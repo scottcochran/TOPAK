@@ -1,0 +1,210 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1680" height="1300" viewBox="0 0 1680 1300">
+<defs><marker id="arw" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#5a6374"/></marker><marker id="arwc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#166b5b"/></marker></defs>
+<rect width="1680" height="1300" fill="#ffffff"/>
+<text x="44" y="46" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="21" fill="#1e2430" font-weight="bold" text-anchor="start">TOPAK — from Genesis Checkpoint G1 into source control, and on to bootstrap</text>
+<text x="44" y="68" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="11.5" fill="#5a6374" font-weight="normal" text-anchor="start">The artifact ratchet (top three lanes) and the custody track (bottom)  ·  2026.09.18  ·  genesis custodian: Scott, (1, 0)</text>
+<text x="1636" y="46" font-family="'SF Mono', 'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="10.5" fill="#8b93a3" font-weight="normal" text-anchor="end">process/MIGRATION-PLAN-2026.09.18.md</text>
+<text x="1636" y="65" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#8b93a3" font-weight="normal" text-anchor="end">G1 §1 conventions · §8 debt ledger · ADR-0029 §5–§7</text>
+<rect x="44" y="90" width="1592" height="187" rx="10" fill="#f6f7f9" stroke="#e3e6ec" stroke-width="1"/>
+<rect x="44" y="90" width="4" height="187" rx="2" fill="#6b7280"/>
+<text x="62" y="111" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" fill="#6b7280" font-weight="bold" text-anchor="start" letter-spacing="0.4">OUTSIDE SOURCE CONTROL</text>
+<text x="62" y="127" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="9.8" fill="#8b93a3" font-weight="normal" text-anchor="start">authored here,</text>
+<text x="62" y="139" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="9.8" fill="#8b93a3" font-weight="normal" text-anchor="start">never canonical</text>
+<rect x="44" y="307" width="1592" height="211" rx="10" fill="#f6f7f9" stroke="#e3e6ec" stroke-width="1"/>
+<rect x="44" y="307" width="4" height="211" rx="2" fill="#b45309"/>
+<text x="62" y="328" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" fill="#b45309" font-weight="bold" text-anchor="start" letter-spacing="0.4">TEMPORARY REPOSITORY</text>
+<text x="62" y="344" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="9.8" fill="#8b93a3" font-weight="normal" text-anchor="start">one per tranche,</text>
+<text x="62" y="356" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="9.8" fill="#8b93a3" font-weight="normal" text-anchor="start">then deleted</text>
+<rect x="44" y="548" width="1592" height="250" rx="10" fill="#f6f7f9" stroke="#e3e6ec" stroke-width="1"/>
+<rect x="44" y="548" width="4" height="250" rx="2" fill="#2f5aa8"/>
+<text x="62" y="569" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" fill="#2f5aa8" font-weight="bold" text-anchor="start" letter-spacing="0.4">CANONICAL PRIVATE REPOSITORY</text>
+<text x="62" y="585" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="9.8" fill="#8b93a3" font-weight="normal" text-anchor="start">main · signed tags</text>
+<rect x="44" y="818" width="1592" height="245" rx="10" fill="#f6f7f9" stroke="#e3e6ec" stroke-width="1"/>
+<rect x="44" y="818" width="4" height="245" rx="2" fill="#166b5b"/>
+<text x="62" y="839" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" fill="#166b5b" font-weight="bold" text-anchor="start" letter-spacing="0.4">CUSTODY AND GOVERNANCE</text>
+<text x="62" y="855" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="9.8" fill="#8b93a3" font-weight="normal" text-anchor="start">who may admit</text>
+<text x="62" y="867" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="9.8" fill="#8b93a3" font-weight="normal" text-anchor="start">a change</text>
+<rect x="190" y="140" width="268" height="92.0" rx="7" fill="#f1f2f4" stroke="#6b7280" stroke-width="1.4"/>
+<text x="201" y="162" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" fill="#6b7280" font-weight="bold" text-anchor="start">G1 corpus · 2026.09.15</text>
+<text x="201" y="178" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">49 files at corpus paths, each pinned</text>
+<text x="201" y="192.5" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">by SHA-256 over its bytes (G-C1)</text>
+<text x="201" y="207.0" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">SHA256SUMS-G1 · G1 = f46e88da…</text>
+<text x="201" y="221.5" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">includes references/ — 3 files</text>
+<rect x="742" y="140" width="300" height="121.0" rx="7" fill="#f1f2f4" stroke="#6b7280" stroke-width="1.4"/>
+<text x="753" y="162" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" fill="#6b7280" font-weight="bold" text-anchor="start">Produced since G1 · 37 sessions</text>
+<text x="753" y="178" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">Class A — 3 filed in the Project:</text>
+<text x="753" y="192.5" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">critical review · log 09.17 · glossary</text>
+<text x="753" y="207.0" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">Class C — 4 delivered, never filed:</text>
+<text x="753" y="221.5" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">feature list rev 2 · LTRO assessment ·</text>
+<text x="753" y="236.0" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">diagram sources · gap map</text>
+<text x="753" y="250.5" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">+ this plan · SESSION-REGISTER.md</text>
+<text x="478" y="174" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.2" fill="#8b93a3" font-weight="normal" text-anchor="start">the cut is the baseline:</text>
+<text x="478" y="189" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.2" fill="#8b93a3" font-weight="normal" text-anchor="start">G1 itself can never change,</text>
+<text x="478" y="204" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.2" fill="#8b93a3" font-weight="normal" text-anchor="start">so every later fix is a diff</text>
+<rect x="190" y="357" width="268" height="135.5" rx="7" fill="#fdf6ec" stroke="#b45309" stroke-width="1.4" stroke-dasharray="5 4"/>
+<text x="201" y="379" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" fill="#b45309" font-weight="bold" text-anchor="start">TEMP #1 — the G1 import · 09.15</text>
+<text x="201" y="395" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">1  import verbatim — 49/49 OK</text>
+<text x="201" y="409.5" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">2  scrub by commit: remove only,</text>
+<text x="201" y="424.0" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">    references/ ×3, named by digest</text>
+<text x="201" y="438.5" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">3  review — genesis route:</text>
+<text x="201" y="453.0" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">    the custodian, alone</text>
+<text x="201" y="467.5" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">4  reviewed tree 8f3e297c… · 46/46</text>
+<text x="201" y="482.0" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">— then deleted; never pushed</text>
+<rect x="742" y="357" width="300" height="135.5" rx="7" fill="#fdf6ec" stroke="#b45309" stroke-width="1.4" stroke-dasharray="5 4"/>
+<text x="753" y="379" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" fill="#b45309" font-weight="bold" text-anchor="start">TEMP #2 — import tranche I1 · next</text>
+<text x="753" y="395" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">1  import verbatim at corpus paths:</text>
+<text x="753" y="409.5" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">    Class A digests + Class C bytes</text>
+<text x="753" y="424.0" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">2  scrub: excluded items removed</text>
+<text x="753" y="438.5" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">    by digest; nothing edited</text>
+<text x="753" y="453.0" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">3  review — genesis route (as above)</text>
+<text x="753" y="467.5" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">4  reviewed tree → SHA256SUMS-I1</text>
+<text x="753" y="482.0" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">— then deleted; never pushed</text>
+<rect x="478" y="365" width="246" height="106.5" rx="7" fill="#fdf0f0" stroke="#a4262c" stroke-width="1.4"/>
+<text x="489" y="387" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" fill="#a4262c" font-weight="bold" text-anchor="start">Never enters the repository</text>
+<text x="489" y="403" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">references/ — Moon &amp; Varshney,</text>
+<text x="489" y="417.5" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">NIST Playbook: not ours to give</text>
+<text x="489" y="432.0" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">the unpublished draft article</text>
+<text x="489" y="446.5" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">article-track drafts · stale scoring</text>
+<text x="489" y="461.0" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">→ pinned by digest, REFERENCES.md</text>
+<line x1="458" y1="419" x2="474" y2="419" stroke="#a4262c" stroke-width="1.6" stroke-dasharray="4 3" marker-end="url(#arw)"/>
+<line x1="742" y1="419" x2="726" y2="419" stroke="#a4262c" stroke-width="1.6" stroke-dasharray="4 3" marker-end="url(#arw)"/>
+<line x1="324" y1="232.0" x2="324" y2="353" stroke="#6b7280" stroke-width="1.6" marker-end="url(#arw)"/>
+<text x="332" y="341" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10" fill="#5a6374" font-weight="normal" text-anchor="start">import</text>
+<line x1="892" y1="261.0" x2="892" y2="353" stroke="#6b7280" stroke-width="1.6" marker-end="url(#arw)"/>
+<text x="900" y="341" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10" fill="#5a6374" font-weight="normal" text-anchor="start">import</text>
+<line x1="300" y1="492.5" x2="300" y2="688" stroke="#b45309" stroke-width="1.6" marker-end="url(#arw)"/>
+<line x1="892" y1="492.5" x2="892" y2="681" stroke="#b45309" stroke-width="1.6" marker-end="url(#arw)"/>
+<text x="440" y="592" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.2" fill="#b45309" font-weight="normal" text-anchor="start">copy — git archive of the reviewed tree,</text>
+<text x="440" y="606" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.2" fill="#5a6374" font-weight="normal" text-anchor="start">never a fetch: pre-scrub objects</text>
+<text x="440" y="620" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.2" fill="#5a6374" font-weight="normal" text-anchor="start">never reach canonical history</text>
+<text x="900" y="592" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.2" fill="#b45309" font-weight="normal" text-anchor="start">copy, then verify per-path blob equality</text>
+<text x="900" y="606" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.2" fill="#5a6374" font-weight="normal" text-anchor="start">against the reviewed tree — derived/ already</text>
+<text x="900" y="620" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.2" fill="#5a6374" font-weight="normal" text-anchor="start">holds G1 files, so no subtree hash</text>
+<line x1="200" y1="694" x2="1560" y2="694" stroke="#2f5aa8" stroke-width="2.4"/>
+<circle cx="324" cy="694" r="9" fill="#ffffff" stroke="#2f5aa8" stroke-width="2.6"/>
+<line x1="324" y1="705" x2="324" y2="712" stroke="#8b93a3" stroke-width="1"/>
+<text x="324" y="724" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="11" fill="#1e2430" font-weight="bold" text-anchor="middle">Genesis Checkpoint G1</text>
+<text x="324" y="737" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10" fill="#5a6374" font-weight="normal" text-anchor="middle">root commit = the reviewed tree,</text>
+<text x="324" y="750" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10" fill="#5a6374" font-weight="normal" text-anchor="middle">byte for byte · 8f3e297c…</text>
+<line x1="324" y1="683" x2="324" y2="642" stroke="#166b5b" stroke-width="1.6"/>
+<path d="M 324 616 H 416 l -12 13 l 12 13 H 324 Z" fill="#ecf6f3" stroke="#166b5b" stroke-width="1.5"/>
+<text x="335" y="634" font-family="'SF Mono', 'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12" fill="#166b5b" font-weight="bold" text-anchor="start">g1</text>
+<text x="324" y="658" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="9.8" fill="#166b5b" font-weight="normal" text-anchor="start">signed by the custodian — the attestation.</text>
+<text x="324" y="671" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="9.8" fill="#5a6374" font-weight="normal" text-anchor="start">CI is evidence; it attests nothing.</text>
+<circle cx="545" cy="694" r="9" fill="#ffffff" stroke="#2f5aa8" stroke-width="2.6"/>
+<line x1="545" y1="705" x2="545" y2="712" stroke="#8b93a3" stroke-width="1"/>
+<text x="545" y="724" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="11" fill="#1e2430" font-weight="bold" text-anchor="middle">Cleanup step 6</text>
+<text x="545" y="737" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10" fill="#5a6374" font-weight="normal" text-anchor="middle">Theory of Operation rev 5</text>
+<text x="545" y="750" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10" fill="#5a6374" font-weight="normal" text-anchor="middle">+ narrative log (S6-1…18)</text>
+<circle cx="892" cy="694" r="9" fill="#ffffff" stroke="#2f5aa8" stroke-width="2.6"/>
+<line x1="892" y1="705" x2="892" y2="712" stroke="#8b93a3" stroke-width="1"/>
+<text x="892" y="724" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="11" fill="#1e2430" font-weight="bold" text-anchor="middle">Import I1</text>
+<text x="892" y="737" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10" fill="#5a6374" font-weight="normal" text-anchor="middle">Class A + Class C at corpus paths</text>
+<text x="892" y="750" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10" fill="#5a6374" font-weight="normal" text-anchor="middle">SHA256SUMS-I1 · SCRUB-LOG §I1</text>
+<circle cx="1000" cy="694" r="9" fill="#ffffff" stroke="#2f5aa8" stroke-width="2.6"/>
+<line x1="1000" y1="683" x2="1000" y2="668" stroke="#8b93a3" stroke-width="1"/>
+<text x="1000" y="638" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="11" fill="#1e2430" font-weight="bold" text-anchor="middle">Restructure</text>
+<text x="1000" y="651" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10" fill="#5a6374" font-weight="normal" text-anchor="middle">renames only — living docs</text>
+<text x="1000" y="664" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10" fill="#5a6374" font-weight="normal" text-anchor="middle">drop their dates (S6-18)</text>
+<circle cx="1100" cy="694" r="9" fill="#ffffff" stroke="#2f5aa8" stroke-width="2.6"/>
+<line x1="1100" y1="705" x2="1100" y2="712" stroke="#8b93a3" stroke-width="1"/>
+<text x="1100" y="724" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="11" fill="#1e2430" font-weight="bold" text-anchor="middle">CI</text>
+<text x="1100" y="737" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10" fill="#5a6374" font-weight="normal" text-anchor="middle">manifest · lint · TLC rerun</text>
+<circle cx="1245" cy="694" r="9" fill="#ffffff" stroke="#2f5aa8" stroke-width="2.6"/>
+<line x1="1245" y1="705" x2="1245" y2="712" stroke="#8b93a3" stroke-width="1"/>
+<text x="1245" y="724" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="11" fill="#1e2430" font-weight="bold" text-anchor="middle">Import rule (Proposed)</text>
+<text x="1245" y="737" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10" fill="#5a6374" font-weight="normal" text-anchor="middle">the route above, recorded</text>
+<circle cx="1320" cy="694" r="6.5" fill="#ffffff" stroke="#2f5aa8" stroke-width="2.2"/>
+<circle cx="1342" cy="694" r="6.5" fill="#ffffff" stroke="#2f5aa8" stroke-width="2.2"/>
+<circle cx="1364" cy="694" r="6.5" fill="#ffffff" stroke="#2f5aa8" stroke-width="2.2"/>
+<circle cx="1386" cy="694" r="6.5" fill="#ffffff" stroke="#2f5aa8" stroke-width="2.2"/>
+<line x1="1353" y1="686" x2="1353" y2="668" stroke="#8b93a3" stroke-width="1"/>
+<line x1="1353" y1="668" x2="1330" y2="660" stroke="#8b93a3" stroke-width="1"/>
+<text x="1330" y="625" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="11" fill="#1e2430" font-weight="bold" text-anchor="middle">S6 fixes, then ratification</text>
+<text x="1330" y="638" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10" fill="#5a6374" font-weight="normal" text-anchor="middle">S6-2 and S6-3 first — mechanism text,</text>
+<text x="1330" y="651" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10" fill="#5a6374" font-weight="normal" text-anchor="middle">then the RulesFloorNV rerun</text>
+<circle cx="1470" cy="694" r="10" fill="#ffffff" stroke="#2f5aa8" stroke-width="2.6"/>
+<line x1="1470" y1="706" x2="1470" y2="712" stroke="#8b93a3" stroke-width="1"/>
+<text x="1470" y="724" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="11" fill="#1e2430" font-weight="bold" text-anchor="middle">Genesis Checkpoint G2</text>
+<text x="1470" y="737" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10" fill="#5a6374" font-weight="normal" text-anchor="middle">records G1's digest, the I1 sources,</text>
+<text x="1470" y="750" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10" fill="#5a6374" font-weight="normal" text-anchor="middle">the layout convention, the ledger</text>
+<line x1="1470" y1="683" x2="1470" y2="642" stroke="#166b5b" stroke-width="1.6"/>
+<path d="M 1470 616 H 1562 l -12 13 l 12 13 H 1470 Z" fill="#ecf6f3" stroke="#166b5b" stroke-width="1.5"/>
+<text x="1481" y="634" font-family="'SF Mono', 'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12" fill="#166b5b" font-weight="bold" text-anchor="start">g2</text>
+<text x="1470" y="658" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="9.8" fill="#166b5b" font-weight="normal" text-anchor="start">signed · SHA256SUMS-G2,</text>
+<text x="1470" y="671" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="9.8" fill="#5a6374" font-weight="normal" text-anchor="start">then the Project mirrors it.</text>
+<circle cx="1522" cy="694" r="3" fill="#8b93a3"/>
+<circle cx="1537" cy="694" r="3" fill="#8b93a3"/>
+<circle cx="1552" cy="694" r="3" fill="#8b93a3"/>
+<text x="1636" y="776" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10" fill="#8b93a3" font-weight="normal" text-anchor="end">then the new records and the spec work → G3</text>
+<rect x="190" y="868" width="300" height="135.5" rx="7" fill="#ecf6f3" stroke="#166b5b" stroke-width="1.4"/>
+<text x="201" y="890" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" fill="#166b5b" font-weight="bold" text-anchor="start">Genesis — where the corpus is now</text>
+<text x="201" y="906" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">custody is declared: Scott, sole custodian (1, 0)</text>
+<text x="201" y="920.5" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">the custodian may ratify unilaterally</text>
+<text x="201" y="935.0" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">an import enters by the genesis route — one</text>
+<text x="201" y="949.5" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">person reviews the temporary repository</text>
+<text x="201" y="964.0" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">every checkpoint carries the debt ledger; at G1:</text>
+<text x="201" y="978.5" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">2 ratified, +4 on queue C, +3 when written</text>
+<text x="201" y="993.0" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">= a confirmation set of 9</text>
+<rect x="524" y="868" width="300" height="150.0" rx="7" fill="#ecf6f3" stroke="#166b5b" stroke-width="1.4"/>
+<text x="535" y="890" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" fill="#166b5b" font-weight="bold" text-anchor="start">Bootstrap trigger — ADR-0029 §5</text>
+<text x="535" y="906" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">a drafted TLA+ bootstrap specification:</text>
+<text x="535" y="920.5" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">Genesis · GenesisSatisfiesFloor</text>
+<text x="535" y="935.0" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">Anchor · FloorPreserved</text>
+<text x="535" y="949.5" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">RulesFloor · NoPromotionWithoutAllGrantSeats †</text>
+<text x="535" y="964.0" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">Promotion · StaleVotesNeverCount</text>
+<text x="535" y="978.5" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">BreakGlass · BreakGlassNeverChangesAuthority</text>
+<text x="535" y="993.0" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">each invariant with a mutation that must fail;</text>
+<text x="535" y="1007.5" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">TLC at small constants advised, not required</text>
+<rect x="858" y="868" width="292" height="150.0" rx="7" fill="#ecf6f3" stroke="#166b5b" stroke-width="1.4"/>
+<text x="869" y="890" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" fill="#166b5b" font-weight="bold" text-anchor="start">The ceremony</text>
+<text x="869" y="906" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">1  seat the key-holders under a declared</text>
+<text x="869" y="920.5" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">    custody record — at least five humans</text>
+<text x="869" y="935.0" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">2  assemble the genesis bundle: the manifest</text>
+<text x="869" y="949.5" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">    incl. the confirmation-required set, the</text>
+<text x="869" y="964.0" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">    spec digest marked checked or drafted-only,</text>
+<text x="869" y="978.5" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">    and the genesis rules</text>
+<text x="869" y="993.0" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">3  every key-holder signs the bundle digest —</text>
+<text x="869" y="1007.5" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">    this is issuance epoch 0</text>
+<rect x="1184" y="868" width="300" height="150.0" rx="7" fill="#ecf6f3" stroke="#166b5b" stroke-width="1.4"/>
+<text x="1195" y="890" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12.5" fill="#166b5b" font-weight="bold" text-anchor="start">After bootstrap</text>
+<text x="1195" y="906" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">custody moves from (1, 0) to a quorum</text>
+<text x="1195" y="920.5" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">first work: a confirmation promotion for every</text>
+<text x="1195" y="935.0" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">confirmation-required record, in dependency</text>
+<text x="1195" y="949.5" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">order, under ADR-0024, with author recusal —</text>
+<text x="1195" y="964.0" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">rejection means a superseding record, not an edit</text>
+<text x="1195" y="978.5" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">records without the marker are not re-reviewed</text>
+<text x="1195" y="993.0" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">an import now enters by promotion, and the</text>
+<text x="1195" y="1007.5" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.5" fill="#5a6374" font-weight="normal" text-anchor="start">genesis route is spent</text>
+<line x1="490" y1="928" x2="520" y2="928" stroke="#166b5b" stroke-width="1.6" marker-end="url(#arw)"/>
+<line x1="824" y1="928" x2="854" y2="928" stroke="#166b5b" stroke-width="1.6" marker-end="url(#arw)"/>
+<line x1="1150" y1="928" x2="1180" y2="928" stroke="#166b5b" stroke-width="1.6" marker-end="url(#arw)"/>
+<text x="524" y="1033.0" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="9.8" fill="#8b93a3" font-weight="normal" text-anchor="start">† the 09.16 spec-scope session argues this invariant belongs in Promotion — unrecorded (plan, Appendix B, R11).</text>
+<text x="524" y="1046.0" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="9.8" fill="#8b93a3" font-weight="normal" text-anchor="start">At G1 the specification is not drafted; RulesFloorNV is a precursor to RulesFloor and Promotion.</text>
+<text x="1184" y="1033.0" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="9.8" fill="#8b93a3" font-weight="normal" text-anchor="start">the genesis bundle is the only artifact</text>
+<text x="1184" y="1046.0" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="9.8" fill="#8b93a3" font-weight="normal" text-anchor="start">never promoted; genesis rules issue no erasure roster</text>
+<line x1="340" y1="862" x2="340" y2="802" stroke="#166b5b" stroke-width="1.3" stroke-dasharray="4 3" marker-end="url(#arwc)"/>
+<text x="350" y="840" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="9.8" fill="#166b5b" font-weight="normal" text-anchor="start">the genesis route is a custody position, not a shortcut</text>
+<path d="M 1353 862 V 834 H 1470 V 802" fill="none" stroke="#166b5b" stroke-width="1.3" stroke-dasharray="4 3" marker-end="url(#arwc)"/>
+<text x="1340" y="840" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="9.8" fill="#166b5b" font-weight="normal" text-anchor="end">bootstrap may be declared at any checkpoint</text>
+<text x="44" y="1093" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10" fill="#8b93a3" font-weight="normal" text-anchor="start">Solid = persistent · dashed = ephemeral or excluded · flags = signed checkpoint tags · circles on the rail = commits</text>
+<rect x="44" y="1107" width="1592" height="152" rx="10" fill="#fbfcfd" stroke="#e3e6ec" stroke-width="1"/>
+<text x="76" y="1135" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" fill="#1e2430" font-weight="bold" text-anchor="start">Identity, and what git is for</text>
+<text x="76" y="1157" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.4" fill="#5a6374" font-weight="normal" text-anchor="start">SHA-256 over a file's bytes is the identity (G-C1). Git's hash is SHA-1</text>
+<text x="76" y="1172" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.4" fill="#5a6374" font-weight="normal" text-anchor="start">over a header plus content, and GitHub hosts no SHA-256 repository —</text>
+<text x="76" y="1187" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.4" fill="#5a6374" font-weight="normal" text-anchor="start">so SHA256SUMS stays the identity and the tags point at it.</text>
+<text x="76" y="1202" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.4" fill="#5a6374" font-weight="normal" text-anchor="start">Git hashes are the transport check: tree equality for G1, per-path blob</text>
+<text x="76" y="1217" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.4" fill="#5a6374" font-weight="normal" text-anchor="start">equality for I1.</text>
+<text x="616" y="1135" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" fill="#1e2430" font-weight="bold" text-anchor="start">What keeps the route honest</text>
+<text x="616" y="1157" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.4" fill="#5a6374" font-weight="normal" text-anchor="start">A scrub removes; it never edits. Every removal is named by digest and</text>
+<text x="616" y="1172" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.4" fill="#5a6374" font-weight="normal" text-anchor="start">reason, never by content.</text>
+<text x="616" y="1187" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.4" fill="#5a6374" font-weight="normal" text-anchor="start">The transfer is a copy, so the temporary history cannot follow it.</text>
+<text x="616" y="1202" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.4" fill="#5a6374" font-weight="normal" text-anchor="start">The temporary repository is deleted, and never pushed.</text>
+<text x="616" y="1217" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.4" fill="#5a6374" font-weight="normal" text-anchor="start">CI enforces the never-enter list and the no-new-chat-URL rule.</text>
+<text x="1156" y="1135" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="12" fill="#1e2430" font-weight="bold" text-anchor="start">Two things that are easy to get wrong</text>
+<text x="1156" y="1157" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.4" fill="#5a6374" font-weight="normal" text-anchor="start">A signed tag is the attestation. CI is evidence and sits outside the</text>
+<text x="1156" y="1172" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.4" fill="#5a6374" font-weight="normal" text-anchor="start">trusted base: a green pipeline ratifies nothing.</text>
+<text x="1156" y="1187" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.4" fill="#5a6374" font-weight="normal" text-anchor="start">Any history rewrite after g1 — authorship, trailers, link removal —</text>
+<text x="1156" y="1202" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.4" fill="#5a6374" font-weight="normal" text-anchor="start">breaks the signature. Those calls happen before g2, or not at all.</text>
+<text x="1156" y="1217" font-family="Inter, 'Helvetica Neue', Helvetica, Arial, sans-serif" font-size="10.4" fill="#5a6374" font-weight="normal" text-anchor="start">At bootstrap the middle lane changes hands, not shape.</text>
+</svg>
