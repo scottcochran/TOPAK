@@ -211,8 +211,22 @@ reader verifies the tree against the manifest, then the manifest against that re
 Verify from the repository root:
 
 ```sh
-shasum -a 256 -c SHA256SUMS-G2 | grep -c ': OK$'    # expect 64
+shasum -a 256 -c SHA256SUMS-G2 | grep -c ': OK$'    # expect 63; see the amendment note below
 ```
+
+**One entry no longer matches, and should not.** `decisions/ADR-0024.md` was amended later on 2026.09.23, after
+this checkpoint was cut: amendment A1 struck its clock-model open obligation, which ADR-0032 discharged. The
+manifest keeps the digest the file had at the cut. Its digest after A1 is
+`4d7a141073df2015cd456be38bdb410e18d0df9f32a6c22c66b885b3cd9adf49`.
+
+**This note changed this checkpoint**, and the manifest measures this checkpoint, so the manifest's entry for this
+file was updated when the note was added. That is the one entry a checkpoint may restate about itself; every other
+entry records the cut.
+
+The manifest is **not** re-cut to absorb that change. A checkpoint measures a moment, and the corpus kept moving
+the same day — ADR-0031, ADR-0032 and the lease specification were all authored after this cut and are outside the
+manifest by construction. Re-cutting would make the file verify while making §1's tallies describe a tree the
+manifest no longer measures. The next checkpoint reconciles both.
 
 The manifest excludes `references/`, which is not ours to redistribute, and the TLA+ jar, which
 `install-tla.sh` fetches by version. G1's manifest remains valid at G1's paths; **it does not verify against this
