@@ -1,0 +1,183 @@
+TOPAK — ADR-0029 §5 bootstrap modules: Anchor, BreakGlass
+Drafted and checked 2026.09.23 · TLC2 2.19 (rev 5a47802) · openjdk version "25.0.1" 2025-10-21
+Shared definitions: RulesFloorBase.tla · floor as ratified 2026.09.23 (R1, R2, R5, R6, R7, R9)
+
+=== anchor-base · Anchor · Mut=none · Active={"R1","R2","R5","R6","R7","R9"} · INVARIANT FloorPreserved
+Starting... (2026-09-23 03:37:07)
+Finished computing initial states: 1 distinct state generated at 2026-09-23 03:37:12.
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.9E-11
+369409 states generated, 961 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 0 (minimum is 0, the maximum 31 and the 95th percentile is 0).
+Finished in 07s at (2026-09-23 03:37:14)
+
+=== anchor-reach · Anchor · Mut=none · Active={"R1","R2","R5","R6","R7","R9"} · INVARIANT NeverIssued
+Starting... (2026-09-23 03:37:14)
+Finished computing initial states: 1 distinct state generated at 2026-09-23 03:37:20.
+Error: Invariant NeverIssued is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ epoch = 0
+/\ rules = [ grant |-> {"h2", "h3", "h5"},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {"Op"},
+  exceptions |-> 2 ]
+State 2: <Issue line 36, col 3 to line 40, col 23 of module Anchor>
+/\ epoch = 1
+/\ rules = [ grant |-> {},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {},
+  exceptions |-> 0 ]
+2 states generated, 2 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 05s at (2026-09-23 03:37:20)
+
+=== anchor-mut · Anchor · Mut=M_FLOOR · Active={"R1","R2","R5","R6","R7","R9"} · INVARIANT FloorPreserved
+Starting... (2026-09-23 03:37:20)
+Finished computing initial states: 1 distinct state generated at 2026-09-23 03:37:25.
+Error: Invariant FloorPreserved is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ epoch = 0
+/\ rules = [ grant |-> {"h2", "h3", "h5"},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {"Op"},
+  exceptions |-> 2 ]
+State 2: <Issue line 36, col 3 to line 40, col 23 of module Anchor>
+/\ epoch = 1
+/\ rules = [ grant |-> {},
+  quorum |-> [mode |-> "k", k |-> 0],
+  minGrant |-> 0,
+  bgScope |-> {},
+  exceptions |-> 0 ]
+2 states generated, 2 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 05s at (2026-09-23 03:37:25)
+
+=== bg-base · BreakGlass · Mut=none · Active={"R1","R2","R5","R6","R7","R9"} · INVARIANT BreakGlassNeverChangesAuthority
+Starting... (2026-09-23 03:37:26)
+Finished computing initial states: 1 distinct state generated at 2026-09-23 03:37:31.
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 7.7E-11
+739779 states generated, 1922 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 0 (minimum is 0, the maximum 31 and the 95th percentile is 1).
+Finished in 08s at (2026-09-23 03:37:34)
+
+=== bg-reach · BreakGlass · Mut=none · Active={"R1","R2","R5","R6","R7","R9"} · INVARIANT NeverBreakGlass
+Starting... (2026-09-23 03:37:35)
+Finished computing initial states: 1 distinct state generated at 2026-09-23 03:37:40.
+Error: Invariant NeverBreakGlass is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ epoch = 0
+/\ bgDid = {}
+/\ rules = [ bgScope |-> {"Op"},
+  grant |-> {"h2", "h3", "h5"},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  exceptions |-> 2 ]
+State 2: <BreakGlass line 44, col 3 to line 45, col 31 of module BreakGlass>
+/\ epoch = 0
+/\ bgDid = {"Op"}
+/\ rules = [ bgScope |-> {"Op"},
+  grant |-> {"h2", "h3", "h5"},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  exceptions |-> 2 ]
+19970 states generated, 962 distinct states found, 902 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 31 and the 95th percentile is 31).
+Finished in 05s at (2026-09-23 03:37:40)
+
+=== bg-scope · BreakGlass · Mut=M_SCOPE · Active={"R1","R2","R5","R6","R7","R9"} · INVARIANT BreakGlassNeverChangesAuthority
+Starting... (2026-09-23 03:37:41)
+Finished computing initial states: 1 distinct state generated at 2026-09-23 03:37:46.
+Error: Invariant BreakGlassNeverChangesAuthority is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ epoch = 0
+/\ bgDid = {}
+/\ rules = [ bgScope |-> {"Op"},
+  grant |-> {"h2", "h3", "h5"},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  exceptions |-> 2 ]
+State 2: <Issue line 33, col 3 to line 36, col 20 of module BreakGlass>
+/\ epoch = 1
+/\ bgDid = {}
+/\ rules = [ bgScope |-> {},
+  grant |-> {},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  exceptions |-> 0 ]
+State 3: <Issue line 33, col 3 to line 36, col 20 of module BreakGlass>
+/\ epoch = 2
+/\ bgDid = {}
+/\ rules = [ bgScope |-> {},
+  grant |-> {},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  exceptions |-> 2 ]
+State 4: <BreakGlass line 44, col 3 to line 45, col 31 of module BreakGlass>
+/\ epoch = 2
+/\ bgDid = {"Issue"}
+/\ rules = [ bgScope |-> {},
+  grant |-> {},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  exceptions |-> 2 ]
+6925 states generated, 973 distinct states found, 949 states left on queue.
+The depth of the complete state graph search is 4.
+Finished in 05s at (2026-09-23 03:37:46)
+
+=== bg-dropR7 · BreakGlass · Mut=none · Active={"R1","R2","R5","R6","R9"} · INVARIANT BreakGlassNeverChangesAuthority
+Starting... (2026-09-23 03:37:47)
+Finished computing initial states: 1 distinct state generated at 2026-09-23 03:37:52.
+Error: Invariant BreakGlassNeverChangesAuthority is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ epoch = 0
+/\ bgDid = {}
+/\ rules = [ bgScope |-> {"Op"},
+  grant |-> {"h2", "h3", "h5"},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  exceptions |-> 2 ]
+State 2: <Issue line 33, col 3 to line 36, col 20 of module BreakGlass>
+/\ epoch = 1
+/\ bgDid = {}
+/\ rules = [ bgScope |-> {},
+  grant |-> {},
+  quorum |-> [mode |-> "all", k |-> 2],
+  minGrant |-> 2,
+  exceptions |-> 0 ]
+State 3: <Issue line 33, col 3 to line 36, col 20 of module BreakGlass>
+/\ epoch = 2
+/\ bgDid = {}
+/\ rules = [ bgScope |-> {"Issue"},
+  grant |-> {},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  exceptions |-> 0 ]
+State 4: <BreakGlass line 44, col 3 to line 45, col 31 of module BreakGlass>
+/\ epoch = 2
+/\ bgDid = {"Issue"}
+/\ rules = [ bgScope |-> {"Issue"},
+  grant |-> {},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  exceptions |-> 0 ]
+1345547 states generated, 7691 distinct states found, 7214 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 0 (minimum is 0, the maximum 31 and the 95th percentile is 0).
+Finished in 06s at (2026-09-23 03:37:53)
+
