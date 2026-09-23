@@ -4,6 +4,7 @@ spec/*.cfg
 spec/tla2tools.jar
 spec/states/
 *.toolbox/
+cloud.ai.exports/ 
 
 # Reference material: not ours to redistribute, pinned by digest in REFERENCES.md
 references/
