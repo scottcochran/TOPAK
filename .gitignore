@@ -1,0 +1,13 @@
+# TLA+ tooling. install-tla.sh downloads the jar; the wrappers are tracked.
+tools/
+spec/*.cfg
+spec/tla2tools.jar
+spec/states/
+*.toolbox/
+
+# Reference material: not ours to redistribute, pinned by digest in REFERENCES.md
+references/
+*.pdf
+
+# Transport containers — their contents are extracted and tracked at corpus paths
+*.zip
