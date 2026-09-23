@@ -1,0 +1,282 @@
+TOPAK — ADR-0013 §4 non-composition check, run 2026.09.23
+Module: NonComposition.tla · TLC2 2.19 (rev 5a47802) · openjdk version "25.0.1" 2025-10-21
+
+=== run base · Mut=none · INVARIANT Safe
+Starting... (2026-09-23 02:06:48)
+Finished computing initial states: 1 distinct state generated at 2026-09-23 02:06:54.
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 4.2E-17
+57 states generated, 34 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 3 and the 95th percentile is 3).
+Finished in 05s at (2026-09-23 02:06:54)
+
+=== run reach · Mut=none · INVARIANT NeverErased
+Starting... (2026-09-23 02:06:54)
+Finished computing initial states: 1 distinct state generated at 2026-09-23 02:06:59.
+Error: Invariant NeverErased is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ bgActive = FALSE
+/\ retained = {}
+/\ viaBG = {}
+/\ admitted = {}
+/\ created = {}
+State 2: <Admit line 55, col 13 to line 60, col 33 of module NonComposition>
+/\ bgActive = FALSE
+/\ retained = {[kind |-> "F1", eff |-> "e1"], [kind |-> "payload", eff |-> "e1"]}
+/\ viaBG = {}
+/\ admitted = {"e1"}
+/\ created = {[kind |-> "F1", eff |-> "e1"], [kind |-> "payload", eff |-> "e1"]}
+State 3: <Erase line 64, col 10 to line 71, col 51 of module NonComposition>
+/\ bgActive = FALSE
+/\ retained = {[kind |-> "F1", eff |-> "e1"], [kind |-> "F6", eff |-> "bg"]}
+/\ viaBG = {}
+/\ admitted = {"e1"}
+/\ created = { [kind |-> "F1", eff |-> "e1"],
+  [kind |-> "F6", eff |-> "bg"],
+  [kind |-> "payload", eff |-> "e1"] }
+14 states generated, 14 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 3 (minimum is 2, the maximum 3 and the 95th percentile is 3).
+Finished in 05s at (2026-09-23 02:06:59)
+
+=== run bg · Mut=none · INVARIANT NeverBGEffect
+Starting... (2026-09-23 02:07:00)
+Finished computing initial states: 1 distinct state generated at 2026-09-23 02:07:05.
+Error: Invariant NeverBGEffect is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ bgActive = FALSE
+/\ retained = {}
+/\ viaBG = {}
+/\ admitted = {}
+/\ created = {}
+State 2: <InvokeBG line 47, col 13 to line 51, col 44 of module NonComposition>
+/\ bgActive = TRUE
+/\ retained = {[kind |-> "F5", eff |-> "bg"]}
+/\ viaBG = {}
+/\ admitted = {}
+/\ created = {[kind |-> "F5", eff |-> "bg"]}
+State 3: <Admit line 55, col 13 to line 60, col 33 of module NonComposition>
+/\ bgActive = TRUE
+/\ retained = { [kind |-> "F1", eff |-> "e1"],
+  [kind |-> "F5", eff |-> "bg"],
+  [kind |-> "payload", eff |-> "e1"] }
+/\ viaBG = {"e1"}
+/\ admitted = {"e1"}
+/\ created = { [kind |-> "F1", eff |-> "e1"],
+  [kind |-> "F5", eff |-> "bg"],
+  [kind |-> "payload", eff |-> "e1"] }
+35 states generated, 23 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 3 and the 95th percentile is 3).
+Finished in 05s at (2026-09-23 02:07:05)
+
+=== run bgerase · Mut=none · INVARIANT NeverBGErased
+Starting... (2026-09-23 02:07:05)
+Finished computing initial states: 1 distinct state generated at 2026-09-23 02:07:10.
+Error: Invariant NeverBGErased is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ bgActive = FALSE
+/\ retained = {}
+/\ viaBG = {}
+/\ admitted = {}
+/\ created = {}
+State 2: <InvokeBG line 47, col 13 to line 51, col 44 of module NonComposition>
+/\ bgActive = TRUE
+/\ retained = {[kind |-> "F5", eff |-> "bg"]}
+/\ viaBG = {}
+/\ admitted = {}
+/\ created = {[kind |-> "F5", eff |-> "bg"]}
+State 3: <Admit line 55, col 13 to line 60, col 33 of module NonComposition>
+/\ bgActive = TRUE
+/\ retained = { [kind |-> "F1", eff |-> "e2"],
+  [kind |-> "F5", eff |-> "bg"],
+  [kind |-> "payload", eff |-> "e2"] }
+/\ viaBG = {"e2"}
+/\ admitted = {"e2"}
+/\ created = { [kind |-> "F1", eff |-> "e2"],
+  [kind |-> "F5", eff |-> "bg"],
+  [kind |-> "payload", eff |-> "e2"] }
+State 4: <Erase line 64, col 10 to line 71, col 51 of module NonComposition>
+/\ bgActive = TRUE
+/\ retained = { [kind |-> "F1", eff |-> "e2"],
+  [kind |-> "F5", eff |-> "bg"],
+  [kind |-> "F6", eff |-> "bg"] }
+/\ viaBG = {"e2"}
+/\ admitted = {"e2"}
+/\ created = { [kind |-> "F1", eff |-> "e2"],
+  [kind |-> "F5", eff |-> "bg"],
+  [kind |-> "F6", eff |-> "bg"],
+  [kind |-> "payload", eff |-> "e2"] }
+43 states generated, 30 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 3 and the 95th percentile is 3).
+Finished in 05s at (2026-09-23 02:07:10)
+
+=== run m1 · Mut=M1 · INVARIANT NC1
+Starting... (2026-09-23 02:07:11)
+Finished computing initial states: 1 distinct state generated at 2026-09-23 02:07:16.
+Error: Invariant NC1 is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ bgActive = FALSE
+/\ retained = {}
+/\ viaBG = {}
+/\ admitted = {}
+/\ created = {}
+State 2: <InvokeBG line 47, col 13 to line 51, col 44 of module NonComposition>
+/\ bgActive = TRUE
+/\ retained = {[kind |-> "F5", eff |-> "bg"]}
+/\ viaBG = {}
+/\ admitted = {}
+/\ created = {[kind |-> "F5", eff |-> "bg"]}
+State 3: <Admit line 55, col 13 to line 60, col 33 of module NonComposition>
+/\ bgActive = TRUE
+/\ retained = { [kind |-> "F1", eff |-> "e1"],
+  [kind |-> "F5", eff |-> "bg"],
+  [kind |-> "payload", eff |-> "e1"] }
+/\ viaBG = {"e1"}
+/\ admitted = {"e1"}
+/\ created = { [kind |-> "F1", eff |-> "e1"],
+  [kind |-> "F5", eff |-> "bg"],
+  [kind |-> "payload", eff |-> "e1"] }
+State 4: <Erase line 64, col 10 to line 71, col 51 of module NonComposition>
+/\ bgActive = TRUE
+/\ retained = { [kind |-> "F5", eff |-> "bg"],
+  [kind |-> "F6", eff |-> "bg"],
+  [kind |-> "payload", eff |-> "e1"] }
+/\ viaBG = {"e1"}
+/\ admitted = {"e1"}
+/\ created = { [kind |-> "F1", eff |-> "e1"],
+  [kind |-> "F5", eff |-> "bg"],
+  [kind |-> "F6", eff |-> "bg"],
+  [kind |-> "payload", eff |-> "e1"] }
+State 5: <Erase line 64, col 10 to line 71, col 51 of module NonComposition>
+/\ bgActive = TRUE
+/\ retained = {[kind |-> "F5", eff |-> "bg"], [kind |-> "F6", eff |-> "bg"]}
+/\ viaBG = {"e1"}
+/\ admitted = {"e1"}
+/\ created = { [kind |-> "F1", eff |-> "e1"],
+  [kind |-> "F5", eff |-> "bg"],
+  [kind |-> "F6", eff |-> "bg"],
+  [kind |-> "payload", eff |-> "e1"] }
+86 states generated, 61 distinct states found, 23 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 2 (minimum is 1, the maximum 4 and the 95th percentile is 4).
+Finished in 05s at (2026-09-23 02:07:16)
+
+=== run m1x · Mut=M1 · INVARIANT NC2
+Starting... (2026-09-23 02:07:16)
+Finished computing initial states: 1 distinct state generated at 2026-09-23 02:07:21.
+Error: Invariant NC2 is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ bgActive = FALSE
+/\ retained = {}
+/\ viaBG = {}
+/\ admitted = {}
+/\ created = {}
+State 2: <Admit line 55, col 13 to line 60, col 33 of module NonComposition>
+/\ bgActive = FALSE
+/\ retained = {[kind |-> "F1", eff |-> "e1"], [kind |-> "payload", eff |-> "e1"]}
+/\ viaBG = {}
+/\ admitted = {"e1"}
+/\ created = {[kind |-> "F1", eff |-> "e1"], [kind |-> "payload", eff |-> "e1"]}
+State 3: <Erase line 64, col 10 to line 71, col 51 of module NonComposition>
+/\ bgActive = FALSE
+/\ retained = {[kind |-> "F6", eff |-> "bg"], [kind |-> "payload", eff |-> "e1"]}
+/\ viaBG = {}
+/\ admitted = {"e1"}
+/\ created = { [kind |-> "F1", eff |-> "e1"],
+  [kind |-> "F6", eff |-> "bg"],
+  [kind |-> "payload", eff |-> "e1"] }
+14 states generated, 14 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 3 (minimum is 2, the maximum 3 and the 95th percentile is 3).
+Finished in 05s at (2026-09-23 02:07:21)
+
+=== run m2 · Mut=M2 · INVARIANT NC2
+Starting... (2026-09-23 02:07:22)
+Finished computing initial states: 1 distinct state generated at 2026-09-23 02:07:27.
+Error: Invariant NC2 is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ bgActive = FALSE
+/\ retained = {}
+/\ viaBG = {}
+/\ admitted = {}
+/\ created = {}
+State 2: <InvokeBG line 47, col 13 to line 51, col 44 of module NonComposition>
+/\ bgActive = TRUE
+/\ retained = {[kind |-> "F5", eff |-> "bg"]}
+/\ viaBG = {}
+/\ admitted = {}
+/\ created = {[kind |-> "F5", eff |-> "bg"]}
+State 3: <Erase line 64, col 10 to line 71, col 51 of module NonComposition>
+/\ bgActive = TRUE
+/\ retained = {[kind |-> "F6", eff |-> "bg"]}
+/\ viaBG = {}
+/\ admitted = {}
+/\ created = {[kind |-> "F5", eff |-> "bg"], [kind |-> "F6", eff |-> "bg"]}
+32 states generated, 27 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 2 (minimum is 1, the maximum 3 and the 95th percentile is 3).
+Finished in 05s at (2026-09-23 02:07:27)
+
+=== run m2x · Mut=M2 · INVARIANT NC1
+Starting... (2026-09-23 02:07:28)
+Finished computing initial states: 1 distinct state generated at 2026-09-23 02:07:33.
+Error: Invariant NC1 is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ bgActive = FALSE
+/\ retained = {}
+/\ viaBG = {}
+/\ admitted = {}
+/\ created = {}
+State 2: <InvokeBG line 47, col 13 to line 51, col 44 of module NonComposition>
+/\ bgActive = TRUE
+/\ retained = {[kind |-> "F5", eff |-> "bg"]}
+/\ viaBG = {}
+/\ admitted = {}
+/\ created = {[kind |-> "F5", eff |-> "bg"]}
+State 3: <Erase line 64, col 10 to line 71, col 51 of module NonComposition>
+/\ bgActive = TRUE
+/\ retained = {[kind |-> "F6", eff |-> "bg"]}
+/\ viaBG = {}
+/\ admitted = {}
+/\ created = {[kind |-> "F5", eff |-> "bg"], [kind |-> "F6", eff |-> "bg"]}
+State 4: <Erase line 64, col 10 to line 71, col 51 of module NonComposition>
+/\ bgActive = TRUE
+/\ retained = {}
+/\ viaBG = {}
+/\ admitted = {}
+/\ created = {[kind |-> "F5", eff |-> "bg"], [kind |-> "F6", eff |-> "bg"]}
+State 5: <Admit line 55, col 13 to line 60, col 33 of module NonComposition>
+/\ bgActive = TRUE
+/\ retained = {[kind |-> "F1", eff |-> "e1"], [kind |-> "payload", eff |-> "e1"]}
+/\ viaBG = {"e1"}
+/\ admitted = {"e1"}
+/\ created = { [kind |-> "F1", eff |-> "e1"],
+  [kind |-> "F5", eff |-> "bg"],
+  [kind |-> "F6", eff |-> "bg"],
+  [kind |-> "payload", eff |-> "e1"] }
+State 6: <Erase line 64, col 10 to line 71, col 51 of module NonComposition>
+/\ bgActive = TRUE
+/\ retained = {[kind |-> "F1", eff |-> "e1"]}
+/\ viaBG = {"e1"}
+/\ admitted = {"e1"}
+/\ created = { [kind |-> "F1", eff |-> "e1"],
+  [kind |-> "F5", eff |-> "bg"],
+  [kind |-> "F6", eff |-> "bg"],
+  [kind |-> "payload", eff |-> "e1"] }
+77 states generated, 54 distinct states found, 20 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 2 (minimum is 1, the maximum 4 and the 95th percentile is 4).
+Finished in 05s at (2026-09-23 02:07:33)
+

@@ -1,0 +1,405 @@
+TOPAK — ADR-0026 §6 non-vacuity rerun (rev5), run 2026.09.23
+Module: RulesFloorNV_rev5.tla · TLC2 2.19 (rev 5a47802) · openjdk version "25.0.1" 2025-10-21
+Supersedes the rev4 column: mechanism is ADR-0024 revision 5 and the ADR-0022 Vote envelope is modeled.
+
+=== base · Mech=rev5 · Active={"R1","R2","R5","R7","R9"} · INVARIANT Safe
+Starting... (2026-09-23 02:22:07)
+Finished computing initial states: 1 distinct state generated at 2026-09-23 02:22:12.
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.5E-12
+19351 states generated, 2776 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 31 and the 95th percentile is 4).
+Finished in 05s at (2026-09-23 02:22:12)
+
+=== reach · Mech=rev5 · Active={"R1","R2","R5","R7","R9"} · INVARIANT NeverPromoted
+Starting... (2026-09-23 02:22:13)
+Finished computing initial states: 1 distinct state generated at 2026-09-23 02:22:18.
+Error: Invariant NeverPromoted is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ bgDid = {}
+/\ seats = {}
+/\ approvers = {}
+/\ rules = [ grant |-> {"h2", "h3", "h5"},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {"Op"} ]
+/\ issued = FALSE
+/\ promoted = FALSE
+/\ votes = [h1 |-> "none", h2 |-> "none", h3 |-> "none", h4 |-> "none", h5 |-> "none"]
+State 2: <Issue line 95, col 10 to line 98, col 59 of module RulesFloorNV_rev5>
+/\ bgDid = {}
+/\ seats = {}
+/\ approvers = {}
+/\ rules = [ grant |-> {"h2", "h3"},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {} ]
+/\ issued = TRUE
+/\ promoted = FALSE
+/\ votes = [h1 |-> "none", h2 |-> "none", h3 |-> "none", h4 |-> "none", h5 |-> "none"]
+State 3: <Vote line 102, col 12 to line 105, col 76 of module RulesFloorNV_rev5>
+/\ bgDid = {}
+/\ seats = {}
+/\ approvers = {}
+/\ rules = [ grant |-> {"h2", "h3"},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {} ]
+/\ issued = TRUE
+/\ promoted = FALSE
+/\ votes = [h1 |-> "none", h2 |-> "grant", h3 |-> "none", h4 |-> "none", h5 |-> "none"]
+State 4: <Vote line 102, col 12 to line 105, col 76 of module RulesFloorNV_rev5>
+/\ bgDid = {}
+/\ seats = {}
+/\ approvers = {}
+/\ rules = [ grant |-> {"h2", "h3"},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {} ]
+/\ issued = TRUE
+/\ promoted = FALSE
+/\ votes = [h1 |-> "none", h2 |-> "grant", h3 |-> "grant", h4 |-> "none", h5 |-> "none"]
+State 5: <Promote line 107, col 12 to line 109, col 55 of module RulesFloorNV_rev5>
+/\ bgDid = {}
+/\ seats = {"h2", "h3"}
+/\ approvers = {"h2", "h3"}
+/\ rules = [ grant |-> {"h2", "h3"},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {} ]
+/\ issued = TRUE
+/\ promoted = TRUE
+/\ votes = [h1 |-> "none", h2 |-> "grant", h3 |-> "grant", h4 |-> "none", h5 |-> "none"]
+865 states generated, 504 distinct states found, 85 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 31 and the 95th percentile is 3).
+Finished in 05s at (2026-09-23 02:22:18)
+
+=== dropR1 · Mech=rev5 · Active={"R2","R5","R7","R9"} · INVARIANT P1_Unanimity
+Starting... (2026-09-23 02:22:19)
+Finished computing initial states: 1 distinct state generated at 2026-09-23 02:22:24.
+Error: Invariant P1_Unanimity is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ bgDid = {}
+/\ seats = {}
+/\ approvers = {}
+/\ rules = [ grant |-> {"h2", "h3", "h5"},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {"Op"} ]
+/\ issued = FALSE
+/\ promoted = FALSE
+/\ votes = [h1 |-> "none", h2 |-> "none", h3 |-> "none", h4 |-> "none", h5 |-> "none"]
+State 2: <Issue line 95, col 10 to line 98, col 59 of module RulesFloorNV_rev5>
+/\ bgDid = {}
+/\ seats = {}
+/\ approvers = {}
+/\ rules = [ grant |-> {"h2", "h3", "h5"},
+  quorum |-> [mode |-> "k", k |-> 2],
+  minGrant |-> 2,
+  bgScope |-> {} ]
+/\ issued = TRUE
+/\ promoted = FALSE
+/\ votes = [h1 |-> "none", h2 |-> "none", h3 |-> "none", h4 |-> "none", h5 |-> "none"]
+State 3: <Vote line 102, col 12 to line 105, col 76 of module RulesFloorNV_rev5>
+/\ bgDid = {}
+/\ seats = {}
+/\ approvers = {}
+/\ rules = [ grant |-> {"h2", "h3", "h5"},
+  quorum |-> [mode |-> "k", k |-> 2],
+  minGrant |-> 2,
+  bgScope |-> {} ]
+/\ issued = TRUE
+/\ promoted = FALSE
+/\ votes = [h1 |-> "none", h2 |-> "grant", h3 |-> "none", h4 |-> "none", h5 |-> "none"]
+State 4: <Vote line 102, col 12 to line 105, col 76 of module RulesFloorNV_rev5>
+/\ bgDid = {}
+/\ seats = {}
+/\ approvers = {}
+/\ rules = [ grant |-> {"h2", "h3", "h5"},
+  quorum |-> [mode |-> "k", k |-> 2],
+  minGrant |-> 2,
+  bgScope |-> {} ]
+/\ issued = TRUE
+/\ promoted = FALSE
+/\ votes = [h1 |-> "none", h2 |-> "grant", h3 |-> "grant", h4 |-> "none", h5 |-> "none"]
+State 5: <Promote line 107, col 12 to line 109, col 55 of module RulesFloorNV_rev5>
+/\ bgDid = {}
+/\ seats = {"h2", "h3", "h5"}
+/\ approvers = {"h2", "h3"}
+/\ rules = [ grant |-> {"h2", "h3", "h5"},
+  quorum |-> [mode |-> "k", k |-> 2],
+  minGrant |-> 2,
+  bgScope |-> {} ]
+/\ issued = TRUE
+/\ promoted = TRUE
+/\ votes = [h1 |-> "none", h2 |-> "grant", h3 |-> "grant", h4 |-> "none", h5 |-> "none"]
+3991 states generated, 2077 distinct states found, 107 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 31 and the 95th percentile is 4).
+Finished in 05s at (2026-09-23 02:22:24)
+
+=== dropR1R9 · Mech=rev5 · Active={"R2","R5","R7"} · INVARIANT P9_NoSoloGrant
+Starting... (2026-09-23 02:22:24)
+Finished computing initial states: 1 distinct state generated at 2026-09-23 02:22:29.
+Error: Invariant P9_NoSoloGrant is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ bgDid = {}
+/\ seats = {}
+/\ approvers = {}
+/\ rules = [ grant |-> {"h2", "h3", "h5"},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {"Op"} ]
+/\ issued = FALSE
+/\ promoted = FALSE
+/\ votes = [h1 |-> "none", h2 |-> "none", h3 |-> "none", h4 |-> "none", h5 |-> "none"]
+State 2: <Issue line 95, col 10 to line 98, col 59 of module RulesFloorNV_rev5>
+/\ bgDid = {}
+/\ seats = {}
+/\ approvers = {}
+/\ rules = [ grant |-> {"h2", "h3"},
+  quorum |-> [mode |-> "k", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {} ]
+/\ issued = TRUE
+/\ promoted = FALSE
+/\ votes = [h1 |-> "none", h2 |-> "none", h3 |-> "none", h4 |-> "none", h5 |-> "none"]
+State 3: <Promote line 107, col 12 to line 109, col 55 of module RulesFloorNV_rev5>
+/\ bgDid = {}
+/\ seats = {"h2", "h3"}
+/\ approvers = {}
+/\ rules = [ grant |-> {"h2", "h3"},
+  quorum |-> [mode |-> "k", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {} ]
+/\ issued = TRUE
+/\ promoted = TRUE
+/\ votes = [h1 |-> "none", h2 |-> "none", h3 |-> "none", h4 |-> "none", h5 |-> "none"]
+1147 states generated, 815 distinct states found, 174 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 31 and the 95th percentile is 3).
+Finished in 05s at (2026-09-23 02:22:29)
+
+=== dropR2 · Mech=rev5 · Active={"R1","R5","R7","R9"} · INVARIANT P2_TwoSeatsCounted
+Starting... (2026-09-23 02:22:30)
+Finished computing initial states: 1 distinct state generated at 2026-09-23 02:22:35.
+Error: Invariant P2_TwoSeatsCounted is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ bgDid = {}
+/\ seats = {}
+/\ approvers = {}
+/\ rules = [ grant |-> {"h2", "h3", "h5"},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {"Op"} ]
+/\ issued = FALSE
+/\ promoted = FALSE
+/\ votes = [h1 |-> "none", h2 |-> "none", h3 |-> "none", h4 |-> "none", h5 |-> "none"]
+State 2: <Issue line 95, col 10 to line 98, col 59 of module RulesFloorNV_rev5>
+/\ bgDid = {}
+/\ seats = {}
+/\ approvers = {}
+/\ rules = [ grant |-> {},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 0,
+  bgScope |-> {} ]
+/\ issued = TRUE
+/\ promoted = FALSE
+/\ votes = [h1 |-> "none", h2 |-> "none", h3 |-> "none", h4 |-> "none", h5 |-> "none"]
+State 3: <Promote line 107, col 12 to line 109, col 55 of module RulesFloorNV_rev5>
+/\ bgDid = {}
+/\ seats = {}
+/\ approvers = {}
+/\ rules = [ grant |-> {},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 0,
+  bgScope |-> {} ]
+/\ issued = TRUE
+/\ promoted = TRUE
+/\ votes = [h1 |-> "none", h2 |-> "none", h3 |-> "none", h4 |-> "none", h5 |-> "none"]
+807 states generated, 509 distinct states found, 456 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 31 and the 95th percentile is 1).
+Finished in 05s at (2026-09-23 02:22:35)
+
+=== envrecuse · Mech=norecuse · Active={"R1","R2","R5","R7","R9"} · INVARIANT P3_AuthorNotCounted
+Starting... (2026-09-23 02:22:36)
+Finished computing initial states: 1 distinct state generated at 2026-09-23 02:22:41.
+Error: Invariant P3_AuthorNotCounted is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ bgDid = {}
+/\ seats = {}
+/\ approvers = {}
+/\ rules = [ grant |-> {"h2", "h3", "h5"},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {"Op"} ]
+/\ issued = FALSE
+/\ promoted = FALSE
+/\ votes = [h1 |-> "none", h2 |-> "none", h3 |-> "none", h4 |-> "none", h5 |-> "none"]
+State 2: <Issue line 95, col 10 to line 98, col 59 of module RulesFloorNV_rev5>
+/\ bgDid = {}
+/\ seats = {}
+/\ approvers = {}
+/\ rules = [ grant |-> {"h1", "h2"},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {} ]
+/\ issued = TRUE
+/\ promoted = FALSE
+/\ votes = [h1 |-> "none", h2 |-> "none", h3 |-> "none", h4 |-> "none", h5 |-> "none"]
+State 3: <Vote line 102, col 12 to line 105, col 76 of module RulesFloorNV_rev5>
+/\ bgDid = {}
+/\ seats = {}
+/\ approvers = {}
+/\ rules = [ grant |-> {"h1", "h2"},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {} ]
+/\ issued = TRUE
+/\ promoted = FALSE
+/\ votes = [h1 |-> "grant", h2 |-> "none", h3 |-> "none", h4 |-> "none", h5 |-> "none"]
+State 4: <Vote line 102, col 12 to line 105, col 76 of module RulesFloorNV_rev5>
+/\ bgDid = {}
+/\ seats = {}
+/\ approvers = {}
+/\ rules = [ grant |-> {"h1", "h2"},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {} ]
+/\ issued = TRUE
+/\ promoted = FALSE
+/\ votes = [h1 |-> "grant", h2 |-> "grant", h3 |-> "none", h4 |-> "none", h5 |-> "none"]
+State 5: <Promote line 107, col 12 to line 109, col 55 of module RulesFloorNV_rev5>
+/\ bgDid = {}
+/\ seats = {"h1", "h2"}
+/\ approvers = {"h1", "h2"}
+/\ rules = [ grant |-> {"h1", "h2"},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {} ]
+/\ issued = TRUE
+/\ promoted = TRUE
+/\ votes = [h1 |-> "grant", h2 |-> "grant", h3 |-> "none", h4 |-> "none", h5 |-> "none"]
+740 states generated, 434 distinct states found, 119 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 31 and the 95th percentile is 3).
+Finished in 05s at (2026-09-23 02:22:41)
+
+=== dropR5 · Mech=rev5 · Active={"R1","R2","R7","R9"} · INVARIANT P5_AnchorNotApprover
+Starting... (2026-09-23 02:22:41)
+Finished computing initial states: 1 distinct state generated at 2026-09-23 02:22:46.
+Error: Invariant P5_AnchorNotApprover is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ bgDid = {}
+/\ seats = {}
+/\ approvers = {}
+/\ rules = [ grant |-> {"h2", "h3", "h5"},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {"Op"} ]
+/\ issued = FALSE
+/\ promoted = FALSE
+/\ votes = [h1 |-> "none", h2 |-> "none", h3 |-> "none", h4 |-> "none", h5 |-> "none"]
+State 2: <Issue line 95, col 10 to line 98, col 59 of module RulesFloorNV_rev5>
+/\ bgDid = {}
+/\ seats = {}
+/\ approvers = {}
+/\ rules = [ grant |-> {"h2", "h4"},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {} ]
+/\ issued = TRUE
+/\ promoted = FALSE
+/\ votes = [h1 |-> "none", h2 |-> "none", h3 |-> "none", h4 |-> "none", h5 |-> "none"]
+State 3: <Vote line 102, col 12 to line 105, col 76 of module RulesFloorNV_rev5>
+/\ bgDid = {}
+/\ seats = {}
+/\ approvers = {}
+/\ rules = [ grant |-> {"h2", "h4"},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {} ]
+/\ issued = TRUE
+/\ promoted = FALSE
+/\ votes = [h1 |-> "none", h2 |-> "grant", h3 |-> "none", h4 |-> "none", h5 |-> "none"]
+State 4: <Vote line 102, col 12 to line 105, col 76 of module RulesFloorNV_rev5>
+/\ bgDid = {}
+/\ seats = {}
+/\ approvers = {}
+/\ rules = [ grant |-> {"h2", "h4"},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {} ]
+/\ issued = TRUE
+/\ promoted = FALSE
+/\ votes = [h1 |-> "none", h2 |-> "grant", h3 |-> "none", h4 |-> "grant", h5 |-> "none"]
+State 5: <Promote line 107, col 12 to line 109, col 55 of module RulesFloorNV_rev5>
+/\ bgDid = {}
+/\ seats = {"h2", "h4"}
+/\ approvers = {"h2", "h4"}
+/\ rules = [ grant |-> {"h2", "h4"},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {} ]
+/\ issued = TRUE
+/\ promoted = TRUE
+/\ votes = [h1 |-> "none", h2 |-> "grant", h3 |-> "none", h4 |-> "grant", h5 |-> "none"]
+1541 states generated, 879 distinct states found, 219 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 31 and the 95th percentile is 3).
+Finished in 05s at (2026-09-23 02:22:46)
+
+=== dropR7 · Mech=rev5 · Active={"R1","R2","R5","R9"} · INVARIANT P7_BGNoAuthority
+Starting... (2026-09-23 02:22:47)
+Finished computing initial states: 1 distinct state generated at 2026-09-23 02:22:52.
+Error: Invariant P7_BGNoAuthority is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ bgDid = {}
+/\ seats = {}
+/\ approvers = {}
+/\ rules = [ grant |-> {"h2", "h3", "h5"},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {"Op"} ]
+/\ issued = FALSE
+/\ promoted = FALSE
+/\ votes = [h1 |-> "none", h2 |-> "none", h3 |-> "none", h4 |-> "none", h5 |-> "none"]
+State 2: <Issue line 95, col 10 to line 98, col 59 of module RulesFloorNV_rev5>
+/\ bgDid = {}
+/\ seats = {}
+/\ approvers = {}
+/\ rules = [ grant |-> {},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {"Issue", "Op"} ]
+/\ issued = TRUE
+/\ promoted = FALSE
+/\ votes = [h1 |-> "none", h2 |-> "none", h3 |-> "none", h4 |-> "none", h5 |-> "none"]
+State 3: <BreakGlass line 111, col 15 to line 112, col 79 of module RulesFloorNV_rev5>
+/\ bgDid = {"Issue"}
+/\ seats = {}
+/\ approvers = {}
+/\ rules = [ grant |-> {},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {"Issue", "Op"} ]
+/\ issued = TRUE
+/\ promoted = FALSE
+/\ votes = [h1 |-> "none", h2 |-> "none", h3 |-> "none", h4 |-> "none", h5 |-> "none"]
+541 states generated, 344 distinct states found, 305 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 31 and the 95th percentile is 31).
+Finished in 05s at (2026-09-23 02:22:52)
+
