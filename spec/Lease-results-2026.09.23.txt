@@ -1,0 +1,171 @@
+TOPAK — ADR-0031 lease schema: property check
+Module: Lease.tla · TLC2 2.19 (rev 5a47802) · openjdk version "25.0.1" 2025-10-21
+Properties: LeaseAuthorityMonotone (§4) · NoActionUnderFencedEpoch (§5) · Rung0NeverContained (§3)
+
+=== base · Mut=none · INVARIANT Safe
+Starting... (2026-09-23 16:11:06)
+Finished computing initial states: 1 distinct state generated at 2026-09-23 16:11:12.
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.7E-8
+  based on the actual fingerprints:  val = 1.3E-8
+1586967 states generated, 436512 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 15.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 29 and the 95th percentile is 3).
+Finished in 06s at (2026-09-23 16:11:13)
+
+=== reach-act · Mut=none · INVARIANT NeverActed
+Starting... (2026-09-23 16:11:13)
+Finished computing initial states: 1 distinct state generated at 2026-09-23 16:11:18.
+Error: Invariant NeverActed is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ epoch = 0
+/\ acted = {}
+/\ fence = 0
+/\ prev = [ p1 |->
+      [live |-> FALSE, alphabet |-> {}, rung |-> 0, epoch |-> 0, fence |-> 0],
+  p2 |->
+      [live |-> FALSE, alphabet |-> {}, rung |-> 0, epoch |-> 0, fence |-> 0] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [live |-> FALSE, alphabet |-> {}, rung |-> 0, epoch |-> 0, fence |-> 0],
+  p2 |->
+      [live |-> FALSE, alphabet |-> {}, rung |-> 0, epoch |-> 0, fence |-> 0] ]
+State 2: <Revoke line 75, col 3 to line 77, col 59 of module Lease>
+/\ epoch = 1
+/\ acted = {}
+
+=== reach-renew · Mut=none · INVARIANT NeverRenewed
+Starting... (2026-09-23 16:11:19)
+Finished computing initial states: 1 distinct state generated at 2026-09-23 16:11:24.
+Error: Invariant NeverRenewed is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ epoch = 0
+/\ acted = {}
+/\ fence = 0
+/\ prev = [ p1 |->
+      [live |-> FALSE, alphabet |-> {}, rung |-> 0, epoch |-> 0, fence |-> 0],
+  p2 |->
+      [live |-> FALSE, alphabet |-> {}, rung |-> 0, epoch |-> 0, fence |-> 0] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [live |-> FALSE, alphabet |-> {}, rung |-> 0, epoch |-> 0, fence |-> 0],
+  p2 |->
+      [live |-> FALSE, alphabet |-> {}, rung |-> 0, epoch |-> 0, fence |-> 0] ]
+State 2: <Grant line 48, col 3 to line 55, col 46 of module Lease>
+/\ epoch = 0
+/\ acted = {}
+
+=== reach-revoke · Mut=none · INVARIANT NeverRevoked
+Starting... (2026-09-23 16:11:24)
+Finished computing initial states: 1 distinct state generated at 2026-09-23 16:11:29.
+Error: Invariant NeverRevoked is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ epoch = 0
+/\ acted = {}
+/\ fence = 0
+/\ prev = [ p1 |->
+      [live |-> FALSE, alphabet |-> {}, rung |-> 0, epoch |-> 0, fence |-> 0],
+  p2 |->
+      [live |-> FALSE, alphabet |-> {}, rung |-> 0, epoch |-> 0, fence |-> 0] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [live |-> FALSE, alphabet |-> {}, rung |-> 0, epoch |-> 0, fence |-> 0],
+  p2 |->
+      [live |-> FALSE, alphabet |-> {}, rung |-> 0, epoch |-> 0, fence |-> 0] ]
+State 2: <Revoke line 75, col 3 to line 77, col 59 of module Lease>
+/\ epoch = 1
+/\ acted = {}
+
+=== reach-stale · Mut=none · INVARIANT NeverStaleLease
+Starting... (2026-09-23 16:11:30)
+Finished computing initial states: 1 distinct state generated at 2026-09-23 16:11:35.
+Error: Invariant NeverStaleLease is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ epoch = 0
+/\ acted = {}
+/\ fence = 0
+/\ prev = [ p1 |->
+      [live |-> FALSE, alphabet |-> {}, rung |-> 0, epoch |-> 0, fence |-> 0],
+  p2 |->
+      [live |-> FALSE, alphabet |-> {}, rung |-> 0, epoch |-> 0, fence |-> 0] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [live |-> FALSE, alphabet |-> {}, rung |-> 0, epoch |-> 0, fence |-> 0],
+  p2 |->
+      [live |-> FALSE, alphabet |-> {}, rung |-> 0, epoch |-> 0, fence |-> 0] ]
+State 2: <Revoke line 75, col 3 to line 77, col 59 of module Lease>
+/\ epoch = 1
+/\ acted = {}
+
+=== mut-renew · Mut=M_RENEW · INVARIANT LeaseAuthorityMonotone
+Starting... (2026-09-23 16:11:36)
+Finished computing initial states: 1 distinct state generated at 2026-09-23 16:11:41.
+Error: Invariant LeaseAuthorityMonotone is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ epoch = 0
+/\ acted = {}
+/\ fence = 0
+/\ prev = [ p1 |->
+      [live |-> FALSE, alphabet |-> {}, rung |-> 0, epoch |-> 0, fence |-> 0],
+  p2 |->
+      [live |-> FALSE, alphabet |-> {}, rung |-> 0, epoch |-> 0, fence |-> 0] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [live |-> FALSE, alphabet |-> {}, rung |-> 0, epoch |-> 0, fence |-> 0],
+  p2 |->
+      [live |-> FALSE, alphabet |-> {}, rung |-> 0, epoch |-> 0, fence |-> 0] ]
+State 2: <Revoke line 75, col 3 to line 77, col 59 of module Lease>
+/\ epoch = 1
+/\ acted = {}
+
+=== mut-fence · Mut=M_FENCE · INVARIANT NoActionUnderFencedEpoch
+Starting... (2026-09-23 16:11:41)
+Finished computing initial states: 1 distinct state generated at 2026-09-23 16:11:46.
+Error: Invariant NoActionUnderFencedEpoch is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ epoch = 0
+/\ acted = {}
+/\ fence = 0
+/\ prev = [ p1 |->
+      [live |-> FALSE, alphabet |-> {}, rung |-> 0, epoch |-> 0, fence |-> 0],
+  p2 |->
+      [live |-> FALSE, alphabet |-> {}, rung |-> 0, epoch |-> 0, fence |-> 0] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [live |-> FALSE, alphabet |-> {}, rung |-> 0, epoch |-> 0, fence |-> 0],
+  p2 |->
+      [live |-> FALSE, alphabet |-> {}, rung |-> 0, epoch |-> 0, fence |-> 0] ]
+State 2: <Grant line 48, col 3 to line 55, col 46 of module Lease>
+/\ epoch = 0
+/\ acted = {}
+
+=== mut-rung · Mut=M_RUNG · INVARIANT Rung0NeverContained
+Starting... (2026-09-23 16:11:47)
+Finished computing initial states: 1 distinct state generated at 2026-09-23 16:11:52.
+Error: Invariant Rung0NeverContained is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ epoch = 0
+/\ acted = {}
+/\ fence = 0
+/\ prev = [ p1 |->
+      [live |-> FALSE, alphabet |-> {}, rung |-> 0, epoch |-> 0, fence |-> 0],
+  p2 |->
+      [live |-> FALSE, alphabet |-> {}, rung |-> 0, epoch |-> 0, fence |-> 0] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [live |-> FALSE, alphabet |-> {}, rung |-> 0, epoch |-> 0, fence |-> 0],
+  p2 |->
+      [live |-> FALSE, alphabet |-> {}, rung |-> 0, epoch |-> 0, fence |-> 0] ]
+State 2: <Revoke line 75, col 3 to line 77, col 59 of module Lease>
+/\ epoch = 1
+/\ acted = {}
+
