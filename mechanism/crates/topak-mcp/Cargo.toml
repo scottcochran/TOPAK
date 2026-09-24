@@ -1,0 +1,16 @@
+[package]
+name = "topak-mcp"
+description = "The agent's only interface: the action alphabet as MCP tools; and the host for allowlisted downstream MCP tools."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+topak-core.workspace = true
+rmcp = { workspace = true, features = ["server", "client", "transport-io", "transport-child-process"] }
+tokio.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+anyhow.workspace = true
+tracing.workspace = true

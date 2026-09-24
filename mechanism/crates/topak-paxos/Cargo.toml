@@ -1,0 +1,10 @@
+[package]
+name = "topak-paxos"
+description = "Sans-IO crash-fault Multi-Paxos: Voting layer (ghost) + message-level Paxos. No clocks, sockets or disks."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+serde.workspace = true

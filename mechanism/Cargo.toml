@@ -1,0 +1,37 @@
+[workspace]
+resolver = "3"
+members = ["crates/*"]
+
+[workspace.package]
+version = "0.1.0"
+edition = "2024"
+license = "UNLICENSED"
+publish = false
+
+[workspace.dependencies]
+topak-core = { path = "crates/topak-core" }
+topak-paxos = { path = "crates/topak-paxos" }
+topak-floor = { path = "crates/topak-floor" }
+topak-bundle = { path = "crates/topak-bundle" }
+topak-transport = { path = "crates/topak-transport" }
+topak-mcp = { path = "crates/topak-mcp" }
+
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+sha2 = "0.10"
+hex = "0.4"
+thiserror = "2"
+anyhow = "1"
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
+tokio = { version = "1", features = ["full"] }
+cedar-policy = "4.13"
+rskafka = "0.6"
+rmcp = "3.4"
+opa-wasm = "0.3"
+ed25519-dalek = "2"
+reqwest = { version = "0.12", default-features = false, features = ["json", "rustls-tls"] }
+schemars = "1"
+clap = { version = "4", features = ["derive"] }
+flate2 = "1"
+tar = "0.4"

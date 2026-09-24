@@ -1,0 +1,19 @@
+[package]
+name = "topak-core"
+description = "TOPAK admit-path mechanism: types, lease, rules floor, promotion, lift, replicated state. No I/O."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+serde.workspace = true
+serde_json.workspace = true
+sha2.workspace = true
+hex.workspace = true
+thiserror.workspace = true
+ed25519-dalek.workspace = true
+
+[dev-dependencies]
+ed25519-dalek = { workspace = true, features = ["rand_core"] }
+rand = "0.8"

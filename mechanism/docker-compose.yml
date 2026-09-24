@@ -1,0 +1,13 @@
+# Dev dependencies for the mechanism: a single-node Kafka (KRaft) and an OPA sidecar serving
+# the compiled bundle. `scripts/dev-init.sh` writes TOPAK_BUNDLE into .env.
+services:
+  kafka:
+    image: apache/kafka:latest
+    ports: ["9092:9092"]
+
+  opa:
+    image: openpolicyagent/opa:latest
+    platform: linux/amd64
+    ports: ["18181:8181"]
+    volumes: ["./bundles:/bundles:ro"]
+    command: ["run", "--server", "--addr=0.0.0.0:8181", "--bundle", "/bundles/${TOPAK_BUNDLE}.tar.gz"]

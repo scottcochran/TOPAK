@@ -1,0 +1,16 @@
+[package]
+name = "topak-floor"
+description = "The policy floor: the gated Cedar text and schema, linked into the mechanism (ADR-0030 §3)."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[dependencies]
+topak-core.workspace = true
+cedar-policy.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+
+[dev-dependencies]
+serde.workspace = true

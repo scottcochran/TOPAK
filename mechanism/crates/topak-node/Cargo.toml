@@ -1,0 +1,34 @@
+[package]
+name = "topak-node"
+description = "A TOPAK mechanism replica: Paxos driver, admit pipeline, effects, agent and operator sockets."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[[bin]]
+name = "topak"
+path = "src/main.rs"
+
+[[bin]]
+name = "topak-demo-tool"
+path = "src/bin/topak-demo-tool.rs"
+
+[dependencies]
+topak-core.workspace = true
+topak-paxos.workspace = true
+topak-floor.workspace = true
+topak-bundle.workspace = true
+topak-transport.workspace = true
+topak-mcp.workspace = true
+rmcp = { workspace = true, features = ["server", "transport-io"] }
+tokio.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+anyhow.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true
+clap.workspace = true
+hex.workspace = true
+ed25519-dalek = { workspace = true, features = ["rand_core"] }
+rand = "0.8"
