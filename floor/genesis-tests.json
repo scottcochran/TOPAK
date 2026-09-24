@@ -8426,7 +8426,7 @@
     },
     "epoch": 3,
     "rulesEpoch": 5,
-    "verdict": "grant",
+    "verdict": "deny",
     "voteRulesEpoch": 5,
     "grantRoster": {
      "__entity": {

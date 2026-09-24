@@ -128,7 +128,7 @@ C += [
     case("B6 grant vote from a grant seat", "v1", "Vote", ("Artifact", "art-a1"), vote_ctx(), "allow", ["B6-vote-seated"]),
     case("B6 deny vote from a veto seat", "o1", "Vote", ("Artifact", "art-a1"), vote_ctx("deny"), "allow", ["B6-vote-seated"]),
     case("B6 vote bound to a superseded rules epoch", "v1", "Vote", ("Artifact", "art-a1"), vote_ctx(vre=RULES - 1), "deny"),
-    case("B6 vote from an unseated principal", "n1", "Vote", ("Artifact", "art-a1"), vote_ctx(), "deny"),
+    case("B6 vote from an unseated principal", "n1", "Vote", ("Artifact", "art-a1"), vote_ctx("deny"), "deny"),
 ]
 # ---- carve-outs
 C += [

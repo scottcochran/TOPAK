@@ -95,14 +95,14 @@ what would replace it.
 
 ## 4. Findings: what building it showed about the corpus
 
-These are observations for the next checkpoint. None was acted on in the corpus.
+These are observations for the next checkpoint. Only finding 1 has been acted on.
 
 1. **The gate suite has a case that does not test what it names.** `floor/genesis-tests.json`,
    "B6 vote from an unseated principal", votes **grant**, so forbid B8 fires and is the reason for
    the deny. B6's roster conjunct is never isolated. The decision matches, so `cedar run-tests`
    passes; the linked engine reports the reason, so the replay test caught it. The fix is a
-   **deny** vote from `n1`. Pinned in `crates/topak-floor/tests/floor.rs`; `gen-tests.py` is not
-   edited.
+   **deny** vote from `n1`. **Fixed 2026.09.24** in `gen-tests.py`; the replay test no longer
+   allows a divergence.
 2. **ADR-0031 §4 "a renewal may … narrow the bundle" names an order that does not exist.**
    ADR-0030 removes the need to compare a bundle with the floor, but nothing compares two bundles.
    The baseline fails closed (I4).

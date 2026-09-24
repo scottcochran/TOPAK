@@ -9,18 +9,13 @@ use topak_floor::*;
 
 const TESTS: &str = include_str!("../../../../floor/genesis-tests.json");
 
-/// Cases whose recorded `reason` differs from what the engine reports, with the reason the
-/// engine gives. The decision still matches.
-///
-/// "B6 vote from an unseated principal" votes `grant`, so forbid B8 fires and is the reason
-/// for the deny. The case therefore does not exercise B6's roster conjunct on its own; a `deny`
-/// vote from the unseated seat would. Finding against `floor/gen-tests.py`, not fixed here.
-const KNOWN_REASON_DIVERGENCE: &[(&str, &[&str])] =
-    &[("B6 vote from an unseated principal", &["B8-grant-only-from-grant-seat"])];
-
 /// Every behavioral case the `cedar run-tests` gate ran must decide identically through the
 /// engine the mechanism links, with the same reasons. This is the differential check between
 /// the CLI the gates used and the library the mechanism runs.
+///
+/// It is also what caught "B6 vote from an unseated principal" voting `grant`, so that forbid B8
+/// was the reason for its deny and B6's roster conjunct was never isolated (GAPS-AND-ASSUMPTIONS
+/// §4 finding 1). The case now votes `deny`; no divergence is allowed.
 #[test]
 fn replays_the_gate_suite() {
     let floor = Floor::load().expect("pinned floor loads");
@@ -31,10 +26,8 @@ fn replays_the_gate_suite() {
         let r = &c["request"];
         let uid = |k: &str| EntityUid::from_str(r[k].as_str().unwrap()).unwrap();
         let out = floor.evaluate(uid("principal"), uid("action"), uid("resource"), &r["context"], &c["entities"]);
-        let mut want: Vec<String> = match KNOWN_REASON_DIVERGENCE.iter().find(|(n, _)| *n == name) {
-            Some((_, r)) => r.iter().map(|s| s.to_string()).collect(),
-            None => c["reason"].as_array().unwrap().iter().map(|v| v.as_str().unwrap().to_string()).collect(),
-        };
+        let mut want: Vec<String> =
+            c["reason"].as_array().unwrap().iter().map(|v| v.as_str().unwrap().to_string()).collect();
         want.sort();
         match (c["decision"].as_str().unwrap(), out) {
             ("allow", FloorOutcome::Permit { mut reasons }) => {
