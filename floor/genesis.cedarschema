@@ -1,0 +1,107 @@
+// TOPAK genesis policy floor — schema S (ADR-0030 §4).
+// DRAFT · 2026.09.24 · not ratified · the analyses in ADR-0030 §5 quantify over this schema.
+//
+// S is the typed lift's type. Every value here is written by the typed lift or by the issued
+// rules (ADR-0030 §3); no bundle has a write path to any of it. Epoch fencing is NOT here: the
+// mechanism rejects a fenced epoch before the floor is consulted (ADR-0022 §2).
+
+namespace Topak {
+  // ---- principals --------------------------------------------------------------------------
+  // A roster is issued by the anchor (grant seats, veto seats). Membership is an entity parent,
+  // set by the mechanism from the rules in force at `rulesEpoch`.
+  entity Roster;
+
+  // A seat (ADR-0016 §5). `domain` separates Build from Run while the per-class floor question
+  // (ToO §3.4) is open: one policy set, policies scoped per domain.
+  entity Seat in [Roster] {
+    domain: String,                       // "build" | "run"
+  };
+
+  // ---- resources ---------------------------------------------------------------------------
+  entity CorpusRoot;                      // the pinned, content-addressed corpus (ADR-0022 §3)
+  entity CorpusObject in [CorpusRoot];
+
+  entity Workspace;                       // one per principal per round
+  entity WorkspaceTarget in [Workspace];
+
+  entity ToolSet;                         // an allowlist: name AND digest (ADR-0022 §3)
+  entity Tool in [ToolSet] {
+    digest: String,
+  };
+
+  entity Topic {                          // a principal's round topic (ADR-0003, ADR-0021)
+    owner: Seat,
+    epoch: Long,
+    round: Long,
+    sealed: Bool,
+  };
+
+  entity Artifact {                       // a sealed workspace offered for promotion
+    author: Seat,
+  };
+
+  entity ArchiveRecord {                  // a record in the archive (ADR-0004, ADR-0028)
+    class: String,                        // "F1".."F6" | "payload"
+  };
+
+  // ---- context -----------------------------------------------------------------------------
+  // The lease fields the floor reads (ADR-0031 §1). `alphabet` is the seat's permitted variants.
+  type Lease = {
+    alphabet: Set<String>,
+    rulesEpoch: Long,
+  };
+
+  type BuildCtx = {
+    lease: Lease,
+    epoch: Long,
+    round: Long,
+    roundRole: String,                    // "author" | "voter" for this principal this round
+    corpusRoot: CorpusRoot,
+    workspace: Workspace,
+    toolAllowlist: ToolSet,
+    inputsInWorkspace: Bool,              // syntactic lift: every input resolves in the workspace
+  };
+
+  type VoteCtx = {
+    lease: Lease,
+    epoch: Long,
+    rulesEpoch: Long,                     // rules epoch in force now
+    verdict: String,                      // "grant" | "deny"
+    voteRulesEpoch: Long,                 // the rules epoch the vote binds to (ADR-0024 §3)
+    grantRoster: Roster,
+    vetoRoster: Roster,
+  };
+
+  type RunCtx = {
+    lease: Lease,
+    epoch: Long,
+    round: Long,
+    corpusRoot: CorpusRoot,
+    toolAllowlist: ToolSet,
+    breakGlass: {
+      quorum: Bool,                       // a break-glass quorum on the issued roster (ADR-0013 §1)
+      tools: ToolSet,                     // the break-glass envelope, issued with the roster
+    },
+  };
+
+  type EraseCtx = {
+    erasureQuorum: Bool,                  // an erasure quorum on the issued roster; FALSE at genesis
+  };
+
+  // ---- Build's alphabet (ADR-0022 §1) ------------------------------------------------------
+  action Read     appliesTo { principal: [Seat], resource: [CorpusObject],    context: BuildCtx };
+  action Draft    appliesTo { principal: [Seat], resource: [WorkspaceTarget], context: BuildCtx };
+  action Invoke   appliesTo { principal: [Seat], resource: [Tool],            context: BuildCtx };
+  action Emit     appliesTo { principal: [Seat], resource: [Topic],           context: BuildCtx };
+  action Submit   appliesTo { principal: [Seat], resource: [Artifact],        context: BuildCtx };
+  action Vote     appliesTo { principal: [Seat], resource: [Artifact],        context: VoteCtx };
+
+  // ---- Run (PROVISIONAL) -------------------------------------------------------------------
+  // No record defines Run's alphabet. ADR-0015 fixes Run's effects as {tool invocation,
+  // principal emission}; these two actions carry them until a record names the variants.
+  action RunInvoke appliesTo { principal: [Seat], resource: [Tool],  context: RunCtx };
+  action RunEmit   appliesTo { principal: [Seat], resource: [Topic], context: RunCtx };
+
+  // ---- the erasure action (ADR-0006) -------------------------------------------------------
+  action Erase    appliesTo { principal: [Seat], resource: [ArchiveRecord],   context: EraseCtx };
+}

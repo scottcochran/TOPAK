@@ -1,0 +1,697 @@
+TOPAK — ADR-0030 verified floor tier: property check
+Modules: FloorComposition.tla (sha256 3d30a058d8f8d9d1) · FloorRouting.tla (sha256 9d4c0f5e03defc1e)
+TLC2 Version 2.19 of 08 August 2024 (rev: 5a47802) · openjdk version "25.0.1" 2025-10-21
+Properties: AdmitImpliesFloorPermit, FloorErrorIsDeny, BundleRefusalHonored (§1) · BundleCannotWriteFloorInputs (§3) · EnvelopeHolds · NoWideningWithoutIssuance, FloorNeverVacuous (§5)
+
+=== FloorComposition · base · Mut=none · INVARIANT Safe
+Starting... (2026-09-24 12:14:13)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-09-24 12:14:18.
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.0E-13
+28289 states generated, 128 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 7 and the 95th percentile is 4).
+Finished in 05s at (2026-09-24 12:14:18)
+
+=== FloorComposition · reach-admit · Mut=none · INVARIANT NeverAdmitted
+Starting... (2026-09-24 12:14:19)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-09-24 12:14:24.
+Error: Invariant NeverAdmitted is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ admitOutside = FALSE
+/\ fstore = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s2", sealed |-> "no"] ]
+/\ admitNoFloor = FALSE
+/\ sawNarrow = FALSE
+/\ admitNoBundle = FALSE
+/\ sawAdmit = FALSE
+/\ admitWithErr = FALSE
+/\ truth = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s2", sealed |-> "no"] ]
+/\ sawFloorErr = FALSE
+
+State 2: <Decide line 127, col 8 to line 134, col 37 of module FloorComposition>
+/\ admitOutside = FALSE
+/\ fstore = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s2", sealed |-> "no"] ]
+/\ admitNoFloor = FALSE
+/\ sawNarrow = FALSE
+/\ admitNoBundle = FALSE
+/\ sawAdmit = TRUE
+/\ admitWithErr = FALSE
+/\ truth = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s2", sealed |-> "no"] ]
+/\ sawFloorErr = FALSE
+
+76 states generated, 28 distinct states found, 4 states left on queue.
+The depth of the complete state graph search is 5.
+Finished in 05s at (2026-09-24 12:14:24)
+
+=== FloorComposition · reach-narrow · Mut=none · INVARIANT NeverNarrowed
+Starting... (2026-09-24 12:14:24)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-09-24 12:14:29.
+Error: Invariant NeverNarrowed is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ admitOutside = FALSE
+/\ fstore = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s2", sealed |-> "no"] ]
+/\ admitNoFloor = FALSE
+/\ sawNarrow = FALSE
+/\ admitNoBundle = FALSE
+/\ sawAdmit = FALSE
+/\ admitWithErr = FALSE
+/\ truth = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s2", sealed |-> "no"] ]
+/\ sawFloorErr = FALSE
+
+State 2: <Reassign line 70, col 3 to line 72, col 20 of module FloorComposition>
+/\ admitOutside = FALSE
+/\ fstore = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s1", sealed |-> "no"] ]
+/\ admitNoFloor = FALSE
+/\ sawNarrow = FALSE
+/\ admitNoBundle = FALSE
+/\ sawAdmit = FALSE
+/\ admitWithErr = FALSE
+/\ truth = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s1", sealed |-> "no"] ]
+/\ sawFloorErr = FALSE
+
+State 3: <Decide line 127, col 8 to line 134, col 37 of module FloorComposition>
+/\ admitOutside = FALSE
+/\ fstore = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s1", sealed |-> "no"] ]
+/\ admitNoFloor = FALSE
+/\ sawNarrow = TRUE
+/\ admitNoBundle = FALSE
+/\ sawAdmit = FALSE
+/\ admitWithErr = FALSE
+/\ truth = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s1", sealed |-> "no"] ]
+/\ sawFloorErr = FALSE
+
+88 states generated, 40 distinct states found, 16 states left on queue.
+The depth of the complete state graph search is 5.
+Finished in 05s at (2026-09-24 12:14:29)
+
+=== FloorComposition · reach-err · Mut=none · INVARIANT NeverFloorError
+Starting... (2026-09-24 12:14:30)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-09-24 12:14:35.
+Error: Invariant NeverFloorError is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ admitOutside = FALSE
+/\ fstore = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s2", sealed |-> "no"] ]
+/\ admitNoFloor = FALSE
+/\ sawNarrow = FALSE
+/\ admitNoBundle = FALSE
+/\ sawAdmit = FALSE
+/\ admitWithErr = FALSE
+/\ truth = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s2", sealed |-> "no"] ]
+/\ sawFloorErr = FALSE
+
+State 2: <Reassign line 70, col 3 to line 72, col 20 of module FloorComposition>
+/\ admitOutside = FALSE
+/\ fstore = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s1", sealed |-> "no"] ]
+/\ admitNoFloor = FALSE
+/\ sawNarrow = FALSE
+/\ admitNoBundle = FALSE
+/\ sawAdmit = FALSE
+/\ admitWithErr = FALSE
+/\ truth = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s1", sealed |-> "no"] ]
+/\ sawFloorErr = FALSE
+
+State 3: <Reassign line 70, col 3 to line 72, col 20 of module FloorComposition>
+/\ admitOutside = FALSE
+/\ fstore = [ t1 |-> [owner |-> "s2", sealed |-> "no"],
+  t2 |-> [owner |-> "s1", sealed |-> "no"] ]
+/\ admitNoFloor = FALSE
+/\ sawNarrow = FALSE
+/\ admitNoBundle = FALSE
+/\ sawAdmit = FALSE
+/\ admitWithErr = FALSE
+/\ truth = [ t1 |-> [owner |-> "s2", sealed |-> "no"],
+  t2 |-> [owner |-> "s1", sealed |-> "no"] ]
+/\ sawFloorErr = FALSE
+
+State 4: <Decide line 127, col 8 to line 134, col 37 of module FloorComposition>
+/\ admitOutside = FALSE
+/\ fstore = [ t1 |-> [owner |-> "s2", sealed |-> "no"],
+  t2 |-> [owner |-> "s1", sealed |-> "no"] ]
+/\ admitNoFloor = FALSE
+/\ sawNarrow = FALSE
+/\ admitNoBundle = FALSE
+/\ sawAdmit = FALSE
+/\ admitWithErr = FALSE
+/\ truth = [ t1 |-> [owner |-> "s2", sealed |-> "no"],
+  t2 |-> [owner |-> "s1", sealed |-> "no"] ]
+/\ sawFloorErr = TRUE
+
+508 states generated, 52 distinct states found, 28 states left on queue.
+The depth of the complete state graph search is 5.
+Finished in 05s at (2026-09-24 12:14:35)
+
+=== FloorComposition · m-override · Mut=M_OVERRIDE · INVARIANT AdmitImpliesFloorPermit
+Starting... (2026-09-24 12:14:35)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-09-24 12:14:41.
+Error: Invariant AdmitImpliesFloorPermit is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ admitOutside = FALSE
+/\ fstore = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s2", sealed |-> "no"] ]
+/\ admitNoFloor = FALSE
+/\ sawNarrow = FALSE
+/\ admitNoBundle = FALSE
+/\ sawAdmit = FALSE
+/\ admitWithErr = FALSE
+/\ truth = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s2", sealed |-> "no"] ]
+/\ sawFloorErr = FALSE
+
+State 2: <Seal line 75, col 3 to line 78, col 20 of module FloorComposition>
+/\ admitOutside = FALSE
+/\ fstore = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s2", sealed |-> "yes"] ]
+/\ admitNoFloor = FALSE
+/\ sawNarrow = FALSE
+/\ admitNoBundle = FALSE
+/\ sawAdmit = FALSE
+/\ admitWithErr = FALSE
+/\ truth = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s2", sealed |-> "yes"] ]
+/\ sawFloorErr = FALSE
+
+State 3: <Decide line 127, col 8 to line 134, col 37 of module FloorComposition>
+/\ admitOutside = FALSE
+/\ fstore = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s2", sealed |-> "yes"] ]
+/\ admitNoFloor = TRUE
+/\ sawNarrow = FALSE
+/\ admitNoBundle = FALSE
+/\ sawAdmit = TRUE
+/\ admitWithErr = TRUE
+/\ truth = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s2", sealed |-> "yes"] ]
+/\ sawFloorErr = TRUE
+
+508 states generated, 52 distinct states found, 28 states left on queue.
+The depth of the complete state graph search is 5.
+Finished in 05s at (2026-09-24 12:14:41)
+
+=== FloorComposition · m-override-env · Mut=M_OVERRIDE · INVARIANT EnvelopeHolds
+Starting... (2026-09-24 12:14:41)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-09-24 12:14:46.
+Error: Invariant EnvelopeHolds is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ admitOutside = FALSE
+/\ fstore = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s2", sealed |-> "no"] ]
+/\ admitNoFloor = FALSE
+/\ sawNarrow = FALSE
+/\ admitNoBundle = FALSE
+/\ sawAdmit = FALSE
+/\ admitWithErr = FALSE
+/\ truth = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s2", sealed |-> "no"] ]
+/\ sawFloorErr = FALSE
+
+State 2: <Reassign line 70, col 3 to line 72, col 20 of module FloorComposition>
+/\ admitOutside = FALSE
+/\ fstore = [ t1 |-> [owner |-> "s2", sealed |-> "no"],
+  t2 |-> [owner |-> "s2", sealed |-> "no"] ]
+/\ admitNoFloor = FALSE
+/\ sawNarrow = FALSE
+/\ admitNoBundle = FALSE
+/\ sawAdmit = FALSE
+/\ admitWithErr = FALSE
+/\ truth = [ t1 |-> [owner |-> "s2", sealed |-> "no"],
+  t2 |-> [owner |-> "s2", sealed |-> "no"] ]
+/\ sawFloorErr = FALSE
+
+State 3: <Decide line 127, col 8 to line 134, col 37 of module FloorComposition>
+/\ admitOutside = TRUE
+/\ fstore = [ t1 |-> [owner |-> "s2", sealed |-> "no"],
+  t2 |-> [owner |-> "s2", sealed |-> "no"] ]
+/\ admitNoFloor = TRUE
+/\ sawNarrow = FALSE
+/\ admitNoBundle = FALSE
+/\ sawAdmit = TRUE
+/\ admitWithErr = TRUE
+/\ truth = [ t1 |-> [owner |-> "s2", sealed |-> "no"],
+  t2 |-> [owner |-> "s2", sealed |-> "no"] ]
+/\ sawFloorErr = TRUE
+
+634 states generated, 66 distinct states found, 42 states left on queue.
+The depth of the complete state graph search is 5.
+Finished in 05s at (2026-09-24 12:14:46)
+
+=== FloorComposition · m-err · Mut=M_ERR · INVARIANT FloorErrorIsDeny
+Starting... (2026-09-24 12:14:47)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-09-24 12:14:52.
+Error: Invariant FloorErrorIsDeny is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ admitOutside = FALSE
+/\ fstore = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s2", sealed |-> "no"] ]
+/\ admitNoFloor = FALSE
+/\ sawNarrow = FALSE
+/\ admitNoBundle = FALSE
+/\ sawAdmit = FALSE
+/\ admitWithErr = FALSE
+/\ truth = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s2", sealed |-> "no"] ]
+/\ sawFloorErr = FALSE
+
+State 2: <Seal line 75, col 3 to line 78, col 20 of module FloorComposition>
+/\ admitOutside = FALSE
+/\ fstore = [ t1 |-> [owner |-> "s1", sealed |-> "yes"],
+  t2 |-> [owner |-> "s2", sealed |-> "no"] ]
+/\ admitNoFloor = FALSE
+/\ sawNarrow = FALSE
+/\ admitNoBundle = FALSE
+/\ sawAdmit = FALSE
+/\ admitWithErr = FALSE
+/\ truth = [ t1 |-> [owner |-> "s1", sealed |-> "yes"],
+  t2 |-> [owner |-> "s2", sealed |-> "no"] ]
+/\ sawFloorErr = FALSE
+
+State 3: <Decide line 127, col 8 to line 134, col 37 of module FloorComposition>
+/\ admitOutside = TRUE
+/\ fstore = [ t1 |-> [owner |-> "s1", sealed |-> "yes"],
+  t2 |-> [owner |-> "s2", sealed |-> "no"] ]
+/\ admitNoFloor = TRUE
+/\ sawNarrow = FALSE
+/\ admitNoBundle = FALSE
+/\ sawAdmit = TRUE
+/\ admitWithErr = TRUE
+/\ truth = [ t1 |-> [owner |-> "s1", sealed |-> "yes"],
+  t2 |-> [owner |-> "s2", sealed |-> "no"] ]
+/\ sawFloorErr = TRUE
+
+1121 states generated, 64 distinct states found, 40 states left on queue.
+The depth of the complete state graph search is 5.
+Finished in 05s at (2026-09-24 12:14:52)
+
+=== FloorComposition · m-err-env · Mut=M_ERR · INVARIANT EnvelopeHolds
+Starting... (2026-09-24 12:14:52)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-09-24 12:14:57.
+Error: Invariant EnvelopeHolds is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ admitOutside = FALSE
+/\ fstore = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s2", sealed |-> "no"] ]
+/\ admitNoFloor = FALSE
+/\ sawNarrow = FALSE
+/\ admitNoBundle = FALSE
+/\ sawAdmit = FALSE
+/\ admitWithErr = FALSE
+/\ truth = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s2", sealed |-> "no"] ]
+/\ sawFloorErr = FALSE
+
+State 2: <Seal line 75, col 3 to line 78, col 20 of module FloorComposition>
+/\ admitOutside = FALSE
+/\ fstore = [ t1 |-> [owner |-> "s1", sealed |-> "yes"],
+  t2 |-> [owner |-> "s2", sealed |-> "no"] ]
+/\ admitNoFloor = FALSE
+/\ sawNarrow = FALSE
+/\ admitNoBundle = FALSE
+/\ sawAdmit = FALSE
+/\ admitWithErr = FALSE
+/\ truth = [ t1 |-> [owner |-> "s1", sealed |-> "yes"],
+  t2 |-> [owner |-> "s2", sealed |-> "no"] ]
+/\ sawFloorErr = FALSE
+
+State 3: <Reassign line 70, col 3 to line 72, col 20 of module FloorComposition>
+/\ admitOutside = FALSE
+/\ fstore = [ t1 |-> [owner |-> "s1", sealed |-> "yes"],
+  t2 |-> [owner |-> "s1", sealed |-> "no"] ]
+/\ admitNoFloor = FALSE
+/\ sawNarrow = FALSE
+/\ admitNoBundle = FALSE
+/\ sawAdmit = FALSE
+/\ admitWithErr = FALSE
+/\ truth = [ t1 |-> [owner |-> "s1", sealed |-> "yes"],
+  t2 |-> [owner |-> "s1", sealed |-> "no"] ]
+/\ sawFloorErr = FALSE
+
+State 4: <Decide line 127, col 8 to line 134, col 37 of module FloorComposition>
+/\ admitOutside = TRUE
+/\ fstore = [ t1 |-> [owner |-> "s1", sealed |-> "yes"],
+  t2 |-> [owner |-> "s1", sealed |-> "no"] ]
+/\ admitNoFloor = TRUE
+/\ sawNarrow = FALSE
+/\ admitNoBundle = FALSE
+/\ sawAdmit = TRUE
+/\ admitWithErr = TRUE
+/\ truth = [ t1 |-> [owner |-> "s1", sealed |-> "yes"],
+  t2 |-> [owner |-> "s1", sealed |-> "no"] ]
+/\ sawFloorErr = TRUE
+
+1956 states generated, 74 distinct states found, 54 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 7 (minimum is 5, the maximum 9 and the 95th percentile is 9).
+Finished in 05s at (2026-09-24 12:14:58)
+
+=== FloorComposition · m-failopen · Mut=M_FAILOPEN · INVARIANT BundleRefusalHonored
+Starting... (2026-09-24 12:14:58)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-09-24 12:15:03.
+Error: Invariant BundleRefusalHonored is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ admitOutside = FALSE
+/\ fstore = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s2", sealed |-> "no"] ]
+/\ admitNoFloor = FALSE
+/\ sawNarrow = FALSE
+/\ admitNoBundle = FALSE
+/\ sawAdmit = FALSE
+/\ admitWithErr = FALSE
+/\ truth = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s2", sealed |-> "no"] ]
+/\ sawFloorErr = FALSE
+
+State 2: <Reassign line 70, col 3 to line 72, col 20 of module FloorComposition>
+/\ admitOutside = FALSE
+/\ fstore = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s1", sealed |-> "no"] ]
+/\ admitNoFloor = FALSE
+/\ sawNarrow = FALSE
+/\ admitNoBundle = FALSE
+/\ sawAdmit = FALSE
+/\ admitWithErr = FALSE
+/\ truth = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s1", sealed |-> "no"] ]
+/\ sawFloorErr = FALSE
+
+State 3: <Seal line 75, col 3 to line 78, col 20 of module FloorComposition>
+/\ admitOutside = FALSE
+/\ fstore = [ t1 |-> [owner |-> "s1", sealed |-> "yes"],
+  t2 |-> [owner |-> "s1", sealed |-> "no"] ]
+/\ admitNoFloor = FALSE
+/\ sawNarrow = FALSE
+/\ admitNoBundle = FALSE
+/\ sawAdmit = FALSE
+/\ admitWithErr = FALSE
+/\ truth = [ t1 |-> [owner |-> "s1", sealed |-> "yes"],
+  t2 |-> [owner |-> "s1", sealed |-> "no"] ]
+/\ sawFloorErr = FALSE
+
+State 4: <Decide line 127, col 8 to line 134, col 37 of module FloorComposition>
+/\ admitOutside = FALSE
+/\ fstore = [ t1 |-> [owner |-> "s1", sealed |-> "yes"],
+  t2 |-> [owner |-> "s1", sealed |-> "no"] ]
+/\ admitNoFloor = FALSE
+/\ sawNarrow = FALSE
+/\ admitNoBundle = TRUE
+/\ sawAdmit = TRUE
+/\ admitWithErr = FALSE
+/\ truth = [ t1 |-> [owner |-> "s1", sealed |-> "yes"],
+  t2 |-> [owner |-> "s1", sealed |-> "no"] ]
+/\ sawFloorErr = FALSE
+
+100 states generated, 52 distinct states found, 28 states left on queue.
+The depth of the complete state graph search is 5.
+Finished in 05s at (2026-09-24 12:15:03)
+
+=== FloorComposition · m-write · Mut=M_WRITE · INVARIANT BundleCannotWriteFloorInputs
+Starting... (2026-09-24 12:15:04)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-09-24 12:15:09.
+Error: Invariant BundleCannotWriteFloorInputs is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ admitOutside = FALSE
+/\ fstore = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s2", sealed |-> "no"] ]
+/\ admitNoFloor = FALSE
+/\ sawNarrow = FALSE
+/\ admitNoBundle = FALSE
+/\ sawAdmit = FALSE
+/\ admitWithErr = FALSE
+/\ truth = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s2", sealed |-> "no"] ]
+/\ sawFloorErr = FALSE
+
+State 2: <BundleWrite line 82, col 3 to line 84, col 43 of module FloorComposition>
+/\ admitOutside = FALSE
+/\ fstore = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s1", sealed |-> "no"] ]
+/\ admitNoFloor = FALSE
+/\ sawNarrow = FALSE
+/\ admitNoBundle = FALSE
+/\ sawAdmit = FALSE
+/\ admitWithErr = FALSE
+/\ truth = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s2", sealed |-> "no"] ]
+/\ sawFloorErr = FALSE
+
+13 states generated, 6 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 4.
+Finished in 05s at (2026-09-24 12:15:09)
+
+=== FloorComposition · m-write-env · Mut=M_WRITE · INVARIANT EnvelopeHolds
+Starting... (2026-09-24 12:15:09)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-09-24 12:15:14.
+Error: Invariant EnvelopeHolds is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ admitOutside = FALSE
+/\ fstore = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s2", sealed |-> "no"] ]
+/\ admitNoFloor = FALSE
+/\ sawNarrow = FALSE
+/\ admitNoBundle = FALSE
+/\ sawAdmit = FALSE
+/\ admitWithErr = FALSE
+/\ truth = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s2", sealed |-> "no"] ]
+/\ sawFloorErr = FALSE
+
+State 2: <Reassign line 70, col 3 to line 72, col 20 of module FloorComposition>
+/\ admitOutside = FALSE
+/\ fstore = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s1", sealed |-> "no"] ]
+/\ admitNoFloor = FALSE
+/\ sawNarrow = FALSE
+/\ admitNoBundle = FALSE
+/\ sawAdmit = FALSE
+/\ admitWithErr = FALSE
+/\ truth = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s1", sealed |-> "no"] ]
+/\ sawFloorErr = FALSE
+
+State 3: <Reassign line 70, col 3 to line 72, col 20 of module FloorComposition>
+/\ admitOutside = FALSE
+/\ fstore = [ t1 |-> [owner |-> "s2", sealed |-> "no"],
+  t2 |-> [owner |-> "s1", sealed |-> "no"] ]
+/\ admitNoFloor = FALSE
+/\ sawNarrow = FALSE
+/\ admitNoBundle = FALSE
+/\ sawAdmit = FALSE
+/\ admitWithErr = FALSE
+/\ truth = [ t1 |-> [owner |-> "s2", sealed |-> "no"],
+  t2 |-> [owner |-> "s1", sealed |-> "no"] ]
+/\ sawFloorErr = FALSE
+
+State 4: <BundleWrite line 82, col 3 to line 84, col 43 of module FloorComposition>
+/\ admitOutside = FALSE
+/\ fstore = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s1", sealed |-> "no"] ]
+/\ admitNoFloor = FALSE
+/\ sawNarrow = FALSE
+/\ admitNoBundle = FALSE
+/\ sawAdmit = FALSE
+/\ admitWithErr = FALSE
+/\ truth = [ t1 |-> [owner |-> "s2", sealed |-> "no"],
+  t2 |-> [owner |-> "s1", sealed |-> "no"] ]
+/\ sawFloorErr = FALSE
+
+State 5: <Decide line 127, col 8 to line 134, col 37 of module FloorComposition>
+/\ admitOutside = TRUE
+/\ fstore = [ t1 |-> [owner |-> "s1", sealed |-> "no"],
+  t2 |-> [owner |-> "s1", sealed |-> "no"] ]
+/\ admitNoFloor = FALSE
+/\ sawNarrow = FALSE
+/\ admitNoBundle = FALSE
+/\ sawAdmit = TRUE
+/\ admitWithErr = FALSE
+/\ truth = [ t1 |-> [owner |-> "s2", sealed |-> "no"],
+  t2 |-> [owner |-> "s1", sealed |-> "no"] ]
+/\ sawFloorErr = FALSE
+
+1943 states generated, 79 distinct states found, 61 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 7 (minimum is 4, the maximum 9 and the 95th percentile is 9).
+Finished in 05s at (2026-09-24 12:15:14)
+
+=== FloorRouting · r-base · Mut=none · INVARIANT Safe
+Starting... (2026-09-24 12:15:15)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-09-24 12:15:20.
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.9E-16
+169 states generated, 24 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 6 and the 95th percentile is 6).
+Finished in 05s at (2026-09-24 12:15:20)
+
+=== FloorRouting · r-reach-incomp · Mut=none · INVARIANT NeverIncomparable
+Starting... (2026-09-24 12:15:21)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-09-24 12:15:26.
+Error: Invariant NeverIncomparable is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ sawIncomparable = FALSE
+/\ deployed = {"r1"}
+/\ sawTighten = FALSE
+/\ sawRelaxIssued = FALSE
+/\ wideNoIssue = FALSE
+
+State 2: <IssueAndPromote line 62, col 3 to line 67, col 42 of module FloorRouting>
+/\ sawIncomparable = TRUE
+/\ deployed = {"r2"}
+/\ sawTighten = FALSE
+/\ sawRelaxIssued = TRUE
+/\ wideNoIssue = FALSE
+
+45 states generated, 16 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 6 and the 95th percentile is 6).
+Finished in 05s at (2026-09-24 12:15:26)
+
+=== FloorRouting · r-reach-relax · Mut=none · INVARIANT NeverRelaxIssued
+Starting... (2026-09-24 12:15:26)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-09-24 12:15:31.
+Error: Invariant NeverRelaxIssued is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ sawIncomparable = FALSE
+/\ deployed = {"r1"}
+/\ sawTighten = FALSE
+/\ sawRelaxIssued = FALSE
+/\ wideNoIssue = FALSE
+
+State 2: <IssueAndPromote line 62, col 3 to line 67, col 42 of module FloorRouting>
+/\ sawIncomparable = TRUE
+/\ deployed = {"r2"}
+/\ sawTighten = FALSE
+/\ sawRelaxIssued = TRUE
+/\ wideNoIssue = FALSE
+
+6 states generated, 4 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 3.
+Finished in 05s at (2026-09-24 12:15:31)
+
+=== FloorRouting · r-reach-tight · Mut=none · INVARIANT NeverTightened
+Starting... (2026-09-24 12:15:32)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-09-24 12:15:37.
+Error: Invariant NeverTightened is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ sawIncomparable = FALSE
+/\ deployed = {"r1"}
+/\ sawTighten = FALSE
+/\ sawRelaxIssued = FALSE
+/\ wideNoIssue = FALSE
+
+State 2: <Promote line 52, col 3 to line 58, col 29 of module FloorRouting>
+/\ sawIncomparable = FALSE
+/\ deployed = {}
+/\ sawTighten = TRUE
+/\ sawRelaxIssued = FALSE
+/\ wideNoIssue = FALSE
+
+2 states generated, 2 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 05s at (2026-09-24 12:15:37)
+
+=== FloorRouting · r-m-route · Mut=M_ROUTE · INVARIANT NoWideningWithoutIssuance
+Starting... (2026-09-24 12:15:37)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-09-24 12:15:42.
+Error: Invariant NoWideningWithoutIssuance is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ sawIncomparable = FALSE
+/\ deployed = {"r1"}
+/\ sawTighten = FALSE
+/\ sawRelaxIssued = FALSE
+/\ wideNoIssue = FALSE
+
+State 2: <Promote line 52, col 3 to line 58, col 29 of module FloorRouting>
+/\ sawIncomparable = TRUE
+/\ deployed = {"r2"}
+/\ sawTighten = FALSE
+/\ sawRelaxIssued = FALSE
+/\ wideNoIssue = TRUE
+
+45 states generated, 16 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 6 and the 95th percentile is 6).
+Finished in 05s at (2026-09-24 12:15:42)
+
+=== FloorRouting · r-m-gate · Mut=M_GATE · INVARIANT FloorNeverVacuous
+Starting... (2026-09-24 12:15:43)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-09-24 12:15:48.
+Error: Invariant FloorNeverVacuous is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ sawIncomparable = FALSE
+/\ deployed = {"r1"}
+/\ sawTighten = FALSE
+/\ sawRelaxIssued = FALSE
+/\ wideNoIssue = FALSE
+
+State 2: <IssueAndPromote line 62, col 3 to line 67, col 42 of module FloorRouting>
+/\ sawIncomparable = FALSE
+/\ deployed = {"r1", "r2", "r3"}
+/\ sawTighten = FALSE
+/\ sawRelaxIssued = TRUE
+/\ wideNoIssue = FALSE
+
+193 states generated, 28 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 0 (minimum is 0, the maximum 3 and the 95th percentile is 3).
+Finished in 05s at (2026-09-24 12:15:48)
+
+=== FloorComposition · m-failopen-env · Mut=M_FAILOPEN · INVARIANT EnvelopeHolds
+Starting... (2026-09-24 12:16:01)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-09-24 12:16:06.
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 4.4E-13
+42433 states generated, 192 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 8 and the 95th percentile is 4).
+Finished in 05s at (2026-09-24 12:16:06)

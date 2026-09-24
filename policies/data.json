@@ -1,0 +1,14 @@
+{
+  "topak": {
+    "tools": {
+      "tlc@d1": {
+        "required": { "spec": "string", "config": "string" },
+        "optional": { "workers": "number", "deadlock": "boolean" }
+      },
+      "search@d3": {
+        "required": { "query": "string" },
+        "optional": { "limit": "number" }
+      }
+    }
+  }
+}
