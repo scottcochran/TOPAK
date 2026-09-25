@@ -1,0 +1,208 @@
+#!/usr/bin/env python3
+"""ADR-0035 §3–§4: evaluate the exclusion rule over lineage records and emit the table.
+
+    uv run lineage/independence.py --records runs/*/lineage.json \
+        --overlaps runs/overlap/*.json --thresholds lineage/thresholds.example.json \
+        --out runs/independence-table.json
+
+Lineages A and B are independent only if every clause holds:
+
+  E1 weights     root(A) ≠ root(B), and no weights digest is in both DAGs
+  E2 generators  no generator in both generatedBy sets, and neither lineage's generators name a
+                 model of the other
+  E3 overlap     exact and near-duplicate overlap of ingress within θ_exact and θ_near
+  E4 arch        different family tags and different tokenizer digests
+  E5 curators    no curator in both curatedBy sets
+
+plus the distillation rule: a lineage whose known-generated ingress exceeds θ_gen is a
+distillation. It sits at provenance rung 1 and cannot be the archetype.
+
+The relation is symmetric, irreflexive and not transitive, so every pair is checked on its own.
+A pair is `projected` only if both records are. The table lists the passing pairs. Nothing
+semantic leaves this program: the admit path looks up digest pairs in the table (§4).
+
+Two E3/distillation modes:
+  adr       the text as written: overlap as a share of the smaller set, generated content as a
+            share of ingress. `gate_suite.py` shows this is NOT monotone in ingress (§2 finding).
+  absolute  a candidate that is monotone: overlap as matched bytes, generated content as bytes.
+            Not in the ADR. It is here so the property check has something to compare against.
+E3 fails closed: a pair with no overlap measurement covering both ingress sets, made by the tool
+and at the granularity the thresholds pin, is not independent.
+"""
+from __future__ import annotations
+
+import argparse
+import glob
+import json
+import sys
+from itertools import combinations
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+from common import sha256_json, write_json  # noqa: E402
+from record import ingress_set_digest, models_of  # noqa: E402
+
+CLAUSES = ("E1", "E2", "E3", "E4", "E5")
+
+
+def _bytes(entries) -> int:
+    return sum(e["bytes"] for e in entries)
+
+
+def e1(a, b):
+    shared = sorted(set(a["weight_ancestry"]) & set(b["weight_ancestry"]))
+    if a["root"] == b["root"]:
+        return False, f"same root {a['root'][:12]}"
+    if shared:
+        return False, f"shared weights {shared[0][:12]}"
+    return True, "distinct roots, disjoint weight ancestry"
+
+
+def e2(a, b):
+    ga, gb = set(a["generatedBy"]), set(b["generatedBy"])
+    if common := sorted(ga & gb):
+        return False, f"common generator {common[0]}"
+    if hit := sorted(ga & models_of(b)):
+        return False, f"{a['lineage']} is distilled from {b['lineage']} ({hit[0][:24]})"
+    if hit := sorted(gb & models_of(a)):
+        return False, f"{b['lineage']} is distilled from {a['lineage']} ({hit[0][:24]})"
+    return True, "no common or cross generator"
+
+
+def find_overlap(a, b, overlaps: dict):
+    return overlaps.get(frozenset((ingress_set_digest(a), ingress_set_digest(b))))
+
+
+def e3(a, b, th: dict, overlaps: dict):
+    ia = {e["digest"]: e for e in a["ingress"]}
+    ib = {e["digest"]: e for e in b["ingress"]}
+    both = [ia[d] for d in ia.keys() & ib.keys()]
+    obj_bytes = _bytes(both)
+    mode = th["mode"]
+    # The cheap first clause: identical objects, no tool needed.
+    if mode == "adr":
+        share = obj_bytes / max(1, min(_bytes(ia.values()), _bytes(ib.values())))
+        if share > th["theta_exact"]:
+            return False, f"object overlap {share:.3f} of the smaller set > θ_exact {th['theta_exact']}"
+    elif obj_bytes > th["theta_exact_bytes"]:
+        return False, f"object overlap {obj_bytes} bytes > θ_exact_bytes {th['theta_exact_bytes']}"
+
+    rep = find_overlap(a, b, overlaps)
+    if rep is None:
+        return False, "no overlap measurement covers both ingress sets (fails closed)"
+    if th.get("near_tool") and rep["tool"] != th["near_tool"]:
+        return False, f"measured by tool {rep['tool'][:12]}, not the pinned {th['near_tool'][:12]}"
+    if th.get("granularity") and rep["params"]["granularity"] != th["granularity"]:
+        return False, f"measured at {rep['params']['granularity']}, not the pinned {th['granularity']}"
+    if mode == "adr":
+        ex, nr = rep["exact"]["share_of_smaller"], rep["near"]["share_of_smaller"]
+        if ex > th["theta_exact"]:
+            return False, f"exact overlap {ex:.4f} of the smaller set > θ_exact {th['theta_exact']}"
+        if nr > th["theta_near"]:
+            return False, f"near-duplicate overlap {nr:.4f} of the smaller set > θ_near {th['theta_near']}"
+        return True, f"exact {ex:.4f}, near {nr:.4f} of the smaller set"
+    ex = max(rep["exact"]["matched_bytes_a"], rep["exact"]["matched_bytes_b"])
+    nr = max(rep["near"]["matched_bytes_a"], rep["near"]["matched_bytes_b"])
+    if ex > th["theta_exact_bytes"]:
+        return False, f"exact overlap {ex} bytes > θ_exact_bytes {th['theta_exact_bytes']}"
+    if nr > th["theta_near_bytes"]:
+        return False, f"near-duplicate overlap {nr} bytes > θ_near_bytes {th['theta_near_bytes']}"
+    return True, f"exact {ex} bytes, near {nr} bytes"
+
+
+def e4(a, b):
+    if a["family"] == b["family"]:
+        return False, f"same family {a['family']}"
+    if a["tokenizer"] == b["tokenizer"]:
+        return False, f"same tokenizer {a['tokenizer'][:12]}"
+    return True, f"{a['family']} vs {b['family']}, distinct tokenizers"
+
+
+def e5(a, b):
+    if common := sorted(set(a["curatedBy"]) & set(b["curatedBy"])):
+        return False, f"common curator {common[0]}"
+    return True, "no common curator"
+
+
+def distillation(r, th: dict) -> tuple[bool, str]:
+    if th["mode"] == "adr":
+        s = r["generated_share"]
+        return s > th["theta_gen"], f"generated share {s:.3f} vs θ_gen {th['theta_gen']}"
+    gb = round(r["generated_share"] * r["ingress_bytes"])
+    return gb > th["theta_gen_bytes"], f"generated {gb} bytes vs θ_gen_bytes {th['theta_gen_bytes']}"
+
+
+def evaluate(a, b, th: dict, overlaps: dict) -> dict:
+    if a["digest"] == b["digest"]:
+        res = {c: (False, "a lineage is not independent of itself") for c in CLAUSES}
+    else:
+        res = {"E1": e1(a, b), "E2": e2(a, b), "E3": e3(a, b, th, overlaps), "E4": e4(a, b), "E5": e5(a, b)}
+    fired = [c for c in CLAUSES if not res[c][0]]
+    da, db = distillation(a, th)[0], distillation(b, th)[0]
+    return {
+        "pair": sorted([a["digest"], b["digest"]]),
+        "lineages": [a["lineage"], b["lineage"]],
+        "independent": not fired,
+        "fired": fired,
+        "clauses": {c: {"pass": ok, "why": why} for c, (ok, why) in res.items()},
+        "strength": "projected" if a["strength"] == b["strength"] == "projected" else "declared",
+        "archetype_eligible": not fired and not da and not db,
+    }
+
+
+def table(records: list[dict], th: dict, overlaps: dict) -> dict:
+    pairs = [evaluate(a, b, th, overlaps) for a, b in combinations(records, 2)]
+    lineages = [{"lineage": r["lineage"], "digest": r["digest"], "strength": r["strength"], "rung": r["rung"],
+                 "distillation": distillation(r, th)[0], "why": distillation(r, th)[1]} for r in records]
+    body = {
+        "schema": "topak.independence-table/0",
+        "thresholds": th,
+        "thresholds_digest": sha256_json(th),
+        "lineages": lineages,
+        "table": [{"pair": p["pair"], "strength": p["strength"]} for p in pairs if p["independent"]],
+        "evaluations": pairs,
+    }
+    body["digest"] = sha256_json({k: v for k, v in body.items() if k != "evaluations"})
+    return body
+
+
+def load_overlaps(paths) -> dict:
+    out = {}
+    for p in paths:
+        rep = json.loads(Path(p).read_text())
+        out[frozenset((rep["a"]["ingress_set"], rep["b"]["ingress_set"]))] = rep
+    return out
+
+
+def main():
+    ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
+    ap.add_argument("--records", nargs="+", required=True, help="lineage.json files (globs allowed)")
+    ap.add_argument("--overlaps", nargs="*", default=[], help="overlap reports from overlap.py (globs allowed)")
+    ap.add_argument("--thresholds", required=True, type=Path)
+    ap.add_argument("--out", type=Path)
+    a = ap.parse_args()
+
+    expand = lambda pats: sorted({p for pat in pats for p in (glob.glob(pat) or [pat])})  # noqa: E731
+    records = [json.loads(Path(p).read_text()) for p in expand(a.records)]
+    th = json.loads(a.thresholds.read_text())
+    if th.get("status", "").startswith("PLACEHOLDER"):
+        print(f"note: {a.thresholds} holds placeholder values, not floor values (ADR-0035 §8)\n", file=sys.stderr)
+    t = table(records, th, load_overlaps(expand(a.overlaps)))
+
+    for l in t["lineages"]:
+        tag = "  DISTILLATION (rung 1)" if l["distillation"] else ""
+        print(f"{l['lineage']:<12} {l['digest'][:12]}  {l['strength']:<9} rung {l['rung']}{tag}")
+    print()
+    for p in t["evaluations"]:
+        verdict = "independent" if p["independent"] else "fails " + ",".join(p["fired"])
+        print(f"{p['lineages'][0]:>12} ⊥ {p['lineages'][1]:<12} {verdict:<22} [{p['strength']}]")
+        for c in p["fired"]:
+            print(f"{'':>30}{c}: {p['clauses'][c]['why']}")
+    print(f"\n{len(t['table'])} independent pair(s); table digest {t['digest'][:16]}")
+    if a.out:
+        write_json(a.out, t)
+
+
+if __name__ == "__main__":
+    main()

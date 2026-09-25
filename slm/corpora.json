@@ -1,0 +1,140 @@
+{
+  "_note": "Corpus catalogue for the ADR-0035 §8 rehearsal. Every source is pinned to a dataset revision and named parquet files, so a slice is reproducible byte for byte. The `declaration` block is the corpus-admission declaration ADR-0035 leaves as an open obligation (generatedBy, curatedBy): it is made here, by whoever edits this file, and every lineage record that reads these objects carries it as DECLARED. Model names are identifiers, not links.",
+  "corpora": {
+    "fineweb-edu-2024-10": {
+      "role": "L-A (pass pair, E1, E3, E4 fail cases) and one side of E5",
+      "source": {
+        "hf_repo": "HuggingFaceFW/fineweb-edu",
+        "revision": "87f09149ef4734204d70ed1d046ddc9ca3f2b8f9",
+        "files": [
+          "data/CC-MAIN-2024-10/000_00000.parquet",
+          "data/CC-MAIN-2024-10/000_00001.parquet",
+          "data/CC-MAIN-2024-10/000_00002.parquet"
+        ],
+        "text_column": "text",
+        "id_column": "id"
+      },
+      "declaration": {
+        "generators": [],
+        "generated_share": 0.0,
+        "curators": [
+          "fasttext/lid.176 (FineWeb language filter)",
+          "HuggingFaceFW/fineweb-edu-classifier",
+          "meta-llama/Meta-Llama-3-70B-Instruct (annotator of the classifier's training labels)"
+        ],
+        "notes": "Filtered from FineWeb (Common Crawl) by an educational-quality classifier trained on Llama-3-70B-Instruct annotations. Web text after ~2022 contains unlabeled model output: residual, ADR-0035 §7."
+      }
+    },
+    "fineweb-2024-10": {
+      "role": "L-C (E3 fail case: FineWeb-Edu is a filtered subset of FineWeb)",
+      "source": {
+        "hf_repo": "HuggingFaceFW/fineweb",
+        "revision": "9bb295ddab0e05d785b879661af7260fed5140fc",
+        "files": [
+          "data/CC-MAIN-2024-10/000_00000.parquet",
+          "data/CC-MAIN-2024-10/000_00001.parquet",
+          "data/CC-MAIN-2024-10/000_00002.parquet"
+        ],
+        "text_column": "text",
+        "id_column": "id"
+      },
+      "declaration": {
+        "generators": [],
+        "generated_share": 0.0,
+        "curators": [
+          "fasttext/lid.176 (FineWeb language filter)"
+        ],
+        "notes": "Same Common Crawl dump as fineweb-edu-2024-10. Unlabeled model text: residual."
+      }
+    },
+    "fineweb-edu-2023-50": {
+      "role": "Other side of E5 (same curator classifier, different crawl)",
+      "source": {
+        "hf_repo": "HuggingFaceFW/fineweb-edu",
+        "revision": "87f09149ef4734204d70ed1d046ddc9ca3f2b8f9",
+        "files": [
+          "data/CC-MAIN-2023-50/train-00000-of-00030.parquet",
+          "data/CC-MAIN-2023-50/train-00001-of-00030.parquet"
+        ],
+        "text_column": "text",
+        "id_column": "id"
+      },
+      "declaration": {
+        "generators": [],
+        "generated_share": 0.0,
+        "curators": [
+          "fasttext/lid.176 (FineWeb language filter)",
+          "HuggingFaceFW/fineweb-edu-classifier",
+          "meta-llama/Meta-Llama-3-70B-Instruct (annotator of the classifier's training labels)"
+        ],
+        "notes": "A different crawl, the same classifier. Near-duplicate overlap with 2024-10 is expected (recrawled pages) and is measured, not assumed."
+      }
+    },
+    "pg19": {
+      "role": "L-B (pass pair) and L-D (E4 fail case): non-web, non-synthetic",
+      "source": {
+        "hf_repo": "emozilla/pg19",
+        "revision": "c021754c8e01c5b1cc83a1f549c1f97fbbb756b8",
+        "files": [
+          "data/train-00000-of-00023-5263dc4323e881d2.parquet",
+          "data/train-00001-of-00023-2b13c68dbeba63b5.parquet",
+          "data/train-00002-of-00023-8e4dd6b70d51dfcf.parquet",
+          "data/train-00003-of-00023-e7f0ba0d3c2eb6c0.parquet",
+          "data/train-00004-of-00023-3f9e7e096fa07f4b.parquet",
+          "data/train-00005-of-00023-87dece6a0ab708e8.parquet"
+        ],
+        "text_column": "text",
+        "id_column": "url",
+        "max_doc_chars": 50000
+      },
+      "declaration": {
+        "generators": [],
+        "generated_share": 0.0,
+        "curators": [],
+        "notes": "PG-19 (Rae et al., 2019): Project Gutenberg books published before 1919, selected by date, not by a model. Mirror of deepmind/pg19. Not a Common Crawl derivative, though Gutenberg text is on the web and so appears in crawls: measured by E3, not assumed away."
+      }
+    },
+    "tinystories-a": {
+      "role": "L-T (distillation) and one side of E2",
+      "source": {
+        "hf_repo": "roneneldan/TinyStories",
+        "revision": "f54c09fd23315a6f9c86f9dc80f725de7d8f9c64",
+        "files": [
+          "data/train-00000-of-00004-2d5a1467fff1081b.parquet"
+        ],
+        "text_column": "text",
+        "id_column": null
+      },
+      "declaration": {
+        "generators": [
+          "openai/gpt-3.5",
+          "openai/gpt-4"
+        ],
+        "generated_share": 1.0,
+        "curators": [],
+        "notes": "Eldan & Li (2023). Every story was generated by GPT-3.5 or GPT-4; the split between them is not labeled per story, so both are charged with the whole share (over-approximation)."
+      }
+    },
+    "tinystories-b": {
+      "role": "Other side of E2: disjoint files, common generators",
+      "source": {
+        "hf_repo": "roneneldan/TinyStories",
+        "revision": "f54c09fd23315a6f9c86f9dc80f725de7d8f9c64",
+        "files": [
+          "data/train-00001-of-00004-5852b56a2bd28fd9.parquet"
+        ],
+        "text_column": "text",
+        "id_column": null
+      },
+      "declaration": {
+        "generators": [
+          "openai/gpt-3.5",
+          "openai/gpt-4"
+        ],
+        "generated_share": 1.0,
+        "curators": [],
+        "notes": "Disjoint parquet file from tinystories-a. E2 should fail on the common generators alone; E3 near-duplicate overlap between formulaic stories is measured too."
+      }
+    }
+  }
+}

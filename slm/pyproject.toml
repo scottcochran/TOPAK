@@ -1,0 +1,16 @@
+[project]
+name = "topak-slm"
+version = "0.1.0"
+description = "Local from-scratch SLM pre-training on Apple silicon, and the ADR-0035 lineage rehearsal"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "mlx",
+  "numpy",
+  "tokenizers",
+  "pyarrow",
+  "huggingface_hub",
+  "fsspec",
+]
+
+[tool.uv]
+package = false

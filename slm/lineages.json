@@ -1,0 +1,85 @@
+{
+  "_note": "The ADR-0035 §8 lineages. Each is pre-trained from scratch by pipeline.py under one profile. Seeds differ on purpose: two lineages with the same family, preset, vocabulary and seed start from byte-identical weights, so they share a root and E1 fails, correctly. `tokenizer_from` and `init_from` name another lineage in this file.",
+  "profiles": {
+    "smoke": {
+      "_note": "Pipeline check only: 1M params, 5M tokens, 20 MB per corpus. Minutes per lineage; the samples are noise.",
+      "preset": "1m",
+      "tokens_budget": 5000000,
+      "corpus_max_bytes": 20000000,
+      "micro_batch": 16,
+      "tokens_per_step": 32768
+    },
+    "small": {
+      "_note": "Every lineage in ~20 min on an M4 Pro (10M params, 50M tokens). Enough to exercise the whole pipeline and the table; not enough for good samples.",
+      "preset": "10m",
+      "tokens_budget": 50000000,
+      "corpus_max_bytes": 300000000,
+      "micro_batch": 16,
+      "tokens_per_step": 65536
+    },
+    "full": {
+      "_note": "The session's range: 30M params at Chinchilla-optimal 550M tokens, ~7 h each on an M4 Pro (bench.py measures yours). Eight lineages ≈ 2.5 days of GPU time; run them one at a time under run_long.sh.",
+      "preset": "30m",
+      "tokens_budget": 550000000,
+      "corpus_max_bytes": 2400000000,
+      "micro_batch": 16,
+      "tokens_per_step": 262144
+    }
+  },
+  "lineages": {
+    "L-A": {
+      "corpus": "fineweb-edu-2024-10",
+      "family": "llama",
+      "seed": 101,
+      "expect": "pass pair with L-B; E1 with L-A'; E3 (+E5) with L-C; E4 with L-D; E5 with L-E5"
+    },
+    "L-A-prime": {
+      "corpus": "pg19",
+      "family": "llama",
+      "seed": 102,
+      "init_from": "L-A",
+      "tokenizer_from": "L-A",
+      "budget_frac": 0.1,
+      "lr_peak": 0.0001,
+      "warmup_frac": 0.02,
+      "expect": "E1 with L-A: a fine-tune of L-A on books"
+    },
+    "L-B": {
+      "corpus": "pg19",
+      "family": "ssd",
+      "seed": 103,
+      "expect": "independent of L-A (E1-E5 hold)"
+    },
+    "L-C": {
+      "corpus": "fineweb-2024-10",
+      "family": "ssd",
+      "seed": 104,
+      "expect": "E3 with L-A. FineWeb-Edu's rows are FineWeb's rows after filtering, in the same order, so a FineWeb head slice ~12x the FineWeb-Edu slice contains it entirely (measured: 3,911 of 3,911 documents). E5 fires too: both carry FineWeb's language-ID curator",
+      "corpus_scale": 12
+    },
+    "L-D": {
+      "corpus": "pg19",
+      "family": "llama",
+      "seed": 105,
+      "expect": "E4 alone with L-A: same family, while E3 passes"
+    },
+    "L-T": {
+      "corpus": "tinystories-a",
+      "family": "llama",
+      "seed": 106,
+      "expect": "distillation: provenance rung 1 (content from GPT-3.5 and GPT-4)"
+    },
+    "L-T2": {
+      "corpus": "tinystories-b",
+      "family": "ssd",
+      "seed": 107,
+      "expect": "E2 with L-T: synthetic sets naming a common generator"
+    },
+    "L-E5": {
+      "corpus": "fineweb-edu-2023-50",
+      "family": "ssd",
+      "seed": 108,
+      "expect": "E5 with L-A: corpora filtered by the same classifier"
+    }
+  }
+}

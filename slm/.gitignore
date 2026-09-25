@@ -1,0 +1,33 @@
+# slm/ — ignore everything the scripts generate; track source, configs and uv.lock.
+# uv.lock is tracked on purpose: it is the version pin, and its digest is part of the trainer's
+# code digest (common.py CODE_FILES), so it must match what a manifest recorded.
+
+# Python environment and caches
+.venv/
+__pycache__/
+*.pyc
+.python-version
+
+# Corpus slices: content-addressed shards streamed from Hugging Face (reproducible from corpora.json)
+data/
+
+# Tokenizers, token files, checkpoints, metrics, manifests, lineage records, overlap reports,
+# overlap cache, benchmark results, logs
+runs/
+
+# Rehearsal clusters: replica WALs and archives, workspaces, generated tool wrapper, bundles,
+# and DEV keys in the clear (rehearsal/run/*/secrets/). Never commit these.
+rehearsal/run/
+
+# Model weights and token files, wherever they land
+*.safetensors
+*.bin
+*.npz
+
+# Atomic-write temporaries (common.write_json, prepare_corpus, train checkpoints)
+*.tmp
+.shard.tmp
+.tmp-*
+
+# OS / editor noise
+.DS_Store
