@@ -213,7 +213,7 @@ frozen input,
 
 So `bundle ⊑ floor` holds of the composed decision for **every** bundle at **every** age: it is no longer something a
 bundle can fail, and nobody has to decide it at promotion. What that buys:
-- **Containment is proven against the floor** and no bundle can weaken it.
+a - **Containment is checked against the floor** and no bundle can weaken it.
 - **Stale bundles are monotone-safe**, now with no refinement premise at all. Local enforcement under partition
   (EL zone 1) survives, sound by construction rather than operational care. This is the same shape as the lease
   argument.
@@ -275,7 +275,7 @@ becomes false.
 
 Two privileged paths cannot be written as subtractions. **Erasure** (ADR-0006) destroys authority-bearing
 evidence. **Break-glass** (ADR-0009) adds authority. Both are **floor exceptions**: carve-outs inside the verified
-object, each with a quorum predicate proven in TLA+.
+object, each with a quorum predicate checked in TLA+.
 
 ADR-0013 writes the exception mechanism once:
 - **Exceptions are declared floor entries**, each with an envelope, a roster reference, and non-composition
@@ -574,7 +574,7 @@ Promotion moves the gate up one level: the authority defining who votes cannot i
 ADR-0025 weighed three treatments of that authority, the **trust anchor**: infallible (an oracle), havoc (any
 authentic issuance, bounded by a verified floor), or characterized (havoc plus a model of how members decide).
 
-Under havoc, safety is proven for every issuance the anchor could make, so the anchor's composition never enters
+Under havoc, safety must hold for every issuance the anchor could make, so the anchor's composition never enters
 the proof. The decision is **havoc, with "infallible" split three ways**:
 
 | Property | Treatment |
@@ -754,7 +754,7 @@ axis. ADR-0023 replaces it:
   falsified but individually discharged. An empty delta is a claim, stated as one. A missing note is not an empty
   delta, and the declaration fails at the gate.
 
-**Nobody ships the archetype.** The TLA+ theorems are proved about an unshipped configuration. The article must say
+**Nobody ships the archetype.** The TLA+ properties are checked against an unshipped configuration. The article must say
 so, with ISO 26262's safety element out of context (SEooC) as the precedent.
 
 ### 8.2 What the lattice has learned since
@@ -1110,6 +1110,10 @@ miniature: the reference is not trusted to track the corpus; it is checked for i
   (replicas) and A10 (the timing budget).
 - **New §15**, the reference implementation and its eleven findings.
 - **Appendices A and B retained.**
+- **Erratum (2026.09.25, after the G3 cut).** Four register corrections — "proven"/"proved" to "checked"/"must
+  hold" in §3.1, §3.3, §7.2 and §8.1 — per G3 §8 ("No theorem is proved") and the 09.25 critical review
+  (CR-25). No decision content changed. Rev 7 is cited by digest in no manifest or accepted record; this
+  erratum changes the file's digest.
 
 ---
 

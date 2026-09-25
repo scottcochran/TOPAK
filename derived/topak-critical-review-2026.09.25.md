@@ -230,6 +230,46 @@ In order of leverage per unit work:
 
 ---
 
+## 8. Post-review dispositions (2026.09.25, same evening)
+
+The sections above are the record of the review's cut; this section records what moved the same evening, after
+the custodian committed that cut (`82d8c2b`).
+
+**Doc-only fixes applied**, at the custodian's instruction; each is a working-tree change awaiting commit:
+
+- **CR-25, rev 7 register.** The four "proven"/"proved" sentences (§3.1, §3.3, §7.2, §8.1) are corrected to
+  "checked"/"must hold", with an erratum bullet added to rev 7's Appendix C. Rev 7 is cited by digest in no
+  manifest or accepted record, so the frozen-artifact convention permits the in-place edit; its digest is now
+  `f485fca37a216ebe…` (the basis line above cites the reviewed bytes, `e8f4b3a107ae7020…`).
+- **CR-25, test count.** `mechanism/GAPS-AND-ASSUMPTIONS.md`'s evidence row now records both runs — 38 tests at
+  `4fd9677`, 44 at `453801c` — removing the mismatch with `mechanism/README.md`, which was deliberately left
+  untouched so ADR-0033 E1's file enumeration stays as ratified (the assumptions register is one of E1's two
+  named files; the README is not).
+- **CR-25, root manifest.** `SHA256SUMS` now opens with a two-line HISTORICAL comment. `shasum -a 256 -c`
+  ignores `#` lines on this platform — verified before the edit — so verification behavior is unchanged.
+- **CR-22, the doc half.** `slm/README.md` Part B now carries an evidence-status note marking its four claims
+  **run, unrecorded**. Checking in dated results files remains open.
+- After the edits, `SHA256SUMS-G3` still verifies **86 of 86**.
+
+**A new finding, surfaced by making them.**
+
+| # | Finding | Severity |
+|---|---|---|
+| **CR-26** | **A post-review commit falsified ADR-0033 E1 by enumeration.** Commit `f59941d` ("LICENSE files", 19:16) changed `mechanism/Cargo.toml` (`license = "UNLICENSED"` → `"Apache-2.0"`). `SHA256SUMS-REF-2026.09.25` now fails **three** entries where G3 §9 says to expect two, and E1's ratified sentence — later changes under `mechanism/` are "the assumptions register and the pin file — and no code" — no longer holds as written: `Cargo.toml` is a third file. A license field is not code, so the sentence's intent survives; its letter does not, and the letter is what was ratified. | Low |
+
+The repair is erratum-class and the custodian's to ratify, not this review's: an ADR-0033 E2 extending the
+enumeration, recorded the way Batch 9 recorded E1. Neither ADR-0033 nor G3 was touched here — both are measured
+entries in `SHA256SUMS-G3`, and editing either breaks the manifest §1 verified. Worth noting: this is the second
+time in two days the E1 sentence class has drifted, which suggests a sibling to G3 §5's one-results-file-per-run
+convention — *a manifest's expected-failure list is part of the checkpoint that states it, and a commit that
+grows the list owes the erratum in the same push.*
+
+**Not done here**, being script, code, or process work: the `RulesFloorNV-run.sh` jar path and per-results-file
+drivers (CR-23), bundle signing (CR-24), the slm results files (CR-22's other half), and the regeneration of the
+two Playbook artifacts against G3 (§4 is the input).
+
+---
+
 ## Sources
 
 - `checkpoints/topak-theory-of-operation-2026.09.25-rev7.md` (`e8f4b3a107ae7020…`)

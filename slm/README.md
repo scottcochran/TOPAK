@@ -175,6 +175,11 @@ ADR-0035 §8's ratification condition has four items. Each maps to a command her
 | 3 | E3 overlap measurements, with θ values proposed from them | `lineage/overlap.py`, `measure_pairs.py` | tool ready; first real measurements at 20 MB (§B2). θ needs slices at training size |
 | 4 | A lineage projected from the reference's log that matches its manifest | `rehearsal/drive.py` | **done** (§B3) |
 
+**Evidence status (2026.09.25).** The states above were run by the author, and no results file is checked
+in: every output directory (`data/`, `runs/`, `rehearsal/run/`) is gitignored, as is the session file this
+README cites. Until dated results files exist here, each claim above is **run, unrecorded** — one register
+below `spec/` and `floor/`, whose runs are checked in (09.25 critical review, CR-22).
+
 ### B1. Gate suite and property check
 
 ```sh

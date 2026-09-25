@@ -1,3 +1,5 @@
+# HISTORICAL — pre-layout manifest with flat paths; superseded by SHA256SUMS-G1/-G2/-G3 and does not
+# verify against the current tree. Kept as the record of its cut. Note added 2026.09.25 (CR-25).
 06e699209e2bd6ba5fe5d34160261c4e96c6bb1e61979818d6e19de95c0cb396  2605.09045v2.pdf
 3ce1bcf7e397b3246d9756aa1e87762bdb11cd4ada306f7a913973098e4325a2  ADR-0001.md
 6ff6b77b7cb970ca867061560fd96ff7abc1a41b2960a57bde3db92af062a1db  ADR-0002.md
