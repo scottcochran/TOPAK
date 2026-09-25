@@ -264,6 +264,14 @@ time in two days the E1 sentence class has drifted, which suggests a sibling to 
 convention — *a manifest's expected-failure list is part of the checkpoint that states it, and a commit that
 grows the list owes the erratum in the same push.*
 
+**ADR-0029 A2, drafted and ratified the same evening.** The custodian reversed the no-review declaration:
+the bootstrap set's marker exclusion stands, but a full-corpus independent review — bootstrap set included — is
+now a precondition of the ceremony, its attestation signed into the genesis bundle (A2.1–A2.5; C3, scoped to the
+amendment). This answers the structural half of **CR-5** and **CR-21**: no record is now exempt from review by
+construction. The evidential half stays open exactly as §7 item 1 states — the grade moves when a reviewer is
+engaged and the review runs, not when the rule changed. The amendment's narrative pass moved rev 7's
+digest again, to `cb43938d5e68c17c…`; rev 7 remains in no manifest.
+
 **Not done here**, being script, code, or process work: the `RulesFloorNV-run.sh` jar path and per-results-file
 drivers (CR-23), bundle signing (CR-24), the slm results files (CR-22's other half), and the regeneration of the
 two Playbook artifacts against G3 (§4 is the input).

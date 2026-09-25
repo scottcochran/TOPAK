@@ -565,8 +565,8 @@ bootstrap record therefore rests on nothing that is still unratified.
 
 **Author-ratified.** ADR-0024 is Accepted (genesis) without a confirmation marker, because the bootstrap set cannot
 carry one — confirmation runs under this record, and confirming it under itself would be circular. Its safety rests
-on the genesis attestation and the intent axiom, never on independent review. That is the sharpest instance of
-§9's weakest point.
+on the genesis attestation and the intent axiom until bootstrap, when ADR-0029 A2's full-corpus review reaches
+it — a reader, not a confirmation promotion, which it can never have (§9).
 
 ### 7.2 The trust anchor is a havoc issuer
 
@@ -804,7 +804,8 @@ trusted by declaration and becomes part of the genesis TCB.
   an exhaustiveness or confinement claim (C2), a reversal in effect of an accepted record (C3), or resolves a debt
   owed by one (C4).
 - **The bootstrap set (ADR-0024 to 0027) cannot be confirmation-required.** Confirmation runs under those rules, and
-  confirming them under themselves would be circular.
+  confirming them under themselves would be circular. The marker is all the circularity forecloses: since A2 the
+  set is reviewed at bootstrap with everything else (below), before the rules it defines take effect.
 - Until confirmed, a publication citing a confirmation-required guarantee says "author-ratified."
 
 **Where ratification stands (2026.09.25).** Twenty-nine records are Accepted (genesis); two remain Proposed, both
@@ -823,19 +824,25 @@ fail. `RulesFloorNV` is a precursor, not a substitute. **Two of the five are dra
 contents; `RulesFloor` and `Promotion` wait on modeling decisions about epochs, the vote triple, and veto seats.
 `Promotion` also owes a model of deciding before committing, which the reference had to implement (§4.1).
 
+**The trigger has a second condition** (ADR-0029 A2, ratified 2026.09.25): an **independent review of the entire
+corpus** — every record including the bootstrap set, the floors and schema, the specification set and its results,
+the reference trees, and the derived documents, at one named manifest digest — by at least one reviewer who is not
+the author, with every finding dispositioned: applied, declined with reasons, or carried as named debt. The
+specification makes bootstrap possible; the review makes it permitted.
+
 **The trigger is permission, not obligation.** Meeting it starts nothing: bootstrap happens when the custodian
 declares it **and** the trigger is met. A forcing function was considered and declined by name. Drafting the
 remaining modules commits to nothing, and TLC checking is recommended rather than required — the ceremony accepts a
 specification digest marked drafted-only.
 
 **Ceremony.** Seat key-holders under a declared custody record. Assemble the **genesis bundle**: the corpus manifest,
-including the confirmation-required set; the specification digest, marked checked or drafted-only; and the genesis
-rules. Every key-holder signs its digest. That is issuance epoch 0. **The genesis bundle is the only artifact never
+including the confirmation-required set; the specification digest, marked checked or drafted-only; the review
+attestation — reviewers, manifest digest, scope, findings disposition (A2); and the genesis rules. Every key-holder signs its digest. That is issuance epoch 0. **The genesis bundle is the only artifact never
 promoted.**
 
 **After bootstrap,** each confirmation-required record goes through a confirmation promotion under ADR-0024 with author
 recusal. Confirmed records lose the marker; rejected ones need a superseding record. Genesis records without the
-marker are not re-reviewed.
+marker get no confirmation promotion; their review happened at the gate, under A2.
 
 **No forcing function.** Genesis may last indefinitely. In its place, every checkpoint carries a debt ledger (G1 §8).
 The debt is visible, not bounded.
@@ -849,9 +856,10 @@ for the anchor, which is not archetype custody. **A solo bootstrap is not a boot
 
 **What the cleanup taught.** The freeze, recovery, fold, normalization, and G1 treated the corpus the way the pattern
 treats artifacts: records identified by digest, changes recorded as typed history, and nothing applied that was not
-ratified. Every pass found something the previous pass had missed, including this one. That is the practical form of
-ADR-0029's weakest point: **the bootstrap set gets no independent review, ever**, so the only reviews it receives
-are the author's passes before ratification.
+ratified. Every pass found something the previous pass had missed, including this one. That was the practical form of
+ADR-0029's weakest point — **the bootstrap set gets no independent review, ever** — until A2 reversed it: the set
+is reviewed at bootstrap with the rest of the corpus, and until that gate the author's passes remain the only
+reviews it has had.
 
 **What the reference taught.** Building the admit path did to the records what the cleanup did to the corpus: it
 found what reading had missed. Eleven findings, three of which only running code could produce, changed five
@@ -959,9 +967,10 @@ The open list is G3. In narrative terms, the argument is weakest in nine places.
 2. **Correlated review failure.** Unanimity multiplies reviewers without making them independent. Floor fitness is
    the missing gate, and it is still unowned.
 3. **Author-only ratification.** Twenty-nine records were ratified by one person, nine of the items on 2026.09.25
-   within two days of drafting. Nine carry confirmation markers and will be reviewed after bootstrap; **the
-   bootstrap set never will be**, by construction — confirmation runs under those records. The only reviews they
-   receive are the author's own passes.
+   within two days of drafting. Nine carry confirmation markers and will be reviewed after bootstrap; the
+   bootstrap set gets no confirmation promotion, by construction — confirmation runs under those records — and
+   since ADR-0029 A2 it is instead reviewed at the bootstrap gate with the entire corpus. Until a reviewer is
+   engaged, every review any record has received is the author's own.
 4. **Anchor capture.** The residual is real, numeric, and the first line of any residual-risk statement.
 5. **The archetype is unshipped.** Every theorem is about a configuration no one deploys, which is honest only if
    the declaration records are actually written. None has been.
@@ -1114,6 +1123,10 @@ miniature: the reference is not trusted to track the corpus; it is checked for i
   hold" in §3.1, §3.3, §7.2 and §8.1 — per G3 §8 ("No theorem is proved") and the 09.25 critical review
   (CR-25). No decision content changed. Rev 7 is cited by digest in no manifest or accepted record; this
   erratum changes the file's digest.
+- **Amendment pass (2026.09.25, ADR-0029 A2 ratified).** §9's exception, trigger, ceremony and cleanup passages,
+  §7.1's author-ratified note on ADR-0024, and §12 item 3 rewritten: the entire corpus is independently reviewed
+  as a precondition of bootstrap, and the genesis bundle carries the review attestation. The marker exclusion for
+  the bootstrap set stands; the no-review consequence is reversed.
 
 ---
 
