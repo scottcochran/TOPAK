@@ -35,7 +35,7 @@ affirmative bundle `true`, from the bundle revision the lease names, is a deny.
 ## Run it
 
 ```sh
-cargo test --workspace --release           # 38 tests; needs a built bundle (next line)
+cargo test --workspace --release           # 40 tests; needs a built bundle (next line)
 scripts/build-bundle.sh                    # policies/ → bundles/<revision>.tar.gz (docker, OPA)
 
 scripts/dev-init.sh                        # 3 replicas, in-memory transport, WASM bundle only
@@ -66,3 +66,9 @@ Operator requests are `grant`, `renew`, `end_round`, `revoke`, `issue`, `gates_p
 - The bundle entrypoint is `policies/bundle.rego` (`data.topak.bundle.allow`), which composes
   `policies/tool_invocation.rego`.
 - `PROVISIONAL (<tag>)` in the code marks every place a gap or assumption lives.
+- Records are **pinned, not followed silently**. `corpus-pins.sha256` holds the digest of every
+  record and TLA+ module the reference follows, as it last followed them. `cargo test -p topak-core
+  --test drift` fails when a pinned file changes, or when the code cites a record that is not
+  pinned. To clear it, review the change against the code, bring the code into line or register the
+  divergence in GAPS-AND-ASSUMPTIONS.md, then replace the pin line (`shasum -a 256 <path>` from
+  the repository root).
