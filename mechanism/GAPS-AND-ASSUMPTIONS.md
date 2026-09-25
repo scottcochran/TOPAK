@@ -26,7 +26,7 @@ provisional twice over.
 
 | Record | Status (G2 + later) | What the baseline takes from it |
 |---|---|---|
-| ADR-0030 floor on a verified evaluator, monotone composition | **Proposed** | Cedar floor, `admit ⟺ floor_permit ∧ ¬bundle_deny`, error-as-deny, the linked floor, S enforced per request |
+| ADR-0030 floor on a verified evaluator, monotone composition | Accepted (genesis), Batch 6 · **confirmation required (C1)** | Cedar floor, `admit ⟺ floor_permit ∧ ¬bundle_deny`, error-as-deny, the linked floor, S enforced per request |
 | ADR-0031 lease schema | Accepted (genesis), Batch 5 · **confirmation required (C1)** | Twelve lease fields, one live lease, monotone renewal with the bundle fixed, targeted revocation and the epoch fence |
 | ADR-0003 A1, A2 | Accepted (genesis), Batch 5 · A2 **confirmation required (C1)** | Chain id in topic names (I17); the round's `after` companion for denials after the seal (I23) |
 | ADR-0005 Kafka is transport only | **Proposed** | Kafka carries emissions after commit; order comes from the log |
@@ -64,7 +64,7 @@ what would replace it.
 | **I17** | **Topics are `topak.<chain>.<domain>.<seat>.e<epoch>.r<round>`**, where chain = genesis-rules digest; one partition each; sealing is a marker record plus the floor's `sealed` attribute | `lift.rs`, `topak-transport` | Kafka has no seal; re-genesis would otherwise collide (Finding 4) | ADR-0003/0021 on naming |
 | **I18** | **Gate evidence is recorded from the operator channel** (`GatesPassed`), and `Vote` is refused until it exists and matches | `state.rs` | ADR-0024 §4 requires gates before votes, and no record says who runs them or how evidence is authenticated | G8 |
 | **I19** | **`inputsInWorkspace` lift**: every string leaf of the tool inputs must be workspace-relative by syntax | `lift.rs` | Tool schemas do not mark path arguments. Coarse, fail-closed | Path-typed tool schemas |
-| **I20** | **Recusal is enforced twice**: floor forbid B7 and the tally's counted seats | floor, `promotion.rs` | Follows the draft floor. **Settled 2026.09.25**: ADR-0030 R4 keeps B7 in the floor; ADR-0022 A1 (pending) amends §7's path | — |
+| **I20** | **Recusal is enforced twice**: floor forbid B7 and the tally's counted seats | floor, `promotion.rs` | Follows the draft floor. **Settled 2026.09.25**: ADR-0030 R4 keeps B7 in the floor; ADR-0022 A1 (Batch 6) amends §7's path | — |
 | **I21** | **Mechanism parameters** (corpus set, allowlists, round bound, lease margin) ship as config, must match on every replica, and their digest is in every admit; `apply` rejects an admit decided under other parameters | `state.rs` `Params` | ADR-0022 §3 names the parameters, not their delivery | Parameters inside the mechanism release |
 | **I22** | **Deny reasons are returned to the agent** | `mechanism.rs` | Debuggability; the floor text is not secret | Reason categories only, if disclosure matters |
 | **I23** | **Denials after the seal go to the round's `after` companion** (`…r<round>.after`), up to `after_topic_limit` records, then one `overflow` marker, then nothing. An attempt with no session goes to the `security` log target | `mechanism.rs` `record_denial`, `act`; `Params` | ADR-0020 wants the attempt; ADR-0003 0003.2 forbids reopening the sealed topic. ADR-0003 A2, ratified in Batch 5 | The bound is counted per replica, not replicated |
