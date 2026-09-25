@@ -98,8 +98,8 @@ what would replace it.
 ## 4. Findings: what building it showed about the corpus
 
 These are observations for the next checkpoint. Findings 1, 2, 4, 5, 6, 10 and 11 have been acted on,
-finding 4 through ADR-0003 A1 (ratified in Batch 5). Findings 3, 7 and 8 wait on pending pointers
-(ADR-0015 E1, ADR-0031 E1) now that ADR-0033 is accepted (Batch 7); finding 9 remains.
+finding 4 through ADR-0003 A1 (ratified in Batch 5). Findings 3, 7 and 8 closed with ADR-0015 E1 and
+ADR-0031 E1 (Batch 8); finding 8 still owes a model in the bootstrap `Promotion` module. Finding 9 remains.
 
 1. **The gate suite has a case that does not test what it names.** `floor/genesis-tests.json`,
    "B6 vote from an unseated principal", votes **grant**, so forbid B8 fires and is the reason for
