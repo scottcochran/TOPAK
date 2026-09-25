@@ -1,0 +1,19 @@
+TOPAK
+Copyright 2026 William Scott Cochran
+
+This repository is dual-licensed by content type.
+
+Source code, formal specifications, policies and tooling -- including
+Rust, Python, shell, TLA+ (.tla), Rego, Cedar, and their configuration
+files -- are licensed under the Apache License, Version 2.0. See LICENSE.
+
+Documentation -- including Markdown (.md) prose, decision records,
+checkpoints, logs, diagrams (.svg) and model-checker result transcripts
+(spec/*-results-*.txt) -- is licensed under the Creative Commons
+Attribution 4.0 International License (CC BY 4.0). See LICENSE-DOCS.
+
+  SPDX-License-Identifier: Apache-2.0      (code)
+  SPDX-License-Identifier: CC-BY-4.0       (documentation)
+
+Third-party reference material (PDFs and the references/ directory) is
+not part of this repository and is not covered by either license.

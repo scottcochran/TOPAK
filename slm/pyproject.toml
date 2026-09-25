@@ -3,6 +3,7 @@ name = "topak-slm"
 version = "0.1.0"
 description = "Local from-scratch SLM pre-training on Apple silicon, and the ADR-0035 lineage rehearsal"
 requires-python = ">=3.12,<3.13"
+license = "Apache-2.0"
 dependencies = [
   "mlx",
   "numpy",
