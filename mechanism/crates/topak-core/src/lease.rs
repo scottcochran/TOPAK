@@ -30,6 +30,10 @@ pub struct Lease {
     pub bundle: Digest,
     pub confinement: Confinement,
     pub alphabet: BTreeSet<ActionKind>,
+    /// The round this lease is granted for (ADR-0031 §1, §2). Never reused per seat.
+    pub round: Round,
+    /// The principal's role in that round. The floor keys on it (ADR-0022 §7).
+    pub role: RoundRole,
     /// Expiry as a duration on the local monotonic clock (ADR-0031 §7, ADR-0032).
     pub ttl_ms: u64,
 }
@@ -62,6 +66,9 @@ impl Lease {
         same("rulesEpoch", new.rules_epoch == self.rules_epoch)?;
         same("bundle", new.bundle == self.bundle)?;
         same("confinement digest", new.confinement.digest == self.confinement.digest)?;
+        // Round and role are fixed for the lease's life: changing either is a grant (§4).
+        same("round", new.round == self.round)?;
+        same("role", new.role == self.role)?;
         if !new.alphabet.is_subset(&self.alphabet) {
             return Err("renewal widens the alphabet".into());
         }

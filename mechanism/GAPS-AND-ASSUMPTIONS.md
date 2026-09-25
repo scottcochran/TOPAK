@@ -95,7 +95,8 @@ what would replace it.
 
 ## 4. Findings: what building it showed about the corpus
 
-These are observations for the next checkpoint. Only finding 1 has been acted on.
+These are observations for the next checkpoint. Findings 1 and 6 have been acted on; finding 4 is
+routed to ADR-0003 as pending amendment A1.
 
 1. **The gate suite has a case that does not test what it names.** `floor/genesis-tests.json`,
    "B6 vote from an unseated principal", votes **grant**, so forbid B8 fires and is the reason for
@@ -121,7 +122,9 @@ These are observations for the next checkpoint. Only finding 1 has been acted on
 6. **"Round-coterminous" needs the round in the credential.** ADR-0031 grants a lease "for a
    round", but `round` is not among the ten fields. The baseline carries it beside the lease
    (`Assignment`). Either the field list is not closed, or the grant record is part of the
-   credential.
+   credential. The same holds for the round *role*, which the floor keys on (ADR-0022 §7).
+   **Resolved 2026.09.25** by ADR-0031 R1: `round` and `role` are lease fields, fixed across
+   renewal. `Assignment` is folded into `Lease`, and `Lease.tla` gains `M_ROLE`.
 7. **Local expiry cannot free the one-live-lease slot by itself.** If each replica judged
    liveness by its own clock, a later `Grant` would apply on some replicas and not others. Expiry
    is decided locally and then *ordered* (I15), which is Finding 3 again.
@@ -165,6 +168,7 @@ These are observations for the next checkpoint. Only finding 1 has been acted on
 | `Lease.tla` | C1 one live lease | `one_live_lease_per_principal` |
 | `Lease.tla` | `NoActionUnderFencedEpoch` / `M_FENCE` | `no_action_under_a_fenced_epoch_and_m_fence_is_refused`; e2e `FencedEpoch` |
 | `Lease.tla` | `Rung0NeverContained` / `M_RUNG` | `rung_zero_is_never_contained_and_nothing_is_contained_yet` |
+| `Lease.tla` | `LeaseAuthorityMonotone` / `M_ROLE` (ADR-0031 R1) | `renewal_cannot_change_round_or_role_and_m_role_is_refused` |
 | `FloorComposition.tla` | `AdmitImpliesFloorPermit` / `M_OVERRIDE` | `admit_implies_floor_permit_and_m_override_is_refused`; e2e allow-all bundle still floor-bounded |
 | `FloorComposition.tla` | `FloorErrorIsDeny` / `M_ERR` | same test; `floor.rs` `an_incomplete_slice_is_a_deny_not_a_skipped_forbid` |
 | `FloorComposition.tla` | `BundleRefusalHonored` / `M_FAILOPEN` | `bundle_refusal_is_honored…`; `fallback.rs` (6 cases) |

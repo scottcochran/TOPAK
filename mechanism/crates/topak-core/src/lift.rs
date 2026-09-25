@@ -98,7 +98,7 @@ pub fn lift(
     let seat = req.seat.as_str();
     let domain = rules.seat_domain(seat).ok_or_else(|| MechanismDeny::Other(format!("seat {seat} is not declared")))?;
     let lease = &rec.lease;
-    let round = rec.assignment.round;
+    let round = lease.round;
     let ws = workspace_id(seat, lease.epoch, round);
 
     let seat_entity = |s: &str| -> Value {
@@ -132,7 +132,7 @@ pub fn lift(
             "lease": lease_ctx,
             "epoch": long(state.epoch)?,
             "round": long(round)?,
-            "roundRole": rec.assignment.role.as_str(),
+            "roundRole": lease.role.as_str(),
             "corpusRoot": eref("CorpusRoot", "pinned"),
             "workspace": eref("Workspace", &ws),
             "toolAllowlist": eref("ToolSet", "build-allow"),
@@ -246,7 +246,7 @@ pub fn lift(
         "context": {
             "epoch": state.epoch,
             "round": round,
-            "roundRole": rec.assignment.role.as_str(),
+            "roundRole": lease.role.as_str(),
             "rulesEpoch": rules.rules_epoch,
             "lease": lease.fence,
         },

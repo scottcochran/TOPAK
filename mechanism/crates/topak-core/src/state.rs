@@ -65,19 +65,9 @@ pub enum EndReason {
     Renewed,
 }
 
-/// What the lease was granted *for*: the round and the principal's role in it. These are not
-/// lease fields — the ADR-0031 schema is closed — but a lease is granted for exactly one round
-/// (§2), so the grant has to name it. PROVISIONAL (round in lease).
-#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
-pub struct Assignment {
-    pub round: Round,
-    pub role: RoundRole,
-}
-
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct LeaseRecord {
     pub lease: Lease,
-    pub assignment: Assignment,
     pub ended: Option<EndReason>,
     /// Admitted actions this round (checked against the round bound).
     pub actions: u64,
@@ -102,7 +92,8 @@ pub struct GrantRequest {
     pub confinement: Confinement,
     pub alphabet: BTreeSet<ActionKind>,
     pub ttl_ms: u64,
-    pub assignment: Assignment,
+    pub round: Round,
+    pub role: RoundRole,
 }
 
 /// A renewal names the live lease and the narrowed values.
@@ -535,13 +526,13 @@ impl State {
         if let Some(k) = req.alphabet.iter().find(|k| k.domain() != domain) {
             return Applied::Rejected(format!("{k} is outside the {} alphabet", domain.as_str()));
         }
-        if req.assignment.role == RoundRole::Voter && domain != Domain::Build {
+        if req.role == RoundRole::Voter && domain != Domain::Build {
             return Applied::Rejected("only Build seats vote".into());
         }
         if req.confinement.rung > MAX_RUNG {
             return Applied::Rejected("no such confinement rung".into());
         }
-        if self.last_round.get(&req.seat).is_some_and(|r| req.assignment.round <= *r) {
+        if self.last_round.get(&req.seat).is_some_and(|r| req.round <= *r) {
             return Applied::Rejected("round numbers are not reused: a round's topic is sealed".into());
         }
         let lease = Lease {
@@ -554,12 +545,13 @@ impl State {
             bundle: req.bundle.clone(),
             confinement: req.confinement.clone(),
             alphabet: req.alphabet.clone(),
+            round: req.round,
+            role: req.role,
             ttl_ms: req.ttl_ms,
         };
-        self.leases
-            .insert(index, LeaseRecord { lease, assignment: req.assignment, ended: None, actions: 0, emit_seq: 0 });
+        self.leases.insert(index, LeaseRecord { lease, ended: None, actions: 0, emit_seq: 0 });
         self.live_by_seat.insert(req.seat.clone(), index);
-        self.last_round.insert(req.seat.clone(), req.assignment.round);
+        self.last_round.insert(req.seat.clone(), req.round);
         Applied::LeaseGranted { fence: index }
     }
 

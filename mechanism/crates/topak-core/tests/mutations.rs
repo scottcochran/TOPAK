@@ -61,7 +61,8 @@ fn grant_req(seat: &str, alphabet: &[ActionKind]) -> GrantRequest {
         confinement: Confinement { digest: Digest::of(b"profile"), rung: 1 },
         alphabet: alphabet.iter().copied().collect(),
         ttl_ms: 1000,
-        assignment: Assignment { round: 1, role: RoundRole::Author },
+        round: 1,
+        role: RoundRole::Author,
     }
 }
 
@@ -123,11 +124,34 @@ fn renewal_cannot_swap_the_bundle() {
         bundle: Digest::of(b"b1"),
         confinement: Confinement { digest: Digest::of(b"c"), rung: 1 },
         alphabet: BTreeSet::from([ActionKind::Read]),
+        round: 1,
+        role: RoundRole::Voter,
         ttl_ms: 10,
     };
     let mut new = old.clone();
     new.bundle = Digest::of(b"b2");
     assert!(old.check_renewal(&new).is_err(), "bundle order is undecidable, so a swap is refused");
+}
+
+/// Lease.tla `M_ROLE`: round and role are lease fields (ADR-0031 R1), fixed across renewal. A
+/// voter renewed as an author would gain `Draft` under the floor's role rule without a grant.
+#[test]
+fn renewal_cannot_change_round_or_role_and_m_role_is_refused() {
+    let p = params();
+    let mut s = state();
+    let mut req = grant_req("a1", &[ActionKind::Read]);
+    req.role = RoundRole::Voter;
+    s.apply(1, &Entry::Grant { id: "g".into(), req }, &p);
+    let old = s.leases[&1].lease.clone();
+    assert_eq!((old.round, old.role), (1, RoundRole::Voter), "the grant's round and role are in the lease");
+
+    let mut as_author = old.clone();
+    as_author.role = RoundRole::Author;
+    assert!(old.check_renewal(&as_author).is_err(), "M_ROLE: a renewal changed the role");
+    let mut next_round = old.clone();
+    next_round.round = 2;
+    assert!(old.check_renewal(&next_round).is_err(), "a renewal moved the lease to another round");
+    assert!(old.check_renewal(&old.clone()).is_ok(), "reachability: an unchanged renewal is accepted");
 }
 
 /// ADR-0031 C1, the finding the check bought: a grant must not replace a live lease, or §4's
@@ -138,7 +162,7 @@ fn one_live_lease_per_principal() {
     let mut s = state();
     s.apply(1, &Entry::Grant { id: "g1".into(), req: grant_req("a1", &[ActionKind::Read]) }, &p);
     let mut wide = grant_req("a1", &[ActionKind::Read, ActionKind::Draft, ActionKind::Invoke]);
-    wide.assignment.round = 2;
+    wide.round = 2;
     let a = s.apply(2, &Entry::Grant { id: "g2".into(), req: wide }, &p);
     assert!(matches!(a, Applied::Rejected(ref r) if r.contains("live lease")), "{a:?}");
 }
@@ -168,6 +192,8 @@ fn rung_zero_is_never_contained_and_nothing_is_contained_yet() {
         bundle: Digest::of(b"b"),
         confinement: Confinement { digest: Digest::of(b"c"), rung: 0 },
         alphabet: BTreeSet::new(),
+        round: 1,
+        role: RoundRole::Author,
         ttl_ms: 1,
     };
     assert!(!l.is_contained());

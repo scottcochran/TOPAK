@@ -179,7 +179,7 @@ impl Mechanism {
                     let d = st.rules.seat_domain(&r.lease.seat)?;
                     Some((
                         f,
-                        topic_name(&st.chain, d, &r.lease.seat, r.lease.epoch, r.assignment.round),
+                        topic_name(&st.chain, d, &r.lease.seat, r.lease.epoch, r.lease.round),
                         format!("{reason:?}"),
                     ))
                 })
@@ -295,7 +295,7 @@ impl Mechanism {
                 }
                 let frozen = lift(&req, &st, &self.params, rec)?;
                 let domain = st.rules.seat_domain(&req.seat).expect("lifted");
-                Ok((frozen, rec.lease.bundle.clone(), rec.lease.epoch, rec.assignment.round, domain))
+                Ok((frozen, rec.lease.bundle.clone(), rec.lease.epoch, rec.lease.round, domain))
             })
         };
         let (frozen, lease_bundle, lease_epoch, round, domain) = match prepared {
@@ -391,7 +391,7 @@ impl Mechanism {
     fn session_workspace(&self, sess: &Session) -> Result<PathBuf, String> {
         let st = self.state.read().unwrap();
         let rec = st.leases.get(&sess.fence).ok_or("unknown lease")?;
-        Ok(self.workspace_dir(&sess.seat, rec.lease.epoch, rec.assignment.round))
+        Ok(self.workspace_dir(&sess.seat, rec.lease.epoch, rec.lease.round))
     }
 
     /// The workspace digest: SHA-256 over sorted (relative path, bytes).
@@ -471,7 +471,8 @@ impl Mechanism {
                     confinement,
                     alphabet,
                     ttl_ms,
-                    assignment: Assignment { round, role },
+                    round,
+                    role,
                 };
                 return match self.propose(Entry::Grant { id, req }).await {
                     Ok((_, Applied::LeaseGranted { fence })) => {
@@ -533,8 +534,8 @@ impl Mechanism {
             .filter_map(|f| st.leases.get(f))
             .map(|r| {
                 json!({
-                    "seat": r.lease.seat, "fence": r.lease.fence, "epoch": r.lease.epoch, "round": r.assignment.round,
-                    "role": r.assignment.role, "actions": r.actions, "alphabet": r.lease.alphabet,
+                    "seat": r.lease.seat, "fence": r.lease.fence, "epoch": r.lease.epoch, "round": r.lease.round,
+                    "role": r.lease.role, "actions": r.actions, "alphabet": r.lease.alphabet,
                     "rung": r.lease.confinement.rung, "contained": r.lease.is_contained(),
                 })
             })

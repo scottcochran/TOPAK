@@ -5,16 +5,21 @@
 (*   NoActionUnderFencedEpoch §5  revocation fences: no action at a stale epoch *)
 (*   Rung0NeverContained      §3  rung 0 is Mediated, always                    *)
 (*                                                                             *)
-(* Authority is modeled as the pair (alphabet, rung). Narrowing the alphabet or *)
-(* lowering the rung subtracts; either one growing is an increase. A grant may  *)
-(* increase authority - it is an admit decision at a fresh fence - and a        *)
-(* renewal may not.                                                            *)
+(* Authority is modeled as (alphabet, rung, role). Narrowing the alphabet or   *)
+(* lowering the rung subtracts; either one growing is an increase. The round    *)
+(* role is not ordered: author and voter admit different actions, so a         *)
+(* renewal that changes it is not a narrowing. A grant may increase authority  *)
+(* - it is an admit decision at a fresh fence - and a renewal may not.          *)
+(* The round number is not modeled: its safety role is topic non-reuse, which  *)
+(* is outside this module, and renewal keeps it exactly as it keeps the role.   *)
 (*                                                                             *)
 (* Mut = "none":    the mechanism as ADR-0031 specifies it.                     *)
 (* Mut = "M_RENEW": renewal may issue any authority. §4 must fail.              *)
 (* Mut = "M_FENCE": the mechanism admits an action whose lease epoch is stale,  *)
 (*                  i.e. revocation does not fence. §5 must fail.               *)
 (* Mut = "M_RUNG":  Contained ignores the rung. §3 must fail.                   *)
+(* Mut = "M_ROLE":  renewal checks alphabet and rung but not the role, so a    *)
+(*                  voter's lease can be renewed as an author's. §4 must fail.  *)
 EXTENDS FiniteSets, Naturals
 
 CONSTANTS Mut, MaxEpoch, MaxFence
@@ -22,9 +27,10 @@ CONSTANTS Mut, MaxEpoch, MaxFence
 Principals == {"p1", "p2"}
 Acts       == {"Read", "Emit"}
 Rungs      == 0..2
+Roles      == {"author", "voter"}
 
 \* A lease. `live` distinguishes a granted lease from no lease at all.
-NoLease == [live |-> FALSE, alphabet |-> {}, rung |-> 0, epoch |-> 0, fence |-> 0]
+NoLease == [live |-> FALSE, alphabet |-> {}, rung |-> 0, role |-> "none", epoch |-> 0, fence |-> 0]
 
 VARIABLES lease, prev, epoch, fence, acted, staleAdmitted
 vars == <<lease, prev, epoch, fence, acted, staleAdmitted>>
@@ -36,8 +42,16 @@ Init == /\ lease = [p \in Principals |-> NoLease]
         /\ acted = {}
         /\ staleAdmitted = FALSE
 
-\* ADR-0031 §4. leaseNext ⊑ leaseCur: narrower alphabet, no higher rung.
-Refines(new, old) == new.alphabet \subseteq old.alphabet /\ new.rung <= old.rung
+\* ADR-0031 §4. leaseNext ⊑ leaseCur: narrower alphabet, no higher rung, and the
+\* same round role (§1 R1: a renewal that changes the role is a grant).
+Narrows(new, old) == new.alphabet \subseteq old.alphabet /\ new.rung <= old.rung
+Refines(new, old) == Narrows(new, old) /\ new.role = old.role
+
+\* What the mechanism checks at renewal. M_RENEW checks nothing; M_ROLE drops the role.
+RenewalAllowed(new, old) ==
+  CASE Mut = "M_RENEW" -> TRUE
+    [] Mut = "M_ROLE"  -> Narrows(new, old)
+    [] OTHER           -> Refines(new, old)
 
 \* A fresh grant: any authority, at the current epoch and a new fence index.
 \* ADR-0031 §2: the lease is round-coterminous, so a principal holds at most one
@@ -47,23 +61,23 @@ Refines(new, old) == new.alphabet \subseteq old.alphabet /\ new.rung <= old.rung
 Grant(p) ==
   /\ ~lease[p].live
   /\ fence < MaxFence
-  /\ \E a \in SUBSET Acts, r \in Rungs :
-       lease' = [lease EXCEPT ![p] = [live |-> TRUE, alphabet |-> a, rung |-> r,
+  /\ \E a \in SUBSET Acts, r \in Rungs, ro \in Roles :
+       lease' = [lease EXCEPT ![p] = [live |-> TRUE, alphabet |-> a, rung |-> r, role |-> ro,
                                       epoch |-> epoch, fence |-> fence + 1]]
   /\ prev' = [prev EXCEPT ![p] = lease[p]]
   /\ fence' = fence + 1
   /\ UNCHANGED <<epoch, acted, staleAdmitted>>
 
 \* A renewal: same principal, same epoch, new fence, authority may only narrow.
+\* The role is drawn freely so that the mechanism's check is what refuses a change.
 Renew(p) ==
   /\ lease[p].live
   /\ lease[p].epoch = epoch
   /\ fence < MaxFence
-  /\ \E a \in SUBSET Acts, r \in Rungs :
-       LET new == [live |-> TRUE, alphabet |-> a, rung |-> r,
+  /\ \E a \in SUBSET Acts, r \in Rungs, ro \in Roles :
+       LET new == [live |-> TRUE, alphabet |-> a, rung |-> r, role |-> ro,
                    epoch |-> epoch, fence |-> fence + 1]
-       IN  /\ \/ Mut = "M_RENEW"                 \* mutation: no refinement check
-              \/ Refines(new, lease[p])
+       IN  /\ RenewalAllowed(new, lease[p])
            /\ lease' = [lease EXCEPT ![p] = new]
   /\ prev' = [prev EXCEPT ![p] = lease[p]]
   /\ fence' = fence + 1
