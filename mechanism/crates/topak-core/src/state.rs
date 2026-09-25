@@ -35,6 +35,15 @@ pub struct Params {
     pub round_bound: u64,
     /// Asymmetric margin subtracted from every lease TTL (ADR-0032 §2).
     pub lease_margin_ms: u64,
+    /// Most denial records written to one round's `after` topic before a single overflow marker
+    /// (ADR-0003 A2). Bounds what a principal can make the mechanism write by acting
+    /// under a dead lease.
+    #[serde(default = "default_after_topic_limit")]
+    pub after_topic_limit: u64,
+}
+
+fn default_after_topic_limit() -> u64 {
+    64
 }
 
 impl Params {
@@ -55,8 +64,11 @@ pub enum EndReason {
     Voted,
     /// Passive expiry observed on a replica's local clock.
     Expired,
-    /// The epoch was incremented (revocation fences it; ADR-0031 §5).
+    /// The epoch was incremented: the fleet fence (ADR-0031 §5).
     Fenced,
+    /// A targeted revocation named this lease's principal, Persona or confinement profile
+    /// (ADR-0031 §5 R3).
+    Revoked,
     /// A new rules epoch was issued.
     RulesChanged,
     /// Ended by an operator (e-stop).
@@ -78,6 +90,26 @@ pub struct LeaseRecord {
 impl LeaseRecord {
     pub fn live(&self) -> bool {
         self.ended.is_none()
+    }
+}
+
+/// What a targeted revocation names (ADR-0031 §5 R3). It ends every live lease it matches and
+/// bars every later grant it would match. Revocation is permanent within a chain.
+#[derive(Clone, Debug, PartialEq, Eq, PartialOrd, Ord, Serialize, Deserialize)]
+#[serde(tag = "kind", content = "id", rename_all = "snake_case")]
+pub enum RevocationTarget {
+    Principal(String),
+    Persona(Digest),
+    Confinement(Digest),
+}
+
+impl RevocationTarget {
+    pub fn matches(&self, principal: &str, persona: &Digest, confinement: &Digest) -> bool {
+        match self {
+            RevocationTarget::Principal(p) => p == principal,
+            RevocationTarget::Persona(d) => d == persona,
+            RevocationTarget::Confinement(d) => d == confinement,
+        }
     }
 }
 
@@ -211,7 +243,15 @@ pub enum Entry {
         reason: EndReason,
         attribution: String,
     },
-    /// Revocation (ADR-0031 §5): increments the epoch, fencing every lease at the old one.
+    /// Targeted revocation (ADR-0031 §5 R3): ends the matching live leases and bars later
+    /// grants. The epoch is untouched. Ordered, no quorum. Stop attribution, forensic class F2.
+    Revoke {
+        id: String,
+        target: RevocationTarget,
+        reason: String,
+        attribution: String,
+    },
+    /// The fleet fence (ADR-0031 §5): increments the epoch, fencing every lease at the old one.
     /// Stop attribution, forensic class F2.
     EpochIncrement {
         id: String,
@@ -247,6 +287,7 @@ impl Entry {
             | Entry::Renew { id, .. }
             | Entry::Admit { id, .. }
             | Entry::EndRound { id, .. }
+            | Entry::Revoke { id, .. }
             | Entry::EpochIncrement { id, .. }
             | Entry::Issue { id, .. }
             | Entry::GatesPassed { id, .. }
@@ -305,6 +346,10 @@ pub enum Applied {
         promoted: Option<Digest>,
     },
     RoundEnded,
+    /// A targeted revocation applied; `ended` live leases matched it.
+    Revoked {
+        ended: usize,
+    },
     EpochIncremented {
         epoch: Epoch,
     },
@@ -337,6 +382,8 @@ pub struct State {
     pub gates: BTreeMap<Digest, Digest>,
     /// seat → epoch → approving roster keys.
     pub break_glass: BTreeMap<SeatId, BTreeMap<Epoch, BTreeSet<KeyHex>>>,
+    /// Targeted revocations in force (ADR-0031 §5 R3). Checked at every grant.
+    pub revoked: BTreeSet<RevocationTarget>,
     /// PROVISIONAL (dedupe growth): unbounded; no snapshotting or compaction yet.
     pub applied_ids: BTreeSet<String>,
     pub last_applied: LogIndex,
@@ -364,6 +411,7 @@ impl State {
             candidates: BTreeMap::new(),
             gates: BTreeMap::new(),
             break_glass: BTreeMap::new(),
+            revoked: BTreeSet::new(),
             applied_ids: BTreeSet::new(),
             last_applied: 0,
         })
@@ -476,6 +524,7 @@ impl State {
                 }
                 _ => Applied::Rejected("no such live lease".into()),
             },
+            Entry::Revoke { target, .. } => self.apply_revoke(target),
             Entry::EpochIncrement { .. } => {
                 self.epoch += 1;
                 self.end_all_live(EndReason::Fenced);
@@ -529,6 +578,10 @@ impl State {
         if req.role == RoundRole::Voter && domain != Domain::Build {
             return Applied::Rejected("only Build seats vote".into());
         }
+        if let Some(t) = self.revoked.iter().find(|t| t.matches(&req.principal, &req.persona, &req.confinement.digest))
+        {
+            return Applied::Rejected(format!("revoked: {t:?} (ADR-0031 §5)"));
+        }
         if req.confinement.rung > MAX_RUNG {
             return Applied::Rejected("no such confinement rung".into());
         }
@@ -553,6 +606,25 @@ impl State {
         self.live_by_seat.insert(req.seat.clone(), index);
         self.last_round.insert(req.seat.clone(), req.round);
         Applied::LeaseGranted { fence: index }
+    }
+
+    /// A targeted revocation (ADR-0031 §5 R3). Ends every live lease the target matches and
+    /// lapses break-glass approvals for those seats: under the fleet fence they lapsed with the
+    /// epoch, and a targeted revocation must not leave them for the seat's next holder.
+    fn apply_revoke(&mut self, target: &RevocationTarget) -> Applied {
+        self.revoked.insert(target.clone());
+        let hit: Vec<(LogIndex, SeatId)> = self
+            .live_by_seat
+            .values()
+            .filter_map(|f| self.leases.get(f).map(|r| (*f, r)))
+            .filter(|(_, r)| target.matches(&r.lease.principal, &r.lease.persona, &r.lease.confinement.digest))
+            .map(|(f, r)| (f, r.lease.seat.clone()))
+            .collect();
+        for (fence, seat) in &hit {
+            self.end_lease(*fence, EndReason::Revoked);
+            self.break_glass.remove(seat);
+        }
+        Applied::Revoked { ended: hit.len() }
     }
 
     /// A renewal replaces the live lease with a narrower one at a new fence (ADR-0031 §4).

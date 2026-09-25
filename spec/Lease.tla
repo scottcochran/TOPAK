@@ -2,7 +2,8 @@
 (* Properties for ADR-0031, the lease schema.                                  *)
 (*                                                                             *)
 (*   LeaseAuthorityMonotone   §4  renewal never adds authority                 *)
-(*   NoActionUnderFencedEpoch §5  revocation fences: no action at a stale epoch *)
+(*   NoActionUnderFencedEpoch §5  a fleet fence: no action at a stale epoch     *)
+(*   RevokedStaysStopped      §5  a revoked principal holds no live lease (R3)  *)
 (*   Rung0NeverContained      §3  rung 0 is Mediated, always                    *)
 (*                                                                             *)
 (* Authority is modeled as (alphabet, rung, role). Narrowing the alphabet or   *)
@@ -20,6 +21,13 @@
 (* Mut = "M_RUNG":  Contained ignores the rung. §3 must fail.                   *)
 (* Mut = "M_ROLE":  renewal checks alphabet and rung but not the role, so a    *)
 (*                  voter's lease can be renewed as an author's. §4 must fail.  *)
+(* Mut = "M_REVOKE": a grant ignores the revocation set, so a revoked          *)
+(*                  principal is simply granted again. §5 must fail.            *)
+(*                                                                             *)
+(* R3: revocation has two tools. RevokeLease(p) ends one principal's lease and *)
+(* bars it from later grants; the epoch is untouched. Revoke is the fleet      *)
+(* fence. `revoked` holds principals; in the mechanism it holds principals,     *)
+(* Persona digests and confinement digests, which a principal stands for here. *)
 EXTENDS FiniteSets, Naturals
 
 CONSTANTS Mut, MaxEpoch, MaxFence
@@ -32,8 +40,8 @@ Roles      == {"author", "voter"}
 \* A lease. `live` distinguishes a granted lease from no lease at all.
 NoLease == [live |-> FALSE, alphabet |-> {}, rung |-> 0, role |-> "none", epoch |-> 0, fence |-> 0]
 
-VARIABLES lease, prev, epoch, fence, acted, staleAdmitted
-vars == <<lease, prev, epoch, fence, acted, staleAdmitted>>
+VARIABLES lease, prev, epoch, fence, acted, staleAdmitted, revoked
+vars == <<lease, prev, epoch, fence, acted, staleAdmitted, revoked>>
 
 Init == /\ lease = [p \in Principals |-> NoLease]
         /\ prev  = [p \in Principals |-> NoLease]
@@ -41,6 +49,7 @@ Init == /\ lease = [p \in Principals |-> NoLease]
         /\ fence = 0
         /\ acted = {}
         /\ staleAdmitted = FALSE
+        /\ revoked = {}
 
 \* ADR-0031 §4. leaseNext ⊑ leaseCur: narrower alphabet, no higher rung, and the
 \* same round role (§1 R1: a renewal that changes the role is a grant).
@@ -60,13 +69,14 @@ RenewalAllowed(new, old) ==
 \* nothing, since the wide path would simply avoid renewal.
 Grant(p) ==
   /\ ~lease[p].live
+  /\ Mut = "M_REVOKE" \/ p \notin revoked        \* R3: the revocation set bars a grant
   /\ fence < MaxFence
   /\ \E a \in SUBSET Acts, r \in Rungs, ro \in Roles :
        lease' = [lease EXCEPT ![p] = [live |-> TRUE, alphabet |-> a, rung |-> r, role |-> ro,
                                       epoch |-> epoch, fence |-> fence + 1]]
   /\ prev' = [prev EXCEPT ![p] = lease[p]]
   /\ fence' = fence + 1
-  /\ UNCHANGED <<epoch, acted, staleAdmitted>>
+  /\ UNCHANGED <<epoch, acted, staleAdmitted, revoked>>
 
 \* A renewal: same principal, same epoch, new fence, authority may only narrow.
 \* The role is drawn freely so that the mechanism's check is what refuses a change.
@@ -81,14 +91,14 @@ Renew(p) ==
            /\ lease' = [lease EXCEPT ![p] = new]
   /\ prev' = [prev EXCEPT ![p] = lease[p]]
   /\ fence' = fence + 1
-  /\ UNCHANGED <<epoch, acted, staleAdmitted>>
+  /\ UNCHANGED <<epoch, acted, staleAdmitted, revoked>>
 
-\* ADR-0031 §5. Revocation increments the epoch, which fences every lease at the
-\* old epoch. Leases are left in place: the fence is what rejects them.
+\* ADR-0031 §5. The fleet fence increments the epoch, which fences every lease at
+\* the old epoch. Leases are left in place: the fence is what rejects them.
 Revoke ==
   /\ epoch < MaxEpoch
   /\ epoch' = epoch + 1
-  /\ UNCHANGED <<lease, prev, fence, acted, staleAdmitted>>
+  /\ UNCHANGED <<lease, prev, fence, acted, staleAdmitted, revoked>>
 
 \* An action is admitted only under a live lease, within its alphabet, at the
 \* current epoch. The epoch check is the fence (ADR-0022 §2).
@@ -101,7 +111,17 @@ Act(p) ==
        acted' = acted \cup {[principal |-> p, act |-> a, atEpoch |-> epoch,
                              leaseEpoch |-> lease[p].epoch]}
   /\ staleAdmitted' = (staleAdmitted \/ lease[p].epoch # epoch)
-  /\ UNCHANGED <<lease, prev, epoch, fence>>
+  /\ UNCHANGED <<lease, prev, epoch, fence, revoked>>
+
+\* ADR-0031 §5 R3. A targeted revocation ends one principal's live lease, if it
+\* has one, and bars later grants to it. It is ordered and needs no quorum; it
+\* leaves the epoch, and every other principal's lease, untouched.
+RevokeLease(p) ==
+  /\ p \notin revoked
+  /\ revoked' = revoked \cup {p}
+  /\ lease' = [lease EXCEPT ![p] = NoLease]
+  /\ prev'  = [prev EXCEPT ![p] = NoLease]
+  /\ UNCHANGED <<epoch, fence, acted, staleAdmitted>>
 
 \* The round ends: the lease expires with it (§2). A new round begins with a
 \* fresh grant, which is where authority may increase.
@@ -109,9 +129,9 @@ EndRound(p) ==
   /\ lease[p].live
   /\ lease' = [lease EXCEPT ![p] = NoLease]
   /\ prev'  = [prev EXCEPT ![p] = NoLease]
-  /\ UNCHANGED <<epoch, fence, acted, staleAdmitted>>
+  /\ UNCHANGED <<epoch, fence, acted, staleAdmitted, revoked>>
 
-Next == Revoke \/ \E p \in Principals : Grant(p) \/ Renew(p) \/ Act(p) \/ EndRound(p)
+Next == Revoke \/ \E p \in Principals : Grant(p) \/ Renew(p) \/ Act(p) \/ EndRound(p) \/ RevokeLease(p)
 Spec == Init /\ [][Next]_vars
 
 \* ADR-0031 §3. Confinement is necessary, not sufficient: the provenance axis is
@@ -138,7 +158,10 @@ NoActionUnderFencedEpoch ==
 Rung0NeverContained ==
   \A p \in Principals : (lease[p].live /\ lease[p].rung = 0) => ~Contained(p)
 
-Safe == LeaseAuthorityMonotone /\ NoActionUnderFencedEpoch /\ Rung0NeverContained
+\* §5 R3. A revoked principal holds no live lease, now or after any later grant.
+RevokedStaysStopped == \A p \in revoked : ~lease[p].live
+
+Safe == LeaseAuthorityMonotone /\ NoActionUnderFencedEpoch /\ Rung0NeverContained /\ RevokedStaysStopped
 
 \* --- reachability witnesses: each must be VIOLATED -------------------------
 NeverActed    == acted = {}
@@ -146,4 +169,8 @@ NeverRenewed  == \A p \in Principals : ~(lease[p].live /\ prev[p].live)
 NeverRevoked  == epoch = 0
 \* The case §5 is actually about: a lease outlives a revocation.
 NeverStaleLease == \A p \in Principals : lease[p].live => lease[p].epoch = epoch
+\* Finding 5, the case R3 is about: one principal is revoked while another's lease
+\* stays live and usable at the current epoch.
+NeverSelectiveRevoke ==
+  ~\E p, q \in Principals : p \in revoked /\ q \notin revoked /\ lease[q].live /\ lease[q].epoch = epoch
 =============================================================================

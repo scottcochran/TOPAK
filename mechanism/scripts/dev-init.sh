@@ -54,7 +54,8 @@ jq -n --argjson anchors "$anchors" --argjson bg "$bgk" --arg tool "$tool_id" \
 }' > "$dev/rules.json"
 
 jq -n --argjson corpus "$corpus" --arg tool "$tool_id" '{
-  corpus: $corpus, build_tools: [$tool], run_tools: [], round_bound: 200, lease_margin_ms: 500
+  corpus: $corpus, build_tools: [$tool], run_tools: [], round_bound: 200, lease_margin_ms: 500,
+  after_topic_limit: 64
 }' > "$dev/params.json"
 
 for i in 1 2 3; do

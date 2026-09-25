@@ -42,6 +42,12 @@ pub fn topic_name(chain: &Digest, domain: Domain, seat: &str, epoch: Epoch, roun
     format!("topak.{}.{}.{}.e{}.r{}", &chain.0[..chain.0.len().min(12)], domain.as_str(), seat, epoch, round)
 }
 
+/// The round's `after` companion (ADR-0003 A2): denials under the round's lease once
+/// its topic has sealed. Same subject and round, so it is erased with the round.
+pub fn after_topic_name(chain: &Digest, domain: Domain, seat: &str, epoch: Epoch, round: Round) -> String {
+    format!("{}.after", topic_name(chain, domain, seat, epoch, round))
+}
+
 pub fn workspace_id(seat: &str, epoch: Epoch, round: Round) -> String {
     format!("ws-{seat}-e{epoch}-r{round}")
 }

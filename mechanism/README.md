@@ -35,7 +35,7 @@ affirmative bundle `true`, from the bundle revision the lease names, is a deny.
 ## Run it
 
 ```sh
-cargo test --workspace --release           # 41 tests; needs a built bundle (next line)
+cargo test --workspace --release           # 43 tests; needs a built bundle (next line)
 scripts/build-bundle.sh                    # policies/ → bundles/<revision>.tar.gz (docker, OPA)
 
 scripts/dev-init.sh                        # 3 replicas, in-memory transport, WASM bundle only
@@ -54,7 +54,8 @@ topak op --socket dev/run/n1/operator.sock '{"op":"grant", ...}'      # returns 
 topak mcp --socket dev/run/n1/agent.sock --token <token> --domain build
 ```
 
-Operator requests are `grant`, `renew`, `end_round`, `revoke`, `issue`, `gates_passed`,
+Operator requests are `grant`, `renew`, `end_round`, `revoke` (targeted; names a principal, Persona or
+confinement digest), `fence_epoch` (the fleet fence), `issue`, `gates_passed`,
 `break_glass_approve` and `status`; see `crates/topak-node/src/ops.rs`. `topak keygen`,
 `topak sign`, `topak tool-digest` and `topak check-rules` are the helpers.
 

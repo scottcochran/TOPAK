@@ -15,7 +15,9 @@
 //!    position; an admit fenced in between is void.
 //! 8. **Effect**, only after commit, only on the deciding replica.
 //!
-//! Denials are never ordered (ADR-0015); they are logged locally with attribution.
+//! Denials are never ordered (ADR-0015). Each is written to the principal's round topic while
+//! that topic is open (ADR-0020: the replayable record includes actions attempted and denied),
+//! by the deciding replica, and logged locally with attribution.
 
 use std::collections::HashMap;
 use std::future::Future;
@@ -32,7 +34,7 @@ use topak_bundle::BundleTier;
 use topak_core::action::{Action, ActionRequest, tool_id};
 use topak_core::admit::{BundleOutcome, Decision, DenyReason, compose, floor_gate, via_break_glass};
 use topak_core::clock::{MonoMillis, MonotonicClock, SystemMonotonic, subtracting_interval_elapsed};
-use topak_core::lift::{self, lift, topic_name, workspace_id, workspace_relative};
+use topak_core::lift::{self, after_topic_name, lift, topic_name, workspace_id, workspace_relative};
 use topak_core::promotion::tally;
 use topak_core::state::*;
 use topak_core::*;
@@ -40,7 +42,7 @@ use topak_floor::Floor;
 use topak_mcp::proto::{AgentOp, AgentRequest, AgentResponse};
 use topak_mcp::toolhost::ToolHost;
 use topak_paxos::NodeId;
-use topak_transport::{EmitRecord, Transport};
+use topak_transport::{EmitRecord, RecordKind, Transport};
 
 use crate::ops::OperatorOp;
 
@@ -98,6 +100,8 @@ pub struct Mechanism {
     workspace_root: PathBuf,
     run_root: PathBuf,
     archive: Mutex<Option<std::fs::File>>,
+    /// Denial records written per `after` topic by this replica (ADR-0003 A2).
+    after_written: Mutex<HashMap<String, u64>>,
 }
 
 const COMMIT_DEADLINE: Duration = Duration::from_secs(5);
@@ -120,6 +124,7 @@ impl Mechanism {
             transport: p.transport,
             tools: p.tools,
             state: RwLock::new(p.genesis),
+            after_written: Mutex::new(HashMap::new()),
             clock: SystemMonotonic::new(),
             leader: AtomicBool::new(false),
             observed: Mutex::new(HashMap::new()),
@@ -250,6 +255,9 @@ impl Mechanism {
 
     pub async fn act(&self, req: AgentRequest) -> AgentResponse {
         let Some(sess) = self.session(&req.token) else {
+            // No session names no principal and no round, so there is no round record for it
+            // (ADR-0003 A2 note). It is an authentication event at this replica's socket (G5).
+            tracing::warn!(target: "security", "action with an unknown session token refused");
             return deny(DenyReason::Mechanism(MechanismDeny::UnknownLease));
         };
         let action = match req.op {
@@ -276,11 +284,89 @@ impl Mechanism {
             }
         };
         let kind = action.kind();
+        let attempted = action.clone();
         let resp = self.admit(&sess, action).await;
         if !resp.admitted {
             tracing::info!(seat = %sess.seat, lease = sess.fence, action = %kind, detail = %resp.detail, "denied");
+            self.record_denial(&sess, &attempted, &resp).await;
         }
         resp
+    }
+
+    /// ADR-0020: a denial is part of the round's replayable record. Written to the round topic
+    /// while it is open: the seat's live lease is in the same epoch and round as the session's
+    /// (a renewal keeps the topic open). Once the round has sealed, it goes to the round's
+    /// `after` companion, up to `after_topic_limit` records and then one overflow marker.
+    /// Content is reduced to digests (ADR-0004). The companion is ADR-0003 A2.
+    async fn record_denial(&self, sess: &Session, action: &Action, resp: &AgentResponse) {
+        let target = {
+            let st = self.state.read().unwrap();
+            let Some(rec) = st.leases.get(&sess.fence) else { return };
+            let Some(d) = st.rules.seat_domain(&sess.seat) else { return };
+            let (epoch, round) = (rec.lease.epoch, rec.lease.round);
+            let open = st.live_lease(&sess.seat).is_some_and(|l| l.lease.epoch == epoch && l.lease.round == round);
+            let topic = if open {
+                topic_name(&st.chain, d, &sess.seat, epoch, round)
+            } else {
+                after_topic_name(&st.chain, d, &sess.seat, epoch, round)
+            };
+            (topic, open, epoch, round, st.last_applied)
+        };
+        let (topic, open, epoch, round, at) = target;
+        let mut kind = RecordKind::Deny;
+        if !open {
+            let mut written = self.after_written.lock().unwrap();
+            let n = written.entry(topic.clone()).or_insert(0);
+            *n += 1;
+            let limit = self.params.after_topic_limit;
+            if *n > limit + 1 {
+                return;
+            }
+            if *n == limit + 1 {
+                kind = RecordKind::Overflow;
+            }
+        }
+        if kind == RecordKind::Overflow {
+            let payload = json!({ "overflow": true, "limit": self.params.after_topic_limit, "epoch": epoch,
+                                  "round": round, "at": at, "decided_by": self.id });
+            let rec = EmitRecord {
+                topic,
+                seat: sess.seat.clone(),
+                fence: sess.fence,
+                kind,
+                admit: None,
+                seq: None,
+                digest: Digest::of_json(&payload),
+                payload,
+            };
+            if let Err(e) = self.transport.emit(&rec).await {
+                tracing::warn!(topic = rec.topic, error = %e, "overflow marker not written");
+            }
+            return;
+        }
+        let req =
+            ActionRequest { seat: sess.seat.clone(), lease: sess.fence, epoch: sess.epoch, action: action.clone() };
+        let payload = json!({
+            "denied": Admitted::from_request(&req, false),
+            "reason": resp.detail["reason"],
+            "epoch": epoch,
+            "round": round,
+            "at": at,
+            "decided_by": self.id,
+        });
+        let rec = EmitRecord {
+            topic,
+            seat: sess.seat.clone(),
+            fence: sess.fence,
+            kind: RecordKind::Deny,
+            admit: None,
+            seq: None,
+            digest: Digest::of_json(&payload),
+            payload,
+        };
+        if let Err(e) = self.transport.emit(&rec).await {
+            tracing::warn!(topic = rec.topic, error = %e, "denial record not written");
+        }
     }
 
     async fn admit(&self, sess: &Session, action: Action) -> AgentResponse {
@@ -441,8 +527,9 @@ impl Mechanism {
                     topic: topic_name(&chain, cx.domain, seat, cx.lease_epoch, cx.round),
                     seat: seat.clone(),
                     fence: cx.sess.fence,
-                    admit: cx.slot,
-                    seq: cx.emit_seq.unwrap_or(0),
+                    kind: RecordKind::Emit,
+                    admit: Some(cx.slot),
+                    seq: Some(cx.emit_seq.unwrap_or(0)),
                     digest: Digest::of_json(record),
                     payload: record.clone(),
                 };
@@ -511,7 +598,8 @@ impl Mechanism {
                 let Some(sess) = self.session(&token) else { return json!({ "ok": false, "error": "unknown token" }) };
                 Entry::EndRound { id, seat: sess.seat, fence: sess.fence, reason, attribution: "operator".into() }
             }
-            OperatorOp::Revoke { reason, attribution } => Entry::EpochIncrement { id, reason, attribution },
+            OperatorOp::Revoke { target, reason, attribution } => Entry::Revoke { id, target, reason, attribution },
+            OperatorOp::FenceEpoch { reason, attribution } => Entry::EpochIncrement { id, reason, attribution },
             OperatorOp::Issue { issuance } => Entry::Issue { id, issuance },
             OperatorOp::GatesPassed { artifact, evidence } => Entry::GatesPassed { id, artifact, evidence },
             OperatorOp::BreakGlassApprove { seat, epoch, approval } => {

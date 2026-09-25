@@ -52,11 +52,9 @@ impl Lease {
     /// ADR-0031 §4: `new ⊑ self`. A renewal may narrow the alphabet, lower the rung or shorten
     /// the TTL. It may never add authority.
     ///
-    /// PROVISIONAL (bundle order): §4 also allows "narrow the bundle", but whether one Rego
-    /// bundle is narrower than another is undecidable here (ADR-0030 §1 is why no check is
-    /// needed between tiers, and nothing orders bundles among themselves). Fail-closed: renewal
-    /// keeps the bundle identical; a bundle change takes effect at the next grant, and an urgent
-    /// one fences the epoch.
+    /// The bundle is fixed across renewal (ADR-0031 R2): nothing orders two bundles, so a new
+    /// bundle reaches a principal only at its next grant. An urgent one ends the round, or fences
+    /// the epoch fleet-wide.
     pub fn check_renewal(&self, new: &Lease) -> Result<(), String> {
         let same = |what: &str, ok: bool| if ok { Ok(()) } else { Err(format!("renewal changes {what}")) };
         same("principal", new.principal == self.principal)?;

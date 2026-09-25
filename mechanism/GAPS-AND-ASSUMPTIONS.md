@@ -27,7 +27,8 @@ provisional twice over.
 | Record | Status (G2 + later) | What the baseline takes from it |
 |---|---|---|
 | ADR-0030 floor on a verified evaluator, monotone composition | **Proposed** | Cedar floor, `admit ⟺ floor_permit ∧ ¬bundle_deny`, error-as-deny, the linked floor, S enforced per request |
-| ADR-0031 lease schema | **Proposed** | Lease fields, one live lease, monotone renewal, revocation fences the epoch |
+| ADR-0031 lease schema | Accepted (genesis), Batch 5 · **confirmation required (C1)** | Twelve lease fields, one live lease, monotone renewal with the bundle fixed, targeted revocation and the epoch fence |
+| ADR-0003 A1, A2 | Accepted (genesis), Batch 5 · A2 **confirmation required (C1)** | Chain id in topic names (I17); the round's `after` companion for denials after the seal (I23) |
 | ADR-0005 Kafka is transport only | **Proposed** | Kafka carries emissions after commit; order comes from the log |
 | ADR-0015 effects are boundary crossings | Accepted · **confirmation required (C2)** | Every effect has an `Admit` predecessor in the log; denials are not ordered |
 | ADR-0013, ADR-0028 exceptions and forensic floor | Accepted · **confirmation required (C1)** | X1/X2 and F1–F6 as floor entries (via the draft floor); `break_glass` flag on F5 admits |
@@ -47,8 +48,8 @@ what would replace it.
 | **I1** | **Crash-fault Multi-Paxos**, not Byzantine. Replicas are in the TCB; agents never speak Paxos | `topak-paxos` | The Byzantine premise (ADR-0007) is about agents. BFT consensus would be a large expansion in scope | A record on the replica fault model |
 | **I2** | **Fallback is an engine fallback.** The local WASM decides only if it holds exactly the lease's `bundle` revision; a reachable sidecar's deny is authoritative; a sidecar serving another revision is treated like an unreachable one | `topak-bundle` | Otherwise a sidecar outage lifts post-build narrowings (ADR-0030 §9 finding 3) | ADR-0030 revision naming the fallback |
 | **I3** | **Bundle identity = content revision**: SHA-256 over sorted (path, bytes) of non-test `.rego` and `data.json`, stamped as the OPA `--revision` | `scripts/build-bundle.sh` | Sidecar provenance and the local tarball must name the same thing | Signed-bundle identity (G7) |
-| **I4** | **Renewal keeps the bundle identical.** Bundle changes take effect at the next grant; an urgent one fences the epoch | `lease.rs` `check_renewal` | ADR-0031 §4 allows "narrow the bundle", but nothing orders Rego bundles (Finding 2) | A bundle-order relation, or an ADR-0031 amendment |
-| **I5** | **Epoch is global**, as in `spec/Lease.tla`. Any revocation fences every lease and ends every live round | `state.rs` `EpochIncrement` | Follows the checked model | A per-principal epoch, if the storm cost matters (Finding 5) |
+| **I4** | **Renewal keeps the bundle identical.** Bundle changes take effect at the next grant; an urgent one fences the epoch | `lease.rs` `check_renewal` | ADR-0031 §4 allowed "narrow the bundle", but nothing orders Rego bundles (Finding 2) | **Settled 2026.09.25** by ADR-0031 R2, which adopts this rule |
+| **I5** | **Epoch is global**, as in `spec/Lease.tla`. ~~Any revocation fences every lease and ends every live round~~ The epoch fence ends every live round; a targeted revocation (`Entry::Revoke`) ends only the leases its target matches, bars later grants through the revocation set, and lapses the seat's break-glass approvals | `state.rs` `EpochIncrement`, `apply_revoke` | **Settled 2026.09.25** by ADR-0031 R3 (Finding 5) | — |
 | **I6** | **Rules-epoch fence.** An issuance ends every live lease; a lease granted under superseded rules is refused | `state.rs` `check_live`, `Issue` | Same shape as ADR-0024 §3 for votes; fail-closed | ADR-0031 saying what `rulesEpoch` is "compared" against |
 | **I7** | **`Authentic` = Ed25519, and every current anchor key signs** (A-0025 strict unanimity). Domain-separated signing bytes | `authentic.rs`, `rules.rs` | ADR-0025 leaves `Authentic` opaque; unanimity is the archetype | A custody declaration per rung |
 | **I8** | **Seats and their domains are declared in the issued rules**, with one key per seat. R5 compares seat keys with anchor keys | `rules.rs` `SeatDecl` | Rosters are issued (ADR-0025 §1a), and R5 needs keys to compare | A record on seat registration |
@@ -66,6 +67,7 @@ what would replace it.
 | **I20** | **Recusal is enforced twice**: floor forbid B7 and the tally's counted seats | floor, `promotion.rs` | Follows the draft floor; ADR-0030 §10 finding 3 is still open | Resolve that finding |
 | **I21** | **Mechanism parameters** (corpus set, allowlists, round bound, lease margin) ship as config, must match on every replica, and their digest is in every admit; `apply` rejects an admit decided under other parameters | `state.rs` `Params` | ADR-0022 §3 names the parameters, not their delivery | Parameters inside the mechanism release |
 | **I22** | **Deny reasons are returned to the agent** | `mechanism.rs` | Debuggability; the floor text is not secret | Reason categories only, if disclosure matters |
+| **I23** | **Denials after the seal go to the round's `after` companion** (`…r<round>.after`), up to `after_topic_limit` records, then one `overflow` marker, then nothing. An attempt with no session goes to the `security` log target | `mechanism.rs` `record_denial`, `act`; `Params` | ADR-0020 wants the attempt; ADR-0003 0003.2 forbids reopening the sealed topic. ADR-0003 A2, ratified in Batch 5 | The bound is counted per replica, not replicated |
 
 ---
 
@@ -95,8 +97,8 @@ what would replace it.
 
 ## 4. Findings: what building it showed about the corpus
 
-These are observations for the next checkpoint. Findings 1 and 6 have been acted on; finding 4 is
-routed to ADR-0003 as pending amendment A1.
+These are observations for the next checkpoint. Findings 1, 2, 5 and 6 have been acted on;
+finding 4 is routed to ADR-0003 as pending amendment A1.
 
 1. **The gate suite has a case that does not test what it names.** `floor/genesis-tests.json`,
    "B6 vote from an unseated principal", votes **grant**, so forbid B8 fires and is the reason for
@@ -106,7 +108,8 @@ routed to ADR-0003 as pending amendment A1.
    allows a divergence.
 2. **ADR-0031 §4 "a renewal may … narrow the bundle" names an order that does not exist.**
    ADR-0030 removes the need to compare a bundle with the floor, but nothing compares two bundles.
-   The baseline fails closed (I4).
+   The baseline fails closed (I4). **Resolved 2026.09.25** by ADR-0031 R2: renewal keeps the
+   bundle, and a new bundle reaches a live principal only at its next grant.
 3. **Ordering and authorization are different properties, and the corpus uses them as one.**
    Revocation, abstention and expiry need no quorum (ADR-0031 §5), but they change replicated
    state (lease liveness, the epoch), so they must be consensus-*ordered* or replicas disagree.
@@ -118,7 +121,9 @@ routed to ADR-0003 as pending amendment A1.
 5. **With a global epoch, one revocation ends every live round**, not just the revoked
    principal's. ADR-0031 lists "a revocation storm is an availability event"; the sharper
    statement is that *a single* revocation is a system-wide round reset. `Lease.tla` models one
-   global epoch, so the checked property does not distinguish the two.
+   global epoch, so the checked property does not distinguish the two. **Resolved 2026.09.25**
+   by ADR-0031 R3: a targeted revocation ends one principal's lease, and the epoch fence is
+   kept for the fleet. `Lease.tla` gains `RevokeLease`, a selective witness and `M_REVOKE`.
 6. **"Round-coterminous" needs the round in the credential.** ADR-0031 grants a lease "for a
    round", but `round` is not among the ten fields. The baseline carries it beside the lease
    (`Assignment`). Either the field list is not closed, or the grant record is part of the
@@ -142,6 +147,16 @@ routed to ADR-0003 as pending amendment A1.
 10. **Floor denials carry reasons only from forbids.** A deny because no permit matched has an
     empty reason list, so "why was this denied?" has no answer for most denials. ADR-0030 §5 gate
     evidence is unaffected. For the Observer and for operators it is a legibility gap.
+11. **Denials never reach the round topic.** Found 2026.09.25 in review, not by the build.
+    ADR-0020 (Accepted) makes "actions attempted, including those denied" part of the replayable
+    record, and says it is the clause an implementer is most likely to drop. The baseline dropped
+    it: a denial goes only to a `tracing` line on the deciding replica (`mechanism.rs`), so replay
+    and the Observer see a clean system. ADR-0033 §2's "written only after commit" forbids the fix
+    as written, since a denial is never committed. **Resolved in part 2026.09.25** (ADR-0033
+    R8): a denial under an open round is written to its topic as a `deny` record, with no admit
+    and no sequence, content by digest. **Resolved 2026.09.25** for the sealed case by ADR-0003
+    A2 (ratified in Batch 5): the round's `after` companion, bounded (I23). An attempt with no session goes to
+    the replica's security log.
 
 ---
 
@@ -169,6 +184,8 @@ routed to ADR-0003 as pending amendment A1.
 | `Lease.tla` | `NoActionUnderFencedEpoch` / `M_FENCE` | `no_action_under_a_fenced_epoch_and_m_fence_is_refused`; e2e `FencedEpoch` |
 | `Lease.tla` | `Rung0NeverContained` / `M_RUNG` | `rung_zero_is_never_contained_and_nothing_is_contained_yet` |
 | `Lease.tla` | `LeaseAuthorityMonotone` / `M_ROLE` (ADR-0031 R1) | `renewal_cannot_change_round_or_role_and_m_role_is_refused` |
+| `Lease.tla` | `NeverSelectiveRevoke` witness (ADR-0031 R3) | `a_targeted_revocation_ends_one_round_and_not_the_fleet`; e2e targeted revocation leaves a bystander live |
+| `Lease.tla` | `RevokedStaysStopped` / `M_REVOKE` (ADR-0031 R3) | `a_revoked_principal_persona_or_profile_is_not_granted_again_and_m_revoke_is_refused` |
 | `FloorComposition.tla` | `AdmitImpliesFloorPermit` / `M_OVERRIDE` | `admit_implies_floor_permit_and_m_override_is_refused`; e2e allow-all bundle still floor-bounded |
 | `FloorComposition.tla` | `FloorErrorIsDeny` / `M_ERR` | same test; `floor.rs` `an_incomplete_slice_is_a_deny_not_a_skipped_forbid` |
 | `FloorComposition.tla` | `BundleRefusalHonored` / `M_FAILOPEN` | `bundle_refusal_is_honored…`; `fallback.rs` (6 cases) |

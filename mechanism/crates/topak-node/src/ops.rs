@@ -12,7 +12,7 @@ use serde::{Deserialize, Serialize};
 use topak_core::authentic::Signed;
 use topak_core::lease::Confinement;
 use topak_core::rules::Issuance;
-use topak_core::state::EndReason;
+use topak_core::state::{EndReason, RevocationTarget};
 use topak_core::*;
 
 #[derive(Clone, Debug, Serialize, Deserialize)]
@@ -41,7 +41,15 @@ pub enum OperatorOp {
         reason: EndReason,
     },
     /// Increment the epoch, fencing every lease (ADR-0031 §5). Stop attribution, F2.
+    /// Targeted revocation (ADR-0031 §5 R3). The target is required: the fleet-wide tool is
+    /// `FenceEpoch`, and nobody should reach it by leaving an argument out.
     Revoke {
+        target: RevocationTarget,
+        reason: String,
+        attribution: String,
+    },
+    /// The fleet fence: increments the epoch and ends every live round (ADR-0031 §5).
+    FenceEpoch {
         reason: String,
         attribution: String,
     },

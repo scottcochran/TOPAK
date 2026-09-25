@@ -3,8 +3,11 @@
 //! Kafka here is a transport with a durability window (`acks=all`; rskafka always produces with
 //! `acks=-1`), **not** the ordering authority and **not** the system of record. Order comes
 //! from the Paxos log: every emitted record carries the log index of the admit that authorized
-//! it, the lease fence, and a per-principal sequence number (the ADR-0015 residual). The record
-//! is written only after its admit has committed.
+//! it, the lease fence, and a per-principal sequence number (the ADR-0015 residual). An emitted
+//! record is written only after its admit has committed. A **denial** record (ADR-0020: the
+//! replayable record includes actions attempted and denied) has no admit: it is written,
+//! unordered, by the replica that decided the denial: to the round's topic while it is open, and
+//! after the seal to the round's `after` companion (ADR-0003 A2), up to a bound.
 //!
 //! One topic per principal per round, named by domain, seat, epoch and round. Kafka has no seal
 //! primitive: sealing is enforced by the mechanism (the floor's `sealed` attribute refuses any
@@ -23,14 +26,28 @@ use serde_json::Value;
 use tokio::sync::Mutex;
 use topak_core::{Digest, LogIndex};
 
+/// What a round-topic record is. Both are control-plane facts (ADR-0004).
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum RecordKind {
+    /// An admitted `Emit`: the effect itself.
+    Emit,
+    /// A denied action (ADR-0020). Never ordered (ADR-0015); carries no admit and no sequence.
+    Deny,
+    /// The `after` topic reached its bound (ADR-0003 A2); later denials are not written.
+    Overflow,
+}
+
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 pub struct EmitRecord {
     pub topic: String,
     pub seat: String,
     pub fence: LogIndex,
-    /// The log index of the `Admit` entry that authorized this emission.
-    pub admit: LogIndex,
-    pub seq: u64,
+    pub kind: RecordKind,
+    /// The log index of the `Admit` entry that authorized this emission. `None` for a denial.
+    pub admit: Option<LogIndex>,
+    /// The per-lease emission sequence number. `None` for a denial.
+    pub seq: Option<u64>,
     pub digest: Digest,
     pub payload: Value,
 }
@@ -58,13 +75,24 @@ impl Transport {
 }
 
 fn headers(rec: &EmitRecord) -> BTreeMap<String, Vec<u8>> {
-    BTreeMap::from([
+    let kind = match rec.kind {
+        RecordKind::Emit => "emit",
+        RecordKind::Deny => "deny",
+        RecordKind::Overflow => "overflow",
+    };
+    let mut h = BTreeMap::from([
+        ("topak-kind".to_owned(), kind.as_bytes().to_vec()),
         ("topak-seat".to_owned(), rec.seat.clone().into_bytes()),
         ("topak-fence".to_owned(), rec.fence.to_string().into_bytes()),
-        ("topak-admit".to_owned(), rec.admit.to_string().into_bytes()),
-        ("topak-seq".to_owned(), rec.seq.to_string().into_bytes()),
         ("topak-digest".to_owned(), rec.digest.0.clone().into_bytes()),
-    ])
+    ]);
+    if let Some(a) = rec.admit {
+        h.insert("topak-admit".to_owned(), a.to_string().into_bytes());
+    }
+    if let Some(s) = rec.seq {
+        h.insert("topak-seq".to_owned(), s.to_string().into_bytes());
+    }
+    h
 }
 
 // ---- Kafka -----------------------------------------------------------------------------------

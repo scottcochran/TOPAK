@@ -49,6 +49,7 @@ fn params() -> Params {
         run_tools: BTreeSet::new(),
         round_bound: 3,
         lease_margin_ms: 0,
+        after_topic_limit: 3,
     }
 }
 
@@ -130,7 +131,7 @@ fn renewal_cannot_swap_the_bundle() {
     };
     let mut new = old.clone();
     new.bundle = Digest::of(b"b2");
-    assert!(old.check_renewal(&new).is_err(), "bundle order is undecidable, so a swap is refused");
+    assert!(old.check_renewal(&new).is_err(), "ADR-0031 R2: renewal keeps the bundle, so a swap is refused");
 }
 
 /// Lease.tla `M_ROLE`: round and role are lease fields (ADR-0031 R1), fixed across renewal. A
@@ -178,6 +179,57 @@ fn no_action_under_a_fenced_epoch_and_m_fence_is_refused() {
     assert_eq!(s.check_live(&read("a1", 1, 0), &p).unwrap_err(), MechanismDeny::FencedEpoch { lease: 0, current: 1 });
     // A request that claims the current epoch under the stale lease is refused as well.
     assert!(s.check_live(&read("a1", 1, 1), &p).is_err());
+}
+
+/// Finding 5, ADR-0031 R3: a targeted revocation ends the matching principal's lease and leaves
+/// every other lease live at the same epoch (`Lease.tla` `NeverSelectiveRevoke`, reachable).
+#[test]
+fn a_targeted_revocation_ends_one_round_and_not_the_fleet() {
+    let p = params();
+    let mut s = state();
+    s.apply(1, &Entry::Grant { id: "g1".into(), req: grant_req("a1", &[ActionKind::Read]) }, &p);
+    let mut other = grant_req("g1", &[ActionKind::Read]);
+    other.persona = Digest::of(b"another persona");
+    s.apply(2, &Entry::Grant { id: "g2".into(), req: other }, &p);
+    s.break_glass.entry("a1".into()).or_default().entry(0).or_default().insert("kA".into());
+
+    let revoke = Entry::Revoke {
+        id: "r".into(),
+        target: RevocationTarget::Persona(Digest::of(b"persona")),
+        reason: "persona revoked".into(),
+        attribution: "t".into(),
+    };
+    assert_eq!(s.apply(3, &revoke, &p), Applied::Revoked { ended: 1 });
+    assert_eq!(s.check_live(&read("a1", 1, 0), &p).unwrap_err(), MechanismDeny::LeaseEnded(EndReason::Revoked));
+    assert!(s.check_live(&read("g1", 2, 0), &p).is_ok(), "another principal's round survives");
+    assert_eq!(s.epoch, 0, "the epoch is untouched");
+    assert!(!s.break_glass.contains_key("a1"), "break-glass approvals lapse with the revoked lease");
+}
+
+/// `Lease.tla` `M_REVOKE`: every target kind bars a later grant that it matches.
+#[test]
+fn a_revoked_principal_persona_or_profile_is_not_granted_again_and_m_revoke_is_refused() {
+    let p = params();
+    for (i, target) in [
+        RevocationTarget::Principal("p-a1".into()),
+        RevocationTarget::Persona(Digest::of(b"persona")),
+        RevocationTarget::Confinement(Digest::of(b"profile")),
+    ]
+    .into_iter()
+    .enumerate()
+    {
+        let mut s = state();
+        let r = Entry::Revoke { id: "r".into(), target, reason: "t".into(), attribution: "t".into() };
+        assert_eq!(s.apply(1, &r, &p), Applied::Revoked { ended: 0 }, "a revocation needs no live lease");
+        let a = s.apply(2, &Entry::Grant { id: "g".into(), req: grant_req("a1", &[ActionKind::Read]) }, &p);
+        assert!(matches!(a, Applied::Rejected(ref m) if m.contains("revoked")), "target {i} re-granted: {a:?}");
+        // Reachability: a principal the target does not match is still granted.
+        let mut other = grant_req("g1", &[ActionKind::Read]);
+        other.principal = "p-other".into();
+        other.persona = Digest::of(b"another persona");
+        other.confinement.digest = Digest::of(b"another profile");
+        assert_eq!(s.apply(3, &Entry::Grant { id: "o".into(), req: other }, &p), Applied::LeaseGranted { fence: 3 });
+    }
 }
 
 #[test]

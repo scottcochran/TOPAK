@@ -25,7 +25,7 @@ use topak_node::driver::Driver;
 use topak_node::mechanism::{BoxFuture, BundleDecider, Mechanism, Parts};
 use topak_node::net::{ChannelNet, Hub};
 use topak_node::ops::OperatorOp;
-use topak_transport::{Memory, Transport};
+use topak_transport::{Memory, RecordKind, Transport};
 
 // ---- fixture ---------------------------------------------------------------------------------
 
@@ -79,6 +79,7 @@ async fn fixture(name: &str) -> Fixture {
         run_tools: BTreeSet::new(),
         round_bound: 50,
         lease_margin_ms: 100,
+        after_topic_limit: 3,
     };
 
     let keys = Keys { anchors: (0..3).map(|_| key()).collect(), bg: (0..2).map(|_| key()).collect() };
@@ -311,7 +312,30 @@ async fn build_round_promotion_and_fencing() {
     let chain = n1.state.read().unwrap().chain.clone();
     let topic = topak_core::lift::topic_name(&chain, Domain::Build, "a1", 0, 1);
     assert!(memory(n1).sealed.lock().await.contains_key(&topic));
-    assert_eq!(memory(n1).topics.lock().await[&topic].len(), 1, "one emission, one record");
+    let records = memory(n1).topics.lock().await[&topic].clone();
+    let count = |k| records.iter().filter(|r| r.kind == k).count();
+    assert_eq!(count(RecordKind::Emit), 1, "one emission, one emit record");
+    // ADR-0020: the four denials under the live lease are in the round's record. The late Emit
+    // after Submit found the topic sealed, so it is in the round's `after` companion (ADR-0003 A2).
+    assert_eq!(count(RecordKind::Deny), 4, "denials are part of the replayable record");
+    let after =
+        memory(n1).topics.lock().await[&topak_core::lift::after_topic_name(&chain, Domain::Build, "a1", 0, 1)].clone();
+    assert_eq!(after.len(), 1, "the late Emit, and nothing else: {after:?}");
+    assert_eq!(after[0].kind, RecordKind::Deny);
+    assert!(after[0].payload["reason"].to_string().contains("LeaseEnded"), "{}", after[0].payload);
+    assert!(!memory(n1).sealed.lock().await.contains_key(&topak_core::lift::after_topic_name(
+        &chain,
+        Domain::Build,
+        "a1",
+        0,
+        1
+    )));
+    for d in records.iter().filter(|r| r.kind == RecordKind::Deny) {
+        assert_eq!((d.admit, d.seq), (None, None), "a denial is never ordered");
+    }
+    let escape = records.iter().find(|r| r.payload["denied"]["target"] == "../escape.txt").expect("escape denial");
+    assert_eq!(escape.payload["denied"]["content"], json!(Digest::of(b"x")), "ADR-0004: digests, not payloads");
+    assert!(escape.payload["reason"].to_string().contains("Floor"), "{}", escape.payload);
 
     // ---- promotion ----
     let evidence = Digest::of(b"gate evidence: totality, non-vacuity, discrimination");
@@ -335,6 +359,12 @@ async fn build_round_promotion_and_fencing() {
     let a1v = grant(n1, &f, "a1", 2, RoundRole::Voter, VOTER, 60_000).await;
     let r = act(n1, &a1v, vote(Verdict::Grant, &evidence)).await;
     assert!(deny_reason(&r).contains("B7-author-recused"), "{}", r.detail);
+    let voter_topic = topak_core::lift::topic_name(&chain, Domain::Build, "a1", 0, 2);
+    let denied_vote = memory(n1).topics.lock().await[&voter_topic].clone();
+    assert!(
+        denied_vote.iter().any(|r| r.kind == RecordKind::Deny && r.payload["reason"].to_string().contains("B7")),
+        "the refused vote is in the voter round's record: {denied_vote:?}"
+    );
 
     // A veto seat cannot grant (floor B8).
     let o1 = grant(n1, &f, "o1", 1, RoundRole::Voter, VOTER, 60_000).await;
@@ -354,14 +384,45 @@ async fn build_round_promotion_and_fencing() {
     assert!(r.admitted, "{}", r.detail);
     assert_eq!(r.detail["result"]["promoted"], true, "every counted grant seat granted; veto silence is not a veto");
 
-    // ---- revocation fences the epoch (ADR-0031 §5) ----
+    // ---- a targeted revocation ends one principal's round, not the fleet's (ADR-0031 §5 R3) ----
     let r1 = grant(n1, &f, "r1", 1, RoundRole::Author, RUN, 60_000).await;
+    // a1v, the recused author's voter lease, is still live: the bystander.
     let r = act(n1, &r1, Action::RunEmit { record: json!({ "valve": "open" }) }).await;
     assert!(r.admitted, "{}", r.detail);
-    let r =
-        n1.operate(OperatorOp::Revoke { reason: "persona revoked".into(), attribution: "operator test".into() }).await;
+    // Every fixture principal shares one Persona digest, so the target here is the principal.
+    let r = n1
+        .operate(OperatorOp::Revoke {
+            target: RevocationTarget::Principal("principal-r1".into()),
+            reason: "principal revoked".into(),
+            attribution: "operator test".into(),
+        })
+        .await;
     assert_eq!(r["ok"], true, "{r}");
     let r = act(n1, &r1, Action::RunEmit { record: json!({ "valve": "close" }) }).await;
+    assert!(
+        deny_reason(&r).contains(r#"{"LeaseEnded":"revoked"}"#),
+        "rejected by the mechanism, not policy: {}",
+        r.detail
+    );
+    let r = act(n1, &a1v, Action::Emit { record: json!({ "unaffected": true }) }).await;
+    assert!(r.admitted, "another principal's round survives a targeted revocation: {}", r.detail);
+    // The revoked principal keeps trying. Each attempt is in its round's `after` topic, up to the
+    // bound (3 in this fixture), then one overflow marker, then nothing (ADR-0003 A2).
+    for i in 0..5 {
+        let r = act(n1, &r1, Action::RunEmit { record: json!({ "retry": i }) }).await;
+        assert!(!r.admitted);
+    }
+    let run_after = topak_core::lift::after_topic_name(&chain, Domain::Run, "r1", 0, 1);
+    let recs = memory(n1).topics.lock().await[&run_after].clone();
+    let kinds: Vec<RecordKind> = recs.iter().map(|r| r.kind).collect();
+    assert_eq!(kinds, [RecordKind::Deny, RecordKind::Deny, RecordKind::Deny, RecordKind::Overflow], "{recs:?}");
+    assert!(recs[0].payload["reason"].to_string().contains(r#"{"LeaseEnded":"revoked"}"#), "{}", recs[0].payload);
+    assert_eq!(c.nodes[0].state.read().unwrap().epoch, 0, "a targeted revocation leaves the epoch");
+
+    // ---- the fleet fence ends every live round ----
+    let r = n1.operate(OperatorOp::FenceEpoch { reason: "e-stop".into(), attribution: "operator test".into() }).await;
+    assert_eq!(r["ok"], true, "{r}");
+    let r = act(n1, &a1v, Action::Emit { record: json!({ "after": "fence" }) }).await;
     assert!(deny_reason(&r).contains("FencedEpoch"), "rejected by the mechanism, not policy: {}", r.detail);
 
     // ---- every replica holds the same state ----
@@ -483,8 +544,9 @@ async fn tools_break_glass_issuance_and_partition() {
     assert!(r.admitted, "{}", r.detail);
     // The isolated replica cannot commit anything.
     let isolated = c.nodes.iter().find(|m| m.id == leader).unwrap();
-    let r =
-        isolated.operate(OperatorOp::Revoke { reason: "from the minority".into(), attribution: "test".into() }).await;
+    let r = isolated
+        .operate(OperatorOp::FenceEpoch { reason: "from the minority".into(), attribution: "test".into() })
+        .await;
     assert_eq!(r["ok"], false, "a minority must not commit: {r}");
     // Heal: the isolated replica catches up to the same state.
     c.hub.isolated.lock().unwrap().clear();
@@ -498,7 +560,7 @@ async fn tools_break_glass_issuance_and_partition() {
         }
     }
     assert!(same, "replicas did not converge after the partition healed");
-    // The minority's revoke was re-proposed until its deadline; whether it landed after the
+    // The minority's fence was re-proposed until its deadline; whether it landed after the
     // heal is timing. Either way every replica agrees on the epoch.
 }
 

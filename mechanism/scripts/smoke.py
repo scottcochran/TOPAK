@@ -88,8 +88,8 @@ def main():
         show("emit after submit", m.call("emit", {"record": {"late": True}}))
         m.close()
 
-        r = op(2, {"op": "revoke", "reason": "smoke", "attribution": "smoke.py"})
-        print(f"revoke via replica 2: slot {r.get('slot')}, {r.get('applied')}")
+        r = op(2, {"op": "fence_epoch", "reason": "smoke", "attribution": "smoke.py"})
+        print(f"fence_epoch via replica 2: slot {r.get('slot')}, {r.get('applied')}")
         time.sleep(0.3)
         for n in (1, 2, 3):
             s = op(n, {"op": "status"})
