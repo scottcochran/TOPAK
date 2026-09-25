@@ -46,7 +46,7 @@ what would replace it.
 | ID | Assumption | Where | Why this way | Change |
 |---|---|---|---|---|
 | **I1** | **Crash-fault Multi-Paxos**, not Byzantine. Replicas are in the TCB; agents never speak Paxos | `topak-paxos` | The Byzantine premise (ADR-0007) is about agents. BFT consensus would be a large expansion in scope | A record on the replica fault model |
-| **I2** | **Fallback is an engine fallback.** The local WASM decides only if it holds exactly the lease's `bundle` revision; a reachable sidecar's deny is authoritative; a sidecar serving another revision is treated like an unreachable one | `topak-bundle` | Otherwise a sidecar outage lifts post-build narrowings (ADR-0030 §9 finding 3) | ADR-0030 revision naming the fallback |
+| **I2** | **Fallback is an engine fallback.** The local WASM decides only if it holds exactly the lease's `bundle` revision; a reachable sidecar's deny is authoritative; a sidecar serving another revision is treated like an unreachable one | `topak-bundle` | Otherwise a sidecar outage lifts post-build narrowings (ADR-0030 §9 finding 3) | **Settled 2026.09.25**: ADR-0030 §1 names it (R4) |
 | **I3** | **Bundle identity = content revision**: SHA-256 over sorted (path, bytes) of non-test `.rego` and `data.json`, stamped as the OPA `--revision` | `scripts/build-bundle.sh` | Sidecar provenance and the local tarball must name the same thing | Signed-bundle identity (G7) |
 | **I4** | **Renewal keeps the bundle identical.** Bundle changes take effect at the next grant; an urgent one fences the epoch | `lease.rs` `check_renewal` | ADR-0031 §4 allowed "narrow the bundle", but nothing orders Rego bundles (Finding 2) | **Settled 2026.09.25** by ADR-0031 R2, which adopts this rule |
 | **I5** | **Epoch is global**, as in `spec/Lease.tla`. ~~Any revocation fences every lease and ends every live round~~ The epoch fence ends every live round; a targeted revocation (`Entry::Revoke`) ends only the leases its target matches, bars later grants through the revocation set, and lapses the seat's break-glass approvals | `state.rs` `EpochIncrement`, `apply_revoke` | **Settled 2026.09.25** by ADR-0031 R3 (Finding 5) | — |
@@ -64,7 +64,7 @@ what would replace it.
 | **I17** | **Topics are `topak.<chain>.<domain>.<seat>.e<epoch>.r<round>`**, where chain = genesis-rules digest; one partition each; sealing is a marker record plus the floor's `sealed` attribute | `lift.rs`, `topak-transport` | Kafka has no seal; re-genesis would otherwise collide (Finding 4) | ADR-0003/0021 on naming |
 | **I18** | **Gate evidence is recorded from the operator channel** (`GatesPassed`), and `Vote` is refused until it exists and matches | `state.rs` | ADR-0024 §4 requires gates before votes, and no record says who runs them or how evidence is authenticated | G8 |
 | **I19** | **`inputsInWorkspace` lift**: every string leaf of the tool inputs must be workspace-relative by syntax | `lift.rs` | Tool schemas do not mark path arguments. Coarse, fail-closed | Path-typed tool schemas |
-| **I20** | **Recusal is enforced twice**: floor forbid B7 and the tally's counted seats | floor, `promotion.rs` | Follows the draft floor; ADR-0030 §10 finding 3 is still open | Resolve that finding |
+| **I20** | **Recusal is enforced twice**: floor forbid B7 and the tally's counted seats | floor, `promotion.rs` | Follows the draft floor. **Settled 2026.09.25**: ADR-0030 R4 keeps B7 in the floor; ADR-0022 A1 (pending) amends §7's path | — |
 | **I21** | **Mechanism parameters** (corpus set, allowlists, round bound, lease margin) ship as config, must match on every replica, and their digest is in every admit; `apply` rejects an admit decided under other parameters | `state.rs` `Params` | ADR-0022 §3 names the parameters, not their delivery | Parameters inside the mechanism release |
 | **I22** | **Deny reasons are returned to the agent** | `mechanism.rs` | Debuggability; the floor text is not secret | Reason categories only, if disclosure matters |
 | **I23** | **Denials after the seal go to the round's `after` companion** (`…r<round>.after`), up to `after_topic_limit` records, then one `overflow` marker, then nothing. An attempt with no session goes to the `security` log target | `mechanism.rs` `record_denial`, `act`; `Params` | ADR-0020 wants the attempt; ADR-0003 0003.2 forbids reopening the sealed topic. ADR-0003 A2, ratified in Batch 5 | The bound is counted per replica, not replicated |
@@ -97,8 +97,8 @@ what would replace it.
 
 ## 4. Findings: what building it showed about the corpus
 
-These are observations for the next checkpoint. Findings 1, 2, 5 and 6 have been acted on;
-finding 4 is routed to ADR-0003 as pending amendment A1.
+These are observations for the next checkpoint. Findings 1, 2, 4, 5, 6, 10 and 11 have been acted on,
+finding 4 through ADR-0003 A1 (ratified in Batch 5). Findings 3, 7, 8 and 9 remain.
 
 1. **The gate suite has a case that does not test what it names.** `floor/genesis-tests.json`,
    "B6 vote from an unseated principal", votes **grant**, so forbid B8 fires and is the reason for
@@ -147,6 +147,9 @@ finding 4 is routed to ADR-0003 as pending amendment A1.
 10. **Floor denials carry reasons only from forbids.** A deny because no permit matched has an
     empty reason list, so "why was this denied?" has no answer for most denials. ADR-0030 §5 gate
     evidence is unaffected. For the Observer and for operators it is a legibility gap.
+    **Resolved 2026.09.25** by ADR-0030 R4: a deny with no determining forbid is reported as
+    `FloorNoPermit` (`admit.rs` `floor_gate`); the engine's own reasons are unchanged, so the
+    replay against the gate suite still compares like with like.
 11. **Denials never reach the round topic.** Found 2026.09.25 in review, not by the build.
     ADR-0020 (Accepted) makes "actions attempted, including those denied" part of the replayable
     record, and says it is the clause an implementer is most likely to drop. The baseline dropped

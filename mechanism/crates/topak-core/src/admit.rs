@@ -9,6 +9,9 @@
 //!   absent or unreachable bundle are all denies. A bundle is never asked whether to grant, only
 //!   whether to refuse.
 //! - A floor deny short-circuits: the bundle is consulted only on a floor permit.
+//! - A floor deny names its reason (ADR-0030 §1, R4): the forbids that fired, or `FloorNoPermit`
+//!   when none did. Cedar reports determining policies only for forbids, so without the second
+//!   case most denials would carry no reason at all.
 
 use serde::{Deserialize, Serialize};
 
@@ -41,7 +44,10 @@ pub enum BundleOutcome {
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub enum DenyReason {
     Mechanism(MechanismDeny),
+    /// The floor denied because these forbids fired.
     Floor(Vec<String>),
+    /// The floor denied because no permit matched: the request is outside every envelope.
+    FloorNoPermit,
     FloorError(Vec<String>),
     Bundle(String),
     /// The admit was decided but voided at apply time, or never committed.
@@ -58,6 +64,7 @@ pub enum Decision {
 pub fn floor_gate(floor: &FloorOutcome) -> Option<DenyReason> {
     match floor {
         FloorOutcome::Permit { .. } => None,
+        FloorOutcome::Deny { reasons } if reasons.is_empty() => Some(DenyReason::FloorNoPermit),
         FloorOutcome::Deny { reasons } => Some(DenyReason::Floor(reasons.clone())),
         FloorOutcome::Error { diagnostics } => Some(DenyReason::FloorError(diagnostics.clone())),
     }

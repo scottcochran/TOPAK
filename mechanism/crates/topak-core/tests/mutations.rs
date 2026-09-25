@@ -232,6 +232,17 @@ fn a_revoked_principal_persona_or_profile_is_not_granted_again_and_m_revoke_is_r
     }
 }
 
+/// ADR-0030 §1 R4 (ADR-0033 finding 10): every floor deny names its reason. A deny with no
+/// determining forbid is `FloorNoPermit`, not an empty list.
+#[test]
+fn every_floor_deny_names_a_reason() {
+    let none = FloorOutcome::Deny { reasons: vec![] };
+    assert_eq!(floor_gate(&none), Some(DenyReason::FloorNoPermit));
+    let forbid = FloorOutcome::Deny { reasons: vec!["B7-author-recused".into()] };
+    assert_eq!(floor_gate(&forbid), Some(DenyReason::Floor(vec!["B7-author-recused".into()])));
+    assert_eq!(floor_gate(&FloorOutcome::Permit { reasons: vec![] }), None);
+}
+
 #[test]
 fn rung_zero_is_never_contained_and_nothing_is_contained_yet() {
     let mut l = Lease {
@@ -283,7 +294,7 @@ fn admit_implies_floor_permit_and_m_override_is_refused() {
     let error = FloorOutcome::Error { diagnostics: vec!["skipped forbid".into()] };
     assert!(matches!(compose(&permit, &allow()), Decision::Admit { .. }), "reachability: something is admitted");
     // M_OVERRIDE: a bundle allow never admits what the floor did not permit.
-    assert!(matches!(compose(&deny, &allow()), Decision::Deny(DenyReason::Floor(_))));
+    assert!(matches!(compose(&deny, &allow()), Decision::Deny(DenyReason::Floor(_) | DenyReason::FloorNoPermit)));
     // M_ERR: a floor error is a deny, whatever the engine decided.
     assert!(matches!(compose(&error, &allow()), Decision::Deny(DenyReason::FloorError(_))));
 }

@@ -261,7 +261,7 @@ async fn build_round_promotion_and_fencing() {
     assert!(r.detail["result"]["content"].as_str().unwrap().contains("MODULE Lease"));
 
     let r = act(n1, &a1, Action::Read { object: Digest::of(b"not in the corpus") }).await;
-    assert!(deny_reason(&r).contains("Floor"), "outside the corpus root: {}", r.detail);
+    assert!(deny_reason(&r).contains("FloorNoPermit"), "outside the corpus root, and no forbid fired: {}", r.detail);
 
     let r = act(n1, &a1, Action::Draft { target: "spec/Lease.tla".into(), content: "VARIABLES lease\n".into() }).await;
     assert!(r.admitted, "{}", r.detail);
