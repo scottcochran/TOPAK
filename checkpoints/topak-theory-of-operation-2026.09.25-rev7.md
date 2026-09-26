@@ -354,9 +354,10 @@ cannot alter them, because no break-glass grant may authorize `Issue`, `Vote`, o
 that keeps the authority-change set at two is therefore **change to the rules in force**, not "adds authority".
 That classification rests on the exception entries of ADR-0013, which is itself confirmation-required.
 
-This makes **effect exclusivity a mechanism claim**, which is strictly stronger than Moon & Varshney's assumed
-version and TOPAK's sharpest differentiation. It is also entirely contingent on the sandbox gap. Any sideways
-effect path falsifies the enumeration rather than degrading it.
+This makes **effect exclusivity a mechanism claim** — TOPAK's sharpest differentiation from Moon & Varshney's
+assumed version once the confinement obligation (ADR-0022 §6) is discharged, and identical to it in strength
+until then (ADR-0015 E2). It is entirely contingent on the sandbox gap. Any sideways effect path falsifies the
+enumeration rather than degrading it.
 
 ### 4.2 What Kafka is
 
@@ -1123,6 +1124,9 @@ miniature: the reference is not trusted to track the corpus; it is checked for i
   hold" in §3.1, §3.3, §7.2 and §8.1 — per G3 §8 ("No theorem is proved") and the 09.25 critical review
   (CR-25). No decision content changed. Rev 7 is cited by digest in no manifest or accepted record; this
   erratum changes the file's digest.
+- **Scrub pass (2026.09.25).** §4.1's "strictly stronger than Moon & Varshney" conditioned on ADR-0022 §6's
+  discharge, tracking ADR-0015 E2; until confinement is enforced the two positions are identical in strength
+  (09.16 review, CR-1). Revisions 5 and 6 keep the old sentence as frozen cuts.
 - **Amendment pass (2026.09.25, ADR-0029 A2 ratified).** §9's exception, trigger, ceremony and cleanup passages,
   §7.1's author-ratified note on ADR-0024, and §12 item 3 rewritten: the entire corpus is independently reviewed
   as a precondition of bootstrap, and the genesis bundle carries the review attestation. The marker exclusion for

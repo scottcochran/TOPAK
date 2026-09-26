@@ -281,6 +281,13 @@ training at 569 s against the recorded 551 s. The README's evidence-status note 
 The gitignored session citation remains (CR-25-adjacent), and the `full`-profile θ measurements stay the
 author's call.
 
+**The "strictly stronger" overclaim, resolved.** At the custodian's instruction, §2 item 2's liability
+sentence is scrubbed: ADR-0015 E2 (ratified 2026.09.25) conditions the comparison on ADR-0022 §6's discharge —
+until confinement is enforced the two positions are identical in strength — and rev 7 §4.1 now carries the
+conditional form. The frozen rev 5 and rev 6 cuts and the documents that critique the old wording are
+deliberately untouched. ADR-0015's entry in `mechanism/corpus-pins.sha256` was re-pinned, which under the
+drift convention is the record that the change was reviewed against the code.
+
 **Not done here**, being script, code, or process work: the `RulesFloorNV-run.sh` jar path and per-results-file
 drivers (CR-23), bundle signing (CR-24), the slm results files (CR-22's other half), and the regeneration of the
 two Playbook artifacts against G3 (§4 is the input).
