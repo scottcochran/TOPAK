@@ -1,949 +1,749 @@
 # TOPAK — Glossary
 
-**2026.09.17** · derived · regenerated from scratch · *The Gripping Hand*
+**2026.09.26** · derived · regenerated from scratch · DRAFT
 
-**Basis.** Theory of Operation revision 5 (2026.09.15), Genesis Checkpoint G1 (2026.09.15), the
-boundary register (2026.09.13), the critical review (2026.09.16), and the narrative log
-(2026.09.17). Session material from 09.16–09.17 that has not reached a record is included and
-marked, because the vocabulary is already in use in conversation.
+**Basis.** Genesis Checkpoint G3 (2026.09.25) and Theory of Operation revision 7 (2026.09.25), with the record files
+they cite. Where the two disagree, G3 wins. Two records written after the G3 cut, ADR-0034 and ADR-0035, are both
+Proposed. They appear only in §10, and they are marked there.
 
-**What this supersedes.** The 2026.09.11 glossary, which G1 §4 placed outside the corpus as stale.
-Nothing from it is folded in; every entry below is re-derived. This is cleanup **step 7**, the
-glossary half.
+**What this supersedes.** The 2026.09.17 glossary, which was cut against rev 5 and G1 and now predates two
+checkpoints (G3 open item 12). Nothing from it is carried over unchecked. Its session vocabulary **[S]** has either
+reached a record, and appears here under that record, or is dropped. §14 lists the moves.
 
-**This document decides nothing.** It reports what terms mean in the corpus as it stands, including
-where two records disagree.
+**This document decides nothing.** It reports what the terms mean in the corpus as it stands, including where two
+sources disagree.
 
 ---
 
 ## 0. How to read
 
-Each entry carries a bracket that says what kind of thing it is. The bracket is about the *term*,
-not about whether the design is good.
-
 | Tag | Meaning |
 |---|---|
 | **[A]** | Defined by an Accepted (genesis) record |
-| **[P]** | Defined by a Proposed or Draft record; the wording can still move |
-| **[D]** | Derived — used throughout the narrative, no record of its own |
-| **[O]** | Outstanding — the term currently names a hole rather than a mechanism |
-| **[C]** | Checkpoint convention — fixed by G1, which "ratifies nothing and adds no decision text" |
-| **[S]** | Session vocabulary — coined 09.16–09.17, in no record and in no checkpoint |
-| **[X]** | Dangling — in use, with no source that defines it |
+| **[A·CR]** | Defined by an Accepted record, or amendment, marked confirmation-required. Cite as *author-ratified* |
+| **[P]** | Defined by a Proposed record, a pending amendment, or a DRAFT artifact. The wording can still move |
+| **[D]** | Derived: used in the narrative, with no record of its own |
+| **[C]** | Checkpoint convention, fixed by G1–G3 |
+| **[R]** | The reference implementation (ADR-0033). It is evidence, not the verified object |
+| **[O]** | Outstanding: the term names a hole rather than a mechanism. Numbers refer to the G3 §7 open list |
 
-Status of the underlying record is G1 §2 and is not restated here except where status changes the
-meaning. **Confirmation-required** and readiness keys are §10.
-
-Three companion sections close the document: **§11 Outstanding**, the terms that are holes;
-**§12 Adjacent**, the vocabulary readers arrive with; **§13 Hazards**, the collisions to settle
-before publication. **§14** lists retired wording — the reason the last glossary went stale.
+Record status is G3 §1 and is not restated here except where the status changes what a term means.
 
 ---
 
-## 1. The pattern and its letters
+## 1. The pattern
 
-**TOPAK** [A/D] — an architecture pattern for autonomous multi-agent collaboration that is safe by
-design. The letters name five components, not five domains:
+**TOPAK** [A/D]: an architecture pattern for autonomous multi-agent collaboration that is safe by design. The
+letters name **roles, not products** (ADR-0030 §2, ADR-0033 §2). Each role carries a stated obligation, and any
+instrument that meets it may be substituted.
 
-| Letter | Component | Role in the pattern |
+| Letter | Role | Instrument at the reference |
 |---|---|---|
-| **T** | TLA+ (Temporal Logic of Actions) | Formal specification and model checking |
-| **O** | Open Policy Agent (OPA) and Rego | Policy as code |
-| **P** | Paxos | Consensus over the control plane |
-| **A** | Agents | The principals doing the work |
-| **K** | Kafka | Event transport |
+| **T** | Formal specification and model checking | TLA+, TLC |
+| **O** | Policy as code: a verified floor evaluator and a per-request bundle engine | Cedar (floor), OPA and Rego (bundle) |
+| **P** | Consensus over the control plane | Sans-IO Multi-Paxos |
+| **A** | The principals doing the work | Agents, reached through MCP |
+| **K** | Event transport | Kafka |
 
-Components are one instantiation, not the pattern. A component is substitutable by **role
-obligation**, not by feature parity: anything that discharges the role's obligations may stand in
-its place. The critical review (§2.7) recommends naming the *requirement* — for O, a policy
-language with a verified evaluator and decidable refinement — and naming Cedar as the reference
-instantiation, keeping OPA where a deployment already has it.
+**The premise** [A]: *an agent is Byzantine at every deployment position.* Safety never depends on what a model
+means or intends, and models stay out of the TCB (ADR-0007).
 
-**The premise** [A] — *an agent is Byzantine at every deployment position.* Safety never depends on
-what a model means or intends. This is the single premise the whole derivation runs on (ADR-0007).
+**The inversion** [D]: the Byzantine threat lives in **Build**, not Run, because Build principals author the
+specifications, policy and floors that Run is judged against.
 
-**The inversion** [D] — the Byzantine threat lives in **Build**, not Run. Build principals author
-the specifications, policy, and floors that Run is later judged against. Every Build cost in the
-design is paying for this. The field's counterpart systems all assume the policy author is trusted;
-this is TOPAK's unoccupied ground.
-
-**Safe by design** [D] — the project's own descriptor. Means *containment proven about the
-mechanism*, never *safe outputs*. Without that scope line the phrase claims output safety and is
-indefensible.
-
-**Verify the cage, not the occupant** [D] — principle P1, the pattern's slogan form.
+**Safe by design** [D]: the project's descriptor. It means *containment checked about the mechanism*. It never means
+*safe outputs*.
 
 ---
 
-## 2. Domains, membrane, principals
+## 2. Domains, principals, the membrane
 
-**`Build`** [A] — the domain that produces artifacts. Renamed from CI by ADR-0001, which retired the
-continuous-integration / critical-infrastructure ambiguity. Consistency posture PC/EC: unavailability
-costs a stalled pipeline.
+**`Build`** · **`Run`** [A]: the domain that produces artifacts, and the domain that operates them (ADR-0001).
 
-**`Run`** [A] — the domain that operates artifacts. Formerly Orch.
+**`Contain`** [A]: the containment component. It is one component instantiated twice, not a third domain.
 
-**`Contain`** [A] — the containment component. One component instantiated twice, **not** a third
-domain.
+**`Build(Contain) → Run(Contain)`** [A]: the structure. The arrow is authority flow. The parentheses are a
+refinement boundary: specification conjunction plus existential hiding (ADR-0001, ADR-0002). The notation does not
+survive being spoken, so prose has to carry the nesting.
 
-**`Build(Contain) → Run(Contain)`** [A] — the structural expression of the above (ADR-0001,
-ADR-0002). The arrow is authority flow. The parentheses are a refinement boundary: specification
-conjunction plus existential hiding of `Contain`'s internal variables. **The notation does not
-survive being spoken**, so prose must carry the nesting on its own.
+**Boundary-enforceable containment** [A]: what `Contain` claims. It has two conjuncts: a **checked** property class
+over the alphabet and its envelope, and **assumed, operationally discharged** effect exclusivity.
 
-**Boundary-enforceable containment** [A] — what `Contain` claims, as two conjuncts of one statement:
-a **proved** property class over the action vocabulary and its envelope, established by mechanical
-extraction; and an **assumed, operationally discharged** effect exclusivity. The correct name for
-the claim. "Semantic containment" is wrong and is retired (§14).
+**Principal** [A]: *anything evictable by an authority other than itself.* Principals are inside the proofs.
 
-**Membrane** [D] — the informal name for `Contain` as it appears inside `Run`. "Contained spatially,
-excluded epistemically."
+**At the gate** [A]: whatever is not evictable. It sits outside the proofs and is carried as an assumption or a
+declaration. **Resignation is not eviction** (ADR-0002 A2). At archetype custody the anchor key-holders are at the
+gate. At degenerate custody they become principals, which is a type change (§8).
 
-**Principal** [A] — *anything evictable by an authority other than itself.* One type for agents and
-humans. Principals are inside the proofs.
+**`Contained(p)`** / **`Mediated(p)`** [A/D]: a principal that reaches the world only through its alphabet, and one
+with some effect path that no action names (a shell, egress, a git remote). Safety theorems quantify over `Contained`
+principals. `Mediated` principals get attribution and authorization, not containment. **Rung 0 is `Mediated`,
+always.** A higher confinement rung is necessary for `Contained` but not sufficient, because the provenance axis
+must also clear. **`Contained` is unreachable at every rung today.**
 
-**At the gate** [A] — whatever is not evictable. Outside the proofs, carried as an assumption or a
-declaration. **Resignation is not eviction** (ADR-0002 A2), which is why anchor key-holders sit at
-the gate at archetype custody.
+**Weakest-link provenance** [D]: a candidate with no record number. A provenance chain that contains a `Mediated`
+principal yields attribution, not a safety property.
 
-**Evictability test** [A] — the criterion above, applied. The sharpest definition in the design, and
-the reason boundary B14 exists.
+**Action alphabet** [A]: the finite, typed vocabulary of a principal's effects.
 
-**`Contained(p)`** [D/P] — holds when a principal reaches the world only through its alphabet.
-Safety theorems quantify over `Contained` principals only.
+**Build alphabet** [A, except §6]: **egress only**, six variants: `Read(ref)` · `Draft(target, content)` ·
+`Invoke(tool, inputs)` · `Emit(record)` · `Submit(digest | ⊥)` · `Vote(verdict, digest, evidence, rulesEpoch)`.
+Every action carries an epoch and a lease. There are three mechanism parameters: corpus root, tool allowlist and
+round bound (ADR-0022).
 
-**`Mediated(p)`** [D/P] — a principal with a shell, a package manager, network egress, or a git
-remote: effects exist that no action names, so the alphabet is not total. For these the architecture
-offers **attribution and authorization, not containment**. Humans are never `Contained`.
+**Run's alphabet** [O, 13]: no record defines it. `RunInvoke` and `RunEmit` are provisional in the floor and at the
+reference.
 
-**Weakest-link provenance** [O] — candidate, unnumbered, carried in ToO rev 5 §2.3 and G1 §2: a provenance chain containing a `Mediated`
-principal yields attribution, not a safety property. One sentence; the critical review recommends it
-become a clause of the ADR-0008 or ADR-0023 supersession rather than a record.
+**Finite in variants, not in instances** [A]: the floor is analysed per action variant over schema S with symbolic
+parameters. It is not analysed by enumeration.
 
-**Action alphabet** [A/P] — the finite, typed vocabulary of a principal's effects. Run has one;
-ADR-0022 gives Build one.
+**Seat separation** [A]: for each artifact, the author and the voters are disjoint. A voter cannot `Draft`, `Invoke`
+or `Submit`.
 
-**The Build alphabet** [P] — **egress only**, six variants: `Read(ref)` · `Draft(target, content)` ·
-`Invoke(tool, inputs)` · `Emit(record)` · `Submit(digest | ⊥)` · `Vote(verdict, digest, evidence,
-rulesEpoch)`. Every action carries epoch and lease. Three mechanism parameters: corpus root, tool
-allowlist, round bound.
+**Confinement obligation** [O, 1]: ADR-0022 §6. No shell, no egress, no filesystem outside the workspace and corpus,
+and no path to the artifactory except `Submit`. §6 is the one section of ADR-0022 that is **not ratified**. The gap
+it leaves is the **sandbox gap**.
 
-**Finite in variants, not in instances** [P] — `Read` ranges over a large ground set, so refinement
-is decided over variants with symbolic parameters (Rego predicates checked by a satisfiability
-modulo theories, or SMT, solver), never by enumeration.
+**`Invoke` hermeticity** [O]: the per-allowlist-entry obligation that a tool opens no unnamed effect path. **One
+allowlisted tool with a socket collapses the envelope to vacuity.** It is assumption of use A2, and it has no owner.
 
-**`Invoke` hermeticity** [O] — the per-allowlist-entry obligation that a tool opens no effect path
-the alphabet does not name. **One allowlisted tool with a socket collapses the envelope to vacuity.**
-No owner, no gate. One of the two unowned gates that decide whether the whole envelope means
-anything (the other is floor fitness, §3).
+**Capability cost** [D]: no shell, no package installation, no network and no git. This is not how agents write code
+today, and the article has to say so first.
 
-**Seat separation** [P] — per artifact, author and voters are disjoint; a voter in a promotion round
-cannot `Draft`, `Invoke`, or `Submit`. ⟨S6-3⟩ the alphabet states recusal as a fixed rule while
-ADR-0024 reads it from issued rules.
-
-**Confinement obligation** [P] — ADR-0022 §6: no shell, no network egress, no filesystem outside
-workspace and corpus, no path to the artifactory except `Submit`. **Stated and not discharged.**
-Until a mechanism enforces it, Build principals are `Mediated`.
-
-**Capability cost** [D] — the admission that this is not how agents write code today: no shell, no
-package installation, no network, no git. The critical review argues the cost may be smaller than
-stated if the sandbox boundary is modeled as `Invoke`'s hermeticity envelope, since a shell whose
-only reachable effects are workspace writes is observationally `Draft`.
+**Front door** [R]: the reference exposes the six variants as MCP tools and nothing else. That makes the alphabet
+the whole **protocol**, not the whole **channel**: an agent with a shell never has to ask.
 
 ---
 
-## 3. Policy and the floors
+## 3. The lease
 
-**Syntactic lift** [A] — mechanical, total extraction of a field from a constrained call interface.
-The only way a field may enter the admit path, and **permitted in any zone**.
+**Lease** [A·CR]: **one composite credential, granted for one round, with a closed schema** of twelve fields:
+principal, seat, Persona, epoch, fence, rules epoch, bundle, confinement, alphabet, round, role and TTL (ADR-0031).
+A capability that is not a field is not carried.
 
-**Semantic lift** [A] — a model's judgment entering the admit path. **Prohibited** (ADR-0007). A
-classifier's output enters only as an Observer finding, and findings may **subtract authority, never
-add it**.
+**One live lease** [A·CR]: a principal holds at most one live lease, and a grant requires that none is live. Without
+this rule, monotone renewal guarantees nothing.
 
-**The three gates** [A] — run on operational bundles *and* on the floor itself: **totality** (the
-alphabet covers every reachable call), **non-vacuity** (the envelope constrains something reachable),
-**discrimination** (it separates cases that must be separated). Referred to as G1–G3 in review
-material, which collides with the genesis checkpoints — see §13.
+**Round-coterminous** [A·CR]: a lease lives exactly as long as its round.
 
-**Floor fitness** [O] — the missing fourth gate (NIST MEASURE 2.13). Three gates are insufficient by
-Moon & Varshney's own published result: a vacuous specification passes all three. **Unowned.**
+**Fence** [A·CR]: the Paxos log index at grant. Leases, admits and issuances are ordered by one log.
 
-**Verified object** [A, with an unratified amendment] — the enforcement mechanism, its version
-pinning, its epoch fencing, and the minimal **policy floor**. ADR-0010 **A1 would add the minimal
-rules floor; it is Pending, triggered by ADR-0026, and queued in batch B.** Everything else is a
-versioned parameter. Each addition is a reviewability cost under ADR-0010's own minimality argument.
+**Renewal only narrows** [A·CR]: a renewal may narrow the alphabet, lower the rung or shorten the TTL. It keeps the
+bundle, the round and the role, because none of the three is ordered, so changing any of them needs a grant. So
+**tightening a live round ends it.**
 
-**Policy floor** [A] — the minimal, default-deny, human-reviewable bundle inside the verified
-object. Containment is proven against it.
+**Targeted revocation** [A·CR]: ends the leases that match a principal, a Persona or a confinement profile, bars
+later grants to it, and lapses the seat's break-glass approvals. That last effect is the C1 marker. Nothing else
+stops.
 
-**`bundle ⊑ floor`** [A] — refinement. An operational bundle is admissible only if it refines the
-floor; it may subtract authority, never add it. Decided **at promotion, in Build**, where
-unavailability costs a stalled pipeline rather than an outage.
+**Epoch fence** [A]: ends every live round. It is kept for e-stop and for scopes nobody can name. After an epoch
+increment, prior-epoch actions are rejected by the mechanism, not by policy.
 
-**Monotone-safe staleness** [D] — the consequence: a stale bundle is bounded below by the floor at
-any age, so local enforcement under partition is sound by construction rather than by operational
-care. The model case in the boundary register's interval table, and the shape the lease argument now
-copies.
+**Revocation is permanent within the chain** [A·CR]. **Lifting a revocation** [O, 22] adds authority, and no record
+says who may do it.
 
-**Resident floor** [A] — the default-deny bundle is pre-blessed, staged, and **instantiated rather
-than fetched**, so fail-closed works at cold start and under partition with no network dependency
-(ADR-0012).
+**Expiry is local, then ordered** [A·CR]: a replica reads its own monotonic clock with a margin that errs early. The
+first replica to see expiry proposes the round's end as a log entry (ADR-0031 E1).
 
-**Vacuous floor** [D] — a floor that admits every bundle and discharges every property over nothing,
-invisibly. The silent failure with the widest blast radius in the system, and the reason the gates
-run on the floor.
+**Per-round TCB** [A·CR]: the field list. Persona, confinement, bundle, alphabet, round and role are checked at grant
+and assumed for the round. Epoch, fence and rules epoch are compared on every action.
 
-**Rules floor** [P] — the bound on the trust anchor (ADR-0026). Joins the verified object; the
-mechanism rejects any issuance that violates it.
+---
 
-| Entry | Bound |
+## 4. Policy and the floors
+
+**Syntactic lift** [A]: mechanical, total extraction of a field from a constrained call interface. It is the only
+way a field may enter the admit path.
+
+**Semantic lift** [A]: a model's judgment entering the admit path. It is **prohibited** (ADR-0007). A classifier's
+output enters only as an Observer finding, and findings subtract authority.
+
+**Verified object** [A]: the enforcement mechanism, its version pinning, its epoch fencing, a minimal policy floor
+and a minimal rules floor (ADR-0010, A1). Everything else is a versioned parameter.
+
+**Policy floor** [A·CR]: the minimal, default-deny floor inside the verified object. Containment is checked against
+it.
+
+**Composition** [A·CR]: **admit ⟺ floor_permit ∧ ¬bundle_deny**, over one frozen input (ADR-0030 §1).
+`floor_permit` requires Allow **with no evaluation error**. `bundle_deny` holds unless the bundle affirmatively
+allows, so a deny, an error, an undefined result, an absent bundle and an unreachable bundle all refuse. **A bundle
+is never asked whether to grant.**
+
+**`bundle ⊑ floor`** [A·CR]: now a **property of composition**, not of the bundle. It holds for every bundle at every
+age, so nobody decides it at promotion.
+
+**Monotone-safe staleness** [D]: a stale bundle is bounded below by the floor at any age, with no refinement premise.
+The lease argument has the same shape.
+
+**Bundle revision binding** [A·CR]: a bundle decision counts only from the revision the lease names. A local
+fallback engine decides only when it holds that revision. Otherwise the bundle is unreachable and refuses. **Bundle
+fail-closed protects narrowings, not the floor.**
+
+**Deny reason** [A·CR]: a floor deny names the forbids that fired, or ***no permit matched***.
+
+**Verified evaluator** [A·CR]: the floor tier's obligation is a mechanized semantics, an implementation checked
+against it, and a decidable comparison of two policy sets. Cedar meets it and Rego does not. The floor is **linked
+into the mechanism as a library**, with no process, socket or fetch.
+
+**Schema S** [A·CR / P]: the typed lift's type, enforced on every request. The analyses quantify over it. The
+genesis `genesis.cedarschema` is DRAFT.
+
+**Nothing translates** [A·CR]: there is no Rego → Cedar transpiler, in either direction, in the archetype.
+
+**The gates** [A·CR]: **totality** (never-errors), **non-vacuity** (not always-allows), **discrimination** (not
+always-denies), per action over S. The genesis floor also runs **every-entry-matters** and **routing**. A failing
+gate returns a counterexample request. The gates are decidable checks on the floor (ADR-0030 §5).
+
+**Floor fitness** [O, 2]: the missing gate (NIST MEASURE 2.13). The gates show that a floor is well formed and not
+vacuous. They do not show that it is *right*. It is unowned.
+
+**Genesis floor** [P, 25]: `floor/genesis-floor.cedar`, 14 Cedar policies, gated 2026.09.24. It is **DRAFT and not
+ratified**: ADR-0030 ratified the language and machinery, not a floor.
+
+**Forbid B7** [P]: the recusal forbid in the genesis floor. Recusal is floor text, so **relaxing it is a policy-floor
+relaxation** (ADR-0022 A1).
+
+**Floor-change routing** [A·CR]: the classification is **computed, not asserted**. The analyzer decides `F′ ⇒ F`
+and `F ⇒ F′`:
+
+| Change | Authority |
 |---|---|
-| R1 | `quorum = "all"` over counted grant seats |
-| R2 | `minGrant ≥ 2` |
-| R3 | `recuse = TRUE` |
-| R4 | **Withdrawn** — a timeout never grants; now a mechanism constant |
-| R5 | No key both in the anchor key set and on the promotion roster **for the same artifact** (the qualifier is in ADR-0026 and dropped by ToO rev 5 §7.3) |
-| R6 | Exception-count bound (arrives with ADR-0013) |
-| R7 | No break-glass grant may authorize `Issue`, `Vote`, or promotion |
-| R8 | **Candidate** — break-glass time-to-live; asked for since 09.13 |
+| Tighten the policy floor | An ordinary promotion |
+| Relax it, or add an exception | Anchor issuance **and** promotion |
+| **Incomparable** revision | Routed as a relaxation |
+| Any rules-floor change, either direction | Anchor issuance **and** promotion |
 
-**Parametricity** [P] — a floor entry bounds something only if the mechanism **reads that value from
-issued rules**. Hard-coded values make the entry vacuous. Established mechanically by the
-`RulesFloorNV` run.
+**Resident floor** [A]: the default-deny floor is pre-blessed, staged and instantiated rather than fetched, so fail-closed
+works at cold start (ADR-0012).
 
-**Empty-roster promotion** [P] — the corpus's sharpest checked result: drop R2 and a havoc issuance
-sets an empty roster, unanimity over the empty set is vacuously true, and an artifact promotes with
-**zero votes**. R1 alone does not protect against it.
+**Vacuous floor** [D]: a floor that admits everything and discharges every property over nothing, invisibly. This
+is why the gates run on the floor.
 
-**Floor exception** [P] — a carve-out inside the verified object for a path that cannot be written as
-a subtraction. Two exist: **erasure** (destroys authority-bearing evidence) and **break-glass** (adds
-authority). Each is a declared floor entry with an envelope, a roster reference, and non-composition
-obligations. Adding one is a floor relaxation. Count bounded by R6.
+**Rules floor** [A]: the verified bound on the trust anchor (ADR-0026). The mechanism rejects any issuance that
+violates it.
 
-**Non-composition** [P] — the obligations stated as TLA+ invariants with mutations. **NC-1:**
-break-glass chained with erasure never yields an effect that is authorized, erased, and
-unattributable. **NC-2:** erasure never removes a forensic-floor record under any composition with
-break-glass. Both are currently **untimed**, and the register argues the interval between the two
-orderings is part of the property.
+| Entry | Bound | State |
+|---|---|---|
+| R1 | `quorum = "all"` over counted grant seats | In force |
+| R2 | `minGrant ≥ 2` | In force |
+| R3 | Recusal | **Withdrawn**: enforced by the `Vote` envelope, so there is no issued value to bound |
+| R4 | A timeout never grants | **Withdrawn**: now a mechanism constant |
+| R5 | No key both in the anchor key set and on the promotion roster | In force |
+| R6 | Exception-count bound, currently two | In force from 09.23 |
+| R7 | No break-glass grant may authorize `Issue`, `Vote` or promotion | In force |
+| R8 | Break-glass grant TTL | **Drafted**: ADR-0026 A1, pending, with four conditions unmet |
+| R9 | `quorum = "all"` or `quorum ≥ 2` | In force. A **conditional entry** that binds only once R1 is relaxed |
 
-**Per-class floors** [O] — the unresolved question of whether Build and Run share one floor or have
-one each over a shared verified core. ADR-0022's partially disjoint alphabets are the evidence; the
-same question now applies to the rules floor.
+**Parametricity** [A]: a floor entry bounds a value only if the mechanism reads it from issued rules. **Converse:**
+a value fixed as a constant cannot be bounded by an entry. Checked by `RulesFloorNV` and `RulesFloorNV_rev5`.
+
+**Empty-roster promotion** [A]: without R2, a havoc issuance sets an empty roster, unanimity over the empty set is
+vacuously true, and an artifact promotes with **zero votes**.
+
+**Floor exception** [A·CR]: a carve-out for a path that cannot be written as a subtraction. There are two:
+**erasure** and **break-glass** (ADR-0013). Since ADR-0030 they are Cedar policies inside the floor, so **a bundle
+can narrow break-glass**, and nothing can widen it.
+
+**Non-composition** [A·CR]: **NC-1**: break-glass chained with erasure never yields an effect that is authorized,
+erased and unattributable. **NC-2**: erasure never removes a forensic-floor record. Both were checked on
+2026.09.23, with a witness that the composition is reachable.
+
+**Per-class floors** [O, 9]: whether Build and Run share one floor or each have one over a shared core. Cedar can
+state either answer, and ADR-0030 does not choose. ADR-0014 is reserved for it.
 
 ---
 
-## 4. Authority
+## 5. Authority
 
-**Promotion** [P] — the crossing from Build to Run, for everything: bundles, mechanism releases
-(including floor changes), and Personas. **Promotion is a grant**, and under ADR-0024 it is a quorum
-grant read from issued rules, not a signing key.
+**Promotion** [A]: the crossing from Build to Run, for bundles, mechanism releases (floor changes included) and
+Personas. **Promotion is a quorum grant** read from issued rules (ADR-0024). **A promotion is a round**, keyed by
+artifact digest.
 
-**Grant seat** [P] — a human `Mediated` principal with a named organizational role, whose vote is
-counted. At the archetype every counted grant seat must grant; a deny or an abstention denies.
+**`quorum`** [A]: either `"all"` or a grant-vote threshold *k*. The archetype value is `"all"`. The value `"any"` is
+**withdrawn**: it is *k* = 1.
 
-**Veto seat** [P] — held by the independent Observer; can only deny. A veto seat is one whose
-alphabet lacks `grant`. **Veto-seat silence is not a veto** — requiring a "no finding" attestation
-would make semantic judgment an enabling condition, which ADR-0007 forbids.
+**Grant seat** / **veto seat** [A]: a grant seat is held by a human `Mediated` principal with a named role. A veto
+seat's alphabet lacks `grant`. **Veto-seat silence is not a veto.**
 
-**A timeout is never a grant** [P] — a mechanism constant, not a policy.
+**A timeout is never a grant** [A]: a mechanism constant.
 
-**Vote binding** [P] — votes bind to (artifact digest, gate-evidence digest, rules epoch). Any
-rules-epoch change voids in-flight votes: fencing, the same shape as leases.
+**Vote binding** [A]: a vote binds to (artifact digest, gate-evidence digest, rules epoch). A change of rules epoch
+voids in-flight votes.
 
-**Gates enable voting; they do not vote** [P] — `Vote` is enabled only after the three gates and
-`bundle ⊑ floor` pass.
+**Gates enable voting; they do not vote** [A].
 
-**Recusal** [P] — the author of an artifact is recused from voting on it. If recusal leaves fewer
-seats than the floor minimum, promotion is denied.
+**Recusal** [A]: a **mechanism constant**. The author is removed from the counted seats, and the `Vote` envelope
+refuses the author's vote. If too few seats remain, promotion is denied.
 
-**Runtime subtraction is not promotion** [P] — e-stop, lease expiry, and `deny=all` stay local and
-attributed.
+**Runtime subtraction is not promotion** [A]: e-stop, expiry, revocation and `deny=all` need no quorum. They are still
+**ordered** wherever they change replicated state.
 
-**Trust anchor** [P] — the authority that defines who votes. Treated as a **havoc issuer**: safety is
-proven for every issuance it could make, so its composition never enters the proof (ADR-0025).
+**Trust anchor** [A]: the authority that defines who votes. It is modeled as a **havoc issuer**: safety holds for
+every issuance it could make (ADR-0025).
 
-**Issuance** [P] — an anchor action. An environment event validated by an opaque `Authentic`
-predicate, an epoch increment, and the rules floor. `Issue` is not a Build action and no Build
-principal can express it. ADR-0022 §8 gives the anchor's alphabet as **`Issue` and `Resign`** —
-⟨S6-9⟩ `Resign` is cited there and **defined nowhere**, which matters most at archetype custody,
-where a resignation is a permanent loss and therefore a freeze.
+**Issuance** / **`Issue`** / **`Resign`** [A]: the anchor's actions. They are environment events that no Build
+principal can express. `Resign` is defined per custody rung in the ADR-0025 annex. At archetype custody it freezes
+the rules. On a threshold rung the recovery rule rotates the key. Under n−1 eviction it consumes that epoch's single
+eviction.
 
-**Rules** [P] — the authority-defining set: the promotion roster and its parameters, the break-glass
-and erasure rosters, the anchor's own key set, and any relaxation of the policy floor or new
-exception. ⟨S6-6⟩ the record's wording omits rules-floor changes from this list.
+**The intent axiom** [A]: the sole axiom. *An authentic issuance at the current anchor epoch is what the anchor
+intended.*
 
-**The intent axiom** [P] — the sole axiom: *an authentic issuance at the current anchor epoch is
-what the anchor intended.* The end of the authority regress.
+**Infallible, split three ways** [A]: **intent** is assumed, **integrity** is modeled, **custody** is declared.
 
-**Infallible, split three ways** [P] — **intent** assumed, **integrity** modeled, **custody**
-declared. The recurring decomposition shape (see §5 and §7).
+**Rules** [A]: the promotion roster and its parameters, the break-glass and erasure rosters, the anchor key set, any
+relaxation of the policy floor or new exception, and **any change to the rules floor in either direction**.
 
-**Custody** [P] — the declared pair (capture threshold, loss tolerance), an axis of anchor
-recoverability:
+**Custody** [A]: the declared pair (capture threshold, loss tolerance).
 
 | Record | Model | (capture, loss) |
 |---|---|---|
-| A-0025 | Strict unanimity, n ≥ 3 — the archetype | (n, 0) |
+| A-0025 | Strict unanimity, n ≥ 3 (the archetype) | (n, 0) |
 | D-0025-2 | n−1 eviction with replacement | (n−1, 1) |
-| D-0025-1 | Threshold with recovery, in the shape of The Update Framework (TUF) root role | (k, n−k) |
-| — | Single custodian | (1, 0) — the row the corpus itself occupies, with no deployment declaration record |
+| D-0025-1 | Threshold with recovery, in the shape of the TUF root role | (k, n−k) |
+| — | Single custodian: the corpus today | (1, 0) |
 
-**Loss freezes the rules** [P] — at archetype custody, the system runs and subtracts but cannot
-change. The only exit is re-genesis.
+**Loss freezes the rules** [A]: at archetype custody the system runs and subtracts but cannot change. The only exit
+is **re-genesis**.
 
-**Anchor capture** [P] — the headline residual: a coalition at the capture threshold can issue any
-rules-floor-conformant roster. **No safety theorem covers anchor intent.** First line of any
-residual-risk statement.
+**Anchor capture** [A]: the headline residual. A coalition at the capture threshold can issue any
+rules-floor-conformant roster. **No safety theorem covers anchor intent.**
 
-**Two keys, both directions** [P] — a rules-floor change needs an anchor issuance *and* a promotion
-under the rules being replaced. **Tightening needs both too**, because a tightened rules floor
-constrains the anchor, which must consent. This is where the rules floor differs from the policy
-floor.
+**Two keys, both directions** [A]: a rules-floor change needs an issuance and a promotion, even to tighten.
 
-**Genesis rules** [P] — ship with the mechanism release and are **fetched from nowhere** (ADR-0027).
-Anchor unavailability blocks change, never operation. Epoch 0 is the root of the rules-epoch chain.
+**Genesis rules** [A]: they ship with the mechanism release and are fetched from nowhere (ADR-0027). Epoch 0 is the
+root of the rules-epoch chain. The epoch-0 floor check is the `GenesisSatisfiesFloor` invariant, not a promotion.
 
-**Monotonicity, at five layers** [D] — decision (consensus for grants, local for denials) · policy
-(bundles only subtract) · change (authority-increasing needs consensus; decreasing is local and
-attributed) · deployment (degenerate forms lose theorems, never gain capability) · authority
-(relaxing rules needs the anchor). **⟨LP-9⟩ proposes a sixth:** an attenuation rule for derived
-principals. **At the pattern level it inverts** — tightening the archetype puts every conformant
-deployment into declaration debt; relaxing it voids published theorems.
+**Privileged grant** [A]: a quorum on an anchor-issued roster, bounded by the rules floor. Ordinary Run admits are
+grants too, but they are decided against a bundle, not a roster.
 
-**Consensus for grants, local for denials** [D] — the unifying rule, and the sentence the design is
-organized around.
+**Consensus for grants, local for denials** [D]: the organizing rule.
 
----
+**Monotonicity, layer by layer** [D]: now eight layers (ToO §7.8):
 
-## 5. The record
+| Layer | Statement |
+|---|---|
+| Decision | Consensus for grants, local for denials |
+| Policy | Bundles only subtract, by composition |
+| Change | Increases need consensus. Decreases need no quorum, but are ordered when they change state |
+| Deployment | Degenerate forms lose theorems, never gain capability |
+| Authority | Relaxing the rules needs the anchor |
+| Evidence | Authority facts survive erasure and break-glass |
+| Credential | Renewal only narrows |
+| Time | Intervals that subtract may use a local clock. Intervals that preserve authority need trusted time |
 
-**Effects** [P] — exactly {tool invocation, principal emission} (ADR-0015). Exhaustive by claim.
-
-**Authority changes** [P] — exactly {promotion, anchor issuance}. ⟨S6-12⟩ break-glass and erasure
-invocations still need a place in one of the two sets.
-
-**The admit decision is the orderable event** [P] — not the emission. **Denials are not ordered:** a
-denied effect never crosses the boundary, and absence of effect is not an event. The critical review
-(CR-3, CR-7) argues this conflicts with what a correlator needs and with ADR-0020's evidentiary role
-for denials, and proposes per-principal sequence numbers on denials.
-
-**The audit chain** [P] — `effect → admit → bundle ⊑ floor → rules epoch → issuance → the intent
-axiom`. No link is assumed except the last.
-
-**Effect exclusivity** [P] — the principal reaches the world only through the alphabet. ADR-0015
-makes it a **mechanism claim** rather than an assumption — *conditional on the sandbox gap*. Until
-ADR-0022 §6 is discharged, CR-1 holds that the claim is no stronger than the assumed version, and
-"strictly stronger than Moon & Varshney" is retired wording (§14).
-
-**Round** [A in Run / P in Build] — the unit of topic scope. In Run, a cycle of principal activity
-(ADR-0003, Accepted). In Build, **one pipeline invocation** (ADR-0021, Proposed). See §13 for the
-collision.
-
-**Topic per principal per round** [A] — one topic per principal per epoch or round, sealed on emit
-completion, with per-topic access control, per-use-case retention, explicit replay authorization,
-write-time masking by wrapper Rego, and no tiered storage (ADR-0003).
-
-**Seal** [A in Run / P in Build] — the instant a round topic becomes immutable and the erasure unit
-becomes well defined. In Build, sealing moves to submission (ADR-0021, Proposed).
-
-**The topic is the unit of erasure** [A] — deleting a sealed container never edits a signature or a
-hash chain, and a masking miss has a blast radius of one round. **Cost: topic count, principals ×
-rounds** — the critical review's first K finding, against KRaft's metadata churn.
-
-**Control-plane facts vs cognitive payloads** [A] — trace conformance needs actions, identities, and
-ordering; forensics needs the text. In the archive the control-plane record keeps a hash and a
-pointer, and plaintext lives in a **separately governed store built for deletion** (ADR-0004).
-
-**Erasure** [A] — a **modeled event**: consensus-ordered, modeled in TLA+, recorded in the log it
-modifies. Authorization lives in the verified object, not in a bundle. Mechanism: deletion of sealed
-topics and of plaintext-store entries.
-
-**Crypto-shredding** [A, rejected] — considered and **rejected** as the primary mechanism: it leaves a
-verifying envelope over unreadable ciphertext, a hole no auditor can distinguish from suppression.
-⟨S6-11⟩ three documents in the corpus still say the opposite.
-
-**Demand taxonomy** [A] — erasure demand types 1–5 (ADR-0006). **Type 5** ("hide that a record
-existed") is *unaddressed* in the accepted text, which entangles it with break-glass and defers it to
-ADR-0013. ADR-0028 (**Proposed**) argues it is structurally excluded at the archetype because F6
-records the erasure. Do not cite the exclusion as settled.
-
-**Replay** [A] — reconstructs **what crossed the membrane**, not what happened inside it (ADR-0020).
-The Observer and replay read the same stream, so an investigator can never be shown something the
-Observer lacked at detection time. That is what keeps `L` an honest number.
-
-**Legibility** [P] — the archetype property that replaces immutability: *every admitted boundary event
-remains readable by the declared audit authority for the declared horizon.* HIPAA-style regimes
-subtract the **record**; SCI-style compartmentation subtracts the **reader set** and is
-archetype-conformant except at spill remediation. The archetype log is the maximum projection each
-regime derives from.
-
-**Forensic floor** [P] — six classes non-erasable for the declared horizon (ADR-0028): **F1** admit
-decisions · **F2** stop attribution (e-stop, lease-expiry eviction, `deny=all`) · **F3** promotion
-votes · **F4** anchor issuances, including genesis · **F5** break-glass invocations · **F6** erasure
-events themselves. All are control-plane facts; **no cognitive payload is in the floor**. **No new
-primitive:** each class is a policy-floor denial on the erasure envelope, so removing a class is a
-floor relaxation. Two seams: ⟨S6-5⟩ votes live on erasable round topics, ⟨S6-14⟩ the horizon ends at
-re-genesis.
-
-**Stop attribution is a feedback path, not just evidence** [P] — in system-theoretic terms (STPA) the
-Observer is a controller, not a probe. That is why F2 is non-erasable.
-
-**Archive** [D] — the system of record (ToO rev 5 §4.2). A 09.16 drafting session concluded it should be
-kept **out** of the trusted computing base and made verifiable against the Paxos log rather than trusted;
-that is session material, not a record. **[S]**
+At the pattern level it **inverts**: tightening the archetype puts every deployment into declaration debt, and
+relaxing it voids published theorems.
 
 ---
 
-## 6. Detection
+## 6. The record
 
-**Observer** [A] — the detection layer. Every semantic concern is an Observer finding and every
-finding is **deny-only**: a block, a quarantine trigger, or an eviction, never an admit precondition.
+**Effects** [A·CR]: exactly {tool invocation, principal emission}. **Authority changes**: exactly {promotion,
+anchor issuance} (ADR-0015). The qualifier that keeps the second set at two is ***change to the rules in force***.
+Break-glass and erasure are admit decisions against their exception entries, so both are effects.
 
-**Placement** [A] — Observer replicas never share a device with the Thinker they watch, and no two
-replicas share a device. A shared device means shared driver, firmware, memory error domain, thermal
-and power events, and host kernel. **A Byzantine quorum of co-resident replicas is arithmetic
-fiction.**
+**The admit decision is the orderable event** [A·CR]: not the emission.
 
-**Monoculture** [O] — an Observer should come from a different model family than the agents it
-watches. Sharing a family is a shared blind spot. **Two records disagree on whether this is closed.**
-ADR-0016 §5 says seat distinctness by lineage "makes the cross-family Observer requirement
-enforceable rather than advisory and closes the monoculture open item." ToO rev 5 §5.1 states it as a
-bare rule, G1 §9 still lists it as an unwritten declaration, and NIST MANAGE 3.1 is still marked a
-gap. CR-10 is the reason to doubt the closure: three seats, two lineages, so two seats must share
-one.
+**Audit chain** [A·CR]: effect → admit → floor ∧ bundle at the lease's revision → rules epoch → issuance → intent
+axiom. No link is assumed except the last.
 
-**Scoping** [A, reversed in effect] — ADR-0008 was accepted with a shared, orchestrator-level Observer
-group. ADR-0023 found neither scoping dominates, and the archetype is now **per-principal Observers
-plus a cross-principal correlator**. The accepted text stays in force until a superseding record
-exists.
+**Decide, order, re-check** [A]: deciding and ordering are separated in time (ADR-0033 §4). The mechanism checks run
+before the floor and again at apply time. An admit that fails the second run is **void**: ordered, recorded and
+without effect. The floor and bundle are not re-run. The effect runs only after commit.
 
-**Cross-principal correlator** [O] — the answer to the strongest published impossibility result
-(Shukla & Joshi), and currently **a noun**: no record, no alphabet, no placement rule, no seat, no
-statement of what it reads.
+**Ordering is not authorization** [A]: subtractions need no quorum, but they must be ordered if they change
+replicated state.
 
-**Silence is invisible** [S] — CR-2's name for the detection layer's failure mode: a dead,
-partitioned, starved, or colluding Observer produces the same observable as a clean system. The
-monotone rule that keeps judgment out of the admit path also makes the absence of judgment
-invisible.
+**Denials are recorded, not ordered** [A]: a denial is written unordered to the principal's round topic, as digests,
+by the replica that decided it (ADR-0020). Without denials, the trail cannot tell *behaved* from *was prevented*.
 
-**Veto-seat liveness heartbeat** [O] — the proposed fix, admissible under ADR-0007 because *the
-Observer replica set attested liveness within the last `T`* is a totally extractable fact rather than
-a judgment. Open for promotion only; CR-2 argues it applies to every Run admit.
+**Effect exclusivity** [A·CR]: the principal reaches the world only through the alphabet. ADR-0015 makes it a
+mechanism claim, which is **identical in strength to Moon & Varshney's assumed version until ADR-0022 §6 is
+discharged** (ADR-0015 E2).
 
-**Untrusted monitor** [S] — the AI-control term for what the Observer is (a model watching a model).
-⟨LP-4⟩ proposes declaring it untrusted and requiring honeypot validation at seat admission.
+**Kafka's role** [P]: neither the ordering authority nor the system of record. It is a transport with a durability
+window (ADR-0005, Proposed). An emission is written after commit and carries the admit's log index, the fence and a
+per-lease sequence number. The reference's use of Kafka is a debt against ADR-0005 (open item 5).
 
-**LTRO** [D] — **Listener / Thinker / Reader / Observer**, the internal decomposition of an agent
-principal, giving separation of duties inside one principal. Human principals are atomic, stated as a
-weakness. **⟨LP-1⟩ the LTRO has no decision record**; its seat semantics are scattered across
-ADR-0008, ADR-0016 §5, ADR-0018, and ADR-0022.
+**Round** [A in Run · P in Build]: in Run, a cycle of principal activity (ADR-0003). In Build, one pipeline
+invocation (ADR-0021, Proposed).
 
-**Seat** [A] — the binding point for a Persona, and the unit of attestation and attribution. **⟨LP-10⟩
-principal ≠ seat:** principal is authority and eviction, seat is attestation and attribution.
+**Topic per principal per round** [A]: sealed on emit completion, with per-topic ACLs, per-use-case retention,
+explicit replay authorization, write-time masking and no tiered storage. **The topic is the unit of erasure.**
 
-**Reader** [A] — the seat that reads logits. May colocate with the Thinker; it was never an
-independent fault domain. **⟨LP-12⟩** its white-box role is in tension with seat distinctness (see
-CR-10: three seats, two lineages).
+**Topic identity includes the rules-epoch chain** [A]: so a successor system never writes to a predecessor's sealed
+topic (ADR-0003 A1).
 
-**Listener** [D] — **⟨LP-3⟩** proposes it become a deterministic labeling stage with no Persona,
-which would make it the only deterministic seat.
+**`after` companion topic** [A·CR]: one per round. It holds denials only, for attempts made under the round's lease
+after its topic is sealed. It is bounded by a limit marker and erased with the round (ADR-0003 A2, the only
+confirmation marker scoped to one amendment).
 
-**Build has an Observer** [P] — ADR-0021 closes the sharpest contradiction on the board (a hostile
-domain with enforcement and no detection) by reusing the round-topic scheme. **Detection is cheaper
-in Build**, because the promotion gate blocks and detection only has to finish before the gate
-clears — which makes its absence harder to defend.
+**Control-plane facts vs cognitive payloads** [A]: the archive keeps a hash and a pointer. Plaintext lives in a
+separately governed store built for deletion (ADR-0004).
 
-**Decode observability** [A] — narrow by decision (ADR-0019). `none` is the only unconditional value;
-`topk_logprobs` is admissible for decoding conformance and substitution detection only, **never** for
-claims about `L`.
+**Erasure** [A·CR]: a modeled event that is consensus-ordered and recorded in the log it modifies. Its authorization
+lives in the verified object. **Genesis rules issue no erasure roster**, so erasure is disabled from epoch 0.
 
----
+**Crypto-shredding** [A, rejected]: it leaves a verifying envelope over unreadable ciphertext, which no auditor can
+tell from suppression.
 
-## 7. The model is pinned
+**Replay** [A]: reconstructs what crossed the membrane, including refused attempts (ADR-0020). The Observer and
+replay read the same stream.
 
-**Persona** [A] — *the model enters the system as a Persona*: a signed, versioned Build artifact
-binding a model to its complete runtime configuration. Eleven fields at minimum (ADR-0016 §1):
-provenance/lineage · Persona ID · sequence number · system prompt · decoding parameters · **decoding
-stack version** (identical weights under a different sampler is a different Persona) · determinism
-class · **context window and truncation policy** (an unpinned truncation rule silently changes what
-the Thinker saw) · decoder identity and hash · decode-observability class · seat binding. Stronger
-than the OpenSSF Model Signing specification, which signs the model artifact alone.
+**Legibility** [A·CR]: replaces "immutable". *Every admitted boundary event remains readable by the declared audit
+authority for the declared horizon.* Compartmentation subtracts the reader set, and it is not erasure.
 
-**Verification versus suitability** [A] — kept apart throughout ADR-0016, because fusing them reads as
-a retreat from the thesis. **Verification** (signature, hash, provenance-chain integrity, record
-completeness) is decidable and is a legitimate precondition of admission. **Suitability**
-(evaluations, benchmarks, red-team findings) is evidence, never a precondition. *TOPAK verifies
-Personas; it does not verify models.*
+**Forensic floor** [A·CR]: six classes that cannot be erased for the horizon: **F1** admit decisions · **F2** stop
+attribution · **F3** promotion votes · **F4** anchor issuances · **F5** break-glass invocations · **F6** erasure
+events (ADR-0028). Each class is a floor denial on the erasure envelope. No cognitive payload is in the floor.
 
-**Evaluation is deny-only** [A] — ADR-0007 applied to a new artifact class: a passing evaluation can
-never admit a Persona; a failing one can deny or quarantine it. The asymmetry is what makes the
-weakness of evals harmless.
+**Where a vote lives** [A]: the authoritative vote is the admit decision in the consensus log, which F3 retains. The
+round-topic emission carries a pointer to its commentary, and erasure removes only the commentary.
 
-**Provenance degradation** [A] — where the artifact is not in hand the gate does not soften; the rung
-changes: **verified** (artifact possessed, hash-checked) → **attested** (provider signs a statement) →
-**asserted** (a version string and nothing else).
+**Demand type 5** [A·CR]: "hide that a record existed". It is **declined**, because it conflicts with NC-2 and F6.
 
-**Persona proliferation** [A] — every parameter change is a new Persona and a new promotion;
-temperature becomes a deploy-cadence change. Stated in the record as the correct price. The floor
-bounds Persona *classes*, so the registry grows without the admission logic growing.
-
-**Persona revocation is an ordinary deny** [A] — local, no consensus, no floor exception, and
-explicitly **does not add to ADR-0013's carve-out count**.
-
-**Lineage** [A] — a Persona's training provenance. The archetype admits only **in-house pre-trained
-Personas from two independent lineages**. Overlapping public corpora do not count as independent.
-
-**Seat distinctness** [A] — the Observer's Persona must differ from the Thinker's **by lineage**, not
-merely by configuration, expressed as a policy predicate over Persona provenance.
-
-**Independent-lineage criterion** [O] — unwritten; ADR-0017 owes a **decidable or auditable**
-criterion for lineage independence. Until it
-exists, the archetype's `Contained` set is unreachable on this axis as well as on the sandbox axis.
-
-**Typed lift split** [A] — the model-specific **decoder** ships in the Persona; the model-agnostic
-**validator** lives in the mechanism (ADR-0018). The ADR-0010 move — verified core, parameterized
-edge — applied to syntax.
-
-**Silent substitution** [D] — a provider updates weights, rotates a tokenizer, or deprecates an
-endpoint: the pin breaks with **no event anywhere in the system**. Boundary B8, the largest empty
-cell in the register. Havoc semantics make a *worse* model harmless for containment; what changes is
-that substitution becomes a detectable identity mismatch instead of an unmodeled event.
-
-**No staleness argument for Personas** [D] — a stale bundle is safe because the floor bounds it below.
-**Nothing makes an out-of-date Persona monotonically less dangerous.** Readers will assume the floor
-argument generalizes; state that it does not.
+**Forensic horizon seam** [O, 10]: the horizon is the rules-epoch chain, and re-genesis starts a new chain. The
+successor's read access is carried as a re-genesis migration obligation.
 
 ---
 
-## 8. Time, intervals, boundaries
+## 7. Detection and the model
 
-**Boundary register** [D] — the companion document listing fourteen boundaries, each with its
-cadence, instant, interval of untruth, and behavior when unavailable. Read it **by its holes**.
+**Observer** [A]: the detection layer. Every finding is **deny-only**.
 
-**Cadence** [D] — the rate at which artifacts on each side of a boundary change. A cadence mismatch is
-what forces a boundary to exist.
+**Placement** [A]: Observer replicas never share a device with the Thinker they watch, or with each other (ADR-0008).
+**A Byzantine quorum of co-resident replicas is arithmetic fiction.**
 
-**Instant** [D] — the moment two independently evolving artifacts are pinned against each other and a
-check becomes decidable. **A boundary with no instant has no enforcement point.** The four instants
-are **promotion**, **seal**, **fence**, and **revoke** — the last with semantics undefined.
+**Scoping, reversed in effect** [A → O, 6]: ADR-0008's shared Observer group stands in text. ADR-0023 makes the
+archetype **per-principal Observers plus a cross-principal correlator**. The superseding record is unwritten, and it
+must also re-home ADR-0024's veto seats.
 
-**Interval of untruth** [D] — the window during which a boundary's claim is untrue or not yet known to
-be true. An unbounded interval with no monotonicity argument is an open hole.
+**Cross-principal correlator** [O]: a noun, with no record, alphabet or placement.
 
-**Epoch fencing** [A] — after an epoch increment, actions carrying the prior epoch are rejected by
-**mechanism** rather than by policy. The cheapest check in the system, and the only place a temporal
-condition is enforced without a policy lookup.
+**Monoculture** [D]: an Observer should come from a different model family than the agents it watches.
 
-**Lease** [A/D] — the authority object a principal holds: identity, alphabet, topic, epoch, expiry.
-Grant is a consensus decision; expiry is a local clock read.
+**Build has an Observer** [P]: ADR-0021, Proposed. It is blocked on ADR-0003's no-tiered-storage clause (open item 4).
 
-**Lease attenuation** [S] — proposed 09.17: `leaseₙ₊₁ ⊑ leaseₙ` within an epoch. A renewal may narrow
-the alphabet, tool allowlist, or topic scope; any widening needs a fresh grant at a new epoch. The
-consequence is that **a stale lease becomes monotone-safe**, which makes the lease the second interval
-in the register to be solved by monotonicity rather than by bounding, and takes the clock off the
-safety path.
+**LTRO** [D]: Listener / Thinker / Reader / Observer, the internal decomposition of an agent principal. The
+**Reader** reads logits and may colocate with the Thinker.
 
-**Lease rank** [S] — the proposed lexicographic tuple `(rules epoch, lease epoch, renewal counter)`.
-Attenuation bumps the last component; widening bumps a higher one. One check covers both axes.
+**Seat** [A]: the binding point for a Persona, and the unit of attestation and attribution. A principal is the unit
+of authority and eviction.
 
-**Fence token** [S] — proposed: the grant's Paxos log index, rather than a second counter.
-Monotonicity must live in the **acceptor** (a durable highest-seen register per principal), not in the
-token.
+**Persona** [A]: a signed, versioned Build artifact that binds a model to its complete runtime configuration
+(ADR-0016). **TOPAK verifies Personas; it does not verify models.** The Persona is a lease field, so revoking a
+Persona is a targeted revocation.
 
-**E-stop taxonomy** [D] — three kinds:
+**Verification vs suitability** [A]: signature, hash and provenance integrity are preconditions. Evaluations are
+evidence. **Evaluation is deny-only.**
 
-| Kind | Trigger | Authority | Latency | Needs availability |
-|---|---|---|---|---|
-| **Passive** | Lease non-refresh | Subtracts | ≤ remaining TTL | No |
-| **Active** | Unilateral human stop | Subtracts | Decision + `W` | Yes |
-| **Break-glass** | Quorum | **Adds** | Consensus round | Yes |
+**Provenance degradation** [A]: **verified** → **attested** → **asserted**.
 
-**Quiesce semantics** [O] — stop-admitting is not stop-effecting. A tool invocation already admitted
-and handed to an executor is outside the stop. **No quiesce semantics exist anywhere in the corpus.**
+**Lineage** [A]: the archetype admits only **in-house pre-trained Personas from two independent lineages** (ADR-0017).
+The admission clause stands, but its ordering-primacy clause is reversed in effect by ADR-0023.
 
-**`W`** [D] — the effect propagation window, about a second. **Guaranteed by mechanism.**
+**Seat distinctness** [A]: the Observer's Persona differs from the Thinker's **by lineage**.
 
-**`L`** [D] — Observer detection latency. **An emergent property of a component**, and **unmeasured**,
-though the safety argument invokes it.
+**Independence criterion** [O, 20]: owed by ADR-0017. Until it exists, `Contained` is unreachable at any rung. ADR-0035
+proposes one (§10).
 
-**`D`** [D] — the human response budget. **An organizational commitment**, named and never budgeted.
+**Typed lift split** [A]: the decoder ships in the Persona, and the validator lives in the mechanism (ADR-0018).
+**Decoder–alphabet compatibility** under a change to S is open (item 17).
 
-**`W < L < D`** [D/O] — the timing chain. The three terms are of **three different kinds**, which is
-why forcing them into one classification (specification invariant versus deployment obligation) was
-rejected as a false dichotomy. Only partly expressible in standard TLA+. The property that matters may
-be a **sum measured against time-to-irreversibility**, not an ordering. **Letter drift is a live
-citation hazard** — see §13.
+**Decode observability** [A]: `none` is the only unconditional value. `topk_logprobs` is admissible for conformance
+and substitution detection, never for claims about `L` (ADR-0019).
 
-**Clock model** [O] — unstated. What the 09.17 session found when it was finally opened: safety is
-clock-free and carried by the fence, so clocks buy **liveness only**; causality (ADR-0005's vector
-clock) bounds no interval; intervals whose failure **subtracts** authority can use a cheap local
-monotonic clock, while intervals whose failure **adds or preserves** authority need trusted time; and
-**no safety decision reads a clock supplied by a principal.** A three-clause record was offered and
-not taken up.
-
-**Asymmetric margin** [S] — the holder self-expires at `TTL − δ`; the grantor waits `TTL + δ` before
-re-granting. No overlap without trusted time (Chubby's lock delay).
-
-**HITL / HOTL / HOOTL** [D] — human-in-the-loop, human-on-the-loop, human-out-of-the-loop, defined by
-**enabling condition**: enabling, disabling only, no channel expressible. Placement is forced by the
-consistency budget, not by preference: Build affords HITL; Run's ~1s window leaves HOTL. All three are
-`ENABLED` predicates in TLA+.
-
-**HOTL proceeds by default** [D] — disabling only. Combined with deny-only findings and veto-seat
-silence, this is the structural half of CR-2.
+**Silent substitution** [D]: a provider changes weights with no event anywhere. Pinning makes it a detectable
+identity mismatch. **No staleness argument covers Personas.**
 
 ---
 
-## 9. Deployment variation
+## 8. Time, variation, boundaries
 
-**Archetype** [P] — the unique maximum of the parameter lattice. A **reference point, not a shippable
-configuration**. **Nobody ships the archetype**, and the TLA+ theorems are proved about an unshipped
-configuration — honest only if the declaration records are actually written. ISO 26262's **safety
-element out of context (SEooC)** is the stated precedent.
+**Clock model** [A]: stated in ADR-0032. **Clocks buy liveness, never safety.** Epoch fencing carries safety.
 
-**Degeneracy** [P] — a form obtained by driving named parameters of the archetype to limiting values.
-*Degenerate* is the formal register; *reduced* is the operational one. **The effect is premise loss,
-not weakening:** theorems are present or absent.
+**Trusted by failure direction** [A]: an interval whose failure **subtracts** (lease expiry, passive e-stop, vote
+timeout) may use a local monotonic clock with an asymmetric margin that errs early. An interval whose failure
+**adds or preserves** authority (break-glass TTL, Persona expiry, re-attestation) needs trusted time.
 
-**Admission test** [P] — a variation is a rung only if it is reachable from the archetype by parameter
-limit. If it has a capability the archetype lacks, **the archetype is incomplete**, and the rejection
-is a finding about the archetype.
+**No safety decision reads a principal-supplied clock** [A]: a timestamp in a payload is content, not a fact.
 
-**Rung** [P] — a position on one axis. **Rungs are per-axis**; a deployment is a tuple and unqualified
-"rung demotion" is barred. See §13 for the collision with attestation rungs.
+**`W + L + D < T_irrev`** [A]: the timing property, declared per effect class. **`W`** is the propagation window,
+about a second, guaranteed by the mechanism. **`L`** is Observer detection latency, an emergent property, and
+**unmeasured**. **`D`** is the human response budget, an organizational commitment. **`T_irrev`** is the time until an
+effect becomes irreversible. Where no budget fits, **the effect must not be in the alphabet.**
 
-**Declaration record** [P] — the fixed schema every degeneracy carries: parameter, archetype value,
-deployed value, premises falsified, theorems voided, mitigation, and a composition note. **Declaration
-is mandatory and mitigation is not; the composition note is mandatory above one parameter.** Existing
-records are A-0025, D-0025-1, D-0025-2 (anchor recoverability) and D-0024-1, D-0024-2 (approver fault
-tolerance).
+**E-stop** [D]: **passive** (lease non-refresh, subtracts) · **active** (unilateral human stop, subtracts) ·
+**break-glass** (quorum, **adds**).
 
-**Axes named so far** [P] — Persona provenance, event-log legibility, Observer scoping, effect-stream
-role, arguably HITL/HOTL/HOOTL posture, approver fault tolerance, anchor recoverability. **The set is
-not enumerated and finiteness of each chain is unproven.**
+**HITL / HOTL / HOOTL** [D]: defined by enabling condition. Build affords HITL. Run's roughly one-second window leaves
+HOTL.
 
-**Two kinds of degeneracy** [P] — **a promotion degeneracy is a mechanism release; a custody degeneracy
-is a declaration.** The first changes what the mechanism admits and reopens a theorem; the second
-instantiates the opaque `Authentic` outside the model and reopens nothing.
+**Boundary register** [D]: fourteen boundaries, each with a cadence, an instant, an interval of untruth and behavior
+when unavailable. **B8** (Persona evolution) is the most critical. The **instants** are promotion, seal, fence and
+revoke.
 
-**Type change** [P] — a degeneracy can move a participant from the gate to principal (or back), which
-**moves the trusted computing base**. Admission must check for this, not only for voided theorems.
+**Archetype** [A·CR]: the unique maximum of the parameter lattice. It is a reference point. **Nobody ships the
+archetype** (ISO 26262 SEooC precedent).
 
-**Dominance rule** [P] — the archetype moves on a paired axis only to Pareto-dominating values. The
-critical review (§2.8) argues the cost function must include **forced authority events** such as
-re-genesis, which would put A-0025 itself back under examination.
+**Degeneracy** [A·CR]: a form reached by driving named parameters to limiting values. Its **effect is premise loss,
+not weakening** (ADR-0023). *Reduced* is the operational register.
 
-**Non-increasing TCB** [P] — across archetype versions. Moving a property into *assumed* needs its own
-record.
+**Admission test** [A·CR]: a variation is a rung only if it is reachable by parameter limit, and it must also be
+checked for **type changes**. A capability the archetype lacks is a finding about the archetype.
 
-**Composition** [O] — not assumed monotone: two degeneracies may void more than the union of their
-theorem sets. Every real deployment has at least three. Until a composition rule exists, **no shipped
-deployment can compute its theorem inventory from its declarations.**
+**Rung** (degeneracy) [A·CR]: a position on one axis. A deployment is a tuple.
 
-**Reversals in effect** [P] — an accepted record whose text stands while a later record contradicts it
-in substance. Two exist: ADR-0008's scoping and ADR-0017's ordering-primacy clause, both by ADR-0023.
-Both happened within 48 hours, by the author alone, during genesis.
+**Declaration record** [A·CR]: kind · parameter · archetype value · deployed value · premises falsified · theorems
+voided · type changes · optional mitigation · composition note.
 
----
+**Kind** [A·CR]: a **mechanism degeneracy** changes a value inside the verified object and ships as a release. A
+**declaration degeneracy** changes something outside it and reopens nothing.
 
-## 10. Corpus, process, and verification vocabulary
+**Composition note** [A·CR]: required above one parameter. It names the **delta**: theorems voided jointly but not
+individually. **A missing note is not an empty delta.**
 
-**ADR** [A] — Architecture Decision Record, in Nygard form, with explicit status and debt tracking. **No
-renumbering; tombstones instead** (ADR-0011 is one). **Decomposition test:** a clause that can be
-superseded alone is a separate decision.
+**Type change** [A·CR]: a participant moving between the gate and principal. It moves the TCB.
 
-**Reserved** [C] — a number assigned with no record (ADR-0014). Explicitly a checkpoint label, not a
-status class: no file, no digest, cannot be ratified (G-C3).
+**Declared records** [A]: D-0024-1 (k-of-n) and D-0024-2 (single signer), on approver fault tolerance. A-0025,
+D-0025-1 and D-0025-2, on anchor recoverability. **A-0030** and **D-0030-1** (a Rego floor, *measured* rather than
+*proven*), on floor verification.
 
-**Genesis** [A] — the current process, **not a degeneracy**: before the anchor exists there is no
-archetype custody to degenerate from. Genesis custody is declared: Scott, sole custodian, (1, 0).
-Everything ratified in genesis is trusted by declaration and becomes part of the **genesis TCB**.
+**Axes named so far** [D]: Persona provenance, event-log legibility, Observer scoping, effect-stream role, arguably
+HITL/HOTL/HOOTL posture, approver fault tolerance, anchor recoverability and floor verification. The set is not
+enumerated.
 
-**Unilateral ratification** [A] — the custodian may ratify any record with decision text. A record
-without decision text cannot be ratified.
+**Archetype-evolution record** [O, 7]: holds archetype versioning, the dominance rule and non-increasing TCB. Until it
+exists, **nothing bounds how the archetype grows.**
 
-**Confirmation-required** [A] — a marker on a ratified record that carries a proof obligation over
-privileged paths (**C1**), an exhaustiveness or confinement claim (**C2**), a reversal in effect
-(**C3**), or resolves a debt owed by one (**C4**). Until confirmed, a publication citing such a
-guarantee says **"author-ratified."** CR-5 proposes a **C5: load-bearing premise**, on the grounds that
-the criteria reach the forensic floor but not ADR-0007 or ADR-0010.
+**Assumptions of use** [D]: ToO §13, framed as a SEooC. **A deployment that fails them does not inherit the
+theorems.**
 
-**Bootstrap set** [A] — ADR-0024 to 0027. **Cannot be confirmation-required**, because confirmation runs
-under those rules and confirming them under themselves would be circular. Its weakest point, stated in
-the corpus: **the bootstrap set gets no independent review, ever.**
-
-**Bootstrap trigger** [A] — the anchor may bootstrap once a drafted TLA+ bootstrap specification exists:
-five modules (`Genesis`, `Anchor`, `RulesFloor`, `Promotion`, `BreakGlass`), five invariants, and a
-mutation for each that must fail. `RulesFloorNV` is a **precursor, not a substitute**.
-
-**Genesis bundle** [A] — assembled at the ceremony: the corpus manifest including the confirmation-required
-set, the specification digest marked checked or drafted-only, and the genesis rules. Every key-holder
-signs its digest; that is issuance epoch 0. **The only artifact never promoted.**
-
-**Re-genesis** [P] — the exit from a frozen rules set. Creates a **successor system**, and is the largest
-authority event the design has, performed under duress and producing a new TCB.
-
-**Genesis debt ledger** [A] — the per-checkpoint tally of the confirmation set. **No forcing function**,
-by decision: the debt is visible, not bounded. At G1: 2 ratified confirmation-required, +4 on queue C,
-+3 when written, total 9.
-
-**G checkpoint** [C] — a genesis checkpoint. **G1** (2026.09.15) is the corpus's state of record and is
-**immutable once cut**; corrections go into G2. Each ratified batch cuts the next one.
-
-**Theory of Operation** [D] — the narrative checkpoint. **Not the state of record** since G1; it explains
-how the design fits together, and status words appear only where status changes the meaning.
-
-**Readiness key** [C] — G1 §2: **R** ratifiable now · **R·CR** ratifiable, confirmation required ·
-**N** not ratifiable (no decision text) · **BS** bootstrap set · **—** already accepted, or tombstone.
-
-**Ratification queue** [C] — batches in dependency order: **B** bootstrap core · **C** confirmation
-required · **D** plain · **E** errata · **F** needs text before it can be queued. (The queue letter
-**C** and the confirmation criterion **C1–C4** are different alphabets that happen to meet here.)
-
-**Finding tags** [D/C] — six families are in use, and all are still live:
-
-| Tag | Source | What it marks |
-|---|---|---|
-| ⟨S6-n⟩ | Narrative log 09.15 | Records that disagree, found during the ToO rev 5 pass (S6-1…S6-18) |
-| **CR-n** | Critical review 09.16 | External-facing findings (CR-1…CR-20) |
-| **N17-n** | Narrative log 09.17 | What the three deferred items exposed when opened (N17-1…N17-3) |
-| ⟨LP-n⟩ | LTRO field assessment 09.16 | Seat and delegation findings (LP-1…LP-13). **Session material; the assessment is not a Project doc**, so these numbers are not checkable against the corpus |
-| T2-n, T3-n, S3-n, S4-n | Cleanup steps 2–4 | Recovery, fold, and normalization findings; dispositions in G1 §6. S3-2 and S3-4 are still **Open**, in queue F |
-| G1-n | The G1 cut | G1-1 applied at the cut; G1-2 still **Open**, same site as S3-4 |
-
-**Custodian call** [C] — a decision applied during cleanup and marked reversible; confirmed by the next
-cut (G-C5). N-1, N-2, and N-3 were confirmed by G1.
-
-**Havoc oracle / havoc semantics** [A] — modeling an agent as capable of anything its alphabet allows.
-The construction the whole design runs on, reached independently from a distributed-systems starting
-point and concordant with Moon & Varshney's Theorem 3.2.
-
-**Non-vacuity witness** [P] — a reachability result showing a property is not discharged over nothing.
-`RulesFloorNV` is the corpus's one checked artifact and the shape every other gate should take. **No
-non-vacuity gate exists for TLA+ invariants**, which mirrors the Rego vacuity problem one layer down.
-
-**Mutation** [P] — a deliberately broken variant of a specification that **must** fail the check. "Every
-invariant ships with a mutation that must fail" is the corpus's discipline, and is still rare in the
-field.
-
-**TLC vs TLAPS** [O] — undeclared (NIST MAP 2.3). TLC over bounded constants gives non-vacuity and
-discrimination, **not proof**. The easiest thing in the corpus for a formal-methods reviewer to attack.
-
-**Trace conformance** [D] — checking a recorded execution against the specification. It appears in
-ADR-0004's Context ("operates over the abstract state machine"), not in its Decision, so it is an
-obligation the corpus assumes rather than a decision it has taken. Currently the closest thing to a
-refinement from specification to implementation (ADR-0005 Consequences; CR-4).
-
-**Refinement** [D] — used in two distinct senses: `bundle ⊑ floor` (policy), and specification-to-
-implementation refinement (formal methods). The corpus has the first and **does not have the second**
-(CR-4).
-
-**Trusted computing base (TCB)** [O] — never enumerated. The 09.17 session proposed a three-column shape:
-**trusted** (about six obligations per item: measurement, minimum version, re-attestation trigger,
-residual, assumption of use, gate check), **explicitly not trusted** (the long column, and the asset),
-and **residual / out of scope** (each with the rung that would buy it down). Plus a **derivation rule** —
-every `CONSTANT`, `ASSUME`, unrefined module, environment step, and floor entry is an entry — so the
-list regenerates per archetype version instead of being re-authored. "Zero assumptions" fails twice:
-mechanically it relocates, and formally it hits the intent axiom. **The product of the hard path is a
-monotone discharge ledger, not an empty list.**
-
-**Guaranteed / measured / declared** [S] — the decomposition shape that keeps recurring: in `W`/`L`/`D`,
-in the TCB's three bins, approximately in the attestation rungs, and earlier in ADR-0025's three-way
-split of "infallible."
+| # | Assumption |
+|---|---|
+| A1 | Effect exclusivity is enforced by a mechanism |
+| A2 | Every allowlisted tool is hermetic |
+| A3 | Anchor key-holders are honest at the declared capture threshold |
+| A4 | Grant seats review independently |
+| A5 | A trained, authorized human is present for break-glass, quarantine release and `D` |
+| A6 | Trusted time exists for intervals that preserve authority |
+| A7 | The deployment declares its degeneracies |
+| A8 | Confirmation-required records are cited as author-ratified |
+| A9 | The mechanism's replicas are not compromised |
+| A10 | Each effect class declares `T_irrev`, and the budget holds |
 
 ---
 
-## 11. Outstanding — terms that name a hole
+## 9. Genesis, process, and the corpus
 
-Each of these is a vocabulary entry the corpus uses as if it denoted a mechanism. Each is on the open
-list (G1 §9) or arrived since.
+**Genesis** [A]: the current process, **not a degeneracy**. Custody is declared as Scott, sole custodian, (1, 0).
 
-**Sandbox gap** [O] — the set of unnamed effects. Blocks ADR-0022 §6 and ADR-0015's exhaustiveness, and
-decides whether `Contained` has members. **No mechanism, no owner.** Sandboxing is commodity in 2026, so
-this is an integration, declaration, and attestation task, not a research gap.
+**Unilateral ratification** [A]: the custodian may ratify any record that has decision text.
 
-**Container vacuity** [O] — the same hole named from the predicate's side: `Contained` may currently have
-**no members at all**, on two axes (confinement and lineage independence).
+**Confirmation-required** [A]: a ratified record carrying a proof obligation over privileged paths (**C1**), an
+exhaustiveness or confinement claim (**C2**), a reversal in effect (**C3**), or the resolution of such a debt
+(**C4**). The count at G3 is **nine**. **A marking may be scoped to an amendment** (ADR-0003 A2).
 
-**Confinement rungs** [S] — the ordering proposed 09.17, by attestation strength: **rung 0** none
-declared · **rung 1** asserted by the launcher · **rung 2** measured boot · **rung 3** confidential VM
-with an independent verifier. Unrecorded. The minimal solution — rung 1 alone — was sized at one record
-plus one model-checking run.
+**Bootstrap set** [A]: ADR-0024 to ADR-0027. It **cannot carry the marker**, because confirming it under itself
+would be circular. **Since ADR-0029 A2 it is reviewed at the bootstrap gate** with the rest of the corpus.
 
-**Mechanism versus instant** [S] — the sharp form of the sandbox gap: the mechanisms are commodity; the
-hard part is **the moment `Contain` knows it is running inside the mechanism it assumed**. That instant
-is boundary B12's empty cell, and **lease grant can be borrowed for it** — no new boundary needed.
+**Bootstrap trigger** [A]: (a) a drafted TLA+ bootstrap specification of five modules (`Genesis`, `Anchor`,
+`RulesFloor`, `Promotion`, `BreakGlass`), of which two exist, **and** (b) an **independent review of the entire
+corpus** at one manifest digest (ADR-0029 A2). **The trigger is permission, not obligation.**
 
-**Contested** [S] — Sokolov's third attestation verdict: signature valid, measurements diverge. TOPAK has
-**no vocabulary for evidence-of-discrepancy versus absence-of-evidence**, and rung 1 has no way to
-produce one.
+**Genesis bundle** [A]: the corpus manifest, the specification digest (checked or drafted-only), the review
+attestation and the genesis rules. Every key-holder signs it, and that is issuance epoch 0. **It is the only artifact
+never promoted.**
 
-**Lease schema** [S] — the record all three deferred items converge on: the clock reaches it (expiry on a
-local monotonic clock with an asymmetric margin), container vacuity reaches it (the lease binds the
-confinement-profile digest), the TCB reaches it (the lease's field list is the enumeration, serialized),
-and the identity gaps reach it from a fourth direction. **The likeliest next record.**
+**Headcount** [A]: an archetype bootstrap needs **five** humans: three key-holders, two grant seats, and R5
+disjointness. It needs six if the author holds a seat. **A solo bootstrap is not a bootstrap.**
 
-**Delegation / on-behalf-of** [O] — ⟨LP-8⟩. No record for delegation, on-behalf-of attribution, or the
-provenance of a task that passed through three principals. `W < L < D` has **no chain-depth term**, against
-published results showing asynchronous detection decays factorially with chain length.
+**Re-genesis** [A]: the exit from frozen rules. It creates a **successor system**. **Migration** is open (item 10).
 
-**Flow** [O] — CR-6. A per-action syntactic envelope cannot say "data read from X may not reach sink Y."
-The proposed fix is inside ADR-0007, not against it: **source labels as syntactic-lift fields**, since
-provenance is mechanically extracted and is not meaning. The 09.17 session added the cost boundary:
-self-prefix path rules stay in EL zone 1, while cross-principal flow needs a global ordered view where a
-stale prefix **fails open systematically**, which disqualifies it from the admit path and assigns it to the
-Observer.
+**Genesis debt ledger** [A]: the per-checkpoint tally of the confirmation set. There is no forcing function: the debt
+is visible, not bounded.
 
-**Observer quarantine gate** [O] — modeled event or internal step. Unblocks ADR-0005 and may eliminate the
-vector clock. "The cheapest open question on the board" since 09.12.
+**Debts on the face** [A]: obligations an accepted record carries openly in its status note. Examples are ADR-0030's
+six, ADR-0031's five, and ADR-0033's Kafka row.
 
-**Floor authorship** [O] — ADR-0014, Reserved. Narrowed to proposal eligibility; still the natural home for
-`Invoke` hermeticity and floor fitness. **Reserving the number while the two gates it would own stay
-unowned is the corpus's most expensive deferral.**
+**G checkpoint** [C]: the state of record. G3 (2026.09.25) is current. A cut is immutable, and corrections go to the
+next one.
 
-**Signed message format** [O] — protobuf versus canonical CBOR. Genesis-blocking: the genesis bundle needs
-it.
+**Theory of Operation** [C]: the narrative. **It is not the state of record.** Rev 7 is current.
 
-**Assumptions of use** [O] — the SEooC-shaped declaration the register calls the highest-leverage fix:
-putting them at the front converts the largest weaknesses from omissions into declared conformance.
+**Batch** [C]: a ratification group. Batches 5–9 were ratified on 09.25, and the records tag them ⟨B5⟩ … ⟨B9⟩.
 
-**Residual risk statement** [O] — NIST MANAGE 1.4, headed by anchor capture.
+**Conventions** [C]: G-C1 (files are cited by digest) · **a tree is cited by manifest** plus commit · **drift pins**
+(`mechanism/corpus-pins.sha256`) · **pointer errata** (a promised pointer, no decision text) · **dependent entries**
+(a ratification row with no text change) · **one results file per run**, never overwritten.
 
-**Reversibility index** [X] — cited by the feature list (F5.5) and the boundary register (§7.2) as
-ADR-0007's; **it does not appear in ADR-0007's recovered text**. A dangling concept with no home, and the
-mechanism ADR-0009's irreversible-domain clause would need. Belongs with G1 §10's unrecorded
-DAG-reversibility decision.
+**Havoc semantics** [A]: modeling an agent as capable of anything its alphabet allows.
 
-**Army of one** [X] — a degraded mode stated as a decision in session and never filed (G1 §10, session
-`a7fad171`). The answer to NIST GOVERN 6.2, third-party failure contingency.
+**Mutation** / **witness** [A/D]: every TLA+ property ships with a mutation that must fail and reachability witnesses
+that must be violated. **The floor has a decidable non-vacuity gate. TLA+ still does not**; for TLA+ it is a
+convention.
+
+**Too-coarse model** [D]: a model can be too small to see a finding. `Lease.tla`'s single global epoch hid finding 5.
+Four humans made R1's mutation hold vacuously. **A threshold needs at least three counted seats** before any
+threshold property means anything.
+
+**Checked, not proved** [C]: TLC at small constants is a discrimination test. **No theorem is proved** (G3 §8).
+
+**Refinement** [D]: two senses. By composition (policy), which the corpus has. Specification-to-implementation
+(formal methods), which it **does not have**.
+
+**Reference implementation** [R]: `mechanism/`, the admit path end to end. It is **evidence, not the verified
+object** (ADR-0033 §1). It is cited by manifest and commit, it has never been promoted, and nothing in it is in any
+TCB. It issues only rung-0 leases, so it fails A1. **Twenty-two assumptions and seventeen gaps** are tagged in the
+code (`GAPS-AND-ASSUMPTIONS.md`).
+
+**Reference findings 1–11** [R]: routed to records in ToO §15. Three needed running code to find (1, 4 and 9). Only
+finding 9, proposer retry in the drafted `Paxos` module, is still open (item 24).
+
+**Crash-recovery replicas** [A]: the consensus replicas are not Byzantine (ADR-0033 §3). **Replica authentication and
+Byzantine replicas** are open (item 23). This is assumption A9.
+
+**TCB declaration record** [O, 16]: it is unwritten. It is owed the engine-divergence and Byzantine-replica residuals.
 
 ---
 
-## 12. Adjacent — vocabulary readers arrive with
+## 10. After G3: Proposed records
 
-Terms TOPAK does not own but must either claim, disclaim, or position against.
+Both records were written on 2026.09.25, after the G3 cut. **Neither is Accepted**, and neither is in G3's manifest.
 
-**Distributed systems.** PACELC · PC/EC · PA/EL · **EL zones** (zone 1 enforcement, zone 2 leases, zone 3
-the effect stream) · linearizability · CALM · Paxos, Multi-Paxos, Byzantine fault tolerance, crash fault
-tolerance · KRaft · `acks=all` · vector clock · fencing token · lease (Gray & Cheriton) · quorum ·
-split-brain.
+**Attestation rung** [P]: ADR-0034 proposes the ordering: **0** none · **1** asserted by the launcher · **2**
+measured boot · **3** confidential VM with an independent verifier. **The archetype is rung 3.** Rungs 0–2 are
+declared degeneracies. Attestation happens **at lease grant** and lands in the lease's `confinement` field. It would
+close ADR-0022 §6 for Build and G3 item 19.
 
-**Safety and supply chain.** SEooC (ISO 26262) · STPA · trusting trust · SLSA and in-toto · reproducible
-builds · The Update Framework (TUF) · Certificate Transparency and Sigstore Rekor · RFC 9334 (RATS) and
-its three freshness models — nonce, **epoch ID**, timestamp · measured boot · confidential VM · OpenSSF
-Model Signing · SPIFFE/SVID and IETF WIMSE · macaroons and biscuit tokens (attenuation-only credentials).
+***Contested*** [P]: Sokolov's verdict: the signature is valid but the measurements diverge. Under ADR-0034 the
+response is refusal plus a **targeted revocation of the principal**. **Rung 1 cannot produce *Contested*.**
 
-**Formal methods.** TLA+, TLC, TLAPS · `ENABLED` · `INSTANCE` · invariant, safety, liveness · refinement ·
-vacuity detection (Beer et al.) · Dafny, Verus, Lean · SMT · enforceable security policies (Schneider
-2000; Basin, Klaedtke & Zălinescu 2013) · the de Bruijn criterion and `#print axioms`.
+**Lineage projection** [P]: ADR-0035 proposes that a Persona's lineage record is **projected from the Build log**,
+not taken from the trainer's manifest. A lineage that can only be declared is **D-0035-1**.
 
-**The field's counterparts.** Moon & Varshney (containment verification; the parent result) · AgentFlow
-(flow-centric policy; "the policy author and runtime are trusted") · CaMeL and FIDES (capabilities and
-information-flow control) · Cedar and Cedar Analysis (Lean-verified semantics, decidable permissiveness) ·
-Microsoft Agent Governance Toolkit (same process boundary; trust scoring) · Confluent's Agent Decision
-Record on an immutable hash-chained log · AI control (Greenblatt; Nelson; Makins; Arike) · Shukla & Joshi's
-impossibility results · Aegis (proof-of-enforcement, to be distinguished from verified-enforcement-mechanism).
+**Exclusion rules E1–E5** [P]: two lineages are independent unless one of these fires: **E1** shared weights ·
+**E2** shared generators · **E3** corpus overlap above θ · **E4** same architecture family and tokenizer · **E5**
+shared curators. Plus the **distillation rule**. The rehearsal is in `slm/`, and the θ values there are
+placeholders.
 
-**Regulatory and framework.** NIST AI RMF and its Playbook (GOVERN / MAP / MEASURE / MANAGE) · OWASP Agentic
-Security Initiative Top 10 · HIPAA · SCI compartmentation · GDPR right to erasure — which, per CR-11, applies
-to the human identifiers the forensic floor retains, so each class needs a legal-basis line.
+---
 
-**Worked examples in use.** The 767 case (authority gradient, detection lag, a human inside the loop) as the
-lede · the scientific method as a containment analogue · **the seatbelt, deliberately not the lede** —
-it maps to assumptions of use and to the 1974 interlock, but a belt is mitigation while `Contain` is
-admission, and invoking it summons risk compensation.
+## 11. Outstanding
+
+These terms name a hole. Each one points to the G3 §7 open list.
+
+| Term | Item |
+|---|---|
+| **Sandbox gap** | 1 |
+| **Floor fitness** | 2 |
+| ADR-0021 (Build Observer) · ADR-0005 (Kafka) | 4 · 5 |
+| ADR-0008 and ADR-0017 supersessions | 6 |
+| Archetype-evolution record | 7 |
+| R8, break-glass TTL | 8 |
+| Per-class floors (ADR-0014) | 9 |
+| Re-genesis migration | 10 |
+| Custody beyond (1, 0) | 11 |
+| Derived documents not regenerated | 12 |
+| Run's alphabet | 13 |
+| Solver trust for routing's "implies" results | 15 |
+| TCB declaration record | 16 |
+| Decoder–alphabet compatibility | 17 |
+| **Bundle signing** (bundle identity is a content revision until it exists) | 18 |
+| Attestation rungs · independence criterion · Persona expiry and lineage | 19 · 20 · 21 |
+| Lifting a revocation | 22 |
+| Replica authentication | 23 |
+| Finding 9 | 24 |
+| Genesis floor and S, DRAFT | 25 |
+
+These are also unowned and not numbered: **`Invoke` hermeticity** · the **cross-principal correlator** · the
+**Observer quarantine gate** · **delegation / on-behalf-of** · **flow** (CR-6) · the **residual-risk statement**,
+headed by anchor capture.
+
+---
+
+## 12. Adjacent vocabulary
+
+These are carried from the 09.17 glossary §12 unchanged, with three additions: **Cedar** and its Lean-verified
+semantics and **SymCC** analyses (now the floor instrument) · **MCP** (the reference's agent interface) ·
+**confidential VM** and **RATS verdicts** (ADR-0034).
 
 ---
 
 ## 13. Terminology hazards
 
-Live collisions. Each needs a ruling before publication; the first three are new since the last glossary.
+These collisions are live. Several are new since 09.17.
 
-1. **"Rung" — two unrelated orderings.** ADR-0023's per-axis degeneracy rungs, and the 09.17 confinement
-   attestation rungs 0–3. Both appear in the same sentence in current sessions. **Rename one.** (Note that
-   a confinement *upgrade* is a subtraction of effect surface, so the two orderings even run in opposite
-   directions.)
-2. **"Floor" — now four things.** Policy floor, rules floor, forensic floor, and floor *fitness*. Plus
-   `bundle ⊑ floor` and "floor minimum" (a seat count). The word is doing more work than it can carry.
-3. **"G1" — checkpoint versus gate.** Genesis Checkpoint G1 and G2, against the three gates called
-   G1–G3 in review material. Also G1-1, a finding tag from the cut itself. **Name the gates; don't
-   letter them.**
-4. **"Agent" — three referents.** The A in TOPAK, the LLM inside a seat, and the OPA daemon (Open Policy
-   *Agent*). The article uses all three. Worst offender, and unresolved since 09.11.
-5. **"EL" — PACELC's else-latency, read as "eventually linearizable" on sight** by distributed-systems
-   readers. Either expand it every time or relabel the zones.
-6. **"Round" — Build and Run mean different things.** A Build round is one pipeline invocation; a Run round
-   is sub-second to seconds. Retention horizons diverge accordingly. Always qualify.
-7. **"Epoch" — four counters.** Rules epoch, anchor epoch, lease epoch, deployment epoch. The lease-rank
-   proposal orders three of them lexicographically, which is exactly the point at which the ambiguity stops
-   being harmless.
-8. **`L` and `D` letter drift.** Before 09.12, `L` was lease duration and `D` was detection lag. From 09.12,
-   `L` is Observer detection latency and `D` is the human response budget. **Any citation of `W < L < D` to
-   pre-09.12 material is wrong in substance**, and the justification for `W < L` differs under the two
-   readings.
-9. **"Consensus" — control plane, not agents.** Paxos orders orchestrator decisions *about* agents. It is not
-   consensus *among* agents over their outputs, which is a different literature TOPAK deliberately does not
-   join.
-10. **"Declared" — three uses.** A declaration record (ADR-0023), the declared bin of the TCB, and declared
-    custody (ADR-0025). Related by shape, not identical.
-11. **"Byzantine" — agents, not orchestrators.** Rev 5 uses it of agents while the control plane runs
-    crash-fault-tolerant Paxos among implicitly trusted orchestrator nodes. **The control plane's fault model
-    is never declared.**
-12. **"Proved" and "theorem."** The corpus's register throughout, against one checked 30-line model. CR-4's
-    recommendation is to say **"obligations stated as theorems, with mutations"** and never "proved" in the
-    present tense.
-13. **"Degenerate" — two problems, one of them assigned here.** ADR-0023's Consequences hands this
-    document an explicit obligation: **note the collision with TLA+'s own "degenerate behavior."**
-    Separately, the word reads pejoratively outside the formal register, which the *degenerate* /
-    *reduced* split in clause 1 is meant to mitigate. Both belong in the article's first use.
-14. **Domains versus components.** `Build`/`Run`/`Contain` against T/O/P/A/K. Two axes; T appears in both
-    domains and K spans them. **The component × domain mapping table is still unwritten** — it has been on the
-    open list since 09.11 and it is the thing that kills this confusion outright.
+1. **"A1", "A2" and so on: four alphabets.** Amendments (ADR-0003 A1), assumptions of use (A1–A10), archetype
+   declarations (A-0025, A-0030), and the readiness key. *"ADR-0003 A2"* and *"assumption A2"* are unrelated.
+2. **"B" and a number: four referents.** Boundaries (B8, B12, B14), floor policy IDs (forbid **B7**), ratification
+   batches (⟨B5⟩–⟨B9⟩), and ADR ratification-table rows (ADR-0026 B4, ADR-0033 B8). *"B7"* and *"B8"* each have more
+   than one live meaning.
+3. **"E" and a number: errata and exclusions.** ADR-0031 E1 and ADR-0015 E2 are errata. ADR-0035's E1–E5 are
+   independence exclusions.
+4. **"R" and a number: rules-floor entries and record revisions.** "0031 at R3" is a record revision. "R3" alone is a
+   withdrawn rules entry. The readiness key's **R** is a third use.
+5. **"G" and a number: checkpoints, conventions and gaps.** G1–G3 are checkpoints, **G-C1** is a convention, and
+   **G5** in `mechanism/` is a code gap. Name the three floor gates; don't letter them.
+6. **"Rung": now three orderings.** ADR-0023 degeneracy rungs (per axis), confinement attestation rungs 0–3
+   (ADR-0031 field, ADR-0034 Proposed), and provenance rungs on ADR-0017's axis. `slm/` says "every round runs at
+   rung 0", meaning **attestation** rung. Always qualify.
+7. **"Floor": now five things.** The policy floor, the rules floor, the forensic floor, floor fitness, and **the
+   genesis floor** (a DRAFT text, as distinct from the machinery that checks one). There is also "floor minimum", a
+   seat count.
+8. **"Declared": two opposed senses.** A **declaration** degeneracy reopens nothing (ADR-0023). A **declared**
+   lineage record is the *weakest* strength (ADR-0035 D-0035-1). Declared custody is a third use.
+9. **"Revocation" vs "fence".** A targeted revocation ends matching leases. An epoch fence ends every round. Earlier
+   text used "fence" for both.
+10. **"Agent": three referents.** The A in TOPAK, the LLM inside a seat, and OPA (Open Policy *Agent*).
+11. **"Epoch": four counters.** Rules epoch, anchor epoch, lease epoch, and deployment epoch. The fence is a log
+    index, not an epoch.
+12. **"Round": Build and Run differ.** A promotion is also a round. Always qualify.
+13. **"Byzantine": agents, not replicas.** Agents are Byzantine. The control-plane replicas are crash-recovery
+    (ADR-0033 §3), which is now declared.
+14. **"Proved": retired** (CR-25, rev 7 erratum). Say *checked* or *must hold*.
+15. **"Degenerate"** collides with TLA+'s "degenerate behavior" (the ADR-0023 obligation) and reads as pejorative.
+    Use *reduced* in operational prose.
+16. **"Confirmation-required" count drift.** G3 and rev 7 say **nine**. ADR-0029's status note, after A2 was
+    ratified on 09.25 following the G3 cut, adds a **C3 marker for A2 only**, which would make ten. G4 has to say
+    which.
 
 ---
 
 ## 14. Retired wording
 
-The 09.11 glossary went stale because vocabulary moved and nothing tracked the movement. This section is the
-countermeasure. Each line is wording that appears in corpus documents and should not be repeated.
+Rows added since 09.17 come first. The 09.17 table (CI/Orch, "semantic containment", the ladder, "immutable",
+crypto-shredding as mechanism, Kafka as system of record, "strictly stronger than Moon & Varshney", the `L`/`D` swap,
+§4.2 → §4.6, "Varshnay") still stands.
 
 | Retired | Replacement | Authority |
 |---|---|---|
-| CI, Orch | `Build`, `Run` | ADR-0001 |
-| Three TLA+ spec domains | Two domains, one component instantiated twice | ADR-0002 |
-| "Semantic containment" | Boundary-enforceable containment | ToO rev 5 §2.1 |
-| Deployment ladder / profiles | Degeneracy; per-axis rungs; a deployment is a tuple | ADR-0023 |
-| "Immutable" log | Legibility | ADR-0028 |
-| Crypto-shredding as the erasure mechanism | Sealed round-topic deletion plus plaintext-store deletion | ADR-0003 (the rejection), ADR-0006 with ADR-0004 (the mechanism) ⟨S6-11⟩ |
-| Kafka as ordering authority or system of record | Transport with a durability window; Paxos orders, the archive records | ADR-0005 |
-| "Strictly stronger than Moon & Varshney" | "Conditional on confinement (ADR-0022 §6)" | CR-1 |
-| `D` as detection lag; `L` as lease duration | `L` detection latency, `D` human response budget | 09.12 onward |
-| Moon & Varshney §4.2 | §4.6 and Appendix B | ADR-0002 E1 |
-| ADR-0016 §8 (in ADR-0018, ADR-0019) | ADR-0020 | Errata queue E |
-| Promotion on a human signing key | A quorum grant read from issued rules | ADR-0024 |
-| "The floor is the one artifact verified rather than promoted" | The floor is verified with the mechanism; the release carrying it is promoted. Only the genesis bundle is never promoted | ToO rev 5 §3.2 ⟨S6-16⟩ |
-| "Varshnay" and other misspellings | **Varshney** | ToO rev 5 §11.1 |
-| "Cheap to close" (of the clock model) | Carried across three checkpoints; retired as a label | N17 §5 |
+| `bundle ⊑ floor` decided at promotion, by SMT over Rego | A property of composition, for every bundle | ADR-0030 §1 |
+| O = OPA and Rego | O = a verified floor evaluator plus a bundle engine | ADR-0030 §2 |
+| `quorum = "any"` | A threshold *k*, with R9 keeping *k* ≥ 2 | ADR-0024, ADR-0026 |
+| Recusal as an issued value; R3 | A mechanism constant in the `Vote` envelope; R3 withdrawn | ADR-0024, ADR-0026 |
+| Relaxing recusal is a mechanism release | A policy-floor relaxation: issuance and promotion | ADR-0022 A1 |
+| `W < L < D` as the safety property | `W + L + D < T_irrev` per effect class; the ordering is a magnitude description | ADR-0032 §4 |
+| "Proved", "proven" | "Checked", "must hold" | G3 §8; CR-25 |
+| "The bootstrap set gets no independent review, ever" | Reviewed at the bootstrap gate with the whole corpus | ADR-0029 A2 |
+| `Resign` "defined nowhere" | Defined per custody rung | ADR-0025 annex |
+| Lease attenuation, lease rank, fence token **[S]** | Renewal only narrows; fence = Paxos log index at grant | ADR-0031 |
+| Asymmetric margin **[S]** | A local monotonic clock with a margin that errs early | ADR-0032 |
+| Confinement rungs, *Contested* **[S]** | Attestation rungs 0–3, *Contested* | ADR-0031 §3; ADR-0034 (Proposed) |
+| One epoch fence for every revocation | Targeted revocation plus epoch fence | ADR-0031 |
+| "Clock model: unstated" | Stated | ADR-0032 |
+| Denials not recorded | Recorded, unordered, as digests | ADR-0020; reference finding 11 |
+| Monotonicity "at five layers" | Eight layers | ToO rev 7 §7.8 |
 
 ---
 
 ## Sources
 
-**Corpus.** Theory of Operation rev 5 (2026.09.15) · Genesis Checkpoint G1 (2026.09.15) · boundary register
-(2026.09.13) · feature list (2026.09.15 rev 1) · ADR-0001 to ADR-0029 at their G1 digests · `RulesFloorNV.tla`
-and its TLC results.
+**Basis.** `checkpoints/topak-genesis-checkpoint-G3-2026.09.25.md` · `checkpoints/topak-theory-of-operation-2026.09.25-rev7.md`
+· the records they cite, at their G3 digests.
 
-**Derived, not records.** Critical review (2026.09.16, CR-1 to CR-20) · narrative log (2026.09.17, N17-1 to
-N17-3) · narrative log (2026.09.15, S6-1 to S6-18). The **LTRO principal field assessment** (2026.09.16,
-LP-1 to LP-13) is cited from session history and is **not in the Project or the corpus**; its findings are
-reported here as session material and its numbering is not independently checkable.
+**After G3, marked where used.** ADR-0029 A2 (ratified 09.25, after the cut) · ADR-0034 and ADR-0035 (Proposed) ·
+`derived/topak-critical-review-2026.09.25.md` (CR-21 to CR-26).
 
-**Unrecorded session material**, marked **[S]** above and drawn from 09.16–09.17: container vacuity (rungs,
-the borrowed instant, *Contested*) · clock and `W < L < D` · TCB enumeration (three columns, derivation rule,
-discharge ledger) · lease implementation (attenuation, rank tuple, fence token) · flow and AgentFlow (CR-6's
-cost boundary).
-
-**External.** Moon, R. & Varshney, L. R., *Containment Verification: AI Safety Guarantees Independent of
-Alignment*, arXiv:2605.09045v2 · Sokolov, arXiv:2608.00801 (attestation verdicts) · the counterpart set listed
-in the critical review §3 · NIST AI RMF Playbook.
+**Superseded.** `derived/topak-glossary-2026.09.17.md`, whose §12 is carried by reference.
