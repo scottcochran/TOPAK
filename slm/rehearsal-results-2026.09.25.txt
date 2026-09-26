@@ -1,0 +1,172 @@
+# slm rehearsal results · 2026.09.25 rerun (README §B3: honest round + omit-object, seed, inject tampers)
+# host: 26.6.2 arm64 · uv 0.9.5 · cargo 1.98.1 · mechanism built from the working tree
+# commands: prepare_corpus.py pg19 8e6/1e6 → rehearsal/init.py --name pg → drive.py --minutes 10, then --minutes 0.5 --tamper {omit-object,seed,inject}
+# verdicts: honest consistent · omit-object Contested · seed Contested · inject Contested   (README recorded: same; honest train 569s here vs 551s recorded)
+# full artifacts (transcripts, manifests, lineage.projected.json, crosscheck.json) under rehearsal/run/pg/result-*/ (gitignored)
+
+pg19: emozilla/pg19@c021754c8e01, up to 8 MB
+  shard    1  9166a9fc49581c46      1.0 MB  20 docs
+  shard    2  12fa539a283f255f      1.0 MB  20 docs
+  shard    3  774119c239cdd135      1.0 MB  20 docs
+  shard    4  222b1648ab3314a9      1.0 MB  20 docs
+  shard    5  fdd9e0859c700299      1.0 MB  21 docs
+  shard    6  f2accdc6377f133e      1.0 MB  21 docs
+  shard    7  ad264438ee775e84      1.0 MB  21 docs
+  shard    8  a7d93f6d6ba60259      0.8 MB  17 docs
+data/corpora/pg19@rehearsal: 8 objects, 8.1 MB, 160 docs, ~2M tokens
+building topak (cargo, incremental)
+tool     slm_tokenizer@3a72016b9fca79216aa98e41817a7b590bb4e3b18ecd43909149d3d90209e6d3
+tool     slm_pretokenize@3a72016b9fca79216aa98e41817a7b590bb4e3b18ecd43909149d3d90209e6d3
+tool     slm_pretrain@3a72016b9fca79216aa98e41817a7b590bb4e3b18ecd43909149d3d90209e6d3
+building bundle (docker, OPA)
+bundle   ec9ed24301d931d3ffcfebe7fe3a8591defb8dacaaa6d34d5a9a10f0ef5572bd
+cluster  /Users/scott/dev/sandbox/TOPAK/slm/rehearsal/run/pg  (8 corpus objects)
+projected R-pg: record 5d03039a410d9b1f  strength declared (rung 0)
+  slots 2–24 under lease [1], params e06c61166a63
+  ingress 8 objects (8.1 MB, corpus root), 8 read, 0 authored drafts
+  root 6a0f51255a3becd5  weights a2c4d09b39e717c1  tokenizer 1422af065be63d1e  family ssm
+  generatedBy ∅  curatedBy ∅
+cross-check against the authored manifest: consistent
+grant a1 round 1: fence 1, ttl 180 min, contained=False
+round:
+  ADMIT read 12fa539a283f255f                            slot 2
+  ADMIT draft corpus/12fa539a283f255f….jsonl             slot 3
+  ADMIT read 222b1648ab3314a9                            slot 4
+  ADMIT draft corpus/222b1648ab3314a9….jsonl             slot 5
+  ADMIT read 774119c239cdd135                            slot 6
+  ADMIT draft corpus/774119c239cdd135….jsonl             slot 7
+  ADMIT read 9166a9fc49581c46                            slot 8
+  ADMIT draft corpus/9166a9fc49581c46….jsonl             slot 9
+  ADMIT read a7d93f6d6ba60259                            slot 10
+  ADMIT draft corpus/a7d93f6d6ba60259….jsonl             slot 11
+  ADMIT read ad264438ee775e84                            slot 12
+  ADMIT draft corpus/ad264438ee775e84….jsonl             slot 13
+  ADMIT read f2accdc6377f133e                            slot 14
+  ADMIT draft corpus/f2accdc6377f133e….jsonl             slot 15
+  ADMIT read fdd9e0859c700299                            slot 16
+  ADMIT draft corpus/fdd9e0859c700299….jsonl             slot 17
+  ADMIT draft config/tokenizer.json                      slot 18
+  ADMIT invoke slm_tokenizer                             slot 19
+        slm_tokenizer took 0s
+  ADMIT draft config/pretokenize.json                    slot 20
+  ADMIT invoke slm_pretokenize                           slot 21
+        slm_pretokenize took 0s
+  ADMIT draft config/pretrain.json                       slot 22
+  ADMIT invoke slm_pretrain                              slot 23
+        slm_pretrain took 569s
+  ADMIT submit                                           slot 24
+submitted artifact d4bafd18a261919de6ae042d9fdf35693b8564c9aa7e8800e6dc30c004cee060
+manifest /Users/scott/dev/sandbox/TOPAK/slm/rehearsal/run/pg/result-honest/manifest.json
+projected R-pg: record af72391f35878b65  strength declared (rung 0)
+  slots 2–24 under lease [1], params e06c61166a63
+  ingress 8 objects (8.1 MB, corpus root), 8 read, 0 authored drafts
+  root 6a0f51255a3becd5  weights 0d7965c4ea69ef4b  tokenizer 1422af065be63d1e  family ssm
+  generatedBy ∅  curatedBy ∅
+cross-check against the authored manifest: Contested
+  corpus: claimed absent, projected fdd9e0859c700299623c6f21  (seat a1, lease 1, slot 16)
+grant a1 round 1: fence 1, ttl 180 min, contained=False
+round:
+  ADMIT read 12fa539a283f255f                            slot 2
+  ADMIT draft corpus/12fa539a283f255f….jsonl             slot 3
+  ADMIT read 222b1648ab3314a9                            slot 4
+  ADMIT draft corpus/222b1648ab3314a9….jsonl             slot 5
+  ADMIT read 774119c239cdd135                            slot 6
+  ADMIT draft corpus/774119c239cdd135….jsonl             slot 7
+  ADMIT read 9166a9fc49581c46                            slot 8
+  ADMIT draft corpus/9166a9fc49581c46….jsonl             slot 9
+  ADMIT read a7d93f6d6ba60259                            slot 10
+  ADMIT draft corpus/a7d93f6d6ba60259….jsonl             slot 11
+  ADMIT read ad264438ee775e84                            slot 12
+  ADMIT draft corpus/ad264438ee775e84….jsonl             slot 13
+  ADMIT read f2accdc6377f133e                            slot 14
+  ADMIT draft corpus/f2accdc6377f133e….jsonl             slot 15
+  ADMIT read fdd9e0859c700299                            slot 16
+  ADMIT draft corpus/fdd9e0859c700299….jsonl             slot 17
+  ADMIT draft config/tokenizer.json                      slot 18
+  ADMIT invoke slm_tokenizer                             slot 19
+        slm_tokenizer took 0s
+  ADMIT draft config/pretokenize.json                    slot 20
+  ADMIT invoke slm_pretokenize                           slot 21
+        slm_pretokenize took 0s
+  ADMIT draft config/pretrain.json                       slot 22
+  ADMIT invoke slm_pretrain                              slot 23
+        slm_pretrain took 28s
+  ADMIT submit                                           slot 24
+submitted artifact c81c871400e922580682ab38bf829408a994dcf7daf7ec27631efddf67a041eb
+manifest /Users/scott/dev/sandbox/TOPAK/slm/rehearsal/run/pg/result-omit-object/manifest.json  (tampered: omit-object)
+projected R-pg: record 761c5b83fec88200  strength declared (rung 0)
+  slots 2–24 under lease [1], params e06c61166a63
+  ingress 8 objects (8.1 MB, corpus root), 8 read, 0 authored drafts
+  root 6a0f51255a3becd5  weights 406ec1e7126dbb77  tokenizer 1422af065be63d1e  family ssm
+  generatedBy ∅  curatedBy ∅
+cross-check against the authored manifest: Contested
+  seed: claimed 8, projected 7  (seat a1, lease 1, slot 23)
+grant a1 round 1: fence 1, ttl 180 min, contained=False
+round:
+  ADMIT read 12fa539a283f255f                            slot 2
+  ADMIT draft corpus/12fa539a283f255f….jsonl             slot 3
+  ADMIT read 222b1648ab3314a9                            slot 4
+  ADMIT draft corpus/222b1648ab3314a9….jsonl             slot 5
+  ADMIT read 774119c239cdd135                            slot 6
+  ADMIT draft corpus/774119c239cdd135….jsonl             slot 7
+  ADMIT read 9166a9fc49581c46                            slot 8
+  ADMIT draft corpus/9166a9fc49581c46….jsonl             slot 9
+  ADMIT read a7d93f6d6ba60259                            slot 10
+  ADMIT draft corpus/a7d93f6d6ba60259….jsonl             slot 11
+  ADMIT read ad264438ee775e84                            slot 12
+  ADMIT draft corpus/ad264438ee775e84….jsonl             slot 13
+  ADMIT read f2accdc6377f133e                            slot 14
+  ADMIT draft corpus/f2accdc6377f133e….jsonl             slot 15
+  ADMIT read fdd9e0859c700299                            slot 16
+  ADMIT draft corpus/fdd9e0859c700299….jsonl             slot 17
+  ADMIT draft config/tokenizer.json                      slot 18
+  ADMIT invoke slm_tokenizer                             slot 19
+        slm_tokenizer took 0s
+  ADMIT draft config/pretokenize.json                    slot 20
+  ADMIT invoke slm_pretokenize                           slot 21
+        slm_pretokenize took 0s
+  ADMIT draft config/pretrain.json                       slot 22
+  ADMIT invoke slm_pretrain                              slot 23
+        slm_pretrain took 29s
+  ADMIT submit                                           slot 24
+submitted artifact aa14dee5b0a1179335e0cd713e66fe61548d3f1d281376d55e60db6d7e8919e7
+manifest /Users/scott/dev/sandbox/TOPAK/slm/rehearsal/run/pg/result-seed/manifest.json  (tampered: seed)
+projected R-pg: record 5514d491f843f95b  strength declared (rung 0)
+  slots 2–25 under lease [1], params e06c61166a63
+  ingress 9 objects (8.1 MB, corpus root), 8 read, 1 authored drafts
+  root 6a0f51255a3becd5  weights b6fe16a2faffcf35  tokenizer a81abc3ec41d7bef  family ssm
+  generatedBy {'persona:0000000000000000000000000000000000000000000000000000000000000000': 0.000247}  curatedBy ∅
+cross-check against the authored manifest: Contested
+  corpus: claimed absent, projected 8f5b917c1fcb3359427d03f8  (seat a1, lease 1, slot 18)
+grant a1 round 1: fence 1, ttl 180 min, contained=False
+round:
+  ADMIT read 12fa539a283f255f                            slot 2
+  ADMIT draft corpus/12fa539a283f255f….jsonl             slot 3
+  ADMIT read 222b1648ab3314a9                            slot 4
+  ADMIT draft corpus/222b1648ab3314a9….jsonl             slot 5
+  ADMIT read 774119c239cdd135                            slot 6
+  ADMIT draft corpus/774119c239cdd135….jsonl             slot 7
+  ADMIT read 9166a9fc49581c46                            slot 8
+  ADMIT draft corpus/9166a9fc49581c46….jsonl             slot 9
+  ADMIT read a7d93f6d6ba60259                            slot 10
+  ADMIT draft corpus/a7d93f6d6ba60259….jsonl             slot 11
+  ADMIT read ad264438ee775e84                            slot 12
+  ADMIT draft corpus/ad264438ee775e84….jsonl             slot 13
+  ADMIT read f2accdc6377f133e                            slot 14
+  ADMIT draft corpus/f2accdc6377f133e….jsonl             slot 15
+  ADMIT read fdd9e0859c700299                            slot 16
+  ADMIT draft corpus/fdd9e0859c700299….jsonl             slot 17
+  ADMIT draft corpus/injected.jsonl (tamper)             slot 18
+  ADMIT draft config/tokenizer.json                      slot 19
+  ADMIT invoke slm_tokenizer                             slot 20
+        slm_tokenizer took 0s
+  ADMIT draft config/pretokenize.json                    slot 21
+  ADMIT invoke slm_pretokenize                           slot 22
+        slm_pretokenize took 0s
+  ADMIT draft config/pretrain.json                       slot 23
+  ADMIT invoke slm_pretrain                              slot 24
+        slm_pretrain took 162s
+  ADMIT submit                                           slot 25
+submitted artifact e5f1ec0dfeb23bda2efea3f0f004338bd5e0f588f650ba4b456c44fe3faf31f0
+manifest /Users/scott/dev/sandbox/TOPAK/slm/rehearsal/run/pg/result-inject/manifest.json  (tampered: inject)
+B3 DONE

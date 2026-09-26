@@ -1,0 +1,75 @@
+# slm E3 overlap results · 2026.09.25 rerun (README §B2, at the recorded 20 MB smoke size; ×12 slice 240 MB)
+# host: 26.6.2 arm64 · uv 0.9.5 · overlap tool digest 494b45d46f87 (printed per run below)
+# corpora streamed per corpora.json pins into data/corpora/*@e3smoke*; per-pair JSON in runs/overlap/ (gitignored)
+# README's recorded values (20 MB, 2026.09.25): doc equal 0.1115 · doc x12 1.0000 (3,911/3,911) · edu24-vs-edu23 0.0020/0.0025 · edu-vs-books 0.0000
+
++/private/tmp/claude-501/-Users-scott-dev-sandbox-TOPAK/7e5ebb11-2c00-47a1-99c2-90708a6579f0/scratchpad/run-b2.sh:3> cd /Users/scott/dev/sandbox/TOPAK/slm
++/private/tmp/claude-501/-Users-scott-dev-sandbox-TOPAK/7e5ebb11-2c00-47a1-99c2-90708a6579f0/scratchpad/run-b2.sh:4> c=fineweb-edu-2024-10
++/private/tmp/claude-501/-Users-scott-dev-sandbox-TOPAK/7e5ebb11-2c00-47a1-99c2-90708a6579f0/scratchpad/run-b2.sh:5> uv run prepare_corpus.py fineweb-edu-2024-10 --max-bytes 20e6 --out data/corpora/fineweb-edu-2024-10@e3smoke
+fineweb-edu-2024-10: HuggingFaceFW/fineweb-edu@87f09149ef47, up to 20 MB
+  shard    1  ab5fa6c1c72c7413     20.0 MB  3911 docs
+data/corpora/fineweb-edu-2024-10@e3smoke: 1 objects, 20.0 MB, 3911 docs, ~5M tokens
++/private/tmp/claude-501/-Users-scott-dev-sandbox-TOPAK/7e5ebb11-2c00-47a1-99c2-90708a6579f0/scratchpad/run-b2.sh:4> c=fineweb-2024-10
++/private/tmp/claude-501/-Users-scott-dev-sandbox-TOPAK/7e5ebb11-2c00-47a1-99c2-90708a6579f0/scratchpad/run-b2.sh:5> uv run prepare_corpus.py fineweb-2024-10 --max-bytes 20e6 --out data/corpora/fineweb-2024-10@e3smoke
+fineweb-2024-10: HuggingFaceFW/fineweb@9bb295ddab0e, up to 20 MB
+  shard    1  9c1796602fc4c811     20.0 MB  5672 docs
+data/corpora/fineweb-2024-10@e3smoke: 1 objects, 20.0 MB, 5672 docs, ~5M tokens
++/private/tmp/claude-501/-Users-scott-dev-sandbox-TOPAK/7e5ebb11-2c00-47a1-99c2-90708a6579f0/scratchpad/run-b2.sh:4> c=pg19
++/private/tmp/claude-501/-Users-scott-dev-sandbox-TOPAK/7e5ebb11-2c00-47a1-99c2-90708a6579f0/scratchpad/run-b2.sh:5> uv run prepare_corpus.py pg19 --max-bytes 20e6 --out data/corpora/pg19@e3smoke
+pg19: emozilla/pg19@c021754c8e01, up to 20 MB
+  shard    1  54d57d05dca1d935     20.0 MB  418 docs
+data/corpora/pg19@e3smoke: 1 objects, 20.0 MB, 418 docs, ~5M tokens
++/private/tmp/claude-501/-Users-scott-dev-sandbox-TOPAK/7e5ebb11-2c00-47a1-99c2-90708a6579f0/scratchpad/run-b2.sh:4> c=fineweb-edu-2023-50
++/private/tmp/claude-501/-Users-scott-dev-sandbox-TOPAK/7e5ebb11-2c00-47a1-99c2-90708a6579f0/scratchpad/run-b2.sh:5> uv run prepare_corpus.py fineweb-edu-2023-50 --max-bytes 20e6 --out data/corpora/fineweb-edu-2023-50@e3smoke
+fineweb-edu-2023-50: HuggingFaceFW/fineweb-edu@87f09149ef47, up to 20 MB
+  shard    1  654c4f34f7bd8e0f     20.0 MB  3933 docs
+data/corpora/fineweb-edu-2023-50@e3smoke: 1 objects, 20.0 MB, 3933 docs, ~5M tokens
++/private/tmp/claude-501/-Users-scott-dev-sandbox-TOPAK/7e5ebb11-2c00-47a1-99c2-90708a6579f0/scratchpad/run-b2.sh:7> uv run prepare_corpus.py fineweb-2024-10 --max-bytes 240e6 --out data/corpora/fineweb-2024-10@e3smoke12x
+fineweb-2024-10: HuggingFaceFW/fineweb@9bb295ddab0e, up to 240 MB
+  shard    1  6da29e8844cfa04b     64.0 MB  18249 docs
+  shard    2  7900857c429c7cd4     64.0 MB  18408 docs
+  shard    3  3e07cdda3d590965     64.0 MB  18767 docs
+  shard    4  e08701d043047862     48.0 MB  13758 docs
+data/corpora/fineweb-2024-10@e3smoke12x: 4 objects, 240.0 MB, 69182 docs, ~60M tokens
++/private/tmp/claude-501/-Users-scott-dev-sandbox-TOPAK/7e5ebb11-2c00-47a1-99c2-90708a6579f0/scratchpad/run-b2.sh:8> uv run lineage/overlap.py --a data/corpora/fineweb-edu-2024-10@e3smoke --b data/corpora/fineweb-2024-10@e3smoke --granularity doc --out runs/overlap/edu-vs-web-doc-equal.json
+a: 1 objects from data/corpora/fineweb-edu-2024-10@e3smoke
+   3,911 units, 19.1 MB normalized, 3s
+b: 1 objects from data/corpora/fineweb-2024-10@e3smoke
+   5,672 units, 19.0 MB normalized, 5s
+a: exact 417 units / 2.11 MB · near 417 units / 2.11 MB  of 3,911 units, 19.1 MB
+b: exact 417 units / 2.11 MB · near 417 units / 2.11 MB  of 5,672 units, 19.0 MB
+share of the smaller set (b): exact 0.11147 · near 0.11147   [doc, tool 494b45d46f87]
++/private/tmp/claude-501/-Users-scott-dev-sandbox-TOPAK/7e5ebb11-2c00-47a1-99c2-90708a6579f0/scratchpad/run-b2.sh:9> uv run lineage/overlap.py --a data/corpora/fineweb-edu-2024-10@e3smoke --b data/corpora/fineweb-2024-10@e3smoke12x --granularity doc --out runs/overlap/edu-vs-web-doc-12x.json
+a: 1 objects from data/corpora/fineweb-edu-2024-10@e3smoke
+   3,911 units, 19.1 MB normalized, 0s
+b: 4 objects from data/corpora/fineweb-2024-10@e3smoke12x
+   69,182 units, 227.2 MB normalized, 6s
+a: exact 3,911 units / 19.10 MB · near 3,911 units / 19.10 MB  of 3,911 units, 19.1 MB
+b: exact 3,911 units / 19.10 MB · near 3,911 units / 19.10 MB  of 69,182 units, 227.2 MB
+share of the smaller set (a): exact 1.00000 · near 1.00000   [doc, tool 494b45d46f87]
++/private/tmp/claude-501/-Users-scott-dev-sandbox-TOPAK/7e5ebb11-2c00-47a1-99c2-90708a6579f0/scratchpad/run-b2.sh:10> uv run lineage/overlap.py --a data/corpora/fineweb-edu-2024-10@e3smoke --b data/corpora/fineweb-2024-10@e3smoke --granularity window:256 --out runs/overlap/edu-vs-web.json
+a: 1 objects from data/corpora/fineweb-edu-2024-10@e3smoke
+   14,383 units, 19.1 MB normalized, 2s
+b: 1 objects from data/corpora/fineweb-2024-10@e3smoke
+   15,670 units, 18.9 MB normalized, 4s
+a: exact 1,592 units / 2.11 MB · near 1,599 units / 2.12 MB  of 14,383 units, 19.1 MB
+b: exact 1,592 units / 2.11 MB · near 1,595 units / 2.11 MB  of 15,670 units, 18.9 MB
+share of the smaller set (b): exact 0.11146 · near 0.11155   [window:256, tool 494b45d46f87]
++/private/tmp/claude-501/-Users-scott-dev-sandbox-TOPAK/7e5ebb11-2c00-47a1-99c2-90708a6579f0/scratchpad/run-b2.sh:11> uv run lineage/overlap.py --a data/corpora/fineweb-edu-2024-10@e3smoke --b data/corpora/pg19@e3smoke --granularity window:256 --out runs/overlap/edu-vs-books.json
+a: 1 objects from data/corpora/fineweb-edu-2024-10@e3smoke
+   14,383 units, 19.1 MB normalized, 0s
+b: 1 objects from data/corpora/pg19@e3smoke
+   13,752 units, 17.8 MB normalized, 2s
+a: exact 0 units / 0.00 MB · near 0 units / 0.00 MB  of 14,383 units, 19.1 MB
+b: exact 0 units / 0.00 MB · near 0 units / 0.00 MB  of 13,752 units, 17.8 MB
+share of the smaller set (b): exact 0.00000 · near 0.00000   [window:256, tool 494b45d46f87]
++/private/tmp/claude-501/-Users-scott-dev-sandbox-TOPAK/7e5ebb11-2c00-47a1-99c2-90708a6579f0/scratchpad/run-b2.sh:12> uv run lineage/overlap.py --a data/corpora/fineweb-edu-2024-10@e3smoke --b data/corpora/fineweb-edu-2023-50@e3smoke --granularity window:256 --out runs/overlap/edu24-vs-edu23.json
+a: 1 objects from data/corpora/fineweb-edu-2024-10@e3smoke
+   14,383 units, 19.1 MB normalized, 0s
+b: 1 objects from data/corpora/fineweb-edu-2023-50@e3smoke
+   14,427 units, 19.0 MB normalized, 2s
+a: exact 31 units / 0.04 MB · near 39 units / 0.04 MB  of 14,383 units, 19.1 MB
+b: exact 31 units / 0.04 MB · near 40 units / 0.05 MB  of 14,427 units, 19.0 MB
+share of the smaller set (b): exact 0.00198 · near 0.00248   [window:256, tool 494b45d46f87]
++/private/tmp/claude-501/-Users-scott-dev-sandbox-TOPAK/7e5ebb11-2c00-47a1-99c2-90708a6579f0/scratchpad/run-b2.sh:13> echo 'B2 DONE'
+B2 DONE

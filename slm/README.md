@@ -175,10 +175,14 @@ ADR-0035 §8's ratification condition has four items. Each maps to a command her
 | 3 | E3 overlap measurements, with θ values proposed from them | `lineage/overlap.py`, `measure_pairs.py` | tool ready; first real measurements at 20 MB (§B2). θ needs slices at training size |
 | 4 | A lineage projected from the reference's log that matches its manifest | `rehearsal/drive.py` | **done** (§B3) |
 
-**Evidence status (2026.09.25).** The states above were run by the author, and no results file is checked
-in: every output directory (`data/`, `runs/`, `rehearsal/run/`) is gitignored, as is the session file this
-README cites. Until dated results files exist here, each claim above is **run, unrecorded** — one register
-below `spec/` and `floor/`, whose runs are checked in (09.25 critical review, CR-22).
+**Evidence status (2026.09.25, rerun).** The table's claims are now recorded: the whole of Part B was rerun
+the same day and captured to dated results files beside this README — `gate-suite-results-2026.09.25.txt`
+(B1: cases pass, monotonicity VIOLATED as written at E3 13/2000 and distillation 241/2000, HOLDS in
+`--mode absolute`), `e3-overlap-results-2026.09.25.txt` (B2 at the recorded 20 MB smoke size, ×12 containment
+1.00000 at 3,911 of 3,911), `independence-results-2026.09.25.txt` (B4 smoke: exactly the §8 table, 9 of 28
+pairs independent), and `rehearsal-results-2026.09.25.txt` (B3: honest round consistent; omit-object, seed
+and inject all Contested). Output directories (`data/`, `runs/`, `rehearsal/run/`) remain gitignored; the
+results files are the record (09.25 critical review, CR-22).
 
 ### B1. Gate suite and property check
 

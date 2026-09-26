@@ -272,6 +272,15 @@ construction. The evidential half stays open exactly as §7 item 1 states — th
 engaged and the review runs, not when the rule changed. The amendment's narrative pass moved rev 7's
 digest again, to `cb43938d5e68c17c…`; rev 7 remains in no manifest.
 
+**CR-22, closed the same evening.** The whole of `slm/` Part B was rerun in this session and captured to four
+dated results files (`gate-suite-`, `e3-overlap-`, `independence-`, `rehearsal-results-2026.09.25.txt`).
+Every recorded claim reproduced: the gate suite's cases and both monotonicity verdicts at the exact trial
+counts (13/2000, 241/2000), the ×12 containment at 1.00000 (3,911 of 3,911), the §8 independence table at
+9 of 28, and the rehearsal's honest-consistent / three-tampers-Contested verdicts, with the honest round's
+training at 569 s against the recorded 551 s. The README's evidence-status note now points at the files.
+The gitignored session citation remains (CR-25-adjacent), and the `full`-profile θ measurements stay the
+author's call.
+
 **Not done here**, being script, code, or process work: the `RulesFloorNV-run.sh` jar path and per-results-file
 drivers (CR-23), bundle signing (CR-24), the slm results files (CR-22's other half), and the regeneration of the
 two Playbook artifacts against G3 (§4 is the input).

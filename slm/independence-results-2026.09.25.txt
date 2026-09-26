@@ -1,0 +1,76 @@
+# slm independence-table results · 2026.09.25 rerun (README §B4, --profile smoke: 1M params, 20 MB corpora, window:256, placeholder θ)
+# host: 26.6.2 arm64 · uv 0.9.5
+# commands: pipeline.py L-A L-B L-C L-D L-T L-T2 L-E5 L-A-prime --profile smoke; measure_pairs.py runs/smoke/*/lineage.json --granularity window:256; independence.py --thresholds lineage/thresholds.example.json
+# README's recorded smoke run (2026.09.25): exactly the ADR-0035 §8 table; 9 of 28 pairs independent
+
+## lineage records (name · record digest · rung)
+  ?            rung 0  runs/smoke/L-A-prime/lineage.json
+  ?            rung 0  runs/smoke/L-A/lineage.json
+  ?            rung 0  runs/smoke/L-B/lineage.json
+  ?            rung 0  runs/smoke/L-C/lineage.json
+  ?            rung 0  runs/smoke/L-D/lineage.json
+  ?            rung 0  runs/smoke/L-E5/lineage.json
+  ?            rung 0  runs/smoke/L-T/lineage.json
+  ?            rung 0  runs/smoke/L-T2/lineage.json
+
+## pair verdicts (independence.py)
+L-T2         55fa351ba9c4  declared  rung 0  DISTILLATION (rung 1)
+
+   L-A-prime ⊥ L-A          fails E1,E3,E4,E5      [declared]
+                              E1: same root f13541210959
+                              E3: object overlap 1.000 of the smaller set > θ_exact 0.01
+                              E4: same family decoder-transformer
+                              E5: common curator HuggingFaceFW/fineweb-edu-classifier
+   L-A-prime ⊥ L-B          fails E3               [declared]
+                              E3: object overlap 1.000 of the smaller set > θ_exact 0.01
+   L-A-prime ⊥ L-C          fails E3,E5            [declared]
+                              E3: exact overlap 0.5179 of the smaller set > θ_exact 0.01
+                              E5: common curator fasttext/lid.176 (FineWeb language filter)
+   L-A-prime ⊥ L-D          fails E3,E4            [declared]
+                              E3: object overlap 1.000 of the smaller set > θ_exact 0.01
+                              E4: same family decoder-transformer
+   L-A-prime ⊥ L-E5         fails E5               [declared]
+                              E5: common curator HuggingFaceFW/fineweb-edu-classifier
+   L-A-prime ⊥ L-T          fails E4               [declared]
+                              E4: same family decoder-transformer
+   L-A-prime ⊥ L-T2         independent            [declared]
+         L-A ⊥ L-B          independent            [declared]
+         L-A ⊥ L-C          fails E3,E5            [declared]
+                              E3: exact overlap 1.0000 of the smaller set > θ_exact 0.01
+                              E5: common curator fasttext/lid.176 (FineWeb language filter)
+         L-A ⊥ L-D          fails E4               [declared]
+                              E4: same family decoder-transformer
+         L-A ⊥ L-E5         fails E5               [declared]
+                              E5: common curator HuggingFaceFW/fineweb-edu-classifier
+         L-A ⊥ L-T          fails E4               [declared]
+                              E4: same family decoder-transformer
+         L-A ⊥ L-T2         independent            [declared]
+         L-B ⊥ L-C          fails E4               [declared]
+                              E4: same family ssm
+         L-B ⊥ L-D          fails E3,E4            [declared]
+                              E3: object overlap 1.000 of the smaller set > θ_exact 0.01
+                              E4: same tokenizer 5191169f404f
+         L-B ⊥ L-E5         fails E4               [declared]
+                              E4: same family ssm
+         L-B ⊥ L-T          independent            [declared]
+         L-B ⊥ L-T2         fails E4               [declared]
+                              E4: same family ssm
+         L-C ⊥ L-D          independent            [declared]
+         L-C ⊥ L-E5         fails E4,E5            [declared]
+                              E4: same family ssm
+                              E5: common curator fasttext/lid.176 (FineWeb language filter)
+         L-C ⊥ L-T          independent            [declared]
+         L-C ⊥ L-T2         fails E4               [declared]
+                              E4: same family ssm
+         L-D ⊥ L-E5         independent            [declared]
+         L-D ⊥ L-T          fails E4               [declared]
+                              E4: same family decoder-transformer
+         L-D ⊥ L-T2         independent            [declared]
+        L-E5 ⊥ L-T          independent            [declared]
+        L-E5 ⊥ L-T2         fails E4               [declared]
+                              E4: same family ssm
+         L-T ⊥ L-T2         fails E2               [declared]
+                              E2: common generator openai/gpt-3.5
+
+9 independent pair(s); table digest 5a8759412a9d1a71
+B4 DONE
