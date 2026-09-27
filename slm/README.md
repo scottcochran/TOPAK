@@ -41,6 +41,7 @@ Nothing at 1–50M parameters is a usable Observer. The session says so, and the
 | `lineage/project.py` | Ratification item 4: project a record from the reference's log; cross-check the manifest |
 | `lineage/thresholds.example.json` | **Placeholder** θ values. Not floor values |
 | `rehearsal/init.py`, `rehearsal/drive.py`, `rehearsal/slm_tool.py` | A three-replica reference cluster whose `Invoke` runs the pipeline as MCP tools, and the author-seat driver |
+| `serve/` | Inference for a trained checkpoint in a sandboxed Docker container (no network, read-only, non-root), as an MCP tool over stdio ([README](serve/README.md)) |
 
 Generated data lives in `data/`, `runs/` and `rehearsal/run/`, all git-ignored.
 

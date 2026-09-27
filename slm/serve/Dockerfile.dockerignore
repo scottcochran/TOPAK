@@ -1,0 +1,5 @@
+# Context is slm/. Send only what the image needs.
+*
+!model.py
+!serve/serve.py
+!serve/requirements.txt

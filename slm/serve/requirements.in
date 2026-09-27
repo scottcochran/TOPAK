@@ -1,0 +1,6 @@
+# Inference-only dependencies for the sandboxed image. Compile with:
+#   uv pip compile requirements.in --generate-hashes --python-version 3.12 \
+#       --python-platform x86_64-manylinux_2_35 -o requirements.txt
+# The hash set covers every wheel of each pinned version, so the same file installs on arm64.
+mlx[cpu]==0.32.2
+tokenizers==0.23.2
