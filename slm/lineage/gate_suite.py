@@ -2,7 +2,8 @@
 """ADR-0035 §8 ratification evidence, items 1 and 2, over synthetic records.
 
     uv run lineage/gate_suite.py                 # the rule as the ADR writes it
-    uv run lineage/gate_suite.py --mode absolute # the monotone candidate, for comparison
+    uv run lineage/gate_suite.py --mode ratio    # the text as first drafted (finding 5)
+    uv run lineage/gate_suite.py --mode absolute # the monotone candidate not taken
     uv run lineage/gate_suite.py --json runs/gate-suite.json
 
 1. **Cases.** Every clause E1–E5 and the distillation rule, each seen to fire, including cases
@@ -51,11 +52,12 @@ def obj(name: str, nbytes: int = 1000, gens=(), gshare: float = 0.0, curs=()):
     return record.ingress_entry(h("obj:" + name), nbytes, decl, corpus=name.split("/")[0])
 
 
-def lin(name, family, objs, tok=None, root=None, weights=None, parents=(), rung=0, strength="declared"):
+def lin(name, family, objs, tok=None, root=None, weights=None, parents=(), rung=0, strength="declared",
+        consumed=None):
     return record.build(lineage=name, strength=strength, rung=rung, root=root or h("root:" + name),
                         weights=weights or h("w:" + name), tokenizer=tok or h("tok:" + name), family=family,
                         trainer={"tool": "t", "config": h("cfg:" + name), "seed": 0}, ingress=list(objs),
-                        parents=list(parents))
+                        parents=list(parents), consumed=consumed)
 
 
 # ---------------------------------------------------------------------------------------------
@@ -206,6 +208,9 @@ def run_cases(mode: str, out: list) -> bool:
 # ---------------------------------------------------------------------------------------------
 
 def property_check(mode: str, trials: int, seed: int, out: dict) -> bool:
+    """§2: adding to what a round COULD read (ingress) never turns a fail into a pass. The extra
+    objects enter A's ingress and not its consumed set: the round is charged with more root and
+    Read nothing more."""
     th = thresholds(mode)
     # Scale byte thresholds to the random universe so both outcomes are common.
     th.update(theta_exact=0.2, theta_near=0.3, theta_gen=0.3, theta_exact_bytes=2500, theta_near_bytes=4000,
@@ -227,7 +232,8 @@ def property_check(mode: str, trials: int, seed: int, out: dict) -> bool:
         sb = rng.sample(U, rng.randint(1, 8))
         extra = rng.sample([u for u in U if u not in sa], rng.randint(1, 8))
         A = lin("A", "decoder-transformer", sa, root="rA", weights="wA", tok="tA")
-        A2 = lin("A", "decoder-transformer", sa + extra, root="rA", weights="wA", tok="tA")
+        A2 = lin("A", "decoder-transformer", sa + extra, root="rA", weights="wA", tok="tA",
+                 consumed=[e["digest"] for e in sa])
         B = lin("B", "ssm", sb, root="rB", weights="wB", tok="tB")
         r1 = ind.evaluate(A, B, th, ov(measure(A, B, near)))
         r2 = ind.evaluate(A2, B, th, ov(measure(A2, B, near)))
@@ -255,16 +261,55 @@ def property_check(mode: str, trials: int, seed: int, out: dict) -> bool:
         print(f"            before: {why1}")
         print(f"            after adding {len(A2['ingress']) - len(A['ingress'])} objects to A "
               f"({A2['ingress_bytes'] - A['ingress_bytes']} B): {why2}")
-    if not holds and mode == "adr":
-        print("  FINDING: a ratio whose denominator grows with ingress is not monotone. Mounting more\n"
+    if not holds and mode == "ratio":
+        print("  FINDING 5: a ratio whose denominator grows with ingress is not monotone. Mounting more\n"
               "  (non-overlapping, non-generated) corpus dilutes the share, so §2's over-approximation\n"
-              "  helps a pair pass E3 and helps a distillation escape the rule. Compare --mode absolute.")
+              "  helps a pair pass E3 and helps a distillation escape the rule. Compare --mode bounded.")
     return holds
+
+
+def padding_residual(mode: str, trials: int, seed: int, out: dict) -> None:
+    """§7 residual, shown rather than hidden: a round that Reads more than it trains on grows its
+    consumed set and can dilute E3 and the distillation rule. Here the extra objects enter both
+    ingress and consumed. This is not a violation of §2, which is about ingress alone; the log
+    shows the reads and not the training, and only §6 can see the difference."""
+    th = thresholds(mode)
+    th.update(theta_exact=0.2, theta_near=0.3, theta_gen=0.3, theta_exact_bytes=2500, theta_near_bytes=4000,
+              theta_gen_bytes=3000)
+    rng = random.Random(seed)
+    diluted: dict[str, int] = {}
+    for t in range(trials):
+        U = [obj(f"p{t}/{i}", rng.randint(100, 2000), gens=rng.choice([(), (), ("g1",), ("g2",)]),
+                 gshare=rng.choice([0.0, 0.5, 1.0])) for i in range(24)]
+        for e in U:
+            if not e["generators"]:
+                e["generated_share"] = 0.0
+        sa = rng.sample(U, rng.randint(1, 8))
+        sb = rng.sample(U, rng.randint(1, 8))
+        extra = rng.sample([u for u in U if u not in sa], rng.randint(1, 8))
+        A = lin("A", "decoder-transformer", sa, root="rA", weights="wA", tok="tA")
+        A3 = lin("A", "decoder-transformer", sa + extra, root="rA", weights="wA", tok="tA")  # Read as well
+        B = lin("B", "ssm", sb, root="rB", weights="wB", tok="tB")
+        r1 = ind.evaluate(A, B, th, ov(measure(A, B)))
+        r3 = ind.evaluate(A3, B, th, ov(measure(A3, B)))
+        if not r1["clauses"]["E3"]["pass"] and r3["clauses"]["E3"]["pass"]:
+            diluted["E3"] = diluted.get("E3", 0) + 1
+        if ind.distillation(A, th)[0] and not ind.distillation(A3, th)[0]:
+            diluted["distillation"] = diluted.get("distillation", 0) + 1
+    out.update(diluted)
+    print(f"\npadding residual (mode {mode}, {trials} trials, seed {seed}): the round also Reads the extra objects")
+    for c in ("E3", "distillation"):
+        n = diluted.get(c, 0)
+        tag = "RESIDUAL" if n else "unaffected"
+        print(f"  {tag:<10} {c}: {n} of {trials} trials turn fail → pass by Reading more")
+    if mode == "bounded" and diluted:
+        print("  §7: a pair whose rounds Read more than they train on can dilute the bound. The log shows the\n"
+              "  reads, not the training. Not a §2 violation; --mode absolute is the only mode this cannot move.")
 
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--mode", choices=["adr", "absolute"], default="adr")
+    ap.add_argument("--mode", choices=list(ind.MODES), default="bounded")
     ap.add_argument("--trials", type=int, default=2000)
     ap.add_argument("--seed", type=int, default=35)
     ap.add_argument("--json", type=Path, help="write results here")
@@ -274,9 +319,11 @@ def main():
     prop: dict = {}
     cases_ok = run_cases(a.mode, results)
     prop_ok = property_check(a.mode, a.trials, a.seed, prop)
+    pad: dict = {}
+    padding_residual(a.mode, a.trials, a.seed, pad)
     if a.json:
         write_json(a.json, {"mode": a.mode, "cases": results, "cases_ok": cases_ok,
-                            "monotonicity_violations": prop, "property_holds": prop_ok,
+                            "monotonicity_violations": prop, "property_holds": prop_ok, "padding_residual": pad,
                             "trials": a.trials, "seed": a.seed})
     print(f"\ncases {'PASS' if cases_ok else 'FAIL'} · monotonicity {'HOLDS' if prop_ok else 'VIOLATED'}")
     sys.exit(0 if cases_ok and prop_ok else (1 if not cases_ok else 2))

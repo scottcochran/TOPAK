@@ -9,9 +9,18 @@ which share this code:
 - **declared** from an authored manifest (`../manifest.py`), for runs made outside the
   mechanism. That is the SLM session's shape, which the ADR keeps only as a cross-check.
 
-Aggregates over the DAG (ingress, generators, curators, weight ancestry) are computed here from
-the nodes and parents, never taken from the caller. That keeps §2's over-approximation in one
-place: a record's ingress is the union of its own round's ingress and every parent's.
+Aggregates over the DAG (ingress, consumed, generators, curators, weight ancestry) are computed
+here from the nodes and parents, never taken from the caller. That keeps §2's over-approximation
+in one place: a record's ingress is the union of its own round's ingress and every parent's.
+
+Two sets per record (ADR-0035 §1, R2):
+  ingress    what the round COULD read: the corpus root in force, plus parents' ingress. Over-
+             approximated. Enters only the numerators of E3 and the distillation rule.
+  consumed   what the round DID read: the ingress objects `Read` into the workspace, plus
+             authored drafts into the data directory, plus parents' consumed. Never over-
+             approximated. It is the denominator, so charging a round with more root cannot
+             lower any share the gate computes (§2's bound). A declared record's consumed set is
+             its whole ingress: the author claims to have trained on what the manifest lists.
 """
 from __future__ import annotations
 
@@ -43,14 +52,22 @@ def ingress_entry(digest: str, nbytes: int, declaration: dict | None, corpus: st
 
 def build(*, lineage: str, strength: str, rung: int, root: str, weights: str, tokenizer: str, family: str,
           trainer: dict, ingress: list[dict], parents: list[dict] = (), nodes: list[dict] = (),
-          evidence: dict | None = None) -> dict:
+          evidence: dict | None = None, consumed: list[str] | None = None) -> dict:
     """Assemble a record and its digest. `parents` are full parent records; their ingress,
-    weight ancestry and rung are folded in (weakest link, §2)."""
+    consumed set, weight ancestry and rung are folded in (weakest link, §2). `consumed` is the
+    digests of the round's own ingress objects it actually read; None means all of them."""
     assert strength in STRENGTHS
     by_digest = {e["digest"]: e for p in parents for e in p["ingress"]}
     by_digest.update({e["digest"]: e for e in ingress})
     ing = sorted(by_digest.values(), key=lambda e: e["digest"])
     total = sum(e["bytes"] for e in ing) or 1
+
+    own = {e["digest"] for e in ingress} if consumed is None else set(consumed) & {e["digest"] for e in ingress}
+    cons = set(own)
+    for p in parents:
+        cons |= set(p.get("consumed", [e["digest"] for e in p["ingress"]]))
+    consumed_bytes = sum(by_digest[d]["bytes"] for d in cons if d in by_digest)
+    generated_bytes = round(sum(e["bytes"] * e["generated_share"] for e in ing))
 
     generated_by: dict[str, float] = {}
     for e in ing:
@@ -77,8 +94,11 @@ def build(*, lineage: str, strength: str, rung: int, root: str, weights: str, to
         "parents": sorted(p["digest"] for p in parents),
         "ingress": ing,
         "ingress_bytes": sum(e["bytes"] for e in ing),
+        "consumed": sorted(cons),
+        "consumed_bytes": consumed_bytes,
         "generatedBy": {k: round(v, 6) for k, v in sorted(generated_by.items())},
         "generated_share": round(generated_share, 6),
+        "generated_bytes": generated_bytes,
         "curatedBy": curated_by,
         "tokenizer": tokenizer,
         "family": family,

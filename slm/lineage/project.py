@@ -172,6 +172,10 @@ def project(a) -> tuple[dict, dict]:
             d["digest"], size, {"generators": [f"persona:{sl['persona']}"], "generated_share": 1.0, "curators": []},
             corpus=f"draft:{a.seat}@slot{d['slot']}"))
 
+    # Consumed (§1 R2): the root objects this round Read, plus its authored data drafts. Not the
+    # root. Over-approximating the root raises E3's numerator and leaves this alone.
+    consumed = sorted((read_set & set(root_objs)) | {d["digest"] for d in authored})
+
     pre = steps["pretrain"]["content"]
     tok_path = ws / steps["tokenizer"]["content"]["out"] / "tokenizer.json"
     ckpt = ws / pre["out"]
@@ -188,6 +192,7 @@ def project(a) -> tuple[dict, dict]:
         family=FAMILY_TAGS[pre["model"]["family"]],
         trainer={"tool": steps["pretrain"]["tool"], "config": steps["pretrain"]["config"], "seed": pre.get("seed")},
         ingress=ingress,
+        consumed=consumed,
         nodes=[{"kind": role, "slot": s["slot"], "tool": s["tool"], "config": s["config"]}
                for role, s in sorted(steps.items(), key=lambda kv: kv[1]["slot"])],
         evidence={"source": "projected from the log", **facts, "artifact": submit[1], "submit_slot": submit[0],
@@ -257,6 +262,7 @@ def main():
     print(f"projected {rec['lineage']}: record {rec['digest'][:16]}  strength {rec['strength']} (rung {rec['rung']})")
     print(f"  slots {ev['slots'][0]}–{ev['slots'][-1]} under lease {ev['leases']}, params {ev['params'][:12]}")
     print(f"  ingress {len(rec['ingress'])} objects ({rec['ingress_bytes'] / 1e6:.1f} MB, corpus root), "
+          f"consumed {len(rec['consumed'])} ({rec['consumed_bytes'] / 1e6:.1f} MB, Read), "
           f"{len(ev['attributed_reads'])} read, {len(ev['authored_drafts'])} authored drafts")
     print(f"  root {rec['root'][:16]}  weights {rec['weights'][:16]}  tokenizer {rec['tokenizer'][:16]}  "
           f"family {rec['family']}")

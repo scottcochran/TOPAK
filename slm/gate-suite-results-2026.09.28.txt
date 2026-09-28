@@ -1,0 +1,138 @@
+# slm gate-suite results · 2026.09.28 (ADR-0035 R2: every share an upper bound; consumed set added to the record)
+# host: 26.6.2 · arm64 · python 3.12.12 · uv 0.9.5
+# modes: bounded = the ADR as revised · ratio = as first drafted (finding 5) · absolute = the candidate not taken
+
+# command: uv run lineage/gate_suite.py --mode bounded
+
+cases (mode bounded)
+  PASS  pass: L-A ⊥ L-B (web-edu/llama vs books/ssm)               fired ∅  all clauses hold
+  PASS  E1: L-A vs its fine-tune L-A'                              fired ['E1', 'E3', 'E4', 'E5']  E1: same root 0327c5b0a611; E3: object overlap ≥ 1.000 of the smaller consumed set > θ_exa
+  PASS  E1 alone: two versions of one lineage (same root)          fired ['E1']  E1: same root 2ca273c3c2db
+  PASS  E1 alone: weights reused through a parent (merge)          fired ['E1']  E1: shared weights 95ad1b84b55c
+  PASS  E2 alone: common generator (TinyStories halves)            fired ['E2']  E2: common generator openai/gpt-3.5
+  PASS  E2 alone: one lineage distilled from the other             fired ['E2']  E2: L-S is distilled from L-A (topak-weights:95ad1b84b5)
+  PASS  E3: L-A vs L-C, FineWeb ⊃ FineWeb-Edu (real curators)      fired ['E3', 'E5']  E3: object overlap ≥ 1.000 of the smaller consumed set > θ_exact 0.01; E5: common curator 
+  PASS  E3 alone: near-duplicate overlap only                      fired ['E3']  E3: near-duplicate overlap ≥ 0.3000 of the smaller consumed set > θ_near 0.05
+  PASS  E3 alone: disjoint objects, doc-level exact overlap        fired ['E3']  E3: exact overlap ≥ 0.2000 of the smaller consumed set > θ_exact 0.01
+  PASS  E3 alone: no measurement → fails closed                    fired ['E3']  E3: no overlap measurement covers both ingress sets (fails closed)
+  PASS  E3 alone: measured by an unpinned tool                     fired ['E3']  E3: measured by tool 000000000000, not the pinned ffffffffffff
+  PASS  E4 alone: L-A vs L-D (llama on books)                      fired ['E4']  E4: same family decoder-transformer
+  PASS  E4 alone: different family, same tokenizer                 fired ['E4']  E4: same tokenizer 259a189b5698
+  PASS  E5 alone: same classifier, different crawl                 fired ['E5']  E5: common curator HuggingFaceFW/fineweb-edu-classifier
+  PASS  irreflexive: L-A vs L-A                                    fired ['E1', 'E2', 'E3', 'E4', 'E5']  E1: a lineage is not independent of itself; E2: a lineage is not independent of itself; E3
+  PASS  distillation(L-T) = 1                                        generated share ≥ 1.000 of consumed vs θ_gen 0.5
+  PASS  distillation(L-A) = 0                                        generated share ≥ 0.000 of consumed vs θ_gen 0.5
+  PASS  distillation(L-C) = 0                                        generated share ≥ 0.000 of consumed vs θ_gen 0.5
+  PASS  symmetric over all 8² ordered pairs
+  PASS  not transitive: L-A⊥L-B True, L-B⊥L-D True, L-A⊥L-D False
+  PASS  weakest link: rung-3 record projected, projected pair projected, mixed pair declared, child of a rung-0 parent declared at rung 0
+  coverage: fired alone at least once: ['E1', 'E2', 'E3', 'E4', 'E5']
+
+monotonicity in ingress (mode bounded, 2000 random trials, seed 35)
+  holds     E1
+  holds     E2
+  holds     E3
+  holds     E4
+  holds     E5
+  holds     distillation
+
+padding residual (mode bounded, 2000 trials, seed 35): the round also Reads the extra objects
+  RESIDUAL   E3: 24 of 2000 trials turn fail → pass by Reading more
+  RESIDUAL   distillation: 250 of 2000 trials turn fail → pass by Reading more
+  §7: a pair whose rounds Read more than they train on can dilute the bound. The log shows the
+  reads, not the training. Not a §2 violation; --mode absolute is the only mode this cannot move.
+
+cases PASS · monotonicity HOLDS
+exit: 0
+
+# command: uv run lineage/gate_suite.py --mode ratio
+
+cases (mode ratio)
+  PASS  pass: L-A ⊥ L-B (web-edu/llama vs books/ssm)               fired ∅  all clauses hold
+  PASS  E1: L-A vs its fine-tune L-A'                              fired ['E1', 'E3', 'E4', 'E5']  E1: same root 0327c5b0a611; E3: object overlap 1.000 of the smaller set > θ_exact 0.01; E4
+  PASS  E1 alone: two versions of one lineage (same root)          fired ['E1']  E1: same root 2ca273c3c2db
+  PASS  E1 alone: weights reused through a parent (merge)          fired ['E1']  E1: shared weights 95ad1b84b55c
+  PASS  E2 alone: common generator (TinyStories halves)            fired ['E2']  E2: common generator openai/gpt-3.5
+  PASS  E2 alone: one lineage distilled from the other             fired ['E2']  E2: L-S is distilled from L-A (topak-weights:95ad1b84b5)
+  PASS  E3: L-A vs L-C, FineWeb ⊃ FineWeb-Edu (real curators)      fired ['E3', 'E5']  E3: object overlap 1.000 of the smaller set > θ_exact 0.01; E5: common curator HuggingFace
+  PASS  E3 alone: near-duplicate overlap only                      fired ['E3']  E3: near-duplicate overlap 0.3000 of the smaller set > θ_near 0.05
+  PASS  E3 alone: disjoint objects, doc-level exact overlap        fired ['E3']  E3: exact overlap 0.2000 of the smaller set > θ_exact 0.01
+  PASS  E3 alone: no measurement → fails closed                    fired ['E3']  E3: no overlap measurement covers both ingress sets (fails closed)
+  PASS  E3 alone: measured by an unpinned tool                     fired ['E3']  E3: measured by tool 000000000000, not the pinned ffffffffffff
+  PASS  E4 alone: L-A vs L-D (llama on books)                      fired ['E4']  E4: same family decoder-transformer
+  PASS  E4 alone: different family, same tokenizer                 fired ['E4']  E4: same tokenizer 259a189b5698
+  PASS  E5 alone: same classifier, different crawl                 fired ['E5']  E5: common curator HuggingFaceFW/fineweb-edu-classifier
+  PASS  irreflexive: L-A vs L-A                                    fired ['E1', 'E2', 'E3', 'E4', 'E5']  E1: a lineage is not independent of itself; E2: a lineage is not independent of itself; E3
+  PASS  distillation(L-T) = 1                                        generated share 1.000 vs θ_gen 0.5
+  PASS  distillation(L-A) = 0                                        generated share 0.000 vs θ_gen 0.5
+  PASS  distillation(L-C) = 0                                        generated share 0.000 vs θ_gen 0.5
+  PASS  symmetric over all 8² ordered pairs
+  PASS  not transitive: L-A⊥L-B True, L-B⊥L-D True, L-A⊥L-D False
+  PASS  weakest link: rung-3 record projected, projected pair projected, mixed pair declared, child of a rung-0 parent declared at rung 0
+  coverage: fired alone at least once: ['E1', 'E2', 'E3', 'E4', 'E5']
+
+monotonicity in ingress (mode ratio, 2000 random trials, seed 35)
+  holds     E1
+  holds     E2
+  VIOLATED  E3: 13 of 2000 trials turn fail → pass by adding ingress
+            e.g. A has 1 objects (376 B), B has 3 (4387 B)
+            before: near-duplicate overlap 1.0000 of the smaller set > θ_near 0.3
+            after adding 1 objects to A (925 B): exact 0.0000, near 0.2890 of the smaller set
+  holds     E4
+  holds     E5
+  VIOLATED  distillation: 241 of 2000 trials turn fail → pass by adding ingress
+            e.g. A has 1 objects (629 B), B has 6 (4627 B)
+            before: generated share 1.000 vs θ_gen 0.3
+            after adding 1 objects to A (1687 B): generated share 0.272 vs θ_gen 0.3
+  FINDING 5: a ratio whose denominator grows with ingress is not monotone. Mounting more
+  (non-overlapping, non-generated) corpus dilutes the share, so §2's over-approximation
+  helps a pair pass E3 and helps a distillation escape the rule. Compare --mode bounded.
+
+padding residual (mode ratio, 2000 trials, seed 35): the round also Reads the extra objects
+  RESIDUAL   E3: 24 of 2000 trials turn fail → pass by Reading more
+  RESIDUAL   distillation: 250 of 2000 trials turn fail → pass by Reading more
+
+cases PASS · monotonicity VIOLATED
+exit: 2
+
+# command: uv run lineage/gate_suite.py --mode absolute
+
+cases (mode absolute)
+  PASS  pass: L-A ⊥ L-B (web-edu/llama vs books/ssm)               fired ∅  all clauses hold
+  PASS  E1: L-A vs its fine-tune L-A'                              fired ['E1', 'E3', 'E4', 'E5']  E1: same root 0327c5b0a611; E3: object overlap 20000 bytes > θ_exact_bytes 100; E4: same f
+  PASS  E1 alone: two versions of one lineage (same root)          fired ['E1']  E1: same root 2ca273c3c2db
+  PASS  E1 alone: weights reused through a parent (merge)          fired ['E1']  E1: shared weights 95ad1b84b55c
+  PASS  E2 alone: common generator (TinyStories halves)            fired ['E2']  E2: common generator openai/gpt-3.5
+  PASS  E2 alone: one lineage distilled from the other             fired ['E2']  E2: L-S is distilled from L-A (topak-weights:95ad1b84b5)
+  PASS  E3: L-A vs L-C, FineWeb ⊃ FineWeb-Edu (real curators)      fired ['E3', 'E5']  E3: object overlap 20000 bytes > θ_exact_bytes 100; E5: common curator HuggingFaceFW/finew
+  PASS  E3 alone: near-duplicate overlap only                      fired ['E3']  E3: near-duplicate overlap 6000 bytes > θ_near_bytes 500
+  PASS  E3 alone: disjoint objects, doc-level exact overlap        fired ['E3']  E3: exact overlap 8000 bytes > θ_exact_bytes 100
+  PASS  E3 alone: no measurement → fails closed                    fired ['E3']  E3: no overlap measurement covers both ingress sets (fails closed)
+  PASS  E3 alone: measured by an unpinned tool                     fired ['E3']  E3: measured by tool 000000000000, not the pinned ffffffffffff
+  PASS  E4 alone: L-A vs L-D (llama on books)                      fired ['E4']  E4: same family decoder-transformer
+  PASS  E4 alone: different family, same tokenizer                 fired ['E4']  E4: same tokenizer 259a189b5698
+  PASS  E5 alone: same classifier, different crawl                 fired ['E5']  E5: common curator HuggingFaceFW/fineweb-edu-classifier
+  PASS  irreflexive: L-A vs L-A                                    fired ['E1', 'E2', 'E3', 'E4', 'E5']  E1: a lineage is not independent of itself; E2: a lineage is not independent of itself; E3
+  PASS  distillation(L-T) = 1                                        generated 5000 bytes vs θ_gen_bytes 1000
+  PASS  distillation(L-A) = 0                                        generated 0 bytes vs θ_gen_bytes 1000
+  PASS  distillation(L-C) = 0                                        generated 0 bytes vs θ_gen_bytes 1000
+  PASS  symmetric over all 8² ordered pairs
+  PASS  not transitive: L-A⊥L-B True, L-B⊥L-D True, L-A⊥L-D False
+  PASS  weakest link: rung-3 record projected, projected pair projected, mixed pair declared, child of a rung-0 parent declared at rung 0
+  coverage: fired alone at least once: ['E1', 'E2', 'E3', 'E4', 'E5']
+
+monotonicity in ingress (mode absolute, 2000 random trials, seed 35)
+  holds     E1
+  holds     E2
+  holds     E3
+  holds     E4
+  holds     E5
+  holds     distillation
+
+padding residual (mode absolute, 2000 trials, seed 35): the round also Reads the extra objects
+  unaffected E3: 0 of 2000 trials turn fail → pass by Reading more
+  unaffected distillation: 0 of 2000 trials turn fail → pass by Reading more
+
+cases PASS · monotonicity HOLDS
+exit: 0
+

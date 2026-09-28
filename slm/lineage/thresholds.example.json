@@ -1,6 +1,6 @@
 {
   "status": "PLACEHOLDER — not floor values. ADR-0035 §3: θ values are policy-floor values, and §8 says they are set from the E3 measurements, not before. Replace every number from runs/overlap/*.json before any value is proposed for the floor.",
-  "mode": "adr",
+  "mode": "bounded",
   "theta_exact": 0.01,
   "theta_near": 0.05,
   "theta_gen": 0.5,
@@ -10,7 +10,7 @@
   "near_tool": null,
   "granularity": "window:256",
   "_fields": {
-    "mode": "adr = the ADR's text (shares of the smaller set / of ingress); absolute = the monotone candidate (bytes). See gate_suite.py.",
+    "mode": "bounded = the ADR (R2): shares as upper bounds, numerators over ingress, denominator the smaller consumed set; ratio = the text as first drafted (not monotone, finding 5); absolute = the candidate not taken (bytes). See gate_suite.py.",
     "near_tool": "SHA-256 of lineage/overlap.py as run; null accepts any tool and should never reach a floor.",
     "granularity": "doc or window:<words>; a measurement at another granularity does not count."
   }

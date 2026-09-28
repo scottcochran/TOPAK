@@ -172,9 +172,10 @@ ADR-0035 §8's ratification condition has four items. Each maps to a command her
 | # | Condition | Command | State |
 |---|---|---|---|
 | 1 | Gate-suite cases for E1–E5 and distillation, each seen to fire | `lineage/gate_suite.py` | **passes**: every clause fires alone at least once |
-| 2 | Property check: adding ingress never turns a fail into a pass | `lineage/gate_suite.py` | **fails as the ADR is written**. See Finding 1 |
+| 2 | Property check: adding to ingress, with consumed fixed, never turns a fail into a pass | `lineage/gate_suite.py` | **holds** under ADR-0035 R2 (`bounded`, 2026.09.28). Failed as first drafted (`ratio`). See Finding 1 |
 | 3 | E3 overlap measurements, with θ values proposed from them | `lineage/overlap.py`, `measure_pairs.py` | tool ready; first real measurements at 20 MB (§B2). θ needs slices at training size |
-| 4 | A lineage projected from the reference's log that matches its manifest | `rehearsal/drive.py` | **done** (§B3) |
+| 4 | A lineage projected from the reference's log that matches its manifest | `rehearsal/drive.py` | **done** (§B3, 2026.09.25); the record schema gained `consumed` on 2026.09.28 and B3 should be rerun |
+| 5 | A best-practice review of the bounded-share construction, by someone other than its author | — | **owed** (ADR-0035 R2, Open obligations) |
 
 **Evidence status (2026.09.25, rerun).** The table's claims are now recorded: the whole of Part B was rerun
 the same day and captured to dated results files beside this README — `gate-suite-results-2026.09.25.txt`
@@ -185,11 +186,20 @@ pairs independent), and `rehearsal-results-2026.09.25.txt` (B3: honest round con
 and inject all Contested). Output directories (`data/`, `runs/`, `rehearsal/run/`) remain gitignored; the
 results files are the record (09.25 critical review, CR-22).
 
+**2026.09.28, ADR-0035 R2.** Finding 1 below was accepted into the record. The lineage record gained a `consumed`
+set (what a round's rounds `Read`), and every share the gate computes is now an upper bound: numerators over
+`ingress`, denominator the smaller `consumed` set. `gate-suite-results-2026.09.28.txt` records all three modes:
+`bounded` (the ADR) holds over 2,000 trials; `ratio` (as first drafted) still fails at E3 13/2000 and distillation
+241/2000; `absolute` (not taken) holds. The suite now also shows the §7 padding residual: a round that also *Reads*
+the extra objects dilutes the bound in 24/2000 E3 trials and 250/2000 distillation trials under `bounded`, and 0
+under `absolute`. That is declared in the ADR, not fixed.
+
 ### B1. Gate suite and property check
 
 ```sh
-uv run lineage/gate_suite.py                    # as written: cases pass, monotonicity VIOLATED (exit 2)
-uv run lineage/gate_suite.py --mode absolute    # the monotone candidate: cases pass, property holds
+uv run lineage/gate_suite.py                    # bounded, the ADR (R2): cases pass, monotonicity holds (exit 0)
+uv run lineage/gate_suite.py --mode ratio       # as first drafted: cases pass, monotonicity VIOLATED (exit 2)
+uv run lineage/gate_suite.py --mode absolute    # the candidate not taken: cases pass, property holds
 ```
 
 The cases use synthetic records that mirror the §8 table, with declarations copied from `corpora.json`. Every
@@ -333,7 +343,9 @@ record is projected, and at rung 0 it is declared too.
 
 ## Findings for the corpus
 
-1. **ADR-0035 §2's monotonicity claim does not hold for E3 or the distillation rule as written.** Both are
+1. **ADR-0035 §2's monotonicity claim did not hold for E3 or the distillation rule as first drafted.** *Accepted
+   into the record as ADR-0035 R2 (2026.09.28), which bounds every share: numerators over ingress, denominator the
+   smaller consumed set. The `absolute` candidate below was not taken; the padding residual is declared in §7.* Both were
    ratios whose denominator grows with ingress: overlap "as a share of the smaller set", and generated content
    as a share of ingress. Adding non-overlapping, non-generated objects dilutes them. So the over-approximation
    §2 calls conservative (charge the trainer with the whole mounted corpus root) *helps* a pair pass E3, and
