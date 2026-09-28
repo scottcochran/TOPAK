@@ -105,8 +105,13 @@ fn lease_renewal_is_monotone_and_m_renew_is_refused() {
         let a = s.apply(10 + i as u64, &Entry::Renew { id: format!("w{i}"), req: r }, &p);
         assert!(matches!(a, Applied::Rejected(_)), "widening {i} accepted: {a:?}");
     }
-    // Narrowing is accepted, at a new fence, and the old lease stops being live.
-    let a = s.apply(20, &Entry::Renew { id: "n".into(), req: renew(&[ActionKind::Read], 0, 500) }, &p);
+    // Lease_A1.tla `M_LOWER`: a lower rung is refused too (ADR-0031 A1, ADR-0034 §3.4). The
+    // lease stays live at its rung; a principal that cannot re-attest lets it lapse instead.
+    let a = s.apply(15, &Entry::Renew { id: "l".into(), req: renew(&[ActionKind::Read], 0, 500) }, &p);
+    assert!(matches!(a, Applied::Rejected(_)), "M_LOWER: a renewal lowered the rung: {a:?}");
+    assert_eq!(s.live_by_seat["a1"], 1, "a refused renewal leaves the lease as it was");
+    // Narrowing is accepted at the same rung, at a new fence, and the old lease stops being live.
+    let a = s.apply(20, &Entry::Renew { id: "n".into(), req: renew(&[ActionKind::Read], 1, 500) }, &p);
     assert_eq!(a, Applied::Renewed { fence: 20 });
     assert_eq!(s.live_by_seat["a1"], 20);
     assert!(s.check_live(&read("a1", 1, 0), &p).is_err());

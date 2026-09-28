@@ -10,7 +10,8 @@ use crate::types::*;
 pub struct Confinement {
     pub digest: Digest,
     /// 0 none declared · 1 asserted by launcher · 2 measured boot · 3 confidential VM + verifier.
-    /// Rungs 1–3 have no semantics yet (the attestation-rung record is unwritten).
+    /// Rung semantics are ADR-0034 §2. The reference has no launcher, so it issues rung 0 only.
+    /// Fixed across renewal (ADR-0031 A1).
     pub rung: u8,
 }
 
@@ -38,9 +39,10 @@ pub struct Lease {
     pub ttl_ms: u64,
 }
 
-/// PROVISIONAL (provenance criterion): ADR-0031 §3 makes confinement necessary but not
-/// sufficient for `Contained`; the provenance independence criterion is unwritten. Until it
-/// exists nothing is `Contained`, whatever the rung.
+/// PROVISIONAL (provenance criterion): ADR-0034 §4 makes ADR-0017's independence criterion a
+/// conjunct of `Contained` (ADR-0031 §3 read with its open obligations). The criterion is ADR-0035,
+/// still Proposed. Until it is in force nothing is `Contained`, whatever the rung; then this
+/// becomes a check of the issued rules, not a constant.
 pub const PROVENANCE_CRITERION_DEFINED: bool = false;
 
 impl Lease {
@@ -49,8 +51,12 @@ impl Lease {
         self.confinement.rung >= 1 && PROVENANCE_CRITERION_DEFINED
     }
 
-    /// ADR-0031 §4: `new ⊑ self`. A renewal may narrow the alphabet, lower the rung or shorten
-    /// the TTL. It may never add authority.
+    /// ADR-0031 §4: `new ⊑ self`. A renewal may narrow the alphabet or shorten the TTL. It may
+    /// never add authority.
+    ///
+    /// The confinement rung is fixed across renewal (ADR-0031 A1). Lowering it under a live lease
+    /// is a silent downgrade (ADR-0034 §3.4): a renewal whose evidence no longer reaches the rung
+    /// is refused, and the lease lapses.
     ///
     /// The bundle is fixed across renewal (ADR-0031 R2): nothing orders two bundles, so a new
     /// bundle reaches a principal only at its next grant. An urgent one ends the round, or fences
@@ -70,9 +76,9 @@ impl Lease {
         if !new.alphabet.is_subset(&self.alphabet) {
             return Err("renewal widens the alphabet".into());
         }
-        if new.confinement.rung > self.confinement.rung {
-            return Err("renewal raises the confinement rung".into());
-        }
+        // A1: a change either way is refused. Raising adds authority; lowering is a silent
+        // downgrade. `Lease_A1.tla` `M_LOWER` is the rule this replaces (`>` only).
+        same("confinement rung", new.confinement.rung == self.confinement.rung)?;
         if new.ttl_ms > self.ttl_ms {
             return Err("renewal lengthens the TTL".into());
         }

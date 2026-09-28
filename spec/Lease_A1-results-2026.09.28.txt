@@ -1,0 +1,1833 @@
+TOPAK — ADR-0031 lease schema: property check, A1 (pending): renewal keeps the confinement rung
+Module: Lease_A1.tla (sha256 0b5eac7a7309be2f) · TLC2 2026.09.25.163503 (rev 8f4bc8b) · openjdk version "25.0.1" 2025-10-21
+Successor of Lease.tla (sha256 7636c6c3364bca9c, frozen). Rungs 0..3. New: M_LOWER, NeverRenewedAbove0
+Properties: LeaseAuthorityMonotone (§4, A1) · NoActionUnderFencedEpoch (§5) · Rung0NeverContained (§3) · RevokedStaysStopped (§5 R3)
+Constants: MaxEpoch = 2 · MaxFence = 3
+
+=== base · Mut=none · INVARIANT Safe
+Starting... (2026-09-28 00:04:31)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-09-28 00:04:31.
+Progress(11) at 2026-09-28 00:04:34: 5,078,518 states generated (5,078,518 s/min), 1,198,786 distinct states found (1,198,786 ds/min), 403,433 states left on queue.
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.1E-6
+  based on the actual fingerprints:  val = 1.9E-7
+12041313 states generated, 2136720 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 16.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 31 and the 95th percentile is 3).
+Finished in 06s at (2026-09-28 00:04:37)
+
+=== reach-act · Mut=none · INVARIANT NeverActed
+Starting... (2026-09-28 00:04:37)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-09-28 00:04:37.
+Error: Invariant NeverActed is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ revoked = {}
+/\ epoch = 0
+/\ acted = {}
+/\ fence = 0
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 2: <Grant("p1") line 84, col 3 to line 92, col 55 of module Lease_A1>
+/\ revoked = {}
+/\ epoch = 0
+/\ acted = {}
+/\ fence = 1
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> TRUE,
+        alphabet |-> {"Read"},
+        rung |-> 0,
+        role |-> "author",
+        epoch |-> 0,
+        fence |-> 1 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 3: <Act("p1") line 121, col 3 to line 127, col 53 of module Lease_A1>
+/\ revoked = {}
+/\ epoch = 0
+/\ acted = {[principal |-> "p1", act |-> "Read", atEpoch |-> 0, leaseEpoch |-> 0]}
+/\ fence = 1
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> TRUE,
+        alphabet |-> {"Read"},
+        rung |-> 0,
+        role |-> "author",
+        epoch |-> 0,
+        fence |-> 1 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+802 states generated, 782 distinct states found, 746 states left on queue.
+The depth of the complete state graph search is 6.
+Finished in 00s at (2026-09-28 00:04:37)
+Trace exploration spec path: ./Lease_A1_TTrace_1790568277.tla
+
+=== reach-renew · Mut=none · INVARIANT NeverRenewed
+Starting... (2026-09-28 00:04:37)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-09-28 00:04:38.
+Error: Invariant NeverRenewed is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ revoked = {}
+/\ epoch = 0
+/\ acted = {}
+/\ fence = 0
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 2: <Revoke line 112, col 3 to line 114, col 68 of module Lease_A1>
+/\ revoked = {}
+/\ epoch = 1
+/\ acted = {}
+/\ fence = 0
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 3: <Revoke line 112, col 3 to line 114, col 68 of module Lease_A1>
+/\ revoked = {}
+/\ epoch = 2
+/\ acted = {}
+/\ fence = 0
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 4: <Grant("p1") line 84, col 3 to line 92, col 55 of module Lease_A1>
+/\ revoked = {}
+/\ epoch = 2
+/\ acted = {}
+/\ fence = 1
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> TRUE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "author",
+        epoch |-> 2,
+        fence |-> 1 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 5: <Renew("p1") line 97, col 3 to line 107, col 55 of module Lease_A1>
+/\ revoked = {}
+/\ epoch = 2
+/\ acted = {}
+/\ fence = 2
+/\ prev = [ p1 |->
+      [ live |-> TRUE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "author",
+        epoch |-> 2,
+        fence |-> 1 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> TRUE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "author",
+        epoch |-> 2,
+        fence |-> 2 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+391 states generated, 388 distinct states found, 359 states left on queue.
+The depth of the complete state graph search is 6.
+Finished in 00s at (2026-09-28 00:04:38)
+Trace exploration spec path: ./Lease_A1_TTrace_1790568277.tla
+
+=== reach-renew-above0 · Mut=none · INVARIANT NeverRenewedAbove0
+Starting... (2026-09-28 00:04:38)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-09-28 00:04:38.
+Error: Invariant NeverRenewedAbove0 is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ revoked = {}
+/\ epoch = 0
+/\ acted = {}
+/\ fence = 0
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 2: <Revoke line 112, col 3 to line 114, col 68 of module Lease_A1>
+/\ revoked = {}
+/\ epoch = 1
+/\ acted = {}
+/\ fence = 0
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 3: <Grant("p1") line 84, col 3 to line 92, col 55 of module Lease_A1>
+/\ revoked = {}
+/\ epoch = 1
+/\ acted = {}
+/\ fence = 1
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> TRUE,
+        alphabet |-> {},
+        rung |-> 1,
+        role |-> "author",
+        epoch |-> 1,
+        fence |-> 1 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 4: <Renew("p1") line 97, col 3 to line 107, col 55 of module Lease_A1>
+/\ revoked = {}
+/\ epoch = 1
+/\ acted = {}
+/\ fence = 2
+/\ prev = [ p1 |->
+      [ live |-> TRUE,
+        alphabet |-> {},
+        rung |-> 1,
+        role |-> "author",
+        epoch |-> 1,
+        fence |-> 1 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> TRUE,
+        alphabet |-> {},
+        rung |-> 1,
+        role |-> "author",
+        epoch |-> 1,
+        fence |-> 2 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+1054 states generated, 1013 distinct states found, 968 states left on queue.
+The depth of the complete state graph search is 6.
+Finished in 00s at (2026-09-28 00:04:38)
+Trace exploration spec path: ./Lease_A1_TTrace_1790568278.tla
+
+=== reach-revoke · Mut=none · INVARIANT NeverRevoked
+Starting... (2026-09-28 00:04:38)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-09-28 00:04:38.
+Error: Invariant NeverRevoked is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ revoked = {}
+/\ epoch = 0
+/\ acted = {}
+/\ fence = 0
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 2: <Revoke line 112, col 3 to line 114, col 68 of module Lease_A1>
+/\ revoked = {}
+/\ epoch = 1
+/\ acted = {}
+/\ fence = 0
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+2 states generated, 2 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 00s at (2026-09-28 00:04:38)
+Trace exploration spec path: ./Lease_A1_TTrace_1790568278.tla
+
+=== reach-stale · Mut=none · INVARIANT NeverStaleLease
+Starting... (2026-09-28 00:04:38)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-09-28 00:04:38.
+Error: Invariant NeverStaleLease is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ revoked = {}
+/\ epoch = 0
+/\ acted = {}
+/\ fence = 0
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 2: <Grant("p1") line 84, col 3 to line 92, col 55 of module Lease_A1>
+/\ revoked = {}
+/\ epoch = 0
+/\ acted = {}
+/\ fence = 1
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> TRUE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "author",
+        epoch |-> 0,
+        fence |-> 1 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 3: <Revoke line 112, col 3 to line 114, col 68 of module Lease_A1>
+/\ revoked = {}
+/\ epoch = 1
+/\ acted = {}
+/\ fence = 1
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> TRUE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "author",
+        epoch |-> 0,
+        fence |-> 1 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+363 states generated, 357 distinct states found, 332 states left on queue.
+The depth of the complete state graph search is 5.
+Finished in 00s at (2026-09-28 00:04:38)
+Trace exploration spec path: ./Lease_A1_TTrace_1790568278.tla
+
+=== reach-selective · Mut=none · INVARIANT NeverSelectiveRevoke
+Starting... (2026-09-28 00:04:39)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-09-28 00:04:39.
+Error: Invariant NeverSelectiveRevoke is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ revoked = {}
+/\ epoch = 0
+/\ acted = {}
+/\ fence = 0
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 2: <Revoke line 112, col 3 to line 114, col 68 of module Lease_A1>
+/\ revoked = {}
+/\ epoch = 1
+/\ acted = {}
+/\ fence = 0
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 3: <Revoke line 112, col 3 to line 114, col 68 of module Lease_A1>
+/\ revoked = {}
+/\ epoch = 2
+/\ acted = {}
+/\ fence = 0
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 4: <Grant("p1") line 84, col 3 to line 92, col 55 of module Lease_A1>
+/\ revoked = {}
+/\ epoch = 2
+/\ acted = {}
+/\ fence = 1
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> TRUE,
+        alphabet |-> {"Read"},
+        rung |-> 0,
+        role |-> "author",
+        epoch |-> 2,
+        fence |-> 1 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 5: <RevokeLease("p2") line 133, col 3 to line 137, col 53 of module Lease_A1>
+/\ revoked = {"p2"}
+/\ epoch = 2
+/\ acted = {}
+/\ fence = 1
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> TRUE,
+        alphabet |-> {"Read"},
+        rung |-> 0,
+        role |-> "author",
+        epoch |-> 2,
+        fence |-> 1 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+901 states generated, 873 distinct states found, 840 states left on queue.
+The depth of the complete state graph search is 6.
+Finished in 00s at (2026-09-28 00:04:39)
+Trace exploration spec path: ./Lease_A1_TTrace_1790568278.tla
+
+=== mut-renew · Mut=M_RENEW · INVARIANT LeaseAuthorityMonotone
+Starting... (2026-09-28 00:04:39)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-09-28 00:04:39.
+Error: Invariant LeaseAuthorityMonotone is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ revoked = {}
+/\ epoch = 0
+/\ acted = {}
+/\ fence = 0
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 2: <Revoke line 112, col 3 to line 114, col 68 of module Lease_A1>
+/\ revoked = {}
+/\ epoch = 1
+/\ acted = {}
+/\ fence = 0
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 3: <Grant("p1") line 84, col 3 to line 92, col 55 of module Lease_A1>
+/\ revoked = {}
+/\ epoch = 1
+/\ acted = {}
+/\ fence = 1
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> TRUE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "author",
+        epoch |-> 1,
+        fence |-> 1 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 4: <Renew("p1") line 97, col 3 to line 107, col 55 of module Lease_A1>
+/\ revoked = {}
+/\ epoch = 1
+/\ acted = {}
+/\ fence = 2
+/\ prev = [ p1 |->
+      [ live |-> TRUE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "author",
+        epoch |-> 1,
+        fence |-> 1 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> TRUE,
+        alphabet |-> {"Read"},
+        rung |-> 0,
+        role |-> "author",
+        epoch |-> 1,
+        fence |-> 2 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+382 states generated, 378 distinct states found, 349 states left on queue.
+The depth of the complete state graph search is 5.
+Finished in 00s at (2026-09-28 00:04:39)
+Trace exploration spec path: ./Lease_A1_TTrace_1790568279.tla
+
+=== mut-fence · Mut=M_FENCE · INVARIANT NoActionUnderFencedEpoch
+Starting... (2026-09-28 00:04:39)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-09-28 00:04:39.
+Error: Invariant NoActionUnderFencedEpoch is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ revoked = {}
+/\ epoch = 0
+/\ acted = {}
+/\ fence = 0
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 2: <Revoke line 112, col 3 to line 114, col 68 of module Lease_A1>
+/\ revoked = {}
+/\ epoch = 1
+/\ acted = {}
+/\ fence = 0
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 3: <Grant("p1") line 84, col 3 to line 92, col 55 of module Lease_A1>
+/\ revoked = {}
+/\ epoch = 1
+/\ acted = {}
+/\ fence = 1
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> TRUE,
+        alphabet |-> {"Read"},
+        rung |-> 0,
+        role |-> "author",
+        epoch |-> 1,
+        fence |-> 1 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 4: <Revoke line 112, col 3 to line 114, col 68 of module Lease_A1>
+/\ revoked = {}
+/\ epoch = 2
+/\ acted = {}
+/\ fence = 1
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> TRUE,
+        alphabet |-> {"Read"},
+        rung |-> 0,
+        role |-> "author",
+        epoch |-> 1,
+        fence |-> 1 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 5: <Act("p1") line 121, col 3 to line 127, col 53 of module Lease_A1>
+/\ revoked = {}
+/\ epoch = 2
+/\ acted = {[principal |-> "p1", act |-> "Read", atEpoch |-> 2, leaseEpoch |-> 1]}
+/\ fence = 1
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = TRUE
+/\ lease = [ p1 |->
+      [ live |-> TRUE,
+        alphabet |-> {"Read"},
+        rung |-> 0,
+        role |-> "author",
+        epoch |-> 1,
+        fence |-> 1 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+1396 states generated, 1337 distinct states found, 1299 states left on queue.
+The depth of the complete state graph search is 7.
+Finished in 00s at (2026-09-28 00:04:39)
+Trace exploration spec path: ./Lease_A1_TTrace_1790568279.tla
+
+=== mut-rung · Mut=M_RUNG · INVARIANT Rung0NeverContained
+Starting... (2026-09-28 00:04:39)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-09-28 00:04:40.
+Error: Invariant Rung0NeverContained is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ revoked = {}
+/\ epoch = 0
+/\ acted = {}
+/\ fence = 0
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 2: <Grant("p1") line 84, col 3 to line 92, col 55 of module Lease_A1>
+/\ revoked = {}
+/\ epoch = 0
+/\ acted = {}
+/\ fence = 1
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> TRUE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "author",
+        epoch |-> 0,
+        fence |-> 1 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+6 states generated, 6 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 4.
+Finished in 00s at (2026-09-28 00:04:40)
+Trace exploration spec path: ./Lease_A1_TTrace_1790568279.tla
+
+=== mut-role · Mut=M_ROLE · INVARIANT LeaseAuthorityMonotone
+Starting... (2026-09-28 00:04:40)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-09-28 00:04:40.
+Error: Invariant LeaseAuthorityMonotone is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ revoked = {}
+/\ epoch = 0
+/\ acted = {}
+/\ fence = 0
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 2: <Revoke line 112, col 3 to line 114, col 68 of module Lease_A1>
+/\ revoked = {}
+/\ epoch = 1
+/\ acted = {}
+/\ fence = 0
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 3: <Grant("p1") line 84, col 3 to line 92, col 55 of module Lease_A1>
+/\ revoked = {}
+/\ epoch = 1
+/\ acted = {}
+/\ fence = 1
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> TRUE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "author",
+        epoch |-> 1,
+        fence |-> 1 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 4: <Renew("p1") line 97, col 3 to line 107, col 55 of module Lease_A1>
+/\ revoked = {}
+/\ epoch = 1
+/\ acted = {}
+/\ fence = 2
+/\ prev = [ p1 |->
+      [ live |-> TRUE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "author",
+        epoch |-> 1,
+        fence |-> 1 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> TRUE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "voter",
+        epoch |-> 1,
+        fence |-> 2 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+348 states generated, 346 distinct states found, 318 states left on queue.
+The depth of the complete state graph search is 5.
+Finished in 00s at (2026-09-28 00:04:40)
+Trace exploration spec path: ./Lease_A1_TTrace_1790568280.tla
+
+=== mut-revoke · Mut=M_REVOKE · INVARIANT RevokedStaysStopped
+Starting... (2026-09-28 00:04:40)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-09-28 00:04:40.
+Error: Invariant RevokedStaysStopped is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ revoked = {}
+/\ epoch = 0
+/\ acted = {}
+/\ fence = 0
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 2: <Revoke line 112, col 3 to line 114, col 68 of module Lease_A1>
+/\ revoked = {}
+/\ epoch = 1
+/\ acted = {}
+/\ fence = 0
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 3: <Grant("p1") line 84, col 3 to line 92, col 55 of module Lease_A1>
+/\ revoked = {}
+/\ epoch = 1
+/\ acted = {}
+/\ fence = 1
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> TRUE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "author",
+        epoch |-> 1,
+        fence |-> 1 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 4: <Revoke line 112, col 3 to line 114, col 68 of module Lease_A1>
+/\ revoked = {}
+/\ epoch = 2
+/\ acted = {}
+/\ fence = 1
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> TRUE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "author",
+        epoch |-> 1,
+        fence |-> 1 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 5: <RevokeLease("p1") line 133, col 3 to line 137, col 53 of module Lease_A1>
+/\ revoked = {"p1"}
+/\ epoch = 2
+/\ acted = {}
+/\ fence = 1
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 6: <Grant("p1") line 84, col 3 to line 92, col 55 of module Lease_A1>
+/\ revoked = {"p1"}
+/\ epoch = 2
+/\ acted = {}
+/\ fence = 2
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> TRUE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "author",
+        epoch |-> 2,
+        fence |-> 2 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+2355 states generated, 1216 distinct states found, 1179 states left on queue.
+The depth of the complete state graph search is 6.
+Finished in 00s at (2026-09-28 00:04:40)
+Trace exploration spec path: ./Lease_A1_TTrace_1790568280.tla
+
+=== mut-lower · Mut=M_LOWER · INVARIANT LeaseAuthorityMonotone
+Starting... (2026-09-28 00:04:40)
+Computing initial states...
+Finished computing initial states: 1 distinct state generated at 2026-09-28 00:04:40.
+Error: Invariant LeaseAuthorityMonotone is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ revoked = {}
+/\ epoch = 0
+/\ acted = {}
+/\ fence = 0
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 2: <Revoke line 112, col 3 to line 114, col 68 of module Lease_A1>
+/\ revoked = {}
+/\ epoch = 1
+/\ acted = {}
+/\ fence = 0
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 3: <Revoke line 112, col 3 to line 114, col 68 of module Lease_A1>
+/\ revoked = {}
+/\ epoch = 2
+/\ acted = {}
+/\ fence = 0
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 4: <Grant("p1") line 84, col 3 to line 92, col 55 of module Lease_A1>
+/\ revoked = {}
+/\ epoch = 2
+/\ acted = {}
+/\ fence = 1
+/\ prev = [ p1 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> TRUE,
+        alphabet |-> {},
+        rung |-> 1,
+        role |-> "author",
+        epoch |-> 2,
+        fence |-> 1 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+State 5: <Renew("p1") line 97, col 3 to line 107, col 55 of module Lease_A1>
+/\ revoked = {}
+/\ epoch = 2
+/\ acted = {}
+/\ fence = 2
+/\ prev = [ p1 |->
+      [ live |-> TRUE,
+        alphabet |-> {},
+        rung |-> 1,
+        role |-> "author",
+        epoch |-> 2,
+        fence |-> 1 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+/\ staleAdmitted = FALSE
+/\ lease = [ p1 |->
+      [ live |-> TRUE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "author",
+        epoch |-> 2,
+        fence |-> 2 ],
+  p2 |->
+      [ live |-> FALSE,
+        alphabet |-> {},
+        rung |-> 0,
+        role |-> "none",
+        epoch |-> 0,
+        fence |-> 0 ] ]
+
+1124 states generated, 1079 distinct states found, 1036 states left on queue.
+The depth of the complete state graph search is 7.
+Finished in 00s at (2026-09-28 00:04:40)
+Trace exploration spec path: ./Lease_A1_TTrace_1790568280.tla
+

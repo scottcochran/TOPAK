@@ -8,6 +8,16 @@
 (*   FreshAppraisal         §3  no lease rests on an appraisal from a fenced    *)
 (*                              epoch                                           *)
 (*                                                                             *)
+(* Renewal re-attests (§3.6) and keeps the rung (ADR-0031 A1, pending). An     *)
+(* Attested re-appraisal renews at the declared rung; an Unattestable one lets *)
+(* the lease lapse; a Contested one revokes. NoSilentDowngrade now covers the  *)
+(* renewal path as well as the grant.                                          *)
+(*                                                                             *)
+(* Evidence is the launch measurement (`boot`), not the running image: rungs 2 *)
+(* and 3 measure what was launched, and neither detects a running guest being  *)
+(* altered (§2, §5). The first run, before renewal existed, read the running   *)
+(* image; the two agree at every first appraisal the unmutated model reaches.  *)
+(*                                                                             *)
 (* The deployment declares one confinement rung, `Declared` (ADR-0031 §3). The *)
 (* host launches guests and may misbehave wherever the declared rung does not  *)
 (* trust it:                                                                   *)
@@ -32,6 +42,9 @@
 (* Mut = "M_STALE":     an appraisal survives an epoch fence.                   *)
 (* Mut = "M_DOWNGRADE": an unattestable principal is granted at rung 0.         *)
 (* Mut = "M_PROFILE":   Contained ignores the profile.                          *)
+(* Mut = "M_RENEWLOW":  an Unattestable renewal is renewed at rung 0 instead of *)
+(*                      lapsing: the frozen ADR-0031 §4 rule, which let a       *)
+(*                      renewal lower the rung.                                 *)
 EXTENDS FiniteSets, Naturals
 
 CONSTANTS Mut, Declared, MaxEpoch, MaxIdx, MaxGen
@@ -40,14 +53,14 @@ Principals == {"p1", "p2"}
 Promoted   == {"arch", "med"}
 Arch       == "arch"
 
-NoGuest   == [img |-> "none", asked |-> "none", gen |-> 0]
+NoGuest   == [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0]
 NoPending == [v |-> "none", prof |-> "none", nEpoch |-> 0, gen |-> 0]
 NoLease   == [live |-> FALSE, rung |-> 0, prof |-> "none", epoch |-> 0, nEpoch |-> 0, gen |-> 0]
 
 VARIABLES guest, gens, pending, lease, epoch, idx, revoked, verifierUp,
-          acted, contested, refused, tamperKilled
+          acted, contested, refused, tamperKilled, renewOut
 vars == <<guest, gens, pending, lease, epoch, idx, revoked, verifierUp,
-          acted, contested, refused, tamperKilled>>
+          acted, contested, refused, tamperKilled, renewOut>>
 
 Init == /\ guest   = [p \in Principals |-> NoGuest]
         /\ gens    = [p \in Principals |-> 0]
@@ -61,6 +74,7 @@ Init == /\ guest   = [p \in Principals |-> NoGuest]
         /\ contested = {}
         /\ refused = FALSE
         /\ tamperKilled = FALSE
+        /\ renewOut = {}
 
 \* --- the host ---------------------------------------------------------------
 
@@ -69,21 +83,22 @@ HostMayLaunchRogue == Declared >= 2 \/ Mut = "M_HOST"
 
 \* The orchestrator is asked for a promoted profile and launches a guest. A new
 \* guest is a new instance: `gen` is the key its session is bound to (§3).
+\* `boot` is what was launched, and is what a measurement reports.
 Launch(p) ==
   /\ guest[p].img = "none"
   /\ gens[p] < MaxGen
   /\ \E asked \in Promoted :
        \E img \in (IF HostMayLaunchRogue THEN {asked, "rogue"} ELSE {asked}) :
-         guest' = [guest EXCEPT ![p] = [img |-> img, asked |-> asked, gen |-> gens[p] + 1]]
+         guest' = [guest EXCEPT ![p] = [img |-> img, asked |-> asked, boot |-> img, gen |-> gens[p] + 1]]
   /\ gens' = [gens EXCEPT ![p] = @ + 1]
-  /\ UNCHANGED <<pending, lease, epoch, idx, revoked, verifierUp, acted, contested, refused, tamperKilled>>
+  /\ UNCHANGED <<pending, lease, epoch, idx, revoked, verifierUp, acted, contested, refused, tamperKilled, renewOut>>
 
 \* The host kills a guest. The mechanism is not told: its lease stays live until
 \* the round ends, but no session reaches it (Act checks the binding).
 Kill(p) ==
   /\ guest[p].img # "none"
   /\ guest' = [guest EXCEPT ![p] = NoGuest]
-  /\ UNCHANGED <<gens, pending, lease, epoch, idx, revoked, verifierUp, acted, contested, refused, tamperKilled>>
+  /\ UNCHANGED <<gens, pending, lease, epoch, idx, revoked, verifierUp, acted, contested, refused, tamperKilled, renewOut>>
 
 \* The host tries to alter a running guest.
 \*   rungs 1, 2: the host (rung 1) or hypervisor (rung 2) is trusted not to;
@@ -101,19 +116,20 @@ Tamper(p) ==
      \/ /\ Declared = 3 /\ Mut # "M_HW"
         /\ guest' = [guest EXCEPT ![p] = NoGuest]
         /\ tamperKilled' = TRUE
-  /\ UNCHANGED <<gens, pending, lease, epoch, idx, revoked, verifierUp, acted, contested, refused>>
+  /\ UNCHANGED <<gens, pending, lease, epoch, idx, revoked, verifierUp, acted, contested, refused, renewOut>>
 
 \* The independent verifier exists only at rung 3, and may be unreachable.
 VerifierFlip ==
   /\ Declared = 3
   /\ verifierUp' = ~verifierUp
-  /\ UNCHANGED <<guest, gens, pending, lease, epoch, idx, revoked, acted, contested, refused, tamperKilled>>
+  /\ UNCHANGED <<guest, gens, pending, lease, epoch, idx, revoked, acted, contested, refused, tamperKilled, renewOut>>
 
 \* --- the mechanism ----------------------------------------------------------
 
-\* The evidence says which image is running. At rung 1 the launcher asserts the
-\* profile it was asked for; at rungs 2 and 3 the measurement is the image.
-Evidence(p) == IF Declared = 1 THEN guest[p].asked ELSE guest[p].img
+\* The evidence says which image was launched. At rung 1 the launcher asserts the
+\* profile it was asked for; at rungs 2 and 3 the measurement is the launched
+\* image. A running guest altered after launch still measures as launched.
+Evidence(p) == IF Declared = 1 THEN guest[p].asked ELSE guest[p].boot
 
 Verdict(p) ==
   IF Declared = 3 /\ ~verifierUp THEN "Unattestable"
@@ -144,13 +160,13 @@ Appraise(p) ==
                            prof |-> guest[p].asked, nEpoch |-> epoch, gen |-> guest[p].gen]]
           /\ contested' = IF v = "Contested" THEN contested \cup {p} ELSE contested
           /\ UNCHANGED <<idx, revoked, refused>>
-  /\ UNCHANGED <<guest, gens, lease, epoch, verifierUp, acted, tamperKilled>>
+  /\ UNCHANGED <<guest, gens, lease, epoch, verifierUp, acted, tamperKilled, renewOut>>
 
 \* A pending appraisal may always be discarded.
 Discard(p) ==
   /\ pending[p].v # "none"
   /\ pending' = [pending EXCEPT ![p] = NoPending]
-  /\ UNCHANGED <<guest, gens, lease, epoch, idx, revoked, verifierUp, acted, contested, refused, tamperKilled>>
+  /\ UNCHANGED <<guest, gens, lease, epoch, idx, revoked, verifierUp, acted, contested, refused, tamperKilled, renewOut>>
 
 FreshEpoch(p) == Mut = "M_STALE"   \/ pending[p].nEpoch = epoch
 SameGuest(p)  == Mut = "M_UNBOUND" \/ pending[p].gen = guest[p].gen
@@ -172,7 +188,7 @@ Grant(p) ==
                   nEpoch |-> pending[p].nEpoch, gen |-> pending[p].gen]]
   /\ pending' = [pending EXCEPT ![p] = NoPending]
   /\ idx' = idx + 1
-  /\ UNCHANGED <<guest, gens, epoch, revoked, verifierUp, acted, contested, refused, tamperKilled>>
+  /\ UNCHANGED <<guest, gens, epoch, revoked, verifierUp, acted, contested, refused, tamperKilled, renewOut>>
 
 \* ADR-0034 §4. Membership: a live lease at rung >= 1 on an Attested verdict,
 \* for the archetype profile. M_PROFILE drops the profile conjunct.
@@ -189,14 +205,47 @@ Act(p) ==
   /\ guest[p].img # "none"
   /\ (Mut = "M_UNBOUND" \/ lease[p].gen = guest[p].gen)
   /\ acted' = acted \cup {[principal |-> p, contained |-> Contained(p), img |-> guest[p].img]}
-  /\ UNCHANGED <<guest, gens, pending, lease, epoch, idx, revoked, verifierUp, contested, refused, tamperKilled>>
+  /\ UNCHANGED <<guest, gens, pending, lease, epoch, idx, revoked, verifierUp, contested, refused, tamperKilled, renewOut>>
+
+\* ADR-0034 §3.6 with ADR-0031 A1. A renewal comes from the bound guest and
+\* re-attests with a fresh nonce. Attested: renewed at the same rung, which is
+\* the declared rung. Unattestable: not renewed, and the lease lapses, a local
+\* subtraction that is then ordered (ADR-0031 E1). Contested: a targeted
+\* revocation, as at grant. Under M_RENEWLOW an Unattestable renewal is renewed
+\* at rung 0 instead.
+Renew(p) ==
+  /\ lease[p].live
+  /\ lease[p].epoch = epoch
+  /\ guest[p].img # "none"
+  /\ lease[p].gen = guest[p].gen
+  /\ idx < MaxIdx
+  /\ idx' = idx + 1
+  /\ LET v == Verdict(p) IN
+     CASE v = "Attested" ->
+            /\ lease' = [lease EXCEPT ![p].nEpoch = epoch]
+            /\ renewOut' = renewOut \cup {"renewed"}
+            /\ UNCHANGED <<revoked, contested>>
+       [] v = "Contested" ->
+            /\ lease' = [lease EXCEPT ![p] = NoLease]
+            /\ revoked' = revoked \cup {p}
+            /\ contested' = contested \cup {p}
+            /\ renewOut' = renewOut \cup {"contested"}
+       [] v = "Unattestable" /\ Mut = "M_RENEWLOW" ->
+            /\ lease' = [lease EXCEPT ![p].rung = 0, ![p].nEpoch = epoch]
+            /\ renewOut' = renewOut \cup {"lowered"}
+            /\ UNCHANGED <<revoked, contested>>
+       [] OTHER ->
+            /\ lease' = [lease EXCEPT ![p] = NoLease]
+            /\ renewOut' = renewOut \cup {"lapsed"}
+            /\ UNCHANGED <<revoked, contested>>
+  /\ UNCHANGED <<guest, gens, pending, epoch, verifierUp, acted, refused, tamperKilled>>
 
 \* The round ends, and the guest with it (§1 P6: the guest is round-coterminous).
 EndRound(p) ==
   /\ lease[p].live
   /\ lease' = [lease EXCEPT ![p] = NoLease]
   /\ guest' = [guest EXCEPT ![p] = NoGuest]
-  /\ UNCHANGED <<gens, pending, epoch, idx, revoked, verifierUp, acted, contested, refused, tamperKilled>>
+  /\ UNCHANGED <<gens, pending, epoch, idx, revoked, verifierUp, acted, contested, refused, tamperKilled, renewOut>>
 
 \* The fleet fence (ADR-0031 §5).
 Fence ==
@@ -204,12 +253,12 @@ Fence ==
   /\ idx < MaxIdx
   /\ epoch' = epoch + 1
   /\ idx' = idx + 1
-  /\ UNCHANGED <<guest, gens, pending, lease, revoked, verifierUp, acted, contested, refused, tamperKilled>>
+  /\ UNCHANGED <<guest, gens, pending, lease, revoked, verifierUp, acted, contested, refused, tamperKilled, renewOut>>
 
 Next == \/ Fence \/ VerifierFlip
         \/ \E p \in Principals :
              Launch(p) \/ Kill(p) \/ Tamper(p) \/ Appraise(p) \/ Discard(p)
-             \/ Grant(p) \/ Act(p) \/ EndRound(p)
+             \/ Grant(p) \/ Renew(p) \/ Act(p) \/ EndRound(p)
 Spec == Init /\ [][Next]_vars
 
 \* --- the four properties --------------------------------------------------
@@ -219,7 +268,8 @@ Spec == Init /\ [][Next]_vars
 ContainedMeansConfined == \A r \in acted : r.contained => r.img = Arch
 
 \* §3. A principal whose evidence does not reach the declared rung is refused,
-\* not granted lower. Vacuity stays declared rather than silent.
+\* not granted lower, and not renewed lower (ADR-0031 A1). Vacuity stays declared
+\* rather than silent.
 NoSilentDowngrade == \A p \in Principals : lease[p].live => lease[p].rung = Declared
 
 \* §3. A Contested principal is revoked and holds no lease.
@@ -243,4 +293,12 @@ NeverContested       == contested = {}
 NeverRefused         == ~refused
 \* Rung 3 turns tampering into a subtraction.
 NeverTamperKilled    == ~tamperKilled
+\* A renewal re-attests and keeps the lease.
+NeverRenewed         == "renewed" \notin renewOut
+\* Rung 3: an unreachable verifier at renewal lets the lease lapse, the case in
+\* which the frozen ADR-0031 §4 rule would have renewed it lower.
+NeverLapsed          == "lapsed" \notin renewOut
+\* Re-attestation of the same instance measures the same launch, so a renewal
+\* never turns Contested. Must HOLD at every rung: see ADR-0034 §7.
+NeverRenewContested  == "contested" \notin renewOut
 =============================================================================

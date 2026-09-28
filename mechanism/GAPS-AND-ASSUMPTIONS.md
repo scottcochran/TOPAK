@@ -68,6 +68,7 @@ what would replace it.
 | **I21** | **Mechanism parameters** (corpus set, allowlists, round bound, lease margin) ship as config, must match on every replica, and their digest is in every admit; `apply` rejects an admit decided under other parameters | `state.rs` `Params` | ADR-0022 §3 names the parameters, not their delivery | Parameters inside the mechanism release |
 | **I22** | **Deny reasons are returned to the agent** | `mechanism.rs` | Debuggability; the floor text is not secret | Reason categories only, if disclosure matters |
 | **I23** | **Denials after the seal go to the round's `after` companion** (`…r<round>.after`), up to `after_topic_limit` records, then one `overflow` marker, then nothing. An attempt with no session goes to the `security` log target | `mechanism.rs` `record_denial`, `act`; `Params` | ADR-0020 wants the attempt; ADR-0003 0003.2 forbids reopening the sealed topic. ADR-0003 A2, ratified in Batch 5 | The bound is counted per replica, not replicated |
+| **I24** | **Renewal keeps the confinement rung.** A renewal that changes the rung either way is refused | `lease.rs` `check_renewal` | ADR-0031 §4 allowed lowering the rung, which ADR-0034 §3.4 forbids at grant (a silent downgrade) | **Settled 2026.09.28** by ADR-0031 A1 (Batch 10); `Lease_A1.tla` `M_LOWER` |
 
 ---
 
@@ -75,8 +76,8 @@ what would replace it.
 
 | ID | Gap | Stand-in in the baseline | Consequence |
 |---|---|---|---|
-| **G1** | **Confinement (ADR-0022 §6, the sandbox gap)** | Nothing. Every lease is rung 0 and `is_contained()` is false by construction | Every principal is `Mediated`. An agent with a shell bypasses the MCP front door entirely. **The largest gap, and code cannot close it; only a sandbox can** |
-| **G2** | **Provenance independence criterion** (ADR-0031 §3) | `PROVENANCE_CRITERION_DEFINED = false` | Even rung 3 would not be `Contained` |
+| **G1** | **Confinement (ADR-0022 §6, the sandbox gap)** | Nothing. Every lease is rung 0 and `is_contained()` is false by construction | Every principal is `Mediated`. An agent with a shell bypasses the MCP front door entirely. **The largest gap, and code cannot close it; only a sandbox can.** The design half is ADR-0034 (ratified 2026.09.28); the smallest mechanism step is its rung-1 launcher, which the reference does not have |
+| **G2** | **Provenance independence criterion** (ADR-0031 §3; a conjunct of `Contained` by ADR-0034 §4) | `PROVENANCE_CRITERION_DEFINED = false` | Even rung 3 would not be `Contained`. ADR-0035 writes the criterion and is Proposed; once it is in force the constant becomes a check of the issued rules |
 | **G3** | **Run's alphabet** | `RunInvoke`, `RunEmit`, matching the draft floor | The Run half of the floor and of the MCP surface is provisional |
 | **G4** | **Tool hermeticity** (ADR-0022 §3, A2) | Binary + schema pinning, cleared env, workspace as working directory | A tool with a socket collapses the envelope and nothing notices |
 | **G5** | **Authentication**: principals, operators, replicas | Bearer token (principals); socket file mode 0600 (operator); none (replica TCP) | Anyone who can reach a socket can act. Replica traffic needs mTLS |
