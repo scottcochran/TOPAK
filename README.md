@@ -17,9 +17,9 @@ deployable system.
 
 ## Start here
 
-- **How it fits together:** [Theory of Operation, rev 7](checkpoints/topak-theory-of-operation-2026.09.25-rev7.md)
-- **State of record** (what is ratified, owed and open): [Genesis Checkpoint G3](checkpoints/topak-genesis-checkpoint-G3-2026.09.25.md). Where it and the narrative disagree, the checkpoint wins.
-- **Vocabulary:** [Glossary](derived/topak-glossary-2026.09.17.md)
+- **How it fits together:** [Theory of Operation, rev 8](checkpoints/topak-theory-of-operation-2026.09.28-rev8.md)
+- **State of record** (what is ratified, owed and open): [Genesis Checkpoint G4](checkpoints/topak-genesis-checkpoint-G4-2026.09.28.md). Where it and the narrative disagree, the checkpoint wins.
+- **Vocabulary:** [Glossary](derived/topak-glossary-2026.09.26.md)
 
 ## Layout
 
@@ -35,7 +35,7 @@ deployable system.
 | [`derived/`](derived/) | Reviews, assessments and reference material derived from the corpus |
 | [`diagrams/`](diagrams/) | Diagrams and their generators |
 | Root `*-LOG-*.md`, `RECOVERY-REGISTRY-*`, `FREEZE-*` | Process logs from the genesis cleanup |
-| `SHA256SUMS-*` | Digest manifests for checkpoint (`G1`–`G3`) and reference (`REF`) cuts |
+| `SHA256SUMS-*` | Digest manifests for checkpoint (`G1`–`G4`), reference (`REF`) and rehearsal (`SLM`) cuts |
 
 ## Running things
 
