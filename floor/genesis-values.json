@@ -1,0 +1,21 @@
+{
+  "_what": "Policy-floor values: the numbers the typed lift reads that the floor's Cedar text cannot hold. This file is part of the floor bundle; its digest is recorded with the floor's and the schema's (ADR-0039 §1). Relaxing a value is an anchor issuance and a promotion; tightening is an ordinary promotion.",
+  "_status": "DRAFT · 2026.09.29 · PLACEHOLDERS · not ratified · not measured",
+  "_placeholders": "Every number here is a placeholder chosen so the ratification runs have a value. None is measured. Each is a deployment or rung choice, declared per deployment under ADR-0023 §6, and the archetype does not fix it. Do not cite these as the pattern's values.",
+  "observer": {
+    "_record": "ADR-0039 §1",
+    "T_obs_ms": 5000,
+    "_T_obs": "Heartbeat freshness, read on the mechanism's local monotonic clock with its asymmetric margin (ADR-0032 §2; the reference's lease_margin_ms). Placeholder: about five propagation windows W (ADR-0032 §4, ~1 s at the archetype), ten lease margins, and well inside a lease TTL. A deployment sets it from its Observer's measured heartbeat cadence.",
+    "K": 8,
+    "_K": "Unread-emission bound: at most K of a Thinker's emissions unread by a live cell Observer. Must be below the round bound R of every domain it applies to; the mechanism refuses a floor where it is not. Placeholder: T_obs at roughly one admit per second, rounded up. A deployment sets it from its Observer's measured lag; K = 0 is the quarantine hold (ADR-0039 finding 1)."
+  },
+  "lineage": {
+    "_record": "ADR-0035 §3",
+    "_note": "The θ values, β, and the near-duplicate tool are policy-floor values with the same home. They are set from measurements at training scale (G4 item 30), not before; null means not set, and the independence table is not computed while any is null.",
+    "theta_exact": null,
+    "theta_near": null,
+    "theta_gen": null,
+    "beta": null,
+    "near_tool": null
+  }
+}
