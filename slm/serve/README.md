@@ -110,3 +110,13 @@ To register it with Claude Code, add this to `.mcp.json` (use absolute paths):
 - **The pin covers the bundle, not the runtime.** The image is pinned by base digest and wheel hashes.
   `serve.py` does not check the image's own digest; pin the image by digest in `SLM_IMAGE` if you need
   that.
+
+## Profile for the host-run occupant (rung 0)
+
+`profile-host-rung0.json` is a confinement profile (ADR-0034 §1, ADR-0036 §1) for running `serve.py` **on the host,
+with no container**, as the occupant of a rung-0 lease. Every clause verdict in it is **declared by the operator and
+verified by nobody**; a results file that cites it prints `confinement: [digest, 0]` and the word *declared*. It
+exists so that the seat records (ADR-0037 to ADR-0039) have a rung-0 principal whose `Mediated` verdict is derived
+from a profile rather than from nothing. It is not a step toward the sandbox gap (`mechanism/` G1); the container
+and launcher above are. The same profile schema carries the guest up the rungs, and the file's `_ladder` lists the
+steps.

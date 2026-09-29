@@ -1,0 +1,48 @@
+{
+  "_what": "Confinement profile (ADR-0034 §1, ADR-0036 §1) for the host-run occupant: serve.py and its Persona bundle run directly on the host, no container, speaking the front door. DRAFT · 2026.09.29 · not a corpus record.",
+  "_rung": 0,
+  "_verdicts_are": "DECLARED by the operator and verified by nobody (ADR-0036 §1 R1). Nothing relies on this file being true. No participant is trusted for it. A results file citing this profile prints its digest as confinement [digest, 0] and the word 'declared' beside every clause.",
+  "image": null,
+  "_image": "No image. The occupant is a host process. The reference value in its place is the digest of serve.py and model.py at the run (P7).",
+  "launch": {
+    "kind": "host-process",
+    "command": "python3 -I slm/serve/serve.py --occupant",
+    "network": "host network reachable; nothing prevents egress",
+    "filesystem": "host filesystem reachable under the operator's user",
+    "capabilities": "the operator's",
+    "user": "the operator",
+    "limits": "none applied",
+    "mounts": "not applicable; the bundle is read from $SLM_BUNDLE on the host"
+  },
+  "channel": {
+    "kind": "agent socket via `topak mcp`, JSON lines",
+    "token": "INSIDE the occupant: the session token is held by the occupant process, because there is no launcher to hold it (ADR-0036 §2 does not apply at rung 0)",
+    "stderr": "outward only, to the operator's terminal; carries no protocol"
+  },
+  "persona": {
+    "model_json_sha256": null,
+    "_note": "Filled at the run from `shasum -a 256 <run>/ckpt/model.json`; the occupant checks weights and tokenizer digests against it at start (serve.py load_bundle) and refuses to start on a mismatch. That refusal is the guest's own; at rung 0 nobody appraises it."
+  },
+  "clauses": {
+    "P1": { "verdict": "fail",    "why": "More than one channel: the host network and every host IPC path are reachable from the process" },
+    "P2": { "verdict": "fail",    "why": "The host filesystem is reachable; nothing is read-only and nothing is bounded to the bundle and workspace" },
+    "P3": { "verdict": "fail",    "why": "A Python interpreter runs the occupant and a shell is reachable from it" },
+    "P4": { "verdict": "vacuous", "why": "The occupant's alphabet has no Invoke" },
+    "P5": { "verdict": "pass",    "why": "Inference is inside the occupant process: weights and tokenizer are loaded from the bundle and digest-checked against model.json at start" },
+    "P6": { "verdict": "pass",    "why": "One occupant process per grant; the process exits at round end. Declared, not enforced: nothing stops the operator starting two" },
+    "P7": { "verdict": "pass",    "why": "Reference values are the model.json digest and the serve.py and model.py digests recorded in the results file" }
+  },
+  "subtractions": {
+    "P1": "Run the occupant under ADR-0036's launcher: --network none, stdio as the only channel, token held by the launcher. That is rung 1 and the same profile schema",
+    "P2": "The same: read-only root, a bounded tmpfs, the bundle read-only, no workspace mount",
+    "P3": "A compiled occupant on a scratch image with no shell and no interpreter (ADR-0036 §4; G4 item 36)"
+  },
+  "_ladder": [
+    "rung 0, this profile: P1 P2 P3 fail, P5 pass · declared",
+    "rung 1, ADR-0036 §4's profile: P1 P2 pass, P3 fail · asserted by the launcher",
+    "rung 1, P3-passing image: every clause passes · asserted by the launcher",
+    "rung 2: the same profile, launch measurement (Firecracker or Kata)",
+    "rung 3, archetype: the same profile, hardware attestation (confidential VM; accelerator attestation, G4 item 29)"
+  ],
+  "_ladder_note": "Each step changes one thing: a clause verdict, or the rung. Elevation is a fresh grant naming the same digest at a higher rung (ADR-0031 A1). Nothing on this ladder adds capability; what it adds is claims: Contained at rung >= 1 with P3–P5 and the criterion, and at rung 3 the Reader's conformance fact stops being a self-report (ADR-0037 §3 R3)."
+}

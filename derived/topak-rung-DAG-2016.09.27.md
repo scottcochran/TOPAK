@@ -60,3 +60,27 @@ Take the theorem-to-premise binding, the table I said was the missing prerequisi
 - The graph is also what `mechanism/corpus-pins.sha256` is trying to be for code: every theorem node cites the TLA+ property and mutation that check it, so a re-pin is an edge whose evidence moved.
 
 If you want the word to keep, it is a **lattice of order ideals over the theorem DAG**. A heap would be a fine choice only for the evaluation order when computing an inventory, and that is an implementation detail nobody needs to name in a record.
+
+---
+
+> **Added 2026.09.29.** A path through the lattice, worked for the reference's own occupant.
+
+**The `slm/serve` ladder as a path of order ideals.** ADR-0036 R1 lets a rung-0 grant name a profile, and holds the
+profile schema constant across rungs. That gives a concrete path in the DAG above, in which every step adds exactly
+one premise node, so each step's added inventory is a closure query rather than a claim:
+
+| Step | Premise nodes added | What becomes reachable |
+|---|---|---|
+| `serve.py` on the host, rung 0, `profile-host-rung0.json` declared | None. The ideal is rung 0's mechanism constants. The profile is an *input* whose clause nodes (P5, P6, P7) are declared true and unverified; a declared premise contributes nothing to the ideal, by rule 1 (undeclared or unverified premises are false) | Nothing beyond rung 0. `Mediated` is derived from the profile, not from its absence, but no theorem moves |
+| Docker plus the ADR-0036 launcher, rung 1 | "confinement rung ≥ 1"; P1, P2 asserted | The rung-1 conditional theorems: session binding by construction; `NoSilentDowngrade` at grant and renewal. `Contained` still unreachable: P3 false |
+| P3-passing image, still rung 1 | P3 | `Contained` reachable, conditional on the ADR-0035 criterion node |
+| Firecracker or Kata, rung 2 | "confinement rung ≥ 2"; the launch-measurement premise | *Contested* becomes a reachable verdict (ADR-0034 §7); the launcher leaves the trusted base for guest integrity (a type-change premise node, rule 2) |
+| Confidential VM with accelerator attestation, rung 3 | "confinement rung = 3"; the inference-attestation premise (G4 item 29) | The host leaves the trusted base; the Reader's conformance fact stops being a self-report and ADR-0019's admitting use has a premise (ADR-0037 §3 R3) |
+
+Two things the table shows that the prose in the records does not. First, **the rung-0 profile adds no node**: a
+declaration is an input to the graph, and rule 1 makes an unverified premise false, so being explicit at rung 0 changes
+what the verdict is *derived from* without changing the inventory. That is the right reading of ADR-0036 R1's
+"declared by the operator and verified by nobody". Second, **the P3 step and the rung-2 step are incomparable** in
+the lattice: a rung-2 guest with an interpreter and a rung-1 guest without one are two ideals neither of which
+contains the other, which is the same shape as the Observer-scoping pair that made ADR-0023 refuse a total order.
+The ladder is a path, not the order; a deployment may take the two steps in either sequence.
