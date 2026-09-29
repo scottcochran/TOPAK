@@ -80,25 +80,28 @@ async fn fixture(name: &str) -> Fixture {
         round_bound: 50,
         lease_margin_ms: 100,
         after_topic_limit: 3,
+        run_round_bound: None,
     };
 
     let keys = Keys { anchors: (0..3).map(|_| key()).collect(), bg: (0..2).map(|_| key()).collect() };
-    let seat = |d: Domain| SeatDecl { domain: d, key: pubhex(&key()) };
+    let seat = |d: Domain, k: topak_core::SeatKind| SeatDecl { domain: d, kind: k, cell: None, key: pubhex(&key()) };
     let rules = Rules {
         rules_epoch: 0,
         quorum: Quorum::All,
         min_grant: 2,
         seats: BTreeMap::from([
-            ("a1".into(), seat(Domain::Build)),
-            ("g1".into(), seat(Domain::Build)),
-            ("g2".into(), seat(Domain::Build)),
-            ("g3".into(), seat(Domain::Build)),
-            ("o1".into(), seat(Domain::Build)),
-            ("r1".into(), seat(Domain::Run)),
+            ("a1".into(), seat(Domain::Build, topak_core::SeatKind::Thinker)),
+            ("g1".into(), seat(Domain::Build, topak_core::SeatKind::Grant)),
+            ("g2".into(), seat(Domain::Build, topak_core::SeatKind::Grant)),
+            ("g3".into(), seat(Domain::Build, topak_core::SeatKind::Grant)),
+            ("o1".into(), SeatDecl { cell: Some("a1".into()), ..seat(Domain::Build, topak_core::SeatKind::Observer) }),
+            ("corr".into(), seat(Domain::Build, topak_core::SeatKind::Observer)), // a correlator: no cell
+            ("r1".into(), seat(Domain::Run, topak_core::SeatKind::Thinker)),
+            ("ro1".into(), SeatDecl { cell: Some("r1".into()), ..seat(Domain::Run, topak_core::SeatKind::Observer) }),
         ]),
         // a1 authors and also holds a grant seat, so recusal has something to refuse.
         grant_roster: ["a1", "g1", "g2", "g3"].into_iter().map(String::from).collect(),
-        veto_roster: BTreeSet::from(["o1".to_string()]),
+        veto_roster: BTreeSet::from(["o1".to_string(), "corr".to_string()]),
         anchor_keys: keys.anchors.iter().map(pubhex).collect(),
         break_glass: Some(BreakGlassRules {
             roster: keys.bg.iter().map(pubhex).collect(),
@@ -210,6 +213,11 @@ const AUTHOR: &[ActionKind] =
     &[ActionKind::Read, ActionKind::Draft, ActionKind::Invoke, ActionKind::Emit, ActionKind::Submit];
 const VOTER: &[ActionKind] = &[ActionKind::Read, ActionKind::Emit, ActionKind::Vote];
 const RUN: &[ActionKind] = &[ActionKind::RunInvoke, ActionKind::RunEmit];
+const RUN_OBS: &[ActionKind] = &[ActionKind::RunEmit];
+
+fn heartbeat(topic: &str, watermark: u64) -> Value {
+    json!({ "heartbeat": { "topic": topic, "watermark": watermark } })
+}
 
 async fn settle(c: &Cluster) {
     // Wait until every live replica has applied the same prefix.
@@ -355,20 +363,31 @@ async fn build_round_promotion_and_fencing() {
     let r = act(n1, &g1, vote(Verdict::Grant, &Digest::of(b"other evidence"))).await;
     assert!(deny_reason(&r).contains("EvidenceMismatch"), "{}", r.detail);
 
-    // The author is recused: the Vote envelope refuses it (floor B7).
-    let a1v = grant(n1, &f, "a1", 2, RoundRole::Voter, VOTER, 60_000).await;
-    let r = act(n1, &a1v, vote(Verdict::Grant, &evidence)).await;
-    assert!(deny_reason(&r).contains("B7-author-recused"), "{}", r.detail);
-    let voter_topic = topak_core::lift::topic_name(&chain, Domain::Build, "a1", 0, 2);
-    let denied_vote = memory(n1).topics.lock().await[&voter_topic].clone();
-    assert!(
-        denied_vote.iter().any(|r| r.kind == RecordKind::Deny && r.payload["reason"].to_string().contains("B7")),
-        "the refused vote is in the voter round's record: {denied_vote:?}"
-    );
+    // The author is recused. Since ADR-0037 §4 this holds at the grant: a1 is a thinker seat and
+    // cannot be issued `Vote` at all, so the B7 envelope (still in the floor) is never reached
+    // through the mechanism. The refusal is the grant's, not the admit's.
+    let r = n1
+        .operate(OperatorOp::Grant {
+            principal: "principal-a1".into(),
+            seat: "a1".into(),
+            persona: Digest::of(b"persona"),
+            bundle: f.bundle_rev.clone(),
+            confinement: topak_core::lease::Confinement { digest: Digest::of(b"none"), rung: 0 },
+            alphabet: VOTER.iter().copied().collect(),
+            ttl_ms: 60_000,
+            round: 2,
+            role: RoundRole::Voter,
+        })
+        .await;
+    assert_eq!(r["ok"], false, "a thinker seat is never issued Vote: {r}");
+    assert!(r.to_string().contains("thinker alphabet"), "{r}");
 
-    // A veto seat cannot grant (floor B8).
+    // A veto seat cannot grant (floor B8): neither the cell Observer nor the correlator (ADR-0038 §6).
     let o1 = grant(n1, &f, "o1", 1, RoundRole::Voter, VOTER, 60_000).await;
     let r = act(n1, &o1, vote(Verdict::Grant, &evidence)).await;
+    assert!(deny_reason(&r).contains("B8-grant-only-from-grant-seat"), "{}", r.detail);
+    let corr = grant(n1, &f, "corr", 1, RoundRole::Voter, VOTER, 60_000).await;
+    let r = act(n1, &corr, vote(Verdict::Grant, &evidence)).await;
     assert!(deny_reason(&r).contains("B8-grant-only-from-grant-seat"), "{}", r.detail);
 
     // Unanimity over counted grant seats {g1, g2, g3}; a1 is not counted.
@@ -382,11 +401,32 @@ async fn build_round_promotion_and_fencing() {
     let g3 = grant(n1, &f, "g3", 1, RoundRole::Voter, VOTER, 60_000).await;
     let r = act(n1, &g3, vote(Verdict::Grant, &evidence)).await;
     assert!(r.admitted, "{}", r.detail);
-    assert_eq!(r.detail["result"]["promoted"], true, "every counted grant seat granted; veto silence is not a veto");
+    // Every counted grant seat granted and veto silence is not a veto, but the author's round is
+    // not yet covered by its cell Observer (ADR-0039 §3; ADR-0024 A2.3 pending): the promotion stalls.
+    assert_eq!(r.detail["result"]["promoted"], false, "stalled for coverage: {}", r.detail);
+    let seal = n1.state.read().unwrap().seals["a1"].clone();
+    assert!(seal.seq >= 1, "a1 emitted in its round: {seal:?}");
+    let r = act(n1, &o1, Action::Emit { record: heartbeat(&seal.topic, seal.seq - 1) }).await;
+    assert!(r.admitted, "a heartbeat short of the seal is a fact, not coverage: {}", r.detail);
+    assert!(n1.state.read().unwrap().candidates[&artifact].promoted_at.is_none(), "still uncovered");
+    let r = act(n1, &o1, Action::Emit { record: heartbeat(&seal.topic, seal.seq) }).await;
+    assert!(r.admitted, "{}", r.detail);
+    settle(&c).await;
+    assert!(
+        n1.state.read().unwrap().candidates[&artifact].promoted_at.is_some(),
+        "coverage to the seal completes the promotion"
+    );
 
     // ---- a targeted revocation ends one principal's round, not the fleet's (ADR-0031 §5 R3) ----
     let r1 = grant(n1, &f, "r1", 1, RoundRole::Author, RUN, 60_000).await;
-    // a1v, the recused author's voter lease, is still live: the bystander.
+    // ADR-0039 §2: nothing in Run is admitted until r1's cell Observer is live.
+    let r = act(n1, &r1, Action::RunEmit { record: json!({ "valve": "open" }) }).await;
+    assert!(deny_reason(&r).contains("R3-observer-live"), "{}", r.detail);
+    let ro1 = grant(n1, &f, "ro1", 1, RoundRole::Author, RUN_OBS, 60_000).await;
+    let r1_topic = topak_core::lift::topic_name(&chain, Domain::Run, "r1", 0, 1);
+    let r = act(n1, &ro1, Action::RunEmit { record: heartbeat(&r1_topic, 0) }).await;
+    assert!(r.admitted, "{}", r.detail);
+    // o1, the veto seat's lease, is still live: the bystander.
     let r = act(n1, &r1, Action::RunEmit { record: json!({ "valve": "open" }) }).await;
     assert!(r.admitted, "{}", r.detail);
     // Every fixture principal shares one Persona digest, so the target here is the principal.
@@ -404,7 +444,7 @@ async fn build_round_promotion_and_fencing() {
         "rejected by the mechanism, not policy: {}",
         r.detail
     );
-    let r = act(n1, &a1v, Action::Emit { record: json!({ "unaffected": true }) }).await;
+    let r = act(n1, &o1, Action::Emit { record: json!({ "unaffected": true }) }).await;
     assert!(r.admitted, "another principal's round survives a targeted revocation: {}", r.detail);
     // The revoked principal keeps trying. Each attempt is in its round's `after` topic, up to the
     // bound (3 in this fixture), then one overflow marker, then nothing (ADR-0003 A2).
@@ -422,7 +462,7 @@ async fn build_round_promotion_and_fencing() {
     // ---- the fleet fence ends every live round ----
     let r = n1.operate(OperatorOp::FenceEpoch { reason: "e-stop".into(), attribution: "operator test".into() }).await;
     assert_eq!(r["ok"], true, "{r}");
-    let r = act(n1, &a1v, Action::Emit { record: json!({ "after": "fence" }) }).await;
+    let r = act(n1, &o1, Action::Emit { record: json!({ "after": "fence" }) }).await;
     assert!(deny_reason(&r).contains("FencedEpoch"), "rejected by the mechanism, not policy: {}", r.detail);
 
     // ---- every replica holds the same state ----
@@ -470,6 +510,11 @@ async fn tools_break_glass_issuance_and_partition() {
 
     // ---- break-glass (X1): a Run tool outside the Run allowlist, inside the envelope ----
     let r1 = grant(n1, &f, "r1", 1, RoundRole::Author, RUN, 60_000).await;
+    let ro1 = grant(n1, &f, "ro1", 1, RoundRole::Author, RUN_OBS, 60_000).await;
+    let chain = n1.state.read().unwrap().chain.clone();
+    let r1_topic = topak_core::lift::topic_name(&chain, Domain::Run, "r1", 0, 1);
+    let r = act(n1, &ro1, Action::RunEmit { record: heartbeat(&r1_topic, 0) }).await;
+    assert!(r.admitted, "{}", r.detail);
     let run = Action::RunInvoke { tool: name.into(), digest: Digest(digest.into()), inputs: inputs.clone() };
     let r = act(n1, &r1, run.clone()).await;
     assert!(deny_reason(&r).contains("Floor"), "no quorum yet: {}", r.detail);
@@ -523,7 +568,10 @@ async fn tools_break_glass_issuance_and_partition() {
 
     let mut good = f.rules.clone();
     good.rules_epoch = 1;
-    good.seats.insert("g4".into(), SeatDecl { domain: Domain::Build, key: pubhex(&key()) });
+    good.seats.insert(
+        "g4".into(),
+        SeatDecl { domain: Domain::Build, kind: topak_core::SeatKind::Grant, cell: None, key: pubhex(&key()) },
+    );
     let mut unsigned = sign_all(&good);
     unsigned.signatures.pop();
     let r = n1.operate(OperatorOp::Issue { issuance: unsigned }).await;
@@ -582,4 +630,110 @@ async fn an_expired_lease_is_ended_and_refused() {
     settle(&c).await;
     let st = n1.state.read().unwrap();
     assert!(!st.live_by_seat.contains_key("a1"), "the sweeper ordered EndRound(Expired)");
+}
+
+// ---- ADR-0039: Observer liveness couples Run admits ------------------------------------------
+
+/// Coupling.tla restated: `NoAdmitWithoutLiveObserver`, `UnreadBounded` (strict form) and the
+/// cross-round grant condition, each refusal seen to fire (ADR-0039 §8). K = 8, T_obs = 5 s are
+/// the placeholders in `floor/genesis-values.json`.
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn observer_liveness_couples_run_admits() {
+    let f = fixture("coupling").await;
+    let c = cluster(&f, true).await;
+    let n1 = &c.nodes[0];
+    let chain = n1.state.read().unwrap().chain.clone();
+    let k = n1.state.read().unwrap().observer.k;
+    assert_eq!(k, 8, "the placeholder");
+    let emit = |i: u64| Action::RunEmit { record: json!({ "i": i }) };
+
+    // No cell Observer lease at all: refused by the floor's R3, with the reason on its face.
+    let r1 = grant(n1, &f, "r1", 1, RoundRole::Author, RUN, 60_000).await;
+    let r = act(n1, &r1, emit(0)).await;
+    assert!(deny_reason(&r).contains("R3-observer-live"), "no observer lease: {}", r.detail);
+
+    // A lease but no heartbeat: still not live.
+    let ro1 = grant(n1, &f, "ro1", 1, RoundRole::Author, RUN_OBS, 60_000).await;
+    let r = act(n1, &r1, emit(0)).await;
+    assert!(deny_reason(&r).contains("R3-observer-live"), "no heartbeat yet: {}", r.detail);
+
+    // Dishonest or malformed heartbeats are the mechanism's to refuse (ADR-0039 §1).
+    let t1 = topak_core::lift::topic_name(&chain, Domain::Run, "r1", 0, 1);
+    let r = act(n1, &ro1, Action::RunEmit { record: heartbeat(&t1, 5) }).await;
+    assert!(deny_reason(&r).contains("BadHeartbeat"), "above what exists: {}", r.detail);
+    let r = act(n1, &ro1, Action::RunEmit { record: heartbeat("topak.nobody", 0) }).await;
+    assert!(deny_reason(&r).contains("BadHeartbeat"), "no such round: {}", r.detail);
+    let r = act(n1, &r1, Action::RunEmit { record: heartbeat(&t1, 0) }).await;
+    assert!(!r.admitted, "a Thinker does not report liveness: {}", r.detail);
+
+    // An honest heartbeat: live. K admits go through; the K+1th is refused for the backlog.
+    let r = act(n1, &ro1, Action::RunEmit { record: heartbeat(&t1, 0) }).await;
+    assert!(r.admitted, "{}", r.detail);
+    for i in 0..k {
+        let r = act(n1, &r1, emit(i)).await;
+        assert!(r.admitted, "admit {i} of {k}: {}", r.detail);
+    }
+    let r = act(n1, &r1, emit(k)).await;
+    assert!(deny_reason(&r).contains("R3-observer-live"), "backlog of {k} unread: {}", r.detail);
+    // Presence is not progress (Coupling.tla M_MARK): a fresh heartbeat with the same watermark
+    // renews T_obs and nothing else, and the Thinker stays refused for its backlog.
+    let r = act(n1, &ro1, Action::RunEmit { record: heartbeat(&t1, 0) }).await;
+    assert!(r.admitted, "{}", r.detail);
+    let r = act(n1, &r1, emit(k)).await;
+    assert!(deny_reason(&r).contains("R3-observer-live"), "presence is not progress: {}", r.detail);
+    // One emission read frees one slot; the next admit refills it.
+    let r = act(n1, &ro1, Action::RunEmit { record: heartbeat(&t1, 1) }).await;
+    assert!(r.admitted, "{}", r.detail);
+    let r = act(n1, &r1, emit(k)).await;
+    assert!(r.admitted, "{} unread, one below K: {}", k - 1, r.detail);
+    let r = act(n1, &r1, emit(k + 10)).await;
+    assert!(deny_reason(&r).contains("R3-observer-live"), "back at {k} unread: {}", r.detail);
+    let r = act(n1, &ro1, Action::RunEmit { record: heartbeat(&t1, 0) }).await;
+    assert!(deny_reason(&r).contains("BadHeartbeat"), "a watermark never falls: {}", r.detail);
+    let r = act(n1, &ro1, Action::RunEmit { record: heartbeat(&t1, k + 1) }).await;
+    assert!(r.admitted, "{}", r.detail);
+    let r = act(n1, &r1, emit(k + 10)).await;
+    assert!(r.admitted, "caught up: {}", r.detail);
+
+    // A stale heartbeat: T_obs elapses on this replica's clock (with the margin, early).
+    let t_obs = n1.state.read().unwrap().observer.t_obs_ms;
+    tokio::time::sleep(Duration::from_millis(t_obs + 200)).await;
+    let r = act(n1, &r1, emit(k + 1)).await;
+    assert!(deny_reason(&r).contains("R3-observer-live"), "stale: {}", r.detail);
+    let r = act(n1, &ro1, Action::RunEmit { record: heartbeat(&t1, k + 1) }).await;
+    assert!(r.admitted, "{}", r.detail);
+    let r = act(n1, &r1, emit(k + 1)).await;
+    assert!(r.admitted, "fresh again: {}", r.detail);
+
+    // Coverage carries across rounds (ADR-0039 §2): round 2 waits until round 1 is read to its seal.
+    let r = n1.operate(OperatorOp::EndRound { token: r1.clone(), reason: EndReason::Operator }).await;
+    assert_eq!(r["ok"], true, "{r}");
+    let seal = n1.state.read().unwrap().seals["r1"].clone();
+    assert_eq!(seal.topic, t1);
+    let refused = n1
+        .operate(OperatorOp::Grant {
+            principal: "principal-r1".into(),
+            seat: "r1".into(),
+            persona: Digest::of(b"persona"),
+            bundle: f.bundle_rev.clone(),
+            confinement: topak_core::lease::Confinement { digest: Digest::of(b"none"), rung: 0 },
+            alphabet: RUN.iter().copied().collect(),
+            ttl_ms: 60_000,
+            round: 2,
+            role: RoundRole::Author,
+        })
+        .await;
+    assert_eq!(refused["ok"], false, "round 1 is unread past its seal: {refused}");
+    assert!(refused.to_string().contains("unread"), "{refused}");
+    let r = act(n1, &ro1, Action::RunEmit { record: heartbeat(&t1, seal.seq) }).await;
+    assert!(r.admitted, "{}", r.detail);
+    let r1b = grant(n1, &f, "r1", 2, RoundRole::Author, RUN, 60_000).await;
+    let r = act(n1, &r1b, emit(100)).await;
+    assert!(r.admitted, "round 2, fresh Observer, nothing unread: {}", r.detail);
+
+    settle(&c).await;
+    let s1 = state_json(&c.nodes[0]);
+    for m in &c.nodes[1..] {
+        assert_eq!(state_json(m), s1, "marks and seals are replicated; heard is not: replica {} diverged", m.id);
+    }
 }

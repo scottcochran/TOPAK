@@ -99,6 +99,7 @@ pub fn lift(
     state: &State,
     params: &Params,
     rec: &LeaseRecord,
+    observer_live: bool,
 ) -> Result<FrozenInput, MechanismDeny> {
     let rules = &state.rules;
     let seat = req.seat.as_str();
@@ -116,7 +117,8 @@ pub fn lift(
             parents.push(uid("Roster", "veto"));
         }
         let d = rules.seat_domain(s).map(Domain::as_str).unwrap_or("unknown");
-        ent("Seat", s, json!({ "domain": d }), parents)
+        let k = rules.seat_kind(s).map(SeatKind::as_str).unwrap_or("unknown");
+        ent("Seat", s, json!({ "domain": d, "kind": k }), parents)
     };
 
     // The slice must be complete for every entity the floor can reference (ADR-0030 §4).
@@ -156,6 +158,8 @@ pub fn lift(
                 "quorum": state.break_glass_quorum(seat),
                 "tools": eref("ToolSet", "bg-tools"),
             },
+            // ADR-0039 §1: live(o) for some cell Observer of this seat, computed by the mechanism.
+            "observerLive": observer_live,
         }))
     };
     let topic = |d: Domain| -> Result<(Value, String), MechanismDeny> {

@@ -20,7 +20,7 @@ const TESTS: &str = include_str!("../../../../floor/genesis-tests.json");
 fn replays_the_gate_suite() {
     let floor = Floor::load().expect("pinned floor loads");
     let cases: Vec<Value> = serde_json::from_str(TESTS).unwrap();
-    assert_eq!(cases.len(), 38);
+    assert_eq!(cases.len(), 51);
     for c in &cases {
         let name = c["name"].as_str().unwrap();
         let r = &c["request"];
@@ -68,7 +68,7 @@ fn an_incomplete_slice_is_a_deny_not_a_skipped_forbid() {
     let floor = Floor::load().unwrap();
     let seat = || json!({ "type": "Topak::Seat", "id": "a1" });
     let entities = json!([
-        { "uid": seat(), "attrs": { "domain": "build" }, "parents": [] },
+        { "uid": seat(), "attrs": { "domain": "build", "kind": "thinker" }, "parents": [] },
         { "uid": { "type": "Topak::Topic", "id": "t" },
           "attrs": { "owner": { "__entity": seat() }, "epoch": 1, "round": 1 }, "parents": [] },
         { "uid": { "type": "Topak::CorpusRoot", "id": "pinned" }, "attrs": {}, "parents": [] },

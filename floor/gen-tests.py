@@ -26,12 +26,17 @@ EPOCH, ROUND, RULES = 3, 7, 5
 
 ENTITIES = [
     ent("Roster", "grant"), ent("Roster", "veto"),
-    # a1 authors this round and also holds a grant seat, so recusal has something to refuse.
-    ent("Seat", "a1", {"domain": "build"}, [("Roster", "grant")]),
-    ent("Seat", "v1", {"domain": "build"}, [("Roster", "grant")]),
-    ent("Seat", "o1", {"domain": "build"}, [("Roster", "veto")]),
-    ent("Seat", "n1", {"domain": "build"}),
-    ent("Seat", "r1", {"domain": "run"}),
+    # ADR-0037 §1, §2: one seat per principal, each with a kind. a1 authors this round. g1 is a grant seat
+    # that is also the author of art-g1, so recusal (B7) has something to refuse that B6/B10 do not.
+    ent("Seat", "a1", {"domain": "build", "kind": "thinker"}),
+    ent("Seat", "g1", {"domain": "build", "kind": "grant"}, [("Roster", "grant")]),
+    ent("Seat", "v1", {"domain": "build", "kind": "grant"}, [("Roster", "grant")]),
+    ent("Seat", "o1", {"domain": "build", "kind": "observer"}, [("Roster", "veto")]),
+    ent("Seat", "t1", {"domain": "build", "kind": "thinker"}, [("Roster", "veto")]),    # wrong kind on a roster
+    ent("Seat", "o2", {"domain": "build", "kind": "observer"}, [("Roster", "grant")]),  # wrong kind on a roster
+    ent("Seat", "n1", {"domain": "build", "kind": "grant"}),
+    ent("Seat", "r1", {"domain": "run", "kind": "thinker"}),
+    ent("Seat", "ro1", {"domain": "run", "kind": "observer"}),
     ent("CorpusRoot", "pinned"),
     ent("CorpusObject", "sha-c1", parents=[("CorpusRoot", "pinned")]),
     ent("CorpusObject", "sha-x"),
@@ -48,13 +53,17 @@ ENTITIES = [
     ent("Topic", "a1-r7-sealed", {"owner": ref("Seat", "a1"), "epoch": EPOCH, "round": ROUND, "sealed": True}),
     ent("Topic", "a1-e2", {"owner": ref("Seat", "a1"), "epoch": EPOCH - 1, "round": ROUND, "sealed": False}),
     ent("Topic", "r1-r7", {"owner": ref("Seat", "r1"), "epoch": EPOCH, "round": ROUND, "sealed": False}),
+    ent("Topic", "o1-r7", {"owner": ref("Seat", "o1"), "epoch": EPOCH, "round": ROUND, "sealed": False}),
+    ent("Topic", "ro1-r7", {"owner": ref("Seat", "ro1"), "epoch": EPOCH, "round": ROUND, "sealed": False}),
     ent("Artifact", "art-a1", {"author": ref("Seat", "a1")}),
     ent("Artifact", "art-v1", {"author": ref("Seat", "v1")}),
+    ent("Artifact", "art-g1", {"author": ref("Seat", "g1")}),
     ent("ArchiveRecord", "payload-1", {"class": "payload"}),
 ] + [ent("ArchiveRecord", f"f{i}", {"class": f"F{i}"}) for i in range(1, 7)]
 
 BUILD_ALPHA = ["Read", "Draft", "Invoke", "Emit", "Submit"]
 VOTE_ALPHA = ["Read", "Emit", "Vote"]
+OBS_ALPHA = ["Read", "Emit"]                    # ADR-0037 §4: an observer seat's Build alphabet
 
 
 def build_ctx(role="author", alphabet=BUILD_ALPHA, inputs=True):
@@ -76,13 +85,14 @@ def vote_ctx(verdict="grant", vre=RULES):
     }
 
 
-def run_ctx(bg=False):
+def run_ctx(bg=False, live=True):
     return {
         "lease": {"alphabet": ["RunInvoke", "RunEmit"], "rulesEpoch": RULES},
         "epoch": EPOCH, "round": ROUND,
         "corpusRoot": ref("CorpusRoot", "pinned"),
         "toolAllowlist": ref("ToolSet", "run-allow"),
         "breakGlass": {"quorum": bg, "tools": ref("ToolSet", "bg-tools")},
+        "observerLive": live,                   # ADR-0039 §1
     }
 
 
@@ -129,14 +139,27 @@ C += [
     case("B6 deny vote from a veto seat", "o1", "Vote", ("Artifact", "art-a1"), vote_ctx("deny"), "allow", ["B6-vote-seated"]),
     case("B6 vote bound to a superseded rules epoch", "v1", "Vote", ("Artifact", "art-a1"), vote_ctx(vre=RULES - 1), "deny"),
     case("B6 vote from an unseated principal", "n1", "Vote", ("Artifact", "art-a1"), vote_ctx("deny"), "deny"),
+    case("B6 a thinker seat on the veto roster cannot vote", "t1", "Vote", ("Artifact", "art-a1"), vote_ctx("deny"), "deny"),
+    case("B6 an observer seat on the grant roster cannot vote", "o2", "Vote", ("Artifact", "art-a1"), vote_ctx("deny"), "deny"),
+]
+# ---- ADR-0037 §4: observer seats read and emit, and nothing else
+C += [
+    case("B1 an observer seat reads the corpus", "o1", "Read", ("CorpusObject", "sha-c1"), build_ctx(alphabet=OBS_ALPHA), "allow", ["B1-read-corpus"]),
+    case("B4 an observer seat emits to its own topic", "o1", "Emit", ("Topic", "o1-r7"), build_ctx(alphabet=OBS_ALPHA), "allow", ["B4-emit-own-topic"]),
 ]
 # ---- carve-outs
 C += [
-    case("B7 author's own grant vote is refused", "a1", "Vote", ("Artifact", "art-a1"), vote_ctx(), "deny", ["B7-author-recused"]),
+    case("B7 author's own grant vote is refused", "g1", "Vote", ("Artifact", "art-g1"), vote_ctx(), "deny", ["B7-author-recused"]),
     case("B8 veto seat cannot grant", "o1", "Vote", ("Artifact", "art-a1"), vote_ctx("grant"), "deny", ["B8-grant-only-from-grant-seat"]),
     case("B9 a voter cannot draft", "a1", "Draft", ("WorkspaceTarget", "ws-a1-r7/spec.tla"), build_ctx(role="voter"), "deny", ["B9-voters-do-not-author"]),
     case("B9 a voter cannot invoke", "a1", "Invoke", ("Tool", "tlc@d1"), build_ctx(role="voter"), "deny", ["B9-voters-do-not-author"]),
     case("B9 a voter cannot submit", "a1", "Submit", ("Artifact", "art-a1"), build_ctx(role="voter"), "deny", ["B9-voters-do-not-author"]),
+    # B10: the lease alphabet and workspace would permit each of these; the kind is the only reason.
+    case("B10 an observer seat cannot draft", "o1", "Draft", ("WorkspaceTarget", "ws-a1-r7/spec.tla"), build_ctx(), "deny", ["B10-only-thinkers-author"]),
+    case("B10 an observer seat cannot invoke", "o1", "Invoke", ("Tool", "tlc@d1"), build_ctx(), "deny", ["B10-only-thinkers-author"]),
+    case("B10 an observer seat cannot submit", "o1", "Submit", ("Artifact", "art-a1"), build_ctx(), "deny", ["B10-only-thinkers-author"]),
+    case("B10 a grant seat cannot draft", "g1", "Draft", ("WorkspaceTarget", "ws-a1-r7/spec.tla"), build_ctx(), "deny", ["B10-only-thinkers-author"]),
+    case("B10 a Run observer seat cannot invoke", "ro1", "RunInvoke", ("Tool", "search@d3"), run_ctx(), "deny", ["B10-only-thinkers-author"]),
 ]
 # ---- Run (provisional) and break-glass
 C += [
@@ -146,6 +169,12 @@ C += [
     case("X1 break-glass tool without a quorum", "r1", "RunInvoke", ("Tool", "valve@d4"), run_ctx(bg=False), "deny"),
     case("X1 break-glass tool under a quorum", "r1", "RunInvoke", ("Tool", "valve@d4"), run_ctx(bg=True), "allow", ["X1-break-glass"]),
     case("X1 break-glass does not reach a tool outside its envelope", "r1", "RunInvoke", ("Tool", "tlc@d2"), run_ctx(bg=True), "deny"),
+    # ADR-0039 §2: the allowlist and alphabet would permit each of these; a dead cell Observer is the only reason.
+    case("R3 run invoke with no live cell Observer", "r1", "RunInvoke", ("Tool", "search@d3"), run_ctx(live=False), "deny", ["R3-observer-live"]),
+    case("R3 run emit with no live cell Observer", "r1", "RunEmit", ("Topic", "r1-r7"), run_ctx(live=False), "deny", ["R3-observer-live"]),
+    case("R3 break-glass under a quorum with no live cell Observer", "r1", "RunInvoke", ("Tool", "valve@d4"), run_ctx(bg=True, live=False), "deny", ["R3-observer-live"]),
+    # An observer seat's own emission (its heartbeat) is not coupled: it is what makes the Thinker live.
+    case("R3 does not couple a Run observer seat's own emission", "ro1", "RunEmit", ("Topic", "ro1-r7"), run_ctx(live=False), "allow", ["R2-run-emit-own-topic"]),
 ]
 # ---- erasure and the forensic floor
 C += [

@@ -102,6 +102,10 @@ pub struct Mechanism {
     archive: Mutex<Option<std::fs::File>>,
     /// Denial records written per `after` topic by this replica (ADR-0003 A2).
     after_written: Mutex<HashMap<String, u64>>,
+    /// `heard(o)` (ADR-0039 §1): this replica's clock when it last applied an admitted heartbeat
+    /// from each observer seat. Per replica, like lease expiry: a subtracting interval on the
+    /// mechanism's own clock (ADR-0032 §2), never replicated state.
+    heard: Mutex<HashMap<SeatId, MonoMillis>>,
 }
 
 const COMMIT_DEADLINE: Duration = Duration::from_secs(5);
@@ -114,6 +118,19 @@ fn deny(reason: DenyReason) -> AgentResponse {
 impl Mechanism {
     pub fn new(p: Parts) -> anyhow::Result<Arc<Self>> {
         std::fs::create_dir_all(&p.data_dir)?;
+        // ADR-0039 §1: K must be below the round bound of every domain, or the coupling check is
+        // vacuous. The values are the floor's; the round bounds are the mechanism's parameters.
+        let k = p.floor.observer_values().k;
+        for d in [Domain::Build, Domain::Run] {
+            let r = p.params.round_bound_for(d);
+            anyhow::ensure!(
+                k < r,
+                "policy-floor value K = {k} is not below {}'s round bound R = {r} (ADR-0039 §1)",
+                d.as_str()
+            );
+        }
+        let mut genesis = p.genesis;
+        genesis.observer = p.floor.observer_values().clone();
         // The archive is a projection of the log, rebuilt as the log is re-delivered.
         let archive = std::fs::File::create(p.data_dir.join("archive.jsonl"))?;
         Ok(Arc::new(Self {
@@ -123,8 +140,9 @@ impl Mechanism {
             bundle: p.bundle,
             transport: p.transport,
             tools: p.tools,
-            state: RwLock::new(p.genesis),
+            state: RwLock::new(genesis),
             after_written: Mutex::new(HashMap::new()),
+            heard: Mutex::new(HashMap::new()),
             clock: SystemMonotonic::new(),
             leader: AtomicBool::new(false),
             observed: Mutex::new(HashMap::new()),
@@ -194,6 +212,13 @@ impl Mechanism {
         if let Applied::LeaseGranted { fence } | Applied::Renewed { fence } = &applied {
             self.observed.lock().unwrap().insert(*fence, self.clock.now_ms());
         }
+        // ADR-0039 §1: `heard(o)` is when *this replica* applied the heartbeat, on its own clock.
+        if let Entry::Admit { rec, .. } = &entry
+            && matches!(rec.action, Admitted::Heartbeat { .. })
+            && matches!(applied, Applied::Admitted { .. })
+        {
+            self.heard.lock().unwrap().insert(rec.seat.clone(), self.clock.now_ms());
+        }
         if let Some(f) = self.archive.lock().unwrap().as_mut() {
             let line = json!({ "slot": slot, "entry": entry, "applied": applied });
             let _ = writeln!(f, "{line}");
@@ -216,6 +241,13 @@ impl Mechanism {
 
     fn session(&self, token: &str) -> Option<Session> {
         self.sessions.lock().unwrap().get(token).cloned()
+    }
+
+    /// ADR-0039 §1, condition 2: fewer than T_obs have elapsed since `heard(o)`, read with the
+    /// asymmetric margin (elapsing early). No heartbeat heard means not fresh.
+    fn fresh(&self, observer: &str, t_obs_ms: u64) -> bool {
+        let Some(at) = self.heard.lock().unwrap().get(observer).copied() else { return false };
+        !subtracting_interval_elapsed(at, t_obs_ms, self.params.lease_margin_ms, self.clock.now_ms())
     }
 
     fn expired(&self, fence: LogIndex, ttl: u64) -> bool {
@@ -379,7 +411,10 @@ impl Mechanism {
                 if self.expired(rec.lease.fence, rec.lease.ttl_ms) {
                     return Err(MechanismDeny::LeaseExpired);
                 }
-                let frozen = lift(&req, &st, &self.params, rec)?;
+                // ADR-0039 §1: live(o) for the seat's cell Observers, freshness on this clock.
+                let t_obs = st.observer.t_obs_ms;
+                let live = st.observer_covers(&req.seat, &|o| self.fresh(o, t_obs));
+                let frozen = lift(&req, &st, &self.params, rec, live)?;
                 let domain = st.rules.seat_domain(&req.seat).expect("lifted");
                 Ok((frozen, rec.lease.bundle.clone(), rec.lease.epoch, rec.lease.round, domain))
             })

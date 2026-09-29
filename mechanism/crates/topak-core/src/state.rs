@@ -16,7 +16,8 @@ use std::fmt;
 use crate::action::{ActionRequest, tool_id};
 use crate::authentic::{self, KeyHex, Signed};
 use crate::lease::{Confinement, Lease, MAX_RUNG};
-use crate::promotion::{Candidate, Tally, VoteRecord, tally};
+use crate::observer::{Heartbeat, ObserverValues};
+use crate::promotion::{Candidate, Tally, VoteRecord, tally_with_coverage};
 use crate::rules::{self, Issuance, Rules, Violation};
 use crate::types::*;
 
@@ -31,8 +32,13 @@ pub struct Params {
     pub build_tools: BTreeSet<String>,
     /// PROVISIONAL (Run alphabet): Run tool allowlist, by `name@digest`.
     pub run_tools: BTreeSet<String>,
-    /// Maximum admitted actions per round (termination; bounds the state space).
+    /// Maximum admitted actions per round (termination; bounds the state space). Build's `R`
+    /// (ADR-0022 §3).
     pub round_bound: u64,
+    /// Run's `R` (ADR-0039 §1, a placeholder of 64 in the dev rules). `None` reads as Build's,
+    /// which is what the reference did before 2026.09.29.
+    #[serde(default)]
+    pub run_round_bound: Option<u64>,
     /// Asymmetric margin subtracted from every lease TTL (ADR-0032 §2).
     pub lease_margin_ms: u64,
     /// Most denial records written to one round's `after` topic before a single overflow marker
@@ -49,6 +55,13 @@ fn default_after_topic_limit() -> u64 {
 impl Params {
     pub fn digest(&self) -> Digest {
         Digest::of_json(self)
+    }
+
+    pub fn round_bound_for(&self, domain: Domain) -> u64 {
+        match domain {
+            Domain::Build => self.round_bound,
+            Domain::Run => self.run_round_bound.unwrap_or(self.round_bound),
+        }
     }
 }
 
@@ -142,14 +155,44 @@ pub struct RenewRequest {
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(tag = "kind")]
 pub enum Admitted {
-    Read { object: Digest },
-    Draft { target: String, content: Digest },
-    Invoke { tool: String, inputs: Digest },
-    Emit { record: Digest },
-    Submit { artifact: Digest },
-    Vote { verdict: Verdict, artifact: Digest, evidence: Digest, rules_epoch: RulesEpoch },
-    RunInvoke { tool: String, inputs: Digest, break_glass: bool },
-    RunEmit { record: Digest },
+    Read {
+        object: Digest,
+    },
+    Draft {
+        target: String,
+        content: Digest,
+    },
+    Invoke {
+        tool: String,
+        inputs: Digest,
+    },
+    Emit {
+        record: Digest,
+    },
+    Submit {
+        artifact: Digest,
+    },
+    Vote {
+        verdict: Verdict,
+        artifact: Digest,
+        evidence: Digest,
+        rules_epoch: RulesEpoch,
+    },
+    RunInvoke {
+        tool: String,
+        inputs: Digest,
+        break_glass: bool,
+    },
+    RunEmit {
+        record: Digest,
+    },
+    /// An observer seat's heartbeat (ADR-0039 §1), carried verbatim: it is a fact, and every
+    /// replica applies the mark from the log. `via` is the emission variant it arrived as.
+    Heartbeat {
+        via: ActionKind,
+        topic: String,
+        watermark: u64,
+    },
 }
 
 impl Admitted {
@@ -163,7 +206,10 @@ impl Admitted {
             A::Invoke { tool, digest, inputs } => {
                 Admitted::Invoke { tool: tool_id(tool, digest), inputs: Digest::of_json(inputs) }
             }
-            A::Emit { record } => Admitted::Emit { record: Digest::of_json(record) },
+            A::Emit { record } => match Heartbeat::parse(record) {
+                Some(h) => Admitted::Heartbeat { via: ActionKind::Emit, topic: h.topic, watermark: h.watermark },
+                None => Admitted::Emit { record: Digest::of_json(record) },
+            },
             A::Submit { artifact } => Admitted::Submit { artifact: artifact.clone() },
             A::Vote { verdict, artifact, evidence, rules_epoch } => Admitted::Vote {
                 verdict: *verdict,
@@ -174,7 +220,10 @@ impl Admitted {
             A::RunInvoke { tool, digest, inputs } => {
                 Admitted::RunInvoke { tool: tool_id(tool, digest), inputs: Digest::of_json(inputs), break_glass }
             }
-            A::RunEmit { record } => Admitted::RunEmit { record: Digest::of_json(record) },
+            A::RunEmit { record } => match Heartbeat::parse(record) {
+                Some(h) => Admitted::Heartbeat { via: ActionKind::RunEmit, topic: h.topic, watermark: h.watermark },
+                None => Admitted::RunEmit { record: Digest::of_json(record) },
+            },
         }
     }
 
@@ -188,6 +237,7 @@ impl Admitted {
             Admitted::Vote { .. } => ActionKind::Vote,
             Admitted::RunInvoke { .. } => ActionKind::RunInvoke,
             Admitted::RunEmit { .. } => ActionKind::RunEmit,
+            Admitted::Heartbeat { via, .. } => *via,
         }
     }
 }
@@ -301,6 +351,9 @@ impl Entry {
 pub enum MechanismDeny {
     UnknownLease,
     WrongSeat,
+    /// A malformed or dishonest heartbeat (ADR-0039 §1): from a non-observer, naming no round of
+    /// a Thinker in its reach, above what exists, or below its last watermark.
+    BadHeartbeat(String),
     /// The epoch fence (ADR-0022 §2). Rejected by the mechanism, not by policy.
     FencedEpoch {
         lease: Epoch,
@@ -387,6 +440,24 @@ pub struct State {
     /// PROVISIONAL (dedupe growth): unbounded; no snapshotting or compaction yet.
     pub applied_ids: BTreeSet<String>,
     pub last_applied: LogIndex,
+    /// The policy-floor values the lift reads (ADR-0039 §1). Set from the linked floor at
+    /// startup; the default is the placeholders, for states built without one.
+    #[serde(default)]
+    pub observer: ObserverValues,
+    /// `mark(o, topic)` (ADR-0039 §1): observer seat → watched round topic → watermark. Kept per
+    /// seat, not per lease, so an Observer's next lease continues where its last left off.
+    #[serde(default)]
+    pub marks: BTreeMap<SeatId, BTreeMap<String, u64>>,
+    /// The seal of each Thinker seat's last ended round: its topic and its final sequence
+    /// number. Read by the cross-round grant condition (ADR-0039 §2) and by coverage (§3).
+    #[serde(default)]
+    pub seals: BTreeMap<SeatId, Seal>,
+}
+
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct Seal {
+    pub topic: String,
+    pub seq: u64,
 }
 
 pub const BREAK_GLASS_PURPOSE: &str = "break-glass";
@@ -414,7 +485,76 @@ impl State {
             revoked: BTreeSet::new(),
             applied_ids: BTreeSet::new(),
             last_applied: 0,
+            observer: ObserverValues::default(),
+            marks: BTreeMap::new(),
+            seals: BTreeMap::new(),
         })
+    }
+
+    fn topic_of(&self, rec: &LeaseRecord) -> Option<String> {
+        let d = self.rules.seat_domain(&rec.lease.seat)?;
+        Some(crate::lift::topic_name(&self.chain, d, &rec.lease.seat, rec.lease.epoch, rec.lease.round))
+    }
+
+    fn mark(&self, observer: &str, topic: &str) -> u64 {
+        self.marks.get(observer).and_then(|m| m.get(topic)).copied().unwrap_or(0)
+    }
+
+    /// The deterministic half of `live(o)` (ADR-0039 §1, conditions 1 and 3) for some cell
+    /// Observer of `thinker`: a live lease and a watermark within K of the Thinker's sequence.
+    /// The strict form, so that after the admit being decided at most K are unread (the
+    /// `Coupling.tla` finding). Re-checked at apply; the heartbeat's freshness (condition 2)
+    /// is a per-replica clock and is checked at decide only, as lease expiry is.
+    pub fn observer_covers(&self, thinker: &str, fresh: &dyn Fn(&str) -> bool) -> bool {
+        let Some(t) = self.live_lease(thinker) else { return false };
+        let Some(topic) = self.topic_of(t) else { return false };
+        self.rules.cell_observers(thinker).iter().any(|o| {
+            self.live_lease(o).is_some()
+                && fresh(o)
+                && t.emit_seq.saturating_sub(self.mark(o, &topic)) < self.observer.k
+        })
+    }
+
+    /// ADR-0039 §3 (ADR-0024 A2.3, pending): the author's cell Observer has reported reading
+    /// the author's round to its seal.
+    pub fn author_covered(&self, author: &str) -> bool {
+        let Some(seal) = self.seals.get(author) else { return false };
+        self.rules.cell_observers(author).iter().any(|o| self.mark(o, &seal.topic) >= seal.seq)
+    }
+
+    /// ADR-0039 §1: a heartbeat names a round of a Thinker in the observer's reach, its watermark
+    /// is at most what exists in that round and at least the last one reported.
+    fn check_heartbeat(&self, seat: &str, h: &Heartbeat) -> Result<(), MechanismDeny> {
+        let bad = |s: &str| Err(MechanismDeny::BadHeartbeat(s.into()));
+        if self.rules.seat_kind(seat) != Some(SeatKind::Observer) {
+            return bad("only an observer seat reports liveness");
+        }
+        let mut found = None;
+        for (t, d) in &self.rules.seats {
+            if d.kind != SeatKind::Thinker {
+                continue;
+            }
+            if let Some(rec) = self.live_lease(t)
+                && self.topic_of(rec).as_deref() == Some(&h.topic)
+            {
+                found = Some((t.clone(), rec.emit_seq));
+            } else if let Some(seal) = self.seals.get(t)
+                && seal.topic == h.topic
+            {
+                found = Some((t.clone(), seal.seq));
+            }
+        }
+        let Some((thinker, upper)) = found else { return bad("names no round of a Thinker") };
+        if !self.rules.watches(seat, &thinker) {
+            return bad("the watched Thinker is outside this observer's reach");
+        }
+        if h.watermark > upper {
+            return bad("watermark is above what exists in the round");
+        }
+        if h.watermark < self.mark(seat, &h.topic) {
+            return bad("watermark falls below the last one reported");
+        }
+        Ok(())
     }
 
     pub fn live_lease(&self, seat: &str) -> Option<&LeaseRecord> {
@@ -459,8 +599,9 @@ impl State {
         if !rec.lease.alphabet.contains(&kind) {
             return Err(MechanismDeny::NotInAlphabet(kind));
         }
-        if rec.actions >= params.round_bound {
-            return Err(MechanismDeny::RoundBoundReached(params.round_bound));
+        let bound = params.round_bound_for(self.rules.seat_domain(&req.seat).unwrap_or(Domain::Build));
+        if rec.actions >= bound {
+            return Err(MechanismDeny::RoundBoundReached(bound));
         }
         self.check_action_preconditions(req)?;
         Ok(rec)
@@ -485,18 +626,30 @@ impl State {
                     Some(_) => Ok(()),
                 }
             }
+            A::Emit { record } | A::RunEmit { record } => match Heartbeat::parse(record) {
+                Some(h) => self.check_heartbeat(&req.seat, &h),
+                None => Ok(()),
+            },
             _ => Ok(()),
         }
     }
 
     fn end_lease(&mut self, fence: LogIndex, reason: EndReason) {
-        if let Some(rec) = self.leases.get_mut(&fence)
-            && rec.ended.is_none()
-        {
-            rec.ended = Some(reason);
-            if self.live_by_seat.get(&rec.lease.seat) == Some(&fence) {
-                self.live_by_seat.remove(&rec.lease.seat);
-            }
+        let Some(rec) = self.leases.get(&fence) else { return };
+        if rec.ended.is_some() {
+            return;
+        }
+        // ADR-0039 §2, §3: a Thinker's round seals at its final sequence number.
+        let seal = (self.rules.seat_kind(&rec.lease.seat) == Some(SeatKind::Thinker))
+            .then(|| self.topic_of(rec).map(|topic| (rec.lease.seat.clone(), Seal { topic, seq: rec.emit_seq })))
+            .flatten();
+        let rec = self.leases.get_mut(&fence).expect("present");
+        rec.ended = Some(reason);
+        if self.live_by_seat.get(&rec.lease.seat) == Some(&fence) {
+            self.live_by_seat.remove(&rec.lease.seat);
+        }
+        if let Some((seat, seal)) = seal {
+            self.seals.insert(seat, seal);
         }
     }
 
@@ -575,6 +728,22 @@ impl State {
         if let Some(k) = req.alphabet.iter().find(|k| k.domain() != domain) {
             return Applied::Rejected(format!("{k} is outside the {} alphabet", domain.as_str()));
         }
+        // ADR-0037 §4: the alphabet is bounded by the seat's kind. The floor states the same
+        // bound (B10, B6); like recusal, it is enforced twice.
+        let kind = self.rules.seat_kind(&req.seat).expect("declared seat has a kind");
+        if let Some(k) = req.alphabet.iter().find(|k| !kind.allows(**k)) {
+            return Applied::Rejected(format!("{k} is outside the {kind} alphabet (ADR-0037 §4)"));
+        }
+        // ADR-0037 §1: a principal holds exactly one seat. `live_by_seat` keys the one-live-lease
+        // rule by seat; this keys it by principal, which Seats.tla's M_SEAT shows is not the same.
+        if let Some(other) =
+            self.live_by_seat.values().filter_map(|f| self.leases.get(f)).find(|r| r.lease.principal == req.principal)
+        {
+            return Applied::Rejected(format!(
+                "principal {} holds a live lease on seat {} (ADR-0037 §1)",
+                req.principal, other.lease.seat
+            ));
+        }
         if req.role == RoundRole::Voter && domain != Domain::Build {
             return Applied::Rejected("only Build seats vote".into());
         }
@@ -584,6 +753,18 @@ impl State {
         }
         if req.confinement.rung > MAX_RUNG {
             return Applied::Rejected("no such confinement rung".into());
+        }
+        // ADR-0039 §2: in Run, a Thinker's next round is granted only once a cell Observer has
+        // read its last round to the seal. Build needs no cross-round rule (§3).
+        if domain == Domain::Run
+            && kind == SeatKind::Thinker
+            && let Some(seal) = self.seals.get(&req.seat)
+            && !self.rules.cell_observers(&req.seat).iter().any(|o| self.mark(o, &seal.topic) >= seal.seq)
+        {
+            return Applied::Rejected(format!(
+                "seat {}'s last round ({}) is unread by its cell Observer past sequence {} (ADR-0039 §2)",
+                req.seat, seal.topic, seal.seq
+            ));
         }
         if self.last_round.get(&req.seat).is_some_and(|r| req.round <= *r) {
             return Applied::Rejected("round numbers are not reused: a round's topic is sealed".into());
@@ -670,6 +851,13 @@ impl State {
         if let Err(d) = self.check_live(&probe, params) {
             return Applied::Rejected(format!("fenced between decision and commit: {d}"));
         }
+        // ADR-0039 §2, re-checked at apply (ADR-0033 §4): the deterministic half of live(o).
+        if matches!(rec.action, Admitted::RunInvoke { .. } | Admitted::RunEmit { .. })
+            && self.rules.seat_kind(&rec.seat) == Some(SeatKind::Thinker)
+            && !self.observer_covers(&rec.seat, &|_| true)
+        {
+            return Applied::Rejected("no cell Observer covers this seat at commit (ADR-0039 §2)".into());
+        }
         let fence = rec.lease;
         let lr = self.leases.get_mut(&fence).expect("checked");
         lr.actions += 1;
@@ -679,6 +867,25 @@ impl State {
             Admitted::Emit { .. } | Admitted::RunEmit { .. } => {
                 lr.emit_seq += 1;
                 emit_seq = Some(lr.emit_seq);
+            }
+            Admitted::Heartbeat { topic, watermark, .. } => {
+                lr.emit_seq += 1;
+                emit_seq = Some(lr.emit_seq);
+                self.marks.entry(rec.seat.clone()).or_default().insert(topic.clone(), *watermark);
+                // Coverage may complete a promotion whose votes are all in (ADR-0039 §3).
+                let authors: Vec<SeatId> =
+                    self.seals.iter().filter(|(_, s)| &s.topic == topic).map(|(a, _)| a.clone()).collect();
+                for author in authors {
+                    let covered = self.author_covered(&author);
+                    let gates = &self.gates;
+                    let rules = &self.rules;
+                    for c in self.candidates.values_mut().filter(|c| c.author == author && c.promoted_at.is_none()) {
+                        if tally_with_coverage(c, rules, gates.get(&c.artifact), covered) == Tally::Promoted {
+                            c.promoted_at = Some(index);
+                            promoted = Some(c.artifact.clone());
+                        }
+                    }
+                }
             }
             Admitted::Submit { artifact } => {
                 self.candidates.insert(
@@ -693,12 +900,14 @@ impl State {
                 self.end_lease(fence, EndReason::Submitted);
             }
             Admitted::Vote { verdict, artifact, evidence, rules_epoch } => {
+                let author = self.candidates.get(artifact).expect("checked").author.clone();
+                let covered = self.author_covered(&author);
                 let c = self.candidates.get_mut(artifact).expect("checked");
                 c.votes.insert(
                     rec.seat.clone(),
                     VoteRecord { verdict: *verdict, evidence: evidence.clone(), rules_epoch: *rules_epoch },
                 );
-                if tally(c, &self.rules, self.gates.get(artifact)) == Tally::Promoted {
+                if tally_with_coverage(c, &self.rules, self.gates.get(artifact), covered) == Tally::Promoted {
                     c.promoted_at = Some(index);
                     promoted = Some(artifact.clone());
                 }
@@ -731,5 +940,9 @@ fn probe_action(a: &Admitted) -> crate::action::Action {
             A::RunInvoke { tool: String::new(), digest: Digest(String::new()), inputs: none() }
         }
         Admitted::RunEmit { .. } => A::RunEmit { record: serde_json::Value::Null },
+        Admitted::Heartbeat { via, topic, watermark } => {
+            let record = Heartbeat { topic: topic.clone(), watermark: *watermark }.record();
+            if *via == ActionKind::Emit { A::Emit { record } } else { A::RunEmit { record } }
+        }
     }
 }

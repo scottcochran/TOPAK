@@ -145,3 +145,40 @@ impl fmt::Display for ActionKind {
         f.write_str(self.as_str())
     }
 }
+
+/// A seat's kind (ADR-0037 §2), declared with the seat in the issued rules and never changed.
+/// Only a `thinker` seat holds a variant that writes, runs or offers (§4).
+#[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
+#[serde(rename_all = "lowercase")]
+pub enum SeatKind {
+    Thinker,
+    Observer,
+    Grant,
+}
+
+impl SeatKind {
+    pub fn as_str(self) -> &'static str {
+        match self {
+            SeatKind::Thinker => "thinker",
+            SeatKind::Observer => "observer",
+            SeatKind::Grant => "grant",
+        }
+    }
+
+    /// ADR-0037 §4: the variants a seat of this kind may be issued. The floor states the same
+    /// bound (B10, B6); the grant path checks it first, as it does the domain.
+    pub fn allows(self, k: ActionKind) -> bool {
+        use ActionKind::*;
+        match self {
+            SeatKind::Thinker => matches!(k, Read | Draft | Invoke | Emit | Submit | RunInvoke | RunEmit),
+            SeatKind::Observer => matches!(k, Read | Emit | Vote | RunEmit),
+            SeatKind::Grant => matches!(k, Read | Emit | Vote),
+        }
+    }
+}
+
+impl fmt::Display for SeatKind {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.write_str(self.as_str())
+    }
+}

@@ -11,10 +11,12 @@ namespace Topak {
   // set by the mechanism from the rules in force at `rulesEpoch`.
   entity Roster;
 
-  // A seat (ADR-0016 §5). `domain` separates Build from Run while the per-class floor question
-  // (ToO §3.4) is open: one policy set, policies scoped per domain.
+  // A seat (ADR-0016 §5; ADR-0037 §1). `domain` separates Build from Run while the per-class floor
+  // question (ToO §3.4) is open: one policy set, policies scoped per domain. `kind` is the seat's
+  // kind (ADR-0037 §2), set by the mechanism from the issued rules like roster membership.
   entity Seat in [Roster] {
     domain: String,                       // "build" | "run"
+    kind: String,                         // "thinker" | "observer" | "grant"
   };
 
   // ---- resources ---------------------------------------------------------------------------
@@ -82,6 +84,7 @@ namespace Topak {
       quorum: Bool,                       // a break-glass quorum on the issued roster (ADR-0013 §1)
       tools: ToolSet,                     // the break-glass envelope, issued with the roster
     },
+    observerLive: Bool,                   // ADR-0039 §1: live(o) for some cell Observer o of this seat, a syntactic lift
   };
 
   type EraseCtx = {

@@ -29,12 +29,28 @@ pub struct Candidate {
 #[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Tally {
     Promoted,
-    Pending { granted: usize, counted: usize },
+    Pending {
+        granted: usize,
+        counted: usize,
+    },
+    /// Every counted grant seat granted, but the author's round is not covered by a cell
+    /// Observer (ADR-0039 §3; ADR-0024 A2.3, ratified 2026.09.29). A stall, never a denial: PC/EC.
+    Stalled(String),
     Denied(String),
 }
 
-/// `PromotionEnabled(a)` from ADR-0024, given the gate evidence the artifact's gates produced.
+/// `PromotionEnabled(a)` from ADR-0024, given the gate evidence, with the author's round taken
+/// as covered. The state machine uses [`tally_with_coverage`]; this form is for the tally rules
+/// alone (tests, status).
 pub fn tally(c: &Candidate, rules: &Rules, evidence: Option<&Digest>) -> Tally {
+    tally_with_coverage(c, rules, evidence, true)
+}
+
+/// `PromotionEnabled(a)` with coverage (ADR-0024 A2.3). `covered` is the
+/// mechanism's fact that the author's cell Observer reported a watermark at or beyond the seal
+/// of the author's round topic (ADR-0039 §3). It is read here and not in the floor, because it
+/// is mechanism state, as recusal's counted set is.
+pub fn tally_with_coverage(c: &Candidate, rules: &Rules, evidence: Option<&Digest>, covered: bool) -> Tally {
     // Gates enable voting; they do not vote (§4). No evidence, nothing can count.
     let Some(evidence) = evidence else {
         return Tally::Pending { granted: 0, counted: 0 };
@@ -62,20 +78,21 @@ pub fn tally(c: &Candidate, rules: &Rules, evidence: Option<&Digest>) -> Tally {
 
     let granted = counted.iter().filter(|s| c.votes.get(**s).is_some_and(|r| current(r, Verdict::Grant))).count();
 
-    match rules.quorum {
+    let would_promote = match rules.quorum {
         Quorum::All => {
             // Any grant-seat deny is a denial under unanimity.
             if let Some(s) = counted.iter().find(|s| c.votes.get(**s).is_some_and(|r| current(r, Verdict::Deny))) {
                 return Tally::Denied(format!("grant seat {s} denied under unanimity"));
             }
-            if granted == counted.len() { Tally::Promoted } else { Tally::Pending { granted, counted: counted.len() } }
+            granted == counted.len()
         }
-        Quorum::Threshold(k) => {
-            if granted >= k as usize {
-                Tally::Promoted
-            } else {
-                Tally::Pending { granted, counted: counted.len() }
-            }
-        }
+        Quorum::Threshold(k) => granted >= k as usize,
+    };
+    if !would_promote {
+        return Tally::Pending { granted, counted: counted.len() };
     }
+    if !covered {
+        return Tally::Stalled("the author's round is not covered by a cell Observer (ADR-0039 §3)".into());
+    }
+    Tally::Promoted
 }

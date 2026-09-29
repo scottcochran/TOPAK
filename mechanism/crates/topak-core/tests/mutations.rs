@@ -17,8 +17,12 @@ use topak_core::rules::*;
 use topak_core::state::*;
 use topak_core::*;
 
-fn seat(d: Domain, key: &str) -> SeatDecl {
-    SeatDecl { domain: d, key: key.into() }
+fn seat(d: Domain, kind: SeatKind, key: &str) -> SeatDecl {
+    SeatDecl { domain: d, kind, cell: None, key: key.into() }
+}
+
+fn cell_observer(d: Domain, cell: &str, key: &str) -> SeatDecl {
+    SeatDecl { domain: d, kind: SeatKind::Observer, cell: Some(cell.into()), key: key.into() }
 }
 
 fn rules() -> Rules {
@@ -27,12 +31,12 @@ fn rules() -> Rules {
         quorum: Quorum::All,
         min_grant: 2,
         seats: BTreeMap::from([
-            ("a1".into(), seat(Domain::Build, "ka1")),
-            ("g1".into(), seat(Domain::Build, "kg1")),
-            ("g2".into(), seat(Domain::Build, "kg2")),
-            ("g3".into(), seat(Domain::Build, "kg3")),
-            ("o1".into(), seat(Domain::Build, "ko1")),
-            ("r1".into(), seat(Domain::Run, "kr1")),
+            ("a1".into(), seat(Domain::Build, SeatKind::Thinker, "ka1")),
+            ("g1".into(), seat(Domain::Build, SeatKind::Grant, "kg1")),
+            ("g2".into(), seat(Domain::Build, SeatKind::Grant, "kg2")),
+            ("g3".into(), seat(Domain::Build, SeatKind::Grant, "kg3")),
+            ("o1".into(), cell_observer(Domain::Build, "a1", "ko1")),
+            ("r1".into(), seat(Domain::Run, SeatKind::Thinker, "kr1")),
         ]),
         grant_roster: ["a1", "g1", "g2", "g3"].into_iter().map(String::from).collect(),
         veto_roster: BTreeSet::from(["o1".into()]),
@@ -50,6 +54,7 @@ fn params() -> Params {
         round_bound: 3,
         lease_margin_ms: 0,
         after_topic_limit: 3,
+        run_round_bound: None,
     }
 }
 
@@ -479,4 +484,105 @@ fn workspace_paths_are_syntactic_and_fail_closed() {
     assert!(inputs_in_workspace(&serde_json::json!({ "spec": "Lease.tla", "workers": 4 })));
     assert!(!inputs_in_workspace(&serde_json::json!({ "spec": "/abs" })));
     assert!(!inputs_in_workspace(&serde_json::json!({ "nested": ["ok", "../no"] })));
+}
+
+// ---- Seats.tla (ADR-0037) ------------------------------------------------------------------
+
+/// Seats.tla `OnlyThinkersAuthor` / `M_KIND`: the grant path issues nothing outside the kind's
+/// bound (ADR-0037 §4), so an observer seat never holds `Draft` and a thinker seat never holds
+/// `Vote`. The floor (B10, B6) is the second enforcement; this is the first.
+#[test]
+fn alphabets_are_bounded_by_seat_kind_and_m_kind_is_refused() {
+    let p = params();
+    let mut s = state();
+    let a =
+        s.apply(1, &Entry::Grant { id: "g1".into(), req: grant_req("o1", &[ActionKind::Read, ActionKind::Draft]) }, &p);
+    assert!(matches!(a, Applied::Rejected(ref r) if r.contains("observer alphabet")), "{a:?}");
+    let a =
+        s.apply(2, &Entry::Grant { id: "g2".into(), req: grant_req("a1", &[ActionKind::Read, ActionKind::Vote]) }, &p);
+    assert!(matches!(a, Applied::Rejected(ref r) if r.contains("thinker alphabet")), "{a:?}");
+    let a = s.apply(3, &Entry::Grant { id: "g3".into(), req: grant_req("g1", &[ActionKind::Submit]) }, &p);
+    assert!(matches!(a, Applied::Rejected(ref r) if r.contains("grant alphabet")), "{a:?}");
+    // Reachability: each kind is granted what it may hold.
+    for (seat, alpha) in [
+        ("o1", vec![ActionKind::Read, ActionKind::Emit, ActionKind::Vote]),
+        ("a1", vec![ActionKind::Read, ActionKind::Draft]),
+        ("g1", vec![ActionKind::Vote]),
+    ] {
+        let mut req = grant_req(seat, &alpha);
+        req.role = if seat == "a1" { RoundRole::Author } else { RoundRole::Voter };
+        let a =
+            s.apply(10 + seat.len() as u64 + alpha.len() as u64, &Entry::Grant { id: format!("ok-{seat}"), req }, &p);
+        assert!(matches!(a, Applied::LeaseGranted { .. }), "{seat}: {a:?}");
+    }
+}
+
+/// Seats.tla `OneSeatPerPrincipal` / `M_SEAT`: a principal holds exactly one seat (ADR-0037 §1).
+/// Before ADR-0037 the reference keyed the one-live-lease rule by seat only (finding 1), which is
+/// exactly M_SEAT: the same principal could be granted a second seat.
+#[test]
+fn one_seat_per_principal_and_m_seat_is_refused() {
+    let p = params();
+    let mut s = state();
+    let mut first = grant_req("a1", &[ActionKind::Read]);
+    first.principal = "p-shared".into();
+    assert!(matches!(s.apply(1, &Entry::Grant { id: "g1".into(), req: first }, &p), Applied::LeaseGranted { .. }));
+    let mut second = grant_req("g1", &[ActionKind::Read]);
+    second.principal = "p-shared".into();
+    second.role = RoundRole::Voter;
+    let a = s.apply(2, &Entry::Grant { id: "g2".into(), req: second }, &p);
+    assert!(matches!(a, Applied::Rejected(ref r) if r.contains("holds a live lease on seat a1")), "M_SEAT: {a:?}");
+    // Reachability: another principal takes g1; and after a1's round ends, p-shared may take g1.
+    let mut other = grant_req("g1", &[ActionKind::Read]);
+    other.principal = "p-other".into();
+    other.role = RoundRole::Voter;
+    assert!(matches!(s.apply(3, &Entry::Grant { id: "g3".into(), req: other }, &p), Applied::LeaseGranted { .. }));
+}
+
+// ---- Observers.tla (ADR-0038) --------------------------------------------------------------
+
+/// ADR-0038 §6 / ADR-0024 A2.1: a correlator, an observer seat with no cell, holds a veto seat
+/// like a cell Observer. Its `Vote(deny)` denies; its silence is not a veto (ADR-0024 §2). Its
+/// `Vote(grant)` is the floor's B8 to refuse, replayed in `floor.rs`.
+#[test]
+fn a_correlator_on_the_veto_roster_vetoes_and_its_silence_does_not() {
+    use topak_core::promotion::{Candidate, Tally, VoteRecord, tally};
+    let mut r = rules();
+    r.seats.insert("corr".into(), seat(Domain::Build, SeatKind::Observer, "kcorr"));
+    r.veto_roster.insert("corr".into());
+    assert!(check_well_formed(&r).is_empty(), "{:?}", check_well_formed(&r));
+    let ev = Digest::of(b"evidence");
+    let vote = |v: Verdict| VoteRecord { verdict: v, evidence: ev.clone(), rules_epoch: 0 };
+    let mut votes: BTreeMap<SeatId, VoteRecord> =
+        ["g1", "g2", "g3"].into_iter().map(|s| (s.to_string(), vote(Verdict::Grant))).collect();
+    let cand = |votes: &BTreeMap<SeatId, VoteRecord>| Candidate {
+        artifact: Digest::of(b"art"),
+        author: "a1".into(),
+        votes: votes.clone(),
+        promoted_at: None,
+    };
+    assert_eq!(tally(&cand(&votes), &r, Some(&ev)), Tally::Promoted, "a silent correlator does not veto");
+    votes.insert("corr".into(), vote(Verdict::Deny));
+    assert!(matches!(tally(&cand(&votes), &r, Some(&ev)), Tally::Denied(ref d) if d.contains("veto seat corr")));
+}
+
+/// ADR-0038 §1: a cell names a declared thinker seat in the observer's domain, and only an
+/// observer seat has one. The rules are refused otherwise.
+#[test]
+fn a_cell_names_a_thinker_seat_in_its_domain_and_only_observers_have_one() {
+    let mut r = rules();
+    r.seats.insert("ox".into(), cell_observer(Domain::Build, "r1", "kox")); // r1 is a Run seat
+    assert!(check_well_formed(&r).iter().any(|v| v.detail.contains("not a thinker seat in its domain")));
+    let mut r = rules();
+    r.seats.insert("ox".into(), cell_observer(Domain::Build, "g1", "kox")); // g1 is a grant seat
+    assert!(check_well_formed(&r).iter().any(|v| v.detail.contains("not a thinker seat")));
+    let mut r = rules();
+    r.seats.insert("ox".into(), cell_observer(Domain::Build, "nobody", "kox"));
+    assert!(check_well_formed(&r).iter().any(|v| v.detail.contains("not declared")));
+    let mut r = rules();
+    r.seats.insert(
+        "gx".into(),
+        SeatDecl { domain: Domain::Build, kind: SeatKind::Grant, cell: Some("a1".into()), key: "kgx".into() },
+    );
+    assert!(check_well_formed(&r).iter().any(|v| v.detail.contains("cannot have a cell")));
 }

@@ -5,11 +5,13 @@
 | File | What it is |
 |---|---|
 | `genesis.cedarschema` | Schema S: the typed lift's type. The analyses quantify over it (ADR-0030 §4) |
-| `genesis-floor.cedar` | The floor: 14 policies — six Build envelopes, three carve-outs, two provisional Run envelopes, two exceptions, the forensic floor |
-| `gen-tests.py` → `genesis-tests.json` | 38 behavioral cases; every permit allows and denies, every forbid is the reason for some deny |
+| `genesis-floor.cedar` | The floor: 16 policies — six Build envelopes, four carve-outs (B10 from ADR-0037 §4), one Run carve-out (R3 from ADR-0039 §2), two provisional Run envelopes, two exceptions, the forensic floor |
+| `gen-tests.py` → `genesis-tests.json` | 51 behavioral cases; every permit allows and denies, every forbid is the reason for some deny |
 | `run-gates.py` | ADR-0030 §5 gates with SymCC: totality, non-vacuity, discrimination, every-entry-matters, routing, and negative controls |
 | `genesis-values.json` | Policy-floor **values**: the numbers the typed lift reads that Cedar text cannot hold (`K`, `T_obs`; ADR-0035's θ, unset). Part of the floor bundle; its digest is recorded with the floor's and the schema's (ADR-0039 §1). **Placeholders, not ratified, not measured** |
-| `genesis-gates-results-2026.09.24.txt` | The gate run, with the floor and schema digests it applies to |
+| `genesis-gates-results-2026.09.24.txt` | The gate run of 09.24, before ADR-0037 |
+| `genesis-gates-results-2026.09.29.txt` | The gate run after ADR-0037 §4: `Seat.kind` in S, B6 tightened, B10 added. All gates pass; 47/47 cases |
+| `genesis-gates-results-2026.09.29-adr0039.txt` | The gate run after ADR-0039 §2: `observerLive` in RunCtx, R3-observer-live (Thinker seats only), the values file digested with the bundle. All gates pass; 51/51 cases. **These are the digests the mechanism pins** |
 
 ## Running
 

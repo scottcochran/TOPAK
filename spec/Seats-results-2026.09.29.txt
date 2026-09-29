@@ -1,0 +1,12 @@
+TOPAK — Seats.tla (ADR-0037 §9), TLC results 2026.09.29
+jar: tla2tools.jar v1.7.4 · constants: 2 principals, 3 seats (one per kind), 4 actions
+expected: none HOLDS on both; M_KIND breaks §4 only; M_SEAT breaks §1 only; witnesses VIOLATED
+s-none-kind | Mut=none | OnlyThinkersAuthor | HOLDS | 6656 distinct states found
+s-none-seat | Mut=none | OneSeatPerPrincipal | HOLDS | 6656 distinct states found
+s-mkind-kind | Mut=M_KIND | OnlyThinkersAuthor | COUNTEREXAMPLE | 37 distinct states found
+s-mkind-seat | Mut=M_KIND | OneSeatPerPrincipal | HOLDS | 53248 distinct states found
+s-mseat-seat | Mut=M_SEAT | OneSeatPerPrincipal | COUNTEREXAMPLE | 49 distinct states found
+s-mseat-kind | Mut=M_SEAT | OnlyThinkersAuthor | HOLDS | 13824 distinct states found
+w-acted | Mut=none | NeverActed | COUNTEREXAMPLE | 25 distinct states found
+w-twolive | Mut=none | NeverTwoLive | COUNTEREXAMPLE | 45 distinct states found
+w-obsvote | Mut=none | NeverObserverVoted | COUNTEREXAMPLE | 118 distinct states found

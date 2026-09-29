@@ -64,13 +64,16 @@ when {
   resource.author == principal
 };
 
+// ADR-0037 §4: a vote is permitted from the grant roster only for a `grant` seat and from the veto
+// roster only for an `observer` seat. A roster issued with the wrong kind of seat on it cannot vote.
 @id("B6-vote-seated")
 permit (principal, action == Topak::Action::"Vote", resource)
 when {
   principal.domain == "build" &&
   context.lease.alphabet.contains("Vote") &&
   context.voteRulesEpoch == context.rulesEpoch &&
-  (principal in context.grantRoster || principal in context.vetoRoster)
+  ((principal in context.grantRoster && principal.kind == "grant") ||
+   (principal in context.vetoRoster && principal.kind == "observer"))
 };
 
 // ---- carve-outs on the Build envelopes ------------------------------------------------------
@@ -95,6 +98,16 @@ forbid (
 )
 when { context.roundRole == "voter" };
 
+// ADR-0037 §4: only a `thinker` seat holds a variant that writes, runs or offers. An Observer or a
+// grant seat never authors, in either domain; a Reader with Draft authority cannot arise.
+@id("B10-only-thinkers-author")
+forbid (
+  principal,
+  action in [Topak::Action::"Draft", Topak::Action::"Invoke", Topak::Action::"Submit", Topak::Action::"RunInvoke"],
+  resource
+)
+when { principal.kind != "thinker" };
+
 // ============================================================================================
 // Run envelopes — PROVISIONAL (no record defines Run's alphabet; see the schema)
 // ============================================================================================
@@ -117,6 +130,16 @@ when {
   resource.round == context.round &&
   !resource.sealed
 };
+
+// ADR-0039 §2: every Run admit under a *Thinker's* lease needs a live cell Observer. `observerLive`
+// is the lift's `live(o)`: a live Observer lease, a heartbeat within T_obs on the mechanism's clock,
+// and a watermark within K of the Thinker's sequence (`genesis-values.json`). Deny-only, and it
+// applies to break-glass too: a dead, partitioned or starved Observer stops its own cell and nothing
+// else. An observer seat's own emissions, its heartbeats among them, are not coupled: nothing
+// watches the watcher's liveness but the Thinker it stalls.
+@id("R3-observer-live")
+forbid (principal, action in [Topak::Action::"RunInvoke", Topak::Action::"RunEmit"], resource)
+when { principal.kind == "thinker" && !context.observerLive };
 
 // ============================================================================================
 // Floor exceptions — ADR-0013 §2. Count: 2, bounded by ADR-0026 R6.

@@ -15,19 +15,25 @@ use cedar_policy::{
     Authorizer, Context, Decision, Entities, EntityUid, PolicyId, PolicySet, Request, Schema, ValidationMode, Validator,
 };
 use serde_json::Value;
-use topak_core::Digest;
 use topak_core::admit::FloorOutcome;
 use topak_core::lift::FrozenInput;
+use topak_core::{Digest, ObserverValues};
 
 /// The gated floor text (`floor/genesis-floor.cedar`, DRAFT, not ratified).
 pub const FLOOR_SRC: &str = include_str!("../../../../floor/genesis-floor.cedar");
 /// Schema S (`floor/genesis.cedarschema`, DRAFT, not ratified).
 pub const SCHEMA_SRC: &str = include_str!("../../../../floor/genesis.cedarschema");
+/// The policy-floor values (`floor/genesis-values.json`, ADR-0039 §1): the third file of the
+/// floor bundle. Placeholders, not measured.
+pub const VALUES_SRC: &str = include_str!("../../../../floor/genesis-values.json");
 
-/// Digests recorded in `floor/genesis-gates-results-2026.09.24.txt`. Changing the floor means
-/// re-running the gates and changing these: a mechanism release.
-pub const PINNED_FLOOR_SHA256: &str = "9b6adeee0c2ae30872ebddb2f1119b7d6f3729eb4ec2c41620f879d600b66349";
-pub const PINNED_SCHEMA_SHA256: &str = "77d9b566d76134c3b05589577462dd38f47c7f7f8e4cbdae58e76e887d2509bc";
+/// Digests recorded in `floor/genesis-gates-results-2026.09.29-adr0039.txt` (the ADR-0039 §2 run:
+/// `observerLive` in RunCtx, R3-observer-live, the values file in the bundle; after the ADR-0037
+/// §4 run of the same day). Changing any of the three means re-running the gates and changing
+/// these: a mechanism release. The 09.24 digests were 9b6adeee… and 77d9b566….
+pub const PINNED_FLOOR_SHA256: &str = "49a6e3140726a9a53eeb363b622677e7d72c7fde9dc16276339a66ddb9ebf252";
+pub const PINNED_SCHEMA_SHA256: &str = "ac2a0accca51f5f8ef8bdc36f0780c24244abba4d9524037d4e61e92cf1ba4ee";
+pub const PINNED_VALUES_SHA256: &str = "0d19c9e3ffa3e7148fac21dfec52cee6886203ec405c1308147eaab0e7c8aec0";
 
 /// The Cedar engine version this mechanism links. The gates ran with cedar-policy-cli 4.13.0.
 pub const ENGINE: &str = "cedar-policy 4.13";
@@ -38,6 +44,10 @@ pub enum FloorLoadError {
     FloorDigest { actual: String, pinned: &'static str },
     #[error("schema digest {actual} is not the gated digest {pinned}")]
     SchemaDigest { actual: String, pinned: &'static str },
+    #[error("values digest {actual} is not the gated digest {pinned}")]
+    ValuesDigest { actual: String, pinned: &'static str },
+    #[error("values: {0}")]
+    Values(String),
     #[error("schema: {0}")]
     Schema(String),
     #[error("policies: {0}")]
@@ -54,6 +64,8 @@ pub struct Floor {
     ids: BTreeMap<PolicyId, String>,
     floor_digest: Digest,
     schema_digest: Digest,
+    values: ObserverValues,
+    values_digest: Digest,
 }
 
 impl Floor {
@@ -62,11 +74,25 @@ impl Floor {
         Self::load_from(FLOOR_SRC, SCHEMA_SRC, true)
     }
 
-    /// Load an arbitrary floor text. `pinned = false` is for tests of the mechanism against
-    /// mutated floors; a running mechanism uses [`Floor::load`].
+    /// The `observer` block of the values file (ADR-0039 §1).
+    pub fn observer_values(&self) -> &ObserverValues {
+        &self.values
+    }
+
+    pub fn values_digest(&self) -> &Digest {
+        &self.values_digest
+    }
+
+    /// Load an arbitrary floor text with the pinned values. `pinned = false` is for tests of the
+    /// mechanism against mutated floors; a running mechanism uses [`Floor::load`].
     pub fn load_from(floor_src: &str, schema_src: &str, pinned: bool) -> Result<Self, FloorLoadError> {
+        Self::load_all(floor_src, schema_src, VALUES_SRC, pinned)
+    }
+
+    pub fn load_all(floor_src: &str, schema_src: &str, values_src: &str, pinned: bool) -> Result<Self, FloorLoadError> {
         let floor_digest = Digest::of(floor_src.as_bytes());
         let schema_digest = Digest::of(schema_src.as_bytes());
+        let values_digest = Digest::of(values_src.as_bytes());
         if pinned {
             if floor_digest.0 != PINNED_FLOOR_SHA256 {
                 return Err(FloorLoadError::FloorDigest { actual: floor_digest.0, pinned: PINNED_FLOOR_SHA256 });
@@ -74,7 +100,16 @@ impl Floor {
             if schema_digest.0 != PINNED_SCHEMA_SHA256 {
                 return Err(FloorLoadError::SchemaDigest { actual: schema_digest.0, pinned: PINNED_SCHEMA_SHA256 });
             }
+            if values_digest.0 != PINNED_VALUES_SHA256 {
+                return Err(FloorLoadError::ValuesDigest { actual: values_digest.0, pinned: PINNED_VALUES_SHA256 });
+            }
         }
+        let values: ObserverValues = serde_json::from_str::<Value>(values_src)
+            .map_err(|e| FloorLoadError::Values(e.to_string()))?
+            .get("observer")
+            .cloned()
+            .ok_or_else(|| FloorLoadError::Values("no `observer` block".into()))
+            .and_then(|v| serde_json::from_value(v).map_err(|e| FloorLoadError::Values(e.to_string())))?;
         let (schema, _warnings) =
             Schema::from_cedarschema_str(schema_src).map_err(|e| FloorLoadError::Schema(e.to_string()))?;
         let policies = PolicySet::from_str(floor_src).map_err(|e| FloorLoadError::Policies(e.to_string()))?;
@@ -88,7 +123,7 @@ impl Floor {
             let id = p.annotation("id").ok_or_else(|| FloorLoadError::MissingId(p.id().to_string()))?;
             ids.insert(p.id().clone(), id.to_string());
         }
-        Ok(Self { policies, schema, ids, floor_digest, schema_digest })
+        Ok(Self { policies, schema, ids, floor_digest, schema_digest, values, values_digest })
     }
 
     pub fn floor_digest(&self) -> &Digest {

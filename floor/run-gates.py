@@ -23,6 +23,7 @@ import tempfile
 HERE = os.path.dirname(os.path.abspath(__file__))
 SCHEMA = os.path.join(HERE, "genesis.cedarschema")
 FLOOR = os.path.join(HERE, "genesis-floor.cedar")
+VALUES = os.path.join(HERE, "genesis-values.json")   # policy-floor values (ADR-0039 §1)
 
 SIGS = {
     "Read": "CorpusObject", "Draft": "WorkspaceTarget", "Invoke": "Tool", "Emit": "Topic",
@@ -84,9 +85,24 @@ def main():
     out("TOPAK — genesis policy floor: ADR-0030 §5 gates")
     dig = lambda p: hashlib.sha256(open(p, "rb").read()).hexdigest()[:16]
     out(f"Floor: {os.path.basename(FLOOR)} (sha256 {dig(FLOOR)}) · {len(pols)} policies · "
-        f"schema {os.path.basename(SCHEMA)} (sha256 {dig(SCHEMA)})")
+        f"schema {os.path.basename(SCHEMA)} (sha256 {dig(SCHEMA)}) · "
+        f"values {os.path.basename(VALUES)} (sha256 {dig(VALUES)})")
     out(f"{ver} · {cvc}")
     failures = 0
+
+    # ADR-0039 §1: the values file is part of the floor bundle. The gate checks its shape; the
+    # K < R comparison needs the mechanism's round bound and is the mechanism's startup check.
+    out("\n=== values: policy-floor numbers the lift reads (placeholders; ADR-0039 §1)")
+    import json
+    vals = json.load(open(VALUES))
+    obs = vals.get("observer", {})
+    k, t_obs = obs.get("K"), obs.get("T_obs_ms")
+    ok = isinstance(k, int) and k >= 0 and isinstance(t_obs, int) and t_obs > 0
+    failures += not ok
+    out(f"  observer.K = {k!r}, observer.T_obs_ms = {t_obs!r}  {'pass' if ok else 'FAIL'}  (K < R is checked by the mechanism at startup)")
+    lin = vals.get("lineage", {})
+    unset = [x for x in ("theta_exact", "theta_near", "theta_gen", "beta", "near_tool") if lin.get(x) is None]
+    out(f"  lineage: {len(unset)} of 5 values unset (ADR-0035; G4 item 30): {', '.join(unset)}")
 
     out("\n=== totality: never-errors, per policy per applicable action")
     for pid, ptext in pols:

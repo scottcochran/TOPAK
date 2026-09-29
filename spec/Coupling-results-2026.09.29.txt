@@ -1,0 +1,18 @@
+TOPAK — Coupling.tla (ADR-0039 §8), TLC results 2026.09.29
+jar: tla2tools.jar v1.7.4 · constants: K=1, R=3, MaxRound=2; one Thinker, its cell Observer, one correlator
+expected: none HOLDS on all three; M_NOCOUPLE breaks §2 (and UnreadBounded: D-0039-1); M_MARK and M_ROUNDS break UnreadBounded only; M_CORR breaks §4 only; witnesses VIOLATED
+c-none-noadmit | Mut=none | NoAdmitWithoutLiveObserver | HOLDS | 1124 distinct states found
+c-none-unread | Mut=none | UnreadBounded | HOLDS | 1124 distinct states found
+c-none-corr | Mut=none | CorrelatorNeverGates | HOLDS | 1124 distinct states found
+c-nocouple-noadmit | Mut=M_NOCOUPLE | NoAdmitWithoutLiveObserver | COUNTEREXAMPLE | 12 distinct states found
+c-nocouple-unread | Mut=M_NOCOUPLE | UnreadBounded | COUNTEREXAMPLE | 57 distinct states found
+c-mark-unread | Mut=M_MARK | UnreadBounded | COUNTEREXAMPLE | 84 distinct states found
+c-mark-noadmit | Mut=M_MARK | NoAdmitWithoutLiveObserver | HOLDS | 1604 distinct states found
+c-rounds-unread | Mut=M_ROUNDS | UnreadBounded | COUNTEREXAMPLE | 247 distinct states found
+c-rounds-noadmit | Mut=M_ROUNDS | NoAdmitWithoutLiveObserver | HOLDS | 1796 distinct states found
+c-corr-corr | Mut=M_CORR | CorrelatorNeverGates | COUNTEREXAMPLE | 120 distinct states found
+c-corr-unread | Mut=M_CORR | UnreadBounded | HOLDS | 1684 distinct states found
+w-round2 | Mut=none | NeverRoundTwo | COUNTEREXAMPLE | 63 distinct states found
+w-refused | Mut=none | NeverRefused | COUNTEREXAMPLE | 12 distinct states found
+w-stale | Mut=none | NeverStaleRefusal | COUNTEREXAMPLE | 79 distinct states found
+w-backlog | Mut=none | NeverBacklogRefusal | COUNTEREXAMPLE | 127 distinct states found

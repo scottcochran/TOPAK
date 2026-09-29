@@ -47,9 +47,16 @@ impl<'de> Deserialize<'de> for Quorum {
 
 /// A seat declared by the rules. PROVISIONAL (seat registry): no record says where seats and
 /// their domains are declared; the rosters are issued (ADR-0025 §1a), so seats are issued too.
+/// The kind is ADR-0037 §2: fixed at declaration, and the bound on what the seat may be issued.
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct SeatDecl {
     pub domain: Domain,
+    pub kind: SeatKind,
+    /// For an `observer` seat: the Thinker seat it watches, which puts it in that Thinker's cell
+    /// (ADR-0038 §1). `None` on an observer seat is a correlator, which belongs to no cell and
+    /// watches every cell in its domain. Meaningless on other kinds, and refused there.
+    #[serde(default)]
+    pub cell: Option<SeatId>,
     /// The key that identifies the seat's holder. R5 compares these against the anchor key set.
     pub key: KeyHex,
 }
@@ -87,6 +94,31 @@ pub struct Rules {
 impl Rules {
     pub fn seat_domain(&self, seat: &str) -> Option<Domain> {
         self.seats.get(seat).map(|s| s.domain)
+    }
+
+    pub fn seat_kind(&self, seat: &str) -> Option<SeatKind> {
+        self.seats.get(seat).map(|s| s.kind)
+    }
+
+    /// The observer seats in a Thinker's cell (ADR-0038 §1): those declaring `cell = thinker`.
+    pub fn cell_observers(&self, thinker: &str) -> Vec<SeatId> {
+        self.seats
+            .iter()
+            .filter(|(_, d)| d.kind == SeatKind::Observer && d.cell.as_deref() == Some(thinker))
+            .map(|(id, _)| id.clone())
+            .collect()
+    }
+
+    /// Whether `observer` is in `W(thinker)` (ADR-0038 §2): its cell Observer, or a correlator
+    /// in the same domain. The reference has no topic read ACL, so this is the declared reach.
+    pub fn watches(&self, observer: &str, thinker: &str) -> bool {
+        match (self.seats.get(observer), self.seats.get(thinker)) {
+            (Some(o), Some(t)) if o.kind == SeatKind::Observer && t.kind == SeatKind::Thinker => match &o.cell {
+                Some(c) => c == thinker,
+                None => o.domain == t.domain,
+            },
+            _ => false,
+        }
     }
 }
 
@@ -167,6 +199,20 @@ pub fn check_well_formed(r: &Rules) -> Vec<Violation> {
                 out.push(v("WF", format!("roster seat {seat} is not a Build seat")))
             }
             _ => {}
+        }
+    }
+    // ADR-0038 §1: a cell names a declared thinker seat in the same domain; only observers have one.
+    for (id, d) in &r.seats {
+        match (&d.cell, d.kind) {
+            (Some(_), k) if k != SeatKind::Observer => {
+                out.push(v("WF", format!("seat {id} is a {k} and cannot have a cell")))
+            }
+            (Some(t), _) => match r.seats.get(t) {
+                Some(td) if td.kind == SeatKind::Thinker && td.domain == d.domain => {}
+                Some(_) => out.push(v("WF", format!("observer {id}'s cell {t} is not a thinker seat in its domain"))),
+                None => out.push(v("WF", format!("observer {id}'s cell {t} is not declared"))),
+            },
+            (None, _) => {}
         }
     }
     if let Some(bg) = &r.break_glass

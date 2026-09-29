@@ -1,0 +1,13 @@
+TOPAK — Observers.tla (ADR-0038 §8), TLC results 2026.09.29
+jar: tla2tools.jar v1.7.4 · constants: 2 cells (Thinker + cell Observer each), 1 correlator
+expected: none HOLDS on both; M_QUORUM breaks §5 only; M_REACH breaks §1 only; witnesses VIOLATED
+o-none-anyof | Mut=none | DenyByAnyOf | HOLDS | 64 distinct states found
+o-none-reach | Mut=none | ReachIsBounded | HOLDS | 64 distinct states found
+o-mquorum-anyof | Mut=M_QUORUM | DenyByAnyOf | COUNTEREXAMPLE | 17 distinct states found
+o-mquorum-reach | Mut=M_QUORUM | ReachIsBounded | HOLDS | 128 distinct states found
+o-mreach-reach | Mut=M_REACH | ReachIsBounded | COUNTEREXAMPLE | 8 distinct states found
+o-mreach-anyof | Mut=M_REACH | DenyByAnyOf | HOLDS | 256 distinct states found
+w-found | Mut=none | NeverFound | COUNTEREXAMPLE | 2 distinct states found
+w-refused | Mut=none | NeverRefused | COUNTEREXAMPLE | 17 distinct states found
+w-corr | Mut=none | CorrelatorNeverFinds | COUNTEREXAMPLE | 8 distinct states found
+w-one | Mut=none | NeverRefusedOnOne | COUNTEREXAMPLE | 17 distinct states found
