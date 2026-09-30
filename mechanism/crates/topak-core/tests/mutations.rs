@@ -51,6 +51,7 @@ fn params() -> Params {
         corpus: BTreeSet::new(),
         build_tools: BTreeSet::new(),
         run_tools: BTreeSet::new(),
+        run_root: BTreeSet::new(),
         round_bound: 3,
         lease_margin_ms: 0,
         after_topic_limit: 3,
@@ -319,8 +320,8 @@ fn bundle_refusal_is_honored_and_m_failopen_is_refused() {
 #[test]
 fn break_glass_is_recognized_only_when_x1_alone_permits() {
     assert!(via_break_glass(&["X1-break-glass".into()]));
-    assert!(!via_break_glass(&["X1-break-glass".into(), "R1-run-invoke-allowlisted".into()]));
-    assert!(!via_break_glass(&["R1-run-invoke-allowlisted".into()]));
+    assert!(!via_break_glass(&["X1-break-glass".into(), "R1-actuate-allowlisted".into()]));
+    assert!(!via_break_glass(&["R1-actuate-allowlisted".into()]));
 }
 
 // ---- RulesFloorNV_rev5.tla ------------------------------------------------------------------
@@ -355,7 +356,7 @@ fn every_rules_floor_entry_has_a_violation_it_catches() {
         roster: BTreeSet::from(["kx".into()]),
         quorum: 1,
         tools: BTreeSet::new(),
-        actions: BTreeSet::from(["RunInvoke".into(), "Vote".into()]),
+        actions: BTreeSet::from(["Actuate".into(), "Vote".into()]),
     });
     assert_eq!(entry(&r7, 2), BTreeSet::from(["R7"]));
 
@@ -585,4 +586,197 @@ fn a_cell_names_a_thinker_seat_in_its_domain_and_only_observers_have_one() {
         SeatDecl { domain: Domain::Build, kind: SeatKind::Grant, cell: Some("a1".into()), key: "kgx".into() },
     );
     assert!(check_well_formed(&r).iter().any(|v| v.detail.contains("cannot have a cell")));
+}
+
+// ---- RunCoupling.tla and RunSeats.tla (ADR-0042 §2, §5; ADR-0043 §2; all Proposed) -----------
+
+fn run_rules() -> Rules {
+    let mut r = rules();
+    r.seats.insert("ro1".into(), cell_observer(Domain::Run, "r1", "kro1"));
+    r
+}
+
+fn run_state() -> State {
+    State::genesis(run_rules(), 2).unwrap()
+}
+
+const RUN_THINKER: &[ActionKind] = &[ActionKind::Consult, ActionKind::Actuate, ActionKind::Report];
+const RUN_OBSERVER: &[ActionKind] = &[ActionKind::Consult, ActionKind::Report];
+
+fn admit(id: &str, seat: &str, lease: LogIndex, action: Admitted, p: &Params) -> Entry {
+    Entry::Admit {
+        id: id.into(),
+        rec: AdmitRecord {
+            seat: seat.into(),
+            lease,
+            epoch: 0,
+            action,
+            input: Digest::of(b"input"),
+            floor: Digest::of(b"floor"),
+            schema: Digest::of(b"schema"),
+            floor_reasons: vec![],
+            bundle: Digest::of(b"bundle"),
+            engine: BundleEngine::LocalWasm,
+            params: p.digest(),
+            decided_by: 1,
+        },
+    }
+}
+
+fn actuate() -> Admitted {
+    Admitted::Actuate { tool: "valve@d4".into(), inputs: Digest::of(b"inputs"), break_glass: false }
+}
+
+fn consult() -> Admitted {
+    Admitted::Consult { object: Digest::of(b"x") }
+}
+
+/// RunCoupling.tla `UnreadEffectsBounded` / `M_EMITSEQ`, and `ConsultNeverCoupled`. The sequence an
+/// Observer's watermark is over counts every effect-bearing admit (ADR-0042 §2). Before ADR-0042
+/// the reference counted emissions only, which is exactly M_EMITSEQ: a Thinker that never
+/// reported could invoke up to the round bound with its Observer's mark standing still.
+#[test]
+fn the_sequence_counts_effects_and_m_emitseq_is_refused() {
+    let mut p = params();
+    p.round_bound = 40;
+    let mut s = run_state();
+    let k = s.observer.k;
+    assert!(k < p.round_bound, "K < R, or the check is vacuous (ADR-0039 §1)");
+    s.apply(1, &Entry::Grant { id: "gt".into(), req: grant_req("r1", RUN_THINKER) }, &p);
+    s.apply(2, &Entry::Grant { id: "go".into(), req: grant_req("ro1", RUN_OBSERVER) }, &p);
+
+    // Three invocations, two reads, one report: four effects, six admits.
+    let mut at = 10;
+    let mut step = |s: &mut State, a: Admitted| {
+        at += 1;
+        s.apply(at, &admit(&format!("a{at}"), "r1", 1, a, &p), &p)
+    };
+    for n in 1..=3 {
+        assert_eq!(step(&mut s, actuate()), Applied::Admitted { seq: Some(n), promoted: None });
+    }
+    for _ in 0..2 {
+        assert_eq!(step(&mut s, consult()), Applied::Admitted { seq: None, promoted: None });
+    }
+    let report = Admitted::Report { record: Digest::of(b"r") };
+    assert_eq!(step(&mut s, report), Applied::Admitted { seq: Some(4), promoted: None });
+    assert_eq!((s.leases[&1].seq, s.leases[&1].actions), (4, 6));
+
+    // Invocations alone fill the backlog to K. Under M_EMITSEQ the sequence would still read 1.
+    while s.leases[&1].seq < k {
+        assert!(matches!(step(&mut s, actuate()), Applied::Admitted { .. }));
+    }
+    let a = step(&mut s, actuate());
+    assert!(matches!(a, Applied::Rejected(ref r) if r.contains("no cell Observer covers")), "M_EMITSEQ: {a:?}");
+
+    // `Consult` is not coupled: a Thinker whose Observer lags can read and cannot act.
+    assert_eq!(step(&mut s, consult()), Applied::Admitted { seq: None, promoted: None });
+    assert_eq!(s.leases[&1].seq, k, "a read does not advance the sequence");
+
+    // The Observer reads to K, and effects resume.
+    let topic = topak_core::lift::topic_name(&s.chain, Domain::Run, "r1", 0, 1);
+    let beat = Admitted::Heartbeat { via: ActionKind::Report, topic, watermark: k };
+    let a = s.apply(5, &admit("hb", "ro1", 2, beat, &p), &p);
+    assert!(matches!(a, Applied::Admitted { .. }), "{a:?}");
+    assert_eq!(step(&mut s, actuate()), Applied::Admitted { seq: Some(k + 1), promoted: None });
+}
+
+/// RunCoupling.tla `RoundBoundCountsAll`: `R` is a termination bound and a read is a step
+/// (ADR-0042 §2), so `Consult` counts toward it though it does not advance the sequence.
+#[test]
+fn the_round_bound_counts_consult() {
+    let p = params();
+    let mut s = run_state();
+    s.apply(1, &Entry::Grant { id: "gt".into(), req: grant_req("r1", &[ActionKind::Consult]) }, &p);
+    for i in 0..p.round_bound {
+        let a = s.apply(10 + i, &admit(&format!("c{i}"), "r1", 1, consult(), &p), &p);
+        assert_eq!(a, Applied::Admitted { seq: None, promoted: None });
+    }
+    let a = s.apply(20, &admit("over", "r1", 1, consult(), &p), &p);
+    assert!(matches!(a, Applied::Rejected(ref r) if r.contains("RoundBoundReached")), "{a:?}");
+    assert_eq!((s.leases[&1].seq, s.leases[&1].actions), (0, p.round_bound));
+}
+
+/// RunCoupling.tla `SealCountsEffects`, and ADR-0042 §5: a Run round ends when its lease ends. The
+/// principal cannot end it, a renewal does not seal it, and the seal is the final sequence.
+#[test]
+fn a_run_round_seals_with_its_lease_and_a_run_seat_cannot_abstain() {
+    let mut p = params();
+    p.round_bound = 40;
+    let mut s = run_state();
+    s.apply(1, &Entry::Grant { id: "gt".into(), req: grant_req("r1", RUN_THINKER) }, &p);
+    s.apply(2, &Entry::Grant { id: "go".into(), req: grant_req("ro1", RUN_OBSERVER) }, &p);
+    for i in 0..2 {
+        s.apply(10 + i, &admit(&format!("a{i}"), "r1", 1, actuate(), &p), &p);
+    }
+
+    let end = |fence, reason| Entry::EndRound {
+        id: format!("end-{fence}-{reason:?}"),
+        seat: "r1".into(),
+        fence,
+        reason,
+        attribution: "test".into(),
+    };
+    let a = s.apply(20, &end(1, EndReason::Abstained), &p);
+    assert!(matches!(a, Applied::Rejected(ref r) if r.contains("cannot abstain")), "{a:?}");
+    assert!(s.leases[&1].live() && !s.seals.contains_key("r1"));
+
+    // A renewal continues the round under a new fence: no seal, and the counters carry over.
+    let renew = RenewRequest {
+        seat: "r1".into(),
+        fence: 1,
+        alphabet: RUN_THINKER.iter().copied().collect(),
+        rung: 1,
+        ttl_ms: 500,
+    };
+    assert_eq!(s.apply(21, &Entry::Renew { id: "rn".into(), req: renew }, &p), Applied::Renewed { fence: 21 });
+    assert!(!s.seals.contains_key("r1"), "a renewal does not seal");
+    assert_eq!((s.leases[&21].seq, s.leases[&21].actions), (2, 2));
+    s.apply(22, &admit("a2", "r1", 21, actuate(), &p), &p);
+
+    // Expiry is the ordinary end. The seal counts the invocations: there were no reports.
+    assert_eq!(s.apply(23, &end(21, EndReason::Expired), &p), Applied::RoundEnded);
+    assert_eq!(s.seals["r1"].seq, 3);
+
+    // Cross-round coverage now means something for invocations (ADR-0039 §2).
+    let mut next = grant_req("r1", RUN_THINKER);
+    next.round = 2;
+    let a = s.apply(24, &Entry::Grant { id: "g2".into(), req: next.clone() }, &p);
+    assert!(matches!(a, Applied::Rejected(ref r) if r.contains("unread")), "M_EMITSEQ would seal at 0: {a:?}");
+    let beat = Admitted::Heartbeat { via: ActionKind::Report, topic: s.seals["r1"].topic.clone(), watermark: 3 };
+    assert!(matches!(s.apply(25, &admit("hb", "ro1", 2, beat, &p), &p), Applied::Admitted { .. }));
+    assert!(matches!(s.apply(26, &Entry::Grant { id: "g3".into(), req: next }, &p), Applied::LeaseGranted { .. }));
+
+    // Abstention is Build's, and stays Build's.
+    let mut b = state();
+    b.apply(1, &Entry::Grant { id: "ga".into(), req: grant_req("a1", &[ActionKind::Read]) }, &p);
+    let abstain = Entry::EndRound {
+        id: "ab".into(),
+        seat: "a1".into(),
+        fence: 1,
+        reason: EndReason::Abstained,
+        attribution: "test".into(),
+    };
+    assert_eq!(b.apply(2, &abstain, &p), Applied::RoundEnded);
+}
+
+/// RunSeats.tla `OnlyThinkersActuate` / `M_KIND`: ADR-0043 §2's Run row. An observer seat holds
+/// `Consult` and `Report`; only a thinker seat holds `Actuate`; no name crosses the domains.
+#[test]
+fn run_alphabets_are_bounded_by_seat_kind_and_domain() {
+    let p = params();
+    let mut s = run_state();
+    let a = s.apply(1, &Entry::Grant { id: "g1".into(), req: grant_req("ro1", &[ActionKind::Actuate]) }, &p);
+    assert!(matches!(a, Applied::Rejected(ref r) if r.contains("observer alphabet")), "M_KIND: {a:?}");
+    let a = s.apply(2, &Entry::Grant { id: "g2".into(), req: grant_req("r1", &[ActionKind::Read]) }, &p);
+    assert!(matches!(a, Applied::Rejected(ref r) if r.contains("outside the run alphabet")), "{a:?}");
+    let a = s.apply(3, &Entry::Grant { id: "g3".into(), req: grant_req("a1", &[ActionKind::Consult]) }, &p);
+    assert!(matches!(a, Applied::Rejected(ref r) if r.contains("outside the build alphabet")), "{a:?}");
+    let a = s.apply(4, &Entry::Grant { id: "g4".into(), req: grant_req("ro1", RUN_OBSERVER) }, &p);
+    assert!(matches!(a, Applied::LeaseGranted { .. }), "{a:?}");
+    let a = s.apply(5, &Entry::Grant { id: "g5".into(), req: grant_req("r1", RUN_THINKER) }, &p);
+    assert!(matches!(a, Applied::LeaseGranted { .. }), "{a:?}");
+    assert!(ActionKind::RUN.iter().all(|k| k.domain() == Domain::Run));
+    assert!(ActionKind::BUILD.iter().all(|k| k.domain() == Domain::Build));
+    assert!(ActionKind::Actuate.is_run_effect() && ActionKind::Report.is_run_effect());
+    assert!(!ActionKind::Consult.is_run_effect());
 }

@@ -84,13 +84,18 @@ pub fn tools_for(domain: Domain) -> Vec<Tool> {
         ],
         Domain::Run => vec![
             Tool::new(
-                "run_invoke",
-                "RunInvoke(tool, inputs): PROVISIONAL Run action — invoke an allowlisted Run tool.",
+                "consult",
+                "Consult(ref): resolve a content-addressed object inside the pinned Run root. Not an effect.",
+                obj(json!({ "object": digest }), &["object"]),
+            ),
+            Tool::new(
+                "actuate",
+                "Actuate(tool, inputs): invoke a Run tool allowlisted by name and digest. Every call is recorded on this round's topic.",
                 obj(invoke_props, &["tool", "digest", "inputs"]),
             ),
             Tool::new(
-                "run_emit",
-                "RunEmit(record): PROVISIONAL Run action — append to this principal's round topic.",
+                "report",
+                "Report(record): append to this principal's round topic.",
                 obj(json!({ "record": {} }), &["record"]),
             ),
         ],
@@ -107,8 +112,9 @@ pub fn to_op(domain: Domain, name: &str, args: &JsonObject) -> Result<AgentOp, S
         (Domain::Build, "invoke") => "Invoke",
         (Domain::Build, "emit") => "Emit",
         (Domain::Build, "vote") => "Vote",
-        (Domain::Run, "run_invoke") => "RunInvoke",
-        (Domain::Run, "run_emit") => "RunEmit",
+        (Domain::Run, "consult") => "Consult",
+        (Domain::Run, "actuate") => "Actuate",
+        (Domain::Run, "report") => "Report",
         (Domain::Build, "abstain") => return Ok(AgentOp::Abstain),
         (Domain::Build, "submit") => match args.get("artifact") {
             None => return Ok(AgentOp::SubmitWorkspace),

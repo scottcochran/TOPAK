@@ -1,5 +1,5 @@
 // TOPAK genesis policy floor (ADR-0030).
-// DRAFT · 2026.09.24 · not ratified · schema: genesis.cedarschema
+// DRAFT · 2026.09.24, revised 2026.09.29 (ADR-0040, ADR-0041) · not ratified · schema: genesis.cedarschema
 //
 // The floor is an upper bound, not the policy. It states what the system may NEVER exceed;
 // fine-grained rules belong in the bundle tier, which can only subtract (ADR-0030 §1).
@@ -103,54 +103,68 @@ when { context.roundRole == "voter" };
 @id("B10-only-thinkers-author")
 forbid (
   principal,
-  action in [Topak::Action::"Draft", Topak::Action::"Invoke", Topak::Action::"Submit", Topak::Action::"RunInvoke"],
+  action in [Topak::Action::"Draft", Topak::Action::"Invoke", Topak::Action::"Submit", Topak::Action::"Actuate"],
   resource
 )
 when { principal.kind != "thinker" };
 
 // ============================================================================================
-// Run envelopes — PROVISIONAL (no record defines Run's alphabet; see the schema)
+// Run envelopes — ADR-0040 §1, stated as ADR-0041 §1 (both Proposed)
 // ============================================================================================
 
-@id("R1-run-invoke-allowlisted")
-permit (principal, action == Topak::Action::"RunInvoke", resource)
+@id("R1-actuate-allowlisted")
+permit (principal, action == Topak::Action::"Actuate", resource)
 when {
   principal.domain == "run" &&
-  context.lease.alphabet.contains("RunInvoke") &&
+  context.lease.alphabet.contains("Actuate") &&
   resource in context.toolAllowlist
 };
 
-@id("R2-run-emit-own-topic")
-permit (principal, action == Topak::Action::"RunEmit", resource)
+@id("R2-report-own-topic")
+permit (principal, action == Topak::Action::"Report", resource)
 when {
   principal.domain == "run" &&
-  context.lease.alphabet.contains("RunEmit") &&
+  context.lease.alphabet.contains("Report") &&
   resource.owner == principal &&
   resource.epoch == context.epoch &&
   resource.round == context.round &&
   !resource.sealed
 };
 
-// ADR-0039 §2: every Run admit under a *Thinker's* lease needs a live cell Observer. `observerLive`
+// ADR-0040 §1: `Consult` resolves a content-addressed object inside the pinned Run root. It is
+// ingress, not an effect. A read of anything live is an `Actuate` of a tool, never a `Consult`.
+@id("R4-consult-pinned")
+permit (principal, action == Topak::Action::"Consult", resource)
+when {
+  principal.domain == "run" &&
+  context.lease.alphabet.contains("Consult") &&
+  resource in context.runRoot
+};
+
+// ADR-0039 §2, as ADR-0041 §2 reads it: every *effect-bearing* Run admit under a Thinker's lease
+// needs a live cell Observer. `Consult` is not named: it emits nothing, nothing crosses outward,
+// and what was read can be reconstructed from the digest. The exemption rests on R4's pinning;
+// the gate run carries a control that a floor without it is classed a relaxation. `observerLive`
 // is the lift's `live(o)`: a live Observer lease, a heartbeat within T_obs on the mechanism's clock,
 // and a watermark within K of the Thinker's sequence (`genesis-values.json`). Deny-only, and it
 // applies to break-glass too: a dead, partitioned or starved Observer stops its own cell and nothing
 // else. An observer seat's own emissions, its heartbeats among them, are not coupled: nothing
 // watches the watcher's liveness but the Thinker it stalls.
 @id("R3-observer-live")
-forbid (principal, action in [Topak::Action::"RunInvoke", Topak::Action::"RunEmit"], resource)
+forbid (principal, action in [Topak::Action::"Actuate", Topak::Action::"Report"], resource)
 when { principal.kind == "thinker" && !context.observerLive };
 
 // ============================================================================================
 // Floor exceptions — ADR-0013 §2. Count: 2, bounded by ADR-0026 R6.
 // ============================================================================================
 
-// X1 break-glass (ADR-0009). Adds authority: a Run seat may invoke a tool outside its allowlist
+// X1 break-glass (ADR-0009). Adds authority: a Run seat may actuate a tool outside its allowlist
 // but inside the issued break-glass envelope, under a quorum on the break-glass roster. The
-// envelope is RunInvoke only, so no break-glass grant reaches Vote, Submit or Erase (ADR-0026 R7;
-// ADR-0013 NC mutation M2). A bundle may still narrow it (ADR-0030 §5).
+// envelope is `Actuate` only, so no break-glass grant reaches Consult, Report, Vote, Submit or
+// Erase (ADR-0026 R7; ADR-0013 NC mutation M2; ADR-0041 §3). A bundle may still narrow it
+// (ADR-0030 §5).
 @id("X1-break-glass")
-permit (principal, action == Topak::Action::"RunInvoke", resource)
+permit (principal, action == Topak::Action::"Actuate", resource)
 when {
   principal.domain == "run" &&
   context.breakGlass.quorum &&

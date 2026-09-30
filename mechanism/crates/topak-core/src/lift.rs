@@ -127,6 +127,8 @@ pub fn lift(
         ent("Roster", "veto", json!({}), vec![]),
         seat_entity(seat),
         ent("CorpusRoot", "pinned", json!({}), vec![]),
+        // ADR-0040 §3: Run's root is its own pinned set, and `Consult` is scoped to it.
+        ent("CorpusRoot", "run-pinned", json!({}), vec![]),
         ent("Workspace", &ws, json!({}), vec![]),
         ent("ToolSet", "build-allow", json!({}), vec![]),
         ent("ToolSet", "run-allow", json!({}), vec![]),
@@ -152,7 +154,7 @@ pub fn lift(
             "lease": lease_ctx,
             "epoch": long(state.epoch)?,
             "round": long(round)?,
-            "corpusRoot": eref("CorpusRoot", "pinned"),
+            "runRoot": eref("CorpusRoot", "run-pinned"),
             "toolAllowlist": eref("ToolSet", "run-allow"),
             "breakGlass": {
                 "quorum": state.break_glass_quorum(seat),
@@ -185,6 +187,11 @@ pub fn lift(
             entities.push(ent("CorpusObject", &object.0, json!({}), parents));
             (uid("CorpusObject", &object.0), build_ctx(true)?, json!({ "object": object }))
         }
+        Action::Consult { object } => {
+            let parents = if params.run_root.contains(object) { vec![uid("CorpusRoot", "run-pinned")] } else { vec![] };
+            entities.push(ent("CorpusObject", &object.0, json!({}), parents));
+            (uid("CorpusObject", &object.0), run_ctx()?, json!({ "object": object }))
+        }
         Action::Draft { target, .. } => {
             let (id, parents) = match workspace_relative(target) {
                 Some(rel) => (format!("{ws}/{rel}"), vec![uid("Workspace", &ws)]),
@@ -193,16 +200,16 @@ pub fn lift(
             entities.push(ent("WorkspaceTarget", &id, json!({}), parents));
             (uid("WorkspaceTarget", &id), build_ctx(true)?, json!({ "target": target }))
         }
-        Action::Invoke { tool, digest, inputs } | Action::RunInvoke { tool, digest, inputs } => {
+        Action::Invoke { tool, digest, inputs } | Action::Actuate { tool, digest, inputs } => {
             let tid = tool_id(tool, digest);
             let mut parents = Vec::new();
             if kind == ActionKind::Invoke && params.build_tools.contains(&tid) {
                 parents.push(uid("ToolSet", "build-allow"));
             }
-            if kind == ActionKind::RunInvoke && params.run_tools.contains(&tid) {
+            if kind == ActionKind::Actuate && params.run_tools.contains(&tid) {
                 parents.push(uid("ToolSet", "run-allow"));
             }
-            if kind == ActionKind::RunInvoke && rules.break_glass.as_ref().is_some_and(|bg| bg.tools.contains(&tid)) {
+            if kind == ActionKind::Actuate && rules.break_glass.as_ref().is_some_and(|bg| bg.tools.contains(&tid)) {
                 parents.push(uid("ToolSet", "bg-tools"));
             }
             entities.push(ent("Tool", &tid, json!({ "digest": digest }), parents));
@@ -213,7 +220,7 @@ pub fn lift(
             };
             (uid("Tool", &tid), ctx, json!({ "tool": tool, "digest": digest }))
         }
-        Action::Emit { .. } | Action::RunEmit { .. } => {
+        Action::Emit { .. } | Action::Report { .. } => {
             let (e, name) = topic(kind.domain())?;
             entities.push(e);
             let ctx = if kind == ActionKind::Emit { build_ctx(true)? } else { run_ctx()? };
@@ -244,7 +251,7 @@ pub fn lift(
     };
 
     let inputs = match &req.action {
-        Action::Invoke { inputs, .. } | Action::RunInvoke { inputs, .. } => Value::Object(inputs.clone()),
+        Action::Invoke { inputs, .. } | Action::Actuate { inputs, .. } => Value::Object(inputs.clone()),
         _ => Value::Null,
     };
     let bundle_input = json!({

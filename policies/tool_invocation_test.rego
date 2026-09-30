@@ -19,9 +19,10 @@ test_required_only_allowed if {
 	tool_invocation.allow with input as tlc({"spec": "Lease.tla", "config": "Lease.cfg"})
 }
 
-test_run_invoke_allowed if {
-	tool_invocation.allow with input as {
-		"action": "RunInvoke",
+# Build's check is Build's: a conforming Run request is not its to allow (actuate.rego's).
+test_actuate_is_not_invoke if {
+	not tool_invocation.allow with input as {
+		"action": "Actuate",
 		"resource": {"tool": "search", "digest": "d3"},
 		"inputs": {"query": "lease schema"},
 	}

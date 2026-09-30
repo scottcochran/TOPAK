@@ -1,0 +1,17 @@
+TOPAK — RunSeats.tla (ADR-0043 §8, Proposed), TLC results 2026.09.29
+jar: tla2tools.jar v1.7.4 · constants: 4 seats (a thinker and an observer in each domain), 6 actions (3 Build, 3 Run)
+expected: none HOLDS on all three; M_KIND breaks OnlyThinkersActuate and ObserversConsultAndReport only; M_DOMAIN breaks NoNameCrossesDomains and, with it, ObserversConsultAndReport (a Run observer seat issued a Build variant holds something else); witnesses VIOLATED under none; under M_OBSEMIT (the provisional column of ADR-0037 §4) every property HOLDS and NeverObserverConsulted HOLDS
+rs-none-actuate | Mut=none | OnlyThinkersActuate | HOLDS | 16384 distinct states found
+rs-none-observer | Mut=none | ObserversConsultAndReport | HOLDS | 16384 distinct states found
+rs-none-domain | Mut=none | NoNameCrossesDomains | HOLDS | 16384 distinct states found
+rs-mkind-actuate | Mut=M_KIND | OnlyThinkersActuate | COUNTEREXAMPLE | 123 distinct states found
+rs-mkind-observer | Mut=M_KIND | ObserversConsultAndReport | COUNTEREXAMPLE | 110 distinct states found
+rs-mkind-domain | Mut=M_KIND | NoNameCrossesDomains | HOLDS | 65536 distinct states found
+rs-mdomain-domain | Mut=M_DOMAIN | NoNameCrossesDomains | COUNTEREXAMPLE | 42 distinct states found
+rs-mdomain-actuate | Mut=M_DOMAIN | OnlyThinkersActuate | HOLDS | 373 distinct states found
+rs-mdomain-observer | Mut=M_DOMAIN | ObserversConsultAndReport | COUNTEREXAMPLE | 154 distinct states found
+rs-obsemit-safe | Mut=M_OBSEMIT | Safe | HOLDS | 8192 distinct states found
+rs-obsemit-consulted | Mut=M_OBSEMIT | NeverObserverConsulted | HOLDS | 8192 distinct states found
+w-actuated | Mut=none | NeverActuated | COUNTEREXAMPLE | 70 distinct states found
+w-obs-reported | Mut=none | NeverObserverReported | COUNTEREXAMPLE | 117 distinct states found
+w-obs-consulted | Mut=none | NeverObserverConsulted | COUNTEREXAMPLE | 104 distinct states found

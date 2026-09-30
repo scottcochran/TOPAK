@@ -27,13 +27,15 @@ pub const SCHEMA_SRC: &str = include_str!("../../../../floor/genesis.cedarschema
 /// floor bundle. Placeholders, not measured.
 pub const VALUES_SRC: &str = include_str!("../../../../floor/genesis-values.json");
 
-/// Digests recorded in `floor/genesis-gates-results-2026.09.29-adr0039.txt` (the ADR-0039 §2 run:
-/// `observerLive` in RunCtx, R3-observer-live, the values file in the bundle; after the ADR-0037
-/// §4 run of the same day). Changing any of the three means re-running the gates and changing
-/// these: a mechanism release. The 09.24 digests were 9b6adeee… and 77d9b566….
-pub const PINNED_FLOOR_SHA256: &str = "49a6e3140726a9a53eeb363b622677e7d72c7fde9dc16276339a66ddb9ebf252";
-pub const PINNED_SCHEMA_SHA256: &str = "ac2a0accca51f5f8ef8bdc36f0780c24244abba4d9524037d4e61e92cf1ba4ee";
-pub const PINNED_VALUES_SHA256: &str = "0d19c9e3ffa3e7148fac21dfec52cee6886203ec405c1308147eaab0e7c8aec0";
+/// Digests recorded in `floor/genesis-gates-results-2026.09.29-adr0041.txt` (the run for ADR-0040
+/// and ADR-0041, both Proposed: `Consult`, `Actuate` and `Report` in S, `runRoot` in RunCtx,
+/// R4-consult-pinned, R3 over effects only; after the ADR-0037 §4 and ADR-0039 §2 runs of the same
+/// day). Changing any of the three means re-running the gates and changing these: a mechanism
+/// release. The 09.24 digests were 9b6adeee… and 77d9b566…; the ADR-0039 run's were 49a6e314…,
+/// ac2a0acc… and 0d19c9e3….
+pub const PINNED_FLOOR_SHA256: &str = "28ec0e4552c6a9150872ad25e3b2290330fc9ed55477695fa138f6426a174c84";
+pub const PINNED_SCHEMA_SHA256: &str = "0ec2fa215eefe1367fa03a205d4a992334fb3abba28b2fe1f1af282b70daeffb";
+pub const PINNED_VALUES_SHA256: &str = "468992e45b1d7d04df65bbd12da05ff32648609bf2c238fa28801f2a445ed4e1";
 
 /// The Cedar engine version this mechanism links. The gates ran with cedar-policy-cli 4.13.0.
 pub const ENGINE: &str = "cedar-policy 4.13";

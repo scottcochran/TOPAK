@@ -9,6 +9,11 @@
 //! unordered, by the replica that decided the denial: to the round's topic while it is open, and
 //! after the seal to the round's `after` companion (ADR-0003 A2), up to a bound.
 //!
+//! In Run, every admitted `Actuate` leaves a record too (ADR-0042 §3, Proposed). The mechanism
+//! writes it, not the principal: it is not an emission and no variant produces it. It carries
+//! the same admit index and the same sequence an emission would, so an Observer's watermark
+//! covers invocations and reports alike.
+//!
 //! One topic per principal per round, named by domain, seat, epoch and round. Kafka has no seal
 //! primitive: sealing is enforced by the mechanism (the floor's `sealed` attribute refuses any
 //! `Emit` once the round has ended), and the transport appends a seal marker so a reader can
@@ -26,12 +31,16 @@ use serde_json::Value;
 use tokio::sync::Mutex;
 use topak_core::{Digest, LogIndex};
 
-/// What a round-topic record is. Both are control-plane facts (ADR-0004).
+/// What a round-topic record is. The envelope of each is a control-plane fact (ADR-0004); an
+/// `Actuate` record's payload also carries the call's inputs and result, which are cognitive
+/// payload, under the topic's ACL and in the round's unit of erasure.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum RecordKind {
-    /// An admitted `Emit`: the effect itself.
+    /// An admitted `Emit` or `Report`: the effect itself.
     Emit,
+    /// An admitted `Actuate` (ADR-0042 §3): the mechanism's record of the call and its outcome.
+    Actuate,
     /// A denied action (ADR-0020). Never ordered (ADR-0015); carries no admit and no sequence.
     Deny,
     /// The `after` topic reached its bound (ADR-0003 A2); later denials are not written.
@@ -46,7 +55,8 @@ pub struct EmitRecord {
     pub kind: RecordKind,
     /// The log index of the `Admit` entry that authorized this emission. `None` for a denial.
     pub admit: Option<LogIndex>,
-    /// The per-lease emission sequence number. `None` for a denial.
+    /// The per-round sequence number: emissions in Build, effect-bearing admits in Run
+    /// (ADR-0042 §2). `None` for a denial.
     pub seq: Option<u64>,
     pub digest: Digest,
     pub payload: Value,
@@ -77,6 +87,7 @@ impl Transport {
 fn headers(rec: &EmitRecord) -> BTreeMap<String, Vec<u8>> {
     let kind = match rec.kind {
         RecordKind::Emit => "emit",
+        RecordKind::Actuate => "actuate",
         RecordKind::Deny => "deny",
         RecordKind::Overflow => "overflow",
     };

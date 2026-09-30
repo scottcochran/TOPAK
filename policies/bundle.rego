@@ -13,23 +13,32 @@
 # Input: the frozen, syntactically lifted request (ADR-0030 §4), identical for the sidecar and
 # the local WASM fallback:
 #   {
-#     "action":    "Read" | "Draft" | "Invoke" | "Emit" | "Submit" | "Vote" | "RunInvoke" | "RunEmit",
+#     "action":    "Read" | "Draft" | "Invoke" | "Emit" | "Submit" | "Vote"     (Build, ADR-0022 §1)
+#                | "Consult" | "Actuate" | "Report"                            (Run, ADR-0040 §1),
 #     "principal": {"seat": "a1", "domain": "build"},
 #     "resource":  {...action-specific; Invoke: {"tool": ..., "digest": ...}},
-#     "inputs":    {...tool arguments, Invoke/RunInvoke only...},
+#     "inputs":    {...tool arguments, Invoke and Actuate only...},
 #     "request":   {...the typed action...},
 #     "context":   {"epoch", "round", "roundRole", "rulesEpoch", "lease"}
 #   }
 package topak.bundle
 
+import data.topak.bundle.actuate
 import data.topak.bundle.tool_invocation
 
 default allow := false
 
 allow if not refused
 
-# Tool invocations must match the tool's declared input schema.
+# Build: a tool invocation must match the tool's declared input schema.
 refused if {
-	input.action in {"Invoke", "RunInvoke"}
+	input.action == "Invoke"
 	not tool_invocation.allow
+}
+
+# Run: an actuation must match the schema, and its tool must declare an effect channel
+# (ADR-0041 §5; ADR-0040 §3).
+refused if {
+	input.action == "Actuate"
+	not actuate.allow
 }

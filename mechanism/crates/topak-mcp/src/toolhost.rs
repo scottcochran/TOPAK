@@ -1,11 +1,13 @@
-//! Downstream tools for `Invoke`/`RunInvoke`, reached as MCP servers over stdio.
+//! Downstream tools for `Invoke` and `Actuate`, reached as MCP servers over stdio.
 //!
 //! An allowlist entry is `name@digest` (ADR-0022 §3). The baseline defines the digest as
 //! `SHA-256(binary digest ‖ canonical JSON of the tool's MCP input schema)`, so a different
 //! binary or a changed interface is a different tool. Both halves are checked on every call:
 //! the binary's bytes before it is spawned, the schema from the spawned server's `tools/list`.
 //!
-//! What is **not** checked: hermeticity (ADR-0022 §3's per-entry obligation, assumption A2).
+//! What is **not** checked: hermeticity for a Build tool (ADR-0022 §3's per-entry obligation,
+//! assumption A2), or channel fidelity for a Run tool (ADR-0042 §6: that it opens the channel
+//! its entry declares and no other).
 //! The child runs with a cleared environment and the workspace as its working directory, and
 //! nothing more. A tool that opens a socket collapses the envelope; nothing here can see it.
 

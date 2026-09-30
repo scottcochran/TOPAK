@@ -30,8 +30,13 @@ pub struct Params {
     pub corpus: BTreeSet<Digest>,
     /// Build tool allowlist, by `name@digest`.
     pub build_tools: BTreeSet<String>,
-    /// PROVISIONAL (Run alphabet): Run tool allowlist, by `name@digest`.
+    /// Run tool allowlist, by `name@digest` (ADR-0040 §3). What channel each entry declares is
+    /// bundle data (`policies/data.json`), PROVISIONAL until a record writes the entry's schema.
     pub run_tools: BTreeSet<String>,
+    /// The pinned, content-addressed Run root (ADR-0040 §3). `Consult` is scoped to it. It is
+    /// its own set: an object in Build's corpus root is not thereby in Run's.
+    #[serde(default)]
+    pub run_root: BTreeSet<Digest>,
     /// Maximum admitted actions per round (termination; bounds the state space). Build's `R`
     /// (ADR-0022 §3).
     pub round_bound: u64,
@@ -96,8 +101,11 @@ pub struct LeaseRecord {
     pub ended: Option<EndReason>,
     /// Admitted actions this round (checked against the round bound).
     pub actions: u64,
-    /// Per-principal emission sequence number, the ADR-0015 residual for admit-to-emit order.
-    pub emit_seq: u64,
+    /// The per-principal sequence number an Observer's watermark is over. In Build it counts
+    /// emissions, the ADR-0015 residual for admit-to-emit order. In Run it counts effect-bearing
+    /// admits, `Actuate` and `Report`, and not `Consult` (ADR-0042 §2). Counting reports only is
+    /// D-0042-1, and `RunCoupling.tla`'s `M_EMITSEQ`.
+    pub seq: u64,
 }
 
 impl LeaseRecord {
@@ -178,12 +186,15 @@ pub enum Admitted {
         evidence: Digest,
         rules_epoch: RulesEpoch,
     },
-    RunInvoke {
+    Consult {
+        object: Digest,
+    },
+    Actuate {
         tool: String,
         inputs: Digest,
         break_glass: bool,
     },
-    RunEmit {
+    Report {
         record: Digest,
     },
     /// An observer seat's heartbeat (ADR-0039 §1), carried verbatim: it is a fact, and every
@@ -217,12 +228,13 @@ impl Admitted {
                 evidence: evidence.clone(),
                 rules_epoch: *rules_epoch,
             },
-            A::RunInvoke { tool, digest, inputs } => {
-                Admitted::RunInvoke { tool: tool_id(tool, digest), inputs: Digest::of_json(inputs), break_glass }
+            A::Consult { object } => Admitted::Consult { object: object.clone() },
+            A::Actuate { tool, digest, inputs } => {
+                Admitted::Actuate { tool: tool_id(tool, digest), inputs: Digest::of_json(inputs), break_glass }
             }
-            A::RunEmit { record } => match Heartbeat::parse(record) {
-                Some(h) => Admitted::Heartbeat { via: ActionKind::RunEmit, topic: h.topic, watermark: h.watermark },
-                None => Admitted::RunEmit { record: Digest::of_json(record) },
+            A::Report { record } => match Heartbeat::parse(record) {
+                Some(h) => Admitted::Heartbeat { via: ActionKind::Report, topic: h.topic, watermark: h.watermark },
+                None => Admitted::Report { record: Digest::of_json(record) },
             },
         }
     }
@@ -235,8 +247,9 @@ impl Admitted {
             Admitted::Emit { .. } => ActionKind::Emit,
             Admitted::Submit { .. } => ActionKind::Submit,
             Admitted::Vote { .. } => ActionKind::Vote,
-            Admitted::RunInvoke { .. } => ActionKind::RunInvoke,
-            Admitted::RunEmit { .. } => ActionKind::RunEmit,
+            Admitted::Consult { .. } => ActionKind::Consult,
+            Admitted::Actuate { .. } => ActionKind::Actuate,
+            Admitted::Report { .. } => ActionKind::Report,
             Admitted::Heartbeat { via, .. } => *via,
         }
     }
@@ -395,7 +408,7 @@ pub enum Applied {
         fence: LogIndex,
     },
     Admitted {
-        emit_seq: Option<u64>,
+        seq: Option<u64>,
         promoted: Option<Digest>,
     },
     RoundEnded,
@@ -501,7 +514,8 @@ impl State {
     }
 
     /// The deterministic half of `live(o)` (ADR-0039 §1, conditions 1 and 3) for some cell
-    /// Observer of `thinker`: a live lease and a watermark within K of the Thinker's sequence.
+    /// Observer of `thinker`: a live lease and a watermark within K of the Thinker's sequence,
+    /// which in Run counts every effect-bearing admit (ADR-0042 §2).
     /// The strict form, so that after the admit being decided at most K are unread (the
     /// `Coupling.tla` finding). Re-checked at apply; the heartbeat's freshness (condition 2)
     /// is a per-replica clock and is checked at decide only, as lease expiry is.
@@ -509,9 +523,7 @@ impl State {
         let Some(t) = self.live_lease(thinker) else { return false };
         let Some(topic) = self.topic_of(t) else { return false };
         self.rules.cell_observers(thinker).iter().any(|o| {
-            self.live_lease(o).is_some()
-                && fresh(o)
-                && t.emit_seq.saturating_sub(self.mark(o, &topic)) < self.observer.k
+            self.live_lease(o).is_some() && fresh(o) && t.seq.saturating_sub(self.mark(o, &topic)) < self.observer.k
         })
     }
 
@@ -537,7 +549,7 @@ impl State {
             if let Some(rec) = self.live_lease(t)
                 && self.topic_of(rec).as_deref() == Some(&h.topic)
             {
-                found = Some((t.clone(), rec.emit_seq));
+                found = Some((t.clone(), rec.seq));
             } else if let Some(seal) = self.seals.get(t)
                 && seal.topic == h.topic
             {
@@ -563,7 +575,7 @@ impl State {
 
     pub fn break_glass_quorum(&self, seat: &str) -> bool {
         let Some(bg) = &self.rules.break_glass else { return false };
-        if !bg.actions.contains(ActionKind::RunInvoke.as_str()) {
+        if !bg.actions.contains(ActionKind::Actuate.as_str()) {
             return false;
         }
         self.break_glass
@@ -626,7 +638,7 @@ impl State {
                     Some(_) => Ok(()),
                 }
             }
-            A::Emit { record } | A::RunEmit { record } => match Heartbeat::parse(record) {
+            A::Emit { record } | A::Report { record } => match Heartbeat::parse(record) {
                 Some(h) => self.check_heartbeat(&req.seat, &h),
                 None => Ok(()),
             },
@@ -639,9 +651,11 @@ impl State {
         if rec.ended.is_some() {
             return;
         }
-        // ADR-0039 §2, §3: a Thinker's round seals at its final sequence number.
+        // ADR-0039 §2, §3: a Thinker's round seals at its final sequence number. In Run that
+        // number counts invocations as well as reports, so coverage to the seal covers both
+        // (ADR-0042 §5). A renewal does not come through here: the round continues.
         let seal = (self.rules.seat_kind(&rec.lease.seat) == Some(SeatKind::Thinker))
-            .then(|| self.topic_of(rec).map(|topic| (rec.lease.seat.clone(), Seal { topic, seq: rec.emit_seq })))
+            .then(|| self.topic_of(rec).map(|topic| (rec.lease.seat.clone(), Seal { topic, seq: rec.seq })))
             .flatten();
         let rec = self.leases.get_mut(&fence).expect("present");
         rec.ended = Some(reason);
@@ -670,6 +684,13 @@ impl State {
             Entry::Grant { req, .. } => self.apply_grant(index, req),
             Entry::Renew { req, .. } => self.apply_renew(index, req),
             Entry::Admit { rec, .. } => self.apply_admit(index, rec, params),
+            // ADR-0042 §5: a Run principal cannot end its own round. Abstention is `Submit(⊥)`
+            // and belongs to Build; a Run round ends when its lease ends.
+            Entry::EndRound { seat, reason: EndReason::Abstained, .. }
+                if self.rules.seat_domain(seat) == Some(Domain::Run) =>
+            {
+                Applied::Rejected("a Run seat cannot abstain: its round ends with its lease (ADR-0042 §5)".into())
+            }
             Entry::EndRound { seat, fence, reason, .. } => match self.leases.get(fence) {
                 Some(r) if &r.lease.seat == seat && r.live() => {
                     self.end_lease(*fence, *reason);
@@ -783,7 +804,7 @@ impl State {
             role: req.role,
             ttl_ms: req.ttl_ms,
         };
-        self.leases.insert(index, LeaseRecord { lease, ended: None, actions: 0, emit_seq: 0 });
+        self.leases.insert(index, LeaseRecord { lease, ended: None, actions: 0, seq: 0 });
         self.live_by_seat.insert(req.seat.clone(), index);
         self.last_round.insert(req.seat.clone(), req.round);
         Applied::LeaseGranted { fence: index }
@@ -852,7 +873,8 @@ impl State {
             return Applied::Rejected(format!("fenced between decision and commit: {d}"));
         }
         // ADR-0039 §2, re-checked at apply (ADR-0033 §4): the deterministic half of live(o).
-        if matches!(rec.action, Admitted::RunInvoke { .. } | Admitted::RunEmit { .. })
+        // Effects only: `Consult` is not coupled (ADR-0041 §2).
+        if matches!(rec.action, Admitted::Actuate { .. } | Admitted::Report { .. })
             && self.rules.seat_kind(&rec.seat) == Some(SeatKind::Thinker)
             && !self.observer_covers(&rec.seat, &|_| true)
         {
@@ -861,16 +883,18 @@ impl State {
         let fence = rec.lease;
         let lr = self.leases.get_mut(&fence).expect("checked");
         lr.actions += 1;
-        let mut emit_seq = None;
+        let mut seq = None;
         let mut promoted = None;
         match &rec.action {
-            Admitted::Emit { .. } | Admitted::RunEmit { .. } => {
-                lr.emit_seq += 1;
-                emit_seq = Some(lr.emit_seq);
+            // ADR-0042 §2: in Run the sequence counts every effect-bearing admit, so an
+            // invocation advances it as a report does. `Consult` advances `actions` only.
+            Admitted::Emit { .. } | Admitted::Report { .. } | Admitted::Actuate { .. } => {
+                lr.seq += 1;
+                seq = Some(lr.seq);
             }
             Admitted::Heartbeat { topic, watermark, .. } => {
-                lr.emit_seq += 1;
-                emit_seq = Some(lr.emit_seq);
+                lr.seq += 1;
+                seq = Some(lr.seq);
                 self.marks.entry(rec.seat.clone()).or_default().insert(topic.clone(), *watermark);
                 // Coverage may complete a promotion whose votes are all in (ADR-0039 §3).
                 let authors: Vec<SeatId> =
@@ -915,7 +939,7 @@ impl State {
             }
             _ => {}
         }
-        Applied::Admitted { emit_seq, promoted }
+        Applied::Admitted { seq, promoted }
     }
 }
 
@@ -936,13 +960,12 @@ fn probe_action(a: &Admitted) -> crate::action::Action {
             evidence: evidence.clone(),
             rules_epoch: *rules_epoch,
         },
-        Admitted::RunInvoke { .. } => {
-            A::RunInvoke { tool: String::new(), digest: Digest(String::new()), inputs: none() }
-        }
-        Admitted::RunEmit { .. } => A::RunEmit { record: serde_json::Value::Null },
+        Admitted::Consult { object } => A::Consult { object: object.clone() },
+        Admitted::Actuate { .. } => A::Actuate { tool: String::new(), digest: Digest(String::new()), inputs: none() },
+        Admitted::Report { .. } => A::Report { record: serde_json::Value::Null },
         Admitted::Heartbeat { via, topic, watermark } => {
             let record = Heartbeat { topic: topic.clone(), watermark: *watermark }.record();
-            if *via == ActionKind::Emit { A::Emit { record } } else { A::RunEmit { record } }
+            if *via == ActionKind::Emit { A::Emit { record } } else { A::Report { record } }
         }
     }
 }

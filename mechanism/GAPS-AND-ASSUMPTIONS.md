@@ -14,7 +14,7 @@ under **Findings** (§4) as a candidate for the next checkpoint.
 
 | | |
 |---|---|
-| **Scope** | The admit path of the verified object: epoch fence → lease → lift → policy floor → bundle → consensus-ordered admit → effect. Build's six actions and the two provisional Run actions |
+| **Scope** | The admit path of the verified object: epoch fence → lease → lift → policy floor → bundle → consensus-ordered admit → effect. Build's six actions and Run's three (ADR-0040 §1, Proposed) |
 | **Stack** | `cedar-policy` 4.13 (floor, linked) · OPA sidecar with in-process OPA WASM fallback (bundle tier) · sans-IO crash-fault Multi-Paxos (`topak-paxos`) · `rskafka` 0.6 (round topics) · `rmcp` 3.4 (agent front door and downstream tools) |
 | **Not in scope** | Observer and correlator · archive and plaintext store (ADR-0004) · write-time masking (ADR-0003) · anchor ceremony and bootstrap · confinement · erasure execution |
 | **Evidence** | At commit `4fd9677` (2026.09.24): 38 tests — 21 core mutation tests (Lease, FloorComposition, RulesFloorNV_rev5 restated), 4 Paxos simulation tests, 4 floor tests (includes a replay of the 38-case gate suite), 6 bundle-fallback tests, 3 end-to-end cluster tests — plus a live smoke run: 3 processes over TCP, real Kafka, a real OPA sidecar, and an MCP client over stdio. At commit `453801c` (2026.09.25, manifest `dcad5e8e3236cbc7`): 44 tests, the run ADR-0033 §7's addendum and `mechanism/README.md` cite; the smoke run was not repeated |
@@ -70,6 +70,12 @@ what would replace it.
 | **I22** | **Deny reasons are returned to the agent** | `mechanism.rs` | Debuggability; the floor text is not secret | Reason categories only, if disclosure matters |
 | **I23** | **Denials after the seal go to the round's `after` companion** (`…r<round>.after`), up to `after_topic_limit` records, then one `overflow` marker, then nothing. An attempt with no session goes to the `security` log target | `mechanism.rs` `record_denial`, `act`; `Params` | ADR-0020 wants the attempt; ADR-0003 0003.2 forbids reopening the sealed topic. ADR-0003 A2, ratified in Batch 5 | The bound is counted per replica, not replicated |
 | **I24** | **Renewal keeps the confinement rung.** A renewal that changes the rung either way is refused | `lease.rs` `check_renewal` | ADR-0031 §4 allowed lowering the rung, which ADR-0034 §3.4 forbids at grant (a silent downgrade) | **Settled 2026.09.28** by ADR-0031 A1 (Batch 10); `Lease_A1.tla` `M_LOWER` |
+| **I28** | **In Run the sequence counts effect-bearing admits.** `Actuate` and `Report` advance `seq`; `Consult` advances `actions` only, so it counts toward the round bound and not toward the watermark. The field was `emit_seq`; in Build it still counts emissions only. The apply-time re-check of `live(o)` covers `Actuate` and `Report` and not `Consult` | `state.rs` `apply_admit`, `LeaseRecord`; `types.rs` `is_run_effect` | ADR-0042 §2, ADR-0041 §2 (both Proposed). Before 2026.09.29 only emissions counted, which is D-0042-1 and `RunCoupling.tla`'s `M_EMITSEQ` | Ratification of ADR-0042, and the ADR-0039 §1 amendment it carries |
+| **I29** | **Every admitted `Actuate` leaves a record on the round topic**, written by the deciding replica when the call returns: kind `actuate`, the admit's log index, the sequence number, and a payload of `actuate` (tool, `breakGlass`, inputs digest, `outcome`, result digest) and `body` (the inputs and the result). The record's digest is over `actuate`. Calls in flight are held in a registry keyed by round topic; when the round seals, each is written as `unknown`, in sequence order, ahead of the seal marker | `mechanism.rs` `effect`, `apply_committed`, `InFlight`; `topak-transport` `RecordKind::Actuate` | ADR-0042 §3 (Proposed). **The registry is per replica and not replicated**: a replica that fails with a call in flight leaves an admit with no record, which is ADR-0042 finding 2 | A rule for the missing record after a replica failure |
+| **I30** | **A result that arrives after the seal is withheld from the principal.** The response says `outcome: unknown` and carries no result | `mechanism.rs` `effect` | ADR-0042 §4: what the principal receives is what the record's digest names, and an `unknown` record names nothing. **The record does not say this**; it follows from §3 and §4 together | A sentence in ADR-0042 §3 or §4 |
+| **I31** | **A Run seat cannot abstain.** Refused at `act`, before proposing, and again at `apply`, where an `EndRound(Abstained)` naming a Run seat is `Rejected`. Build's abstain is unchanged | `mechanism.rs` `act`; `state.rs` `apply` | ADR-0042 §5 (Proposed), and its finding 3: the node's handler did not check the domain | — |
+| **I32** | **One content-addressed store, two pinned sets.** `Consult` is served from the same directory as `Read`; what differs is the set the floor checks membership in, `Params::run_root` for Run and `Params::corpus` for Build. An object in one set is not thereby in the other | `state.rs` `Params`; `lift.rs`; `mechanism.rs` `effect` | ADR-0040 §3 says the Run root is a pinned set and not where its objects live | A record on what may enter either root, and who admits it (ADR-0041, open obligations) |
+| **I33** | **A Run tool's entry declares a channel, and the bundle refuses one that does not.** `policies/data.json` carries `channel: {kind, target}`, two non-empty strings; `actuate.rego` checks presence and shape and interprets neither. The Build check is `tool_invocation.rego`; both read `tool_schema.rego` | `policies/` | ADR-0040 §3 requires a declared channel and lists the entry's schema as an open obligation. **This schema is invented here** | A record that writes the allowlist entry's schema. See G19 |
 
 ---
 
@@ -79,7 +85,7 @@ what would replace it.
 |---|---|---|---|
 | **G1** | **Confinement (ADR-0022 §6, the sandbox gap)** | Nothing. Every lease is rung 0 and `is_contained()` is false by construction | Every principal is `Mediated`. An agent with a shell bypasses the MCP front door entirely. **The largest gap, and code cannot close it; only a sandbox can.** The design half is ADR-0034 (ratified 2026.09.28); the smallest mechanism step is its rung-1 launcher, which the reference does not have |
 | **G2** | **Provenance independence criterion** (ADR-0031 §3; a conjunct of `Contained` by ADR-0034 §4) | `PROVENANCE_CRITERION_DEFINED = false` | Even rung 3 would not be `Contained`. ADR-0035 writes the criterion and is Proposed; once it is in force the constant becomes a check of the issued rules |
-| **G3** | **Run's alphabet** | `RunInvoke`, `RunEmit`, matching the draft floor | The Run half of the floor and of the MCP surface is provisional |
+| **G3** | **Run's alphabet** | `Consult`, `Actuate`, `Report`, as ADR-0040 §1 names them, in the draft floor, the bundle and the MCP surface. **ADR-0040 to ADR-0043 are Proposed, not ratified.** `RunInvoke` and `RunEmit` are retired: a request naming either fails validation against S | The Run half follows records the custodian has not ratified. A change to them in ratification is a change here (the pins say when) |
 | **G4** | **Tool hermeticity** (ADR-0022 §3, A2) | Binary + schema pinning, cleared env, workspace as working directory | A tool with a socket collapses the envelope and nothing notices |
 | **G5** | **Authentication**: principals, operators, replicas | Bearer token (principals); socket file mode 0600 (operator); none (replica TCP) | Anyone who can reach a socket can act. Replica traffic needs mTLS |
 | **G6** | **Genesis rules and the bootstrap spec** | `dev/rules.json` from `scripts/dev-init.sh` (3 anchor keys, 3 grant seats, 1 veto seat), checked by the rules floor at startup, which is a runtime `GenesisSatisfiesFloor` | **Dev rules are not genesis rules.** Secrets are in `dev/secrets/` in the clear |
@@ -95,6 +101,7 @@ what would replace it.
 | **G16** | **Floor fitness** (MEASURE 2.13) | None | The floor is well-formed and non-vacuous; nothing says it is the right floor |
 | **G17** | **Re-genesis migration** | Chain id in topic names only | No inherited forensic read access |
 | **G18** | **ADR-0024 A2.2, an independent veto seat leased for the round** | Nothing. The tally checks coverage (A2.3) and not independence, because no independence table exists in the reference (ADR-0035 §4 is unbuilt) | A promotion completes with a correlated veto seat; the independence half of the veto-seat-outage discharge is declared and not enforced |
+| **G19** | **Channel fidelity, and the allowlist entry's schema** (ADR-0040 §3; ADR-0042 §6) | A declared `channel` in bundle data, checked for presence and shape (I33). The tool host pins a Run tool's binary and schema as it does a Build tool's, and nothing more | **A Run tool that opens a channel it did not declare is not seen by anything.** The declaration is an operator's assertion, as a rung-0 profile is |
 
 ---
 
@@ -103,6 +110,7 @@ what would replace it.
 These are observations for the next checkpoint. Findings 1, 2, 4, 5, 6, 10 and 11 have been acted on,
 finding 4 through ADR-0003 A1 (ratified in Batch 5). Findings 3, 7 and 8 closed with ADR-0015 E1 and
 ADR-0031 E1 (Batch 8); finding 8 still owes a model in the bootstrap `Promotion` module. Finding 9 remains.
+Findings 12 to 14 are from 2026.09.29, carrying ADR-0040 to ADR-0043 (all Proposed) into the reference.
 
 1. **The gate suite has a case that does not test what it names.** `floor/genesis-tests.json`,
    "B6 vote from an unseated principal", votes **grant**, so forbid B8 fires and is the reason for
@@ -165,6 +173,23 @@ ADR-0031 E1 (Batch 8); finding 8 still owes a model in the bootstrap `Promotion`
     A2 (ratified in Batch 5): the round's `after` companion, bounded (I23). An attempt with no session goes to
     the replica's security log.
 
+12. **ADR-0041 §7 names the wrong gate for its negative control.** Found 2026.09.29, building the
+    floor. The record says `R4` with its Run-root condition removed "is caught by the non-vacuity
+    gate on `Consult`". It is not: the domain and alphabet conjuncts still refuse requests, so
+    `always-allows` stays refuted and the gate passes. What catches it is routing, which classes
+    the candidate a relaxation (`F ⇒ F′` holds, `F′ ⇒ F` is refuted). The gate run carries that
+    control, and a permit-all on `Consult` for non-vacuity. ADR-0041 is Proposed, so the fix is a
+    revision in place; it is the custodian's to make.
+13. **`Coupling.tla` and the reference counted different things**, which ADR-0042 finding 1
+    records. It is restated here because the register's §6 listed `UnreadBounded` against an e2e
+    test that reports and never invokes: the restatement was faithful to the model and the model
+    was not the mechanism. `RunCoupling.tla` separates the counters; `M_EMITSEQ` is the old
+    behaviour.
+14. **The bundle tier cannot hold a Run tool to its channel.** `actuate.rego` refuses a tool that
+    declares none (I33), and that is all a request-time policy can do: whether the tool opens
+    that channel is a fact about the tool, not the request. It is G19, and ADR-0042 §6 says it
+    has no owner.
+
 ---
 
 ## 5. Assumptions of use (ToO §13), as the baseline stands
@@ -199,6 +224,13 @@ ADR-0031 E1 (Batch 8); finding 8 still owes a model in the bootstrap `Promotion`
 | `Observers.tla` | `ReachIsBounded` / `M_REACH` (ADR-0038 §1) | `a_cell_names_a_thinker_seat_in_its_domain_and_only_observers_have_one` (declared reach); **not enforced**: no topic read ACL (I8) |
 | `Coupling.tla` | `NoAdmitWithoutLiveObserver` / `M_NOCOUPLE` (ADR-0039 §2) | e2e `observer_liveness_couples_run_admits`: refused with no Observer lease, no heartbeat, and after `T_obs` (floor R3); `floor.rs` replays R3 |
 | `Coupling.tla` | `UnreadBounded` / `M_MARK`, `M_ROUNDS` (ADR-0039 §2) | same e2e: refused at a backlog of `K`, refused on a fresh heartbeat with an unchanged watermark, refused a round-2 grant while round 1 is unread (`apply_grant`); `State::observer_covers` is the strict form |
+| `RunCoupling.tla` | `UnreadEffectsBounded` / `M_EMITSEQ` (ADR-0042 §2; **the reference's behaviour before 2026.09.29**, D-0042-1) | `mutations.rs` `the_sequence_counts_effects_and_m_emitseq_is_refused`; e2e `actuate_is_counted_recorded_and_sealed`: `K` invocations and no report, the next refused by R3 |
+| `RunCoupling.tla` | `ConsultNeverCoupled` / `M_COUPLEALL` (ADR-0041 §2) | same two tests: a `Consult` admitted with no heartbeat at all, and again while `Actuate` and `Report` are refused for the backlog; `floor.rs` replays "R3 does not couple Consult" |
+| `RunCoupling.tla` | `SealCountsEffects`, and `M_ROUNDS` carried over (ADR-0042 §5) | `a_run_round_seals_with_its_lease_and_a_run_seat_cannot_abstain`: a renewal does not seal, the seal is 3 after three invocations, and the round-2 grant waits on it; e2e: the grant refused with one invocation unread |
+| `RunCoupling.tla` | `RoundBoundCountsAll` / `M_BOUNDEFF` (ADR-0042 §2) | `the_round_bound_counts_consult` |
+| `RunSeats.tla` | `OnlyThinkersActuate`, `ObserversConsultAndReport` / `M_KIND`; `NoNameCrossesDomains` / `M_DOMAIN` (ADR-0043 §2; ADR-0040 §2) | `run_alphabets_are_bounded_by_seat_kind_and_domain`; `floor.rs` replays B10 over `Actuate` and R4 for an observer seat |
+| ADR-0042 §3, §4 | the `Actuate` record; `unknown` ahead of the seal; the late result withheld | e2e `actuate_is_counted_recorded_and_sealed`. **Not modeled in TLA+**: `RunCoupling.tla` assumes a record at every sequence number |
+| ADR-0040 §1, ADR-0041 §4 | a retired name is an error, and an error is a deny | `floor.rs` `a_retired_run_action_is_an_error_not_a_decision` |
 | `Coupling.tla` | `CorrelatorNeverGates` / `M_CORR` (ADR-0039 §4) | `Rules::cell_observers` excludes correlators from `live(o)`; e2e: the correlator is never granted a Run lease and Run admits proceed |
 | ADR-0039 §3 (ADR-0024 A2.3) | coverage to the seal completes a promotion | e2e `build_round_promotion_and_fencing`: every grant seat granted, `Tally::Stalled` until `o1` heartbeats `a1`'s seal |
 | `FloorComposition.tla` | `AdmitImpliesFloorPermit` / `M_OVERRIDE` | `admit_implies_floor_permit_and_m_override_is_refused`; e2e allow-all bundle still floor-bounded |

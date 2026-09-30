@@ -49,7 +49,11 @@ fn sign(k: &SigningKey, purpose: &str, body: &Value) -> Signed {
 struct Fixture {
     dir: PathBuf,
     corpus_obj: Digest,
+    /// An object in Run's root and not in Build's (ADR-0040 §3).
+    run_obj: Digest,
     tool: String,
+    /// The demo binary's `sleep`, on Run's allowlist. `tool` is not: it is break-glass's.
+    run_tool: String,
     tools: BTreeMap<String, ToolSpec>,
     params: Params,
     rules: Rules,
@@ -68,15 +72,24 @@ async fn fixture(name: &str) -> Fixture {
     let bin = PathBuf::from(env!("CARGO_BIN_EXE_topak-demo-tool"));
     let (bin_digest, tdigest) = ToolHost::digest_of(&bin, &[], "wordcount").await.unwrap();
     let tool = tool_id("wordcount", &tdigest);
-    let tools = BTreeMap::from([(
-        tool.clone(),
-        ToolSpec { command: bin, args: vec![], binary_sha256: bin_digest, mcp_tool: "wordcount".into() },
-    )]);
+    let (_, sdigest) = ToolHost::digest_of(&bin, &[], "sleep").await.unwrap();
+    let run_tool = tool_id("sleep", &sdigest);
+    let spec = |mcp_tool: &str| ToolSpec {
+        command: bin.clone(),
+        args: vec![],
+        binary_sha256: bin_digest.clone(),
+        mcp_tool: mcp_tool.into(),
+    };
+    let tools = BTreeMap::from([(tool.clone(), spec("wordcount")), (run_tool.clone(), spec("sleep"))]);
+    let run_content = b"valve v7: closed is safe\n";
+    let run_obj = Digest::of(run_content);
+    std::fs::write(dir.join("corpus").join(&run_obj.0), run_content).unwrap();
 
     let params = Params {
         corpus: BTreeSet::from([corpus_obj.clone()]),
         build_tools: BTreeSet::from([tool.clone()]),
-        run_tools: BTreeSet::new(),
+        run_tools: BTreeSet::from([run_tool.clone()]),
+        run_root: BTreeSet::from([run_obj.clone()]),
         round_bound: 50,
         lease_margin_ms: 100,
         after_topic_limit: 3,
@@ -107,7 +120,7 @@ async fn fixture(name: &str) -> Fixture {
             roster: keys.bg.iter().map(pubhex).collect(),
             quorum: 2,
             tools: BTreeSet::from([tool.clone()]),
-            actions: BTreeSet::from(["RunInvoke".to_string()]),
+            actions: BTreeSet::from(["Actuate".to_string()]),
         }),
         erasure_roster: None,
     };
@@ -116,7 +129,7 @@ async fn fixture(name: &str) -> Fixture {
     let l = LocalBundles::load_dir(&bundles).await.unwrap();
     let bundle_rev = l.revisions().next().expect("run scripts/build-bundle.sh first").clone();
 
-    Fixture { dir, corpus_obj, tool, tools, params, rules, keys, bundle_rev }
+    Fixture { dir, corpus_obj, run_obj, tool, run_tool, tools, params, rules, keys, bundle_rev }
 }
 
 /// A bundle that allows everything, to exercise effects the real placeholder bundle refuses.
@@ -212,8 +225,8 @@ fn deny_reason(r: &AgentResponse) -> String {
 const AUTHOR: &[ActionKind] =
     &[ActionKind::Read, ActionKind::Draft, ActionKind::Invoke, ActionKind::Emit, ActionKind::Submit];
 const VOTER: &[ActionKind] = &[ActionKind::Read, ActionKind::Emit, ActionKind::Vote];
-const RUN: &[ActionKind] = &[ActionKind::RunInvoke, ActionKind::RunEmit];
-const RUN_OBS: &[ActionKind] = &[ActionKind::RunEmit];
+const RUN: &[ActionKind] = &[ActionKind::Consult, ActionKind::Actuate, ActionKind::Report];
+const RUN_OBS: &[ActionKind] = &[ActionKind::Consult, ActionKind::Report];
 
 fn heartbeat(topic: &str, watermark: u64) -> Value {
     json!({ "heartbeat": { "topic": topic, "watermark": watermark } })
@@ -420,14 +433,14 @@ async fn build_round_promotion_and_fencing() {
     // ---- a targeted revocation ends one principal's round, not the fleet's (ADR-0031 §5 R3) ----
     let r1 = grant(n1, &f, "r1", 1, RoundRole::Author, RUN, 60_000).await;
     // ADR-0039 §2: nothing in Run is admitted until r1's cell Observer is live.
-    let r = act(n1, &r1, Action::RunEmit { record: json!({ "valve": "open" }) }).await;
+    let r = act(n1, &r1, Action::Report { record: json!({ "valve": "open" }) }).await;
     assert!(deny_reason(&r).contains("R3-observer-live"), "{}", r.detail);
     let ro1 = grant(n1, &f, "ro1", 1, RoundRole::Author, RUN_OBS, 60_000).await;
     let r1_topic = topak_core::lift::topic_name(&chain, Domain::Run, "r1", 0, 1);
-    let r = act(n1, &ro1, Action::RunEmit { record: heartbeat(&r1_topic, 0) }).await;
+    let r = act(n1, &ro1, Action::Report { record: heartbeat(&r1_topic, 0) }).await;
     assert!(r.admitted, "{}", r.detail);
     // o1, the veto seat's lease, is still live: the bystander.
-    let r = act(n1, &r1, Action::RunEmit { record: json!({ "valve": "open" }) }).await;
+    let r = act(n1, &r1, Action::Report { record: json!({ "valve": "open" }) }).await;
     assert!(r.admitted, "{}", r.detail);
     // Every fixture principal shares one Persona digest, so the target here is the principal.
     let r = n1
@@ -438,7 +451,7 @@ async fn build_round_promotion_and_fencing() {
         })
         .await;
     assert_eq!(r["ok"], true, "{r}");
-    let r = act(n1, &r1, Action::RunEmit { record: json!({ "valve": "close" }) }).await;
+    let r = act(n1, &r1, Action::Report { record: json!({ "valve": "close" }) }).await;
     assert!(
         deny_reason(&r).contains(r#"{"LeaseEnded":"revoked"}"#),
         "rejected by the mechanism, not policy: {}",
@@ -449,7 +462,7 @@ async fn build_round_promotion_and_fencing() {
     // The revoked principal keeps trying. Each attempt is in its round's `after` topic, up to the
     // bound (3 in this fixture), then one overflow marker, then nothing (ADR-0003 A2).
     for i in 0..5 {
-        let r = act(n1, &r1, Action::RunEmit { record: json!({ "retry": i }) }).await;
+        let r = act(n1, &r1, Action::Report { record: json!({ "retry": i }) }).await;
         assert!(!r.admitted);
     }
     let run_after = topak_core::lift::after_topic_name(&chain, Domain::Run, "r1", 0, 1);
@@ -513,9 +526,9 @@ async fn tools_break_glass_issuance_and_partition() {
     let ro1 = grant(n1, &f, "ro1", 1, RoundRole::Author, RUN_OBS, 60_000).await;
     let chain = n1.state.read().unwrap().chain.clone();
     let r1_topic = topak_core::lift::topic_name(&chain, Domain::Run, "r1", 0, 1);
-    let r = act(n1, &ro1, Action::RunEmit { record: heartbeat(&r1_topic, 0) }).await;
+    let r = act(n1, &ro1, Action::Report { record: heartbeat(&r1_topic, 0) }).await;
     assert!(r.admitted, "{}", r.detail);
-    let run = Action::RunInvoke { tool: name.into(), digest: Digest(digest.into()), inputs: inputs.clone() };
+    let run = Action::Actuate { tool: name.into(), digest: Digest(digest.into()), inputs: inputs.clone() };
     let r = act(n1, &r1, run.clone()).await;
     assert!(deny_reason(&r).contains("Floor"), "no quorum yet: {}", r.detail);
     let body = json!({ "seat": "r1", "epoch": 0 });
@@ -636,7 +649,8 @@ async fn an_expired_lease_is_ended_and_refused() {
 
 /// Coupling.tla restated: `NoAdmitWithoutLiveObserver`, `UnreadBounded` (strict form) and the
 /// cross-round grant condition, each refusal seen to fire (ADR-0039 §8). K = 8, T_obs = 5 s are
-/// the placeholders in `floor/genesis-values.json`.
+/// the placeholders in `floor/genesis-values.json`. This test reports and never invokes; the
+/// backlog made of invocations is `actuate_is_counted_recorded_and_sealed`.
 #[tokio::test(flavor = "multi_thread", worker_threads = 4)]
 async fn observer_liveness_couples_run_admits() {
     let f = fixture("coupling").await;
@@ -645,7 +659,7 @@ async fn observer_liveness_couples_run_admits() {
     let chain = n1.state.read().unwrap().chain.clone();
     let k = n1.state.read().unwrap().observer.k;
     assert_eq!(k, 8, "the placeholder");
-    let emit = |i: u64| Action::RunEmit { record: json!({ "i": i }) };
+    let emit = |i: u64| Action::Report { record: json!({ "i": i }) };
 
     // No cell Observer lease at all: refused by the floor's R3, with the reason on its face.
     let r1 = grant(n1, &f, "r1", 1, RoundRole::Author, RUN, 60_000).await;
@@ -659,15 +673,15 @@ async fn observer_liveness_couples_run_admits() {
 
     // Dishonest or malformed heartbeats are the mechanism's to refuse (ADR-0039 §1).
     let t1 = topak_core::lift::topic_name(&chain, Domain::Run, "r1", 0, 1);
-    let r = act(n1, &ro1, Action::RunEmit { record: heartbeat(&t1, 5) }).await;
+    let r = act(n1, &ro1, Action::Report { record: heartbeat(&t1, 5) }).await;
     assert!(deny_reason(&r).contains("BadHeartbeat"), "above what exists: {}", r.detail);
-    let r = act(n1, &ro1, Action::RunEmit { record: heartbeat("topak.nobody", 0) }).await;
+    let r = act(n1, &ro1, Action::Report { record: heartbeat("topak.nobody", 0) }).await;
     assert!(deny_reason(&r).contains("BadHeartbeat"), "no such round: {}", r.detail);
-    let r = act(n1, &r1, Action::RunEmit { record: heartbeat(&t1, 0) }).await;
+    let r = act(n1, &r1, Action::Report { record: heartbeat(&t1, 0) }).await;
     assert!(!r.admitted, "a Thinker does not report liveness: {}", r.detail);
 
     // An honest heartbeat: live. K admits go through; the K+1th is refused for the backlog.
-    let r = act(n1, &ro1, Action::RunEmit { record: heartbeat(&t1, 0) }).await;
+    let r = act(n1, &ro1, Action::Report { record: heartbeat(&t1, 0) }).await;
     assert!(r.admitted, "{}", r.detail);
     for i in 0..k {
         let r = act(n1, &r1, emit(i)).await;
@@ -677,20 +691,20 @@ async fn observer_liveness_couples_run_admits() {
     assert!(deny_reason(&r).contains("R3-observer-live"), "backlog of {k} unread: {}", r.detail);
     // Presence is not progress (Coupling.tla M_MARK): a fresh heartbeat with the same watermark
     // renews T_obs and nothing else, and the Thinker stays refused for its backlog.
-    let r = act(n1, &ro1, Action::RunEmit { record: heartbeat(&t1, 0) }).await;
+    let r = act(n1, &ro1, Action::Report { record: heartbeat(&t1, 0) }).await;
     assert!(r.admitted, "{}", r.detail);
     let r = act(n1, &r1, emit(k)).await;
     assert!(deny_reason(&r).contains("R3-observer-live"), "presence is not progress: {}", r.detail);
     // One emission read frees one slot; the next admit refills it.
-    let r = act(n1, &ro1, Action::RunEmit { record: heartbeat(&t1, 1) }).await;
+    let r = act(n1, &ro1, Action::Report { record: heartbeat(&t1, 1) }).await;
     assert!(r.admitted, "{}", r.detail);
     let r = act(n1, &r1, emit(k)).await;
     assert!(r.admitted, "{} unread, one below K: {}", k - 1, r.detail);
     let r = act(n1, &r1, emit(k + 10)).await;
     assert!(deny_reason(&r).contains("R3-observer-live"), "back at {k} unread: {}", r.detail);
-    let r = act(n1, &ro1, Action::RunEmit { record: heartbeat(&t1, 0) }).await;
+    let r = act(n1, &ro1, Action::Report { record: heartbeat(&t1, 0) }).await;
     assert!(deny_reason(&r).contains("BadHeartbeat"), "a watermark never falls: {}", r.detail);
-    let r = act(n1, &ro1, Action::RunEmit { record: heartbeat(&t1, k + 1) }).await;
+    let r = act(n1, &ro1, Action::Report { record: heartbeat(&t1, k + 1) }).await;
     assert!(r.admitted, "{}", r.detail);
     let r = act(n1, &r1, emit(k + 10)).await;
     assert!(r.admitted, "caught up: {}", r.detail);
@@ -700,7 +714,7 @@ async fn observer_liveness_couples_run_admits() {
     tokio::time::sleep(Duration::from_millis(t_obs + 200)).await;
     let r = act(n1, &r1, emit(k + 1)).await;
     assert!(deny_reason(&r).contains("R3-observer-live"), "stale: {}", r.detail);
-    let r = act(n1, &ro1, Action::RunEmit { record: heartbeat(&t1, k + 1) }).await;
+    let r = act(n1, &ro1, Action::Report { record: heartbeat(&t1, k + 1) }).await;
     assert!(r.admitted, "{}", r.detail);
     let r = act(n1, &r1, emit(k + 1)).await;
     assert!(r.admitted, "fresh again: {}", r.detail);
@@ -725,7 +739,7 @@ async fn observer_liveness_couples_run_admits() {
         .await;
     assert_eq!(refused["ok"], false, "round 1 is unread past its seal: {refused}");
     assert!(refused.to_string().contains("unread"), "{refused}");
-    let r = act(n1, &ro1, Action::RunEmit { record: heartbeat(&t1, seal.seq) }).await;
+    let r = act(n1, &ro1, Action::Report { record: heartbeat(&t1, seal.seq) }).await;
     assert!(r.admitted, "{}", r.detail);
     let r1b = grant(n1, &f, "r1", 2, RoundRole::Author, RUN, 60_000).await;
     let r = act(n1, &r1b, emit(100)).await;
@@ -735,5 +749,147 @@ async fn observer_liveness_couples_run_admits() {
     let s1 = state_json(&c.nodes[0]);
     for m in &c.nodes[1..] {
         assert_eq!(state_json(m), s1, "marks and seals are replicated; heard is not: replica {} diverged", m.id);
+    }
+}
+
+// ---- ADR-0042: the sequence counts effects, every Actuate leaves a record, the lease seals ----
+
+/// RunCoupling.tla restated against the running mechanism (ADR-0042 §8, Proposed). The three
+/// behaviours the record asks to see: a backlog made of invocations alone is refused past `K`; a
+/// `Consult` is admitted while it is; and the next round waits until the invocations are read.
+/// Then the record itself (§3), the `unknown` record written ahead of the seal with its result
+/// withheld (§3, §4), and the abstain a Run seat may not make (§5).
+///
+/// On an allow-all bundle: the compiled bundle has no schema, and so no declared channel, for the
+/// demo binary's `sleep`, and `actuate.rego` refuses a tool that declares none.
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn actuate_is_counted_recorded_and_sealed() {
+    let f = fixture("actuate").await;
+    let c = cluster(&f, false).await;
+    let n1 = &c.nodes[0];
+    let chain = n1.state.read().unwrap().chain.clone();
+    let k = n1.state.read().unwrap().observer.k;
+    let (name, digest) = f.run_tool.split_once('@').unwrap();
+    let sleep = |ms: u64| Action::Actuate {
+        tool: name.into(),
+        digest: Digest(digest.into()),
+        inputs: json!({ "ms": ms }).as_object().unwrap().clone(),
+    };
+    let seq_of = |m: &Mechanism, seat: &str| m.state.read().unwrap().live_lease(seat).map(|r| (r.seq, r.actions));
+
+    let r1 = grant(n1, &f, "r1", 1, RoundRole::Author, RUN, 60_000).await;
+    let ro1 = grant(n1, &f, "ro1", 1, RoundRole::Author, RUN_OBS, 60_000).await;
+    let t1 = topak_core::lift::topic_name(&chain, Domain::Run, "r1", 0, 1);
+
+    // Consult is not coupled: admitted before the Observer has said anything at all.
+    let r = act(n1, &r1, Action::Consult { object: f.run_obj.clone() }).await;
+    assert!(r.admitted, "{}", r.detail);
+    assert_eq!(r.detail["floor"], json!(["R4-consult-pinned"]));
+    assert!(r.detail["result"]["content"].as_str().unwrap().contains("closed is safe"));
+    // The Run root is its own set: an object in Build's corpus root is not in it.
+    let r = act(n1, &r1, Action::Consult { object: f.corpus_obj.clone() }).await;
+    assert!(deny_reason(&r).contains("FloorNoPermit"), "outside the Run root: {}", r.detail);
+    // An Actuate is an effect, and is coupled.
+    let r = act(n1, &r1, sleep(0)).await;
+    assert!(deny_reason(&r).contains("R3-observer-live"), "no heartbeat yet: {}", r.detail);
+
+    // Live. K invocations go through, and nothing else is emitted: the backlog is invocations alone.
+    let r = act(n1, &ro1, Action::Report { record: heartbeat(&t1, 0) }).await;
+    assert!(r.admitted, "{}", r.detail);
+    for i in 1..=k {
+        let r = act(n1, &r1, sleep(0)).await;
+        assert!(r.admitted, "actuate {i} of {k}: {}", r.detail);
+        assert_eq!(r.detail["result"]["seq"], i, "the sequence counts invocations: {}", r.detail);
+        assert_eq!(r.detail["result"]["outcome"], "returned");
+    }
+    assert_eq!(seq_of(n1, "r1"), Some((k, k + 1)), "K effects; K + 1 admits, the Consult among them");
+    let r = act(n1, &r1, sleep(0)).await;
+    assert!(deny_reason(&r).contains("R3-observer-live"), "M_EMITSEQ: {k} invocations unread: {}", r.detail);
+    let r = act(n1, &r1, Action::Report { record: json!({ "done": false }) }).await;
+    assert!(deny_reason(&r).contains("R3-observer-live"), "a report is an effect too: {}", r.detail);
+    // A Thinker whose Observer lags can read and cannot act (ADR-0041 §2).
+    let r = act(n1, &r1, Action::Consult { object: f.run_obj.clone() }).await;
+    assert!(r.admitted, "Consult while effects are refused: {}", r.detail);
+    assert_eq!(seq_of(n1, "r1"), Some((k, k + 2)), "a read is a step and not an effect");
+
+    // The record (ADR-0042 §3): one for each call, written by the mechanism, at the call's sequence.
+    {
+        let topics = memory(n1).topics.lock().await;
+        let recs: Vec<_> = topics[&t1].iter().filter(|r| r.kind == RecordKind::Actuate).collect();
+        assert_eq!(recs.len() as u64, k);
+        for (i, rec) in recs.iter().enumerate() {
+            let env = &rec.payload["actuate"];
+            assert_eq!(rec.seq, Some(i as u64 + 1));
+            assert!(rec.admit.is_some(), "the admit's log index");
+            assert_eq!(rec.digest, Digest::of_json(env), "the record's digest is over its envelope");
+            assert_eq!(env["tool"], json!(f.run_tool));
+            assert_eq!(env["breakGlass"], false);
+            assert_eq!(env["outcome"], "returned");
+            assert_eq!(env["inputs"], json!(Digest::of_json(&rec.payload["body"]["inputs"])));
+            assert_eq!(env["result"], json!(Digest::of_json(&rec.payload["body"]["result"])));
+        }
+    }
+
+    // The Observer reads them, and a slow call goes out. The round ends while it is in flight.
+    let r = act(n1, &ro1, Action::Report { record: heartbeat(&t1, k) }).await;
+    assert!(r.admitted, "{}", r.detail);
+    let (node, token, slow) = (n1.clone(), r1.clone(), sleep(1_500));
+    let call = tokio::spawn(async move { act(&node, &token, slow).await });
+    for _ in 0..200 {
+        if seq_of(n1, "r1") == Some((k + 1, k + 3)) {
+            break;
+        }
+        tokio::time::sleep(Duration::from_millis(10)).await;
+    }
+    assert_eq!(seq_of(n1, "r1"), Some((k + 1, k + 3)), "the slow call's admit has committed");
+    // A Run seat cannot abstain (§5). Its round ends with its lease; here the operator ends it.
+    let r = n1.act(AgentRequest { token: r1.clone(), op: AgentOp::Abstain }).await;
+    assert!(deny_reason(&r).contains("cannot abstain"), "{}", r.detail);
+    assert!(seq_of(n1, "r1").is_some(), "the refused abstain ended nothing");
+    let r = n1.operate(OperatorOp::EndRound { token: r1.clone(), reason: EndReason::Operator }).await;
+    assert_eq!(r["ok"], true, "{r}");
+
+    // The call returns to a sealed round: its record says `unknown`, and its result is withheld.
+    let r = call.await.unwrap();
+    assert_eq!(r.detail["result"]["outcome"], "unknown", "{}", r.detail);
+    assert!(r.detail["result"].get("result").is_none(), "what was not recorded is not delivered: {}", r.detail);
+    {
+        let topics = memory(n1).topics.lock().await;
+        let last = topics[&t1].iter().rfind(|r| r.kind == RecordKind::Actuate).unwrap();
+        assert_eq!(last.seq, Some(k + 1));
+        assert_eq!(last.payload["actuate"]["outcome"], "unknown");
+        assert_eq!(last.payload["actuate"]["result"], Value::Null);
+        assert!(memory(n1).sealed.lock().await.contains_key(&t1), "and the seal marker followed it");
+    }
+
+    // The seal counts the invocations, so round 2 waits until they are read (ADR-0039 §2).
+    let seal = n1.state.read().unwrap().seals["r1"].clone();
+    assert_eq!((seal.topic.as_str(), seal.seq), (t1.as_str(), k + 1));
+    let refused = n1
+        .operate(OperatorOp::Grant {
+            principal: "principal-r1".into(),
+            seat: "r1".into(),
+            persona: Digest::of(b"persona"),
+            bundle: f.bundle_rev.clone(),
+            confinement: topak_core::lease::Confinement { digest: Digest::of(b"none"), rung: 0 },
+            alphabet: RUN.iter().copied().collect(),
+            ttl_ms: 60_000,
+            round: 2,
+            role: RoundRole::Author,
+        })
+        .await;
+    assert_eq!(refused["ok"], false, "one invocation is unread past the mark: {refused}");
+    assert!(refused.to_string().contains("unread"), "{refused}");
+    let r = act(n1, &ro1, Action::Report { record: heartbeat(&t1, seal.seq) }).await;
+    assert!(r.admitted, "{}", r.detail);
+    let r1b = grant(n1, &f, "r1", 2, RoundRole::Author, RUN, 60_000).await;
+    let r = act(n1, &r1b, sleep(0)).await;
+    assert!(r.admitted, "round 2: {}", r.detail);
+    assert_eq!(r.detail["result"]["seq"], 1, "the sequence restarts with the round");
+
+    settle(&c).await;
+    let s1 = state_json(&c.nodes[0]);
+    for m in &c.nodes[1..] {
+        assert_eq!(state_json(m), s1, "the sequence and the seal are replicated: replica {} diverged", m.id);
     }
 }

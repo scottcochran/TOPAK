@@ -212,6 +212,27 @@
    },
    {
     "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
      "type": "Topak::Workspace",
      "id": "ws-a1-r7"
     },
@@ -789,6 +810,27 @@
     },
     "attrs": {},
     "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
    },
    {
     "uid": {
@@ -1370,6 +1412,27 @@
    },
    {
     "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
      "type": "Topak::Workspace",
      "id": "ws-a1-r7"
     },
@@ -1941,6 +2004,626 @@
     },
     "attrs": {},
     "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Workspace",
+     "id": "ws-a1-r7"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Workspace",
+     "id": "ws-other"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::WorkspaceTarget",
+     "id": "ws-a1-r7/spec.tla"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::Workspace",
+      "id": "ws-a1-r7"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::WorkspaceTarget",
+     "id": "ws-other/spec.tla"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::Workspace",
+      "id": "ws-other"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::ToolSet",
+     "id": "build-allow"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ToolSet",
+     "id": "run-allow"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ToolSet",
+     "id": "bg-tools"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "tlc@d1"
+    },
+    "attrs": {
+     "digest": "d1"
+    },
+    "parents": [
+     {
+      "type": "Topak::ToolSet",
+      "id": "build-allow"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "tlc@d2"
+    },
+    "attrs": {
+     "digest": "d2"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "search@d3"
+    },
+    "attrs": {
+     "digest": "d3"
+    },
+    "parents": [
+     {
+      "type": "Topak::ToolSet",
+      "id": "run-allow"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "valve@d4"
+    },
+    "attrs": {
+     "digest": "d4"
+    },
+    "parents": [
+     {
+      "type": "Topak::ToolSet",
+      "id": "bg-tools"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "a1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "v1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "v1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "a1-r7-sealed"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": true
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "a1-e2"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     },
+     "epoch": 2,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "r1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "r1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "o1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "o1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "ro1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "ro1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Artifact",
+     "id": "art-a1"
+    },
+    "attrs": {
+     "author": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     }
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Artifact",
+     "id": "art-v1"
+    },
+    "attrs": {
+     "author": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "v1"
+      }
+     }
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Artifact",
+     "id": "art-g1"
+    },
+    "attrs": {
+     "author": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "g1"
+      }
+     }
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "payload-1"
+    },
+    "attrs": {
+     "class": "payload"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f1"
+    },
+    "attrs": {
+     "class": "F1"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f2"
+    },
+    "attrs": {
+     "class": "F2"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f3"
+    },
+    "attrs": {
+     "class": "F3"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f4"
+    },
+    "attrs": {
+     "class": "F4"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f5"
+    },
+    "attrs": {
+     "class": "F5"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f6"
+    },
+    "attrs": {
+     "class": "F6"
+    },
+    "parents": []
+   }
+  ],
+  "decision": "deny",
+  "reason": [],
+  "num_errors": 0
+ },
+ {
+  "name": "B1 read of an object in Run's root only",
+  "request": {
+   "principal": "Topak::Seat::\"a1\"",
+   "action": "Topak::Action::\"Read\"",
+   "resource": "Topak::CorpusObject::\"sha-r1\"",
+   "context": {
+    "lease": {
+     "alphabet": [
+      "Read",
+      "Draft",
+      "Invoke",
+      "Emit",
+      "Submit"
+     ],
+     "rulesEpoch": 5
+    },
+    "epoch": 3,
+    "round": 7,
+    "roundRole": "author",
+    "corpusRoot": {
+     "__entity": {
+      "type": "Topak::CorpusRoot",
+      "id": "pinned"
+     }
+    },
+    "workspace": {
+     "__entity": {
+      "type": "Topak::Workspace",
+      "id": "ws-a1-r7"
+     }
+    },
+    "toolAllowlist": {
+     "__entity": {
+      "type": "Topak::ToolSet",
+      "id": "build-allow"
+     }
+    },
+    "inputsInWorkspace": true
+   }
+  },
+  "entities": [
+   {
+    "uid": {
+     "type": "Topak::Roster",
+     "id": "grant"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Roster",
+     "id": "veto"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "a1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "thinker"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "g1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "grant"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "grant"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "v1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "grant"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "grant"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "o1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "observer"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "veto"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "t1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "thinker"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "veto"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "o2"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "observer"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "grant"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "n1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "grant"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "r1"
+    },
+    "attrs": {
+     "domain": "run",
+     "kind": "thinker"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "ro1"
+    },
+    "attrs": {
+     "domain": "run",
+     "kind": "observer"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-c1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-x"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
    },
    {
     "uid": {
@@ -2519,6 +3202,27 @@
     },
     "attrs": {},
     "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
    },
    {
     "uid": {
@@ -3102,6 +3806,27 @@
    },
    {
     "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
      "type": "Topak::Workspace",
      "id": "ws-a1-r7"
     },
@@ -3677,6 +4402,27 @@
     },
     "attrs": {},
     "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
    },
    {
     "uid": {
@@ -4260,6 +5006,27 @@
    },
    {
     "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
      "type": "Topak::Workspace",
      "id": "ws-a1-r7"
     },
@@ -4838,6 +5605,27 @@
    },
    {
     "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
      "type": "Topak::Workspace",
      "id": "ws-a1-r7"
     },
@@ -5413,6 +6201,27 @@
     },
     "attrs": {},
     "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
    },
    {
     "uid": {
@@ -5996,6 +6805,27 @@
    },
    {
     "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
      "type": "Topak::Workspace",
      "id": "ws-a1-r7"
     },
@@ -6571,6 +7401,27 @@
     },
     "attrs": {},
     "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
    },
    {
     "uid": {
@@ -7152,6 +8003,27 @@
    },
    {
     "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
      "type": "Topak::Workspace",
      "id": "ws-a1-r7"
     },
@@ -7727,6 +8599,27 @@
     },
     "attrs": {},
     "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
    },
    {
     "uid": {
@@ -8310,6 +9203,27 @@
    },
    {
     "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
      "type": "Topak::Workspace",
      "id": "ws-a1-r7"
     },
@@ -8877,6 +9791,27 @@
     },
     "attrs": {},
     "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
    },
    {
     "uid": {
@@ -9452,6 +10387,27 @@
    },
    {
     "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
      "type": "Topak::Workspace",
      "id": "ws-a1-r7"
     },
@@ -10021,6 +10977,27 @@
     },
     "attrs": {},
     "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
    },
    {
     "uid": {
@@ -10594,6 +11571,27 @@
    },
    {
     "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
      "type": "Topak::Workspace",
      "id": "ws-a1-r7"
     },
@@ -11164,6 +12162,27 @@
    },
    {
     "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
      "type": "Topak::Workspace",
      "id": "ws-a1-r7"
     },
@@ -11731,6 +12750,27 @@
     },
     "attrs": {},
     "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
    },
    {
     "uid": {
@@ -12306,6 +13346,27 @@
     },
     "attrs": {},
     "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
    },
    {
     "uid": {
@@ -12886,6 +13947,27 @@
    },
    {
     "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
      "type": "Topak::Workspace",
      "id": "ws-a1-r7"
     },
@@ -13458,6 +14540,27 @@
    },
    {
     "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
      "type": "Topak::Workspace",
      "id": "ws-a1-r7"
     },
@@ -14027,6 +15130,27 @@
     },
     "attrs": {},
     "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
    },
    {
     "uid": {
@@ -14610,6 +15734,27 @@
    },
    {
     "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
      "type": "Topak::Workspace",
      "id": "ws-a1-r7"
     },
@@ -15187,6 +16332,27 @@
     },
     "attrs": {},
     "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
    },
    {
     "uid": {
@@ -15770,6 +16936,27 @@
    },
    {
     "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
      "type": "Topak::Workspace",
      "id": "ws-a1-r7"
     },
@@ -16347,6 +17534,27 @@
     },
     "attrs": {},
     "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
    },
    {
     "uid": {
@@ -16930,6 +18138,27 @@
    },
    {
     "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
      "type": "Topak::Workspace",
      "id": "ws-a1-r7"
     },
@@ -17507,6 +18736,27 @@
     },
     "attrs": {},
     "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
    },
    {
     "uid": {
@@ -18090,6 +19340,27 @@
    },
    {
     "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
      "type": "Topak::Workspace",
      "id": "ws-a1-r7"
     },
@@ -18458,25 +19729,26 @@
   "num_errors": 0
  },
  {
-  "name": "B10 a Run observer seat cannot invoke",
+  "name": "B10 a Run observer seat cannot actuate",
   "request": {
    "principal": "Topak::Seat::\"ro1\"",
-   "action": "Topak::Action::\"RunInvoke\"",
+   "action": "Topak::Action::\"Actuate\"",
    "resource": "Topak::Tool::\"search@d3\"",
    "context": {
     "lease": {
      "alphabet": [
-      "RunInvoke",
-      "RunEmit"
+      "Consult",
+      "Actuate",
+      "Report"
      ],
      "rulesEpoch": 5
     },
     "epoch": 3,
     "round": 7,
-    "corpusRoot": {
+    "runRoot": {
      "__entity": {
       "type": "Topak::CorpusRoot",
-      "id": "pinned"
+      "id": "run-pinned"
      }
     },
     "toolAllowlist": {
@@ -18666,6 +19938,27 @@
     },
     "attrs": {},
     "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
    },
    {
     "uid": {
@@ -19037,25 +20330,26 @@
   "num_errors": 0
  },
  {
-  "name": "R1 run invoke, allowlisted",
+  "name": "R1 actuate, allowlisted",
   "request": {
    "principal": "Topak::Seat::\"r1\"",
-   "action": "Topak::Action::\"RunInvoke\"",
+   "action": "Topak::Action::\"Actuate\"",
    "resource": "Topak::Tool::\"search@d3\"",
    "context": {
     "lease": {
      "alphabet": [
-      "RunInvoke",
-      "RunEmit"
+      "Consult",
+      "Actuate",
+      "Report"
      ],
      "rulesEpoch": 5
     },
     "epoch": 3,
     "round": 7,
-    "corpusRoot": {
+    "runRoot": {
      "__entity": {
       "type": "Topak::CorpusRoot",
-      "id": "pinned"
+      "id": "run-pinned"
      }
     },
     "toolAllowlist": {
@@ -19245,6 +20539,27 @@
     },
     "attrs": {},
     "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
    },
    {
     "uid": {
@@ -19611,30 +20926,31 @@
   ],
   "decision": "allow",
   "reason": [
-   "R1-run-invoke-allowlisted"
+   "R1-actuate-allowlisted"
   ],
   "num_errors": 0
  },
  {
-  "name": "R1 run invoke by a Build seat",
+  "name": "R1 actuate by a Build seat",
   "request": {
    "principal": "Topak::Seat::\"a1\"",
-   "action": "Topak::Action::\"RunInvoke\"",
+   "action": "Topak::Action::\"Actuate\"",
    "resource": "Topak::Tool::\"search@d3\"",
    "context": {
     "lease": {
      "alphabet": [
-      "RunInvoke",
-      "RunEmit"
+      "Consult",
+      "Actuate",
+      "Report"
      ],
      "rulesEpoch": 5
     },
     "epoch": 3,
     "round": 7,
-    "corpusRoot": {
+    "runRoot": {
      "__entity": {
       "type": "Topak::CorpusRoot",
-      "id": "pinned"
+      "id": "run-pinned"
      }
     },
     "toolAllowlist": {
@@ -19824,6 +21140,27 @@
     },
     "attrs": {},
     "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
    },
    {
     "uid": {
@@ -20193,25 +21530,25 @@
   "num_errors": 0
  },
  {
-  "name": "R2 run emit to own topic",
+  "name": "R1 actuate not in the lease alphabet",
   "request": {
    "principal": "Topak::Seat::\"r1\"",
-   "action": "Topak::Action::\"RunEmit\"",
-   "resource": "Topak::Topic::\"r1-r7\"",
+   "action": "Topak::Action::\"Actuate\"",
+   "resource": "Topak::Tool::\"search@d3\"",
    "context": {
     "lease": {
      "alphabet": [
-      "RunInvoke",
-      "RunEmit"
+      "Consult",
+      "Report"
      ],
      "rulesEpoch": 5
     },
     "epoch": 3,
     "round": 7,
-    "corpusRoot": {
+    "runRoot": {
      "__entity": {
       "type": "Topak::CorpusRoot",
-      "id": "pinned"
+      "id": "run-pinned"
      }
     },
     "toolAllowlist": {
@@ -20401,6 +21738,626 @@
     },
     "attrs": {},
     "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Workspace",
+     "id": "ws-a1-r7"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Workspace",
+     "id": "ws-other"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::WorkspaceTarget",
+     "id": "ws-a1-r7/spec.tla"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::Workspace",
+      "id": "ws-a1-r7"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::WorkspaceTarget",
+     "id": "ws-other/spec.tla"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::Workspace",
+      "id": "ws-other"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::ToolSet",
+     "id": "build-allow"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ToolSet",
+     "id": "run-allow"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ToolSet",
+     "id": "bg-tools"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "tlc@d1"
+    },
+    "attrs": {
+     "digest": "d1"
+    },
+    "parents": [
+     {
+      "type": "Topak::ToolSet",
+      "id": "build-allow"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "tlc@d2"
+    },
+    "attrs": {
+     "digest": "d2"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "search@d3"
+    },
+    "attrs": {
+     "digest": "d3"
+    },
+    "parents": [
+     {
+      "type": "Topak::ToolSet",
+      "id": "run-allow"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "valve@d4"
+    },
+    "attrs": {
+     "digest": "d4"
+    },
+    "parents": [
+     {
+      "type": "Topak::ToolSet",
+      "id": "bg-tools"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "a1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "v1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "v1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "a1-r7-sealed"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": true
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "a1-e2"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     },
+     "epoch": 2,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "r1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "r1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "o1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "o1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "ro1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "ro1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Artifact",
+     "id": "art-a1"
+    },
+    "attrs": {
+     "author": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     }
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Artifact",
+     "id": "art-v1"
+    },
+    "attrs": {
+     "author": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "v1"
+      }
+     }
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Artifact",
+     "id": "art-g1"
+    },
+    "attrs": {
+     "author": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "g1"
+      }
+     }
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "payload-1"
+    },
+    "attrs": {
+     "class": "payload"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f1"
+    },
+    "attrs": {
+     "class": "F1"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f2"
+    },
+    "attrs": {
+     "class": "F2"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f3"
+    },
+    "attrs": {
+     "class": "F3"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f4"
+    },
+    "attrs": {
+     "class": "F4"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f5"
+    },
+    "attrs": {
+     "class": "F5"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f6"
+    },
+    "attrs": {
+     "class": "F6"
+    },
+    "parents": []
+   }
+  ],
+  "decision": "deny",
+  "reason": [],
+  "num_errors": 0
+ },
+ {
+  "name": "R2 report to own topic",
+  "request": {
+   "principal": "Topak::Seat::\"r1\"",
+   "action": "Topak::Action::\"Report\"",
+   "resource": "Topak::Topic::\"r1-r7\"",
+   "context": {
+    "lease": {
+     "alphabet": [
+      "Consult",
+      "Actuate",
+      "Report"
+     ],
+     "rulesEpoch": 5
+    },
+    "epoch": 3,
+    "round": 7,
+    "runRoot": {
+     "__entity": {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    },
+    "toolAllowlist": {
+     "__entity": {
+      "type": "Topak::ToolSet",
+      "id": "run-allow"
+     }
+    },
+    "breakGlass": {
+     "quorum": false,
+     "tools": {
+      "__entity": {
+       "type": "Topak::ToolSet",
+       "id": "bg-tools"
+      }
+     }
+    },
+    "observerLive": true
+   }
+  },
+  "entities": [
+   {
+    "uid": {
+     "type": "Topak::Roster",
+     "id": "grant"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Roster",
+     "id": "veto"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "a1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "thinker"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "g1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "grant"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "grant"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "v1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "grant"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "grant"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "o1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "observer"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "veto"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "t1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "thinker"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "veto"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "o2"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "observer"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "grant"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "n1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "grant"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "r1"
+    },
+    "attrs": {
+     "domain": "run",
+     "kind": "thinker"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "ro1"
+    },
+    "attrs": {
+     "domain": "run",
+     "kind": "observer"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-c1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-x"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
    },
    {
     "uid": {
@@ -20767,30 +22724,31 @@
   ],
   "decision": "allow",
   "reason": [
-   "R2-run-emit-own-topic"
+   "R2-report-own-topic"
   ],
   "num_errors": 0
  },
  {
-  "name": "X1 break-glass tool without a quorum",
+  "name": "R2 report to another principal's topic",
   "request": {
    "principal": "Topak::Seat::\"r1\"",
-   "action": "Topak::Action::\"RunInvoke\"",
-   "resource": "Topak::Tool::\"valve@d4\"",
+   "action": "Topak::Action::\"Report\"",
+   "resource": "Topak::Topic::\"ro1-r7\"",
    "context": {
     "lease": {
      "alphabet": [
-      "RunInvoke",
-      "RunEmit"
+      "Consult",
+      "Actuate",
+      "Report"
      ],
      "rulesEpoch": 5
     },
     "epoch": 3,
     "round": 7,
-    "corpusRoot": {
+    "runRoot": {
      "__entity": {
       "type": "Topak::CorpusRoot",
-      "id": "pinned"
+      "id": "run-pinned"
      }
     },
     "toolAllowlist": {
@@ -20980,6 +22938,626 @@
     },
     "attrs": {},
     "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Workspace",
+     "id": "ws-a1-r7"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Workspace",
+     "id": "ws-other"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::WorkspaceTarget",
+     "id": "ws-a1-r7/spec.tla"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::Workspace",
+      "id": "ws-a1-r7"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::WorkspaceTarget",
+     "id": "ws-other/spec.tla"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::Workspace",
+      "id": "ws-other"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::ToolSet",
+     "id": "build-allow"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ToolSet",
+     "id": "run-allow"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ToolSet",
+     "id": "bg-tools"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "tlc@d1"
+    },
+    "attrs": {
+     "digest": "d1"
+    },
+    "parents": [
+     {
+      "type": "Topak::ToolSet",
+      "id": "build-allow"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "tlc@d2"
+    },
+    "attrs": {
+     "digest": "d2"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "search@d3"
+    },
+    "attrs": {
+     "digest": "d3"
+    },
+    "parents": [
+     {
+      "type": "Topak::ToolSet",
+      "id": "run-allow"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "valve@d4"
+    },
+    "attrs": {
+     "digest": "d4"
+    },
+    "parents": [
+     {
+      "type": "Topak::ToolSet",
+      "id": "bg-tools"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "a1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "v1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "v1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "a1-r7-sealed"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": true
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "a1-e2"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     },
+     "epoch": 2,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "r1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "r1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "o1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "o1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "ro1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "ro1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Artifact",
+     "id": "art-a1"
+    },
+    "attrs": {
+     "author": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     }
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Artifact",
+     "id": "art-v1"
+    },
+    "attrs": {
+     "author": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "v1"
+      }
+     }
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Artifact",
+     "id": "art-g1"
+    },
+    "attrs": {
+     "author": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "g1"
+      }
+     }
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "payload-1"
+    },
+    "attrs": {
+     "class": "payload"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f1"
+    },
+    "attrs": {
+     "class": "F1"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f2"
+    },
+    "attrs": {
+     "class": "F2"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f3"
+    },
+    "attrs": {
+     "class": "F3"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f4"
+    },
+    "attrs": {
+     "class": "F4"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f5"
+    },
+    "attrs": {
+     "class": "F5"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f6"
+    },
+    "attrs": {
+     "class": "F6"
+    },
+    "parents": []
+   }
+  ],
+  "decision": "deny",
+  "reason": [],
+  "num_errors": 0
+ },
+ {
+  "name": "X1 break-glass tool without a quorum",
+  "request": {
+   "principal": "Topak::Seat::\"r1\"",
+   "action": "Topak::Action::\"Actuate\"",
+   "resource": "Topak::Tool::\"valve@d4\"",
+   "context": {
+    "lease": {
+     "alphabet": [
+      "Consult",
+      "Actuate",
+      "Report"
+     ],
+     "rulesEpoch": 5
+    },
+    "epoch": 3,
+    "round": 7,
+    "runRoot": {
+     "__entity": {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    },
+    "toolAllowlist": {
+     "__entity": {
+      "type": "Topak::ToolSet",
+      "id": "run-allow"
+     }
+    },
+    "breakGlass": {
+     "quorum": false,
+     "tools": {
+      "__entity": {
+       "type": "Topak::ToolSet",
+       "id": "bg-tools"
+      }
+     }
+    },
+    "observerLive": true
+   }
+  },
+  "entities": [
+   {
+    "uid": {
+     "type": "Topak::Roster",
+     "id": "grant"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Roster",
+     "id": "veto"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "a1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "thinker"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "g1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "grant"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "grant"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "v1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "grant"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "grant"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "o1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "observer"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "veto"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "t1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "thinker"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "veto"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "o2"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "observer"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "grant"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "n1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "grant"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "r1"
+    },
+    "attrs": {
+     "domain": "run",
+     "kind": "thinker"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "ro1"
+    },
+    "attrs": {
+     "domain": "run",
+     "kind": "observer"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-c1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-x"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
    },
    {
     "uid": {
@@ -21352,22 +23930,23 @@
   "name": "X1 break-glass tool under a quorum",
   "request": {
    "principal": "Topak::Seat::\"r1\"",
-   "action": "Topak::Action::\"RunInvoke\"",
+   "action": "Topak::Action::\"Actuate\"",
    "resource": "Topak::Tool::\"valve@d4\"",
    "context": {
     "lease": {
      "alphabet": [
-      "RunInvoke",
-      "RunEmit"
+      "Consult",
+      "Actuate",
+      "Report"
      ],
      "rulesEpoch": 5
     },
     "epoch": 3,
     "round": 7,
-    "corpusRoot": {
+    "runRoot": {
      "__entity": {
       "type": "Topak::CorpusRoot",
-      "id": "pinned"
+      "id": "run-pinned"
      }
     },
     "toolAllowlist": {
@@ -21557,6 +24136,27 @@
     },
     "attrs": {},
     "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
    },
    {
     "uid": {
@@ -21931,22 +24531,23 @@
   "name": "X1 break-glass does not reach a tool outside its envelope",
   "request": {
    "principal": "Topak::Seat::\"r1\"",
-   "action": "Topak::Action::\"RunInvoke\"",
+   "action": "Topak::Action::\"Actuate\"",
    "resource": "Topak::Tool::\"tlc@d2\"",
    "context": {
     "lease": {
      "alphabet": [
-      "RunInvoke",
-      "RunEmit"
+      "Consult",
+      "Actuate",
+      "Report"
      ],
      "rulesEpoch": 5
     },
     "epoch": 3,
     "round": 7,
-    "corpusRoot": {
+    "runRoot": {
      "__entity": {
       "type": "Topak::CorpusRoot",
-      "id": "pinned"
+      "id": "run-pinned"
      }
     },
     "toolAllowlist": {
@@ -22136,6 +24737,27 @@
     },
     "attrs": {},
     "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
    },
    {
     "uid": {
@@ -22505,25 +25127,4221 @@
   "num_errors": 0
  },
  {
-  "name": "R3 run invoke with no live cell Observer",
+  "name": "R4 consult inside the Run root",
   "request": {
    "principal": "Topak::Seat::\"r1\"",
-   "action": "Topak::Action::\"RunInvoke\"",
-   "resource": "Topak::Tool::\"search@d3\"",
+   "action": "Topak::Action::\"Consult\"",
+   "resource": "Topak::CorpusObject::\"sha-r1\"",
    "context": {
     "lease": {
      "alphabet": [
-      "RunInvoke",
-      "RunEmit"
+      "Consult",
+      "Actuate",
+      "Report"
      ],
      "rulesEpoch": 5
     },
     "epoch": 3,
     "round": 7,
-    "corpusRoot": {
+    "runRoot": {
      "__entity": {
       "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    },
+    "toolAllowlist": {
+     "__entity": {
+      "type": "Topak::ToolSet",
+      "id": "run-allow"
+     }
+    },
+    "breakGlass": {
+     "quorum": false,
+     "tools": {
+      "__entity": {
+       "type": "Topak::ToolSet",
+       "id": "bg-tools"
+      }
+     }
+    },
+    "observerLive": true
+   }
+  },
+  "entities": [
+   {
+    "uid": {
+     "type": "Topak::Roster",
+     "id": "grant"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Roster",
+     "id": "veto"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "a1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "thinker"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "g1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "grant"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "grant"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "v1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "grant"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "grant"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "o1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "observer"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "veto"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "t1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "thinker"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "veto"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "o2"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "observer"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "grant"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "n1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "grant"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "r1"
+    },
+    "attrs": {
+     "domain": "run",
+     "kind": "thinker"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "ro1"
+    },
+    "attrs": {
+     "domain": "run",
+     "kind": "observer"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-c1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
       "id": "pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-x"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Workspace",
+     "id": "ws-a1-r7"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Workspace",
+     "id": "ws-other"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::WorkspaceTarget",
+     "id": "ws-a1-r7/spec.tla"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::Workspace",
+      "id": "ws-a1-r7"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::WorkspaceTarget",
+     "id": "ws-other/spec.tla"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::Workspace",
+      "id": "ws-other"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::ToolSet",
+     "id": "build-allow"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ToolSet",
+     "id": "run-allow"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ToolSet",
+     "id": "bg-tools"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "tlc@d1"
+    },
+    "attrs": {
+     "digest": "d1"
+    },
+    "parents": [
+     {
+      "type": "Topak::ToolSet",
+      "id": "build-allow"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "tlc@d2"
+    },
+    "attrs": {
+     "digest": "d2"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "search@d3"
+    },
+    "attrs": {
+     "digest": "d3"
+    },
+    "parents": [
+     {
+      "type": "Topak::ToolSet",
+      "id": "run-allow"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "valve@d4"
+    },
+    "attrs": {
+     "digest": "d4"
+    },
+    "parents": [
+     {
+      "type": "Topak::ToolSet",
+      "id": "bg-tools"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "a1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "v1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "v1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "a1-r7-sealed"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": true
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "a1-e2"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     },
+     "epoch": 2,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "r1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "r1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "o1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "o1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "ro1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "ro1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Artifact",
+     "id": "art-a1"
+    },
+    "attrs": {
+     "author": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     }
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Artifact",
+     "id": "art-v1"
+    },
+    "attrs": {
+     "author": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "v1"
+      }
+     }
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Artifact",
+     "id": "art-g1"
+    },
+    "attrs": {
+     "author": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "g1"
+      }
+     }
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "payload-1"
+    },
+    "attrs": {
+     "class": "payload"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f1"
+    },
+    "attrs": {
+     "class": "F1"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f2"
+    },
+    "attrs": {
+     "class": "F2"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f3"
+    },
+    "attrs": {
+     "class": "F3"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f4"
+    },
+    "attrs": {
+     "class": "F4"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f5"
+    },
+    "attrs": {
+     "class": "F5"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f6"
+    },
+    "attrs": {
+     "class": "F6"
+    },
+    "parents": []
+   }
+  ],
+  "decision": "allow",
+  "reason": [
+   "R4-consult-pinned"
+  ],
+  "num_errors": 0
+ },
+ {
+  "name": "R4 consult outside the Run root",
+  "request": {
+   "principal": "Topak::Seat::\"r1\"",
+   "action": "Topak::Action::\"Consult\"",
+   "resource": "Topak::CorpusObject::\"sha-x\"",
+   "context": {
+    "lease": {
+     "alphabet": [
+      "Consult",
+      "Actuate",
+      "Report"
+     ],
+     "rulesEpoch": 5
+    },
+    "epoch": 3,
+    "round": 7,
+    "runRoot": {
+     "__entity": {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    },
+    "toolAllowlist": {
+     "__entity": {
+      "type": "Topak::ToolSet",
+      "id": "run-allow"
+     }
+    },
+    "breakGlass": {
+     "quorum": false,
+     "tools": {
+      "__entity": {
+       "type": "Topak::ToolSet",
+       "id": "bg-tools"
+      }
+     }
+    },
+    "observerLive": true
+   }
+  },
+  "entities": [
+   {
+    "uid": {
+     "type": "Topak::Roster",
+     "id": "grant"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Roster",
+     "id": "veto"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "a1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "thinker"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "g1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "grant"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "grant"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "v1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "grant"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "grant"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "o1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "observer"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "veto"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "t1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "thinker"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "veto"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "o2"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "observer"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "grant"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "n1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "grant"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "r1"
+    },
+    "attrs": {
+     "domain": "run",
+     "kind": "thinker"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "ro1"
+    },
+    "attrs": {
+     "domain": "run",
+     "kind": "observer"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-c1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-x"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Workspace",
+     "id": "ws-a1-r7"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Workspace",
+     "id": "ws-other"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::WorkspaceTarget",
+     "id": "ws-a1-r7/spec.tla"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::Workspace",
+      "id": "ws-a1-r7"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::WorkspaceTarget",
+     "id": "ws-other/spec.tla"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::Workspace",
+      "id": "ws-other"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::ToolSet",
+     "id": "build-allow"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ToolSet",
+     "id": "run-allow"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ToolSet",
+     "id": "bg-tools"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "tlc@d1"
+    },
+    "attrs": {
+     "digest": "d1"
+    },
+    "parents": [
+     {
+      "type": "Topak::ToolSet",
+      "id": "build-allow"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "tlc@d2"
+    },
+    "attrs": {
+     "digest": "d2"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "search@d3"
+    },
+    "attrs": {
+     "digest": "d3"
+    },
+    "parents": [
+     {
+      "type": "Topak::ToolSet",
+      "id": "run-allow"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "valve@d4"
+    },
+    "attrs": {
+     "digest": "d4"
+    },
+    "parents": [
+     {
+      "type": "Topak::ToolSet",
+      "id": "bg-tools"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "a1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "v1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "v1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "a1-r7-sealed"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": true
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "a1-e2"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     },
+     "epoch": 2,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "r1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "r1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "o1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "o1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "ro1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "ro1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Artifact",
+     "id": "art-a1"
+    },
+    "attrs": {
+     "author": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     }
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Artifact",
+     "id": "art-v1"
+    },
+    "attrs": {
+     "author": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "v1"
+      }
+     }
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Artifact",
+     "id": "art-g1"
+    },
+    "attrs": {
+     "author": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "g1"
+      }
+     }
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "payload-1"
+    },
+    "attrs": {
+     "class": "payload"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f1"
+    },
+    "attrs": {
+     "class": "F1"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f2"
+    },
+    "attrs": {
+     "class": "F2"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f3"
+    },
+    "attrs": {
+     "class": "F3"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f4"
+    },
+    "attrs": {
+     "class": "F4"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f5"
+    },
+    "attrs": {
+     "class": "F5"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f6"
+    },
+    "attrs": {
+     "class": "F6"
+    },
+    "parents": []
+   }
+  ],
+  "decision": "deny",
+  "reason": [],
+  "num_errors": 0
+ },
+ {
+  "name": "R4 consult of an object in Build's root only",
+  "request": {
+   "principal": "Topak::Seat::\"r1\"",
+   "action": "Topak::Action::\"Consult\"",
+   "resource": "Topak::CorpusObject::\"sha-c1\"",
+   "context": {
+    "lease": {
+     "alphabet": [
+      "Consult",
+      "Actuate",
+      "Report"
+     ],
+     "rulesEpoch": 5
+    },
+    "epoch": 3,
+    "round": 7,
+    "runRoot": {
+     "__entity": {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    },
+    "toolAllowlist": {
+     "__entity": {
+      "type": "Topak::ToolSet",
+      "id": "run-allow"
+     }
+    },
+    "breakGlass": {
+     "quorum": false,
+     "tools": {
+      "__entity": {
+       "type": "Topak::ToolSet",
+       "id": "bg-tools"
+      }
+     }
+    },
+    "observerLive": true
+   }
+  },
+  "entities": [
+   {
+    "uid": {
+     "type": "Topak::Roster",
+     "id": "grant"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Roster",
+     "id": "veto"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "a1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "thinker"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "g1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "grant"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "grant"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "v1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "grant"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "grant"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "o1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "observer"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "veto"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "t1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "thinker"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "veto"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "o2"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "observer"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "grant"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "n1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "grant"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "r1"
+    },
+    "attrs": {
+     "domain": "run",
+     "kind": "thinker"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "ro1"
+    },
+    "attrs": {
+     "domain": "run",
+     "kind": "observer"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-c1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-x"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Workspace",
+     "id": "ws-a1-r7"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Workspace",
+     "id": "ws-other"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::WorkspaceTarget",
+     "id": "ws-a1-r7/spec.tla"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::Workspace",
+      "id": "ws-a1-r7"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::WorkspaceTarget",
+     "id": "ws-other/spec.tla"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::Workspace",
+      "id": "ws-other"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::ToolSet",
+     "id": "build-allow"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ToolSet",
+     "id": "run-allow"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ToolSet",
+     "id": "bg-tools"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "tlc@d1"
+    },
+    "attrs": {
+     "digest": "d1"
+    },
+    "parents": [
+     {
+      "type": "Topak::ToolSet",
+      "id": "build-allow"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "tlc@d2"
+    },
+    "attrs": {
+     "digest": "d2"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "search@d3"
+    },
+    "attrs": {
+     "digest": "d3"
+    },
+    "parents": [
+     {
+      "type": "Topak::ToolSet",
+      "id": "run-allow"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "valve@d4"
+    },
+    "attrs": {
+     "digest": "d4"
+    },
+    "parents": [
+     {
+      "type": "Topak::ToolSet",
+      "id": "bg-tools"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "a1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "v1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "v1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "a1-r7-sealed"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": true
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "a1-e2"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     },
+     "epoch": 2,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "r1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "r1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "o1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "o1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "ro1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "ro1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Artifact",
+     "id": "art-a1"
+    },
+    "attrs": {
+     "author": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     }
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Artifact",
+     "id": "art-v1"
+    },
+    "attrs": {
+     "author": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "v1"
+      }
+     }
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Artifact",
+     "id": "art-g1"
+    },
+    "attrs": {
+     "author": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "g1"
+      }
+     }
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "payload-1"
+    },
+    "attrs": {
+     "class": "payload"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f1"
+    },
+    "attrs": {
+     "class": "F1"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f2"
+    },
+    "attrs": {
+     "class": "F2"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f3"
+    },
+    "attrs": {
+     "class": "F3"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f4"
+    },
+    "attrs": {
+     "class": "F4"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f5"
+    },
+    "attrs": {
+     "class": "F5"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f6"
+    },
+    "attrs": {
+     "class": "F6"
+    },
+    "parents": []
+   }
+  ],
+  "decision": "deny",
+  "reason": [],
+  "num_errors": 0
+ },
+ {
+  "name": "R4 consult by a Build seat",
+  "request": {
+   "principal": "Topak::Seat::\"a1\"",
+   "action": "Topak::Action::\"Consult\"",
+   "resource": "Topak::CorpusObject::\"sha-r1\"",
+   "context": {
+    "lease": {
+     "alphabet": [
+      "Consult",
+      "Actuate",
+      "Report"
+     ],
+     "rulesEpoch": 5
+    },
+    "epoch": 3,
+    "round": 7,
+    "runRoot": {
+     "__entity": {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    },
+    "toolAllowlist": {
+     "__entity": {
+      "type": "Topak::ToolSet",
+      "id": "run-allow"
+     }
+    },
+    "breakGlass": {
+     "quorum": false,
+     "tools": {
+      "__entity": {
+       "type": "Topak::ToolSet",
+       "id": "bg-tools"
+      }
+     }
+    },
+    "observerLive": true
+   }
+  },
+  "entities": [
+   {
+    "uid": {
+     "type": "Topak::Roster",
+     "id": "grant"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Roster",
+     "id": "veto"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "a1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "thinker"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "g1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "grant"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "grant"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "v1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "grant"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "grant"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "o1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "observer"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "veto"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "t1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "thinker"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "veto"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "o2"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "observer"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "grant"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "n1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "grant"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "r1"
+    },
+    "attrs": {
+     "domain": "run",
+     "kind": "thinker"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "ro1"
+    },
+    "attrs": {
+     "domain": "run",
+     "kind": "observer"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-c1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-x"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Workspace",
+     "id": "ws-a1-r7"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Workspace",
+     "id": "ws-other"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::WorkspaceTarget",
+     "id": "ws-a1-r7/spec.tla"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::Workspace",
+      "id": "ws-a1-r7"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::WorkspaceTarget",
+     "id": "ws-other/spec.tla"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::Workspace",
+      "id": "ws-other"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::ToolSet",
+     "id": "build-allow"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ToolSet",
+     "id": "run-allow"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ToolSet",
+     "id": "bg-tools"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "tlc@d1"
+    },
+    "attrs": {
+     "digest": "d1"
+    },
+    "parents": [
+     {
+      "type": "Topak::ToolSet",
+      "id": "build-allow"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "tlc@d2"
+    },
+    "attrs": {
+     "digest": "d2"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "search@d3"
+    },
+    "attrs": {
+     "digest": "d3"
+    },
+    "parents": [
+     {
+      "type": "Topak::ToolSet",
+      "id": "run-allow"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "valve@d4"
+    },
+    "attrs": {
+     "digest": "d4"
+    },
+    "parents": [
+     {
+      "type": "Topak::ToolSet",
+      "id": "bg-tools"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "a1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "v1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "v1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "a1-r7-sealed"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": true
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "a1-e2"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     },
+     "epoch": 2,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "r1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "r1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "o1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "o1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "ro1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "ro1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Artifact",
+     "id": "art-a1"
+    },
+    "attrs": {
+     "author": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     }
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Artifact",
+     "id": "art-v1"
+    },
+    "attrs": {
+     "author": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "v1"
+      }
+     }
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Artifact",
+     "id": "art-g1"
+    },
+    "attrs": {
+     "author": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "g1"
+      }
+     }
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "payload-1"
+    },
+    "attrs": {
+     "class": "payload"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f1"
+    },
+    "attrs": {
+     "class": "F1"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f2"
+    },
+    "attrs": {
+     "class": "F2"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f3"
+    },
+    "attrs": {
+     "class": "F3"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f4"
+    },
+    "attrs": {
+     "class": "F4"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f5"
+    },
+    "attrs": {
+     "class": "F5"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f6"
+    },
+    "attrs": {
+     "class": "F6"
+    },
+    "parents": []
+   }
+  ],
+  "decision": "deny",
+  "reason": [],
+  "num_errors": 0
+ },
+ {
+  "name": "R4 consult not in the lease alphabet",
+  "request": {
+   "principal": "Topak::Seat::\"r1\"",
+   "action": "Topak::Action::\"Consult\"",
+   "resource": "Topak::CorpusObject::\"sha-r1\"",
+   "context": {
+    "lease": {
+     "alphabet": [
+      "Actuate",
+      "Report"
+     ],
+     "rulesEpoch": 5
+    },
+    "epoch": 3,
+    "round": 7,
+    "runRoot": {
+     "__entity": {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    },
+    "toolAllowlist": {
+     "__entity": {
+      "type": "Topak::ToolSet",
+      "id": "run-allow"
+     }
+    },
+    "breakGlass": {
+     "quorum": false,
+     "tools": {
+      "__entity": {
+       "type": "Topak::ToolSet",
+       "id": "bg-tools"
+      }
+     }
+    },
+    "observerLive": true
+   }
+  },
+  "entities": [
+   {
+    "uid": {
+     "type": "Topak::Roster",
+     "id": "grant"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Roster",
+     "id": "veto"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "a1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "thinker"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "g1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "grant"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "grant"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "v1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "grant"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "grant"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "o1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "observer"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "veto"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "t1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "thinker"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "veto"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "o2"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "observer"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "grant"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "n1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "grant"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "r1"
+    },
+    "attrs": {
+     "domain": "run",
+     "kind": "thinker"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "ro1"
+    },
+    "attrs": {
+     "domain": "run",
+     "kind": "observer"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-c1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-x"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Workspace",
+     "id": "ws-a1-r7"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Workspace",
+     "id": "ws-other"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::WorkspaceTarget",
+     "id": "ws-a1-r7/spec.tla"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::Workspace",
+      "id": "ws-a1-r7"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::WorkspaceTarget",
+     "id": "ws-other/spec.tla"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::Workspace",
+      "id": "ws-other"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::ToolSet",
+     "id": "build-allow"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ToolSet",
+     "id": "run-allow"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ToolSet",
+     "id": "bg-tools"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "tlc@d1"
+    },
+    "attrs": {
+     "digest": "d1"
+    },
+    "parents": [
+     {
+      "type": "Topak::ToolSet",
+      "id": "build-allow"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "tlc@d2"
+    },
+    "attrs": {
+     "digest": "d2"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "search@d3"
+    },
+    "attrs": {
+     "digest": "d3"
+    },
+    "parents": [
+     {
+      "type": "Topak::ToolSet",
+      "id": "run-allow"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "valve@d4"
+    },
+    "attrs": {
+     "digest": "d4"
+    },
+    "parents": [
+     {
+      "type": "Topak::ToolSet",
+      "id": "bg-tools"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "a1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "v1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "v1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "a1-r7-sealed"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": true
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "a1-e2"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     },
+     "epoch": 2,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "r1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "r1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "o1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "o1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "ro1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "ro1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Artifact",
+     "id": "art-a1"
+    },
+    "attrs": {
+     "author": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     }
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Artifact",
+     "id": "art-v1"
+    },
+    "attrs": {
+     "author": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "v1"
+      }
+     }
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Artifact",
+     "id": "art-g1"
+    },
+    "attrs": {
+     "author": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "g1"
+      }
+     }
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "payload-1"
+    },
+    "attrs": {
+     "class": "payload"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f1"
+    },
+    "attrs": {
+     "class": "F1"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f2"
+    },
+    "attrs": {
+     "class": "F2"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f3"
+    },
+    "attrs": {
+     "class": "F3"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f4"
+    },
+    "attrs": {
+     "class": "F4"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f5"
+    },
+    "attrs": {
+     "class": "F5"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f6"
+    },
+    "attrs": {
+     "class": "F6"
+    },
+    "parents": []
+   }
+  ],
+  "decision": "deny",
+  "reason": [],
+  "num_errors": 0
+ },
+ {
+  "name": "R4 a Run observer seat consults",
+  "request": {
+   "principal": "Topak::Seat::\"ro1\"",
+   "action": "Topak::Action::\"Consult\"",
+   "resource": "Topak::CorpusObject::\"sha-r1\"",
+   "context": {
+    "lease": {
+     "alphabet": [
+      "Consult",
+      "Report"
+     ],
+     "rulesEpoch": 5
+    },
+    "epoch": 3,
+    "round": 7,
+    "runRoot": {
+     "__entity": {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    },
+    "toolAllowlist": {
+     "__entity": {
+      "type": "Topak::ToolSet",
+      "id": "run-allow"
+     }
+    },
+    "breakGlass": {
+     "quorum": false,
+     "tools": {
+      "__entity": {
+       "type": "Topak::ToolSet",
+       "id": "bg-tools"
+      }
+     }
+    },
+    "observerLive": true
+   }
+  },
+  "entities": [
+   {
+    "uid": {
+     "type": "Topak::Roster",
+     "id": "grant"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Roster",
+     "id": "veto"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "a1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "thinker"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "g1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "grant"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "grant"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "v1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "grant"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "grant"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "o1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "observer"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "veto"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "t1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "thinker"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "veto"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "o2"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "observer"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "grant"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "n1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "grant"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "r1"
+    },
+    "attrs": {
+     "domain": "run",
+     "kind": "thinker"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "ro1"
+    },
+    "attrs": {
+     "domain": "run",
+     "kind": "observer"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-c1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-x"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Workspace",
+     "id": "ws-a1-r7"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Workspace",
+     "id": "ws-other"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::WorkspaceTarget",
+     "id": "ws-a1-r7/spec.tla"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::Workspace",
+      "id": "ws-a1-r7"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::WorkspaceTarget",
+     "id": "ws-other/spec.tla"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::Workspace",
+      "id": "ws-other"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::ToolSet",
+     "id": "build-allow"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ToolSet",
+     "id": "run-allow"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ToolSet",
+     "id": "bg-tools"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "tlc@d1"
+    },
+    "attrs": {
+     "digest": "d1"
+    },
+    "parents": [
+     {
+      "type": "Topak::ToolSet",
+      "id": "build-allow"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "tlc@d2"
+    },
+    "attrs": {
+     "digest": "d2"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "search@d3"
+    },
+    "attrs": {
+     "digest": "d3"
+    },
+    "parents": [
+     {
+      "type": "Topak::ToolSet",
+      "id": "run-allow"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "valve@d4"
+    },
+    "attrs": {
+     "digest": "d4"
+    },
+    "parents": [
+     {
+      "type": "Topak::ToolSet",
+      "id": "bg-tools"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "a1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "v1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "v1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "a1-r7-sealed"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": true
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "a1-e2"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     },
+     "epoch": 2,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "r1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "r1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "o1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "o1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "ro1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "ro1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Artifact",
+     "id": "art-a1"
+    },
+    "attrs": {
+     "author": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     }
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Artifact",
+     "id": "art-v1"
+    },
+    "attrs": {
+     "author": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "v1"
+      }
+     }
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Artifact",
+     "id": "art-g1"
+    },
+    "attrs": {
+     "author": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "g1"
+      }
+     }
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "payload-1"
+    },
+    "attrs": {
+     "class": "payload"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f1"
+    },
+    "attrs": {
+     "class": "F1"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f2"
+    },
+    "attrs": {
+     "class": "F2"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f3"
+    },
+    "attrs": {
+     "class": "F3"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f4"
+    },
+    "attrs": {
+     "class": "F4"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f5"
+    },
+    "attrs": {
+     "class": "F5"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f6"
+    },
+    "attrs": {
+     "class": "F6"
+    },
+    "parents": []
+   }
+  ],
+  "decision": "allow",
+  "reason": [
+   "R4-consult-pinned"
+  ],
+  "num_errors": 0
+ },
+ {
+  "name": "X1 break-glass does not reach Consult",
+  "request": {
+   "principal": "Topak::Seat::\"r1\"",
+   "action": "Topak::Action::\"Consult\"",
+   "resource": "Topak::CorpusObject::\"sha-x\"",
+   "context": {
+    "lease": {
+     "alphabet": [
+      "Consult",
+      "Actuate",
+      "Report"
+     ],
+     "rulesEpoch": 5
+    },
+    "epoch": 3,
+    "round": 7,
+    "runRoot": {
+     "__entity": {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    },
+    "toolAllowlist": {
+     "__entity": {
+      "type": "Topak::ToolSet",
+      "id": "run-allow"
+     }
+    },
+    "breakGlass": {
+     "quorum": true,
+     "tools": {
+      "__entity": {
+       "type": "Topak::ToolSet",
+       "id": "bg-tools"
+      }
+     }
+    },
+    "observerLive": true
+   }
+  },
+  "entities": [
+   {
+    "uid": {
+     "type": "Topak::Roster",
+     "id": "grant"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Roster",
+     "id": "veto"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "a1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "thinker"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "g1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "grant"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "grant"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "v1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "grant"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "grant"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "o1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "observer"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "veto"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "t1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "thinker"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "veto"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "o2"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "observer"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "grant"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "n1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "grant"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "r1"
+    },
+    "attrs": {
+     "domain": "run",
+     "kind": "thinker"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "ro1"
+    },
+    "attrs": {
+     "domain": "run",
+     "kind": "observer"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-c1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-x"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Workspace",
+     "id": "ws-a1-r7"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Workspace",
+     "id": "ws-other"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::WorkspaceTarget",
+     "id": "ws-a1-r7/spec.tla"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::Workspace",
+      "id": "ws-a1-r7"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::WorkspaceTarget",
+     "id": "ws-other/spec.tla"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::Workspace",
+      "id": "ws-other"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::ToolSet",
+     "id": "build-allow"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ToolSet",
+     "id": "run-allow"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ToolSet",
+     "id": "bg-tools"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "tlc@d1"
+    },
+    "attrs": {
+     "digest": "d1"
+    },
+    "parents": [
+     {
+      "type": "Topak::ToolSet",
+      "id": "build-allow"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "tlc@d2"
+    },
+    "attrs": {
+     "digest": "d2"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "search@d3"
+    },
+    "attrs": {
+     "digest": "d3"
+    },
+    "parents": [
+     {
+      "type": "Topak::ToolSet",
+      "id": "run-allow"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "valve@d4"
+    },
+    "attrs": {
+     "digest": "d4"
+    },
+    "parents": [
+     {
+      "type": "Topak::ToolSet",
+      "id": "bg-tools"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "a1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "v1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "v1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "a1-r7-sealed"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": true
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "a1-e2"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     },
+     "epoch": 2,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "r1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "r1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "o1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "o1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "ro1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "ro1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Artifact",
+     "id": "art-a1"
+    },
+    "attrs": {
+     "author": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     }
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Artifact",
+     "id": "art-v1"
+    },
+    "attrs": {
+     "author": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "v1"
+      }
+     }
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Artifact",
+     "id": "art-g1"
+    },
+    "attrs": {
+     "author": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "g1"
+      }
+     }
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "payload-1"
+    },
+    "attrs": {
+     "class": "payload"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f1"
+    },
+    "attrs": {
+     "class": "F1"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f2"
+    },
+    "attrs": {
+     "class": "F2"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f3"
+    },
+    "attrs": {
+     "class": "F3"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f4"
+    },
+    "attrs": {
+     "class": "F4"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f5"
+    },
+    "attrs": {
+     "class": "F5"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f6"
+    },
+    "attrs": {
+     "class": "F6"
+    },
+    "parents": []
+   }
+  ],
+  "decision": "deny",
+  "reason": [],
+  "num_errors": 0
+ },
+ {
+  "name": "R3 actuate with no live cell Observer",
+  "request": {
+   "principal": "Topak::Seat::\"r1\"",
+   "action": "Topak::Action::\"Actuate\"",
+   "resource": "Topak::Tool::\"search@d3\"",
+   "context": {
+    "lease": {
+     "alphabet": [
+      "Consult",
+      "Actuate",
+      "Report"
+     ],
+     "rulesEpoch": 5
+    },
+    "epoch": 3,
+    "round": 7,
+    "runRoot": {
+     "__entity": {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
      }
     },
     "toolAllowlist": {
@@ -22713,6 +29531,27 @@
     },
     "attrs": {},
     "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
    },
    {
     "uid": {
@@ -23084,25 +29923,26 @@
   "num_errors": 0
  },
  {
-  "name": "R3 run emit with no live cell Observer",
+  "name": "R3 report with no live cell Observer",
   "request": {
    "principal": "Topak::Seat::\"r1\"",
-   "action": "Topak::Action::\"RunEmit\"",
+   "action": "Topak::Action::\"Report\"",
    "resource": "Topak::Topic::\"r1-r7\"",
    "context": {
     "lease": {
      "alphabet": [
-      "RunInvoke",
-      "RunEmit"
+      "Consult",
+      "Actuate",
+      "Report"
      ],
      "rulesEpoch": 5
     },
     "epoch": 3,
     "round": 7,
-    "corpusRoot": {
+    "runRoot": {
      "__entity": {
       "type": "Topak::CorpusRoot",
-      "id": "pinned"
+      "id": "run-pinned"
      }
     },
     "toolAllowlist": {
@@ -23292,6 +30132,27 @@
     },
     "attrs": {},
     "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
    },
    {
     "uid": {
@@ -23666,22 +30527,23 @@
   "name": "R3 break-glass under a quorum with no live cell Observer",
   "request": {
    "principal": "Topak::Seat::\"r1\"",
-   "action": "Topak::Action::\"RunInvoke\"",
+   "action": "Topak::Action::\"Actuate\"",
    "resource": "Topak::Tool::\"valve@d4\"",
    "context": {
     "lease": {
      "alphabet": [
-      "RunInvoke",
-      "RunEmit"
+      "Consult",
+      "Actuate",
+      "Report"
      ],
      "rulesEpoch": 5
     },
     "epoch": 3,
     "round": 7,
-    "corpusRoot": {
+    "runRoot": {
      "__entity": {
       "type": "Topak::CorpusRoot",
-      "id": "pinned"
+      "id": "run-pinned"
      }
     },
     "toolAllowlist": {
@@ -23871,6 +30733,27 @@
     },
     "attrs": {},
     "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
    },
    {
     "uid": {
@@ -24242,25 +31125,25 @@
   "num_errors": 0
  },
  {
-  "name": "R3 does not couple a Run observer seat's own emission",
+  "name": "R3 does not couple a Run observer seat's own report",
   "request": {
    "principal": "Topak::Seat::\"ro1\"",
-   "action": "Topak::Action::\"RunEmit\"",
+   "action": "Topak::Action::\"Report\"",
    "resource": "Topak::Topic::\"ro1-r7\"",
    "context": {
     "lease": {
      "alphabet": [
-      "RunInvoke",
-      "RunEmit"
+      "Consult",
+      "Report"
      ],
      "rulesEpoch": 5
     },
     "epoch": 3,
     "round": 7,
-    "corpusRoot": {
+    "runRoot": {
      "__entity": {
       "type": "Topak::CorpusRoot",
-      "id": "pinned"
+      "id": "run-pinned"
      }
     },
     "toolAllowlist": {
@@ -24450,6 +31333,27 @@
     },
     "attrs": {},
     "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
    },
    {
     "uid": {
@@ -24816,7 +31720,608 @@
   ],
   "decision": "allow",
   "reason": [
-   "R2-run-emit-own-topic"
+   "R2-report-own-topic"
+  ],
+  "num_errors": 0
+ },
+ {
+  "name": "R3 does not couple Consult",
+  "request": {
+   "principal": "Topak::Seat::\"r1\"",
+   "action": "Topak::Action::\"Consult\"",
+   "resource": "Topak::CorpusObject::\"sha-r1\"",
+   "context": {
+    "lease": {
+     "alphabet": [
+      "Consult",
+      "Actuate",
+      "Report"
+     ],
+     "rulesEpoch": 5
+    },
+    "epoch": 3,
+    "round": 7,
+    "runRoot": {
+     "__entity": {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    },
+    "toolAllowlist": {
+     "__entity": {
+      "type": "Topak::ToolSet",
+      "id": "run-allow"
+     }
+    },
+    "breakGlass": {
+     "quorum": false,
+     "tools": {
+      "__entity": {
+       "type": "Topak::ToolSet",
+       "id": "bg-tools"
+      }
+     }
+    },
+    "observerLive": false
+   }
+  },
+  "entities": [
+   {
+    "uid": {
+     "type": "Topak::Roster",
+     "id": "grant"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Roster",
+     "id": "veto"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "a1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "thinker"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "g1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "grant"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "grant"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "v1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "grant"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "grant"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "o1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "observer"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "veto"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "t1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "thinker"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "veto"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "o2"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "observer"
+    },
+    "parents": [
+     {
+      "type": "Topak::Roster",
+      "id": "grant"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "n1"
+    },
+    "attrs": {
+     "domain": "build",
+     "kind": "grant"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "r1"
+    },
+    "attrs": {
+     "domain": "run",
+     "kind": "thinker"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Seat",
+     "id": "ro1"
+    },
+    "attrs": {
+     "domain": "run",
+     "kind": "observer"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-c1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-x"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Workspace",
+     "id": "ws-a1-r7"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Workspace",
+     "id": "ws-other"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::WorkspaceTarget",
+     "id": "ws-a1-r7/spec.tla"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::Workspace",
+      "id": "ws-a1-r7"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::WorkspaceTarget",
+     "id": "ws-other/spec.tla"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::Workspace",
+      "id": "ws-other"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::ToolSet",
+     "id": "build-allow"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ToolSet",
+     "id": "run-allow"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ToolSet",
+     "id": "bg-tools"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "tlc@d1"
+    },
+    "attrs": {
+     "digest": "d1"
+    },
+    "parents": [
+     {
+      "type": "Topak::ToolSet",
+      "id": "build-allow"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "tlc@d2"
+    },
+    "attrs": {
+     "digest": "d2"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "search@d3"
+    },
+    "attrs": {
+     "digest": "d3"
+    },
+    "parents": [
+     {
+      "type": "Topak::ToolSet",
+      "id": "run-allow"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Tool",
+     "id": "valve@d4"
+    },
+    "attrs": {
+     "digest": "d4"
+    },
+    "parents": [
+     {
+      "type": "Topak::ToolSet",
+      "id": "bg-tools"
+     }
+    ]
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "a1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "v1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "v1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "a1-r7-sealed"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": true
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "a1-e2"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     },
+     "epoch": 2,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "r1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "r1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "o1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "o1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Topic",
+     "id": "ro1-r7"
+    },
+    "attrs": {
+     "owner": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "ro1"
+      }
+     },
+     "epoch": 3,
+     "round": 7,
+     "sealed": false
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Artifact",
+     "id": "art-a1"
+    },
+    "attrs": {
+     "author": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "a1"
+      }
+     }
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Artifact",
+     "id": "art-v1"
+    },
+    "attrs": {
+     "author": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "v1"
+      }
+     }
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::Artifact",
+     "id": "art-g1"
+    },
+    "attrs": {
+     "author": {
+      "__entity": {
+       "type": "Topak::Seat",
+       "id": "g1"
+      }
+     }
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "payload-1"
+    },
+    "attrs": {
+     "class": "payload"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f1"
+    },
+    "attrs": {
+     "class": "F1"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f2"
+    },
+    "attrs": {
+     "class": "F2"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f3"
+    },
+    "attrs": {
+     "class": "F3"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f4"
+    },
+    "attrs": {
+     "class": "F4"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f5"
+    },
+    "attrs": {
+     "class": "F5"
+    },
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::ArchiveRecord",
+     "id": "f6"
+    },
+    "attrs": {
+     "class": "F6"
+    },
+    "parents": []
+   }
+  ],
+  "decision": "allow",
+  "reason": [
+   "R4-consult-pinned"
   ],
   "num_errors": 0
  },
@@ -24999,6 +32504,27 @@
     },
     "attrs": {},
     "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
    },
    {
     "uid": {
@@ -25546,6 +33072,27 @@
     },
     "attrs": {},
     "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
    },
    {
     "uid": {
@@ -26098,6 +33645,27 @@
    },
    {
     "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
      "type": "Topak::Workspace",
      "id": "ws-a1-r7"
     },
@@ -26644,6 +34212,27 @@
     },
     "attrs": {},
     "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
    },
    {
     "uid": {
@@ -27196,6 +34785,27 @@
    },
    {
     "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
      "type": "Topak::Workspace",
      "id": "ws-a1-r7"
     },
@@ -27742,6 +35352,27 @@
     },
     "attrs": {},
     "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
    },
    {
     "uid": {
@@ -28294,6 +35925,27 @@
    },
    {
     "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
+   },
+   {
+    "uid": {
      "type": "Topak::Workspace",
      "id": "ws-a1-r7"
     },
@@ -28840,6 +36492,27 @@
     },
     "attrs": {},
     "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusRoot",
+     "id": "run-pinned"
+    },
+    "attrs": {},
+    "parents": []
+   },
+   {
+    "uid": {
+     "type": "Topak::CorpusObject",
+     "id": "sha-r1"
+    },
+    "attrs": {},
+    "parents": [
+     {
+      "type": "Topak::CorpusRoot",
+      "id": "run-pinned"
+     }
+    ]
    },
    {
     "uid": {

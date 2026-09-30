@@ -87,5 +87,5 @@ pub fn compose(floor: &FloorOutcome, bundle: &BundleOutcome) -> Decision {
 /// Whether the floor admitted through the break-glass exception rather than an ordinary
 /// envelope: the invocation is then forensic class F5.
 pub fn via_break_glass(reasons: &[String]) -> bool {
-    reasons.iter().any(|r| r == "X1-break-glass") && !reasons.iter().any(|r| r == "R1-run-invoke-allowlisted")
+    reasons.iter().any(|r| r == "X1-break-glass") && !reasons.iter().any(|r| r == "R1-actuate-allowlisted")
 }

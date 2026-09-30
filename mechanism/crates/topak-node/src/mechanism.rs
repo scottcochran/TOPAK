@@ -19,7 +19,7 @@
 //! that topic is open (ADR-0020: the replayable record includes actions attempted and denied),
 //! by the deciding replica, and logged locally with attribution.
 
-use std::collections::HashMap;
+use std::collections::{BTreeMap, HashMap};
 use std::future::Future;
 use std::io::Write;
 use std::path::{Path, PathBuf};
@@ -98,7 +98,15 @@ pub struct Mechanism {
     counter: AtomicU64,
     corpus_dir: PathBuf,
     workspace_root: PathBuf,
-    run_root: PathBuf,
+    /// Working directories for Run tools, one per seat per round. Not the Run root: that is a
+    /// pinned set of digests (`Params::run_root`), served from the content-addressed store.
+    run_work: PathBuf,
+    /// `Actuate` calls admitted and not yet returned, by round topic and sequence number
+    /// (ADR-0042 §3). Keyed by topic, not fence, because a renewal moves the fence and keeps
+    /// the round. The lock is held across the record write and across the seal, so a call's
+    /// record is written either by the call, before the seal marker, or by the seal, as
+    /// `unknown`; never both and never neither.
+    in_flight: tokio::sync::Mutex<HashMap<String, BTreeMap<u64, InFlight>>>,
     archive: Mutex<Option<std::fs::File>>,
     /// Denial records written per `after` topic by this replica (ADR-0003 A2).
     after_written: Mutex<HashMap<String, u64>>,
@@ -153,7 +161,8 @@ impl Mechanism {
             counter: AtomicU64::new(0),
             corpus_dir: p.corpus_dir,
             workspace_root: p.data_dir.join("workspaces"),
-            run_root: p.data_dir.join("run"),
+            run_work: p.data_dir.join("run"),
+            in_flight: tokio::sync::Mutex::new(HashMap::new()),
             archive: Mutex::new(Some(archive)),
         }))
     }
@@ -223,12 +232,22 @@ impl Mechanism {
             let line = json!({ "slot": slot, "entry": entry, "applied": applied });
             let _ = writeln!(f, "{line}");
         }
-        // Seal the topics of rounds that just ended, for sessions this replica serves.
+        // Seal the topics of rounds that just ended, for sessions this replica serves. A call
+        // still in flight is written as `unknown` ahead of the seal marker (ADR-0042 §3), in
+        // sequence order, so the sealed topic has a record at every sequence number.
         let local: Vec<LogIndex> = self.sessions.lock().unwrap().values().map(|s| s.fence).collect();
         for (fence, topic, reason) in ended {
-            if local.contains(&fence)
-                && let Err(e) = self.transport.seal(&topic, &reason).await
-            {
+            if !local.contains(&fence) {
+                continue;
+            }
+            let mut in_flight = self.in_flight.lock().await;
+            for (seq, call) in in_flight.remove(&topic).unwrap_or_default() {
+                let rec = call.record(&topic, seq, Outcome::Unknown, None);
+                if let Err(e) = self.transport.emit(&rec).await {
+                    tracing::warn!(topic, seq, error = %e, "unknown Actuate record not written");
+                }
+            }
+            if let Err(e) = self.transport.seal(&topic, &reason).await {
                 tracing::warn!(topic, error = %e, "seal marker not written");
             }
         }
@@ -299,6 +318,13 @@ impl Mechanism {
                 Err(e) => return deny(DenyReason::Mechanism(MechanismDeny::Other(e))),
             },
             AgentOp::Abstain => {
+                // ADR-0042 §5: a Run principal cannot end its own round. `apply` refuses the
+                // entry too; refusing here keeps it off the log.
+                if self.state.read().unwrap().rules.seat_domain(&sess.seat) == Some(Domain::Run) {
+                    return deny(DenyReason::Mechanism(MechanismDeny::Other(
+                        "a Run seat cannot abstain: its round ends with its lease (ADR-0042 §5)".into(),
+                    )));
+                }
                 let e = Entry::EndRound {
                     id: self.fresh_id(),
                     seat: sess.seat.clone(),
@@ -460,11 +486,12 @@ impl Mechanism {
         };
 
         // 7: order the admit.
+        let break_glass = via_break_glass(&floor_reasons);
         let rec = AdmitRecord {
             seat: req.seat.clone(),
             lease: req.lease,
             epoch: req.epoch,
-            action: Admitted::from_request(&req, via_break_glass(&floor_reasons)),
+            action: Admitted::from_request(&req, break_glass),
             input: frozen.digest(),
             floor: self.floor.floor_digest().clone(),
             schema: self.floor.schema_digest().clone(),
@@ -478,13 +505,13 @@ impl Mechanism {
             Ok(r) => r,
             Err(e) => return deny(DenyReason::NotCommitted(e)),
         };
-        let (emit_seq, promoted) = match applied {
-            Applied::Admitted { emit_seq, promoted } => (emit_seq, promoted),
+        let (seq, promoted) = match applied {
+            Applied::Admitted { seq, promoted } => (seq, promoted),
             other => return deny(DenyReason::NotCommitted(format!("{other:?}"))),
         };
 
         // 8: the effect.
-        let ctx = EffectCtx { sess, slot, lease_epoch, round, domain, emit_seq, promoted };
+        let ctx = EffectCtx { sess, slot, lease_epoch, round, domain, seq, promoted, break_glass };
         let result = self.effect(&req, &ctx).await;
         let (ok, result) = match result {
             Ok(v) => (true, v),
@@ -552,19 +579,60 @@ impl Mechanism {
                 std::fs::create_dir_all(&ws)?;
                 self.tools.call(&tool_id(tool, digest), inputs, &ws).await
             }
-            Action::RunInvoke { tool, digest, inputs } => {
-                let dir = self.run_root.join(format!("{seat}-e{}-r{}", cx.lease_epoch, cx.round));
-                std::fs::create_dir_all(&dir)?;
-                self.tools.call(&tool_id(tool, digest), inputs, &dir).await
+            Action::Consult { object } => {
+                // The store is content-addressed; membership in the Run root was the floor's
+                // decision (R4), from `Params::run_root`.
+                let bytes = std::fs::read(self.corpus_dir.join(&object.0))?;
+                anyhow::ensure!(Digest::of(&bytes) == *object, "object does not match its address");
+                Ok(json!({ "object": object, "content": String::from_utf8_lossy(&bytes) }))
             }
-            Action::Emit { record } | Action::RunEmit { record } => {
+            Action::Actuate { tool, digest, inputs } => {
+                let topic = topic_name(&chain, cx.domain, seat, cx.lease_epoch, cx.round);
+                let seq = cx.seq.unwrap_or(0);
+                let tid = tool_id(tool, digest);
+                let call = InFlight {
+                    seat: seat.clone(),
+                    fence: cx.sess.fence,
+                    admit: cx.slot,
+                    tool: tid.clone(),
+                    break_glass: cx.break_glass,
+                    inputs: Value::Object(inputs.clone()),
+                };
+                self.in_flight.lock().await.entry(topic.clone()).or_default().insert(seq, call);
+                let dir = self.run_work.join(format!("{seat}-e{}-r{}", cx.lease_epoch, cx.round));
+                std::fs::create_dir_all(&dir)?;
+                let out = self.tools.call(&tid, inputs, &dir).await;
+
+                // Take the call back under the lock the seal holds. If the seal took it first,
+                // the topic says `unknown`, and the result is withheld: what the principal
+                // receives must be what the record's digest names (ADR-0042 §4), and an
+                // `unknown` record names nothing.
+                let mut in_flight = self.in_flight.lock().await;
+                let Some(call) = in_flight.get_mut(&topic).and_then(|m| m.remove(&seq)) else {
+                    return Ok(json!({
+                        "seq": seq, "outcome": Outcome::Unknown,
+                        "withheld": "the round sealed before the call returned (ADR-0042 §3, §4)",
+                    }));
+                };
+                let outcome = if out.is_ok() { Outcome::Returned } else { Outcome::Failed };
+                let rec = call.record(&topic, seq, outcome, out.as_ref().ok());
+                let result_digest = rec.payload["actuate"]["result"].clone();
+                let offset = self.transport.emit(&rec).await?;
+                drop(in_flight);
+                let result = out?;
+                Ok(json!({
+                    "topic": topic, "offset": offset, "seq": seq, "outcome": outcome,
+                    "result_digest": result_digest, "result": result,
+                }))
+            }
+            Action::Emit { record } | Action::Report { record } => {
                 let rec = EmitRecord {
                     topic: topic_name(&chain, cx.domain, seat, cx.lease_epoch, cx.round),
                     seat: seat.clone(),
                     fence: cx.sess.fence,
                     kind: RecordKind::Emit,
                     admit: Some(cx.slot),
-                    seq: Some(cx.emit_seq.unwrap_or(0)),
+                    seq: Some(cx.seq.unwrap_or(0)),
                     digest: Digest::of_json(record),
                     payload: record.clone(),
                 };
@@ -696,8 +764,57 @@ struct EffectCtx<'a> {
     lease_epoch: Epoch,
     round: Round,
     domain: Domain,
-    emit_seq: Option<u64>,
+    seq: Option<u64>,
     promoted: Option<Digest>,
+    break_glass: bool,
+}
+
+/// How an `Actuate` call ended, as its record says it (ADR-0042 §3).
+#[derive(Clone, Copy, Debug, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[serde(rename_all = "snake_case")]
+pub enum Outcome {
+    /// The tool returned, and `result` is the digest of what it returned.
+    Returned,
+    /// The call failed: the tool host refused it, or the tool returned an error.
+    Failed,
+    /// The round sealed before the call returned. Whether the effect happened is not known.
+    Unknown,
+}
+
+/// An admitted `Actuate` whose record is not yet on the topic.
+#[derive(Clone, Debug)]
+struct InFlight {
+    seat: SeatId,
+    fence: LogIndex,
+    admit: LogIndex,
+    tool: String,
+    break_glass: bool,
+    inputs: Value,
+}
+
+impl InFlight {
+    /// The record of ADR-0042 §3. `actuate` is the envelope: control-plane facts, with the
+    /// inputs and the result by digest, and the record's own digest is over it. `body` is the
+    /// cognitive payload, the inputs and the result themselves (ADR-0004).
+    fn record(&self, topic: &str, seq: u64, outcome: Outcome, result: Option<&Value>) -> EmitRecord {
+        let envelope = json!({
+            "tool": self.tool,
+            "breakGlass": self.break_glass,
+            "inputs": Digest::of_json(&self.inputs),
+            "outcome": outcome,
+            "result": result.map(Digest::of_json),
+        });
+        EmitRecord {
+            topic: topic.to_string(),
+            seat: self.seat.clone(),
+            fence: self.fence,
+            kind: RecordKind::Actuate,
+            admit: Some(self.admit),
+            seq: Some(seq),
+            digest: Digest::of_json(&envelope),
+            payload: json!({ "actuate": envelope, "body": { "inputs": self.inputs, "result": result } }),
+        }
+    }
 }
 
 fn walk(root: &Path, dir: &Path, out: &mut Vec<String>) -> std::io::Result<()> {

@@ -20,7 +20,7 @@ const TESTS: &str = include_str!("../../../../floor/genesis-tests.json");
 fn replays_the_gate_suite() {
     let floor = Floor::load().expect("pinned floor loads");
     let cases: Vec<Value> = serde_json::from_str(TESTS).unwrap();
-    assert_eq!(cases.len(), 51);
+    assert_eq!(cases.len(), 62);
     for c in &cases {
         let name = c["name"].as_str().unwrap();
         let r = &c["request"];
@@ -98,4 +98,54 @@ fn an_incomplete_slice_is_a_deny_not_a_skipped_forbid() {
         },
     );
     assert!(matches!(composed, topak_core::admit::Decision::Deny(_)));
+}
+
+/// ADR-0040 §1, ADR-0041 §4: the provisional names are retired. A request naming one fails
+/// validation against S, and the composition turns any floor error into a deny. This cannot be a
+/// `cedar run-tests` case, because the request never reaches evaluation.
+#[test]
+fn a_retired_run_action_is_an_error_not_a_decision() {
+    let floor = Floor::load().unwrap();
+    let seat = || json!({ "type": "Topak::Seat", "id": "r1" });
+    let root = || json!({ "type": "Topak::CorpusRoot", "id": "run-pinned" });
+    let set = |id: &str| json!({ "type": "Topak::ToolSet", "id": id });
+    let tool = || json!({ "type": "Topak::Tool", "id": "search@d3" });
+    let topic = || json!({ "type": "Topak::Topic", "id": "t" });
+    let entities = json!([
+        { "uid": seat(), "attrs": { "domain": "run", "kind": "thinker" }, "parents": [] },
+        { "uid": root(), "attrs": {}, "parents": [] },
+        { "uid": set("run-allow"), "attrs": {}, "parents": [] },
+        { "uid": set("bg-tools"), "attrs": {}, "parents": [] },
+        { "uid": tool(), "attrs": { "digest": "d3" }, "parents": [set("run-allow")] },
+        { "uid": topic(),
+          "attrs": { "owner": { "__entity": seat() }, "epoch": 1, "round": 1, "sealed": false }, "parents": [] },
+    ]);
+    let context = |alphabet: Value| {
+        json!({
+            "lease": { "alphabet": alphabet, "rulesEpoch": 0 }, "epoch": 1, "round": 1,
+            "runRoot": { "__entity": root() },
+            "toolAllowlist": { "__entity": set("run-allow") },
+            "breakGlass": { "quorum": false, "tools": { "__entity": set("bg-tools") } },
+            "observerLive": true,
+        })
+    };
+    let ask = |action: &str, resource: &str, alphabet: Value| {
+        floor.evaluate(
+            EntityUid::from_str(r#"Topak::Seat::"r1""#).unwrap(),
+            EntityUid::from_str(&format!(r#"Topak::Action::"{action}""#)).unwrap(),
+            EntityUid::from_str(resource).unwrap(),
+            &context(alphabet),
+            &entities,
+        )
+    };
+    // The same request under the new names is decided, so the error below is the name's.
+    let out = ask("Actuate", r#"Topak::Tool::"search@d3""#, json!(["Actuate"]));
+    assert!(matches!(out, FloorOutcome::Permit { .. }), "{out:?}");
+    let out = ask("Report", r#"Topak::Topic::"t""#, json!(["Report"]));
+    assert!(matches!(out, FloorOutcome::Permit { .. }), "{out:?}");
+    for (retired, resource) in [("RunInvoke", r#"Topak::Tool::"search@d3""#), ("RunEmit", r#"Topak::Topic::"t""#)] {
+        let out = ask(retired, resource, json!([retired]));
+        assert!(matches!(out, FloorOutcome::Error { .. }), "{retired}: {out:?}");
+        assert!(topak_core::admit::floor_gate(&out).is_some(), "{retired}: any floor error is a deny");
+    }
 }

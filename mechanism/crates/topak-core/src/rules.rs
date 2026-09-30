@@ -70,7 +70,7 @@ pub struct BreakGlassRules {
     /// Tool ids (`name@digest`) inside the break-glass envelope.
     pub tools: BTreeSet<String>,
     /// Actions a break-glass grant may authorize. Read by the mechanism so R7 has a value to
-    /// bound; the floor's X1 additionally confines break-glass to `RunInvoke`.
+    /// bound; the floor's X1 additionally confines break-glass to `Actuate`.
     pub actions: BTreeSet<String>,
 }
 

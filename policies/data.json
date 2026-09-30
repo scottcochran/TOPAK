@@ -7,7 +7,8 @@
       },
       "search@d3": {
         "required": { "query": "string" },
-        "optional": { "limit": "number" }
+        "optional": { "limit": "number" },
+        "channel": { "kind": "https", "target": "search.internal:443" }
       }
     }
   }

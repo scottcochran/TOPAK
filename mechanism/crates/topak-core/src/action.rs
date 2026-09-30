@@ -1,4 +1,5 @@
-//! The typed action alphabet (ADR-0022 §1) and the request that carries it.
+//! The typed action alphabets (Build: ADR-0022 §1; Run: ADR-0040 §1, Proposed) and the request
+//! that carries them.
 
 use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
@@ -22,10 +23,14 @@ pub enum Action {
     Submit { artifact: Digest },
     /// Cast a promotion vote bound to (artifact, gate evidence, rules epoch) (ADR-0024 §3).
     Vote { verdict: Verdict, artifact: Digest, evidence: Digest, rules_epoch: RulesEpoch },
-    /// PROVISIONAL (Run alphabet): invoke a Run tool.
-    RunInvoke { tool: String, digest: Digest, inputs: Map<String, Value> },
-    /// PROVISIONAL (Run alphabet): append to the Run principal's round topic.
-    RunEmit { record: Value },
+    /// Run: resolve a content-addressed object inside the pinned Run root. Ingress, not an
+    /// effect; a read of anything live is an `Actuate` (ADR-0040 §1).
+    Consult { object: Digest },
+    /// Run: invoke a tool allowlisted by name and digest. Effect-bearing by design, unlike
+    /// Build's hermetic `Invoke`.
+    Actuate { tool: String, digest: Digest, inputs: Map<String, Value> },
+    /// Run: append to the principal's round topic.
+    Report { record: Value },
 }
 
 impl Action {
@@ -37,8 +42,9 @@ impl Action {
             Action::Emit { .. } => ActionKind::Emit,
             Action::Submit { .. } => ActionKind::Submit,
             Action::Vote { .. } => ActionKind::Vote,
-            Action::RunInvoke { .. } => ActionKind::RunInvoke,
-            Action::RunEmit { .. } => ActionKind::RunEmit,
+            Action::Consult { .. } => ActionKind::Consult,
+            Action::Actuate { .. } => ActionKind::Actuate,
+            Action::Report { .. } => ActionKind::Report,
         }
     }
 
@@ -52,14 +58,14 @@ impl Action {
             Action::Emit { record } => serde_json::json!({
                 "kind": "Emit", "record": Digest::of_json(record),
             }),
-            Action::RunEmit { record } => serde_json::json!({
-                "kind": "RunEmit", "record": Digest::of_json(record),
+            Action::Report { record } => serde_json::json!({
+                "kind": "Report", "record": Digest::of_json(record),
             }),
             Action::Invoke { tool, digest, inputs } => serde_json::json!({
                 "kind": "Invoke", "tool": tool, "digest": digest, "inputs": Digest::of_json(inputs),
             }),
-            Action::RunInvoke { tool, digest, inputs } => serde_json::json!({
-                "kind": "RunInvoke", "tool": tool, "digest": digest, "inputs": Digest::of_json(inputs),
+            Action::Actuate { tool, digest, inputs } => serde_json::json!({
+                "kind": "Actuate", "tool": tool, "digest": digest, "inputs": Digest::of_json(inputs),
             }),
             other => serde_json::to_value(other).expect("serializable"),
         }

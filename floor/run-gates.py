@@ -27,7 +27,8 @@ VALUES = os.path.join(HERE, "genesis-values.json")   # policy-floor values (ADR-
 
 SIGS = {
     "Read": "CorpusObject", "Draft": "WorkspaceTarget", "Invoke": "Tool", "Emit": "Topic",
-    "Submit": "Artifact", "Vote": "Artifact", "RunInvoke": "Tool", "RunEmit": "Topic",
+    "Submit": "Artifact", "Vote": "Artifact",
+    "Consult": "CorpusObject", "Actuate": "Tool", "Report": "Topic",      # ADR-0040 §1
     "Erase": "ArchiveRecord",
 }
 
@@ -145,11 +146,18 @@ def main():
     tighten = text + '\n@id("T-no-read-by-voters")\nforbid (principal, action == Topak::Action::"Read", resource)\nwhen { context.roundRole == "voter" };\n'
     relax = text.replace(forensic, forensic.replace('"F1", ', ""))  # F1 becomes erasable
     incomparable = relax + '\n@id("T-no-erase-payload")\nforbid (principal, action == Topak::Action::"Erase", resource)\nwhen { resource.class == "payload" };\n'
+    # ADR-0041 §2: the exemption of Consult from R3 rests on R4's pinning. A floor whose R4 omits the
+    # Run-root conjunct still refuses Build seats and leases without Consult, so it is NOT vacuous and
+    # the non-vacuity gate does not see it. It is a relaxation, and routing is the gate that says so.
+    pinned = '  context.lease.alphabet.contains("Consult") &&\n  resource in context.runRoot\n'
+    assert text.count(pinned) == 1, "R4-consult-pinned has changed shape; update this control"
+    unpinned = text.replace(pinned, '  context.lease.alphabet.contains("Consult")\n')
     cands = [("tighten: voters may not Read", "Read", tighten, "tightening"),
              ("relax: F1 removed from the forensic floor", "Erase", relax, "relaxation"),
-             ("incomparable: F1 erasable, payload not", "Erase", incomparable, "incomparable")]
-    for name, a, ctext, expect in cands:
-        cf = write(f"cand-{expect}.cedar", ctext)
+             ("incomparable: F1 erasable, payload not", "Erase", incomparable, "incomparable"),
+             ("relax: R4 without the Run-root condition", "Consult", unpinned, "relaxation")]
+    for n, (name, a, ctext, expect) in enumerate(cands):
+        cf = write(f"cand-{n}-{expect}.cedar", ctext)
         new_old, _ = symcc(a, "implies", "--policies1", cf, "--policies2", FLOOR)   # F' => F
         old_new, _ = symcc(a, "implies", "--policies1", FLOOR, "--policies2", cf)   # F  => F'
         cls = {("holds", "holds"): "equivalent", ("holds", "refuted"): "tightening",
@@ -166,6 +174,11 @@ def main():
     ok = r == "holds"
     failures += not ok
     out(f"  {'vacuous floor: permit-all added (Read)':44} always-allows  {r:8} -> {'caught' if ok else 'MISSED'}")
+    # Consult, like Read, is covered by no forbid: R3 and B10 do not name it (ADR-0041 §1, §2).
+    r, _ = symcc("Consult", "always-allows", "-p", vac)
+    ok = r == "holds"
+    failures += not ok
+    out(f"  {'vacuous floor: permit-all added (Consult)':44} always-allows  {r:8} -> {'caught' if ok else 'MISSED'}")
     err = write("ctl-overflow.cedar", '@id("CTL-overflow")\npermit (principal, action == Topak::Action::"Emit", resource)\nwhen { context.epoch + 1 > context.round };\n')
     r, _ = symcc("Emit", "never-errors", "-p", err)
     ok = r == "refuted"

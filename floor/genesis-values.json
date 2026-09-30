@@ -7,7 +7,7 @@
     "T_obs_ms": 5000,
     "_T_obs": "Heartbeat freshness, read on the mechanism's local monotonic clock with its asymmetric margin (ADR-0032 §2; the reference's lease_margin_ms). Placeholder: about five propagation windows W (ADR-0032 §4, ~1 s at the archetype), ten lease margins, and well inside a lease TTL. A deployment sets it from its Observer's measured heartbeat cadence.",
     "K": 8,
-    "_K": "Unread-emission bound: at most K of a Thinker's emissions unread by a live cell Observer. Must be below the round bound R of every domain it applies to; the mechanism refuses a floor where it is not. Placeholder: T_obs at roughly one admit per second, rounded up. A deployment sets it from its Observer's measured lag; K = 0 is the quarantine hold (ADR-0039 finding 1)."
+    "_K": "Unread bound: at most K of a Thinker's emissions unread by a live cell Observer. In Run the count is over effect-bearing admits, Actuate and Report, and not Consult (ADR-0042 §2, Proposed). Must be below the round bound R of every domain it applies to; the mechanism refuses a floor where it is not. Placeholder: T_obs at roughly one admit per second, rounded up. A deployment sets it from its Observer's measured lag; K = 0 is the quarantine hold (ADR-0039 finding 1)."
   },
   "lineage": {
     "_record": "ADR-0035 §3",

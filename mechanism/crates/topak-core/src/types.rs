@@ -94,8 +94,9 @@ impl Verdict {
 
 /// The action variants. Names match the Cedar actions in `floor/genesis.cedarschema`.
 ///
-/// Build's six are ADR-0022 §1. `RunInvoke` and `RunEmit` are PROVISIONAL: no record defines
-/// Run's alphabet; they carry ADR-0015's two Run effects, as the draft floor does.
+/// Build's six are ADR-0022 §1. Run's three are ADR-0040 §1 (Proposed): `Consult` is ingress over
+/// the pinned Run root, and `Actuate` and `Report` are ADR-0015's two effect classes. No name is
+/// shared between the domains (ADR-0040 §2).
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum ActionKind {
     Read,
@@ -104,8 +105,9 @@ pub enum ActionKind {
     Emit,
     Submit,
     Vote,
-    RunInvoke,
-    RunEmit,
+    Consult,
+    Actuate,
+    Report,
 }
 
 impl ActionKind {
@@ -117,7 +119,7 @@ impl ActionKind {
         ActionKind::Submit,
         ActionKind::Vote,
     ];
-    pub const RUN: [ActionKind; 2] = [ActionKind::RunInvoke, ActionKind::RunEmit];
+    pub const RUN: [ActionKind; 3] = [ActionKind::Consult, ActionKind::Actuate, ActionKind::Report];
 
     pub fn as_str(self) -> &'static str {
         match self {
@@ -127,16 +129,24 @@ impl ActionKind {
             ActionKind::Emit => "Emit",
             ActionKind::Submit => "Submit",
             ActionKind::Vote => "Vote",
-            ActionKind::RunInvoke => "RunInvoke",
-            ActionKind::RunEmit => "RunEmit",
+            ActionKind::Consult => "Consult",
+            ActionKind::Actuate => "Actuate",
+            ActionKind::Report => "Report",
         }
     }
 
     pub fn domain(self) -> Domain {
         match self {
-            ActionKind::RunInvoke | ActionKind::RunEmit => Domain::Run,
+            ActionKind::Consult | ActionKind::Actuate | ActionKind::Report => Domain::Run,
             _ => Domain::Build,
         }
+    }
+
+    /// ADR-0042 §2: the Run variants that bear an effect. These advance the sequence an Observer's
+    /// watermark is over, and these are what `R3-observer-live` couples (ADR-0041 §2). `Consult`
+    /// is ingress and does neither.
+    pub fn is_run_effect(self) -> bool {
+        matches!(self, ActionKind::Actuate | ActionKind::Report)
     }
 }
 
@@ -147,7 +157,8 @@ impl fmt::Display for ActionKind {
 }
 
 /// A seat's kind (ADR-0037 §2), declared with the seat in the issued rules and never changed.
-/// Only a `thinker` seat holds a variant that writes, runs or offers (§4).
+/// Only a `thinker` seat holds a variant that writes, runs or offers (§4): in Run, `Actuate`
+/// (ADR-0043 §2).
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum SeatKind {
@@ -165,13 +176,16 @@ impl SeatKind {
         }
     }
 
-    /// ADR-0037 §4: the variants a seat of this kind may be issued. The floor states the same
-    /// bound (B10, B6); the grant path checks it first, as it does the domain.
+    /// ADR-0037 §4 for Build and ADR-0043 §2 for Run: the variants a seat of this kind may be
+    /// issued. The floor states the same bound (B10, B6); the grant path checks it first, as it
+    /// does the domain. An observer seat's `Consult` is scoped to the Run root its Thinker's is.
     pub fn allows(self, k: ActionKind) -> bool {
         use ActionKind::*;
         match self {
-            SeatKind::Thinker => matches!(k, Read | Draft | Invoke | Emit | Submit | RunInvoke | RunEmit),
-            SeatKind::Observer => matches!(k, Read | Emit | Vote | RunEmit),
+            SeatKind::Thinker => {
+                matches!(k, Read | Draft | Invoke | Emit | Submit | Consult | Actuate | Report)
+            }
+            SeatKind::Observer => matches!(k, Read | Emit | Vote | Consult | Report),
             SeatKind::Grant => matches!(k, Read | Emit | Vote),
         }
     }

@@ -2,6 +2,10 @@
 //! workspace-relative file. No network, no filesystem outside its working directory,
 //! deterministic given its inputs — the ADR-0022 §3 obligation, met by construction here and
 //! by nobody's check.
+//!
+//! `sleep(ms)` waits and returns. It stands in for a Run tool in the end-to-end tests: fast with
+//! `ms = 0`, and slow enough with a larger value for a round to seal while the call is in flight
+//! (ADR-0042 §3, the `unknown` record). It opens no channel, so it is a Run tool in name only.
 
 use std::sync::Arc;
 
@@ -31,11 +35,20 @@ impl ServerHandler for Demo {
             "required": ["path"],
             "additionalProperties": false,
         });
-        Ok(ListToolsResult::with_all_items(vec![Tool::new(
-            "wordcount",
-            "Count lines, words and bytes of a workspace file.",
-            Arc::new(schema.as_object().unwrap().clone()),
-        )]))
+        let sleep = json!({
+            "type": "object",
+            "properties": { "ms": { "type": "integer", "minimum": 0 } },
+            "required": ["ms"],
+            "additionalProperties": false,
+        });
+        Ok(ListToolsResult::with_all_items(vec![
+            Tool::new(
+                "wordcount",
+                "Count lines, words and bytes of a workspace file.",
+                Arc::new(schema.as_object().unwrap().clone()),
+            ),
+            Tool::new("sleep", "Wait for `ms` milliseconds.", Arc::new(sleep.as_object().unwrap().clone())),
+        ]))
     }
 
     async fn call_tool(
@@ -43,6 +56,17 @@ impl ServerHandler for Demo {
         req: CallToolRequestParams,
         _c: RequestContext<RoleServer>,
     ) -> Result<CallToolResponse, ErrorData> {
+        if req.name == "sleep" {
+            let ms = req
+                .arguments
+                .as_ref()
+                .and_then(|a| a.get("ms"))
+                .and_then(|m| m.as_u64())
+                .ok_or_else(|| ErrorData::invalid_params("ms is required", None))?;
+            tokio::time::sleep(std::time::Duration::from_millis(ms)).await;
+            let out = json!({ "slept": ms });
+            return Ok(CallToolResult::success(vec![ContentBlock::text(out.to_string())]).into());
+        }
         let path = req
             .arguments
             .as_ref()

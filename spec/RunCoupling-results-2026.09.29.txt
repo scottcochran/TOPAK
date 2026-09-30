@@ -1,0 +1,30 @@
+TOPAK — RunCoupling.tla (ADR-0042 §8, Proposed), TLC results 2026.09.29
+jar: tla2tools.jar v1.7.4 · constants: K=1, R=4, MaxRound=2; one Thinker and its cell Observer; three actions (Consult, Actuate, Report)
+expected: none HOLDS on all five; M_EMITSEQ breaks UnreadEffectsBounded and SealCountsEffects only (the reference before ADR-0042: D-0042-1); M_COUPLEALL breaks ConsultNeverCoupled only; M_ROUNDS and M_MARK break UnreadEffectsBounded only; M_NOCOUPLE breaks NoEffectWithoutLiveObserver and UnreadEffectsBounded (D-0039-1); M_BOUNDEFF breaks RoundBoundCountsAll (its other rows are not run: the state space is unbounded); witnesses VIOLATED
+rc-none-noeffect | Mut=none | NoEffectWithoutLiveObserver | HOLDS | 16586 distinct states found
+rc-none-unread | Mut=none | UnreadEffectsBounded | HOLDS | 16586 distinct states found
+rc-none-consult | Mut=none | ConsultNeverCoupled | HOLDS | 16586 distinct states found
+rc-none-seal | Mut=none | SealCountsEffects | HOLDS | 16586 distinct states found
+rc-none-bound | Mut=none | RoundBoundCountsAll | HOLDS | 16586 distinct states found
+rc-emitseq-unread | Mut=M_EMITSEQ | UnreadEffectsBounded | COUNTEREXAMPLE | 194 distinct states found
+rc-emitseq-seal | Mut=M_EMITSEQ | SealCountsEffects | COUNTEREXAMPLE | 245 distinct states found
+rc-emitseq-noeffect | Mut=M_EMITSEQ | NoEffectWithoutLiveObserver | HOLDS | 25762 distinct states found
+rc-emitseq-consult | Mut=M_EMITSEQ | ConsultNeverCoupled | HOLDS | 25762 distinct states found
+rc-emitseq-bound | Mut=M_EMITSEQ | RoundBoundCountsAll | HOLDS | 25762 distinct states found
+rc-coupleall-consult | Mut=M_COUPLEALL | ConsultNeverCoupled | COUNTEREXAMPLE | 2 distinct states found
+rc-coupleall-unread | Mut=M_COUPLEALL | UnreadEffectsBounded | HOLDS | 8946 distinct states found
+rc-coupleall-noeffect | Mut=M_COUPLEALL | NoEffectWithoutLiveObserver | HOLDS | 8946 distinct states found
+rc-coupleall-seal | Mut=M_COUPLEALL | SealCountsEffects | HOLDS | 8946 distinct states found
+rc-rounds-unread | Mut=M_ROUNDS | UnreadEffectsBounded | COUNTEREXAMPLE | 692 distinct states found
+rc-rounds-noeffect | Mut=M_ROUNDS | NoEffectWithoutLiveObserver | HOLDS | 28370 distinct states found
+rc-rounds-seal | Mut=M_ROUNDS | SealCountsEffects | HOLDS | 28370 distinct states found
+rc-mark-unread | Mut=M_MARK | UnreadEffectsBounded | COUNTEREXAMPLE | 188 distinct states found
+rc-mark-noeffect | Mut=M_MARK | NoEffectWithoutLiveObserver | HOLDS | 18402 distinct states found
+rc-nocouple-noeffect | Mut=M_NOCOUPLE | NoEffectWithoutLiveObserver | COUNTEREXAMPLE | 35 distinct states found
+rc-nocouple-unread | Mut=M_NOCOUPLE | UnreadEffectsBounded | COUNTEREXAMPLE | 70 distinct states found
+rc-boundeff-bound | Mut=M_BOUNDEFF | RoundBoundCountsAll | COUNTEREXAMPLE | 123 distinct states found
+w-round2 | Mut=none | NeverRoundTwo | COUNTEREXAMPLE | 107 distinct states found
+w-refused | Mut=none | NeverRefused | COUNTEREXAMPLE | 37 distinct states found
+w-refused-actuates | Mut=none | NeverRefusedOnActuates | COUNTEREXAMPLE | 249 distinct states found
+w-consult-stalled | Mut=none | NeverConsultedWhileStalled | COUNTEREXAMPLE | 6 distinct states found
+w-sealed-actuates | Mut=none | NeverSealedOnActuates | COUNTEREXAMPLE | 237 distinct states found
