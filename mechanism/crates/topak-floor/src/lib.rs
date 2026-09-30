@@ -32,10 +32,12 @@ pub const VALUES_SRC: &str = include_str!("../../../../floor/genesis-values.json
 /// R4-consult-pinned, R3 over effects only; after the ADR-0037 §4 and ADR-0039 §2 runs of the same
 /// day). Changing any of the three means re-running the gates and changing these: a mechanism
 /// release. The 09.24 digests were 9b6adeee… and 77d9b566…; the ADR-0039 run's were 49a6e314…,
-/// ac2a0acc… and 0d19c9e3….
+/// ac2a0acc… and 0d19c9e3…. The values digest moved again on 2026.09.30 (`persona.T_persona_ms`, ADR-0031 A2,
+/// Pending; not yet read here), recorded in `genesis-gates-results-2026.09.30.txt`; the 09.29-adr0041 values
+/// digest was 468992e4….
 pub const PINNED_FLOOR_SHA256: &str = "28ec0e4552c6a9150872ad25e3b2290330fc9ed55477695fa138f6426a174c84";
 pub const PINNED_SCHEMA_SHA256: &str = "0ec2fa215eefe1367fa03a205d4a992334fb3abba28b2fe1f1af282b70daeffb";
-pub const PINNED_VALUES_SHA256: &str = "468992e45b1d7d04df65bbd12da05ff32648609bf2c238fa28801f2a445ed4e1";
+pub const PINNED_VALUES_SHA256: &str = "85ab6fefb66f031636bd7527722cd9241be101a00088fa2add4fe003cb25d760";
 
 /// The Cedar engine version this mechanism links. The gates ran with cedar-policy-cli 4.13.0.
 pub const ENGINE: &str = "cedar-policy 4.13";

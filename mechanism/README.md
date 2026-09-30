@@ -35,7 +35,7 @@ affirmative bundle `true`, from the bundle revision the lease names, is a deny.
 ## Run it
 
 ```sh
-cargo test --workspace --release           # 44 tests; needs a built bundle (next line)
+cargo test --workspace --release           # 55 tests (2026.09.29, ADR-0033 A3); needs a built bundle (next line)
 scripts/build-bundle.sh                    # policies/ → bundles/<revision>.tar.gz (docker, OPA)
 
 scripts/dev-init.sh                        # 3 replicas, in-memory transport, WASM bundle only

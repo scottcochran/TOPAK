@@ -1,6 +1,6 @@
 {
   "_what": "Policy-floor values: the numbers the typed lift reads that the floor's Cedar text cannot hold. This file is part of the floor bundle; its digest is recorded with the floor's and the schema's (ADR-0039 §1). Relaxing a value is an anchor issuance and a promotion; tightening is an ordinary promotion.",
-  "_status": "DRAFT · 2026.09.29 · PLACEHOLDERS · not ratified · not measured",
+  "_status": "DRAFT · 2026.09.30 · PLACEHOLDERS · not ratified · not measured",
   "_placeholders": "Every number here is a placeholder chosen so the ratification runs have a value. None is measured. Each is a deployment or rung choice, declared per deployment under ADR-0023 §6, and the archetype does not fix it. Do not cite these as the pattern's values.",
   "observer": {
     "_record": "ADR-0039 §1",
@@ -8,6 +8,11 @@
     "_T_obs": "Heartbeat freshness, read on the mechanism's local monotonic clock with its asymmetric margin (ADR-0032 §2; the reference's lease_margin_ms). Placeholder: about five propagation windows W (ADR-0032 §4, ~1 s at the archetype), ten lease margins, and well inside a lease TTL. A deployment sets it from its Observer's measured heartbeat cadence.",
     "K": 8,
     "_K": "Unread bound: at most K of a Thinker's emissions unread by a live cell Observer. In Run the count is over effect-bearing admits, Actuate and Report, and not Consult (ADR-0042 §2, Proposed). Must be below the round bound R of every domain it applies to; the mechanism refuses a floor where it is not. Placeholder: T_obs at roughly one admit per second, rounded up. A deployment sets it from its Observer's measured lag; K = 0 is the quarantine hold (ADR-0039 finding 1)."
+  },
+  "persona": {
+    "_record": "ADR-0031 A2 (Pending); ADR-0016 §6",
+    "T_persona_ms": 3600000,
+    "_T_persona": "Upper bound on a lease's ttl at grant and at every renewal, so the Persona is re-attested at least this often. Placeholder: one hour; a deployment sets it from its provider's declared cadence (ADR-0016 Context) and its renewal cost. Must exceed the lease margin and T_obs. Not yet read by the reference."
   },
   "lineage": {
     "_record": "ADR-0035 §3",

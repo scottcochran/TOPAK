@@ -2,6 +2,8 @@
 
 **2026.09.17** · derived · regenerated from scratch · *The Gripping Hand*
 
+> **Superseded** (2026.09.30 note) by `derived/topak-glossary-2026.09.26.md` and then `derived/topak-glossary-2026.09.29.md`. Kept unchanged below this line because ADR-0032 and ADR-0037 cite it by path. Its vocabulary predates ADR-0030 onward: no rungs, no cells, no correlator, `RunInvoke`/`RunEmit` for Run.
+
 **Basis.** Theory of Operation revision 5 (2026.09.15), Genesis Checkpoint G1 (2026.09.15), the
 boundary register (2026.09.13), the critical review (2026.09.16), and the narrative log
 (2026.09.17). Session material from 09.16–09.17 that has not reached a record is included and

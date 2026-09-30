@@ -2,6 +2,8 @@
 
 **2026.09.16** · derived · review, not a record · basis: Theory of Operation rev 5 (`topak-theory-of-operation-2026.09.15-rev5.md`), Genesis Checkpoint G1 (`f46e88dafbc38f7d…`), the narrative log (S6-1…S6-18), all 29 ADR numbers at their G1 digests, the boundary register (09.13), `RulesFloorNV.tla` and its TLC results, and Moon & Varshney arXiv:2605.09045v2. Post-checkpoint sessions (09.15–09.16: positioning draft, LTRO field assessment, container-vacuity taxonomy, TLA+ spec-set scoping) are cited where they change the picture and are marked as unrecorded. · *The Gripping Hand*
 
+> **Superseded** (2026.09.30 note) as the current review by `derived/topak-critical-review-2026.09.25.md`, which re-grades CR-1 to CR-20 from this document and adds CR-21 to CR-25. Kept unchanged below this line; its basis is rev 5 and G1.
+
 Nothing here is ratified, and this document proposes no decision text. Findings are tagged **CR-n** so they can be tracked next to S6-n if useful. Sources are listed at the end.
 
 ---
