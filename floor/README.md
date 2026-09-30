@@ -29,8 +29,8 @@ python3 run-gates.py genesis-gates-results-<date>.txt
 
 ## What is provisional
 
-- **Run's alphabet is a Proposed record's.** `Consult`, `Actuate` and `Report` are ADR-0040 §1, and the six Run
-  entries are ADR-0041 §1. Neither record is ratified. `RunInvoke` and `RunEmit` are retired: a request naming
+- **Run's alphabet is ADR-0040 §1's, and the six Run entries are ADR-0041 §1's**, both ratified 2026.09.30 (Batch
+  20). The floor itself is still DRAFT, as ADR-0030 left it. `RunInvoke` and `RunEmit` are retired: a request naming
   either fails validation against S, and any error is a deny.
 - **`Consult` is not coupled to the Observer**, and the exemption rests on R4's pinning (ADR-0041 §2). The gate run
   carries two controls for it: a permit-all on `Consult` is caught by non-vacuity, and R4 without its Run-root
