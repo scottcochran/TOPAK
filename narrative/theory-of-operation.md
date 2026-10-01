@@ -1,18 +1,18 @@
 # TOPAK — Theory of Operation
 
-**2026.09.30** · revision 10 · **narrative only** · cut from Genesis Checkpoint G6 · supersedes revision 9 as narrative
+**2026.10.01** · revision 11 · **narrative only** · cut from Genesis Checkpoint G7 · supersedes revision 10 as narrative
 
-Revision 10 is revision 9 corrected against G6. Between the cuts Run acquired its own alphabet and the three
-records that carry its obligations (ADR-0040 to ADR-0043, Batch 20), the seven easy wins of the 09.28
-prioritization were taken as amendments and ratified (Batches 17 to 19), ADR-0021 was ratified after eighteen days
-Proposed (Batch 18), bundles acquired an issued signing key (ADR-0044), and the trusted base acquired a record with
-an admission rule and the first enumeration of what the theorems assume (ADR-0045, Proposed). The reference followed
-with three addenda, the last of which records the first mechanized link between the modules and the code: every
-behaviour its tests exercise, replayed through an operational model of its state machine. Two things are new in
-kind and are said where they bite: three records were drafted by the assistant at the custodian's request and
-ratified or revised by the custodian, and the trusted-base rule, applied to the corpus's own gate, refused the
-solver. Passages those changes made false are rewritten; the narrative spine is revision 9's. Section numbers are
-kept, because records cite them: Run's alphabet enters as §2.9 and the trusted base as §7.9. Appendix F lists
+Revision 11 is revision 10 corrected against G7. Between the cuts three things that revision 10 said were owed were
+delivered. **The trusted base is in force** (ADR-0045, Batch 22): the admission rule, the thirty rows, the
+reference's own declaration, and the theorem-to-premise binding table its §3 owed, forty-two rows that compute which
+properties hold at the reference and which are void. **The reference built Batch 17's debts** (ADR-0033 A6, Batch
+23): the `ttl` bound refused at grant and renewal, the two key fields in the issued rules, and a bundle loaded only
+under a signature. **The solver is trusted for nothing** (ADR-0030 A1, Batch 24): a routing `holds` counts only with
+a proof that a pinned, independent checker accepted from the query's own declarations and assertions, and the gate
+run of 2026.10.01 carries one for every solver-backed `holds`, with three controls showing a lying solver producing
+a failure. Two trusted-base rows changed class on the way, the bundle signer and the solver's. The repository was
+reorganized between G6 and these batches with no byte changed, and the glossary was revised in place. Passages those
+changes made false are rewritten; the narrative spine is revision 10's and no section is added. Appendix G lists
 every change.
 
 ---
@@ -20,20 +20,21 @@ every change.
 ## 0. How to read this
 
 **This document explains how the design fits together. It is not the state of record.** Status, readiness,
-digests, the ratification queue, the genesis debt ledger, and the open list are in **G6**.
+digests, the ratification queue, the genesis debt ledger, and the open list are in **G7**.
 
 The narrative describes what the records say. Status words appear only where status changes the meaning — a
 reversal in effect, a claim still carrying a confirmation marker, or a section of a record that was deliberately
 left unratified.
 
-**What "ratified" means here, and what it does not.** Thirty-eight records are now Accepted (genesis), two of them
-in part, and one is superseded. Twenty of the accepted carry a confirmation-required marker — three, ADR-0003,
+**What "ratified" means here, and what it does not.** Thirty-nine records are now Accepted (genesis), two of them
+in part, and one is superseded. Twenty-one of the accepted carry a confirmation-required marker — three, ADR-0003,
 ADR-0029 and ADR-0031's C2, for a single amendment only — which means they were ratified by one person and must pass
-an independent confirmation promotion after bootstrap. **Until then, any claim resting on those twenty is
+an independent confirmation promotion after bootstrap. **Until then, any claim resting on those twenty-one is
 author-ratified, and this document says so at each point rather than once in a footnote.** Ratification by a sole
-custodian is a declaration, not a review. Since 2026.09.30 a further qualification applies to three records:
-ADR-0044, ADR-0045 and ADR-0030 A1 were **drafted by the assistant** at the custodian's request, with every choice
-marked as the drafter's, and the custodian settled them by ratifying or revising the text. That is one step further
+custodian is a declaration, not a review. Since 2026.09.30 a further qualification applies to three texts, all now
+ratified: ADR-0044 (Batch 17), ADR-0045 (Batch 22) and ADR-0030 A1 (Batch 24) were **drafted by the assistant** at
+the custodian's request, with every choice marked as the drafter's, and the custodian settled them by ratifying the
+text; A1's one open choice, the proof format and the checker, was settled by the first run. That is one step further
 from review than the records they draw on, and each says so on its face.
 
 **Findings.** Revision 5 carried ⟨S6-n⟩ markers where records disagreed. All are dispositioned; §14 lists each with
@@ -267,7 +268,7 @@ VM with an independent verifier; rungs 2 and 1 are declared degeneracies, and ru
 - **The trusted base per rung is named.** Rung 3 adds the CPU vendor's root of trust and firmware, the verifier and
   the promoted image; rung 2 adds host firmware and the hypervisor; rung 1 adds the host operator and orchestrator.
   Rung 3 trades an assumption for a mechanism: A1 becomes a claim resting on named, audited components with a
-  published attack history, which is still strictly more than A1 conditioned on nothing. ADR-0045 (Proposed)
+  published attack history, which is still strictly more than A1 conditioned on nothing. ADR-0045 (Batch 22)
   flattens the per-rung table to one row per component with a rung range, T-0045-16 to T-0045-22, each with its
   residual on the face, and loses nothing in the flattening (§7.9).
 
@@ -438,7 +439,9 @@ floor**, and (per ADR-0010 A1) a **minimal rules floor** (§7.3). Operational bu
 may subtract authority, never add it. **And a bundle is trusted by its signature, not its file name** (ADR-0044,
 Batch 17, C1): the signing key is carried in the issued rules, the signature covers the content revision, the
 mechanism loads a bundle only when it verifies, and signing happens at promotion. The record is in force and the
-reference does not implement it yet, which its face says.
+reference implements it since ADR-0033 A6 (Batch 23): a bundle loads only under a signature that verifies against
+the rules' keys, today a dev key with custody (1, 0), and signing at promotion is a script step because no promotion
+pipeline exists (§15).
 
 **Refinement is a property of composition, not of the bundle** (ADR-0030 §1). For every admit decision, over one
 frozen input,
@@ -465,15 +468,21 @@ a - **Containment is checked against the floor** and no bundle can weaken it.
 - **No cross-language check.** Earlier revisions decided refinement at promotion with an SMT solver over Rego. That
   check needed a mechanized Rego semantics and an analyzer proven against it; composition removes the need.
 
-**One trusted step remains at the gate, and it is named.** The routing of a floor change (§3.2) rests on two
+**One step at the gate was trusted, and is now checked.** The routing of a floor change (§3.2) rests on two
 "implies" answers, and an "implies" that holds is an UNSAT result from the solver. The encoding is sound by proof;
 the solver is not, and a wrong `holds` classes a relaxation as a tightening, which then passes by promotion alone.
 ADR-0045's admission rule (§7.9) refuses that: the solver's failure adds authority and no issuance fixes a solver's
-honesty. **ADR-0030 A1 (pending)** keeps the routing table and moves the trust: a `holds` verdict counts only with
-the query it answered, the proof the solver produced and a small pinned checker's acceptance, their digests in the
-gate evidence; a `refuted` verdict needs none, since it can only subtract. Until the wrapper and the checker exist,
-every gate run to date is **D-0030-2**, routing verdicts unchecked, whose subtractive mitigation is to make every
-floor change two-key.
+honesty. **ADR-0030 A1 (Batch 24)** keeps the routing table and moves the trust: a `holds` verdict counts only with
+the query it answered, the proof the solver produced and a pinned, independent checker's acceptance, their digests
+in the gate evidence; a `refuted` verdict needs none, since it can only subtract. The gate run invokes the solver
+through a wrapper that keeps the query, prefixes the proof with declarations derived from the query's own text,
+requires every assumption the proof makes to be one of the query's assertions, and forwards `unsat` only after the
+checker accepts; the checker is `ethos` at a pinned commit, checking cvc5's proofs against cvc5's own rule
+signature, which is tracked and measured, so the trust has moved from a solver's search to a rule set read as
+written. What the checker does not reach is said: cedar decides most of the totality gate by folding the authorizer
+term without any query, and those verdicts rest on the engine's faithfulness (T-0045-3), not on a proof. A
+deployment that runs the gates without the checker declares **D-0030-2**, routing verdicts unchecked, whose
+subtractive mitigation is to make every floor change two-key; every gate run before 2026.10.01 was one.
 
 **What is given up.** A bundle cannot establish that something is allowed. Over-denial by a bundle is a modeled,
 attributed local event, and a bad bundle can disable break-glass — a liveness cost, never a widening.
@@ -493,9 +502,10 @@ classification become measured rather than proven. `bundle ⊑ floor` survives i
 depend on the floor's language.
 
 **The genesis floor exists, as a draft.** Seventeen Cedar policies, schema S and, since ADR-0039, a **values file**,
-gated five times, last on 2026.09.30: every policy never errors on every action it covers, every action of the
-nine is neither always-allowed nor always-denied, removing any one policy changes the floor, and four deliberately
-broken controls were caught, two of them for `Consult`. The values file holds the numbers the typed lift reads that
+gated six times, last on 2026.10.01 with proofs behind it: every policy never errors on every action it covers,
+every action of the nine is neither always-allowed nor always-denied, removing any one policy changes the floor,
+four deliberately broken floors were caught, two of them for `Consult`, and three lying solvers produced a failure
+and never a `holds`. The values file holds the numbers the typed lift reads that
 Cedar text cannot, `K`, `T_obs`, `T_persona` and the unset θ, and its digest is pinned with the floor's and the
 schema's; every number in it is a placeholder and says so. The text is **not ratified**; ADR-0030 ratified the
 language and the machinery, not a floor, and ADR-0041 ratified what a Run floor must contain, not this one.
@@ -520,9 +530,9 @@ silent failure with the widest blast radius in the system. The gates in §2.2 ru
 **The classification is computed, not asserted** (ADR-0030 §5). Between the deployed floor F and a candidate F′, the
 analyzer decides `F′ ⇒ F` and `F ⇒ F′`, and the answer picks the row. A Build author — Byzantine by premise — cannot
 relabel a relaxation as a tightening to choose a cheaper authority path for its own change. The analysis results go
-into the gate evidence that votes already bind to. **What a Byzantine author cannot do, a wrong solver can**, and
-until ADR-0030 A1 is in force the solver is the one component at the gate trusted for an answer that adds authority
-(§3.1).
+into the gate evidence that votes already bind to. **What a Byzantine author cannot do, a wrong solver could**, until
+ADR-0030 A1 (Batch 24): a `holds` now counts only with a proof the pinned checker accepted, and the solver is trusted
+for nothing (§3.1).
 
 The policy floor ships inside the mechanism, and mechanism releases are promoted like any artifact (ADR-0024 §1).
 Earlier text described the floor as "the one artifact verified rather than promoted." Both are true in sequence:
@@ -1085,7 +1095,7 @@ reopens nothing. The two axes, approver fault tolerance and anchor recoverabilit
 | Seat | Only a thinker seat is issued a variant that writes, runs or offers; adding a seat to a cell never adds authority | ADR-0037 |
 | Detection | Observers combine by any-of, and coupling only refuses: more Observers never lower safety, and an absent one stalls | ADR-0038, ADR-0039 |
 | Bundle | A bundle loads only under an issued key's signature; a file name is evidence of nothing | ADR-0044 |
-| Trusted base | A component enters only if its failure can only subtract, or its identity is issued; what can add and is fixed by nothing is refused | ADR-0045 (Proposed) |
+| Trusted base | A component enters only if its failure can only subtract, or its identity is issued; what can add and is fixed by nothing is refused | ADR-0045 |
 
 **At the pattern level it inverts.** Tightening the archetype puts every conformant deployment into declaration
 debt. Relaxing it voids published theorems. Both directions cost something.
@@ -1095,7 +1105,8 @@ debt. Relaxing it voids published theorems. Both directions cost something.
 Six records owed the trusted base rows and no two shaped a row the same way: ADR-0034 per rung, ADR-0036 per
 component at one rung, ADR-0030 a residual with no table, ADR-0037 a fact about where conformance sits, ADR-0042
 and ADR-0043 the tool host. ADR-0023 §6b required every degeneracy declaration to say what enters or leaves the
-trusted base, and the field pointed at nothing. **ADR-0045 (Proposed, 2026.09.30)** writes the table and, first, the
+trusted base, and the field pointed at nothing. **ADR-0045 (drafted 2026.09.30, ratified 2026.10.01 in Batch 22, C2
+and C4)** writes the table and, first, the
 rule for being in it. The rule is §7.8's principle stated once for the trusted base, in ADR-0015's terms: *adds
 authority* means an admit the rules in force would refuse, a promotion the tally would stall, or an issuance the
 rules floor would reject, and nothing else.
@@ -1120,16 +1131,22 @@ rules floor would reject, and nothing else.
   reference: every theorem premised on confinement, gate evidence, hermeticity or channel fidelity is void there,
   which is §15's prose made row by row.
 - **What applying the rule changed.** Of the eight components the 09.28 prioritization proposed to delegate, two are
-  trust roots, two delegated, two excluded, one not a row, and **one refused: the solver** (§3.1). Trusted time for
+  trust roots, two delegated, two excluded, one not a row, and **one refused: the solver** (§3.1), whose row has
+  since been rewritten for the proof checker that replaces it (Batch 24). Trusted time for
   R8 is refused too, which the prioritization already said. And the rule caught the record's own first draft:
   §5 had called the admit path, the tally and the log "checked, not trusted", which is true of the specification and
   false of any code that runs it. **What runs is a row**: the implementation as a refinement of the specification,
   the model checker at the constants run, and the build toolchain are trust roots for every deployment until a
   refinement chain exists, and the gap is a debt ADR-0033 owns, not a residual the archetype keeps (§15).
 
-**Not yet ratified.** ADR-0045 is Proposed, revised four times on the day it was drafted, and drafted by the
-assistant; its ratification condition asks for every owed row, the sorted candidates, the reference's annex and the
-ADR-0030 disposition of the solver, all of which exist, and a theorem-to-premise binding table, which does not.
+**Ratified, and already moving.** ADR-0045 was ratified in Batch 22 at its sixth revision, once the theorem-to-premise
+binding table existed: `spec/theorem-premise-binding.md`, forty-two rows naming for every checked property the rows,
+the degeneracy parameters and the declared gaps it rests on, with a last column that computes what holds at the
+reference. Two Annex B rows have changed class since, each by a dependent entry on the owing record's ratification:
+the bundle signer from excluded to a trust root under a dev key (Batch 23), and the solver's refused row to a trust
+root for the proof checker, pinned by three digests in the gate header (Batch 24). The binding table is a draft
+revised with the records it binds; its versioning, with the table's, is still the archetype-evolution record's
+(§8.2).
 
 ---
 
@@ -1174,7 +1191,7 @@ so, with ISO 26262's safety element out of context (SEooC) as the precedent.
   per cell plus correlator, the shared group being D-0038-1), effect-stream role, arguably HITL/HOTL/HOOTL posture,
   approver fault tolerance, anchor recoverability, **floor verification** (ADR-0030), **confinement rung**
   (ADR-0034), **lineage strength** (ADR-0035), **Observer coupling** (ADR-0039), **emission retention**
-  (ADR-0037), and now **the trusted base itself** as a coordinate beside theorems held (ADR-0045, Proposed). The set
+  (ADR-0037), and now **the trusted base itself** as a coordinate beside theorems held (ADR-0045). The set
   is not enumerated, and finiteness of
   each chain is unproven. The 09.26 accounting found the word *rung* carrying four orderings, two of them numbered
   in opposite directions: provenance rungs ascend with weakness and confinement rungs with strength. Always qualify.
@@ -1192,10 +1209,11 @@ tolerance; **A-0025**, **D-0025-1**, and **D-0025-2** on anchor recoverability; 
 floor, tested rather than proven) on floor verification; **D-0034-1** to **D-0034-4** on confinement (rung 2, rung
 1, a native tool, rung 0); **D-0037-1** and **D-0037-2** (no Observer in a cell; no raw emission retained);
 **D-0038-1** and **D-0038-2** (the shared group only; no correlator); **D-0039-1** (Run uncoupled); **D-0042-1**
-(effects counted and recorded as reports only, the reference before 09.29); **D-0044-1** (bundle signing off); and,
-in Proposed or pending records, **D-0035-1** (a lineage that can only be declared), **D-0036-1** (a profile with a
-reachable interpreter), **D-0045-1** (no trusted-base declaration at all: the bottom of every axis) and **D-0030-2**
-(routing verdicts unchecked, every gate run to date). None of these is a deployment declaration; they are record-level entries, and the 09.26 accounting
+(effects counted and recorded as reports only, the reference before 09.29); **D-0044-1** (bundle signing off, the
+reference before 10.01); **D-0045-1** (no trusted-base declaration at all: the bottom of every axis); **D-0030-2**
+(routing verdicts unchecked: every gate run before 10.01, and any run without the checker); and, in Proposed
+records, **D-0035-1** (a lineage that can only be declared) and **D-0036-1** (a profile with a reachable
+interpreter). None of these is a deployment declaration; they are record-level entries, and the 09.26 accounting
 notes that no record yet says how the two differ. **The five Observer and retention entries void no safety theorem**,
 because the Observer is deny-only, and state their losses in prose: a detection claim, an audit, a bound on unread
 emissions. ADR-0023 §6's schema has no field for that, and a *properties lost* field is proposed (G5 item 40). D-0024-1 is now reachable: `quorum`
@@ -1236,25 +1254,26 @@ trusted by declaration and becomes part of the genesis TCB.
   set is reviewed at bootstrap with everything else (below), before the rules it defines take effect.
 - Until confirmed, a publication citing a confirmation-required guarantee says "author-ratified."
 
-**Where ratification stands (2026.09.30).** Thirty-eight records are Accepted (genesis); one, ADR-0008, is
-superseded; four are Proposed: ADR-0005, blocked on a decision; ADR-0035 and ADR-0036, blocked on evidence and on a
-review; and ADR-0045, drafted this day. The confirmation-required set is **twenty**: ADR-0006 and ADR-0009 (C1, C4
-via ADR-0013), ADR-0013 (C1, C4), ADR-0015 (C2), ADR-0021 (C4), ADR-0023 (C3), ADR-0028 (C1), ADR-0030 (C1),
-ADR-0031 (C1, and C2 for A1 only), ADR-0034 (C2, C4), ADR-0037 (C3, C4), ADR-0038 (C3, C4), ADR-0039 (C4),
-**ADR-0040 (C3, C4), ADR-0041 (C1, C4), ADR-0042 (C4), ADR-0043 (C4), ADR-0044 (C1)**, and two records marked for one
-amendment only: ADR-0003 A2 (C1) and ADR-0029 A2 (C3). Batches 17 to 21, all of 2026.09.30, ratified six amendments
-and ADR-0044 (17), ADR-0021 (18), ADR-0033 A4 (19), the four Run records with three amendments (20), and ADR-0033 A5
-(21). Two records are ratified in part: ADR-0022 §1–§5, §7 and §8, with **§6 not**, since ADR-0034 discharges its
-obligation for Build and not for Run; and ADR-0042 §1–§5, §7 and §8, with **§6 not**, Run's confinement obligation,
-left out by the custodian as ADR-0022 §6 was. Accepted records carry **debts on their face** — ADR-0030's, ADR-0031's
-`ttl` check, ADR-0033's Kafka row and its refinement chain, ADR-0034's, ADR-0025's two schema fields, ADR-0044's
-whole implementation — which is ADR-0029 §2 working as written. **One marking has no criterion:** ADR-0035 R2 is
-confirmation-required by custodian instruction, because its measurement rule is a novel construction to be reviewed
-against practice; G4 carries it as a ledger line and asks whether ADR-0029 needs a criterion for markings of that
-kind. **One kind of debt is new**: three records were drafted by the assistant at the custodian's request, ADR-0044,
-ADR-0045 and ADR-0030 A1, each marking every choice as the drafter's; the custodian settled ADR-0044's by ratifying
-the text and the other two are still Proposed or pending. ADR-0029 has no criterion for that either, and G6 carries
-it beside the ADR-0035 line.
+**Where ratification stands (2026.10.01).** Thirty-nine records are Accepted (genesis); one, ADR-0008, is
+superseded; three are Proposed: ADR-0005, blocked on a decision; ADR-0035 and ADR-0036, blocked on evidence and on a
+review. The confirmation-required set is **twenty-one**: ADR-0006 and ADR-0009 (C1, C4 via ADR-0013), ADR-0013 (C1,
+C4), ADR-0015 (C2), ADR-0021 (C4), ADR-0023 (C3), ADR-0028 (C1), ADR-0030 (C1), ADR-0031 (C1, and C2 for A1 only),
+ADR-0034 (C2, C4), ADR-0037 (C3, C4), ADR-0038 (C3, C4), ADR-0039 (C4), ADR-0040 (C3, C4), ADR-0041 (C1, C4),
+ADR-0042 (C4), ADR-0043 (C4), ADR-0044 (C1), **ADR-0045 (C2, C4)**, and two records marked for one amendment only:
+ADR-0003 A2 (C1) and ADR-0029 A2 (C3). Batches 17 to 21, all of 2026.09.30, ratified six amendments and ADR-0044
+(17), ADR-0021 (18), ADR-0033 A4 (19), the four Run records with three amendments (20), and ADR-0033 A5 (21).
+Batches 22 to 24, all of 2026.10.01, ratified ADR-0045 (22), ADR-0033 A6 (23) and ADR-0030 A1 (24). Two records are
+ratified in part: ADR-0022 §1–§5, §7 and §8, with **§6 not**, since ADR-0034 discharges its obligation for Build and
+not for Run; and ADR-0042 §1–§5, §7 and §8, with **§6 not**, Run's confinement obligation, left out by the custodian
+as ADR-0022 §6 was. Accepted records carry **debts on their face** — ADR-0030's, ADR-0033's Kafka row and its
+refinement chain, ADR-0034's, ADR-0045's — which is ADR-0029 §2 working as written; three debts that stood at
+revision 10, ADR-0031's `ttl` check, ADR-0025's two schema fields and ADR-0044's implementation, were struck by
+ADR-0033 A6. **One marking has no criterion:** ADR-0035 R2 is confirmation-required by custodian instruction, because
+its measurement rule is a novel construction to be reviewed against practice; G4 carries it as a ledger line and asks
+whether ADR-0029 needs a criterion for markings of that kind. **One kind of debt is new**: three texts were drafted
+by the assistant at the custodian's request, ADR-0044, ADR-0045 and ADR-0030 A1, each marking every choice as the
+drafter's, and the custodian settled all three by ratifying the text. ADR-0029 has no criterion for that either, and
+G7 carries it beside the ADR-0035 line.
 
 **Bootstrap trigger.** The anchor *may* bootstrap once a drafted TLA+ bootstrap specification exists: five modules
 (`Genesis`, `Anchor`, `RulesFloor`, `Promotion`, `BreakGlass`), five invariants, and a mutation for each that must
@@ -1276,8 +1295,8 @@ specification digest marked drafted-only.
 
 **Ceremony.** Seat key-holders under a declared custody record. Assemble the **genesis bundle**: the corpus manifest,
 including the confirmation-required set; the specification digest, marked checked or drafted-only; the review
-attestation — reviewers, manifest digest, scope, findings disposition (A2); the genesis rules; and, once ADR-0045 is
-in force, the trusted-base declaration beside the custody record, since the five bootstrap modules rest on its
+attestation — reviewers, manifest digest, scope, findings disposition (A2); the genesis rules; and, now that ADR-0045
+is in force, the trusted-base declaration beside the custody record, since the five bootstrap modules rest on its
 rung-0 rows and the ceremony's reviewers read them as such (§7.9). Every key-holder signs its digest. That is issuance epoch 0. **The genesis bundle is the only artifact never
 promoted.**
 
@@ -1375,7 +1394,8 @@ mechanism claim for effect exclusivity; the rules floor, which carries the same 
    paper's own ordering.
 7. **Their trusted list is shorter than ours and names the Dafny verifier**, which discharges every obligation
    through Z3 and emits no certificate. ADR-0045 §2 applied to the corpus's own gate refused cvc5 for exactly that
-   reason (§3.1), so a Dafny or Verus chain would not remove T-0045-28 here; it would replace it with a trust-root
+   reason, and ADR-0030 A1 put a proof checker behind it (§3.1), so a Dafny or Verus chain would not remove
+   T-0045-28 here; it would replace it with a trust-root
    row for the verifier, which the paper accepts and this corpus would have to say. The chain shape the corpus has
    already accepted is ADR-0030 §3's: a Rust engine differentially tested against a Lean model whose theorems a
    small kernel checks.
@@ -1448,7 +1468,7 @@ The narrative expectation for that pass:
 
 ## 12. Where the argument is thin
 
-The open list is G6. In narrative terms, the argument is weakest in sixteen places.
+The open list is G7. In narrative terms, the argument is weakest in sixteen places.
 
 1. **The sandbox gap.** Effect exclusivity, ADR-0015's exhaustiveness, and ADR-0022 §6's confinement all rest on a
    mechanism that is now specified (ADR-0034) and not built. The reference issues every lease at rung 0; the first
@@ -1501,10 +1521,12 @@ The open list is G6. In narrative terms, the argument is weakest in sixteen plac
 14. **The correlator reads everything and computes nothing yet.** It has a seat kind, a placement rule, a veto seat and
     a stated read set, and no detection function; it is the corpus's answer to the strongest published impossibility
     result, and it is still, in that respect, a noun (§5.1).
-15. **The solver is trusted, and the gate evidence is unsigned.** Every floor change routed to date rests on a cvc5
-    answer nobody checked, and every promotion vote binds to a gate-evidence digest an operator asserted. ADR-0030 A1
-    names the repair for the first and is pending; the gate runner's key under ADR-0025 §1 (f) is the repair for the
-    second and is unissued (§3.1, §7.9).
+15. **The checker is trusted as written, and the gate evidence is unsigned.** Every floor change routed before
+    2026.10.01 rested on a cvc5 answer nobody checked; since then a `holds` counts only with a proof the pinned
+    checker accepted, and the trust has moved to the checker's rule signature, read as cvc5's authors wrote it, and
+    to cedar's own folding of the totality gate, which never reaches the solver (§3.1). Every promotion vote still
+    binds to a gate-evidence digest an operator asserted; the gate runner's key under ADR-0025 §1 (f) is the repair
+    and is unissued (§7.9).
 16. **What runs is not what is checked.** The modules are checked at small constants; the Rust is asserted to follow
     them, and since 2026.09.30 shown to agree with a model of itself on every tested path, which is a harness and not a
     refinement. The implementation, the model checker and the build toolchain are trust roots for every deployment,
@@ -1587,7 +1609,7 @@ promoted, no promotion pipeline exists to promote it, and nothing in it is in an
 lease it issues is rung 0, so every principal it serves is `Mediated`, and it fails assumption of use A1. **A running
 program invites being mistaken for the mechanism**, and this paragraph exists because saying so once is not enough.
 
-**It moved once since revision 7**, again at revision 9, and three times since. Batch 10 made the reference refuse
+**It moved once since revision 7**, again at revision 9, and four times since. Batch 10 made the reference refuse
 a renewal that changes the confinement rung (ADR-0031 A1), and a second addendum cited it. On 2026.09.29 it followed
 three records at once: seat kinds and one seat per principal at the grant (ADR-0037), cells and a correlator on the
 veto roster (ADR-0038), and heartbeats, marks, seals, `live(o)` at decide and apply, the cross-round grant and
@@ -1596,8 +1618,12 @@ evening it took Run's alphabet while the records were still Proposed: three Run 
 pinned set for `Consult`, the effect counter, the `Actuate` record with its `unknown` outcome ahead of the seal, and
 a refused abstain, twenty-four files, fifty-five tests, and the first addendum whose records were all Proposed
 (ADR-0033 A3, Batch 17; the records followed on 09.30 and the addendum needed no revision). Then the values pin for
-`T_persona` with no behaviour change (A4, Batch 19), and the trace recorder (A5, Batch 21, below). The register
-stands at thirty-three assumptions and nineteen gaps; the newest gap is channel fidelity, G19, and nothing checks it.
+`T_persona` with no behaviour change (A4, Batch 19), and the trace recorder (A5, Batch 21, below). On 2026.10.01 it
+built Batch 17's three debts (A6, Batch 23): the `ttl` bound refused at grant and at every renewal, the two key
+fields in the issued rules, and a bundle loaded only under a signature that verifies against those keys, with a
+renamed tarball under a forged manifest refused by test; eighteen files, 381 lines, sixty-one tests. The register
+stands at thirty-four assumptions and eighteen gaps; the bundle-signing gap retired, and the newest gap is still
+channel fidelity, G19, which nothing checks.
 
 **What it showed.** The records compose, subject to what it does not show (below): every link of §4.1's audit chain
 has running code. Making them run took the assumptions and gaps above, each tagged in the code, which turns "the
@@ -1642,7 +1668,9 @@ state and the result. When asked, the core records every `apply` as a step, and 
 trace through the model in TLC, failing at the first step whose projected state or result differs. The first run
 replayed every behaviour the mutation and e2e suites exercise, **21 traces and 163 applied entries, each step
 matching**, over grants, renewals, revocations, fences, issuances, break-glass approvals, heartbeats, promotion
-with coverage and Run sealing. Three facts the model takes from the trace rather than computing: whether an
+with coverage and Run sealing; the second, after Batch 17's debts changed the model, 22 traces and 168 entries, and
+on the way it caught a test that lowered a floor constant between two entries, which the model cannot see without
+an entry: the harness working as intended, on the test and not the code. Three facts the model takes from the trace rather than computing: whether an
 issuance passed `validate_issuance`, whether a break-glass approval's signature verified, and whether an admit's
 parameter digest matched. What it is: the first mechanized link between `spec/` and `mechanism/`, and a harness
 that catches drift at the exact step. What it is not: a refinement, or independent evidence, since the model was
@@ -1650,7 +1678,7 @@ written from the code by the same hand on the same day; agreement was expected. 
 trust-root row, and ADR-0033 owns the chain's next two stages, a Lean model with differential testing and then its
 compilation.
 
-**How it stays honest.** The reference pins the digest of every record and TLA+ module it follows, forty-two pins
+**How it stays honest.** The reference pins the digest of every record and TLA+ module it follows, forty-four pins
 now, and a test fails when one changes or when the code cites one that is not pinned (G3 §5). Every change to a
 record in this revision's window was followed by a failing drift check, a review against the code, and a re-pin.
 That is the discipline in miniature: the reference is not trusted to track the corpus; it is checked for it. The
@@ -1692,6 +1720,31 @@ directories are not tracked, and G4 measures the tree by manifest.
 **What it does not show.** That θ is right, that the near-duplicate tool is the right tool, that two lineages the
 rule calls independent fail independently (only §6's test can), and that the bound is how anyone else measures
 overlap. The last is why ADR-0035 R2 is marked for review before ratification (§12, item 10).
+
+---
+
+## Appendix G. Changes from revision 10
+
+- **State of record repointed** from G6 to G7. Counts updated: thirty-nine records accepted, two in part, one
+  superseded, three Proposed, twenty-one confirmation-required (§0, §9). The three assistant-drafted texts are all
+  ratified (§0, §9).
+- **§2.6:** ADR-0045 cited as ratified.
+- **§3.1:** the floor gated six times, the last with proofs; bundle signing implemented at the reference under a dev
+  key (ADR-0033 A6); the trusted step at the gate
+  is now checked: ADR-0030 A1 in force, the wrapper, the checker and its signature, what the checker does not reach,
+  D-0030-2 as the position of a run without the checker. **§3.2:** what a wrong solver could do, past tense.
+- **§7.8:** the trusted-base row's record no longer Proposed. **§7.9:** ADR-0045 ratified in Batch 22; the solver's
+  row rewritten for the checker; "Not yet ratified" replaced by the binding table and the two rows that changed
+  class since.
+- **§8.2:** the trusted base no longer Proposed; D-0044-1, D-0045-1 and D-0030-2 moved out of the Proposed-or-pending
+  clause and dated.
+- **§9:** ratification at 2026.10.01; Batches 22 to 24; three debts struck from the face list; the trusted-base
+  declaration in the genesis bundle now that ADR-0045 is in force.
+- **§11.1:** item 7 names the checker. **§12:** item 15 rewritten, the checker trusted as written and the gate
+  evidence still unsigned.
+- **§15:** four moves since revision 9; the A6 addendum; the register at thirty-four and eighteen; the second trace
+  run and what it caught; forty-four pins.
+- **Appendices A to F retained.**
 
 ---
 

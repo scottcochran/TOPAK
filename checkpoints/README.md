@@ -36,6 +36,6 @@ verified at.
 
 ## Tags
 
-`G3` to `G7` mark the commit that added each checkpoint; `glossary-2026.09.30` the glossary's revision in place; `ToO-rev7` to `ToO-rev10` each Theory of Operation
-revision; `REF-<date>` the reference tree each ADR-0033 addendum cites; `SLM-2026.09.28` the rehearsal tree. G1, G2
+`G3` to `G7` mark the commit that added each checkpoint; `glossary-<date>` each revision of the glossary in place;
+`ToO-rev7` to `ToO-rev11` each Theory of Operation revision; `REF-<date>` the reference tree each ADR-0033 addendum cites; `SLM-2026.09.28` the rehearsal tree. G1, G2
 and revisions before 7 predate git and have no tag.

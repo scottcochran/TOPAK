@@ -1,17 +1,18 @@
 # TOPAK — Glossary
 
-**2026.09.30** · narrative · the glossary head, revised in place · DRAFT
+**2026.10.01** · narrative · the glossary head, revised in place · DRAFT
 
-**Basis.** Genesis Checkpoint G6 (2026.09.30) and Theory of Operation revision 10 (`narrative/theory-of-operation.md`,
-tag `ToO-rev10`), with the record files they cite. Where the two disagree, G6 wins. The four Proposed records
-(ADR-0005, ADR-0035, ADR-0036, ADR-0045) and the one Proposed section (ADR-0042 §6) appear under their subjects, tagged
-**[P]**, and are collected in §10.
+**Basis.** Genesis Checkpoint G7 (2026.10.01) and Theory of Operation revision 11 (`narrative/theory-of-operation.md`,
+tag `ToO-rev11`), with the record files they cite. Where the two disagree, G7 wins. The three Proposed records
+(ADR-0005, ADR-0035, ADR-0036) and the one Proposed section (ADR-0042 §6) appear under their subjects, tagged **[P]**,
+and are collected in §10.
 
-**What this supersedes.** The 2026.09.29 glossary, cut against G5 and revision 9, which this file's previous bytes
-were (`derived/topak-glossary-2026.09.29.md` until the 2026.09.30 reorganization; `git log --follow` reads it). Every
-entry was re-read against G6; the ones Batches 17 to 21, ADR-0044 and ADR-0045 changed are rewritten, and §14 lists
-the wording that retired. From this revision on the glossary has no dated copies: a revision is a commit to this
-file, and the checkpoint cut with it measures the head.
+**What this supersedes.** This file's 2026.09.30 revision (tag `glossary-2026.09.30`), cut against G6 and revision
+10; `git diff glossary-2026.09.30 glossary-2026.10.01 -- narrative/glossary.md` reads the two side by side. The
+entries Batches 22 to 24 changed are rewritten: the trusted base in force, the solver checked, bundles signed at the
+reference; §14 lists the wording that retired. Before that, the 2026.09.29 glossary (`derived/topak-glossary-2026.09.29.md`
+until the reorganization; `git log --follow` reads it). The glossary has no dated copies: a revision is a commit to
+this file, and the checkpoint cut with it measures the head.
 
 **This document decides nothing.** It reports what the terms mean in the corpus as it stands, including where two
 sources disagree.
@@ -26,12 +27,12 @@ sources disagree.
 | **[A·CR]** | Defined by an Accepted record, or amendment, marked confirmation-required. Cite as *author-ratified* |
 | **[P]** | Defined by a Proposed record, a pending amendment, or a DRAFT artifact. The wording can still move |
 | **[D]** | Derived: used in the narrative, with no record of its own |
-| **[C]** | Checkpoint convention, fixed by G1–G6 |
+| **[C]** | Checkpoint convention, fixed by G1–G7 |
 | **[R]** | The reference implementation (ADR-0033). It is evidence, not the verified object |
-| **[O]** | Outstanding: the term names a hole rather than a mechanism. Numbers refer to the G6 §7 open list |
+| **[O]** | Outstanding: the term names a hole rather than a mechanism. Numbers refer to the G7 §7 open list |
 | **[X]** | Superseded: the term's record is superseded and its text is no longer in force |
 
-Record status is G6 §1 and is not restated here except where the status changes what a term means.
+Record status is G7 §1 and is not restated here except where the status changes what a term means.
 
 ---
 
@@ -198,8 +199,8 @@ and assumed for the round. Epoch, fence and rules epoch are compared on every ac
 trusted base that is derived rather than declared; the rest is ADR-0045's table (§9).
 
 **`T_persona`** [A·CR]: the bound on a lease's `ttl`, at grant and at every renewal, so the Persona is re-attested at
-least that often (ADR-0031 A2, Batch 17). A policy-floor value, placeholder one hour, not yet read by the reference.
-It bounds the declared value; expiry runs on the local clock, so the interval it bounds is `T_persona` plus drift
+least that often (ADR-0031 A2, Batch 17). A policy-floor value, placeholder one hour, read by the reference since
+ADR-0033 A6 (Batch 23) and refused at apply like every mechanism condition. It bounds the declared value; expiry runs on the local clock, so the interval it bounds is `T_persona` plus drift
 (ADR-0045 finding 2).
 
 ---
@@ -274,7 +275,7 @@ Observer is live (ADR-0039 §2 as amended by A1; ADR-0041 §1). It applies to br
 alphabet contains it, and the object is in the Run root (ADR-0041 §1). The exemption from R3 rests on the pinning,
 and the gate run carries a control for it: R4 without its root condition is classed a relaxation by routing.
 
-**Checked routing verdict**: ADR-0030 A1, ratified 2026.10.01 (Batch 24, after G6). A `holds` answer to `F′ ⇒ F` or
+**Checked routing verdict** [A·CR]: ADR-0030 A1, ratified 2026.10.01 (Batch 24). A `holds` answer to `F′ ⇒ F` or
 `F ⇒ F′` is an UNSAT result from the solver, and a wrong one lets a relaxation pass by promotion alone; under A1 a
 `holds` verdict counts only with the query, the solver's proof and a pinned checker's acceptance, their digests in
 the gate evidence. A `refuted` verdict needs none, since it can only subtract. The wrapper is `floor/cvc5-checked`
@@ -283,11 +284,17 @@ decided without a solver query and rests on the engine's row. A gate run without
 routing verdicts unchecked, whose subtractive mitigation is to make every floor change two-key; every run before
 2026.10.01 was one.
 
+**Evidence tree** [C]: the queries, bound proofs and verdicts of a gate run, copied beside its results file
+(`floor/genesis-gates-evidence-<date>/`), with the tree's digest printed at the end of the results; that digest is
+what joins the gate-evidence digest. A verdict names the query, proof, solver and checker digests. The first is the
+2026.10.01 run's, reproducible run to run.
+
 **Bundle signing** · **bundle key** [A·CR]: a bundle is trusted by its signature, not its file name (ADR-0044, Batch
 17, C1). The bundle key is carried in the issued rules (ADR-0025 §1 (f)); the signature covers the content revision;
 the mechanism loads a bundle only when it verifies, counts a sidecar's decision only from a verified revision, and
-refuses a grant naming an unverified one; signing happens at promotion. Not implemented at the reference
-(**D-0044-1**; `mechanism/` G7).
+refuses a grant naming an unverified one; signing happens at promotion. Implemented at the reference since ADR-0033
+A6 (Batch 23) under a dev key with custody (1, 0) (`mechanism/` I34); **D-0044-1** was the reference's position before
+2026.10.01, and signing at promotion is a script step until a promotion pipeline exists (G7 item 67).
 
 **Floor-change routing** [A·CR]: the classification is **computed, not asserted**. The analyzer decides `F′ ⇒ F`
 and `F ⇒ F′`:
@@ -696,9 +703,10 @@ D-0025-1 and D-0025-2, on anchor recoverability. **A-0030** and **D-0030-1** (a 
 *proven*), on floor verification. **D-0034-1** to **D-0034-4** (rung 2, rung 1, a native tool, rung 0), on
 confinement. **D-0037-1** (no Observer in a cell), **D-0037-2** (no raw emission retained), **D-0038-1** (the shared
 group only: ADR-0008 as ratified), **D-0038-2** (no correlator), **D-0039-1** (Run uncoupled), **D-0042-1** (effects
-counted and recorded as reports only: the reference before 09.29), **D-0044-1** (bundle signing off). In Proposed or
-pending records, D-0035-1, D-0036-1, **D-0045-1** (no trusted-base declaration: the bottom of every axis) and
-**D-0030-2** (routing verdicts unchecked). None is a deployment declaration.
+counted and recorded as reports only: the reference before 09.29), **D-0044-1** (bundle signing off: the reference
+before 10.01), **D-0045-1** (no trusted-base declaration: the bottom of every axis), **D-0030-2** (routing verdicts
+unchecked: every gate run before 10.01, and a run without the checker). In Proposed records, D-0035-1 and D-0036-1.
+None is a deployment declaration.
 
 **Properties lost** [O, 40]: the field ADR-0023 §6's schema lacks. The five Observer and retention degeneracies void
 no safety theorem and state their losses in prose: a detection claim, an audit, a bound (ADR-0037 finding 6).
@@ -723,11 +731,11 @@ Rung 1 cannot produce it.
 **Axes named so far** [D]: Persona provenance, event-log legibility, Observer scoping (archetype fixed: per cell plus
 correlator), effect-stream role, arguably HITL/HOTL/HOOTL posture, approver fault tolerance, anchor recoverability,
 floor verification, confinement rung, lineage strength, Observer coupling, emission retention, and the trusted base
-itself as a coordinate beside theorems held (ADR-0045, Proposed). The set is not enumerated.
+itself as a coordinate beside theorems held (ADR-0045). The set is not enumerated.
 
 **Archetype-evolution record** [O, 7]: holds archetype versioning, the dominance rule and non-increasing TCB, and now
-the versioning of ADR-0045's table and, with it, the **theorem-to-premise binding table** (ADR-0045 §3). Until it
-exists, **nothing bounds how the archetype grows**, and "computed void" is a claim about what the table would show.
+the versioning of ADR-0045's table and of the binding table (§9). Until it exists, **nothing bounds how the archetype
+grows**, and "computed void" is a claim the binding table's last column makes by hand, revised with the records.
 
 **Assumptions of use** [D]: ToO §13, framed as a SEooC. **A deployment that fails them does not inherit the
 theorems.**
@@ -828,15 +836,17 @@ mechanism.
 
 **Trace validation** [R]: with `TOPAK_TRACE_DIR` set, the core records every `apply` as a step; `spec/trace2tla.py`
 and `mechanism-trace-run.sh` replay each recorded trace through the operational model in TLC, failing at the first
-step whose projected state or result differs. The 2026.09.30 run: 21 traces, 163 steps, every step matching
-(ADR-0033 A5). **A mechanized link and a drift harness, not a refinement and not independent evidence**: the model was
+step whose projected state or result differs. Two runs: 2026.09.30, 21 traces and 163 steps (ADR-0033 A5);
+2026.10.01, 22 and 168 after Batch 17's debts changed the model (A6), every step matching in both. The second caught
+a test that changed a floor constant between entries, not the code. **A mechanized link and a drift harness, not a refinement and not independent evidence**: the model was
 written from the code by the same hand on the same day. Three facts it takes from the trace rather than computing:
 issuance validity, approval signatures, the parameter digest.
 
 **Reference implementation** [R]: `mechanism/`, the admit path end to end. It is **evidence, not the verified
-object** (ADR-0033 §1). It is cited by manifest and commit (last `SHA256SUMS-REF-2026.09.30b` at `8cf9bd1`), it has
+object** (ADR-0033 §1). It is cited by manifest and commit (last `SHA256SUMS-REF-2026.10.01` at `dacbb0c`), it has
 never been promoted, and its own trusted-base declaration is ADR-0045 Annex B. It issues only rung-0 leases, so it
-fails A1. **Thirty-three assumptions and nineteen gaps** are tagged in the code (`GAPS-AND-ASSUMPTIONS.md`). Since
+fails A1. **Thirty-four assumptions and eighteen gaps** are tagged in the code (`GAPS-AND-ASSUMPTIONS.md`); the
+bundle-signing gap retired on 10.01, when bundles became signed, the `ttl` bounded and the key fields issued. Since
 09.29 it has seat kinds, cells, a correlator, heartbeats, marks, seals, coupling, coverage, Run's three actions, the
 effect counter and the `Actuate` record; since 09.30 the trace recorder. It owes Batch 17's three debts: the `ttl`
 bound, the two key fields, bundle signing.
@@ -854,14 +864,21 @@ module and the reference counted different things; the bundle tier cannot hold a
 trusted-base row **T-0045-1**: a trust root whose residual is the forged admit, with mutual authentication as its
 delegated mitigation, unbuilt (item 23). BFT is not required.
 
-**Trusted-base record** [P, 53]: ADR-0045, Proposed, drafted 2026.09.30 and revised four times that day. The rule for
-entering the trusted base, the archetype's table of thirty **rows** (Annex A), and the reference's own declaration
-(Annex B). Six records owed it rows and it carries all of them.
+**Trusted-base record** [A·CR]: ADR-0045, drafted 2026.09.30, revised six times, ratified 2026.10.01 (Batch 22, C2 and
+C4). The rule for entering the trusted base, the archetype's table of thirty **rows** (Annex A), and the reference's
+own declaration (Annex B). Six records owed it rows and it carries all of them. Two Annex B rows changed class after
+ratification, by dependent entry: the bundle signer, excluded to trust root under a dev key (B23), and the solver's,
+refused to trust root for the proof checker (B24).
 
-**Row** [P]: one entry of the trusted base, `T-0045-n`, with a fixed schema: component, layer, *trusted for* (the
+**Binding table** [P]: `spec/theorem-premise-binding.md` (ADR-0045 R6), one row per checked property naming the
+trusted-base rows, the degeneracy parameters and the declared gaps it rests on; forty-two rows, DRAFT, revised with
+the records it binds. Its last column computes the reference's inventory: a property holds when every row it names
+is delegated or a trust root, and is void on an excluded, undeclared or refused one.
+
+**Row** [A·CR]: one entry of the trusted base, `T-0045-n`, with a fixed schema: component, layer, *trusted for* (the
 row's premise), rungs, class, what its failure can produce, what fixes its identity, residual (ADR-0045 §1).
 
-**Delegated** · **trust root** · **excluded** · **refused** [P]: the three row classes and the refusal (ADR-0045 §2).
+**Delegated** · **trust root** · **excluded** · **refused** [A·CR]: the three row classes and the refusal (ADR-0045 §2).
 A **delegated** row's failure can produce only subtractions and needs no key; a **trust root**'s failure can add
 authority, and the corpus trusts it because an issuance or a promotion fixes its identity and its own record admitted
 it; an **excluded** row is relied on and trusted for nothing, so the theorems on it compute void; anything whose
@@ -869,21 +886,23 @@ failure can add and whose identity nothing fixes is **refused**, inside the veri
 authority" is ADR-0015's: an admit the rules in force would refuse, a promotion the tally would stall, an issuance
 the rules floor would reject.
 
-**Premise node** [P]: a row's *trusted for* sentence, read as a premise in the theorem DAG; **an undeclared row is
+**Premise node** [A·CR]: a row's *trusted for* sentence, read as a premise in the theorem DAG; **an undeclared row is
 false**, and type changes are rows (ADR-0045 §3). Removing a row is a tightening; adding one is a relaxation that
 needs its own record.
 
-**The solver, refused**: cvc5's "implies" answers fail both admissible classes; ADR-0045 §6 refuses the row and
-ADR-0030 A1 moves the trust to a proof checker (§4), which is T-0045-14's trust root since Batch 24 (2026.10.01).
+**The solver, refused** [A·CR]: cvc5's "implies" answers fail both admissible classes; ADR-0045 §6 refuses the row
+and ADR-0030 A1 moves the trust to a proof checker (§4), which is T-0045-14's trust root since Batch 24 (2026.10.01):
+the checker binary, its rule signature and the wrapper, pinned by the three digests the gate header prints.
 
-**What runs is a row** [P]: the implementation as a refinement of the specification, the model checker at the
+**What runs is a row** [A·CR]: the implementation as a refinement of the specification, the model checker at the
 constants run, and the build toolchain are trust roots for every deployment until a refinement exists
 (T-0045-28 to 30, ADR-0045 R1). The first draft had called them "checked, not trusted"; a comparison with Moon &
 Varshney caught it (finding 7).
 
 **Assisted drafting** · **drafter's choice** [C]: ADR-0044, ADR-0045 and ADR-0030 A1 were drafted by the assistant at
 the custodian's request, every choice the custodian did not settle marked *(drafter's choice)*; ratification settles
-them. One step further from review than author-ratification, and ADR-0029 has no criterion for it (G6 item 66).
+them, and all three are ratified (Batches 17, 22, 24). One step further from review than author-ratification, and
+ADR-0029 has no criterion for it (G7 item 66).
 
 **Scoping amendment** [C]: an amendment that narrows what an accepted clause was ever about rather than changing its
 effect ratifies without C3, and its row names the reading under which C3 would attach (ADR-0003 A3, B17).
@@ -892,12 +911,10 @@ effect ratifies without C3, and its row names the reading under which C3 would a
 
 ## 10. Proposed records
 
-Four records and one section are Proposed at G6. **None is Accepted.** ADR-0021 left this list in Batch 18.
+Three records and one section are Proposed at G7. **None is Accepted.** ADR-0021 left this list in Batch 18 and
+ADR-0045 in Batch 22.
 
 **ADR-0005** [P, 5]: Kafka's role. The reference's use of Kafka is a debt against it.
-
-**ADR-0045** [P, 53]: the trusted base (§9). Its ratification condition is met except for the theorem-to-premise
-binding table.
 
 **ADR-0042 §6** [P, 58]: Run's confinement obligation (§2), left out of Batch 20 as ADR-0022 §6 was left out of B2.
 
@@ -918,7 +935,7 @@ points finding 1 at ADR-0035 R4. Its ratification run is item 34, with five miss
 
 ## 11. Outstanding
 
-These terms name a hole. Each one points to the G6 §7 open list.
+These terms name a hole. Each one points to the G7 §7 open list.
 
 | Term | Item |
 |---|---|
@@ -926,12 +943,12 @@ These terms name a hole. Each one points to the G6 §7 open list.
 | **Floor fitness** | 2 |
 | ADR-0005 (Kafka) | 5 |
 | ADR-0017 supersession | 6 · 50 |
-| Archetype-evolution record · the theorem-to-premise binding table | 7 · 53 |
+| Archetype-evolution record · the binding table's versioning | 7 |
 | R8, break-glass TTL | 8 |
 | Per-class floors (ADR-0014) | 9 |
 | Re-genesis migration | 10 |
 | Custody beyond (1, 0) | 11 |
-| The glossary's Run names (this revision) · the stale derived set | 12 · 63 |
+| The stale derived set | 12 |
 | Decoder–alphabet compatibility; a decoder seat | 17 |
 | Independence criterion (ADR-0035) · the in-guest trainer image | 20 |
 | Lifting a revocation | 22 |
@@ -955,9 +972,6 @@ These terms name a hole. Each one points to the G6 §7 open list.
 | Break-glass under a dead Observer | 49 |
 | **Delegation / on-behalf-of** · attenuation · honeypots | 51 |
 | The live smoke run | 52 |
-| **ADR-0045's ratification** | 53 |
-| **ADR-0030 A1**: the solver wrapper and the proof checker | 54 |
-| **Batch 17's reference debts**: the `ttl` check, the two key fields, bundle signing | 55 |
 | **The refinement chain**, stages 2 and 3 · the reproducible build | 56 |
 | **Gate evidence signed** (T-0045-13) | 57 |
 | The allowlist entry's schema | 59 |
@@ -965,6 +979,10 @@ These terms name a hole. Each one points to the G6 §7 open list.
 | `T_persona` on a local clock | 62 |
 | ADR-0023 §6b amendment · a deployment declaration template | 64 |
 | An ADR-0029 criterion for assisted drafting | 66 |
+| Signing at promotion · the bundle key's custody row | 67 |
+| The checker carried in a release | 68 |
+| What `holds°` rests on: cedar's folding of the totality gate | 69 |
+| Theory of Operation revision 11 (discharged by this cut) · the register's header | 70 · 71 |
 
 Unowned and not numbered: **`Invoke` hermeticity** for native tools (an excluded row, T-0045-23) · **channel
 fidelity** for Run tools (T-0045-24; G19) · **flow** (CR-6) · the **residual-risk statement**, headed by anchor
@@ -1075,11 +1093,14 @@ crypto-shredding as mechanism, Kafka as system of record, "strictly stronger tha
 | R3 on every Run admit | R3 on `Actuate` and `Report`; `Consult` exempt, on the pinning | ADR-0041 §2 |
 | "No tiered storage" read as a retention length | One store for the topic's whole retention; length per use and per domain | ADR-0003 A3 |
 | ADR-0021 "stays Proposed" | Ratified, Batch 18 | G6 §1 |
-| "TCB declaration record: unwritten" | ADR-0045, Proposed, with an admission rule and thirty rows | ADR-0045 |
+| "TCB declaration record: unwritten" | ADR-0045, in force, with an admission rule and thirty rows | ADR-0045; Batch 22 |
+| "ADR-0045, Proposed" · "the binding table does not exist" | Accepted (genesis), C2 and C4; forty-two rows, DRAFT | Batch 22; ADR-0045 R6 |
+| "The solver is trusted" · "every gate run is D-0030-2" | A `holds` counts only with a proof the pinned checker accepted; D-0030-2 is a run without the checker | ADR-0030 A1, Batch 24 |
+| "Not yet read by the reference" (`T_persona`) | Refused at grant and renewal | ADR-0033 A6 |
 | "Write the solver's row; do not try to verify cvc5" | The solver is refused; a `holds` verdict counts only with a checked proof | ADR-0045 §6; ADR-0030 A1 |
 | "The admit path, the tally and the log are checked, not trusted" | True of the specification; what runs is a trust-root row | ADR-0045 R1 |
 | "Persona expiry: open" | `ttl ≤ T_persona` | ADR-0031 A2 |
-| "Bundle signing: open" | A record in force; the implementation owed | ADR-0044 |
+| "Bundle signing: open" · "the implementation owed" | A record in force and implemented at the reference under a dev key | ADR-0044; ADR-0033 A6 |
 | The reference "checked only by restated tests" | Every tested behaviour replayed through the operational model | ADR-0033 A5 |
 | Monotonicity "at twelve layers" | Fourteen: bundle and trusted base | ToO rev 10 §7.8 |
 | Dated glossary and ToO copies after revision 9 | A head file, a commit and a tag | The 2026.09.30 reorganization |
@@ -1088,9 +1109,9 @@ crypto-shredding as mechanism, Kafka as system of record, "strictly stronger tha
 
 ## Sources
 
-**Basis.** `checkpoints/topak-genesis-checkpoint-G6-2026.09.30.md` · `narrative/theory-of-operation.md` at tag
-`ToO-rev10` · the records they cite, at their G6 digests.
+**Basis.** `checkpoints/topak-genesis-checkpoint-G7-2026.10.01.md` · `narrative/theory-of-operation.md` at tag
+`ToO-rev11` · the records they cite, at their G7 digests.
 
-**Superseded.** This file's previous revision, the 2026.09.29 glossary (`derived/topak-glossary-2026.09.29.md` before
-the reorganization, measured by `manifests/SHA256SUMS-G6` at its commit), and through it the 09.26 and 09.17
-glossaries whose §12 is carried by reference.
+**Superseded.** This file's previous revision (tag `glossary-2026.09.30`, measured by `manifests/SHA256SUMS-G7` at its
+commit), before it the 2026.09.29 glossary (`derived/topak-glossary-2026.09.29.md` before the reorganization, measured
+by `manifests/SHA256SUMS-G6`), and through it the 09.26 and 09.17 glossaries whose §12 is carried by reference.
