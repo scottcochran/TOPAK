@@ -15,4 +15,4 @@ SHA256SUMS-REF-2026.09.30	reference	2026.09.30	fb40db1	65	65	ADR-0033 A4
 SHA256SUMS-REF-2026.09.30b	reference	2026.09.30	8cf9bd1	66	66	ADR-0033 A5; the pin moved in the next commit (Batch 21), so at 8cf9bd1 every entry verifies
 SHA256SUMS-SLM-2026.09.28	rehearsal	2026.09.28	7542730	40	40	ADR-0035 §8
 SHA256SUMS-REF-2026.10.01	reference	2026.10.01	dacbb0c	66	66	ADR-0033 A6; the pin moves in the next commit
-SHA256SUMS-G7	checkpoint	2026.10.01	HEAD	336	336	first cut under the 2026.09.30 layout; measures tools/cpc (ADR-0045 T-0045-14) beside the jar; the index itself is excluded from G7 on
+SHA256SUMS-G7	checkpoint	2026.10.01	97d1b81	336	336	first cut under the 2026.09.30 layout; measures tools/cpc (ADR-0045 T-0045-14) beside the jar; the index itself is excluded from G7 on
