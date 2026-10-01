@@ -274,11 +274,14 @@ Observer is live (ADR-0039 §2 as amended by A1; ADR-0041 §1). It applies to br
 alphabet contains it, and the object is in the Run root (ADR-0041 §1). The exemption from R3 rests on the pinning,
 and the gate run carries a control for it: R4 without its root condition is classed a relaxation by routing.
 
-**Checked routing verdict** [P]: ADR-0030 A1, pending. A `holds` answer to `F′ ⇒ F` or `F ⇒ F′` is an UNSAT result
-from the solver, and a wrong one lets a relaxation pass by promotion alone; under A1 a `holds` verdict counts only
-with the query, the solver's proof and a pinned checker's acceptance, their digests in the gate evidence. A `refuted`
-verdict needs none, since it can only subtract. Until the wrapper and checker exist every gate run is **D-0030-2**,
-routing verdicts unchecked, whose subtractive mitigation is to make every floor change two-key.
+**Checked routing verdict**: ADR-0030 A1, ratified 2026.10.01 (Batch 24, after G6). A `holds` answer to `F′ ⇒ F` or
+`F ⇒ F′` is an UNSAT result from the solver, and a wrong one lets a relaxation pass by promotion alone; under A1 a
+`holds` verdict counts only with the query, the solver's proof and a pinned checker's acceptance, their digests in
+the gate evidence. A `refuted` verdict needs none, since it can only subtract. The wrapper is `floor/cvc5-checked`
+and the checker `ethos`, checking cvc5's CPC proofs against the signature in `tools/cpc/`; a `holds°` is one cedar
+decided without a solver query and rests on the engine's row. A gate run without the checker is **D-0030-2**,
+routing verdicts unchecked, whose subtractive mitigation is to make every floor change two-key; every run before
+2026.10.01 was one.
 
 **Bundle signing** · **bundle key** [A·CR]: a bundle is trusted by its signature, not its file name (ADR-0044, Batch
 17, C1). The bundle key is carried in the issued rules (ADR-0025 §1 (f)); the signature covers the content revision;
@@ -870,8 +873,8 @@ the rules floor would reject.
 false**, and type changes are rows (ADR-0045 §3). Removing a row is a tightening; adding one is a relaxation that
 needs its own record.
 
-**The solver, refused** [P]: cvc5's "implies" answers fail both admissible classes; ADR-0045 §6 refuses the row and
-ADR-0030 A1 moves the trust to a proof checker (§4).
+**The solver, refused**: cvc5's "implies" answers fail both admissible classes; ADR-0045 §6 refuses the row and
+ADR-0030 A1 moves the trust to a proof checker (§4), which is T-0045-14's trust root since Batch 24 (2026.10.01).
 
 **What runs is a row** [P]: the implementation as a refinement of the specification, the model checker at the
 constants run, and the build toolchain are trust roots for every deployment until a refinement exists

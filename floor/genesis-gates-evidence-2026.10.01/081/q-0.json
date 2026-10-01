@@ -1,0 +1,34 @@
+{
+ "index": 0,
+ "query": "q-0.smt2",
+ "query_sha256": "55d5895c9b2b53908fe0ffca836e2efc71688b86b18986920a66cfa62211048a",
+ "solver": "fake-solver-2.sh",
+ "solver_sha256": "859de7bc7a366d89be0d2a5ddce2b13debc50e7a1dac14e44d191f044bac9d9e",
+ "solver_argv": [
+  "--lang",
+  "smt",
+  "--tlimit=60000",
+  "--produce-proofs",
+  "--dump-proofs",
+  "--proof-format-mode=cpc",
+  "--proof-granularity=dsl-rewrite"
+ ],
+ "checker": "ethos",
+ "checker_sha256": "4eb41c1f1f9fce881ec94e8bac0e5a9b410f78dab7692ab03c90e76f9e6eca7d",
+ "checked": false,
+ "answer": "unsat",
+ "forwarded": "unknown",
+ "reason": "checker refused: Error: q-0.cpc:108.42: Could not find symbol @p55",
+ "renamed": [
+  "E1",
+  "E3",
+  "E5",
+  "E7",
+  "R0",
+  "R2",
+  "R4",
+  "R6"
+ ],
+ "proof": "q-0.cpc",
+ "proof_sha256": "5e030842b0f026cb7f7949246501924afdfb9402a44ad12b3a49fdfea69cf0da"
+}

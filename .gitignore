@@ -1,6 +1,8 @@
 # TLA+ tooling. tools/ is tracked: the wrappers, the installer, the verification scripts and tla2tools.jar
 # (since 756b481, for its digest: ADR-0045 T-0045-29). The static cvc5 build the floor gates use is not.
 tools/cvc5-*/
+# The proof checker build (tools/install-ethos.sh): its binary digest is printed in the gate header.
+tools/ethos-*/
 spec/*.cfg
 spec/Trace_*.tla
 spec/states/

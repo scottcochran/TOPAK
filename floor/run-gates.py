@@ -10,10 +10,19 @@ Gates, per action signature (principal type, action, resource type) over schema 
   routing         three candidate revisions are classified by implies in both directions
                   and routed per ToO §3.2; incomparable routes as a relaxation
 
-Requires: cedar built with `--features analyze`, and CVC5 pointing at a cvc5 binary.
+Every solver call goes through `cvc5-checked` (ADR-0030 §5 A1): the query is kept, the solver runs with
+proof production on, and an `unsat` reaches cedar only after the pinned checker (ethos) accepts a proof of
+false from the query's own declarations and assertions. A `holds` is marked `holds✓` when every query behind
+it was so checked, and `holds°` when cedar decided it without a solver query (a syntactic subset). The
+queries, proofs and verdicts are copied beside the results file as `<results>.evidence/`, and their tree
+digest is printed at the end: that is what joins the gate-evidence digest.
+
+Requires: cedar built with `--features analyze`; CVC5 pointing at a cvc5 1.4.0 binary; ETHOS pointing at
+the checker (default tools/ethos-8dc85c4/bin/ethos, from tools/install-ethos.sh).
 Usage: run-gates.py [results-file]
 """
 import hashlib
+import json
 import os
 import re
 import subprocess
@@ -34,6 +43,27 @@ SIGS = {
 
 TMP = tempfile.mkdtemp(prefix="floor-gates-")
 LOG = []
+
+TOOLS = os.path.join(os.path.dirname(HERE), "tools")
+WRAPPER = os.path.join(HERE, "cvc5-checked")
+REAL_CVC5 = os.environ.get("CVC5", "cvc5")
+ETHOS = os.environ.get("ETHOS", os.path.join(TOOLS, "ethos-8dc85c4", "bin", "ethos"))
+CPC = os.path.join(TOOLS, "cpc")
+CALLS = os.path.join(TMP, "calls")
+STATS = {"calls": 0, "queries": 0, "checked": 0, "sat": 0, "unknown": 0}
+INDEX = []   # one row per cedar call: call, cmd, action, result, queries, checked, sat, unknown
+
+
+def tree_digest(root, suffix=None):
+    """sha256 over 'relpath  sha256' lines of every file under root (sorted); 16 hex chars."""
+    lines = []
+    for dp, _, fns in os.walk(root):
+        for fn in fns:
+            if suffix and not fn.endswith(suffix):
+                continue
+            p = os.path.join(dp, fn)
+            lines.append(f"{os.path.relpath(p, root)}  {hashlib.sha256(open(p, 'rb').read()).hexdigest()}")
+    return hashlib.sha256("\n".join(sorted(lines)).encode()).hexdigest()[:16]
 
 
 def out(line=""):
@@ -64,37 +94,60 @@ def write(name, text):
     return p
 
 
-def symcc(action, cmd, *args):
+def symcc(action, cmd, *args, solver=None):
+    """One cedar analysis. Returns (verdict, raw output). The verdict is `holds✓` when every solver query
+    behind it came back as a checked proof, `holds°` when cedar needed no query, else `refuted`/`ERROR`."""
+    STATS["calls"] += 1
+    d = os.path.join(CALLS, f"{STATS['calls']:03d}")
+    os.makedirs(d)
+    env = dict(os.environ, CVC5=WRAPPER, TOPAK_CVC5=solver or REAL_CVC5, TOPAK_ETHOS=ETHOS,
+               TOPAK_CPC=CPC, TOPAK_PROOF_DIR=d)
     argv = ["cedar", "symcc", "--schema", SCHEMA, "--principal-type", "Topak::Seat",
             "--action", f'Topak::Action::"{action}"', "--resource-type", f"Topak::{SIGS[action]}",
             "--error-format", "plain", cmd, *args]
-    r = subprocess.run(argv, capture_output=True, text=True)
+    r = subprocess.run(argv, capture_output=True, text=True, env=env)
     s = r.stdout + r.stderr
+    vs = [json.load(open(os.path.join(d, f))) for f in sorted(os.listdir(d)) if f.endswith(".json")]
+    q, c = len(vs), sum(v["checked"] for v in vs)
+    sat, unk = sum(v["forwarded"] == "sat" for v in vs), sum(v["forwarded"] not in ("sat", "unsat") for v in vs)
+    STATS["queries"] += q; STATS["checked"] += c; STATS["sat"] += sat; STATS["unknown"] += unk
     # symcc prints "✓ …: VERIFIED" when a property holds and "✗ …: DOES NOT HOLD" when refuted.
     if "DOES NOT HOLD" in s:
-        return "refuted", s
-    if ": VERIFIED" in s:
-        return "holds", s
-    return "ERROR", s
+        res = "refuted"
+    elif ": VERIFIED" in s:
+        res = "holds✓" if (c == q and q > 0) else ("holds°" if q == 0 else "holds?")
+    else:
+        res = "ERROR"
+    INDEX.append(f"{STATS['calls']:03d}\t{cmd}\t{action}\t{res}\t{q}\t{c}\t{sat}\t{unk}")
+    return res, s
+
+
+def unchecked_holds():
+    """A cedar `holds` that no checked proof backs: never acceptable under ADR-0030 §5 A1."""
+    return sum(1 for row in INDEX if row.split("\t")[3] == "holds?")
 
 
 def main():
     text = open(FLOOR).read()
     pols = split_policies(text)
     ver = subprocess.run(["cedar", "--version"], capture_output=True, text=True).stdout.strip()
-    cvc = subprocess.run([os.environ.get("CVC5", "cvc5"), "--version"], capture_output=True, text=True).stdout.splitlines()[0]
+    cvc = subprocess.run([REAL_CVC5, "--version"], capture_output=True, text=True).stdout.splitlines()[0]
     out("TOPAK — genesis policy floor: ADR-0030 §5 gates")
     dig = lambda p: hashlib.sha256(open(p, "rb").read()).hexdigest()[:16]
     out(f"Floor: {os.path.basename(FLOOR)} (sha256 {dig(FLOOR)}) · {len(pols)} policies · "
         f"schema {os.path.basename(SCHEMA)} (sha256 {dig(SCHEMA)}) · "
         f"values {os.path.basename(VALUES)} (sha256 {dig(VALUES)})")
-    out(f"{ver} · {cvc}")
+    ethos_commit = open(os.path.join(os.path.dirname(os.path.dirname(ETHOS)), "COMMIT")).read().strip()[:7] \
+        if os.path.exists(os.path.join(os.path.dirname(os.path.dirname(ETHOS)), "COMMIT")) else "?"
+    out(f"{ver} · {cvc} (binary sha256 {dig(REAL_CVC5)})")
+    out(f"Checker: ethos {ethos_commit} (binary sha256 {dig(ETHOS)}) · CPC signature tools/cpc from cvc5-1.4.0 "
+        f"(tree sha256 {tree_digest(CPC, '.eo')}) · wrapper cvc5-checked (sha256 {dig(WRAPPER)})")
     failures = 0
+    os.makedirs(CALLS)
 
     # ADR-0039 §1: the values file is part of the floor bundle. The gate checks its shape; the
     # K < R comparison needs the mechanism's round bound and is the mechanism's startup check.
     out("\n=== values: policy-floor numbers the lift reads (placeholders; ADR-0039 §1)")
-    import json
     vals = json.load(open(VALUES))
     obs = vals.get("observer", {})
     k, t_obs = obs.get("K"), obs.get("T_obs_ms")
@@ -110,7 +163,7 @@ def main():
         f = write(f"{pid}.cedar", ptext + "\n")
         for a in actions_of(ptext):
             res, raw = symcc(a, "never-errors", "-p", f)
-            ok = res == "holds"
+            ok = res in ("holds✓", "holds°")
             failures += not ok
             out(f"  {pid:34} {a:10} {res:8} {'pass' if ok else 'FAIL'}")
             if res == "ERROR":
@@ -156,12 +209,16 @@ def main():
              ("relax: F1 removed from the forensic floor", "Erase", relax, "relaxation"),
              ("incomparable: F1 erasable, payload not", "Erase", incomparable, "incomparable"),
              ("relax: R4 without the Run-root condition", "Consult", unpinned, "relaxation")]
+    cf_unpinned = None
     for n, (name, a, ctext, expect) in enumerate(cands):
         cf = write(f"cand-{n}-{expect}.cedar", ctext)
+        if ctext is unpinned:
+            cf_unpinned = cf
         new_old, _ = symcc(a, "implies", "--policies1", cf, "--policies2", FLOOR)   # F' => F
         old_new, _ = symcc(a, "implies", "--policies1", FLOOR, "--policies2", cf)   # F  => F'
+        h = lambda v: "holds" if v in ("holds✓", "holds°") else v
         cls = {("holds", "holds"): "equivalent", ("holds", "refuted"): "tightening",
-               ("refuted", "holds"): "relaxation", ("refuted", "refuted"): "incomparable"}.get((new_old, old_new), "ERROR")
+               ("refuted", "holds"): "relaxation", ("refuted", "refuted"): "incomparable"}.get((h(new_old), h(old_new)), "ERROR")
         route = "ordinary promotion" if cls in ("equivalent", "tightening") else "anchor issuance + promotion"
         ok = cls == expect
         failures += not ok
@@ -170,13 +227,14 @@ def main():
     out("\n=== negative controls: each gate must CATCH a defective floor")
     vac = write("ctl-vacuous.cedar", text + '\n@id("CTL-permit-all")\npermit (principal, action, resource);\n')
     # On Read, which no forbid covers. On Vote a permit-all is NOT vacuous: B7 and B8 still refuse.
+    # cedar decides a permit-all without a solver query (the authorizer term folds to true): holds°.
     r, _ = symcc("Read", "always-allows", "-p", vac)
-    ok = r == "holds"
+    ok = r in ("holds✓", "holds°")
     failures += not ok
     out(f"  {'vacuous floor: permit-all added (Read)':44} always-allows  {r:8} -> {'caught' if ok else 'MISSED'}")
     # Consult, like Read, is covered by no forbid: R3 and B10 do not name it (ADR-0041 §1, §2).
     r, _ = symcc("Consult", "always-allows", "-p", vac)
-    ok = r == "holds"
+    ok = r in ("holds✓", "holds°")
     failures += not ok
     out(f"  {'vacuous floor: permit-all added (Consult)':44} always-allows  {r:8} -> {'caught' if ok else 'MISSED'}")
     err = write("ctl-overflow.cedar", '@id("CTL-overflow")\npermit (principal, action == Topak::Action::"Emit", resource)\nwhen { context.epoch + 1 > context.round };\n')
@@ -188,9 +246,57 @@ def main():
     dupf = write("ctl-redundant.cedar", dup)
     dupless = write("ctl-redundant-without.cedar", text)
     r, _ = symcc("Erase", "equivalent", "--policies1", dupf, "--policies2", dupless)
-    ok = r == "holds"
+    ok = r == "holds✓"
     failures += not ok
     out(f"  {'dead entry: forbid F1 duplicated':44} equivalent     {r:8} -> {'caught' if ok else 'MISSED'}")
+
+    out("\n=== checker controls: a solver that lies must not produce a holds (ADR-0030 §5 A1)")
+    # Under the wrapper, cedar sees `unknown` (an analysis failure) unless the checker accepts a proof of
+    # false from the query's own assertions. Three fake solvers stand in for cvc5 on F => F' for the
+    # unpinned-R4 candidate, an implication that holds (the relaxation's second direction).
+    fakes = {
+        "answers unsat with no proof": '#!/bin/bash\nwhile read -r l; do [ "$l" = "(check-sat)" ] && echo unsat; done\n',
+        "answers unsat with a proof of another query": f'#!/bin/bash\n'
+            f'# ignore the query; prove (assert false) instead and present that proof\n'
+            f'while read -r l; do [ "$l" = "(check-sat)" ] && break; done\n'
+            f'printf "(set-logic ALL)(assert false)(check-sat)\\n" | {REAL_CVC5} "$@"\n',
+        "answers unsat with a proof missing a step": f'#!/bin/bash\n'
+            f'{REAL_CVC5} "$@" | python3 -c "import sys; L=sys.stdin.read().splitlines(); '
+            f'i=max(k for k,l in enumerate(L) if l.startswith(\'(step\')); del L[i-1]; print(\'\\n\'.join(L))"\n',
+    }
+    for n, (name, body) in enumerate(fakes.items()):
+        fp = write(f"fake-solver-{n}.sh", body)
+        os.chmod(fp, 0o755)
+        before = STATS["calls"]
+        r, raw = symcc("Consult", "implies", "--policies1", FLOOR, "--policies2", cf_unpinned, solver=fp)
+        reason = ""
+        for row in INDEX[before:]:
+            d = os.path.join(CALLS, row.split("\t")[0])
+            for f in sorted(os.listdir(d)):
+                if f.endswith(".json"):
+                    reason = json.load(open(os.path.join(d, f))).get("reason") or ""
+        ok = r == "ERROR" and "unknown" in raw
+        failures += not ok
+        out(f"  {name:44} F=>F' {r:8} -> {'caught' if ok else 'MISSED'}  ({reason[:70]})")
+    bad = unchecked_holds()
+    failures += bad
+    out(f"  {'holds without a checked proof, whole run':44} {bad:8} -> {'none' if bad == 0 else 'FAIL'}")
+
+    out(f"\n=== evidence: every solver query, its proof and the checker's verdict (ADR-0030 §5 A1)")
+    with open(os.path.join(CALLS, "index.tsv"), "w") as f:
+        f.write("call\tanalysis\taction\tresult\tqueries\tchecked\tsat\tunknown\n" + "\n".join(INDEX) + "\n")
+    out(f"  {STATS['calls']} cedar calls · {STATS['queries']} solver queries · {STATS['checked']} unsat with a checked proof · "
+        f"{STATS['sat']} sat (counterexample) · {STATS['unknown']} unknown/unchecked (the three controls)")
+    ev_digest = tree_digest(CALLS)
+    if len(sys.argv) > 1:
+        ev = os.path.splitext(sys.argv[1])[0].replace("results", "evidence")
+        import shutil
+        if os.path.exists(ev):
+            shutil.rmtree(ev)
+        shutil.copytree(CALLS, ev)
+        out(f"  evidence tree sha256 {ev_digest} · copied to {os.path.relpath(ev, HERE)}/")
+    else:
+        out(f"  evidence tree sha256 {ev_digest} · left in {CALLS}")
 
     out(f"\nRESULT: {'all gates pass' if failures == 0 else f'{failures} failure(s)'}")
     if len(sys.argv) > 1:

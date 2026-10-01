@@ -1,6 +1,6 @@
 # Theorem-to-premise binding
 
-**2026.09.30** · the table ADR-0045 §3 owes and ADR-0023 §2 assumes · DRAFT, revised with the records it binds
+**2026.09.30**, revised 2026.10.01 (Batch 24: T-0045-14) · the table ADR-0045 §3 owes and ADR-0023 §2 assumes · DRAFT, revised with the records it binds
 
 **What this is.** One row per checked property, naming what it rests on: the trusted-base rows (`T-0045-n`, ADR-0045
 Annex A), the degeneracy parameters (ADR-0023 §6a values), and the gaps the corpus has declared and not closed. A
@@ -36,7 +36,7 @@ convention, G2 §3) and are not theorems; they are omitted here.
 | `BundleRefusalHonored` | `FloorComposition.tla` | ADR-0030 §1 R4 | `M_FAILOPEN` | BASE; T-0045-6 (any bundle answer but an affirmative allow from the lease's revision is a deny); T-0045-27 (the bundle signer signs only what promotion admitted) | bundle signed [D-0044-1]: with an unsigned bundle the *revision* the lease names is a file name | **holds**; the revision is verified under the dev bundle key since 2026.10.01 (ADR-0033 A6) |
 | `BundleCannotWriteFloorInputs` | `FloorComposition.tla` | ADR-0030 §4 | `M_WRITE` | BASE; T-0045-3 | — | **holds** |
 | `EnvelopeHolds`, `FloorNeverVacuous` | `FloorComposition.tla`, `FloorRouting.tla` | ADR-0030 §5 | the non-vacuity controls | BASE; T-0045-3 | floor verified [D-0030-1]; the floor text is DRAFT | **holds**, of the draft floor |
-| `NoWideningWithoutIssuance` | `FloorRouting.tla` | ADR-0030 §5 | `r-reach-incomp` and the routing controls | BASE; T-0045-3; **T-0045-14** (the routing verdict: refused) | **routing checked** [D-0030-2: a `holds` verdict is the solver's assertion] | **asserted, not checked**: D-0030-2 on every gate run to date; ADR-0030 A1 pending |
+| `NoWideningWithoutIssuance` | `FloorRouting.tla` | ADR-0030 §5 | `r-reach-incomp` and the routing controls | BASE; T-0045-3; T-0045-14 (the proof checker behind a `holds`; trust root since Batch 24) | **routing checked** (ADR-0030 §5 A1): a `holds` counts only with a proof the checker accepted; D-0030-2 where the gates run without it | **holds** at the reference since 2026.10.01: every routing `holds` in `floor/genesis-gates-results-2026.10.01.txt` carries a checked proof; the five earlier runs were D-0030-2 runs |
 | `NC1`, `NC2` | `NonComposition.tla` | ADR-0013 §4 | the composition mutations | BASE; T-0045-2 (approval signatures); T-0045-12 (break-glass approvers); T-0045-3 (the exception and forensic entries as floor text) | rules floor R6, R7 in force | **holds** |
 | `P1_Unanimity` | `RulesFloorNV_rev5.tla` | ADR-0026 R1; ADR-0024 | drop R1 | BASE; T-0045-10 (genesis rules satisfy the floor); T-0045-2; T-0045-9 (key-holders honest at threshold, for the issuance) | `quorum = "all"` [D-0024-1 voids it; R9 keeps D-0024-2 out] | **holds** at the dev rules; the dev rules are not genesis rules (G6) |
 | `P2_TwoSeatsCounted` | `RulesFloorNV_rev5.tla` | ADR-0026 R2 | drop R2 | BASE; T-0045-10 | `minGrant ≥ 2` | **holds** |
@@ -67,12 +67,12 @@ convention, G2 §3) and are not theorems; they are omitted here.
 | **Effect exclusivity** (no module) | restated as a claim | ADR-0015 E2; ADR-0022 §6; ADR-0042 §6 | — | BASE; **T-0045-16 to 22** (confinement at the declared rung); **T-0045-23** (native tools); **T-0045-24** (Run tools' channels); **T-0045-25** | confinement ≥ 1; Run's confinement delivered (ADR-0042 §6, Proposed) | **void**: A1 fails, T-0045-22 to 24 are excluded rows. Identical in strength to Moon & Varshney's assumed version (ADR-0015 E2) |
 | **`PromotionMeetsIssuedQuorum`** (the `Promotion` module, owed) | `promotion.rs` tests only | ADR-0024; ADR-0029 §5 | — | BASE; T-0045-2; T-0045-9; T-0045-10; **T-0045-13** (gate evidence: excluded) ; T-0045-15 (the lineage tools, for A2.2) | A2.2 and A2.3 as tally constants; **gap:** no independence table (G18) | **gate evidence is an operator's assertion** (T-0045-13 excluded); A2.2 not built; the module is unwritten |
 | `OneValuePerBallot`, chosen-unique, agreement | `topak-paxos` `sim.rs` (the `Voting` ghost) | ADR-0033 §2 | both simulated mutations | T-0045-1; T-0045-28 to 30 | — | **holds** of the simulation; the `Paxos` module the ToO calls for is unwritten (finding 9) |
-| **The floor gates**: totality, non-vacuity, discrimination, entry matters, routing | `floor/run-gates.py` | ADR-0030 §5 | the four negative controls | T-0045-3; **T-0045-14** (refused) | **routing checked** [D-0030-2]: a `holds` is the solver's; a `refuted` can only subtract | **pass**; every `holds` is unchecked (D-0030-2) |
+| **The floor gates**: totality, non-vacuity, discrimination, entry matters, routing | `floor/run-gates.py` through `floor/cvc5-checked` | ADR-0030 §5 | the four negative controls and the three lying-solver controls | T-0045-3; T-0045-14 (trust root since Batch 24) | **routing checked** (ADR-0030 §5 A1): a `holds` from a solver query counts only with a checked proof; a `refuted` can only subtract | **pass** (2026.10.01): 4 `holds` on checked proofs, 25 `holds°` by cedar's own folding (T-0045-3), none unchecked; evidence tree `f8b1196a427a35ed` |
 | **Trace validation** `TraceMatches` | `Mechanism.tla` over recorded traces | ADR-0033 A5; ADR-0045 T-0045-28 | a step that differs | T-0045-29; the three oracles (issuance validity, approval signatures, the parameter digest) | — | **21 traces match**; a harness, not a theorem; it is what makes T-0045-28's residual "every untested path" rather than "everything" |
 
 **Reading the last column as an inventory.** At the reference, every theorem premised on confinement, gate evidence,
-hermeticity or channel fidelity is void; the routing theorem and every `holds` gate verdict are the solver's
-assertion; the bundle's revision is a file name; the reach bound is declared and not enforced. What remains holds of
+hermeticity or channel fidelity is void; the routing theorem and the gate verdicts rest on checked proofs since
+2026.10.01, where before they were the solver's assertion; the bundle's revision is a file name; the reach bound is declared and not enforced. What remains holds of
 the modules and, by trace validation, of the running code on every tested path: the lease, the fence, revocation,
 composition, the rules floor, the bootstrap pair, seats, any-of, coupling with its collusion gap, Run's counters and
 seal. That is ADR-0045 Annex B's inventory sentence, computed.

@@ -1,0 +1,29 @@
+{
+ "index": 0,
+ "query": "q-0.smt2",
+ "query_sha256": "945780060bad9eeae5d1bf45d7d23ecda8a009d3cb29449c8246da9c765edc88",
+ "solver": "cvc5",
+ "solver_sha256": "a4ce24a1765322090fef816aef49227e96386bb91303bc9becf0d5afb861da23",
+ "solver_argv": [
+  "--lang",
+  "smt",
+  "--tlimit=60000",
+  "--produce-proofs",
+  "--dump-proofs",
+  "--proof-format-mode=cpc",
+  "--proof-granularity=dsl-rewrite"
+ ],
+ "checker": "ethos",
+ "checker_sha256": "4eb41c1f1f9fce881ec94e8bac0e5a9b410f78dab7692ab03c90e76f9e6eca7d",
+ "checked": true,
+ "answer": "unsat",
+ "forwarded": "unsat",
+ "reason": "checker accepted the proof",
+ "renamed": [
+  "E2",
+  "R0",
+  "R1"
+ ],
+ "proof": "q-0.cpc",
+ "proof_sha256": "ee9bcafa2583afec13e9771f1fe8ef610b6637f372c5272868f9d70a6d4c825c"
+}

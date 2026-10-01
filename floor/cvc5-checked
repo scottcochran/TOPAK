@@ -1,0 +1,384 @@
+#!/usr/bin/env python3
+"""cvc5-checked: the solver wrapper of ADR-0030 §5 (A1). `cedar symcc` runs this in place of cvc5.
+
+cedar writes one SMT-LIB form per line to stdin, `(check-sat)`, then reads one line; on `sat` it writes
+`(get-model)` and reads the model. This wrapper keeps every query it is given, runs the real solver with
+proof production on, and forwards `unsat` only after a PINNED, INDEPENDENT checker (ethos) has accepted
+a proof of `false` from the query's own declarations and assertions. A `holds` cedar reports therefore
+rests on a checked proof, never on the solver's say-so. Anything the checker does not accept is forwarded
+as `unknown`, which cedar reports as an analysis failure. `sat` carries a counterexample cedar decodes and
+needs no certificate: it can only subtract.
+
+Binding the proof to the query. cvc5's dump re-states the declarations; the wrapper discards that
+restatement and prefixes the proof with a prelude derived from the query text itself (declarations,
+definitions), then requires every `assume` step's formula to be one of the query's `assert`s verbatim.
+The checker thus certifies: the query's declarations + the query's assertions entail false.
+
+Renaming. cedar names each record constructor after its sort (`(declare-datatype R2 ((R2 …)))`), which is
+legal SMT-LIB but a single namespace in Eunoia. The wrapper alpha-renames such constructors to `mk_<sort>`
+in the script the solver sees; the saved query is the original, and the verdict file lists the renames.
+
+Environment:  TOPAK_CVC5       the real solver (required)
+              TOPAK_ETHOS      the checker binary (required)
+              TOPAK_CPC        directory of the CPC signature (default: ../tools/cpc)
+              TOPAK_PROOF_DIR  where q-N.smt2 / q-N.cpc / q-N.json land (default: a temp dir)
+Any argv is passed through to the solver (cedar passes `--lang smt --tlimit=60000`).
+"""
+import hashlib
+import json
+import os
+import subprocess
+import sys
+import tempfile
+import time
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+PREFIX = "mk_"
+PROOF_FLAGS = ["--produce-proofs", "--dump-proofs", "--proof-format-mode=cpc", "--proof-granularity=dsl-rewrite"]
+
+
+# ---- s-expressions ---------------------------------------------------------------------------
+
+def tokenize(s):
+    i, n = 0, len(s)
+    while i < n:
+        c = s[i]
+        if c.isspace():
+            i += 1
+        elif c == ";":
+            j = s.find("\n", i)
+            i = n if j < 0 else j
+        elif c in "()":
+            yield c, c
+            i += 1
+        elif c == '"':
+            j = i + 1
+            while True:
+                j = s.find('"', j)
+                if j < 0:
+                    raise ValueError("unterminated string")
+                if j + 1 < n and s[j + 1] == '"':
+                    j += 2
+                    continue
+                break
+            yield "a", s[i:j + 1]
+            i = j + 1
+        elif c == "|":
+            j = s.find("|", i + 1)
+            if j < 0:
+                raise ValueError("unterminated quoted symbol")
+            yield "a", s[i:j + 1]
+            i = j + 1
+        else:
+            j = i
+            while j < n and not s[j].isspace() and s[j] not in '()"|;':
+                j += 1
+            yield "a", s[i:j]
+            i = j
+
+
+def parse(s):
+    stack = [[]]
+    for k, v in tokenize(s):
+        if k == "(":
+            stack.append([])
+        elif k == ")":
+            if len(stack) == 1:
+                raise ValueError("unbalanced )")
+            l = stack.pop()
+            stack[-1].append(l)
+        else:
+            stack[-1].append(v)
+    if len(stack) != 1:
+        raise ValueError("unbalanced (")
+    return stack[0]
+
+
+def show(x):
+    return "(" + " ".join(show(y) for y in x) + ")" if isinstance(x, list) else x
+
+
+class FormReader:
+    """Splits a byte stream into top-level forms as they complete (strings and comments respected)."""
+
+    def __init__(self):
+        self.buf = ""
+        self.depth = 0
+        self.in_str = False
+        self.in_comment = False
+        self.pos = 0
+
+    def feed(self, chunk):
+        self.buf += chunk
+        out = []
+        while self.pos < len(self.buf):
+            c = self.buf[self.pos]
+            self.pos += 1
+            if self.in_comment:
+                if c == "\n":
+                    self.in_comment = False
+                continue
+            if self.in_str:
+                if c == '"':
+                    self.in_str = False   # a doubled "" closes and reopens; harmless for depth
+                continue
+            if c == '"':
+                self.in_str = True
+            elif c == ";":
+                self.in_comment = True
+            elif c == "(":
+                self.depth += 1
+            elif c == ")":
+                self.depth -= 1
+                if self.depth == 0:
+                    out.append(self.buf[:self.pos])
+                    self.buf = self.buf[self.pos:]
+                    self.pos = 0
+        return out
+
+
+# ---- query transformation -----------------------------------------------------------------------
+
+def rename_constructors(forms):
+    """Rename constructors named after their sort to PREFIX+name, in declarations and in terms."""
+    ren = set()
+
+    def ctors_of(body):
+        return body[2] if (isinstance(body, list) and body and body[0] == "par") else body
+
+    def term(t):
+        if not isinstance(t, list):
+            return
+        if t and isinstance(t[0], str) and t[0] in ren:
+            t[0] = PREFIX + t[0]
+        if len(t) == 3 and t[0] == "_" and t[1] == "is" and t[2] in ren:
+            t[2] = PREFIX + t[2]
+        for y in t:
+            term(y)
+
+    for f in forms:
+        if not isinstance(f, list) or not f:
+            continue
+        h = f[0]
+        if h == "declare-datatype":
+            for cl in ctors_of(f[2]):
+                if isinstance(cl, list) and cl and cl[0] == f[1]:
+                    ren.add(f[1])
+                    cl[0] = PREFIX + cl[0]
+        elif h == "declare-datatypes":
+            for (name, _), body in zip(f[1], f[2]):
+                for cl in ctors_of(body):
+                    if isinstance(cl, list) and cl and cl[0] == name:
+                        ren.add(name)
+                        cl[0] = PREFIX + cl[0]
+        elif h in ("assert", "define-fun", "define-const"):
+            term(f[-1])
+    return sorted(ren)
+
+
+def eunoia_term(t):
+    """SMT-LIB term to Eunoia term. The one divergence cedar's queries reach: SMT-LIB's n-ary
+    `(set.insert e1 … en S)` is `(set.insert (@tlist e1 … en) S)` in the CPC signature."""
+    if not isinstance(t, list):
+        return t
+    t = [eunoia_term(y) for y in t]
+    if t and t[0] == "set.insert" and len(t) >= 3:
+        t = ["set.insert", ["@tlist", *t[1:-1]], t[-1]]
+    return t
+
+
+def eunoia_prelude(forms):
+    """The query's declarations and definitions in Eunoia form, and its assert bodies."""
+    pre, asserts = [], []
+    for f in forms:
+        if not isinstance(f, list) or not f:
+            continue
+        h = f[0]
+        f = eunoia_term(f) if h in ("define-fun", "define-const", "assert") else f
+        if h == "declare-datatype":
+            body = f[2]
+            arity = str(len(body[1])) if (isinstance(body, list) and body and body[0] == "par") else "0"
+            pre.append(["declare-datatypes", [[f[1], arity]], [body]])
+        elif h == "declare-datatypes":
+            pre.append(f)
+        elif h == "declare-fun":
+            pre.append(["declare-const", f[1], f[3]] if not f[2] else ["declare-const", f[1], ["->", *f[2], f[3]]])
+        elif h == "declare-const":
+            pre.append(f)
+        elif h == "declare-sort":
+            pre.append(["declare-type", f[1], ["Type"] * int(f[2])])
+        elif h == "define-fun":
+            pre.append(["define", f[1], f[2], f[4]])
+        elif h == "define-const":
+            pre.append(["define", f[1], [], f[3]])
+        elif h == "assert":
+            asserts.append(f[1])
+        elif h in ("set-logic", "set-option", "set-info", "reset", "check-sat", "get-model", "echo"):
+            pass
+        else:
+            raise ValueError("form the wrapper does not carry into a proof: " + h)
+    return pre, asserts
+
+
+def sha(data):
+    return hashlib.sha256(data.encode() if isinstance(data, str) else data).hexdigest()
+
+
+# ---- the checked solve ----------------------------------------------------------------------------
+
+class Checked:
+    def __init__(self, argv):
+        self.argv = argv
+        self.cvc5 = os.environ.get("TOPAK_CVC5")
+        self.ethos = os.environ.get("TOPAK_ETHOS")
+        self.cpc = os.environ.get("TOPAK_CPC", os.path.join(HERE, "..", "tools", "cpc"))
+        self.dir = os.environ.get("TOPAK_PROOF_DIR") or tempfile.mkdtemp(prefix="cvc5-checked-")
+        os.makedirs(self.dir, exist_ok=True)
+        self.script = ""        # forms since the last (reset), as cedar wrote them
+        self.n = len([f for f in os.listdir(self.dir) if f.endswith(".smt2")])
+        self.last = None        # (index, raw script) of the last check-sat, for get-model
+
+    def solver_run(self, text, extra):
+        t = time.time()
+        r = subprocess.run([self.cvc5, *self.argv, *extra], input=text, capture_output=True, text=True)
+        return r, time.time() - t
+
+    def check_sat(self):
+        n = self.n
+        self.n += 1
+        raw = self.script + "(check-sat)\n"
+        base = os.path.join(self.dir, f"q-{n}")
+        with open(base + ".smt2", "w") as f:
+            f.write(raw)
+        verdict = {"index": n, "query": f"q-{n}.smt2", "query_sha256": sha(raw),
+                   "solver": os.path.basename(self.cvc5), "solver_sha256": sha(open(self.cvc5, "rb").read()),
+                   "solver_argv": self.argv + PROOF_FLAGS,
+                   "checker": os.path.basename(self.ethos), "checker_sha256": sha(open(self.ethos, "rb").read()),
+                   "checked": False, "answer": None, "forwarded": None, "reason": None}
+        self.last = (n, raw)
+        try:
+            forms = parse(self.script)
+            if PREFIX in self.script:
+                raise ValueError(f"query already uses the rename prefix {PREFIX!r}")
+            verdict["renamed"] = rename_constructors(forms)
+            renamed = "\n".join(show(f) for f in forms) + "\n(check-sat)\n"
+            r, dt = self.solver_run(renamed, PROOF_FLAGS)
+            lines = r.stdout.splitlines()
+            answer = lines[0].strip() if lines else ""
+            verdict["answer"] = answer
+            if r.stderr.strip():
+                verdict["solver_stderr"] = r.stderr.strip()
+            if answer == "unsat":
+                ok, reason, proof_text = self.bind_and_check(forms, lines, base)
+                verdict["checked"] = ok
+                verdict["reason"] = reason
+                verdict["proof"] = f"q-{n}.cpc"
+                verdict["proof_sha256"] = sha(proof_text)
+                verdict["forwarded"] = "unsat" if ok else "unknown"
+            elif answer == "sat":
+                verdict["forwarded"] = "sat"
+            else:
+                verdict["forwarded"] = answer if answer else "unknown"
+                verdict["reason"] = "solver gave no verdict" if not answer else None
+        except Exception as e:      # any failure in the wrapper is an unchecked result
+            verdict["forwarded"] = "unknown"
+            verdict["reason"] = f"wrapper: {type(e).__name__}: {e}"
+        with open(base + ".json", "w") as f:
+            json.dump(verdict, f, indent=1)
+        return verdict["forwarded"]
+
+    def bind_and_check(self, forms, lines, base):
+        n = os.path.basename(base)[2:]
+        # cvc5 prints: unsat / ( / <forms> / )
+        if len(lines) < 3 or lines[1].strip() != "(" or lines[-1].strip() != ")":
+            return False, "proof dump has an unexpected shape", ""
+        body = parse("\n".join(lines[2:-1]))
+        pre, asserts = eunoia_prelude(forms)
+        kept, restated = [], {}
+        for f in body:
+            h = f[0] if isinstance(f, list) and f else None
+            if h == "define" and isinstance(f[1], str) and f[1].startswith("@"):
+                kept.append(f)
+            elif h in ("assume", "step"):
+                kept.append(f)
+            elif h in ("declare-const", "define"):
+                restated[f[1]] = show(f)          # the solver's restatement of the query, cross-checked below
+            elif h == "declare-datatypes":
+                for (name, _), ctors in zip(f[1], f[2]):
+                    restated[name] = show(ctors)
+            elif h in ("declare-fun", "declare-datatype", "declare-sort"):
+                return False, f"proof restates the query in a form the wrapper does not compare: {h}", ""
+            else:
+                return False, f"proof contains a form the wrapper does not accept: {show(f)[:80]}", ""
+        # The prelude is the query's own text in Eunoia form. The solver's restatement must agree with it
+        # symbol by symbol: a disagreement means the translation is wrong or the solver proved something else.
+        for pf in pre:
+            name = pf[1][0][0] if pf[0] == "declare-datatypes" else pf[1]
+            mine = show(pf[2][0]) if pf[0] == "declare-datatypes" else show(pf)
+            if name in restated and restated[name] != mine:
+                return False, f"the solver's restatement of {name} differs from the query's: {restated[name][:60]} vs {mine[:60]}", ""
+        assert_set = {show(a) for a in asserts}
+        for f in kept:
+            if f[0] == "assume" and show(f[2]) not in assert_set:
+                return False, f"assume {f[1]} is not one of the query's assertions", ""
+        if not any(f[0] == "assume" for f in kept):
+            return False, "proof assumes nothing", ""
+        proof_text = ("; proof of false from the query's declarations and assertions (ADR-0030 §5 A1)\n"
+                      "; check: ethos --include=<cpc>/Cpc.eo --include=<cpc>/expert/CpcExpert.eo --require-proof-of-false <this file>\n"
+                      + "\n".join(show(p) for p in pre) + "\n" + "\n".join(show(k) for k in kept) + "\n")
+        with open(base + ".cpc", "w") as f:
+            f.write(proof_text)
+        r = subprocess.run([self.ethos, f"--include={os.path.join(self.cpc, 'Cpc.eo')}",
+                            f"--include={os.path.join(self.cpc, 'expert', 'CpcExpert.eo')}",
+                            "--require-proof-of-false", base + ".cpc"], capture_output=True, text=True)
+        if r.returncode == 0 and r.stdout.strip() == "correct":
+            return True, "checker accepted the proof", proof_text
+        msg = r.stderr.strip() or r.stdout.strip()
+        msg = msg[msg.find("Error:"):] if "Error:" in msg else msg      # drop ethos's "Fatal failure within …" preface
+        return False, "checker refused: " + msg.replace(base + ".cpc", f"q-{n}.cpc")[:300], proof_text
+
+    def get_model(self):
+        if not self.last:
+            return '(error "no check-sat before get-model")\n'
+        n, raw = self.last
+        r, _ = self.solver_run(raw + "(get-model)\n", ["--produce-models"])
+        lines = r.stdout.splitlines()
+        if not lines or lines[0].strip() != "sat":
+            return '(error "model unavailable")\n'
+        return "\n".join(lines[1:]) + "\n"
+
+    def run(self):
+        reader = FormReader()
+        while True:
+            chunk = os.read(0, 65536)
+            if not chunk:
+                return 0
+            for form in reader.feed(chunk.decode()):
+                head = form.strip()
+                if head == "(check-sat)":
+                    sys.stdout.write(self.check_sat() + "\n")
+                    sys.stdout.flush()
+                elif head == "(get-model)":
+                    sys.stdout.write(self.get_model())
+                    sys.stdout.flush()
+                elif head == "(reset)":
+                    self.script = ""
+                elif head == "(exit)":
+                    return 0
+                else:
+                    self.script += form.strip() + "\n"
+
+
+def main():
+    argv = sys.argv[1:]
+    cvc5 = os.environ.get("TOPAK_CVC5")
+    if not cvc5 or not os.environ.get("TOPAK_ETHOS"):
+        sys.stderr.write("cvc5-checked: TOPAK_CVC5 and TOPAK_ETHOS must name the solver and the checker\n")
+        return 2
+    if "--version" in argv:
+        os.execv(cvc5, [cvc5, *argv])
+    return Checked(argv).run()
+
+
+if __name__ == "__main__":
+    sys.exit(main())
