@@ -27,3 +27,4 @@ marked *superseded* point at what replaced them. The glossary head moved to `nar
 | `topak-gaps-prioritization-2026.09.28.md` | Highest-ROI items, easy wins, and what to delegate to the trusted base; the plan the 09.30 batches followed |
 | `topak-vs-nvidia-open-agent-safety-platform-2026.09.28.md` | Comparison with OpenShell, NemoClaw and NeMo Guardrails; a source of ADR-0040 |
 | `topak-repo-reorganization-proposal-2026.09.30.md` | The proposal the 2026.09.30 reorganization commit carries out, with one sequencing change (`checkpoints/README.md`) |
+| `topak-competitive-design-assessment-2026.10.01.md` | Design-level comparison with Moon & Varshney, OpenShell (delta since 09.28), Temporal, AgentCore/Dogwood, CaMeL, FIDES and others; no functional assessment |
