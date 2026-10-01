@@ -1,5 +1,7 @@
-# TLA+ tooling. install-tla.sh downloads the jar; the wrappers are tracked.
+# TLA+ tooling. The wrappers are tracked, and so is tools/tla2tools.jar (since 756b481, for its digest:
+# ADR-0045 T-0045-29); the rest of tools/ (cvc5) is not. install-tla.sh would replace the jar; see ADR-0045.
 tools/
+!tools/tla2tools.jar
 spec/*.cfg
 spec/tla2tools.jar
 spec/states/
