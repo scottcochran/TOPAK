@@ -18,7 +18,7 @@ deployable system.
 ## Start here
 
 - **How it fits together:** [Theory of Operation](narrative/theory-of-operation.md) (revision 10, tag `ToO-rev10`)
-- **State of record** (what is ratified, owed and open): [Genesis Checkpoint G6](checkpoints/topak-genesis-checkpoint-G6-2026.09.30.md). Where it and the narrative disagree, the checkpoint wins.
+- **State of record** (what is ratified, owed and open): [Genesis Checkpoint G7](checkpoints/topak-genesis-checkpoint-G7-2026.10.01.md). Where it and the narrative disagree, the checkpoint wins.
 - **Vocabulary:** [Glossary](narrative/glossary.md)
 
 ## Layout
