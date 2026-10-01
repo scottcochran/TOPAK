@@ -37,6 +37,7 @@ provisional twice over.
 | ADR-0037, ADR-0038, ADR-0039 seats, Observers, coupling | Accepted (genesis), Batches 12–14 · **confirmation required (C3, C4 · C3, C4 · C4)** | Seat kinds and one seat per principal (I8); per-cell Observers and the correlator (I8); heartbeats, marks and `live(o)` (I27) |
 | ADR-0024 A2 veto seats | Accepted (genesis), Batch 15 | The veto-seat holder and coverage to the seal (A2.1, A2.3); A2.2 is G18 |
 | ADR-0040 to ADR-0043 Run's alphabet and its obligations | Accepted (genesis), Batch 20 (2026.09.30) · **confirmation required (C3, C4 · C1, C4 · C4 · C4)** · **ADR-0042 §6 stays Proposed** | `Consult`, `Actuate`, `Report` (G3); effect counting, the `Actuate` record, the seal, no abstention (I28–I31); the Run root (I32); the channel declaration (I33, G19) |
+| ADR-0045 the trusted base | Accepted (genesis), Batch 22 (2026.10.01) · **confirmation required (C2, C4)** | Nothing in the code reads it. **Annex B is this reference's trusted-base declaration**: which of its rows the reference instantiates, which are excluded, and the inventory that leaves it. It moves by ADR-0033 addendum |
 | ADR-0036 R1 rung-0 declared profile | **Proposed** | Nothing: the reference has no launcher (G1). `slm/serve/profile-host-rung0.json` is the operator's declaration, read by nobody in `mechanism/` |
 | `floor/genesis-floor.cedar`, `genesis.cedarschema`, `genesis-values.json` | **DRAFT**, not ratified; changed twice 2026.09.29 (ADR-0037 §4, ADR-0039 §2) and again under ADR-0041 | Linked verbatim and pinned by digest (`PINNED_*_SHA256`) |
 
@@ -84,6 +85,11 @@ what would replace it.
 ---
 
 ## 3. Gaps: what the corpus does not supply, and what stands in for it
+
+Since Batch 22 the gaps below have a second reading: ADR-0045 Annex B declares, row by row, what the reference
+trusts, what it relies on and trusts for nothing, and what that voids. G1 is T-0045-16 to 22 absent and 22 excluded;
+G4 and G19 are the excluded rows T-0045-23 and 24; G5 is T-0045-1's unbuilt mitigation; G7 is T-0045-27 excluded;
+G8 is T-0045-13 excluded; G9 is T-0045-7.
 
 | ID | Gap | Stand-in in the baseline | Consequence |
 |---|---|---|---|
