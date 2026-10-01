@@ -18,6 +18,13 @@
 //! Without the digest match, a sidecar outage would silently lift any narrowing the operator
 //! pushed after the local copy was built — ADR-0030 §9 finding 3, arriving by another route.
 //! Every admit records which engine decided, so a fallback is attributable.
+//!
+//! **A bundle is trusted by its signature, not its file name** (ADR-0044). Beside each
+//! `<revision>.tar.gz` sits `<revision>.sig`, a `Signed` over `{"revision": <revision>}` for the
+//! purpose `bundle`, under a key the issued rules carry (`Rules::bundle_keys`, ADR-0025 §1 (f)).
+//! `load_dir` loads a tarball only when its signature verifies under one of those keys, and the
+//! revisions it holds are the mechanism's **verified set**. A sidecar's decision counts only from
+//! a verified revision (§3), and the node refuses a grant naming an unverified one.
 
 use std::collections::BTreeMap;
 use std::io::Read;
@@ -29,13 +36,23 @@ use anyhow::{Context as _, bail};
 use opa_wasm::wasmtime::{Config, Engine, Module, Store};
 use opa_wasm::{DefaultContext, Policy, Runtime};
 use serde_json::{Value, json};
+use std::collections::BTreeSet;
 use tokio::sync::Mutex;
 use topak_core::Digest;
+use topak_core::authentic::{self, KeyHex, Signed};
 use topak_core::admit::BundleOutcome;
 use topak_core::state::BundleEngine;
 
 /// The bundle entrypoint, `data.topak.bundle.allow`.
 pub const ENTRYPOINT: &str = "topak/bundle/allow";
+
+/// The domain-separation purpose of a bundle signature (ADR-0044 §2).
+pub const BUNDLE_PURPOSE: &str = "bundle";
+
+/// What the bundle key signs: the content revision, and nothing else.
+pub fn bundle_body(revision: &str) -> Value {
+    json!({ "revision": revision })
+}
 
 // ---- sidecar ---------------------------------------------------------------------------------
 
@@ -132,12 +149,11 @@ impl LocalBundles {
         Self { bundles: BTreeMap::new() }
     }
 
-    /// Load every `<revision>.tar.gz` in `dir`. A file whose manifest revision differs from its
-    /// name is refused rather than trusted under either name.
-    ///
-    /// PROVISIONAL (bundle signing): the revision is read from the manifest and not verified
-    /// against a signature.
-    pub async fn load_dir(dir: &Path) -> anyhow::Result<Self> {
+    /// Load every `<revision>.tar.gz` in `dir` whose `<revision>.sig` verifies under one of
+    /// `keys` (ADR-0044 §3). A file whose manifest revision differs from its name, or whose
+    /// signature is missing, is for another revision, or is under a key the rules do not carry,
+    /// is refused rather than trusted under any name. With no keys nothing loads (ADR-0044 §1).
+    pub async fn load_dir(dir: &Path, keys: &BTreeSet<KeyHex>) -> anyhow::Result<Self> {
         let mut me = Self::empty();
         if !dir.exists() {
             return Ok(me);
@@ -150,9 +166,25 @@ impl LocalBundles {
             if files.revision != stem {
                 bail!("{name}: manifest revision {} does not match the file name", files.revision);
             }
+            let sig_path = path.with_file_name(format!("{stem}.sig"));
+            let sig: Signed = std::fs::read(&sig_path)
+                .ok()
+                .and_then(|b| serde_json::from_slice(&b).ok())
+                .with_context(|| format!("{name}: no signature file {stem}.sig (ADR-0044 §3)"))?;
+            if !keys.contains(&sig.key) {
+                bail!("{name}: signed under {}, which the issued rules do not carry (ADR-0044 §1)", &sig.key[..16]);
+            }
+            if !authentic::verify(BUNDLE_PURPOSE, &bundle_body(&files.revision), &sig) {
+                bail!("{name}: signature does not verify over revision {} (ADR-0044 §2)", &files.revision[..16]);
+            }
             me.insert(files).await?;
         }
         Ok(me)
+    }
+
+    /// Whether `rev` is a revision whose signature verified at load: the verified set.
+    pub fn verified(&self, rev: &Digest) -> bool {
+        self.bundles.contains_key(rev)
     }
 
     pub async fn insert(&mut self, files: BundleFiles) -> anyhow::Result<()> {
@@ -199,8 +231,22 @@ impl BundleTier {
         Self { sidecar, local }
     }
 
+    /// Whether the lease's revision has a verified signature (ADR-0044 §3). The node refuses a
+    /// grant naming one that does not.
+    pub fn verified(&self, rev: &Digest) -> bool {
+        self.local.verified(rev)
+    }
+
     /// Ask the bundle whether to refuse. Called only after a floor permit.
     pub async fn decide(&self, lease_bundle: &Digest, input: &Value) -> BundleOutcome {
+        // ADR-0044 §3: a decision counts only from a revision whose signature the mechanism
+        // verified, whichever engine produced it. The sidecar is not trusted to have checked.
+        if !self.local.verified(lease_bundle) {
+            return BundleOutcome::Refuse {
+                engine: None,
+                reason: format!("bundle {} has no verified signature (ADR-0044 §3)", lease_bundle.short()),
+            };
+        }
         let why_local = match &self.sidecar {
             Some(s) => match s.ask(lease_bundle, input).await {
                 SidecarAnswer::Decided(true) => {

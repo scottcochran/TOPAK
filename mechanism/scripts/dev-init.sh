@@ -22,7 +22,7 @@ cargo build -q --manifest-path "$here/Cargo.toml" -p topak-node
 bin="$here/target/debug"
 rev="$("$here/scripts/build-bundle.sh" 2>/dev/null)"
 
-rm -rf "$dev"; mkdir -p "$dev/corpus" "$dev/secrets" "$dev/run"
+rm -rf "$dev"; mkdir -p "$dev/corpus" "$dev/secrets" "$dev/run" "$dev/bundles"
 echo "TOPAK_BUNDLE=$rev" > "$here/.env"
 
 # Corpus: the repository's TLA+ modules, content-addressed.
@@ -39,8 +39,14 @@ key() { "$bin/topak" keygen > "$dev/secrets/$1.json"; jq -r .public "$dev/secret
 for s in a1 g1 g2 g3 o1 corr r1 ro1; do declare "seat_$s=$(key "seat-$s")"; done
 anchors="$(for i in 1 2 3; do key "anchor-$i"; done | jq -R . | jq -s .)"
 bgk="$(for i in 1 2; do key "bg-$i"; done | jq -R . | jq -s .)"
+# ADR-0044: the dev bundle key signs a copy of the built bundle into dev/bundles/; the rules carry
+# its public key under bundle_keys (ADR-0025 §1 (f)). The tracked tarball in bundles/ stays unsigned.
+bundle_pub="$(key bundle)"
+cp "$here/bundles/$rev.tar.gz" "$dev/bundles/"
+"$bin/topak" sign --purpose bundle --secret "$(jq -r .secret "$dev/secrets/bundle.json")" \
+  <(printf '{"revision":"%s"}' "$rev") > "$dev/bundles/$rev.sig"
 
-jq -n --argjson anchors "$anchors" --argjson bg "$bgk" --arg tool "$tool_id" \
+jq -n --argjson anchors "$anchors" --argjson bg "$bgk" --arg tool "$tool_id" --arg bundle_pub "$bundle_pub" \
   --arg a1 "$seat_a1" --arg g1 "$seat_g1" --arg g2 "$seat_g2" --arg g3 "$seat_g3" --arg o1 "$seat_o1" --arg corr "$seat_corr" --arg r1 "$seat_r1" --arg ro1 "$seat_ro1" '{
   rules_epoch: 0, quorum: "all", min_grant: 2,
   seats: {
@@ -54,7 +60,8 @@ jq -n --argjson anchors "$anchors" --argjson bg "$bgk" --arg tool "$tool_id" \
   grant_roster: ["g1", "g2", "g3"], veto_roster: ["o1", "corr"],
   anchor_keys: $anchors,
   break_glass: {roster: $bg, quorum: 2, tools: [$tool], actions: ["Actuate"]},
-  erasure_roster: null
+  erasure_roster: null,
+  verifier_keys: [], bundle_keys: [$bundle_pub]
 }' > "$dev/rules.json"
 
 jq -n --argjson corpus "$corpus" --arg tool "$tool_id" '{
@@ -69,13 +76,13 @@ for i in 1 2 3; do
     id: $id,
     peers: {"1": "127.0.0.1:7101", "2": "127.0.0.1:7102", "3": "127.0.0.1:7103"},
     data_dir: "run/n\($id)", agent_socket: "run/n\($id)/agent.sock", operator_socket: "run/n\($id)/operator.sock",
-    rules: "rules.json", params: "params.json", corpus_dir: "corpus", bundles_dir: "../bundles",
+    rules: "rules.json", params: "params.json", corpus_dir: "corpus", bundles_dir: "bundles",
     opa_sidecar: $opa, kafka: $kafka,
     tools: {($tool): {command: $cmd, args: [], binary_sha256: $bin_sha, mcp_tool: "wordcount"}}
   }' > "$dev/n$i.json"
 done
 
 "$bin/topak" check-rules "$dev/rules.json"
-echo "bundle   $rev"
+echo "bundle   $rev  (signed copy in dev/bundles/, key dev/secrets/bundle.json)"
 echo "tool     $tool_id"
 echo "configs  $dev/n{1,2,3}.json"

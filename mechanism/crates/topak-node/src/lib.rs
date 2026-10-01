@@ -56,9 +56,10 @@ pub async fn start_node(cfg: NodeConfig) -> anyhow::Result<Arc<Mechanism>> {
     let genesis = genesis(&cfg.rules, &floor)?;
     let params: Params = serde_json::from_str(&std::fs::read_to_string(&cfg.params)?)?;
 
-    let local = LocalBundles::load_dir(&cfg.bundles_dir).await?;
+    // ADR-0044: bundles load only under a signature that verifies under the rules' bundle keys.
+    let local = LocalBundles::load_dir(&cfg.bundles_dir, &genesis.rules.bundle_keys).await?;
     let revs: Vec<String> = local.revisions().map(|d| d.short().to_string()).collect();
-    tracing::info!(?revs, sidecar = ?cfg.opa_sidecar, "bundle tier");
+    tracing::info!(?revs, keys = genesis.rules.bundle_keys.len(), sidecar = ?cfg.opa_sidecar, "bundle tier (verified revisions)");
     let sidecar = cfg
         .opa_sidecar
         .as_ref()

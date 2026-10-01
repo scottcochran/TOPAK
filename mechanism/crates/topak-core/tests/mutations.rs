@@ -43,6 +43,8 @@ fn rules() -> Rules {
         anchor_keys: BTreeSet::from(["kA".into(), "kB".into(), "kC".into()]),
         break_glass: None,
         erasure_roster: None,
+        verifier_keys: BTreeSet::new(),
+        bundle_keys: BTreeSet::new(),
     }
 }
 
@@ -783,4 +785,42 @@ fn run_alphabets_are_bounded_by_seat_kind_and_domain() {
     assert!(ActionKind::BUILD.iter().all(|k| k.domain() == Domain::Build));
     assert!(ActionKind::Actuate.is_run_effect() && ActionKind::Report.is_run_effect());
     assert!(!ActionKind::Consult.is_run_effect());
+}
+
+/// ADR-0031 A2: a lease's ttl is at most T_persona at grant and at renewal, refused by the
+/// mechanism and not by policy; the bound is on the declared value (ADR-0045 finding 2).
+/// The bound is a floor constant, so it never moves within a trace: a renewal over it is also a
+/// renewal over the lease's own ttl, which §4 refuses first. The renewal check exists for a bound
+/// that moves by release, and is shown here at the bound's edge.
+#[test]
+fn a_ttl_over_t_persona_is_refused_at_grant_and_at_renewal() {
+    let mut s = state();
+    s.persona.t_persona_ms = 5_000;
+    let p = params();
+    let mut over = grant_req("a1", &[ActionKind::Read]);
+    over.ttl_ms = 5_001;
+    assert!(matches!(s.apply(1, &Entry::Grant { id: "g-over".into(), req: over }, &p), Applied::Rejected(_)));
+    let mut at = grant_req("a1", &[ActionKind::Read]);
+    at.ttl_ms = 5_000;
+    assert_eq!(s.apply(2, &Entry::Grant { id: "g-at".into(), req: at }, &p), Applied::LeaseGranted { fence: 2 });
+    let renew = |fence: LogIndex, ttl_ms: u64| Entry::Renew {
+        id: format!("r-{fence}-{ttl_ms}"),
+        req: RenewRequest { seat: "a1".into(), fence, alphabet: [ActionKind::Read].into_iter().collect(), rung: 1, ttl_ms },
+    };
+    assert!(matches!(s.apply(3, &renew(2, 5_001), &p), Applied::Rejected(_)), "over the bound, and over the lease");
+    assert_eq!(s.apply(4, &renew(2, 5_000), &p), Applied::Renewed { fence: 4 }, "at the bound");
+    assert_eq!(s.apply(5, &renew(4, 1_000), &p), Applied::Renewed { fence: 5 }, "shorter");
+}
+
+/// ADR-0025 §1 (f): the keys that vouch for artifacts are issued like every other key, and must
+/// be keys.
+#[test]
+fn vouching_keys_are_issued_and_must_be_keys() {
+    let mut r = rules();
+    r.bundle_keys.insert("not-a-key".into());
+    assert!(check_well_formed(&r).iter().any(|v| v.entry == "WF" && v.detail.contains("bundle key")));
+    let mut r = rules();
+    r.verifier_keys.insert("ab".repeat(32));
+    r.bundle_keys.insert("cd".repeat(32));
+    assert!(check_well_formed(&r).is_empty());
 }

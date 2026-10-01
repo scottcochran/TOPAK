@@ -28,6 +28,23 @@ impl Default for ObserverValues {
     }
 }
 
+/// The `persona` block of `floor/genesis-values.json` (ADR-0031 A2): the upper bound on a lease's
+/// `ttl` at grant and at every renewal, so the Persona is re-attested at least this often
+/// (ADR-0016 §6). A **placeholder** of one hour until measured. It bounds the declared value;
+/// expiry runs on the local clock, so the interval it bounds is `T_persona` plus drift (ADR-0045
+/// finding 2).
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct PersonaValues {
+    #[serde(rename = "T_persona_ms")]
+    pub t_persona_ms: u64,
+}
+
+impl Default for PersonaValues {
+    fn default() -> Self {
+        Self { t_persona_ms: 3_600_000 }
+    }
+}
+
 /// `{"heartbeat": {"topic": "<watched round topic>", "watermark": n}}`, and nothing else.
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Heartbeat {

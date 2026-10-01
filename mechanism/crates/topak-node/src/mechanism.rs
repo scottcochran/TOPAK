@@ -51,11 +51,17 @@ pub type BoxFuture<'a, T> = Pin<Box<dyn Future<Output = T> + Send + 'a>>;
 /// The bundle tier as the mechanism sees it.
 pub trait BundleDecider: Send + Sync {
     fn decide<'a>(&'a self, lease_bundle: &'a Digest, input: &'a Value) -> BoxFuture<'a, BundleOutcome>;
+    /// ADR-0044 §3: whether this revision's signature verified at load. A grant naming one that
+    /// did not is refused before it is proposed.
+    fn verified(&self, rev: &Digest) -> bool;
 }
 
 impl BundleDecider for BundleTier {
     fn decide<'a>(&'a self, lease_bundle: &'a Digest, input: &'a Value) -> BoxFuture<'a, BundleOutcome> {
         Box::pin(BundleTier::decide(self, lease_bundle, input))
+    }
+    fn verified(&self, rev: &Digest) -> bool {
+        BundleTier::verified(self, rev)
     }
 }
 
@@ -139,6 +145,7 @@ impl Mechanism {
         }
         let mut genesis = p.genesis;
         genesis.observer = p.floor.observer_values().clone();
+        genesis.persona = p.floor.persona_values().clone();
         // The archive is a projection of the log, rebuilt as the log is re-delivered.
         let archive = std::fs::File::create(p.data_dir.join("archive.jsonl"))?;
         Ok(Arc::new(Self {
@@ -653,6 +660,15 @@ impl Mechanism {
         let entry = match op {
             OperatorOp::Status => return self.status(),
             OperatorOp::Grant { principal, seat, persona, bundle, confinement, alphabet, ttl_ms, round, role } => {
+                // ADR-0044 §3: a grant naming a revision with no verified signature is refused,
+                // here at decide, as a grant under superseded rules is at apply (I6). The
+                // verified set is per replica, like the parameters, and must agree across them.
+                if !self.bundle.verified(&bundle) {
+                    return json!({
+                        "ok": false,
+                        "error": format!("bundle {} has no verified signature (ADR-0044 §3)", bundle.short()),
+                    });
+                }
                 let req = GrantRequest {
                     principal,
                     seat: seat.clone(),

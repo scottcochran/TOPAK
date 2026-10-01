@@ -17,7 +17,7 @@ use cedar_policy::{
 use serde_json::Value;
 use topak_core::admit::FloorOutcome;
 use topak_core::lift::FrozenInput;
-use topak_core::{Digest, ObserverValues};
+use topak_core::{Digest, ObserverValues, PersonaValues};
 
 /// The gated floor text (`floor/genesis-floor.cedar`, DRAFT, not ratified).
 pub const FLOOR_SRC: &str = include_str!("../../../../floor/genesis-floor.cedar");
@@ -69,6 +69,7 @@ pub struct Floor {
     floor_digest: Digest,
     schema_digest: Digest,
     values: ObserverValues,
+    persona: PersonaValues,
     values_digest: Digest,
 }
 
@@ -85,6 +86,11 @@ impl Floor {
 
     pub fn values_digest(&self) -> &Digest {
         &self.values_digest
+    }
+
+    /// The `persona` block of the values file (ADR-0031 A2): `T_persona`.
+    pub fn persona_values(&self) -> &PersonaValues {
+        &self.persona
     }
 
     /// Load an arbitrary floor text with the pinned values. `pinned = false` is for tests of the
@@ -108,12 +114,14 @@ impl Floor {
                 return Err(FloorLoadError::ValuesDigest { actual: values_digest.0, pinned: PINNED_VALUES_SHA256 });
             }
         }
-        let values: ObserverValues = serde_json::from_str::<Value>(values_src)
-            .map_err(|e| FloorLoadError::Values(e.to_string()))?
-            .get("observer")
-            .cloned()
-            .ok_or_else(|| FloorLoadError::Values("no `observer` block".into()))
-            .and_then(|v| serde_json::from_value(v).map_err(|e| FloorLoadError::Values(e.to_string())))?;
+        let values_json = serde_json::from_str::<Value>(values_src).map_err(|e| FloorLoadError::Values(e.to_string()))?;
+        let block = |name: &str| {
+            values_json.get(name).cloned().ok_or_else(|| FloorLoadError::Values(format!("no `{name}` block")))
+        };
+        let values: ObserverValues =
+            serde_json::from_value(block("observer")?).map_err(|e| FloorLoadError::Values(e.to_string()))?;
+        let persona: PersonaValues =
+            serde_json::from_value(block("persona")?).map_err(|e| FloorLoadError::Values(e.to_string()))?;
         let (schema, _warnings) =
             Schema::from_cedarschema_str(schema_src).map_err(|e| FloorLoadError::Schema(e.to_string()))?;
         let policies = PolicySet::from_str(floor_src).map_err(|e| FloorLoadError::Policies(e.to_string()))?;
@@ -127,7 +135,7 @@ impl Floor {
             let id = p.annotation("id").ok_or_else(|| FloorLoadError::MissingId(p.id().to_string()))?;
             ids.insert(p.id().clone(), id.to_string());
         }
-        Ok(Self { policies, schema, ids, floor_digest, schema_digest, values, values_digest })
+        Ok(Self { policies, schema, ids, floor_digest, schema_digest, values, persona, values_digest })
     }
 
     pub fn floor_digest(&self) -> &Digest {

@@ -32,6 +32,8 @@ use topak_transport::{Memory, RecordKind, Transport};
 struct Keys {
     anchors: Vec<SigningKey>,
     bg: Vec<SigningKey>,
+    /// The bundle key (ADR-0044 §1): the fixture signs its copy of the bundle with it.
+    bundle: SigningKey,
 }
 
 fn key() -> SigningKey {
@@ -96,7 +98,7 @@ async fn fixture(name: &str) -> Fixture {
         run_round_bound: None,
     };
 
-    let keys = Keys { anchors: (0..3).map(|_| key()).collect(), bg: (0..2).map(|_| key()).collect() };
+    let keys = Keys { anchors: (0..3).map(|_| key()).collect(), bg: (0..2).map(|_| key()).collect(), bundle: key() };
     let seat = |d: Domain, k: topak_core::SeatKind| SeatDecl { domain: d, kind: k, cell: None, key: pubhex(&key()) };
     let rules = Rules {
         rules_epoch: 0,
@@ -123,11 +125,25 @@ async fn fixture(name: &str) -> Fixture {
             actions: BTreeSet::from(["Actuate".to_string()]),
         }),
         erasure_roster: None,
+        verifier_keys: BTreeSet::new(),
+        bundle_keys: BTreeSet::from([pubhex(&keys.bundle)]),
     };
 
-    let bundles = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../bundles");
-    let l = LocalBundles::load_dir(&bundles).await.unwrap();
-    let bundle_rev = l.revisions().next().expect("run scripts/build-bundle.sh first").clone();
+    // ADR-0044: the fixture's bundle key signs a copy of the built bundle into its own bundles
+    // directory; the rules above carry the key.
+    let built = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../bundles");
+    let tarball = std::fs::read_dir(&built)
+        .expect("run scripts/build-bundle.sh first")
+        .filter_map(|e| e.ok().map(|e| e.path()))
+        .find(|p| p.extension().is_some_and(|x| x == "gz"))
+        .expect("run scripts/build-bundle.sh first");
+    let rev = tarball.file_name().unwrap().to_string_lossy().trim_end_matches(".tar.gz").to_string();
+    std::fs::create_dir_all(dir.join("bundles")).unwrap();
+    std::fs::copy(&tarball, dir.join("bundles").join(format!("{rev}.tar.gz"))).unwrap();
+    let sig = topak_core::authentic::sign(topak_bundle::BUNDLE_PURPOSE, &topak_bundle::bundle_body(&rev), &keys.bundle.to_bytes());
+    std::fs::write(dir.join("bundles").join(format!("{rev}.sig")), serde_json::to_vec(&sig).unwrap()).unwrap();
+    let l = LocalBundles::load_dir(&dir.join("bundles"), &rules.bundle_keys).await.unwrap();
+    let bundle_rev = l.revisions().next().expect("the signed copy loads").clone();
 
     Fixture { dir, corpus_obj, run_obj, tool, run_tool, tools, params, rules, keys, bundle_rev }
 }
@@ -138,6 +154,10 @@ struct AllowAll;
 impl BundleDecider for AllowAll {
     fn decide<'a>(&'a self, b: &'a Digest, _i: &'a Value) -> BoxFuture<'a, BundleOutcome> {
         Box::pin(async move { BundleOutcome::Allow { engine: BundleEngine::Sidecar, bundle: b.clone() } })
+    }
+    /// A test stub: every revision counts as verified, so grants are not refused for it.
+    fn verified(&self, _rev: &Digest) -> bool {
+        true
     }
 }
 
@@ -155,8 +175,8 @@ async fn cluster(f: &Fixture, real_bundle: bool) -> Cluster {
         let (in_tx, in_rx) = mpsc::channel(8192);
         hub.register(id, in_tx);
         let bundle: Box<dyn BundleDecider> = if real_bundle {
-            let bundles = PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("../../bundles");
-            Box::new(BundleTier::new(None, LocalBundles::load_dir(&bundles).await.unwrap()))
+            let bundles = f.dir.join("bundles");
+            Box::new(BundleTier::new(None, LocalBundles::load_dir(&bundles, &f.rules.bundle_keys).await.unwrap()))
         } else {
             Box::new(AllowAll)
         };

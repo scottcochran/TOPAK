@@ -1,0 +1,33 @@
+TOPAK — Mechanism.tla trace validation: the reference's recorded behaviours replayed through the operational model (ADR-0045 T-0045-28, stage 1)
+Module: Mechanism.tla (sha256 3bfbc88be6cf7fe7) · TLC Version 2.19 of 08 August 2024 (jar sha256 936a262061c91469) · openjdk version "25.0.1" 2025-10-21
+Reference: mechanism/ at f873795 + working tree · recorder: crates/topak-core/src/trace.rs · converter: trace2tla.py · driver: mechanism-trace-run.sh
+Suites traced: topak-core tests/mutations.rs (every state the helpers build) · topak-node tests/e2e.rs (replica 1 of every cluster)
+A MATCH line means every recorded step's projected state and result equal the model's. A trace is one test; steps are applied log entries.
+
+test result: ok. 35 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.12s
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.70s
+
+e2e_actuate_actuate_is_counted_recorded_and_sealed_1 | 20 steps | MATCH
+e2e_build_build_round_promotion_and_fencing_4 | 24 steps | MATCH
+e2e_coupling_observer_liveness_couples_run_admits_3 | 23 steps | MATCH
+e2e_expiry_an_expired_lease_is_ended_and_refused_2 | 3 steps | MATCH
+e2e_tools_tools_break_glass_issuance_and_partition_0 | 21 steps | MATCH
+mut_a_revoked_principal_persona_or_profile_is_not_granted_again_and_m_revoke_is_refused_0 | 3 steps | MATCH
+mut_a_revoked_principal_persona_or_profile_is_not_granted_again_and_m_revoke_is_refused_14 | 3 steps | MATCH
+mut_a_revoked_principal_persona_or_profile_is_not_granted_again_and_m_revoke_is_refused_15 | 3 steps | MATCH
+mut_a_run_round_seals_with_its_lease_and_a_run_seat_cannot_abstain_16 | 2 steps | MATCH
+mut_a_run_round_seals_with_its_lease_and_a_run_seat_cannot_abstain_3 | 11 steps | MATCH
+mut_a_targeted_revocation_ends_one_round_and_not_the_fleet_2 | 3 steps | MATCH
+mut_a_ttl_over_t_persona_is_refused_at_grant_and_at_renewal_4 | 5 steps | MATCH
+mut_alphabets_are_bounded_by_seat_kind_and_m_kind_is_refused_1 | 6 steps | MATCH
+mut_lease_renewal_is_monotone_and_m_renew_is_refused_6 | 6 steps | MATCH
+mut_no_action_under_a_fenced_epoch_and_m_fence_is_refused_5 | 2 steps | MATCH
+mut_one_live_lease_per_principal_7 | 2 steps | MATCH
+mut_one_seat_per_principal_and_m_seat_is_refused_8 | 3 steps | MATCH
+mut_renewal_cannot_change_round_or_role_and_m_role_is_refused_9 | 1 steps | MATCH
+mut_run_alphabets_are_bounded_by_seat_kind_and_domain_10 | 5 steps | MATCH
+mut_the_round_bound_counts_consult_11 | 5 steps | MATCH
+mut_the_round_bound_terminates_a_round_12 | 1 steps | MATCH
+mut_the_sequence_counts_effects_and_m_emitseq_is_refused_13 | 16 steps | MATCH
+
+22 traces · 168 steps

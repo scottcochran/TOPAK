@@ -26,4 +26,4 @@ pub mod types;
 
 pub use types::*;
 pub mod observer;
-pub use observer::{Heartbeat, ObserverValues};
+pub use observer::{Heartbeat, ObserverValues, PersonaValues};

@@ -34,8 +34,9 @@
 (*                                                                                *)
 (* State: epoch rulesEpoch seats grantRoster vetoRoster quorum minGrant bgIssued  *)
 (*        bgRoster (a set, empty when no break-glass roster is issued)            *)
+(*        verifierKeys bundleKeys (ADR-0025 §1 (f); carried, read by nothing here) *)
 (*        leases liveBySeat lastRound candidates gates approvals revoked          *)
-(*        appliedIds lastApplied k marks seals buildBound runBound                *)
+(*        appliedIds lastApplied k tPersona marks seals buildBound runBound       *)
 (* Lease: principal seat persona epoch rulesEpoch conf rung alphabet round role   *)
 (*        ttl ended actions seq                                                   *)
 (* Candidate: artifact author votes promotedAt · Vote: verdict evidence rulesEpoch*)
@@ -193,6 +194,7 @@ ApplyGrant(s, idx, e) ==
      ELSE IF e.role = "voter" /\ dom # "build" THEN Rej(s)
      ELSE IF revokedHit THEN Rej(s)
      ELSE IF e.rung > 3 THEN Rej(s)
+     ELSE IF e.ttl > s.tPersona THEN Rej(s)      \* ADR-0031 A2
      ELSE IF unread THEN Rej(s)
      ELSE IF reused THEN Rej(s)
      ELSE LET lr == [principal |-> e.principal, seat |-> e.seat, persona |-> e.persona,
@@ -209,6 +211,7 @@ ApplyRenew(s, idx, e) ==
   ELSE LET old == s.leases[e.fence] IN
     IF old.seat # e.seat \/ old.ended # NONE THEN Rej(s)
     ELSE IF old.epoch # s.epoch \/ old.rulesEpoch # s.rulesEpoch THEN Rej(s)
+    ELSE IF e.ttl > s.tPersona THEN Rej(s)      \* ADR-0031 A2
     ELSE IF ~(e.alphabet \subseteq old.alphabet) THEN Rej(s)
     ELSE IF e.rung # old.rung THEN Rej(s)
     ELSE IF e.ttl > old.ttl THEN Rej(s)
@@ -284,7 +287,8 @@ ApplyIssue(s, e) ==
   ELSE LET r  == e.rules
            s1 == [s EXCEPT !.rulesEpoch = r.rulesEpoch, !.seats = r.seats, !.grantRoster = r.grantRoster,
                            !.vetoRoster = r.vetoRoster, !.quorum = r.quorum, !.minGrant = r.minGrant,
-                           !.bgIssued = r.bgIssued, !.bgRoster = r.bgRoster]
+                           !.bgIssued = r.bgIssued, !.bgRoster = r.bgRoster,
+                           !.verifierKeys = r.verifierKeys, !.bundleKeys = r.bundleKeys]
        IN [st |-> EndAllLive(s1, "rules_changed"), res |-> [kind |-> "Issued", rulesEpoch |-> r.rulesEpoch]]
 
 ApplyBreakGlass(s, e) ==

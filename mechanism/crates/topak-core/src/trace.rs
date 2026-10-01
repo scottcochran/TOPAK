@@ -112,6 +112,8 @@ fn project_rules(r: &Rules) -> Value {
         "minGrant": r.min_grant,
         "bgIssued": r.break_glass.is_some(),
         "bgRoster": setv(r.break_glass.iter().flat_map(|bg| bg.roster.iter().cloned())),
+        "verifierKeys": setv(r.verifier_keys.iter().cloned()),
+        "bundleKeys": setv(r.bundle_keys.iter().cloned()),
     })
 }
 
@@ -133,6 +135,8 @@ pub fn project_state(s: &State, params: &Params) -> Value {
         "rulesEpoch": r["rulesEpoch"], "seats": r["seats"], "grantRoster": r["grantRoster"],
         "vetoRoster": r["vetoRoster"], "quorum": r["quorum"], "minGrant": r["minGrant"],
         "bgIssued": r["bgIssued"], "bgRoster": r["bgRoster"],
+        "verifierKeys": r["verifierKeys"], "bundleKeys": r["bundleKeys"],
+        "tPersona": s.persona.t_persona_ms,
         "leases": fnv(s.leases.iter().map(|(f, lr)| (*f, lease(lr)))),
         "liveBySeat": fnv(s.live_by_seat.iter().map(|(k, v)| (k.clone(), *v))),
         "lastRound": fnv(s.last_round.iter().map(|(k, v)| (k.clone(), *v))),

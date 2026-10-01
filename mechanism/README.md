@@ -35,8 +35,8 @@ affirmative bundle `true`, from the bundle revision the lease names, is a deny.
 ## Run it
 
 ```sh
-cargo test --workspace --release           # 55 tests (2026.09.29, ADR-0033 A3); needs a built bundle (next line)
-scripts/build-bundle.sh                    # policies/ → bundles/<revision>.tar.gz (docker, OPA)
+cargo test --workspace --release           # 61 tests (2026.10.01); needs a built bundle (next line)
+scripts/build-bundle.sh                    # policies/ → bundles/<revision>.tar.gz (docker, OPA); TOPAK_BUNDLE_SECRET=<hex> also writes <revision>.sig
 
 TOPAK_TRACE_DIR=/tmp/t cargo test --release -p topak-core --test mutations   # record every apply …
 ../spec/mechanism-trace-run.sh /tmp/t/*.jsonl                                 # … and replay it through spec/Mechanism.tla
@@ -66,6 +66,8 @@ confinement digest), `fence_epoch` (the fleet fence), `issue`, `gates_passed`,
 - The floor text is **not copied**. `topak-floor` includes `../floor/*` by path and refuses to load
   unless the bytes match the digests the gate run recorded. Changing the floor means re-running
   the gates and changing the pin, which is a mechanism release.
+- **A bundle loads only under a signature** over its revision that verifies under a key in the rules' `bundle_keys`
+  (ADR-0044). The tests sign a copy under their own key; `dev-init.sh` signs one into `dev/bundles/`.
 - The bundle entrypoint is `policies/bundle.rego` (`data.topak.bundle.allow`), which composes
   `policies/tool_invocation.rego`.
 - `PROVISIONAL (<tag>)` in the code marks every place a gap or assumption lives.

@@ -89,6 +89,15 @@ pub struct Rules {
     /// Genesis rules issue no erasure roster, so erasure is disabled from epoch 0 (ADR-0028).
     #[serde(default)]
     pub erasure_roster: Option<BTreeSet<KeyHex>>,
+    /// ADR-0025 §1 (f): the keys the mechanism accepts a signature from in place of its own check.
+    /// The rung-3 verifier's appraisal keys (ADR-0034 §2). Empty means no rung-3 grant; the
+    /// reference issues rung 0 only and never reads them.
+    #[serde(default)]
+    pub verifier_keys: BTreeSet<KeyHex>,
+    /// ADR-0025 §1 (f): the bundle-signing keys (ADR-0044 §1). A bundle loads only under a
+    /// signature that verifies under one of these; empty means the bundle tier loads nothing.
+    #[serde(default)]
+    pub bundle_keys: BTreeSet<KeyHex>,
 }
 
 impl Rules {
@@ -222,6 +231,14 @@ pub fn check_well_formed(r: &Rules) -> Vec<Violation> {
     }
     if r.anchor_keys.is_empty() {
         out.push(v("WF", "anchor key set is empty"));
+    }
+    // ADR-0025 §1 (f): a vouching key is a 32-byte Ed25519 public key, like every other key issued.
+    for (what, keys) in [("verifier", &r.verifier_keys), ("bundle", &r.bundle_keys)] {
+        for k in keys {
+            if hex::decode(k).map(|b| b.len() != 32).unwrap_or(true) {
+                out.push(v("WF", format!("{what} key {k} is not a 32-byte hex key")));
+            }
+        }
     }
     out
 }

@@ -16,7 +16,7 @@ use std::fmt;
 use crate::action::{ActionRequest, tool_id};
 use crate::authentic::{self, KeyHex, Signed};
 use crate::lease::{Confinement, Lease, MAX_RUNG};
-use crate::observer::{Heartbeat, ObserverValues};
+use crate::observer::{Heartbeat, ObserverValues, PersonaValues};
 use crate::promotion::{Candidate, Tally, VoteRecord, tally_with_coverage};
 use crate::rules::{self, Issuance, Rules, Violation};
 use crate::types::*;
@@ -457,6 +457,10 @@ pub struct State {
     /// startup; the default is the placeholders, for states built without one.
     #[serde(default)]
     pub observer: ObserverValues,
+    /// `T_persona` (ADR-0031 A2): the bound on a lease's `ttl` at grant and renewal. Set from the
+    /// linked floor at startup; the default is the placeholder, for states built without one.
+    #[serde(default)]
+    pub persona: PersonaValues,
     /// `mark(o, topic)` (ADR-0039 §1): observer seat → watched round topic → watermark. Kept per
     /// seat, not per lease, so an Observer's next lease continues where its last left off.
     #[serde(default)]
@@ -503,6 +507,7 @@ impl State {
             applied_ids: BTreeSet::new(),
             last_applied: 0,
             observer: ObserverValues::default(),
+            persona: PersonaValues::default(),
             marks: BTreeMap::new(),
             seals: BTreeMap::new(),
             trace: None,
@@ -792,6 +797,14 @@ impl State {
         if req.confinement.rung > MAX_RUNG {
             return Applied::Rejected("no such confinement rung".into());
         }
+        // ADR-0031 A2: a lease's ttl is at most T_persona, so the Persona is re-attested at least
+        // that often (ADR-0016 §6). Refused by the mechanism, not by policy.
+        if req.ttl_ms > self.persona.t_persona_ms {
+            return Applied::Rejected(format!(
+                "ttl {} ms exceeds T_persona {} ms (ADR-0031 A2)",
+                req.ttl_ms, self.persona.t_persona_ms
+            ));
+        }
         // ADR-0039 §2: in Run, a Thinker's next round is granted only once a cell Observer has
         // read its last round to the seal. Build needs no cross-round rule (§3).
         if domain == Domain::Run
@@ -856,6 +869,13 @@ impl State {
         }
         if old.lease.epoch != self.epoch || old.lease.rules_epoch != self.rules.rules_epoch {
             return Applied::Rejected("renewal of a fenced lease".into());
+        }
+        // ADR-0031 A2: the renewal's ttl is bounded by T_persona again.
+        if req.ttl_ms > self.persona.t_persona_ms {
+            return Applied::Rejected(format!(
+                "renewal ttl {} ms exceeds T_persona {} ms (ADR-0031 A2)",
+                req.ttl_ms, self.persona.t_persona_ms
+            ));
         }
         let mut new = old.lease.clone();
         new.fence = index;
