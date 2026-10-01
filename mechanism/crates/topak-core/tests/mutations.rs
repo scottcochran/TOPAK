@@ -74,7 +74,9 @@ fn grant_req(seat: &str, alphabet: &[ActionKind]) -> GrantRequest {
 }
 
 fn state() -> State {
-    State::genesis(rules(), 2).unwrap()
+    let mut s = State::genesis(rules(), 2).unwrap();
+    s.trace = topak_core::trace::name_from_env("mut");
+    s
 }
 
 fn read(seat: &str, lease: LogIndex, epoch: Epoch) -> ActionRequest {
@@ -597,7 +599,9 @@ fn run_rules() -> Rules {
 }
 
 fn run_state() -> State {
-    State::genesis(run_rules(), 2).unwrap()
+    let mut s = State::genesis(run_rules(), 2).unwrap();
+    s.trace = topak_core::trace::name_from_env("mut");
+    s
 }
 
 const RUN_THINKER: &[ActionKind] = &[ActionKind::Consult, ActionKind::Actuate, ActionKind::Report];

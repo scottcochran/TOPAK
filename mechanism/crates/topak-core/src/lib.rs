@@ -21,6 +21,7 @@ pub mod lift;
 pub mod promotion;
 pub mod rules;
 pub mod state;
+pub mod trace;
 pub mod types;
 
 pub use types::*;

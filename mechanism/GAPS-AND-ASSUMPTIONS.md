@@ -17,7 +17,7 @@ under **Findings** (§4) as a candidate for the next checkpoint.
 | **Scope** | The admit path of the verified object: epoch fence → lease → lift → policy floor → bundle → consensus-ordered admit → effect. Build's six actions and Run's three (ADR-0040 §1, Proposed) |
 | **Stack** | `cedar-policy` 4.13 (floor, linked) · OPA sidecar with in-process OPA WASM fallback (bundle tier) · sans-IO crash-fault Multi-Paxos (`topak-paxos`) · `rskafka` 0.6 (round topics) · `rmcp` 3.4 (agent front door and downstream tools) |
 | **Not in scope** | Observer and correlator · archive and plaintext store (ADR-0004) · write-time masking (ADR-0003) · anchor ceremony and bootstrap · confinement · erasure execution |
-| **Evidence** | At commit `4fd9677` (2026.09.24): 38 tests — 21 core mutation tests (Lease, FloorComposition, RulesFloorNV_rev5 restated), 4 Paxos simulation tests, 4 floor tests (includes a replay of the 38-case gate suite), 6 bundle-fallback tests, 3 end-to-end cluster tests — plus a live smoke run: 3 processes over TCP, real Kafka, a real OPA sidecar, and an MCP client over stdio. At commit `453801c` (2026.09.25, manifest `dcad5e8e3236cbc7`): 44 tests, the run ADR-0033 §7's 2026.09.25 addendum cites. At commit `5b25245` (2026.09.28, manifest `45ff610e16b1cc9c`): 44 tests, ADR-0033 A1. At commit `7f74c0b` (2026.09.29, manifest `a5a89d9c824743e4`, 62 entries): 49 tests across six binaries, ADR-0033 A2, with the seat, Observer and coupling cases of §6. At commit `1e6c0c4` (2026.09.29, manifest `8409d2365589ada1`, 65 entries): **55 tests and 31 Rego cases**, the run ADR-0033 A3 (pending) and `mechanism/README.md` cite, carrying ADR-0040 to ADR-0043. The replayed gate suite is 51 cases since ADR-0039's floor run. The live smoke run has not been repeated since 2026.09.25 (G5 item 52) |
+| **Evidence** | At commit `4fd9677` (2026.09.24): 38 tests — 21 core mutation tests (Lease, FloorComposition, RulesFloorNV_rev5 restated), 4 Paxos simulation tests, 4 floor tests (includes a replay of the 38-case gate suite), 6 bundle-fallback tests, 3 end-to-end cluster tests — plus a live smoke run: 3 processes over TCP, real Kafka, a real OPA sidecar, and an MCP client over stdio. At commit `453801c` (2026.09.25, manifest `dcad5e8e3236cbc7`): 44 tests, the run ADR-0033 §7's 2026.09.25 addendum cites. At commit `5b25245` (2026.09.28, manifest `45ff610e16b1cc9c`): 44 tests, ADR-0033 A1. At commit `7f74c0b` (2026.09.29, manifest `a5a89d9c824743e4`, 62 entries): 49 tests across six binaries, ADR-0033 A2, with the seat, Observer and coupling cases of §6. At commit `1e6c0c4` (2026.09.29, manifest `8409d2365589ada1`, 65 entries): **55 tests and 31 Rego cases**, the run ADR-0033 A3 (pending) and `mechanism/README.md` cite, carrying ADR-0040 to ADR-0043. The replayed gate suite is 51 cases since ADR-0039's floor run. The live smoke run has not been repeated since 2026.09.25 (G5 item 52). **Since 2026.09.30 every behaviour the mutation and e2e suites exercise is also replayed through `spec/Mechanism.tla`**, an operational model of `State::apply`: 21 traces, 163 applied entries, each step's projected state and result matching the model's (`spec/Mechanism-trace-results-2026.09.30.txt`; `trace.rs`; ADR-0045 T-0045-28, stage 1) |
 
 ### 1.1 Records it builds on, by status
 
@@ -212,6 +212,16 @@ Findings 12 to 14 are from 2026.09.29, carrying ADR-0040 to ADR-0043 (then Propo
 ---
 
 ## 6. TLA+ properties and the tests that restate them
+
+**Since 2026.09.30 the restatement is checked, not asserted, on every path a test takes**: with
+`TOPAK_TRACE_DIR` set, each state these tests build records its applied entries, and
+`spec/mechanism-trace-run.sh` replays them through `spec/Mechanism.tla`, the operational model of
+`State::apply` and `check_live`, failing at the first step whose state or result differs
+(`spec/mechanism-trace-results.sh` regenerates the results file). The rows below still say which
+discriminating module each test restates; the model is what the test's behaviour is checked
+against. Three facts the model takes from the trace and does not compute: whether an issuance
+passed `validate_issuance`, whether a break-glass approval's signature verified, and whether an
+admit's parameter digest matched. Nothing a test does not reach is checked.
 
 | Artifact | Property / mutation | Rust test |
 |---|---|---|

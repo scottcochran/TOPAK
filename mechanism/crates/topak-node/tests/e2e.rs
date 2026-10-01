@@ -183,6 +183,13 @@ async fn cluster(f: &Fixture, real_bundle: bool) -> Cluster {
         topak_node::spawn_sweeper(mech.clone());
         nodes.push(mech);
     }
+    // Trace validation (ADR-0045 T-0045-28, stage 1): with TOPAK_TRACE_DIR set, replica 1's
+    // every `apply` is recorded for `spec/Mechanism.tla`; the others converge to the same state.
+    let fixture = f.dir.file_name().unwrap().to_string_lossy().to_string();
+    let fixture = fixture.strip_prefix("topak-e2e-").unwrap_or(&fixture).rsplit_once('-').map(|(n, _pid)| n.to_string()).unwrap_or(fixture);
+    if let Some(name) = topak_core::trace::name_from_env(&format!("e2e-{fixture}")) {
+        nodes[0].state.write().unwrap().trace = Some(name);
+    }
     Cluster { nodes, hub }
 }
 

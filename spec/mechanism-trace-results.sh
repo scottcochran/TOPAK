@@ -1,0 +1,26 @@
+#!/bin/bash
+# Regenerates a Mechanism trace-validation results file (ADR-0045 T-0045-28, stage 1):
+# runs the reference's core and e2e suites with tracing on, converts every trace, checks each
+# against Mechanism.tla with TLC, and prints the results file.
+#   usage: mechanism-trace-results.sh > Mechanism-trace-results-<date>.txt
+# Needs: cargo (a built bundle under mechanism/bundles for the e2e suite), java, the TLC jar.
+set -u
+here=$(cd "$(dirname "$0")" && pwd)
+root=$(cd "$here/.." && pwd)
+jar=${TLA_JAR:-$root/tools/tla2tools.jar}
+traces=$(mktemp -d /tmp/topak-traces.XXXXXX)
+tlcv=$(java -cp "$jar" tlc2.TLC -h 2>&1 | grep -oE "Version [0-9.]+ of [^ ]+ [^ ]+ [0-9]+" | head -1)
+echo "TOPAK — Mechanism.tla trace validation: the reference's recorded behaviours replayed through the operational model (ADR-0045 T-0045-28, stage 1)"
+echo "Module: Mechanism.tla (sha256 $(shasum -a 256 "$here/Mechanism.tla" | cut -c1-16)) · TLC $tlcv (jar sha256 $(shasum -a 256 "$jar" | cut -c1-16)) · $(java -version 2>&1 | head -1)"
+echo "Reference: mechanism/ at $(cd "$root" && git rev-parse --short HEAD)$(cd "$root" && git diff --quiet -- mechanism || echo ' + working tree') · recorder: crates/topak-core/src/trace.rs · converter: trace2tla.py · driver: mechanism-trace-run.sh"
+echo "Suites traced: topak-core tests/mutations.rs (every state the helpers build) · topak-node tests/e2e.rs (replica 1 of every cluster)"
+echo "A MATCH line means every recorded step's projected state and result equal the model's. A trace is one test; steps are applied log entries."
+echo
+(cd "$root/mechanism" && TOPAK_TRACE_DIR=$traces cargo test -p topak-core --release --test mutations 2>&1 | grep "^test result")
+(cd "$root/mechanism" && TOPAK_TRACE_DIR=$traces cargo test -p topak-node --release --test e2e 2>&1 | grep "^test result")
+echo
+TLA_JAR=$jar "$here/mechanism-trace-run.sh" "$traces"/*.jsonl | sed 's/^Trace_//'
+echo
+n=$(ls "$traces"/*.jsonl | wc -l | tr -d ' '); s=$(cat "$traces"/*.jsonl | grep -c '"index"')
+echo "$n traces · $s steps"
+rm -rf "$traces"

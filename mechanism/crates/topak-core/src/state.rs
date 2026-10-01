@@ -465,6 +465,10 @@ pub struct State {
     /// number. Read by the cross-round grant condition (ADR-0039 §2) and by coverage (§3).
     #[serde(default)]
     pub seals: BTreeMap<SeatId, Seal>,
+    /// A trace name, set by a test or an operator: with `TOPAK_TRACE_DIR`, every `apply` is
+    /// recorded for checking against `spec/Mechanism.tla` (`trace.rs`). Never replicated state.
+    #[serde(skip)]
+    pub trace: Option<String>,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -501,6 +505,7 @@ impl State {
             observer: ObserverValues::default(),
             marks: BTreeMap::new(),
             seals: BTreeMap::new(),
+            trace: None,
         })
     }
 
@@ -674,8 +679,20 @@ impl State {
         }
     }
 
-    /// Apply one committed entry at log index `index`. Deterministic.
+    /// Apply one committed entry at log index `index`. Deterministic. With a trace name and
+    /// `TOPAK_TRACE_DIR` set, the step is recorded for `spec/Mechanism.tla` (`trace.rs`).
     pub fn apply(&mut self, index: LogIndex, entry: &Entry, params: &Params) -> Applied {
+        if crate::trace::enabled(self) {
+            let oracle = crate::trace::oracle(self, entry, params);
+            let pre = self.clone();
+            let applied = self.apply_inner(index, entry, params);
+            crate::trace::record(&pre, self, index, entry, &applied, oracle, params);
+            return applied;
+        }
+        self.apply_inner(index, entry, params)
+    }
+
+    fn apply_inner(&mut self, index: LogIndex, entry: &Entry, params: &Params) -> Applied {
         self.last_applied = index;
         if !self.applied_ids.insert(entry.id().to_string()) {
             return Applied::Duplicate;

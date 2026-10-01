@@ -3,6 +3,7 @@
 tools/
 !tools/tla2tools.jar
 spec/*.cfg
+spec/Trace_*.tla
 spec/tla2tools.jar
 spec/states/
 *.toolbox/
