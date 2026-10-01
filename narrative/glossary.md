@@ -1,14 +1,17 @@
 # TOPAK — Glossary
 
-**2026.09.29** · derived · regenerated · DRAFT
+**2026.09.30** · narrative · the glossary head, revised in place · DRAFT
 
-**Basis.** Genesis Checkpoint G5 (2026.09.29) and Theory of Operation revision 9 (2026.09.29), with the record files
-they cite. Where the two disagree, G5 wins. The four Proposed records (ADR-0005, ADR-0021, ADR-0035, ADR-0036) appear
-under their subjects, tagged **[P]**, and are collected in §10.
+**Basis.** Genesis Checkpoint G6 (2026.09.30) and Theory of Operation revision 10 (`narrative/theory-of-operation.md`,
+tag `ToO-rev10`), with the record files they cite. Where the two disagree, G6 wins. The four Proposed records
+(ADR-0005, ADR-0035, ADR-0036, ADR-0045) and the one Proposed section (ADR-0042 §6) appear under their subjects, tagged
+**[P]**, and are collected in §10.
 
-**What this supersedes.** The 2026.09.26 glossary, cut against G3 and rev 7, which predated G4 and G5 (G5 open item
-12). Every entry was re-read against G5; the ones G4 and G5 changed are rewritten, and §14 lists the wording that
-retired. The 09.17 session vocabulary stays dropped or placed as the 09.26 glossary placed it.
+**What this supersedes.** The 2026.09.29 glossary, cut against G5 and revision 9, which this file's previous bytes
+were (`derived/topak-glossary-2026.09.29.md` until the 2026.09.30 reorganization; `git log --follow` reads it). Every
+entry was re-read against G6; the ones Batches 17 to 21, ADR-0044 and ADR-0045 changed are rewritten, and §14 lists
+the wording that retired. From this revision on the glossary has no dated copies: a revision is a commit to this
+file, and the checkpoint cut with it measures the head.
 
 **This document decides nothing.** It reports what the terms mean in the corpus as it stands, including where two
 sources disagree.
@@ -23,12 +26,12 @@ sources disagree.
 | **[A·CR]** | Defined by an Accepted record, or amendment, marked confirmation-required. Cite as *author-ratified* |
 | **[P]** | Defined by a Proposed record, a pending amendment, or a DRAFT artifact. The wording can still move |
 | **[D]** | Derived: used in the narrative, with no record of its own |
-| **[C]** | Checkpoint convention, fixed by G1–G5 |
+| **[C]** | Checkpoint convention, fixed by G1–G6 |
 | **[R]** | The reference implementation (ADR-0033). It is evidence, not the verified object |
-| **[O]** | Outstanding: the term names a hole rather than a mechanism. Numbers refer to the G5 §7 open list |
+| **[O]** | Outstanding: the term names a hole rather than a mechanism. Numbers refer to the G6 §7 open list |
 | **[X]** | Superseded: the term's record is superseded and its text is no longer in force |
 
-Record status is G5 §1 and is not restated here except where the status changes what a term means.
+Record status is G6 §1 and is not restated here except where the status changes what a term means.
 
 ---
 
@@ -99,8 +102,34 @@ principal yields attribution, not a safety property.
 Every action carries an epoch and a lease. There are three mechanism parameters: corpus root, tool allowlist and
 round bound (ADR-0022).
 
-**Run's alphabet** [O, 13]: no record defines it. `RunInvoke` and `RunEmit` are provisional in the floor and at the
-reference.
+**Run's alphabet** [A·CR]: three variants and nothing shared with Build but the carrier (ADR-0040, Batch 20, C3 and
+C4). **`Consult(ref)`** resolves a content-addressed object inside the pinned **Run root**: ingress, no effect.
+**`Actuate(tool, inputs)`** invokes an allowlisted Run tool whose entry declares the **effect channel** it opens:
+ADR-0015's tool-invocation class. **`Report(record)`** appends to the principal's round topic: the emission class.
+**A read of live state is an `Actuate`.** There is no terminal variant: **a Run round ends when its lease ends**, and a
+Run seat cannot abstain (ADR-0042 §5). The provisional pair `RunInvoke` and `RunEmit` is retired; a request naming
+either fails validation against S. Its obligations are owned: policy by ADR-0041, mechanism by ADR-0042, the cell by
+ADR-0043.
+
+**Run root** [A·CR]: a second pinned, content-addressed set, as Build's corpus root is; `Consult` is scoped to it
+(ADR-0040 §3). What may enter it, and who admits it, is open (ADR-0041 open obligations).
+
+**Effect channel** · **channel fidelity** [A·CR / O, 58]: a Run tool's allowlist entry declares the channel the tool
+opens; the tool is not hermetic and is not asked to be, only to open that channel and no other (ADR-0040 §3). Nothing
+checks it: the declaration is an operator's assertion (`mechanism/` G19, I33), and channel fidelity has no owner
+(ADR-0042 §6, Proposed).
+
+**`Actuate` record** [A·CR]: for every admitted `Actuate` the mechanism writes one record to the principal's round
+topic when the call returns: seat, fence, log index, sequence number, tool, break-glass flag and digests of inputs
+and result as facts, the bodies as payload (ADR-0042 §3). A call that has not returned when the round seals is written
+as `unknown` ahead of the seal marker, and **a result the record does not name is not delivered** (§4).
+
+**Recorded ingress** [A·CR]: a tool's result is ingress and is recorded by digest, so Run's ingress is a closed list:
+the task, each admitted `Consult`'s content, each admitted `Actuate`'s result (ADR-0042 §4; ADR-0043 §1).
+
+**Run's confinement obligation** [P]: ADR-0042 §6, the one section of the Run records left Proposed. The effect
+channels are the tools', not the principal's, so **P4 cannot hold for a Run tool** and channel fidelity replaces it.
+Stated, not delivered; the Run profile that would carry it is unwritten (item 58).
 
 **Finite in variants, not in instances** [A]: the floor is analysed per action variant over schema S with symbolic
 parameters. It is not analysed by enumeration.
@@ -109,8 +138,10 @@ parameters. It is not analysed by enumeration.
 or `Submit`.
 
 **Alphabets bounded by seat kind** [A·CR]: only a `thinker` seat is ever issued `Draft`, `Invoke`, `Submit` or
-`RunInvoke`; an `observer` seat reads, emits and, on the veto roster, denies; a `grant` seat reads, emits and votes
-(ADR-0037 §4). Stated in the floor as **forbid B10** and a tightened **B6**, and checked by the grant path first.
+`Actuate`; an `observer` seat reads, emits and, on the veto roster, denies, and in Run holds `Consult` and `Report`;
+a `grant` seat reads, emits and votes, and holds nothing in Run (ADR-0037 §4; ADR-0043 §2 for the Run column, which
+ADR-0037 A1 made in force). Stated in the floor as **forbid B10** and a tightened **B6**, and checked by the grant
+path first.
 
 **Confinement obligation** [O, 1]: ADR-0022 §6. No shell, no egress, no filesystem outside the workspace and corpus,
 and no path to the artifactory except `Submit`. §6 is the one section of ADR-0022 that is **not ratified**. The gap
@@ -163,7 +194,13 @@ says who may do it.
 first replica to see expiry proposes the round's end as a log entry (ADR-0031 E1).
 
 **Per-round TCB** [A·CR]: the field list. Persona, confinement, bundle, alphabet, round and role are checked at grant
-and assumed for the round. Epoch, fence and rules epoch are compared on every action.
+and assumed for the round. Epoch, fence and rules epoch are compared on every action. It is the one slice of the
+trusted base that is derived rather than declared; the rest is ADR-0045's table (§9).
+
+**`T_persona`** [A·CR]: the bound on a lease's `ttl`, at grant and at every renewal, so the Persona is re-attested at
+least that often (ADR-0031 A2, Batch 17). A policy-floor value, placeholder one hour, not yet read by the reference.
+It bounds the declared value; expiry runs on the local clock, so the interval it bounds is `T_persona` plus drift
+(ADR-0045 finding 2).
 
 ---
 
@@ -215,11 +252,11 @@ gate returns a counterexample request. The gates are decidable checks on the flo
 vacuous. They do not show that it is *right*. It is unowned.
 
 **Genesis floor** [P, 25]: `floor/genesis-floor.cedar`, 16 Cedar policies, schema S and the values file, gated
-three times, last on 2026.09.29. It is **DRAFT and not ratified**: ADR-0030 ratified the language and machinery,
+five times, last on 2026.09.30. It is **DRAFT and not ratified**: ADR-0030 ratified the language and machinery,
 not a floor. The mechanism compiles all three in and refuses any other bytes.
 
 **Values file** [P]: `floor/genesis-values.json`, the third file of the floor bundle: the numbers the typed lift
-reads that Cedar text cannot hold, `K`, `T_obs` and ADR-0035's unset θ (ADR-0039 §1). Relaxing a value is an
+reads that Cedar text cannot hold, `K`, `T_obs`, `T_persona` and ADR-0035's unset θ (ADR-0039 §1; ADR-0031 A2). Relaxing a value is an
 issuance and a promotion. **Every number in it is a placeholder**, a deployment or rung choice, and the file says so.
 
 **Forbid B7** [P]: the recusal forbid in the genesis floor. Recusal is floor text, so **relaxing it is a policy-floor
@@ -228,9 +265,26 @@ relaxation** (ADR-0022 A1).
 **Forbid B10** · **B6** [P]: only a `thinker` seat authors, in either domain; a vote is permitted from the grant
 roster only for a `grant` seat and from the veto roster only for an `observer` seat (ADR-0037 §4).
 
-**Forbid R3** [P]: `R3-observer-live`. A `RunInvoke` or `RunEmit` under a `thinker` seat is refused when no cell
-Observer is live (ADR-0039 §2). It applies to break-glass too. An observer seat's own emissions, its heartbeats
-among them, are not coupled.
+**Forbid R3** [P]: `R3-observer-live`. An `Actuate` or `Report` under a `thinker` seat is refused when no cell
+Observer is live (ADR-0039 §2 as amended by A1; ADR-0041 §1). It applies to break-glass too. It does **not** name
+`Consult`: a read of pinned content adds nothing to the backlog and can be reconstructed later from its digest
+(ADR-0041 §2). An observer seat's own emissions, its heartbeats among them, are not coupled.
+
+**Permit R4** [P]: `R4-consult-pinned`. A `Consult` is permitted when the seat's domain is `run`, the lease's
+alphabet contains it, and the object is in the Run root (ADR-0041 §1). The exemption from R3 rests on the pinning,
+and the gate run carries a control for it: R4 without its root condition is classed a relaxation by routing.
+
+**Checked routing verdict** [P]: ADR-0030 A1, pending. A `holds` answer to `F′ ⇒ F` or `F ⇒ F′` is an UNSAT result
+from the solver, and a wrong one lets a relaxation pass by promotion alone; under A1 a `holds` verdict counts only
+with the query, the solver's proof and a pinned checker's acceptance, their digests in the gate evidence. A `refuted`
+verdict needs none, since it can only subtract. Until the wrapper and checker exist every gate run is **D-0030-2**,
+routing verdicts unchecked, whose subtractive mitigation is to make every floor change two-key.
+
+**Bundle signing** · **bundle key** [A·CR]: a bundle is trusted by its signature, not its file name (ADR-0044, Batch
+17, C1). The bundle key is carried in the issued rules (ADR-0025 §1 (f)); the signature covers the content revision;
+the mechanism loads a bundle only when it verifies, counts a sidecar's decision only from a verified revision, and
+refuses a grant naming an unverified one; signing happens at promotion. Not implemented at the reference
+(**D-0044-1**; `mechanism/` G7).
 
 **Floor-change routing** [A·CR]: the classification is **computed, not asserted**. The analyzer decides `F′ ⇒ F`
 and `F ⇒ F′`:
@@ -406,11 +460,13 @@ discharged** (ADR-0015 E2).
 window (ADR-0005, Proposed). An emission is written after commit and carries the admit's log index, the fence and a
 per-lease sequence number. The reference's use of Kafka is a debt against ADR-0005 (open item 5).
 
-**Round** [A in Run · P in Build]: in Run, a cycle of principal activity (ADR-0003). In Build, one pipeline
-invocation (ADR-0021, Proposed).
+**Round** [A]: in Run, a cycle of principal activity (ADR-0003), ending when its lease ends (ADR-0042 §5). In Build,
+one pipeline invocation (ADR-0021, Batch 18).
 
 **Topic per principal per round** [A]: sealed on emit completion, with per-topic ACLs, per-use-case retention,
 explicit replay authorization, write-time masking and no tiered storage. **The topic is the unit of erasure.**
+Since A3 (Batch 17) "no tiered storage" means one store for a topic's whole retention, never a retention length,
+which is per use and per domain, and the archive is not a tier.
 
 **Topic identity includes the rules-epoch chain** [A]: so a successor system never writes to a predecessor's sealed
 topic (ADR-0003 A1).
@@ -538,8 +594,10 @@ amendment (G5 item 49).
 **Monoculture** [A]: an Observer should come from a different model family than the agents it watches. The predicate
 now has one pair per cell to cover.
 
-**Build has an Observer** [P]: ADR-0021, Proposed. Since R3 it follows ADR-0038 placement. It is blocked on ADR-0003's
-no-tiered-storage clause (open item 4).
+**Build has an Observer** [A·CR]: ADR-0021, ratified 2026.09.30 (Batch 18, C4) after ADR-0003 A3 scoped the storage
+clause that had held it and R5 read it through for ADR-0008 vocabulary. Build emits to the effect stream, a round is
+one pipeline invocation sealed at submission, the Observer follows ADR-0038 placement, and retention is per domain.
+In force in the record; §5 and §6 are not exercised at the reference.
 
 **Quarantine gate** [O, 48]: the 09.10 design's *hold*. It is `K = 0` with a hold instead of a wait, and under the
 strict form `K = 0` admits nothing, so the hold needs its own mechanism.
@@ -563,8 +621,9 @@ supersession is unwritten (item 50).
 **Persona granularity** [A·CR]: two `thinker` seats on one Persona are two principals in two cells, and this is
 permitted (ADR-0037 §5).
 
-**Independence criterion** [P, 20]: ADR-0035, Proposed at R3. Until it is in force, `Contained` is unreachable at any
-rung (§10).
+**Independence criterion** [P, 20]: ADR-0035, Proposed at R4. Until it is in force, `Contained` is unreachable at any
+rung (§10). R4 says the ingress bound covers the guest's reads and not a tool's run outside it, so a training round
+under ADR-0036's launcher stays declared until an in-guest trainer image exists.
 
 **Typed lift split** [A]: the decoder ships in the Persona, and the validator lives in the mechanism (ADR-0018). Its
 Reader scope correction is reversed in effect by ADR-0037 (C3); the split stands. **Decoder–alphabet compatibility**
@@ -586,7 +645,9 @@ identity mismatch. **No staleness argument covers Personas.**
 
 **Trusted by failure direction** [A]: an interval whose failure **subtracts** (lease expiry, passive e-stop, vote
 timeout) may use a local monotonic clock with an asymmetric margin that errs early. An interval whose failure
-**adds or preserves** authority (break-glass TTL, Persona expiry, re-attestation) needs trusted time.
+**adds or preserves** authority (break-glass TTL, Persona expiry, re-attestation) needs trusted time. ADR-0045 §6
+refuses trusted time as a trusted-base row until a time source has an attested identity, so the epoch-lapse stand-in
+for R8 is the honest answer, and `T_persona` bounds a value rather than an interval (§3).
 
 **No safety decision reads a principal-supplied clock** [A]: a timestamp in a payload is content, not a fact.
 
@@ -631,8 +692,10 @@ individually. **A missing note is not an empty delta.**
 D-0025-1 and D-0025-2, on anchor recoverability. **A-0030** and **D-0030-1** (a Rego floor, *measured* rather than
 *proven*), on floor verification. **D-0034-1** to **D-0034-4** (rung 2, rung 1, a native tool, rung 0), on
 confinement. **D-0037-1** (no Observer in a cell), **D-0037-2** (no raw emission retained), **D-0038-1** (the shared
-group only: ADR-0008 as ratified), **D-0038-2** (no correlator), **D-0039-1** (Run uncoupled). In Proposed records,
-D-0035-1 and D-0036-1. None is a deployment declaration.
+group only: ADR-0008 as ratified), **D-0038-2** (no correlator), **D-0039-1** (Run uncoupled), **D-0042-1** (effects
+counted and recorded as reports only: the reference before 09.29), **D-0044-1** (bundle signing off). In Proposed or
+pending records, D-0035-1, D-0036-1, **D-0045-1** (no trusted-base declaration: the bottom of every axis) and
+**D-0030-2** (routing verdicts unchecked). None is a deployment declaration.
 
 **Properties lost** [O, 40]: the field ADR-0023 §6's schema lacks. The five Observer and retention degeneracies void
 no safety theorem and state their losses in prose: a detection claim, an audit, a bound (ADR-0037 finding 6).
@@ -648,19 +711,20 @@ per round, its own reference values (ADR-0034 §1). In the reference a JSON file
 confinement digest (ADR-0036 §1, Proposed), each clause `pass`, `fail` or `vacuous` with a reason.
 
 **Declared profile** [P]: a rung-0 grant may name a profile; its verdict is then derived from the declared clauses,
-*declared by the operator and verified by nobody* (ADR-0036 R1). The trusted base at rung 0 stays empty. The profile
-is the constant across rungs and the rung the variable.
+*declared by the operator and verified by nobody* (ADR-0036 R1). The trusted base at rung 0 stays empty: the host is
+an **excluded** row (ADR-0045 T-0045-22). The profile is the constant across rungs and the rung the variable.
 
 ***Contested*** [A·CR]: signature valid, measurements diverging. Refusal plus a targeted revocation of the principal.
 Rung 1 cannot produce it.
 
 **Axes named so far** [D]: Persona provenance, event-log legibility, Observer scoping (archetype fixed: per cell plus
 correlator), effect-stream role, arguably HITL/HOTL/HOOTL posture, approver fault tolerance, anchor recoverability,
-floor verification, confinement rung, lineage strength, Observer coupling and emission retention. The set is not
-enumerated.
+floor verification, confinement rung, lineage strength, Observer coupling, emission retention, and the trusted base
+itself as a coordinate beside theorems held (ADR-0045, Proposed). The set is not enumerated.
 
-**Archetype-evolution record** [O, 7]: holds archetype versioning, the dominance rule and non-increasing TCB. Until it
-exists, **nothing bounds how the archetype grows.**
+**Archetype-evolution record** [O, 7]: holds archetype versioning, the dominance rule and non-increasing TCB, and now
+the versioning of ADR-0045's table and, with it, the **theorem-to-premise binding table** (ADR-0045 §3). Until it
+exists, **nothing bounds how the archetype grows**, and "computed void" is a claim about what the table would show.
 
 **Assumptions of use** [D]: ToO §13, framed as a SEooC. **A deployment that fails them does not inherit the
 theorems.**
@@ -749,36 +813,90 @@ threshold property means anything.
 **Checked, not proved** [C]: TLC at small constants is a discrimination test. **No theorem is proved** (G3 §8).
 
 **Refinement** [D]: two senses. By composition (policy), which the corpus has. Specification-to-implementation
-(formal methods), which it **does not have**.
+(formal methods), which it **does not have**: the gap is a trusted-base row (T-0045-28) and a debt ADR-0033 owns
+(ADR-0045 R2). Stage 1 of the chain, trace validation, exists; stages 2 and 3, a Lean model with differential
+testing and then its compilation, are the chain proper and are not begun.
+
+**Operational model** [R / P]: `spec/Mechanism.tla`, the state machine `State::apply` and `check_live` written once,
+operationally, as a function from a projected state and a log entry to the next state and the result. What the
+reference's recorded behaviour is checked against; pinned, not frozen, since it moves with the code. The fourteen
+discriminating modules each check one property over their own abstraction and are not a specification of the
+mechanism.
+
+**Trace validation** [R]: with `TOPAK_TRACE_DIR` set, the core records every `apply` as a step; `spec/trace2tla.py`
+and `mechanism-trace-run.sh` replay each recorded trace through the operational model in TLC, failing at the first
+step whose projected state or result differs. The 2026.09.30 run: 21 traces, 163 steps, every step matching
+(ADR-0033 A5). **A mechanized link and a drift harness, not a refinement and not independent evidence**: the model was
+written from the code by the same hand on the same day. Three facts it takes from the trace rather than computing:
+issuance validity, approval signatures, the parameter digest.
 
 **Reference implementation** [R]: `mechanism/`, the admit path end to end. It is **evidence, not the verified
-object** (ADR-0033 §1). It is cited by manifest and commit (last `SHA256SUMS-REF-2026.09.29` at `7f74c0b`), it has
-never been promoted, and nothing in it is in any TCB. It issues only rung-0 leases, so it fails A1. **Twenty-five
-assumptions and eighteen gaps** are tagged in the code (`GAPS-AND-ASSUMPTIONS.md`). Since 09.29 it has seat kinds,
-cells, a correlator, heartbeats, marks, seals, coupling and coverage.
+object** (ADR-0033 §1). It is cited by manifest and commit (last `SHA256SUMS-REF-2026.09.30b` at `8cf9bd1`), it has
+never been promoted, and its own trusted-base declaration is ADR-0045 Annex B. It issues only rung-0 leases, so it
+fails A1. **Thirty-three assumptions and nineteen gaps** are tagged in the code (`GAPS-AND-ASSUMPTIONS.md`). Since
+09.29 it has seat kinds, cells, a correlator, heartbeats, marks, seals, coupling, coverage, Run's three actions, the
+effect counter and the `Actuate` record; since 09.30 the trace recorder. It owes Batch 17's three debts: the `ttl`
+bound, the two key fields, bundle signing.
 
 **Reference findings 1–11** [R]: routed to records in ToO §15. Three needed running code to find (1, 4 and 9). Only
 finding 9, proposer retry in the drafted `Paxos` module, is still open (item 24). Three more on 09.29: one live lease
 had been enforced per seat, not per principal; a coupling rule refused the heartbeat it depended on; `T_obs` cannot
-be re-checked at apply.
+be re-checked at apply. Three more from the Run build (12 to 14): ADR-0041 named the wrong gate for a control; the
+module and the reference counted different things; the bundle tier cannot hold a tool to its channel.
 
 **Host-run occupant** [R / P]: `serve.py` on the host with no container, the reference's first declared profile
 (`slm/serve/profile-host-rung0.json`), a rung-0 principal whose `Mediated` verdict is derived rather than empty.
 
-**Crash-recovery replicas** [A]: the consensus replicas are not Byzantine (ADR-0033 §3). **Replica authentication and
-Byzantine replicas** are open (item 23). This is assumption A9.
+**Crash-recovery replicas** [A]: the consensus replicas are not Byzantine (ADR-0033 §3). This is assumption A9 and
+trusted-base row **T-0045-1**: a trust root whose residual is the forged admit, with mutual authentication as its
+delegated mitigation, unbuilt (item 23). BFT is not required.
 
-**TCB declaration record** [O, 16]: it is unwritten. It is owed the engine-divergence and Byzantine-replica residuals.
+**Trusted-base record** [P, 53]: ADR-0045, Proposed, drafted 2026.09.30 and revised four times that day. The rule for
+entering the trusted base, the archetype's table of thirty **rows** (Annex A), and the reference's own declaration
+(Annex B). Six records owed it rows and it carries all of them.
+
+**Row** [P]: one entry of the trusted base, `T-0045-n`, with a fixed schema: component, layer, *trusted for* (the
+row's premise), rungs, class, what its failure can produce, what fixes its identity, residual (ADR-0045 §1).
+
+**Delegated** · **trust root** · **excluded** · **refused** [P]: the three row classes and the refusal (ADR-0045 §2).
+A **delegated** row's failure can produce only subtractions and needs no key; a **trust root**'s failure can add
+authority, and the corpus trusts it because an issuance or a promotion fixes its identity and its own record admitted
+it; an **excluded** row is relied on and trusted for nothing, so the theorems on it compute void; anything whose
+failure can add and whose identity nothing fixes is **refused**, inside the verified object or redesigned. "Adds
+authority" is ADR-0015's: an admit the rules in force would refuse, a promotion the tally would stall, an issuance
+the rules floor would reject.
+
+**Premise node** [P]: a row's *trusted for* sentence, read as a premise in the theorem DAG; **an undeclared row is
+false**, and type changes are rows (ADR-0045 §3). Removing a row is a tightening; adding one is a relaxation that
+needs its own record.
+
+**The solver, refused** [P]: cvc5's "implies" answers fail both admissible classes; ADR-0045 §6 refuses the row and
+ADR-0030 A1 moves the trust to a proof checker (§4).
+
+**What runs is a row** [P]: the implementation as a refinement of the specification, the model checker at the
+constants run, and the build toolchain are trust roots for every deployment until a refinement exists
+(T-0045-28 to 30, ADR-0045 R1). The first draft had called them "checked, not trusted"; a comparison with Moon &
+Varshney caught it (finding 7).
+
+**Assisted drafting** · **drafter's choice** [C]: ADR-0044, ADR-0045 and ADR-0030 A1 were drafted by the assistant at
+the custodian's request, every choice the custodian did not settle marked *(drafter's choice)*; ratification settles
+them. One step further from review than author-ratification, and ADR-0029 has no criterion for it (G6 item 66).
+
+**Scoping amendment** [C]: an amendment that narrows what an accepted clause was ever about rather than changing its
+effect ratifies without C3, and its row names the reading under which C3 would attach (ADR-0003 A3, B17).
 
 ---
 
 ## 10. Proposed records
 
-Four records are Proposed at G5. **None is Accepted.**
+Four records and one section are Proposed at G6. **None is Accepted.** ADR-0021 left this list in Batch 18.
 
 **ADR-0005** [P, 5]: Kafka's role. The reference's use of Kafka is a debt against it.
 
-**ADR-0021** [P, 4]: Build has an Observer. Blocked on ADR-0003's no-tiered-storage clause; R3 cites ADR-0038.
+**ADR-0045** [P, 53]: the trusted base (§9). Its ratification condition is met except for the theorem-to-premise
+binding table.
+
+**ADR-0042 §6** [P, 58]: Run's confinement obligation (§2), left out of Batch 20 as ADR-0022 §6 was left out of B2.
 
 **Lineage projection** [P, 20]: ADR-0035 proposes that a Persona's lineage record is **projected from the Build log**,
 not taken from the trainer's manifest. A lineage that can only be declared is **D-0035-1**. **Every share the gate
@@ -790,54 +908,64 @@ shared curators. Plus the **distillation rule**. The rehearsal is in `slm/`; the
 and are unset.
 
 **Launcher** [P, 34]: ADR-0036. At rung 1 the launcher is the channel: **launch, appraise, grant, bridge**, with the
-token never entering the guest. Its first profile fails P3. R1 adds the rung-0 declared profile and the ladder.
+token never entering the guest. Its first profile fails P3. R1 adds the rung-0 declared profile and the ladder; R2
+points finding 1 at ADR-0035 R4. Its ratification run is item 34, with five missing pieces.
 
 ---
 
 ## 11. Outstanding
 
-These terms name a hole. Each one points to the G5 §7 open list.
+These terms name a hole. Each one points to the G6 §7 open list.
 
 | Term | Item |
 |---|---|
-| **Sandbox gap** (mechanism half) | 1 |
+| **Sandbox gap** (mechanism half; Run's half has a record and no mechanism) | 1 · 58 |
 | **Floor fitness** | 2 |
-| ADR-0021 (Build Observer) · ADR-0005 (Kafka) | 4 · 5 |
-| ADR-0017 supersession (the ADR-0008 half is done) | 6 · 50 |
-| Archetype-evolution record | 7 |
+| ADR-0005 (Kafka) | 5 |
+| ADR-0017 supersession | 6 · 50 |
+| Archetype-evolution record · the theorem-to-premise binding table | 7 · 53 |
 | R8, break-glass TTL | 8 |
 | Per-class floors (ADR-0014) | 9 |
 | Re-genesis migration | 10 |
 | Custody beyond (1, 0) | 11 |
-| Run's alphabet, and Run's `R` | 13 |
-| Solver trust for routing's "implies" results | 15 |
-| TCB declaration record | 16 |
+| The glossary's Run names (this revision) · the stale derived set | 12 · 63 |
 | Decoder–alphabet compatibility; a decoder seat | 17 |
-| **Bundle signing** | 18 |
-| Independence criterion · Persona expiry | 20 · 21 |
+| Independence criterion (ADR-0035) · the in-guest trainer image | 20 |
 | Lifting a revocation | 22 |
-| Replica authentication | 23 |
+| Replica authentication (T-0045-1's mitigation) | 23 |
 | Finding 9 | 24 |
 | Genesis floor, S and the values, DRAFT | 25 |
-| The Run profile · verifier key · retention · accelerator attestation | 26 · 27 · 28 · 29 |
+| The Run profile · retention · accelerator attestation (T-0045-21) | 26 · 28 · 29 |
 | θ values · best-practice review of the bound | 30 · 33 |
 | ADR-0036's run · the launcher in the node · a P3-passing image | 34 · 35 · 36 |
+| `Lease.tla`'s rung range | 38 |
 | ADR-0026 §6 rerun with A2.2 and A2.3 | 39 |
 | **Properties lost** field | 40 |
 | **Seat-registration record** | 41 |
 | ADR-0037's occupant steps (retention audit, Reader facts) | 42 |
 | **Correlator's detection function** | 43 |
 | Sequence numbers on denials · correlator's store vs erasure | 44 |
-| A scripted cell Observer | 45 |
+| A scripted cell Observer · a scripted Run cell | 45 |
 | `W(p)` as an ACL · gate-side `K < R` · A2.2 in the reference (G18) | 46 |
-| **Measured `T_obs`, `K`, Run's `R`** | 47 |
-| **Quarantine gate** · Observer round layout | 48 |
+| **Measured `T_obs`, `K`, `T_persona`, Run's `R`** | 47 |
+| **Quarantine gate** · Observer round layout · a round-layout record | 48 · 60 |
 | Break-glass under a dead Observer | 49 |
 | **Delegation / on-behalf-of** · attenuation · honeypots | 51 |
 | The live smoke run | 52 |
+| **ADR-0045's ratification** | 53 |
+| **ADR-0030 A1**: the solver wrapper and the proof checker | 54 |
+| **Batch 17's reference debts**: the `ttl` check, the two key fields, bundle signing | 55 |
+| **The refinement chain**, stages 2 and 3 · the reproducible build | 56 |
+| **Gate evidence signed** (T-0045-13) | 57 |
+| The allowlist entry's schema | 59 |
+| ADR-0042's remainders: the missing record, result size, Run's TTL | 61 |
+| `T_persona` on a local clock | 62 |
+| ADR-0023 §6b amendment · a deployment declaration template | 64 |
+| An ADR-0029 criterion for assisted drafting | 66 |
 
-Unowned and not numbered: **`Invoke` hermeticity** for native tools · **flow** (CR-6) · the **residual-risk
-statement**, headed by anchor capture and now carrying collusion.
+Unowned and not numbered: **`Invoke` hermeticity** for native tools (an excluded row, T-0045-23) · **channel
+fidelity** for Run tools (T-0045-24; G19) · **flow** (CR-6) · the **residual-risk statement**, headed by anchor
+capture and now carrying collusion.
 
 ---
 
@@ -937,13 +1065,29 @@ crypto-shredding as mechanism, Kafka as system of record, "strictly stronger tha
 | The floor as two files | Three: policies, schema S, the values file | ADR-0039 §1 R3 |
 | "Renewal may lower the rung" | Renewal keeps the rung | ADR-0031 A1 |
 | The cross-principal correlator as "a noun" | A seat kind, a placement, a veto seat and a read set; still no detection function | ADR-0038; G5 item 43 |
+| `RunInvoke`, `RunEmit` | `Consult`, `Actuate`, `Report`; no name shared between the domains | ADR-0040 §1, §2 |
+| "`Read`, `Emit` and the carrier are common to Build and Run" | The carrier is common; no variant name is | ADR-0022 A2 |
+| "Run's alphabet: no record defines it" | ADR-0040, with ADR-0041 to ADR-0043 for its obligations | Batch 20 |
+| The sequence as the emission counter, in Run | The sequence counts effect-bearing admits; `Consult` advances nothing | ADR-0039 A1; ADR-0042 §2 |
+| R3 on every Run admit | R3 on `Actuate` and `Report`; `Consult` exempt, on the pinning | ADR-0041 §2 |
+| "No tiered storage" read as a retention length | One store for the topic's whole retention; length per use and per domain | ADR-0003 A3 |
+| ADR-0021 "stays Proposed" | Ratified, Batch 18 | G6 §1 |
+| "TCB declaration record: unwritten" | ADR-0045, Proposed, with an admission rule and thirty rows | ADR-0045 |
+| "Write the solver's row; do not try to verify cvc5" | The solver is refused; a `holds` verdict counts only with a checked proof | ADR-0045 §6; ADR-0030 A1 |
+| "The admit path, the tally and the log are checked, not trusted" | True of the specification; what runs is a trust-root row | ADR-0045 R1 |
+| "Persona expiry: open" | `ttl ≤ T_persona` | ADR-0031 A2 |
+| "Bundle signing: open" | A record in force; the implementation owed | ADR-0044 |
+| The reference "checked only by restated tests" | Every tested behaviour replayed through the operational model | ADR-0033 A5 |
+| Monotonicity "at twelve layers" | Fourteen: bundle and trusted base | ToO rev 10 §7.8 |
+| Dated glossary and ToO copies after revision 9 | A head file, a commit and a tag | The 2026.09.30 reorganization |
 
 ---
 
 ## Sources
 
-**Basis.** `checkpoints/topak-genesis-checkpoint-G5-2026.09.29.md` · `checkpoints/topak-theory-of-operation-2026.09.29-rev9.md`
-· the records they cite, at their G5 digests.
+**Basis.** `checkpoints/topak-genesis-checkpoint-G6-2026.09.30.md` · `narrative/theory-of-operation.md` at tag
+`ToO-rev10` · the records they cite, at their G6 digests.
 
-**Superseded.** `derived/topak-glossary-2026.09.26.md`, and through it the 09.17 glossary whose §12 is carried by
-reference.
+**Superseded.** This file's previous revision, the 2026.09.29 glossary (`derived/topak-glossary-2026.09.29.md` before
+the reorganization, measured by `manifests/SHA256SUMS-G6` at its commit), and through it the 09.26 and 09.17
+glossaries whose §12 is carried by reference.

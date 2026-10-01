@@ -17,7 +17,7 @@ KNOWN = {
     ("derived/topak-vs-nvidia-open-agent-safety-platform-2026.09.28.md", "2026-09-10"),  # an external release date, quoted
 }
 # Files exempt as a whole: they describe paths rather than cite them.
-KNOWN_FILES = {"derived/topak-repo-reorganization-proposal-2026.09.30.md"}
+KNOWN_FILES = {"derived/topak-repo-reorganization-proposal-2026.09.30.md", "checkpoints/README.md"}  # the proposal and the layout map name old paths on purpose
 MOVED = {"checkpoints/topak-theory-of-operation-": "narrative/", "SHA256SUMS": "manifests/", "FOLD-LOG": "process/", "FREEZE-AND": "process/",
          "NARRATIVE-LOG": "process/", "NORMALIZATION-LOG": "process/", "RECOVERY-REGISTRY": "process/", "derived/topak-glossary-2026.09.29.md": "narrative/glossary.md"}
 missing, moved, dates = [], [], []
