@@ -1,3 +1,0 @@
-#!/bin/bash
-# TLC wrapper script
-java -XX:+UseParallelGC -jar "$(dirname "$0")/tools/tla2tools.jar" "$@"

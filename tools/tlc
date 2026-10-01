@@ -1,0 +1,3 @@
+#!/bin/bash
+# TLC wrapper script. The jar lives beside this script (tools/tla2tools.jar, tracked for its digest: ADR-0045 T-0045-29).
+java -XX:+UseParallelGC -jar "$(dirname "$0")/tla2tools.jar" "$@"

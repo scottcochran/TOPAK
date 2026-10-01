@@ -1,0 +1,13 @@
+^(LICENSE|LICENSE-DOCS|NOTICE|README\.md|SECURITY\.md|CODEOWNERS|\.gitignore)$
+^\.claude/
+^\.github/
+^doc/
+^sessions/
+^tools/
+^diagrams/
+^manifests/(SHA256SUMS|SHA256SUMS-G[0-9]+|README\.md|EXCLUDE)$
+^mechanism/
+^policies/
+^slm/
+^narrative/README\.md$
+^(decisions|derived|spec|checkpoints|process)/README\.md$

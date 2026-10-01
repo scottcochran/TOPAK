@@ -17,30 +17,34 @@ deployable system.
 
 ## Start here
 
-- **How it fits together:** [Theory of Operation, rev 10](checkpoints/topak-theory-of-operation-2026.09.30-rev10.md)
+- **How it fits together:** [Theory of Operation](narrative/theory-of-operation.md) (revision 10, tag `ToO-rev10`)
 - **State of record** (what is ratified, owed and open): [Genesis Checkpoint G6](checkpoints/topak-genesis-checkpoint-G6-2026.09.30.md). Where it and the narrative disagree, the checkpoint wins.
-- **Vocabulary:** [Glossary](derived/topak-glossary-2026.09.29.md)
+- **Vocabulary:** [Glossary](narrative/glossary.md)
 
 ## Layout
 
 | Path | Contents |
 |---|---|
-| [`decisions/`](decisions/) | Architecture decision records (ADR-0001 onward) |
-| [`checkpoints/`](checkpoints/) | Genesis checkpoints and Theory of Operation revisions |
-| [`spec/`](spec/) | TLA+ specifications, run scripts, and dated TLC results |
+| [`decisions/`](decisions/) | Architecture decision records, ADR-0001 onward ([index](decisions/README.md)) |
+| [`checkpoints/`](checkpoints/) | Genesis checkpoints, the state of record; the layout map from the 2026.09.30 cut ([README](checkpoints/README.md)) |
+| [`narrative/`](narrative/) | The living layer: the Theory of Operation and the glossary, cut with each checkpoint, and the closed archive of earlier revisions ([README](narrative/README.md)) |
+| [`spec/`](spec/) | TLA+ modules, run scripts, generators, and dated TLC results ([README](spec/README.md)) |
 | [`floor/`](floor/) | Draft genesis policy floor in Cedar, with tests and gates ([README](floor/README.md)) |
 | [`policies/`](policies/) | Rego bundle-tier policies and tests |
 | [`mechanism/`](mechanism/) | Rust reference implementation of the admit path ([README](mechanism/README.md), [gaps](mechanism/GAPS-AND-ASSUMPTIONS.md)) |
 | [`slm/`](slm/) | Small-model pre-training and the ADR-0035 lineage rehearsal ([README](slm/README.md)) |
-| [`derived/`](derived/) | Reviews, assessments and reference material derived from the corpus |
+| [`derived/`](derived/) | Dated, frozen analyses, reviews and assessments ([index](derived/README.md)) |
+| [`manifests/`](manifests/) | Digest manifests for checkpoint, reference and rehearsal cuts, with an index of what each measures ([README](manifests/README.md)) |
+| [`process/`](process/) | The genesis cleanup's process logs ([README](process/README.md)) |
+| [`tools/`](tools/) | The TLC jar and wrappers, the installer, and the manifest and reference checkers |
 | [`diagrams/`](diagrams/) | Diagrams and their generators |
-| Root `*-LOG-*.md`, `RECOVERY-REGISTRY-*`, `FREEZE-*` | Process logs from the genesis cleanup |
-| `SHA256SUMS-*` | Digest manifests for checkpoint (`G1`–`G6`), reference (`REF`) and rehearsal (`SLM`) cuts |
 
 ## Running things
 
-- **Model checking:** `./install-tla.sh` fetches `tla2tools.jar` into `tools/`; `./tlc` and `./tlc-workers` wrap
-  TLC. Each spec has a `*-run.sh` in `spec/`.
+- **Model checking:** `tools/tlc` and `tools/tlc-workers` wrap TLC over the tracked `tools/tla2tools.jar`; each
+  module has a `*-run.sh` in `spec/` ([README](spec/README.md)).
+- **Verifying a cut:** `tools/verify-manifest.sh --all` checks every manifest at the commit it measured;
+  `tools/check-refs.py` checks every path a document cites.
 - **Floor, mechanism, SLM:** see the README in each directory.
 
 ## License

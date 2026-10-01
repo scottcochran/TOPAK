@@ -1,0 +1,16 @@
+name	kind	cut	commit	entries	expected_ok	note
+SHA256SUMS	historical	2026.09.15	-	60	-	pre-layout flat paths; the record of its cut
+SHA256SUMS-G1	checkpoint	2026.09.15	8fdbe97	49	29	pre-git; 29/49 at 8fdbe97, the nearest tree; four ToO revisions and four process logs moved by the 2026.09.30 cut
+SHA256SUMS-G2	checkpoint	2026.09.23	8fdbe97	64	60	pre-git; 60/64 at 8fdbe97, the nearest tree; the four misses are records changed 09.23–09.25
+SHA256SUMS-G3	checkpoint	2026.09.25	27ea3ff	86	86	
+SHA256SUMS-G4	checkpoint	2026.09.28	7542730	108	108	
+SHA256SUMS-G5	checkpoint	2026.09.29	64e5413	130	130	
+SHA256SUMS-G6	checkpoint	2026.09.30	5244aab	159	159	first manifest to include tools/tla2tools.jar (ADR-0045 T-0045-29); cut before the 2026.09.30 reorganization, so its paths are pre-cut
+SHA256SUMS-REF-2026.09.24	reference	2026.09.24	4fd9677	59	59	ADR-0033 §7
+SHA256SUMS-REF-2026.09.25	reference	2026.09.25	453801c	61	61	ADR-0033 §7 R13
+SHA256SUMS-REF-2026.09.28	reference	2026.09.28	5b25245	61	61	ADR-0033 A1
+SHA256SUMS-REF-2026.09.29	reference	2026.09.29	7f74c0b	62	62	ADR-0033 A2
+SHA256SUMS-REF-2026.09.29b	reference	2026.09.29	1e6c0c4	65	64	ADR-0033 A3; pin file moved after the manifest was taken
+SHA256SUMS-REF-2026.09.30	reference	2026.09.30	fb40db1	65	65	ADR-0033 A4
+SHA256SUMS-REF-2026.09.30b	reference	2026.09.30	8cf9bd1	66	66	ADR-0033 A5; the pin moved in the next commit (Batch 21), so at 8cf9bd1 every entry verifies
+SHA256SUMS-SLM-2026.09.28	rehearsal	2026.09.28	7542730	40	40	ADR-0035 §8

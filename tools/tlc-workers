@@ -1,0 +1,3 @@
+#!/bin/bash
+# TLC wrapper with auto workers (uses all CPU cores). The jar lives beside this script.
+java -XX:+UseParallelGC -jar "$(dirname "$0")/tla2tools.jar" -workers auto "$@"
