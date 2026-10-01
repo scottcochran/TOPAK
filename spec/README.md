@@ -23,5 +23,8 @@ hand-assembled TLC output with a dated name and never change; the two generators
 | `RunSeats.tla` | ADR-0043 §8 | `runseats-run.sh` | `RunSeats-results-2026.09.29.txt` | ADR-0043 |
 | `Mechanism.tla` | ADR-0045 T-0045-28; ADR-0033 A5 | `mechanism-trace-run.sh` on traces the reference records; `mechanism-trace-results.sh` regenerates the file; `trace2tla.py` converts | `Mechanism-trace-results-2026.09.30.txt` | Pinned, not frozen: the operational model moves with the code |
 
+**`theorem-premise-binding.md`** is the table ADR-0045 §3 owes: for every property above, the trusted-base rows,
+degeneracy parameters and declared gaps it rests on, with the reference's inventory computed in its last column.
+
 Every `*-run.sh` finds the jar at `../tools/tla2tools.jar` or `$TLA_JAR`; from `spec/` no export is needed. TLC
 writes its metadata under `/tmp/tlc_<name>`.
