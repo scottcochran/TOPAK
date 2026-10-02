@@ -1,6 +1,6 @@
 # Theorem-to-premise binding
 
-**2026.09.30**, revised 2026.10.01 (Batch 24: T-0045-14), revised 2026.10.02 (ADR-0046, Proposed: the proofs; four "Breaks under" corrections and one parameter premise struck) · the table ADR-0045 §3 owes and ADR-0023 §2 assumes · DRAFT, revised with the records it binds
+**2026.09.30**, revised 2026.10.01 (Batch 24: T-0045-14), revised 2026.10.02 (ADR-0046, Batch 25: the proofs; four "Breaks under" corrections and one parameter premise struck) · the table ADR-0045 §3 owes and ADR-0023 §2 assumes · DRAFT, revised with the records it binds
 
 **What this is.** One row per checked property, naming what it rests on: the trusted-base rows (`T-0045-n`, ADR-0045
 Annex A), the degeneracy parameters (ADR-0023 §6a values), and the gaps the corpus has declared and not closed. A
@@ -19,7 +19,7 @@ does not strengthen the check.
 T-0045-11 (the records are the records that were ratified), **T-0045-28** (the running code refines the checked
 specification: no refinement exists, so for any running deployment every property below is conditional on this
 row), T-0045-29 (TLC, at the constants run) and T-0045-30 (the build toolchain). They are not repeated per row.
-**For a property whose *Checked in* column names a proof module** (ADR-0046, Proposed), the invariant rests on
+**For a property whose *Checked in* column names a proof module** (ADR-0046), the invariant rests on
 **T-0045-31** (the prover) in place of T-0045-29, for every constant the proof module's named assumptions admit, and
 its hypotheses are the "Breaks under" column; the mutations and witnesses rest on T-0045-29 as before. Where the
 proof's hypothesis and the TLC rows disagreed, the column was corrected on 2026.10.02 and the row says so.

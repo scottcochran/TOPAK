@@ -21,7 +21,7 @@ hand-assembled TLC output with a dated name and never change; the two generators
 | `Coupling.tla` | ADR-0039 §8 | `coupling-run.sh` | `Coupling-results-2026.09.29.txt` | ADR-0039 |
 | `RunCoupling.tla` | ADR-0042 §8 | `runcoupling-run.sh` | `RunCoupling-results-2026.09.29.txt` | ADR-0042 |
 | `RunSeats.tla` | ADR-0043 §8 | `runseats-run.sh` | `RunSeats-results-2026.09.29.txt` | ADR-0043 |
-| `FloorComposition.tla`, `Coupling.tla`, `RunCoupling.tla` | ADR-0046 §5 (the premise-table corrections) | `premise-corrections-results.sh` | `premise-corrections-results-2026.10.02.txt` | ADR-0046 (Proposed) |
+| `FloorComposition.tla`, `Coupling.tla`, `RunCoupling.tla` | ADR-0046 §5 (the premise-table corrections) | `premise-corrections-results.sh` | `premise-corrections-results-2026.10.02.txt` | ADR-0046 |
 | `Mechanism.tla` | ADR-0045 T-0045-28; ADR-0033 A5 | `mechanism-trace-run.sh` on traces the reference records; `mechanism-trace-results.sh` regenerates the file; `trace2tla.py` converts | `Mechanism-trace-results-2026.09.30.txt`, `-2026.10.01.txt` | Pinned, not frozen: the operational model moves with the code |
 
 ## TLAPS proofs
@@ -33,9 +33,9 @@ constants, so it is a different kind of evidence from a TLC row. Mutations and r
 behaviours and stay with TLC; each proof module instead carries a lemma per mutation saying why it must fail. Where
 a module has several mutations, each theorem takes as hypothesis only the mutations that break it, so the hypotheses
 restate the "Breaks under" column of `theorem-premise-binding.md`, and a combined `SafeAlways` takes `Mut = "none"`.
-ADR-0046 (Proposed, 2026.10.02) declares the method, names the prover a trusted-base row (T-0045-31) and cites every
-proof module and results file by digest; the modules freeze on its ratification, and the checkpoints' §8 still
-describe the formal layer as TLC-checked until then.
+ADR-0046 (Accepted 2026.10.02, Batch 25) declares the method, names the prover a trusted-base row (T-0045-31) and
+cites every proof module and results file by digest; those are frozen from its ratification. The checkpoints' §8
+describe the formal layer as TLC-checked until the next checkpoint is cut.
 
 `tools/tlapm` wraps the prover, which `tools/install-tlaps.sh` installs beside it (not tracked). `proof-results.sh
 <Module>_proof` checks one proof module and prints its results file, with the digest of every module in the EXTENDS
@@ -57,7 +57,7 @@ chain and of the prover binary; `$TLAPM` overrides the binary, and the proof cac
 | `Lease_A1_proof.tla` | `Lease_A1.tla` | ADR-0031 §4, A1 | all four: `LeaseAuthorityMonotone`, `NoActionUnderFencedEpoch`, `Rung0NeverContained`, `RevokedStaysStopped` | none | `Lease_A1-proof-results-2026.10.02.txt` |
 | `Confinement_proof.tla` | `Confinement.tla` | ADR-0034 §7, A1 | all four: `ContainedMeansConfined`, `NoSilentDowngrade`, `ContestedStopped`, `FreshAppraisal`, for every rung at once | `Declared ∈ 0..3` | `Confinement-proof-results-2026.10.02.txt` |
 
-All thirteen are cited by digest in ADR-0046 (Proposed). **`proof-method.md`** records how they were written, the patterns they
+All thirteen are cited by digest in ADR-0046, and frozen. **`proof-method.md`** records how they were written, the patterns they
 share, the prover's habits, and a dated assessment of why they were cheap and where that stops.
 
 ## Practice
@@ -88,7 +88,7 @@ most expensive, each with the kind of evidence it gives.
    running code replayed through an operational model of `apply`, step for step. Drift detection, not a refinement
    (ADR-0045 T-0045-28).
 6. **Prove the invariants** (`*_proof.tla`, `proof-results.sh`): each under the mutations that break it and the
-   module's named assumptions, for every constant those admit. `proof-method.md` is the method; ADR-0046 (Proposed)
+   module's named assumptions, for every constant those admit. `proof-method.md` is the method; ADR-0046
    is the declaration. A proof replaces no mutation row: the existential claims stay with TLC.
 7. **Keep the proofs in step** (`proof-sync.sh`): a proof results file names the digest of every module in the
    proof's EXTENDS chain as proved; the script compares them with the tree and lists base modules without a proof.
