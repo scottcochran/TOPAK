@@ -191,8 +191,8 @@ def build():
         ["`RulesFloorBase.tla`", "ADR-0029 §5 shared definitions; the floor as ratified 2026.09.23 (R1, R2, R5, "
          "R6, R7, R9)", "— (the live definition of the floor; no property of its own)", "—", "—",
          "via `bootstrap-run.sh`", "—", "— (extended by `Anchor` and `BreakGlass` and their proofs)",
-         "ADR-0026; **live**: ADR-0046 §4 cites the digest proved (`cf2351de2b39cccf`), and its erratum E1, "
-         "pending, corrects that record's \"frozen\""],
+         "ADR-0026; **live**: ADR-0046 §4 cites the digest proved (`cf2351de2b39cccf`) and does not freeze it "
+         "(E1, Batch 26)"],
         ["`RulesFloorNV.tla`", "ADR-0026 §6", "`P1_AllSeatsGranted`, `P2_AtLeastTwo`, `P3_AuthorNotCounted`, "
          "`P4_NoTimeoutGrant`, `P5_AnchorNotApprover`, `P7_BGNoAuthority` (in `Safe`)",
          "drop R1, R2, R3, R4, R5, R7, under `Mech` = `param`, `as0024`, `rev4`", "`NeverPromoted`",

@@ -20,7 +20,7 @@ def build():
                      "(d4b39bd7094c38d1) over spec/Lease_A1.tla (0b5eac7a7309be2f); spec/Observers_proof.tla, "
                      "spec/Seats_proof.tla, spec/Confinement_proof.tla, spec/Coupling_proof.tla, "
                      "spec/RunCoupling_proof.tla, spec/Anchor_proof.tla; spec/proof-results.sh; spec/proof-sync.sh; "
-                     "tools/tlapm; ADR-0046 §1 to §5, §7, R2, B25 and E1 (pending); ADR-0045 T-0045-28, T-0045-31; "
+                     "tools/tlapm; ADR-0046 §1 to §5, §7, R2, B25 and E1 (Batch 26); ADR-0045 T-0045-28, T-0045-31; "
                      "spec/RulesFloorBase.tla; ADR-0026 A1 note; G8 §2.9, §3, §5, §7 items 73, 74")
     X0, X1 = c.x0, c.x1
     W = X1 - X0
@@ -270,12 +270,12 @@ def build():
             "The proof carries hypotheses (`Mut # \"M_X\"`, `\"R7\" \\in Active`) that the module must not: the "
             "module is written so TLC can flip each mutation. Each reason is sufficient (proof-method §6).",
         ]),
-        ("A live module in the chain: `RulesFloorBase.tla`", "amber", "proposed", "ADR-0046 E1, pending", [
+        ("A live module in the chain: `RulesFloorBase.tla`", "teal", "accepted", "ADR-0046 E1 · Batch 26", [
             "`Anchor` and `BreakGlass` extend it. It is the live definition of the floor by its own header, and "
             "ADR-0026's A1 note says it changes with R8.",
             "The results files record the digest proved (`cf2351de2b39cccf`), so a change shows as **STALE** for "
             "both proofs and each needs a successor proof.",
-            "ADR-0046 §4 calls it frozen; erratum E1 corrects that, and is not yet ratified.",
+            "ADR-0046 §4 called it frozen; erratum E1, ratified in Batch 26, corrected that.",
         ]),
     ]
     sh = max(c.card(0, 0, tw3, t, b, a, status=s, status_extra=e, size=14, draw=False) for t, a, s, e, b in side)
