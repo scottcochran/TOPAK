@@ -1,7 +1,7 @@
 # Decisions
 
 Architecture decision records, one file each, numbered in the order they were settled. **Status is as of Genesis
-Checkpoint G7 (2026.10.01)**; the checkpoint is the state of record and this index is a convenience. A record is never
+Checkpoint G8 (2026.10.02)**; the checkpoint is the state of record and this index is a convenience. A record is never
 edited after ratification except by a typed History row: an amendment, an erratum, a revision before ratification,
 or a dependent entry written when another record's ratification touches it. Accepted records that carry a
 confirmation-required criterion (ADR-0029 §4: C1 privileged path, C2 exhaustiveness or confinement, C3 reversal, C4
@@ -9,7 +9,7 @@ resolves a debt) were ratified by one person and await the first post-bootstrap 
 
 `mechanism/corpus-pins.sha256` pins the digest of every record the reference follows; a test fails when one moves.
 
-| Record | Title | Status at G7 | Superseded by |
+| Record | Title | Status at G8 | Superseded by |
 |---|---|---|---|
 | [ADR-0001](ADR-0001.md) | Rename the CI domain to `Build`; adopt `Build(Contain) → Run(Contain)` | Accepted (genesis) | |
 | [ADR-0002](ADR-0002.md) | Apply the membrane in `Build` as well: `Build(Contain) → Run(Contain)` | Accepted (genesis) | |
@@ -56,4 +56,4 @@ resolves a debt) were ratified by one person and await the first post-bootstrap 
 | [ADR-0043](ADR-0043.md) | Cell obligations for Run: what the Listener delivers, what each seat holds, and what the Observer must read | Accepted (genesis); confirmation required: C4 | |
 | [ADR-0044](ADR-0044.md) | A bundle is trusted by its signature, not its file name: the bundle key lives in the issued rules | Accepted (genesis); confirmation required: C1 | |
 | [ADR-0045](ADR-0045.md) | The trusted base is declared row by row, and a component enters it only if its failure can only subtract, or its identity is issued | Accepted (genesis); confirmation required: C2, C4 | |
-| [ADR-0046](ADR-0046.md) | The formal layer's method is declared: TLC checks mutations and witnesses at small constants, TLAPS proves the invariants, and the prover is a trusted-base row | Accepted (genesis), Batch 25, 2026.10.02, after G7; confirmation required: C2, C4 | |
+| [ADR-0046](ADR-0046.md) | The formal layer's method is declared: TLC checks mutations and witnesses at small constants, TLAPS proves the invariants, and the prover is a trusted-base row | Accepted (genesis); confirmation required: C2, C4 | |

@@ -3,7 +3,7 @@
 ^\.github/
 ^doc/
 ^sessions/
-^tools/(check-refs\.py|cut-manifest\.sh|verify-manifest\.sh|install-[a-z]+\.sh|tlc|tlc-workers)$
+^tools/(check-refs\.py|cut-manifest\.sh|verify-manifest\.sh|install-[a-z]+\.sh|tlc|tlc-workers|tlapm)$
 ^diagrams/
 ^manifests/(SHA256SUMS|SHA256SUMS-G[0-9]+|README\.md|EXCLUDE|index\.tsv)$
 ^mechanism/
