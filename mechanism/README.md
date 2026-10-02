@@ -30,13 +30,13 @@ affirmative bundle `true`, from the bundle revision the lease names, is a deny.
 | `topak-bundle` | OPA sidecar client; local OPA WASM fallback bound to the lease's bundle | HTTP |
 | `topak-transport` | Round topics over `rskafka` (or in memory) | Kafka |
 | `topak-mcp` | The alphabet as MCP tools (`rmcp` server); downstream tool host (`rmcp` client) | stdio |
-| `topak-contain` | The launcher (ADR-0036 §6): backends, the guest channel, appraisers, the bridge; `topak-demo-guest`, a scripted occupant. Rung 1 real; rung 3 SIMULATED behind feature `sim` | processes, docker |
+| `topak-contain` | The launcher (ADR-0036 §6): backends, the guest channel, appraisers, the bridge; `topak-demo-guest`, a scripted occupant. Rung 1 real; rung 3 SIMULATED behind feature `sim`. And the Run tool host, `wasmtool` (ADR-0034 A2, pending) | processes, docker, the declared target |
 | `topak-node` | Replica: Paxos driver, WAL, admit pipeline, effects, sockets, `topak` CLI | all |
 
 ## Run it
 
 ```sh
-cargo test --workspace --release           # 96 tests (2026.10.02); needs a built bundle (next line); builds topak-demo-guest
+cargo test --workspace --release           # 103 tests (2026.10.02); needs a built bundle (next line); builds topak-demo-guest
 TOPAK_DOCKER_IMAGE=<image with python3> cargo test --release -p topak-contain --test launch   # + a real container round (skipped without it)
 scripts/build-bundle.sh                    # policies/ → bundles/<revision>.tar.gz (docker, OPA); TOPAK_BUNDLE_SECRET=<hex> also writes <revision>.sig
 
@@ -104,3 +104,18 @@ anchor issuance puts the simulator's key in `verifier_keys`. What they reach is 
   pinned. To clear it, review the change against the code, bring the code into line or register the
   divergence in GAPS-AND-ASSUMPTIONS.md, then replace the pin line (`shasum -a 256 <path>` from
   the repository root).
+
+## Run tools held to their channel (ADR-0034 A2, pending)
+
+A Run tool listed under `wasm_tools` in the node's config runs as a Wasm module whose only network
+capability is its declared target:
+
+```json
+"wasm_tools": { "valve@<module sha256>": { "module": "tools/valve.wasm", "module_sha256": "<sha256>",
+                                           "channel": { "kind": "tcp", "target": "plc.internal:502" } } }
+```
+
+Name the same ids in the parameters' `wasm_tools`; a replica that does not host one refuses to start.
+A Run profile (`"domain": "run"`) that says P4 passes then admits `Actuate` of those tools only. The
+module's interface is in `crates/topak-contain/src/wasmtool.rs`: PROVISIONAL, a core module and not
+the component A2 names.

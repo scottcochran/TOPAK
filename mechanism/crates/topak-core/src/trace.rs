@@ -63,7 +63,6 @@ pub fn oracle(state: &State, entry: &Entry, params: &Params) -> Value {
             let ok = parsed.as_ref().is_ok_and(|p| p.check_well_formed().is_empty());
             json!({
                 "ok": ok,
-                "build": parsed.as_ref().is_ok_and(|p| p.domain == Domain::Build),
                 "digest": Digest::of(profile.as_bytes()).0,
                 "artifact": profile_artifact(profile.as_bytes()).0,
                 "profile": parsed.as_ref().map(project_profile).unwrap_or_else(|_| json!("none")),
@@ -239,6 +238,7 @@ pub fn project_state(s: &State, params: &Params) -> Value {
         })))),
         "contested": fnv(s.contested.iter().map(|(p, e)| (p.clone(), e.0.clone()))),
         "contained": setv(s.leases.keys().filter(|f| s.contained(**f).contained).copied()),
+        "wasmTools": setv(params.wasm_tools.iter().cloned()),
         "buildBound": params.round_bound_for(Domain::Build),
         "runBound": params.round_bound_for(Domain::Run),
     })
@@ -251,6 +251,7 @@ fn project_action(a: &Admitted) -> Value {
             "kind": "Vote", "verdict": verdict.as_str(), "artifact": artifact.0,
             "evidence": evidence.0, "rulesEpoch": rules_epoch,
         }),
+        Admitted::Actuate { tool, .. } => json!({ "kind": "Actuate", "tool": tool }),
         Admitted::Heartbeat { via, topic, watermark } => json!({
             "kind": "Heartbeat", "via": via.as_str(), "topic": topic_tuple(topic), "watermark": watermark,
         }),

@@ -58,6 +58,7 @@ declared, in the place T-0045-29 declares TLC.
 | `Confinement_proof.tla` | 502 | 4 | a type invariant, plus six generation-binding clauses (§3) |
 | `NonComposition_proof.tla` | 58 | 2 | NC2, plus "the records NC1 needs were created" and "only admitted effects went via break-glass" |
 | `FloorComposition_proof.tla` | 171 | 5 | the flags themselves; EnvelopeHolds adds the type invariant and "the floor's inputs are the truth" |
+| `RunConfinement_proof.tla` (2026.10.02, ADR-0034 A2 pending) | 116 | 2 | the properties themselves: a new effect's target follows from the check and the runtime's reach |
 | `Coupling_proof.tla` | 320 | 3 | a shape invariant under every mutation (future rounds zero, mark at most the sequence, an idle round's seal is its sequence), plus "past marks equal seals" and "the backlog is at most K" |
 | `RunCoupling_proof.tla` | 469 | 5 | the Coupling shape with effect seals, plus "the sequence counts effects" and "past seals agree"; the `ENABLED` invariant is a state lemma |
 | `RulesFloorNV_rev5_proof.tla` | 262 | 6 | "the issued rules are in the rule space and satisfy the floor"; each property is established at Promote and frozen, since Issue and Vote need `~promoted` |

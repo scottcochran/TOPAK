@@ -92,6 +92,7 @@ async fn fixture(name: &str) -> Fixture {
         build_tools: BTreeSet::from([tool.clone()]),
         run_tools: BTreeSet::from([run_tool.clone()]),
         run_root: BTreeSet::from([run_obj.clone()]),
+        wasm_tools: BTreeSet::new(),
         round_bound: 50,
         lease_margin_ms: 100,
         after_topic_limit: 3,
@@ -198,6 +199,7 @@ async fn cluster(f: &Fixture, real_bundle: bool) -> Cluster {
             corpus_dir: f.dir.join("corpus"),
             data_dir: f.dir.join(format!("n{id}")),
             proposals: prop_tx,
+            wasm_tools: None,
             contain: None,
         })
         .unwrap();

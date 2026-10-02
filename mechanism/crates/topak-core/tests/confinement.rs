@@ -59,6 +59,8 @@ fn rules() -> Rules {
             ("c3".into(), seat(Domain::Build, SeatKind::Thinker, "kc3", 3)),
             ("d3".into(), seat(Domain::Build, SeatKind::Thinker, "kd3", 3)),
             ("r3".into(), seat(Domain::Run, SeatKind::Thinker, "kr3", 3)),
+            ("ro3".into(), SeatDecl { cell: Some("r3".into()), ..seat(Domain::Run, SeatKind::Observer, "kro3", 3) }),
+            ("rz".into(), SeatDecl { cell: Some("r3".into()), ..seat(Domain::Run, SeatKind::Observer, "krz", 0) }),
             ("z0".into(), seat(Domain::Build, SeatKind::Thinker, "kz0", 0)),
         ]),
         grant_roster: ["g1", "g2", "g3"].into_iter().map(String::from).collect(),
@@ -83,6 +85,7 @@ fn params() -> Params {
         build_tools: BTreeSet::new(),
         run_tools: BTreeSet::new(),
         run_root: BTreeSet::new(),
+        wasm_tools: BTreeSet::from([WASM_TOOL.to_string()]),
         round_bound: 8,
         lease_margin_ms: 0,
         after_topic_limit: 3,
@@ -97,6 +100,16 @@ fn state_with(r: Rules) -> State {
 }
 
 /// A profile file: every clause passes unless `fail` names one, with P7's values.
+const WASM_TOOL: &str = "valve@wasm";
+const NATIVE_TOOL: &str = "valve@native";
+
+/// A Run profile (ADR-0034 A2, pending): every clause passes but P4, which is `p4`.
+fn run_profile_text(p4: ClauseVerdict) -> String {
+    let mut v: Value = serde_json::from_str(&profile_text(&[], p4)).unwrap();
+    v["domain"] = json!("run");
+    serde_json::to_string_pretty(&v).unwrap()
+}
+
 fn profile_text(fail: &[Clause], p4: ClauseVerdict) -> String {
     let clauses: BTreeMap<String, Value> = Clause::ALL
         .iter()
@@ -334,11 +347,10 @@ fn only_a_promoted_well_formed_build_profile_is_a_reference_value() {
     v["subtractions"] = json!({});
     let silent = serde_json::to_string(&v).unwrap();
     assert!(rejected(&log.promote_and_register(&silent).1, "names no subtraction"));
-    // ADR-0042 §6 is Proposed: no Run profile exists.
-    let mut v: Value = serde_json::from_str(&text).unwrap();
-    v["domain"] = json!("run");
-    let run = serde_json::to_string(&v).unwrap();
-    assert!(rejected(&log.promote_and_register(&run).1, "Run profile"));
+    // A Run profile registers (ADR-0034 A2, pending; PROVISIONAL run-profile).
+    let run = run_profile_text(ClauseVerdict::Pass);
+    let (d, a) = log.promote_and_register(&run);
+    assert_eq!(a, Applied::ProfileRegistered { digest: d });
 }
 
 #[test]
@@ -682,4 +694,72 @@ fn rules_without_the_new_fields_keep_their_bytes() {
     assert!(v["seats"]["c3"].get("rung").is_none());
     let back: Rules = serde_json::from_value(v).unwrap();
     assert_eq!(back, r);
+}
+
+// ---- Run (ADR-0034 A2, pending: P4 for Run is channel fidelity) ---------------------------------
+
+const RUN_THINKER: &[ActionKind] = &[ActionKind::Consult, ActionKind::Actuate, ActionKind::Report];
+const RUN_OBSERVER: &[ActionKind] = &[ActionKind::Consult, ActionKind::Report];
+
+#[test]
+fn a_run_seat_on_a_run_profile_is_contained_with_p4_as_channel_fidelity() {
+    let mut log = Log::new(rules());
+    let (pass, _) = log.promote_and_register(&run_profile_text(ClauseVerdict::Pass));
+    let Applied::LeaseGranted { fence } = Ask::new(&log, 3, "p-r3", &pass).grant(&mut log, "r3", RUN_THINKER) else {
+        panic!()
+    };
+    let c = log.s.contained(fence);
+    assert!(c.contained, "{c:?}");
+
+    // A Run profile that declares P4 vacuous does not cover a seat that can `Actuate`: D-0034-6.
+    let mut log = Log::new(rules());
+    let (vac, _) = log.promote_and_register(&run_profile_text(ClauseVerdict::Vacuous));
+    let Applied::LeaseGranted { fence } = Ask::new(&log, 3, "p-r3", &vac).grant(&mut log, "r3", RUN_THINKER) else {
+        panic!()
+    };
+    let c = log.s.contained(fence);
+    assert!(!c.contained && c.because.iter().any(|r| r.contains("holds Actuate")), "{c:?}");
+    // An Observer reaches no tool: P4 holds vacuously, as for a Build seat without `Invoke`.
+    let Applied::LeaseGranted { fence } = Ask::new(&log, 3, "p-ro3", &vac).grant(&mut log, "ro3", RUN_OBSERVER) else {
+        panic!()
+    };
+    assert!(log.s.contained(fence).contained);
+    // And a Build seat is not granted on a Run profile (ADR-0034 §1).
+    assert!(rejected(&Ask::new(&log, 3, "p-c3", &vac).grant(&mut log, "c3", BUILD), "does not confine a build seat"));
+}
+
+/// The Run counterpart of `M_PROFILE`: a native tool under a lease whose Run profile says P4
+/// passes (A2's `M_NATIVE`). Refused at apply, on every replica, so the claim is not a declaration.
+#[test]
+fn channel_fidelity_is_checked_at_apply() {
+    let mut log = Log::new(rules());
+    let (d, _) = log.promote_and_register(&run_profile_text(ClauseVerdict::Pass));
+    let Applied::LeaseGranted { fence } = Ask::new(&log, 3, "p-r3", &d).grant(&mut log, "r3", RUN_THINKER) else {
+        panic!()
+    };
+    // The cell Observer holds a live lease, so the coupling at apply (ADR-0039 §2) is met.
+    log.grant_plain("rz", RoundRole::Author, RUN_OBSERVER);
+    let actuate = |tool: &str| Admitted::Actuate { tool: tool.into(), inputs: Digest::of(b"in"), break_glass: false };
+    let id = log.id("a");
+    let a = log.apply(admit_entry(&id, "r3", fence, actuate(NATIVE_TOOL), Some(proof(&GUEST_A, fence, 1))));
+    assert!(rejected(&a, "not held to its declared channel"), "M_NATIVE: {a:?}");
+    let id = log.id("a");
+    let a = log.apply(admit_entry(&id, "r3", fence, actuate(WASM_TOOL), Some(proof(&GUEST_A, fence, 1))));
+    assert!(matches!(a, Applied::Admitted { .. }), "{a:?}");
+    // A Run profile that declares P4 `fail` claims nothing: a native tool is admitted, and the
+    // principal is `Mediated` (D-0034-6).
+    let mut log = Log::new(rules());
+    let (f, _) = log.promote_and_register(&{
+        let mut v: Value = serde_json::from_str(&profile_text(&[Clause::P4], ClauseVerdict::Pass)).unwrap();
+        v["domain"] = json!("run");
+        serde_json::to_string(&v).unwrap()
+    });
+    let Applied::LeaseGranted { fence } = Ask::new(&log, 3, "p-r3", &f).grant(&mut log, "r3", RUN_THINKER) else {
+        panic!()
+    };
+    log.grant_plain("rz", RoundRole::Author, RUN_OBSERVER);
+    let id = log.id("a");
+    let a = log.apply(admit_entry(&id, "r3", fence, actuate(NATIVE_TOOL), Some(proof(&GUEST_A, fence, 1))));
+    assert!(matches!(a, Applied::Admitted { .. }), "{a:?}");
+    assert!(!log.s.contained(fence).contained);
 }

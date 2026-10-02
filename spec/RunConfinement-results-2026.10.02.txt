@@ -1,0 +1,245 @@
+TOPAK — RunConfinement.tla: channel fidelity for Run, ADR-0034 A2 (pending) ratification condition (ii), run 2026.10.02
+Module: RunConfinement.tla (sha256 d0c4aa37934b78b5) · TLC Version 2.19 of 08 August 2024 (jar sha256 936a262061c91469) · openjdk version "25.0.1" 2025-10-21
+Runner: runconfinement-gen-results.sh · Principals = {p1, p2} · Tools = {w: wasm, f: filtered, n: native} · Targets = {a, b, c}
+
+=== safe · Filtered=FALSE · Mut=none · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 5.0E-13
+9217 states generated, 1152 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 12.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 7 and the 95th percentile is 4).
+Finished in 05s at (2026-10-02 11:13:31)
+
+=== safef · Filtered=TRUE · Mut=none · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.0E-12
+18433 states generated, 2304 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 13.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 8 and the 95th percentile is 4).
+Finished in 05s at (2026-10-02 11:13:37)
+
+=== ch · Filtered=FALSE · Mut=M_CHANNEL · INVARIANT EffectsOnDeclaredChannels
+Error: Invariant EffectsOnDeclaredChannels is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ effects = {}
+/\ refused = FALSE
+/\ lease = [p1 |-> [live |-> FALSE, p4 |-> "fail"], p2 |-> [live |-> FALSE, p4 |-> "fail"]]
+State 2: <Grant line 73, col 3 to line 75, col 35 of module RunConfinement>
+/\ effects = {}
+/\ refused = FALSE
+/\ lease = [p1 |-> [live |-> FALSE, p4 |-> "fail"], p2 |-> [live |-> TRUE, p4 |-> "pass"]]
+State 3: <Grant line 73, col 3 to line 75, col 35 of module RunConfinement>
+/\ effects = {}
+/\ refused = FALSE
+/\ lease = [p1 |-> [live |-> TRUE, p4 |-> "pass"], p2 |-> [live |-> TRUE, p4 |-> "pass"]]
+State 4: <Actuate line 80, col 3 to line 86, col 43 of module RunConfinement>
+/\ effects = {[contained |-> TRUE, tool |-> "w", target |-> "b"]}
+/\ refused = FALSE
+/\ lease = [p1 |-> [live |-> TRUE, p4 |-> "pass"], p2 |-> [live |-> TRUE, p4 |-> "pass"]]
+143 states generated, 92 distinct states found, 60 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 7 (minimum is 4, the maximum 9 and the 95th percentile is 9).
+Finished in 05s at (2026-10-02 11:13:42)
+
+=== chh · Filtered=FALSE · Mut=M_CHANNEL · INVARIANT ContainedEffectsUseHeldTools
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.8E-10
+  based on the actual fingerprints:  val = 5.9E-12
+196609 states generated, 18432 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 16.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 11 and the 95th percentile is 4).
+Finished in 05s at (2026-10-02 11:13:48)
+
+=== nat · Filtered=FALSE · Mut=M_NATIVE · INVARIANT EffectsOnDeclaredChannels
+Error: Invariant EffectsOnDeclaredChannels is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ effects = {}
+/\ refused = FALSE
+/\ lease = [p1 |-> [live |-> FALSE, p4 |-> "fail"], p2 |-> [live |-> FALSE, p4 |-> "fail"]]
+State 2: <Grant line 73, col 3 to line 75, col 35 of module RunConfinement>
+/\ effects = {}
+/\ refused = FALSE
+/\ lease = [p1 |-> [live |-> FALSE, p4 |-> "fail"], p2 |-> [live |-> TRUE, p4 |-> "pass"]]
+State 3: <Grant line 73, col 3 to line 75, col 35 of module RunConfinement>
+/\ effects = {}
+/\ refused = FALSE
+/\ lease = [p1 |-> [live |-> TRUE, p4 |-> "pass"], p2 |-> [live |-> TRUE, p4 |-> "pass"]]
+State 4: <Actuate line 80, col 3 to line 86, col 43 of module RunConfinement>
+/\ effects = {[contained |-> TRUE, tool |-> "n", target |-> "a"]}
+/\ refused = FALSE
+/\ lease = [p1 |-> [live |-> TRUE, p4 |-> "pass"], p2 |-> [live |-> TRUE, p4 |-> "pass"]]
+207 states generated, 93 distinct states found, 58 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 4 (minimum is 1, the maximum 7 and the 95th percentile is 7).
+Finished in 05s at (2026-10-02 11:13:54)
+
+=== nath · Filtered=FALSE · Mut=M_NATIVE · INVARIANT ContainedEffectsUseHeldTools
+Error: Invariant ContainedEffectsUseHeldTools is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ effects = {}
+/\ refused = FALSE
+/\ lease = [p1 |-> [live |-> FALSE, p4 |-> "fail"], p2 |-> [live |-> FALSE, p4 |-> "fail"]]
+State 2: <Grant line 73, col 3 to line 75, col 35 of module RunConfinement>
+/\ effects = {}
+/\ refused = FALSE
+/\ lease = [p1 |-> [live |-> FALSE, p4 |-> "fail"], p2 |-> [live |-> TRUE, p4 |-> "fail"]]
+State 3: <Grant line 73, col 3 to line 75, col 35 of module RunConfinement>
+/\ effects = {}
+/\ refused = FALSE
+/\ lease = [p1 |-> [live |-> TRUE, p4 |-> "pass"], p2 |-> [live |-> TRUE, p4 |-> "fail"]]
+State 4: <Actuate line 80, col 3 to line 86, col 43 of module RunConfinement>
+/\ effects = {[contained |-> TRUE, tool |-> "n", target |-> "a"]}
+/\ refused = FALSE
+/\ lease = [p1 |-> [live |-> TRUE, p4 |-> "pass"], p2 |-> [live |-> TRUE, p4 |-> "fail"]]
+181 states generated, 87 distinct states found, 52 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 4 (minimum is 1, the maximum 7 and the 95th percentile is 7).
+Finished in 05s at (2026-10-02 11:13:59)
+
+=== fil · Filtered=TRUE · Mut=M_FILTER · INVARIANT EffectsOnDeclaredChannels
+Error: Invariant EffectsOnDeclaredChannels is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ effects = {}
+/\ refused = FALSE
+/\ lease = [p1 |-> [live |-> FALSE, p4 |-> "fail"], p2 |-> [live |-> FALSE, p4 |-> "fail"]]
+State 2: <Grant line 73, col 3 to line 75, col 35 of module RunConfinement>
+/\ effects = {}
+/\ refused = FALSE
+/\ lease = [p1 |-> [live |-> FALSE, p4 |-> "fail"], p2 |-> [live |-> TRUE, p4 |-> "pass"]]
+State 3: <Grant line 73, col 3 to line 75, col 35 of module RunConfinement>
+/\ effects = {}
+/\ refused = FALSE
+/\ lease = [p1 |-> [live |-> TRUE, p4 |-> "pass"], p2 |-> [live |-> TRUE, p4 |-> "pass"]]
+State 4: <Actuate line 80, col 3 to line 86, col 43 of module RunConfinement>
+/\ effects = {[contained |-> TRUE, tool |-> "f", target |-> "a"]}
+/\ refused = FALSE
+/\ lease = [p1 |-> [live |-> TRUE, p4 |-> "pass"], p2 |-> [live |-> TRUE, p4 |-> "pass"]]
+175 states generated, 103 distinct states found, 72 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 6 (minimum is 4, the maximum 9 and the 95th percentile is 9).
+Finished in 05s at (2026-10-02 11:14:05)
+
+=== fil0 · Filtered=FALSE · Mut=M_FILTER · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 9.6E-12
+43009 states generated, 4608 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 14.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 9 and the 95th percentile is 3).
+Finished in 05s at (2026-10-02 11:14:11)
+
+=== wc · Filtered=FALSE · Mut=none · INVARIANT NeverContainedEffect
+Error: Invariant NeverContainedEffect is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ effects = {}
+/\ refused = FALSE
+/\ lease = [p1 |-> [live |-> FALSE, p4 |-> "fail"], p2 |-> [live |-> FALSE, p4 |-> "fail"]]
+State 2: <Grant line 73, col 3 to line 75, col 35 of module RunConfinement>
+/\ effects = {}
+/\ refused = FALSE
+/\ lease = [p1 |-> [live |-> FALSE, p4 |-> "fail"], p2 |-> [live |-> TRUE, p4 |-> "pass"]]
+State 3: <Actuate line 80, col 3 to line 86, col 43 of module RunConfinement>
+/\ effects = {[contained |-> TRUE, tool |-> "w", target |-> "a"]}
+/\ refused = FALSE
+/\ lease = [p1 |-> [live |-> FALSE, p4 |-> "fail"], p2 |-> [live |-> TRUE, p4 |-> "pass"]]
+132 states generated, 76 distinct states found, 45 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 4 (minimum is 1, the maximum 7 and the 95th percentile is 7).
+Finished in 05s at (2026-10-02 11:14:16)
+
+=== wm · Filtered=FALSE · Mut=none · INVARIANT NeverMediatedEffect
+Error: Invariant NeverMediatedEffect is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ effects = {}
+/\ refused = FALSE
+/\ lease = [p1 |-> [live |-> FALSE, p4 |-> "fail"], p2 |-> [live |-> FALSE, p4 |-> "fail"]]
+State 2: <Grant line 73, col 3 to line 75, col 35 of module RunConfinement>
+/\ effects = {}
+/\ refused = FALSE
+/\ lease = [p1 |-> [live |-> TRUE, p4 |-> "fail"], p2 |-> [live |-> FALSE, p4 |-> "fail"]]
+State 3: <Actuate line 80, col 3 to line 86, col 43 of module RunConfinement>
+/\ effects = {[contained |-> FALSE, tool |-> "n", target |-> "a"]}
+/\ refused = FALSE
+/\ lease = [p1 |-> [live |-> TRUE, p4 |-> "fail"], p2 |-> [live |-> FALSE, p4 |-> "fail"]]
+131 states generated, 45 distinct states found, 7 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 4 and the 95th percentile is 4).
+Finished in 05s at (2026-10-02 11:14:22)
+
+=== wr · Filtered=FALSE · Mut=none · INVARIANT NeverRefused
+Error: Invariant NeverRefused is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ effects = {}
+/\ refused = FALSE
+/\ lease = [p1 |-> [live |-> FALSE, p4 |-> "fail"], p2 |-> [live |-> FALSE, p4 |-> "fail"]]
+State 2: <Grant line 73, col 3 to line 75, col 35 of module RunConfinement>
+/\ effects = {}
+/\ refused = FALSE
+/\ lease = [p1 |-> [live |-> FALSE, p4 |-> "fail"], p2 |-> [live |-> TRUE, p4 |-> "pass"]]
+State 3: <Actuate line 80, col 3 to line 86, col 43 of module RunConfinement>
+/\ effects = {}
+/\ refused = TRUE
+/\ lease = [p1 |-> [live |-> FALSE, p4 |-> "fail"], p2 |-> [live |-> TRUE, p4 |-> "pass"]]
+187 states generated, 88 distinct states found, 54 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 4 (minimum is 1, the maximum 6 and the 95th percentile is 6).
+Finished in 05s at (2026-10-02 11:14:27)
+
+=== wrf · Filtered=TRUE · Mut=none · INVARIANT NeverRefused
+Error: Invariant NeverRefused is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ effects = {}
+/\ refused = FALSE
+/\ lease = [p1 |-> [live |-> FALSE, p4 |-> "fail"], p2 |-> [live |-> FALSE, p4 |-> "fail"]]
+State 2: <Grant line 73, col 3 to line 75, col 35 of module RunConfinement>
+/\ effects = {}
+/\ refused = FALSE
+/\ lease = [p1 |-> [live |-> FALSE, p4 |-> "fail"], p2 |-> [live |-> TRUE, p4 |-> "pass"]]
+State 3: <Actuate line 80, col 3 to line 86, col 43 of module RunConfinement>
+/\ effects = {}
+/\ refused = TRUE
+/\ lease = [p1 |-> [live |-> FALSE, p4 |-> "fail"], p2 |-> [live |-> TRUE, p4 |-> "pass"]]
+163 states generated, 83 distinct states found, 51 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 4 (minimum is 1, the maximum 7 and the 95th percentile is 7).
+Finished in 05s at (2026-10-02 11:14:33)
+
+=== wu · Filtered=FALSE · Mut=none · INVARIANT NeverUndeclaredTarget
+Error: Invariant NeverUndeclaredTarget is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ effects = {}
+/\ refused = FALSE
+/\ lease = [p1 |-> [live |-> FALSE, p4 |-> "fail"], p2 |-> [live |-> FALSE, p4 |-> "fail"]]
+State 2: <Grant line 73, col 3 to line 75, col 35 of module RunConfinement>
+/\ effects = {}
+/\ refused = FALSE
+/\ lease = [p1 |-> [live |-> FALSE, p4 |-> "fail"], p2 |-> [live |-> TRUE, p4 |-> "pass"]]
+State 3: <Grant line 73, col 3 to line 75, col 35 of module RunConfinement>
+/\ effects = {}
+/\ refused = FALSE
+/\ lease = [p1 |-> [live |-> TRUE, p4 |-> "fail"], p2 |-> [live |-> TRUE, p4 |-> "pass"]]
+State 4: <Actuate line 80, col 3 to line 86, col 43 of module RunConfinement>
+/\ effects = {[contained |-> FALSE, tool |-> "n", target |-> "a"]}
+/\ refused = FALSE
+/\ lease = [p1 |-> [live |-> TRUE, p4 |-> "fail"], p2 |-> [live |-> TRUE, p4 |-> "pass"]]
+91 states generated, 41 distinct states found, 9 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 2 (minimum is 1, the maximum 4 and the 95th percentile is 4).
+Finished in 05s at (2026-10-02 11:14:39)
+

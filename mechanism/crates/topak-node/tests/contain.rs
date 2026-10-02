@@ -60,6 +60,8 @@ fn guest_bin() -> PathBuf {
 struct Fx {
     dir: PathBuf,
     corpus_obj: Digest,
+    /// An object in the Run root, for a Run guest's `Consult`.
+    run_obj: Digest,
     params: Params,
     rules: Rules,
     model: PathBuf,
@@ -94,6 +96,9 @@ fn fixture(name: &str, criterion: bool) -> Fx {
     let content = b"---- MODULE Confinement ----\n";
     let corpus_obj = Digest::of(content);
     std::fs::write(dir.join("corpus").join(&corpus_obj.0), content).unwrap();
+    let run_content = b"valve v7: closed is safe\n";
+    let run_obj = Digest::of(run_content);
+    std::fs::write(dir.join("corpus").join(&run_obj.0), run_content).unwrap();
     let model = persona_bundle(&dir, "persona", false);
     let corrupt_model = persona_bundle(&dir, "corrupt", true);
     let persona = Digest::of(&std::fs::read(&model).unwrap());
@@ -143,6 +148,7 @@ fn fixture(name: &str, criterion: bool) -> Fx {
         build_tools: BTreeSet::new(),
         run_tools: BTreeSet::new(),
         run_root: BTreeSet::new(),
+        wasm_tools: BTreeSet::new(),
         round_bound: 50,
         lease_margin_ms: 100,
         after_topic_limit: 3,
@@ -151,6 +157,7 @@ fn fixture(name: &str, criterion: bool) -> Fx {
     Fx {
         dir,
         corpus_obj,
+        run_obj,
         params,
         rules,
         model,
@@ -210,6 +217,9 @@ struct Opts {
     script: &'static str,
     corrupt: bool,
     lying: bool,
+    /// Run tools hosted as Wasm modules, and the one the guest's `actuate` step names.
+    wasm: Option<Arc<topak_contain::wasmtool::WasmToolHost>>,
+    tool: String,
 }
 
 struct Cl {
@@ -222,7 +232,10 @@ struct Cl {
 fn guest_args(f: &Fx, rung: u8, o: &Opts) -> Vec<String> {
     let model = if o.corrupt { &f.corrupt_model } else { &f.model };
     let mut a = vec!["--model".into(), model.display().to_string(), "--rung".into(), rung.to_string()];
-    a.extend(["--read".into(), f.corpus_obj.0.clone()]);
+    a.extend(["--read".into(), f.corpus_obj.0.clone(), "--consult".into(), f.run_obj.0.clone()]);
+    if !o.tool.is_empty() {
+        a.extend(["--tool".into(), o.tool.clone()]);
+    }
     if !o.script.is_empty() {
         a.extend(["--script".into(), o.script.into()]);
     }
@@ -262,6 +275,7 @@ async fn cluster(f: &Fx, o: Opts) -> Cl {
             corpus_dir: f.dir.join("corpus"),
             data_dir: f.dir.join(format!("n{id}")),
             proposals: prop_tx,
+            wasm_tools: o.wasm.clone(),
             contain: Some(contain),
         })
         .unwrap();
@@ -742,4 +756,150 @@ async fn withdrawing_a_profile_fences_its_leases() {
     until("the guest destroyed", || launched(n1) == 0).await;
     let r = launch(n1, &f, "bob", "d3", &p, LONG).await;
     assert!(r["reason"].as_str().unwrap().contains("revoked"), "{r}");
+}
+
+// ---- Run (ADR-0034 A2, pending: the Run profile; P4 is channel fidelity) ------------------------
+
+/// A tool that connects to its declared target, sends its inputs, and returns the reply.
+const ECHO_TOOL: &str = r#"
+(module
+  (import "topak" "input_len" (func $input_len (result i32)))
+  (import "topak" "input_read" (func $input_read (param i32)))
+  (import "topak" "output" (func $output (param i32 i32)))
+  (import "topak" "connect" (func $connect (result i32)))
+  (import "topak" "send" (func $send (param i32 i32 i32) (result i32)))
+  (import "topak" "recv" (func $recv (param i32 i32 i32) (result i32)))
+  (memory (export "memory") 1)
+  (func (export "run") (result i32)
+    (local $n i32) (local $h i32) (local $r i32)
+    (local.set $n (call $input_len))
+    (call $input_read (i32.const 0))
+    (local.set $h (call $connect))
+    (if (i32.lt_s (local.get $h) (i32.const 0)) (then (return (i32.const 1))))
+    (drop (call $send (local.get $h) (i32.const 0) (local.get $n)))
+    (local.set $r (call $recv (local.get $h) (i32.const 1024) (i32.const 1000)))
+    (call $output (i32.const 1024) (local.get $r))
+    (i32.const 0)))
+"#;
+
+/// F28 for Run, SIMULATED: a Run principal launched at rung 3 on a Run profile `Consult`s, then
+/// `Actuate`s a tool held to its declared channel, with its cell Observer live. The effect reaches
+/// the declared target, the record names the channel, and the lease is `Contained`.
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn a_run_round_actuates_only_its_declared_channel() {
+    use std::io::{Read, Write};
+    use topak_contain::wasmtool::{Channel, WasmToolHost, WasmToolSpec, module_digest};
+    let mut f = fixture("run3", true);
+    // The declared target: answers once, and says what it was sent.
+    let target = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+    let addr = target.local_addr().unwrap().to_string();
+    let seen = std::thread::spawn(move || {
+        let (mut s, _) = target.accept().unwrap();
+        s.set_read_timeout(Some(Duration::from_secs(5))).unwrap();
+        let mut buf = vec![0u8; 4096];
+        let n = s.read(&mut buf).unwrap();
+        s.write_all(format!("{{\"echo\":{n}}}").as_bytes()).unwrap();
+        String::from_utf8_lossy(&buf[..n]).to_string()
+    });
+    let module = f.dir.join("valve.wasm");
+    std::fs::write(&module, wat::parse_str(ECHO_TOOL).unwrap()).unwrap();
+    let digest = module_digest(&module).unwrap();
+    let tool = format!("valve@{}", digest.0);
+    let channel = Channel { kind: "tcp".into(), target: addr };
+    let host = Arc::new(
+        WasmToolHost::new(BTreeMap::from([(
+            tool.clone(),
+            WasmToolSpec { module, module_sha256: digest, channel: Some(channel.clone()) },
+        )]))
+        .unwrap(),
+    );
+    f.params.run_root.insert(f.run_obj.clone());
+    f.params.run_tools.insert(tool.clone());
+    f.params.wasm_tools.insert(tool.clone());
+    let cell = SeatDecl {
+        domain: Domain::Run,
+        kind: SeatKind::Observer,
+        cell: Some("r3".into()),
+        key: hex::encode(rand::random::<[u8; 32]>()),
+        rung: 0,
+    };
+    f.rules.seats.insert("ro0".into(), cell);
+    let c = cluster(
+        &f,
+        Opts { script: "consult,wait:1500,actuate", wasm: Some(host), tool: tool.clone(), ..Default::default() },
+    )
+    .await;
+    let n1 = &c.nodes[0];
+
+    // The Run profile: every clause passes, P4 as channel fidelity.
+    let text = profile_text(&f, &image(), Some(c.sim.expected_measurement().unwrap()), &[]);
+    let mut v: Value = serde_json::from_str(&text).unwrap();
+    v["domain"] = json!("run");
+    v["clauses"]["P4"]["verdict"] = json!("pass");
+    let p = promote(n1, &f, &serde_json::to_string_pretty(&v).unwrap()).await;
+
+    // The cell Observer, at rung 0: it reports, it acts on nothing.
+    let r = n1
+        .operate(OperatorOp::Grant {
+            principal: "watcher".into(),
+            seat: "ro0".into(),
+            persona: f.persona.clone(),
+            bundle: Digest::of(b"bundle"),
+            confinement: topak_core::lease::Confinement { digest: Digest::of(b"none"), rung: 0 },
+            alphabet: [ActionKind::Consult, ActionKind::Report].into_iter().collect(),
+            ttl_ms: LONG,
+            round: f.next_round(),
+            role: RoundRole::Author,
+        })
+        .await;
+    let watcher = r["token"].as_str().unwrap().to_string();
+
+    let round = f.next_round();
+    let r = n1
+        .operate(OperatorOp::Launch {
+            principal: "operator-of-v7".into(),
+            seat: "r3".into(),
+            profile: p.clone(),
+            bundle: Digest::of(b"bundle"),
+            alphabet: [ActionKind::Consult, ActionKind::Actuate, ActionKind::Report].into_iter().collect(),
+            ttl_ms: LONG,
+            round,
+            role: RoundRole::Author,
+        })
+        .await;
+    assert_eq!(r["ok"], true, "{r}");
+    assert_eq!((r["contained"].as_bool(), r["simulated"].as_bool()), (Some(true), Some(true)), "{r}");
+    let fence = r["fence"].as_u64().unwrap();
+    let chain = n1.state.read().unwrap().chain.clone();
+    let topic = topak_core::lift::topic_name(&chain, Domain::Run, "r3", 0, round);
+    let hb =
+        AgentOp::Act { action: Action::Report { record: json!({ "heartbeat": { "topic": topic, "watermark": 0 } }) } };
+    let r = n1.act(AgentRequest { token: watcher, op: hb }).await;
+    assert!(r.admitted, "the Observer is live: {}", r.detail);
+
+    let sent = seen.join().unwrap();
+    assert!(sent.contains("\"open\":\"v7\""), "the declared target received the call: {sent}");
+    until("the Actuate admitted", || n1.state.read().unwrap().leases.get(&fence).is_some_and(|l| l.seq == 1)).await;
+    let Transport::Memory(mem) = &n1.transport else { unreachable!() };
+    // The record is written when the call returns, after the admit is applied.
+    let mut rec = None;
+    for _ in 0..200 {
+        let found = mem
+            .topics
+            .lock()
+            .await
+            .get(&topic)
+            .and_then(|recs| recs.iter().find(|r| r.kind == topak_transport::RecordKind::Actuate).cloned());
+        if found.is_some() {
+            rec = found;
+            break;
+        }
+        tokio::time::sleep(Duration::from_millis(25)).await;
+    }
+    let rec = rec.expect("the Actuate record");
+    let env = &rec.payload["actuate"];
+    assert_eq!(env["tool"], json!(tool));
+    assert_eq!(env["outcome"], "returned");
+    assert_eq!(env["channel"], json!(channel), "the record names the channel the tool was held to");
+    assert!(n1.state.read().unwrap().contained(fence).contained);
 }

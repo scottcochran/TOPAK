@@ -4,7 +4,8 @@
 //!
 //! ```text
 //! topak-demo-guest --model <model.json> [--rung N] [--read <digest>]
-//!                  [--script read,draft,emit,submit] [--exit] [--rogue]
+//!                  [--consult <digest>] [--tool <name@digest>]
+//!                  [--script read,draft,emit,submit | consult,actuate,report,wait:<ms>] [--exit] [--rogue]
 //! ```
 //!
 //! - It checks the weights against `model.json` and exits 3 before its identity line on a
@@ -30,18 +31,23 @@ struct Args {
     model: PathBuf,
     rung: u8,
     read: Option<Digest>,
+    consult: Option<Digest>,
+    tool: Option<String>,
     script: Vec<String>,
     exit: bool,
 }
 
 fn args() -> Args {
-    let mut a = Args { model: PathBuf::new(), rung: 1, read: None, script: vec![], exit: false };
+    let mut a =
+        Args { model: PathBuf::new(), rung: 1, read: None, consult: None, tool: None, script: vec![], exit: false };
     let mut it = std::env::args().skip(1);
     while let Some(k) = it.next() {
         match k.as_str() {
             "--model" => a.model = it.next().expect("--model <path>").into(),
             "--rung" => a.rung = it.next().expect("--rung <n>").parse().expect("a rung"),
             "--read" => a.read = Some(Digest(it.next().expect("--read <digest>"))),
+            "--consult" => a.consult = Some(Digest(it.next().expect("--consult <digest>"))),
+            "--tool" => a.tool = Some(it.next().expect("--tool <name@digest>")),
             "--script" => a.script = it.next().expect("--script a,b").split(',').map(String::from).collect(),
             "--exit" => a.exit = true,
             "--rogue" => {}
@@ -157,7 +163,21 @@ fn main() {
         return;
     }
     for step in a.script.clone() {
+        if let Some(ms) = step.strip_prefix("wait:") {
+            std::thread::sleep(std::time::Duration::from_millis(ms.parse().expect("wait:<ms>")));
+            continue;
+        }
         let op = match step.as_str() {
+            "consult" => AgentOp::Act {
+                action: Action::Consult { object: a.consult.clone().expect("--consult for a consult step") },
+            },
+            "actuate" => {
+                let id = a.tool.clone().expect("--tool for an actuate step");
+                let (name, digest) = id.split_once('@').expect("name@digest");
+                let inputs = json!({ "open": "v7", "by": persona.short() }).as_object().unwrap().clone();
+                AgentOp::Act { action: Action::Actuate { tool: name.into(), digest: Digest(digest.into()), inputs } }
+            }
+            "report" => AgentOp::Act { action: Action::Report { record: json!({ "note": "occupant" }) } },
             "read" => AgentOp::Act { action: Action::Read { object: a.read.clone().expect("--read for a read step") } },
             "draft" => AgentOp::Act {
                 action: Action::Draft {

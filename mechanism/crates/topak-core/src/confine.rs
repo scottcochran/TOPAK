@@ -146,17 +146,26 @@ impl Profile {
         Ok(())
     }
 
-    /// ADR-0034 §4's profile conjunct: P3 to P5 hold. P4 `vacuous` holds only for an alphabet
-    /// without `Invoke` (D-0034-3). Returns what fails; empty means the conjunct holds.
+    /// ADR-0034 §4's profile conjunct: P3 to P5 hold. P4 is the domain's: for Build, tools are
+    /// Wasm components; for Run, channel fidelity (ADR-0034 A2, pending). `vacuous` holds only for
+    /// an alphabet without the variant that reaches a tool, `Invoke` or `Actuate` (D-0034-3,
+    /// D-0034-6). Returns what fails; empty means the conjunct holds.
     pub fn meets_p3_p5(&self, alphabet: &BTreeSet<ActionKind>) -> Vec<String> {
+        let tool = match self.domain {
+            Domain::Build => ActionKind::Invoke,
+            Domain::Run => ActionKind::Actuate,
+        };
         let mut out = Vec::new();
         if self.verdict(Clause::P3) != Some(ClauseVerdict::Pass) {
             out.push("P3 does not pass: a launcher is reachable from the principal".into());
         }
         match self.verdict(Clause::P4) {
             Some(ClauseVerdict::Pass) => {}
-            Some(ClauseVerdict::Vacuous) if !alphabet.contains(&ActionKind::Invoke) => {}
-            Some(ClauseVerdict::Vacuous) => out.push("P4 is vacuous but the alphabet holds Invoke".into()),
+            Some(ClauseVerdict::Vacuous) if !alphabet.contains(&tool) => {}
+            Some(ClauseVerdict::Vacuous) => out.push(format!("P4 is vacuous but the alphabet holds {tool}")),
+            _ if self.domain == Domain::Run => {
+                out.push("P4 does not pass: a Run tool is not held to its declared channel".into())
+            }
             _ => out.push("P4 does not pass: a tool is not a Wasm component".into()),
         }
         if self.verdict(Clause::P5) != Some(ClauseVerdict::Pass) {

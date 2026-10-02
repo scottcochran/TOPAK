@@ -93,6 +93,11 @@ pub async fn start_node(cfg: NodeConfig) -> anyhow::Result<Arc<Mechanism>> {
         bundle: Box::new(bundle),
         transport,
         tools: ToolHost::new(cfg.tools.clone()),
+        wasm_tools: if cfg.wasm_tools.is_empty() {
+            None
+        } else {
+            Some(Arc::new(topak_contain::wasmtool::WasmToolHost::new(cfg.wasm_tools.clone())?))
+        },
         corpus_dir: cfg.corpus_dir.clone(),
         data_dir: cfg.data_dir.clone(),
         proposals: prop_tx,

@@ -16,6 +16,9 @@
 //! | `SimCvmBackend`  | 3    | SIMULATED, feature `sim`: a measured process and a test verifier |
 //! | `seams`          | 2, 3 | Firecracker or Kata with a TPM quote; SEV-SNP; TDX. Not built   |
 //!
+//! And for Run (ADR-0034 A2, pending): `wasmtool`, the tool host's runtime, which hands a Run tool
+//! one network capability, its declared target, and nothing else (P4 for Run: channel fidelity).
+//!
 //! What a replica believes is decided in `topak-core` at apply, not here: this crate produces
 //! entries, and the state machine checks them.
 
@@ -27,6 +30,7 @@ pub mod guest;
 pub mod seams;
 #[cfg(feature = "sim")]
 pub mod sim;
+pub mod wasmtool;
 
 use std::future::Future;
 use std::pin::Pin;

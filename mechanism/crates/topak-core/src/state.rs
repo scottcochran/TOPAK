@@ -38,6 +38,12 @@ pub struct Params {
     /// its own set: an object in Build's corpus root is not thereby in Run's.
     #[serde(default)]
     pub run_root: BTreeSet<Digest>,
+    /// The Run tools the tool host runs as Wasm modules whose only network capability is their
+    /// declared target: channel fidelity by construction (ADR-0034 A2, pending; `topak-contain`
+    /// `wasmtool`). PROVISIONAL (wasm-tools): a mechanism parameter so every replica can check at
+    /// apply what a Run profile's P4 claims; the node refuses to start unless it hosts every one.
+    #[serde(default, skip_serializing_if = "BTreeSet::is_empty")]
+    pub wasm_tools: BTreeSet<String>,
     /// Maximum admitted actions per round (termination; bounds the state space). Build's `R`
     /// (ADR-0022 §3).
     pub round_bound: u64,
@@ -1054,6 +1060,12 @@ impl State {
         {
             return Applied::Rejected("no cell Observer covers this seat at commit (ADR-0039 §2)".into());
         }
+        // ADR-0034 A2 (pending): a Run profile's channel fidelity, re-checked at apply.
+        if let Admitted::Actuate { tool, .. } = &rec.action
+            && let Err(e) = self.channel_fidelity(rec.lease, tool, params)
+        {
+            return Applied::Rejected(e);
+        }
         // ADR-0034 §3.5: under an attested session key, the action is the attested guest's. The
         // generation binding at `Act`: a proof under any other key, or a replayed counter, is void.
         let key = self.leases[&rec.lease].attestation.as_ref().and_then(|a| a.session_key.clone());
@@ -1258,9 +1270,9 @@ impl State {
         if !bad.is_empty() {
             return Applied::Rejected(format!("malformed profile: {}", bad.join("; ")));
         }
-        if profile.domain != Domain::Build {
-            return Applied::Rejected("no Run profile exists yet (ADR-0042 §6)".into());
-        }
+        // PROVISIONAL (run-profile): Run profiles register under ADR-0034 A2, which is pending, and
+        // ADR-0042 §6, which is Proposed. What A2 makes a Run profile's P4 mean is checked at
+        // every `Actuate` (`State::channel_fidelity`).
         let artifact = profile_artifact(text.as_bytes());
         if !self.candidates.get(&artifact).is_some_and(|c| c.promoted_at.is_some()) {
             return Applied::Rejected("the profile's artifact is not promoted (ADR-0034 §1)".into());
@@ -1268,6 +1280,29 @@ impl State {
         let digest = Digest::of(text.as_bytes());
         self.profiles.entry(digest.clone()).or_insert(ProfileRecord { profile, artifact, registered_at: index });
         Applied::ProfileRegistered { digest }
+    }
+
+    /// ADR-0034 A2 (pending), P4 for Run: under an attested lease whose Run profile says P4
+    /// passes, an `Actuate` names only a tool the tool host holds to its declared channel
+    /// (`Params::wasm_tools`). The profile's claim is made true here, at decide and at apply, and
+    /// not left to the declaration. A profile that declares P4 `fail` claims nothing, and its
+    /// principals are `Mediated` (D-0034-6). Rung 0 rests on no appraisal and is not checked.
+    /// `RunConfinement.tla` `Fidelity`; its `M_NATIVE` drops this check.
+    pub fn channel_fidelity(&self, fence: LogIndex, tool: &str, params: &Params) -> Result<(), String> {
+        let Some(lr) = self.leases.get(&fence) else { return Ok(()) };
+        if lr.attestation.is_none() {
+            return Ok(());
+        }
+        let Some(pr) = self.profiles.get(&lr.lease.confinement.digest) else { return Ok(()) };
+        if pr.profile.domain == Domain::Run
+            && pr.profile.verdict(Clause::P4) == Some(ClauseVerdict::Pass)
+            && !params.wasm_tools.contains(tool)
+        {
+            return Err(format!(
+                "tool {tool} is not held to its declared channel, and the lease's profile says P4 passes (ADR-0034 A2)"
+            ));
+        }
+        Ok(())
     }
 
     /// `Contained(p)` (ADR-0034 §4) for the lease at `fence`: a lookup, never a judgment. Every
@@ -1299,8 +1334,13 @@ impl State {
         if self.rules.criterion.is_none() {
             because.push("ADR-0035's criterion is not in force in the issued rules".into());
         }
-        if self.rules.seat_domain(&l.seat) != Some(Domain::Build) {
-            because.push("Run principals are Mediated until the Run profile exists (ADR-0042 §6)".into());
+        // ADR-0034 §1: the profile is the seat's domain's. Apply refuses any other grant; this is
+        // the second guard. A Run seat on a Run profile is `Contained` on the same conjuncts as a
+        // Build seat, with P4 read as channel fidelity (ADR-0034 A2, pending).
+        if let Some(pr) = self.profiles.get(&l.confinement.digest)
+            && Some(pr.profile.domain) != self.rules.seat_domain(&l.seat)
+        {
+            because.push("the profile is not for the seat's domain (ADR-0034 §1)".into());
         }
         let simulated = lr.attestation.as_ref().is_some_and(|a| a.platform == PLATFORM_SIM_SNP);
         Containment { contained: because.is_empty(), because, simulated }

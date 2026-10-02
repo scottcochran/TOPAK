@@ -56,6 +56,7 @@ fn params() -> Params {
         build_tools: BTreeSet::new(),
         run_tools: BTreeSet::new(),
         run_root: BTreeSet::new(),
+        wasm_tools: BTreeSet::new(),
         round_bound: 3,
         lease_margin_ms: 0,
         after_topic_limit: 3,

@@ -28,7 +28,11 @@ tracing.workspace = true
 hex.workspace = true
 ed25519-dalek = { workspace = true, features = ["rand_core"] }
 rand = "0.8"
+# The Run tool host's runtime (ADR-0034 A2, P4: channel fidelity). The same version the bundle tier
+# links through opa-wasm, so the workspace compiles one.
+wasmtime = { version = "47", default-features = false, features = ["cranelift", "runtime", "std", "anyhow"] }
 
 [dev-dependencies]
+wat = "1"
 # The tests exercise the simulator; the library builds without it.
 topak-contain = { path = ".", features = ["sim"] }

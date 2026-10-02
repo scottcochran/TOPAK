@@ -27,8 +27,8 @@
 (*   Grant Renew       whether the appraisal's signature verified (`sigOk`), and  *)
 (*   Contested         the key it names (`sigKey`); the model checks the key is   *)
 (*                     an issued verifier key (ADR-0025 §1 (f))                   *)
-(*   ProfileRegister   what the file parses to: well-formed (`ok`), its domain,   *)
-(*                     its digest, its artifact digest, and the summary below     *)
+(*   ProfileRegister   what the file parses to: well-formed (`ok`), its digest,   *)
+(*                     its artifact digest, and the summary below                 *)
 (*                                                                                *)
 (* Confinement (ADR-0034 §3, ADR-0036 §6) is modelled as the code checks it at    *)
 (* apply: the appraisal against the registered profile, the nonce's epoch, the    *)
@@ -51,7 +51,7 @@
 (*        verifierKeys bundleKeys (ADR-0025 §1 (f)) personas criterion           *)
 (*        leases liveBySeat lastRound candidates gates approvals revoked          *)
 (*        appliedIds lastApplied k tPersona marks seals profiles contested        *)
-(*        contained buildBound runBound                                           *)
+(*        contained wasmTools buildBound runBound                                 *)
 (* Seat: domain kind cell rung                                                    *)
 (* Lease: principal seat persona epoch rulesEpoch conf rung alphabet round role   *)
 (*        ttl ended actions seq att sessionCtr                                    *)
@@ -206,11 +206,21 @@ ProfileForRung(p, r) ==
      /\ (r >= 2 => ~IsNone(p.measurement))
      /\ (r >= 3 => ~IsNone(p.minTcb))
 
-\* Profile::meets_p3_p5 (ADR-0034 §4; D-0034-3)
+\* Profile::meets_p3_p5 (ADR-0034 §4; D-0034-3; for Run, P4 is channel fidelity, A2 pending)
+ToolVariant(p) == IF p.domain = "run" THEN "Actuate" ELSE "Invoke"
 MeetsP3P5(p, alphabet) ==
   /\ p.p3 = "pass"
-  /\ (p.p4 = "pass" \/ (p.p4 = "vacuous" /\ "Invoke" \notin alphabet))
+  /\ (p.p4 = "pass" \/ (p.p4 = "vacuous" /\ ToolVariant(p) \notin alphabet))
   /\ p.p5 = "pass"
+\* State::channel_fidelity (ADR-0034 A2, pending): under an attested Run lease whose profile says P4
+\* passes, an Actuate names only a tool held to its declared channel
+ChannelFidelity(s, f, tool) ==
+  LET l == s.leases[f] IN
+  \/ IsNone(l.att)
+  \/ l.conf \notin DOMAIN s.profiles
+  \/ s.profiles[l.conf].summary.domain # "run"
+  \/ s.profiles[l.conf].summary.p4 # "pass"
+  \/ tool \in s.wasmTools
 
 \* State::check_appraisal (ADR-0034 §3.2): w names what the request fixes
 AppraisalOk(s, idx, e, w) ==
@@ -255,7 +265,7 @@ ContainedF(s, f) ==
   /\ l.persona \in DOMAIN s.personas
   /\ s.personas[l.persona] \in InHouse
   /\ s.criterion
-  /\ SeatDomain(s, l.seat) = "build"
+  /\ s.profiles[l.conf].summary.domain = SeatDomain(s, l.seat)
 
 ContainedSet(s) == {f \in DOMAIN s.leases : ContainedF(s, f)}
 
@@ -345,6 +355,7 @@ ApplyAdmit(s, idx, e) ==
   IF ~e.ok THEN Rej(s)
   ELSE IF ~CheckLive(s, e) THEN Rej(s)
   ELSE IF e.action.kind \in RunEffects /\ SeatKindOf(s, e.seat) = "thinker" /\ ~ObserverCovers(s, e.seat) THEN Rej(s)
+  ELSE IF e.action.kind = "Actuate" /\ ~ChannelFidelity(s, e.lease, e.action.tool) THEN Rej(s)
   \* ADR-0034 §3.5: under a session key, the attested guest's proof with a fresh counter
   ELSE IF HasKey(s.leases[e.lease])
           /\ (IsNone(e.session) \/ ~e.proofOk \/ e.session.ctr <= s.leases[e.lease].sessionCtr) THEN Rej(s)
@@ -421,7 +432,6 @@ ApplyContested(s, e) ==
 \* State::apply_profile_register (ADR-0034 §1): only a promoted artifact is a reference value
 ApplyProfileRegister(s, idx, e) ==
   IF ~e.ok THEN Rej(s)
-  ELSE IF ~e.build THEN Rej(s)
   ELSE IF ~(e.artifact \in DOMAIN s.candidates /\ ~IsNone(s.candidates[e.artifact].promotedAt)) THEN Rej(s)
   ELSE [st  |-> IF e.digest \in DOMAIN s.profiles THEN s
                 ELSE [s EXCEPT !.profiles = Put(@, e.digest,

@@ -1,0 +1,10 @@
+TOPAK — TLAPS proof results for RunConfinement.tla: every obligation of RunConfinement_proof.tla, checked by the prover below
+Modules: RunConfinement.tla (sha256 d0c4aa37934b78b5) · RunConfinement_proof.tla (sha256 e8612bf4111c7599)
+Prover: tlapm 7824dab (binary sha256 e150fb793fb28592) · backends: Z3 version 4.8.9 - 64 bit · zenon version 0.8.4 [a268] 2017-11-14 · Isabelle2025 · LS4 for PTL · driver: proof-results.sh
+Assumptions: FilteredBool == Filtered \in BOOLEAN
+Theorems: EffectsOnDeclaredChannelsAlways · ContainedEffectsUseHeldToolsAlways · SafeAlways
+Lemmas: KindValues · ToolCases · HeldReachesDeclared · ContainedHeld · ActuateEffect · NextDeclared · NextHeld · InitBoth · MutChannelReachesAll · MutNativeAdmitsAll · MutFilterReachesAll · NativeIsNeverHeld
+A proved obligation is a theorem of the module under its assumptions and the hypotheses the statement names; the prover, not the constants, bounds the claim. Mutations and witnesses are behaviours and stay with TLC.
+
+File "./RunConfinement_proof.tla", line 1, character 1 to line 180, character 77:
+[INFO]: All 116 obligations proved.

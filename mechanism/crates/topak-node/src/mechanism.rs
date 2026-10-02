@@ -89,6 +89,9 @@ pub struct Parts {
     pub bundle: Box<dyn BundleDecider>,
     pub transport: Transport,
     pub tools: ToolHost,
+    /// Tools run as Wasm modules (`topak-contain` `wasmtool`): Run's channel fidelity by
+    /// construction (ADR-0034 A2, pending). Must host every id `Params::wasm_tools` names.
+    pub wasm_tools: Option<Arc<topak_contain::wasmtool::WasmToolHost>>,
     pub corpus_dir: PathBuf,
     pub data_dir: PathBuf,
     pub proposals: mpsc::Sender<Entry>,
@@ -103,6 +106,7 @@ pub struct Mechanism {
     bundle: Box<dyn BundleDecider>,
     pub transport: Transport,
     tools: ToolHost,
+    wasm_tools: Option<Arc<topak_contain::wasmtool::WasmToolHost>>,
     pub state: RwLock<State>,
     pub clock: SystemMonotonic,
     pub leader: AtomicBool,
@@ -157,6 +161,15 @@ impl Mechanism {
                 d.as_str()
             );
         }
+        // ADR-0034 A2 (pending): every replica checks at apply that a Run profile's P4 holds by the
+        // set `Params::wasm_tools`. A replica that does not host one of them would run it some
+        // other way, so it does not start.
+        for id in &p.params.wasm_tools {
+            anyhow::ensure!(
+                p.wasm_tools.as_ref().is_some_and(|w| w.hosts(id)),
+                "the parameters name {id} as a Wasm tool held to its channel, and this replica does not host it"
+            );
+        }
         let mut genesis = p.genesis;
         genesis.observer = p.floor.observer_values().clone();
         genesis.persona = p.floor.persona_values().clone();
@@ -169,6 +182,7 @@ impl Mechanism {
             bundle: p.bundle,
             transport: p.transport,
             tools: p.tools,
+            wasm_tools: p.wasm_tools,
             state: RwLock::new(genesis),
             after_written: Mutex::new(HashMap::new()),
             heard: Mutex::new(HashMap::new()),
@@ -509,6 +523,11 @@ impl Mechanism {
                 // ADR-0039 §1: live(o) for the seat's cell Observers, freshness on this clock.
                 let t_obs = st.observer.t_obs_ms;
                 let live = st.observer_covers(&req.seat, &|o| self.fresh(o, t_obs));
+                // ADR-0034 A2 (pending): a Run profile's P4 is checked here and again at apply.
+                if let Action::Actuate { tool, digest, .. } = &req.action {
+                    st.channel_fidelity(rec.lease.fence, &tool_id(tool, digest), &self.params)
+                        .map_err(MechanismDeny::Other)?;
+                }
                 let frozen = lift(&req, &st, &self.params, rec, live)?;
                 let domain = st.rules.seat_domain(&req.seat).expect("lifted");
                 Ok((frozen, rec.lease.bundle.clone(), rec.lease.epoch, rec.lease.round, domain))
@@ -644,7 +663,11 @@ impl Mechanism {
             }
             Action::Invoke { tool, digest, inputs } => {
                 std::fs::create_dir_all(&ws)?;
-                self.tools.call(&tool_id(tool, digest), inputs, &ws).await
+                let tid = tool_id(tool, digest);
+                match &self.wasm_tools {
+                    Some(w) if w.hosts(&tid) => w.call(&tid, inputs).await.map(|(v, _)| v),
+                    _ => self.tools.call(&tid, inputs, &ws).await,
+                }
             }
             Action::Consult { object } => {
                 // The store is content-addressed; membership in the Run root was the floor's
@@ -664,11 +687,15 @@ impl Mechanism {
                     tool: tid.clone(),
                     break_glass: cx.break_glass,
                     inputs: Value::Object(inputs.clone()),
+                    channel: self.wasm_tools.as_ref().and_then(|w| w.channel(&tid).cloned()),
                 };
                 self.in_flight.lock().await.entry(topic.clone()).or_default().insert(seq, call);
                 let dir = self.run_work.join(format!("{seat}-e{}-r{}", cx.lease_epoch, cx.round));
                 std::fs::create_dir_all(&dir)?;
-                let out = self.tools.call(&tid, inputs, &dir).await;
+                let out = match &self.wasm_tools {
+                    Some(w) if w.hosts(&tid) => w.call(&tid, inputs).await.map(|(v, _)| v),
+                    _ => self.tools.call(&tid, inputs, &dir).await,
+                };
 
                 // Take the call back under the lock the seal holds. If the seal took it first,
                 // the topic says `unknown`, and the result is withheld: what the principal
@@ -873,6 +900,9 @@ struct InFlight {
     tool: String,
     break_glass: bool,
     inputs: Value,
+    /// The declared channel a Wasm tool was held to (ADR-0034 A2): recorded, so the record says
+    /// which channel the effect could have used. Absent for a native tool, which nothing holds.
+    channel: Option<topak_contain::wasmtool::Channel>,
 }
 
 impl InFlight {
@@ -880,13 +910,16 @@ impl InFlight {
     /// inputs and the result by digest, and the record's own digest is over it. `body` is the
     /// cognitive payload, the inputs and the result themselves (ADR-0004).
     fn record(&self, topic: &str, seq: u64, outcome: Outcome, result: Option<&Value>) -> EmitRecord {
-        let envelope = json!({
+        let mut envelope = json!({
             "tool": self.tool,
             "breakGlass": self.break_glass,
             "inputs": Digest::of_json(&self.inputs),
             "outcome": outcome,
             "result": result.map(Digest::of_json),
         });
+        if let Some(ch) = &self.channel {
+            envelope["channel"] = json!(ch);
+        }
         EmitRecord {
             topic: topic.to_string(),
             seat: self.seat.clone(),

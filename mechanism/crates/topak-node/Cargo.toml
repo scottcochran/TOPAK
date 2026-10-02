@@ -40,3 +40,4 @@ rand = "0.8"
 
 [dev-dependencies]
 topak-contain = { workspace = true, features = ["sim"] }
+wat = "1"

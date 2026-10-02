@@ -46,6 +46,10 @@ pub struct NodeConfig {
     /// Downstream tool hosts, keyed by allowlist id `name@digest`.
     #[serde(default)]
     pub tools: BTreeMap<String, ToolSpec>,
+    /// Tools run as Wasm modules, keyed by allowlist id `name@<module sha256>`. A Run tool's entry
+    /// declares its channel, the only network it can reach (ADR-0034 A2, pending).
+    #[serde(default)]
+    pub wasm_tools: BTreeMap<String, topak_contain::wasmtool::WasmToolSpec>,
     #[serde(default = "hb")]
     pub heartbeat_ms: u64,
     #[serde(default = "et")]
@@ -215,6 +219,9 @@ impl NodeConfig {
         fix(&mut c.bundles_dir);
         for t in c.tools.values_mut() {
             fix(&mut t.command);
+        }
+        for t in c.wasm_tools.values_mut() {
+            fix(&mut t.module);
         }
         if let Some(ct) = c.contain.as_mut() {
             if let Some(d) = ct.evidence_dir.as_mut() {
