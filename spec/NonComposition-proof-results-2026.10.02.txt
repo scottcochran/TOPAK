@@ -1,0 +1,10 @@
+TOPAK — TLAPS proof results for NonComposition.tla: every obligation of NonComposition_proof.tla, checked by the prover below
+Modules: NonComposition.tla (sha256 119f9a7e878f8929) · NonComposition_proof.tla (sha256 6ce6aee98a43d40e)
+Prover: tlapm 7824dab (binary sha256 e150fb793fb28592) · backends: Z3 version 4.8.9 - 64 bit · zenon version 0.8.4 [a268] 2017-11-14 · Isabelle2025 · LS4 for PTL · driver: proof-results.sh
+Assumptions: none
+Theorems: SafeAlways · NC1Always · NC2Always
+Lemmas: ForensicKept · InitInv · NextInv · InvSafe · MutM1ErasesAdmitRecord · MutM2ErasesAllUnderBreakGlass
+A proved obligation is a theorem of the module under its assumptions and the hypotheses the statement names; the prover, not the constants, bounds the claim. Mutations and witnesses are behaviours and stay with TLC.
+
+File "./NonComposition_proof.tla", line 1, character 1 to line 124, character 77:
+[INFO]: All 58 obligations proved.

@@ -2,7 +2,7 @@
 
 **2026.10.02** · the method behind the `spec/*_proof.tla` modules and `spec/proof-results.sh` · DRAFT, revised with the proofs it describes
 
-**What this is.** How the eight proof modules written on 2026.10.02 were made, what each claims and does not claim,
+**What this is.** How the ten proof modules written on 2026.10.02 were made, what each claims and does not claim,
 the patterns they share, the prover's habits that cost time, and a dated assessment of why they were cheap and where
 that stops. It is a method note, not a record. Nothing here is ratified, no record cites a proof yet, and the
 TLC-versus-TLAPS declaration (MAP 2.3, open in every checkpoint's §8) remains the custodian's to make. A later
@@ -26,10 +26,12 @@ declared, in the place T-0045-29 declares TLC.
   so the theorem holds for every value of it, where TLC ran one value.
 - **Each theorem takes as hypothesis only the mutations that break it,** written `ASSUME Mut # "M_X"`. A combined
   `SafeAlways` takes `Mut = "none"`. The hypotheses restate the "Breaks under" column of
-  `spec/theorem-premise-binding.md`, and writing them produced two corrections to it: RunSeats' `M_OBSEMIT` breaks
-  none of that module's three invariants (it narrows an observer's bound, and the invariants are upper bounds), and
+  `spec/theorem-premise-binding.md`, and writing them produced three corrections to it: RunSeats' `M_OBSEMIT` breaks
+  none of that module's three invariants (it narrows an observer's bound, and the invariants are upper bounds);
   Confinement's binding of a lease to a guest is enforced by Act's generation check, not by `SameGuest` at grant,
-  which the proof never uses.
+  which the proof never uses; and in FloorComposition, `M_OVERRIDE` breaks `FloorErrorIsDeny` and
+  `BundleRefusalHonored` as well as `AdmitImpliesFloorPermit`, and `M_ERR` breaks `AdmitImpliesFloorPermit` as well
+  as `FloorErrorIsDeny`, rows TLC did not run.
 - **Mutations and reachability witnesses stay with TLC.** A counterexample and a witness are behaviours, and the
   prover proves universal statements. Each proof module instead carries one lemma per mutation stating what the
   mutation admits (the guard it removes): `MutAdmitsAll`, `MutAdmitsAuthority`, `MutRevokeGrantsAgain` and the
@@ -48,6 +50,8 @@ declared, in the place T-0045-29 declares TLC.
 | `RunSeats_proof.tla` | 147 | 3 | a type invariant, plus "a live alphabet is the granted one", under every mutation |
 | `Lease_A1_proof.tla` | 200 | 4 | a type invariant; one property is valid in every state and needs no induction |
 | `Confinement_proof.tla` | 502 | 4 | a type invariant, plus six generation-binding clauses (§3) |
+| `NonComposition_proof.tla` | 58 | 2 | NC2, plus "the records NC1 needs were created" and "only admitted effects went via break-glass" |
+| `FloorComposition_proof.tla` | 171 | 5 | the flags themselves; EnvelopeHolds adds the type invariant and "the floor's inputs are the truth" |
 
 ## 2. Process, per module
 
@@ -121,7 +125,7 @@ declared, in the place T-0045-29 declares TLC.
 
 ## 5. Assessment, 2026.10.02: why these were cheap, and where that stops
 
-The eight modules took one session. Four causes, in descending weight, and one caveat.
+The ten modules took one session. Four causes, in descending weight, and one caveat.
 
 **Locality, by way of monotone ghost variables.** The modules were written for mutation testing, and that style
 instruments each property so TLC can flip it: a write-once flag set at the action that would violate it, or an
@@ -155,7 +159,9 @@ invariant had to be invented. The remaining modules are harder for the same reas
 have arithmetic invariants over counters and marks (`seq - mark[round] <= K`, marks never exceeding seals, the
 sealed round equal to the counter while idle) that must be found rather than read off a guard, and `RunCoupling`
 states an `ENABLED` invariant. `RulesFloorNV_rev5` needs cardinality lemmas over subsets of a five-element set.
-`NonComposition` and `FloorComposition` are flag-shaped and expected to be cheap. `Mechanism` is not in this class:
+`NonComposition` and `FloorComposition` were flag-shaped and cheap, as expected; NonComposition's one surprise was
+a missing clause, that only admitted effects are recorded as via break-glass, which the prover found and TLC could
+not have. `Mechanism` is not in this class:
 it is a trace replay over a concrete trace constant, and the meaningful target is a refinement from it to the
 small modules, which is the gap T-0045-28 declares.
 
@@ -165,4 +171,4 @@ small modules, which is the gap T-0045-28 declares.
 - A trusted-base row for the prover and its backends, in the place T-0045-29 holds TLC, and whether the premise
   table's rows for proved properties cite it.
 - Whether and where a record cites a proof module by digest, which would freeze it.
-- The two corrections to the "Breaks under" column in §1.
+- The three corrections to the "Breaks under" column in §1.

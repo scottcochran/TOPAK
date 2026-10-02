@@ -25,7 +25,7 @@ hand-assembled TLC output with a dated name and never change; the two generators
 
 ## TLAPS proofs
 
-Eight modules also have deductive proofs, checked with the TLA+ Proof System (2026.10.02). Each proof module
+Ten modules also have deductive proofs, checked with the TLA+ Proof System (2026.10.02). Each proof module
 extends a frozen module without editing it and proves the invariants that module states, for every value of its
 constants that the named assumptions admit. A proof is bounded by its assumptions and the prover rather than by
 constants, so it is a different kind of evidence from a TLC row. Mutations and reachability witnesses are
@@ -40,9 +40,11 @@ chain and of the prover binary; `$TLAPM` overrides the binary, and the proof cac
 
 | Proof module | Over | Record | Theorems | Assumptions | Results |
 |---|---|---|---|---|---|
+| `NonComposition_proof.tla` | `NonComposition.tla` | ADR-0013 §4 | `NC1`, `NC2` | none | `NonComposition-proof-results-2026.10.02.txt` |
 | `Anchor_proof.tla` | `Anchor.tla` | ADR-0029 §5 | `FloorPreserved`, `EpochMonotone` | `Active ⊆ AllEntries`, `MaxEpoch ∈ Nat` | `Anchor-proof-results-2026.10.02.txt` |
 | `BreakGlass_proof.tla` | `BreakGlass.tla` | ADR-0029 §5; ADR-0026 R7 | `BreakGlassNeverChangesAuthority` | `Active ⊆ AllEntries`, `"R7" ∈ Active` | `BreakGlass-proof-results-2026.10.02.txt` |
 | `FloorRouting_proof.tla` | `FloorRouting.tla` | ADR-0030 §9 | `NoWideningWithoutIssuance`, `FloorNeverVacuous` | none | `FloorRouting-proof-results-2026.10.02.txt` |
+| `FloorComposition_proof.tla` | `FloorComposition.tla` | ADR-0030 §1, §4, §5 | all five: `AdmitImpliesFloorPermit`, `FloorErrorIsDeny`, `BundleRefusalHonored`, `BundleCannotWriteFloorInputs`, `EnvelopeHolds` | none | `FloorComposition-proof-results-2026.10.02.txt` |
 | `Seats_proof.tla` | `Seats.tla` | ADR-0037 §9 | `OnlyThinkersAuthor`, `OneSeatPerPrincipal` | none | `Seats-proof-results-2026.10.02.txt` |
 | `Observers_proof.tla` | `Observers.tla` | ADR-0038 §8 | `DenyByAnyOf`, `ReachIsBounded` | none | `Observers-proof-results-2026.10.02.txt` |
 | `RunSeats_proof.tla` | `RunSeats.tla` | ADR-0043 §8 | `OnlyThinkersActuate`, `ObserversConsultAndReport`, `NoNameCrossesDomains` | none | `RunSeats-proof-results-2026.10.02.txt` |
