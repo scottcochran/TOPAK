@@ -1,0 +1,374 @@
+"""H3 — Verification map: every check the corpus runs, what it checks, what must fail, where its result lives, and
+what none of it claims."""
+from lib import Canvas
+
+ID, SLUG = "H3", "verification-map"
+
+
+def lane(c, x0, y, w, cards, gap=56, size=14, label_fn=None):
+    """A row of cards joined by arrows. cards: (title, body, accent, status, status_extra, dash, arrow_label).
+    Returns the height used."""
+    n = len(cards)
+    cw = (w - gap * (n - 1)) / n
+    h = max(c.card(0, 0, cw, t, b, accent=a, status=s, status_extra=se, draw=False, size=size, bullets=False)
+            for t, b, a, s, se, d, al in cards)
+    for i, (t, b, a, s, se, d, al) in enumerate(cards):
+        x = x0 + i * (cw + gap)
+        c.card(x, y, cw, t, b, accent=a, status=s, status_extra=se, dash=d, h=h, size=size, bullets=False)
+        if i < n - 1:
+            nxt = cards[i + 1]
+            acc = nxt[2] if nxt[2] in ("red",) else "grey"
+            dash = "7 5" if nxt[2] == "red" or (nxt[3] in ("notbuilt",)) else None
+            c.arrow([(x + cw + 2, y + 40), (x + cw + gap - 3, y + 40)], acc, dash=dash)
+    return h
+
+
+def build():
+    c = Canvas(ID, "Verification map: what is checked, what must fail, and what the checks do not claim",
+               "Every check in the corpus: seventeen TLA+ modules run in TLC at small constants, each property with a "
+               "mutation that must fail and a reachability witness that must be violated; the policy floor's gates with "
+               "a pinned proof checker; the reference's tests restating the properties; the trace harness that replays "
+               "those tests through an operational model; the drift pins; and the lineage gate suite. Then the honesty "
+               "layer: these are evidence, not proofs, and what runs is not what is checked.",
+               3400,
+               "spec/README.md and every spec/*.tla header and results file; spec/theorem-premise-binding.md; "
+               "floor/README.md, floor/run-gates.py, floor/genesis-gates-results-2026.10.01.txt; "
+               "mechanism/README.md, mechanism/GAPS-AND-ASSUMPTIONS.md §6, mechanism/corpus-pins.sha256; "
+               "slm/README.md Part B, slm/gate-suite-results-2026.09.28.txt; ADR-0029 §5 (A1); ADR-0030 §5 A1; "
+               "ADR-0033 A5, A6, open obligations; ADR-0045 §5, T-0045-14, T-0045-28 to 30; G5 §4; G7 §2.2, §2.8, §3, "
+               "§4, §8")
+    X0, X1 = c.x0, c.x1
+    W = X1 - X0
+    y = c.y
+
+    # ================================================================ 1. the chains
+    y += c.heading(X0, y, "1 · Four chains of evidence, from the record to the running code", size=22)
+    y += 14
+    LP = 30
+
+    # lane A: protocol properties
+    top = y
+    y += 40
+    hA = lane(c, X0 + LP, y, W - 2 * LP, [
+        ("Records", ["The ADRs state each property against what an agent's alphabet allows. A module is cited by "
+                     "digest in the accepted record it checks; a change is a successor module (`Lease_A1`, "
+                     "`RulesFloorNV_rev5`)."], "blue", None, "", None, None),
+        ("17 TLA+ modules, TLC", ["Each property with a **mutation that must fail** and a `Never…` "
+                                  "**witness that must be violated** (non-vacuity, G2 §3). Small constants; "
+                                  "`tools/tla2tools.jar` 1.7.4, TLC 2.19, tracked for its digest (T-0045-29)."],
+         "teal", None, "", None, None),
+        ("Rust tests restate them", ["`mechanism/`: **61 tests** across six binaries (2026.10.01), each named for "
+                                     "the property and the mutation it refuses (GAPS §6). Discrimination tests, "
+                                     "not proofs, by the same hand."], "teal", "built", "", None, None),
+        ("Trace validation: stage 1", ["Tests record every `apply`; `trace2tla.py` converts; `Mechanism.tla` "
+                                       "replays and checks `TraceMatches`. **21 traces, 163 steps** (09.30); "
+                                       "**22 traces, 168 steps** (10.01), every step matching."],
+         "teal", "built", "", None, None),
+        ("No refinement (T-0045-28)", ["What no test reaches is asserted, and three oracles come from the trace "
+                                       "(issuance validity, approval signatures, the parameter digest). T-0045-28 "
+                                       "stays a **trust root** for every deployment."], "red", "open", "", "6 4",
+         None),
+        ("Stage 2: a Lean model", ["With differential testing against the code (ADR-0033 open obligations; G7 "
+                                   "item 56). **Not begun.**"], "red", "notbuilt", "", None, None),
+        ("Stage 3: compilation", ["The Lean model compiled; with a reproducible build (T-0045-30), the rows "
+                                  "leave Annex A only on the addendum that cites the chain. **Not begun.**"],
+         "red", "notbuilt", "", None, None),
+    ], size=14)
+    y += hA + 26
+    c.region(X0, top, W, y - top, "Protocol properties: spec/ → mechanism/", "teal", dash=None, sw=2, size=15)
+    y += 44
+
+    # lane B: the floor
+    top = y
+    y += 40
+    hB = lane(c, X0 + LP, y, W - 2 * LP, [
+        ("The floor bundle", ["`genesis-floor.cedar` (17 policies), `genesis.cedarschema`, `genesis-values.json` "
+                              "(placeholders). **DRAFT, not ratified.**"], "violet", "draft", "", None, None),
+        ("`run-gates.py`, `cedar symcc`", ["Totality, non-vacuity, discrimination, every entry matters, routing, "
+                                          "four negative controls, three checker controls (ADR-0030 §5)."],
+         "blue", None, "", None, None),
+        ("`floor/cvc5-checked`", ["Keeps each query, runs cvc5 with proofs, binds the proof to the query's own "
+                                  "declarations and assertions; forwards `unsat` only once the checker accepts. "
+                                  "Anything else is `unknown`, a failure."], "blue", None, "", None, None),
+        ("The checker (T-0045-14)", ["`ethos` 8dc85c4 against the CPC signature in `tools/cpc/` (from cvc5 1.4.0). "
+                                     "**The solver is trusted for nothing** (ADR-0030 A1, Batch 24)."], "blue",
+         "accepted", "C1", None, None),
+        ("Results 2026.10.01", ["**RESULT: all gates pass.** 4 `holds✓` on checked proofs, 25 `holds°` by cedar's "
+                                "folding (T-0045-3), none unchecked. Evidence tree `f8b1196a427a35ed`."], "teal",
+         None, "", None, None),
+        ("`topak-floor` pins it", ["The floor text is compiled in **by path** and refused at startup unless its "
+                                   "bytes match the gated digests; a floor change is a mechanism release."],
+         "teal", "built", "", None, None),
+    ], size=14)
+    y += hB + 26
+    c.region(X0, top, W, y - top, "Policy floor: floor/ → topak-floor", "blue", dash=None, sw=2, size=15)
+    y += 44
+
+    # lanes C and D side by side
+    half = (W - 40) / 2
+    top = y
+    yy = y + 40
+    hC = lane(c, X0 + LP, yy, half - 2 * LP, [
+        ("Lineage records", ["`slm/` pipeline at rung 0: every record is **declared** (D-0035-1)."], "grey", None,
+         "", None, None),
+        ("`gate_suite.py`", ["E1–E5 and distillation cases each seen to fire alone; the §2 monotonicity check: "
+                             "**holds** in `bounded` mode, 2,000 trials (09.28)."], "grey", None, "", None, None),
+        ("ADR-0035", ["The independence criterion these test. **Not in force**; its §8 item 5 review is owed."],
+         "amber", "proposed", "", None, None),
+    ], size=14)
+    hD = lane(c, X0 + half + 40 + LP, yy, half - 2 * LP, [
+        ("`corpus-pins.sha256`", ["The whole-file digest of every record (34) and TLA+ module (10) the reference "
+                                  "follows, as it last followed them."], "grey", None, "", None, None),
+        ("`cargo test -p topak-core --test drift`", ["Fails when a pinned file changes, or when the code cites a "
+                                                      "record that is not pinned."], "teal", "built", "", None, None),
+        ("Clearing it", ["Review the change against the code; bring the code into line or register the divergence "
+                         "in GAPS; replace the pin line. Whole-file pins trip on History-only edits."], "grey", None,
+         "", None, None),
+    ], size=14)
+    hh = max(hC, hD) + 66
+    c.region(X0, top, half, hh, "Lineage gate suite: slm/ (ADR-0035 §8 rehearsal)", "amber", dash="10 6", sw=2,
+             size=15)
+    c.region(X0 + half + 40, top, half, hh, "Drift: records and modules pinned by the reference", "grey",
+             dash=None, sw=2, size=15)
+    y = top + hh + 60
+
+    # ================================================================ 2. the module table
+    y += c.heading(X0, y, "2 · Every TLA+ module in `spec/`: what it checks, what must fail, and where its result is",
+                   size=22)
+    y += c.para(X0, y, W, "Seventeen modules (G7 §9). Properties are invariants checked under `Mut = \"none\"`; each "
+                "mutation changes the mechanism, never the property, and must produce a counterexample; each `Never…` "
+                "witness must be violated, which shows the behaviour it names is reachable. Results files are "
+                "hand-assembled TLC output with a dated name and never change. **Pinned** means listed in "
+                "`mechanism/corpus-pins.sha256`.", 15, "muted") + 14
+    cols = [("Module", 250, {"mono": False}), ("Record it checks", 270), ("Properties (invariants)", 470),
+            ("Mutations that must fail", 440), ("Witnesses that must be violated", 450),
+            ("Driver", 220), ("Results file, constants", 590), ("Cited by digest in · status", 598)]
+    rows = [
+        {"group": "The rules floor and the bootstrap modules", "accent": "blue"},
+        ["`RulesFloorBase.tla`", "ADR-0029 §5 shared definitions; the floor as ratified 2026.09.23 (R1, R2, R5, "
+         "R6, R7, R9)", "— (the live definition of the floor; no property of its own)", "—", "—",
+         "via `bootstrap-run.sh`", "—", "— · live; the frozen modules carry their own copies"],
+        ["`RulesFloorNV.tla`", "ADR-0026 §6", "`P1_AllSeatsGranted`, `P2_AtLeastTwo`, `P3_AuthorNotCounted`, "
+         "`P4_NoTimeoutGrant`, `P5_AnchorNotApprover`, `P7_BGNoAuthority` (in `Safe`)",
+         "drop R1, R2, R3, R4, R5, R7, under `Mech` = `param`, `as0024`, `rev4`", "`NeverPromoted`",
+         "`RulesFloorNV-run.sh`", "`RulesFloorNV-results-2026.09.15.txt` (26 runs)", "ADR-0026 · frozen (G1)"],
+        ["`RulesFloorNV_rev5.tla`", "ADR-0026 R1; ADR-0024 rev 5", "`P1_Unanimity`, `P2_TwoSeatsCounted`, "
+         "`P3_AuthorNotCounted`, `P5_AnchorNotApprover`, `P7_BGNoAuthority`, `P9_NoSoloGrant`",
+         "drop R1; drop R1 and R9; drop R2; `Mech = \"norecuse\"` (withdrawn R3); drop R5; drop R7",
+         "`NeverPromoted`", "`RulesFloorNV_rev5-run.sh`", "`RulesFloorNV-rev5-results-2026.09.23.txt`; five humans "
+         "(at four, threshold equals unanimity)", "ADR-0026, ADR-0033 · **pinned**"],
+        ["`NonComposition.tla`", "ADR-0013 §4 (erasure, ADR-0006, with break-glass, ADR-0009, against ADR-0028)",
+         "`NC1`, `NC2`", "`M1` (F1 decisions erasable), `M2` (break-glass widens erasure)",
+         "`NeverErased`, `NeverBGEffect`, `NeverBGErased`", "`NonComposition-run.sh`",
+         "`NonComposition-results-2026.09.23.txt`", "ADR-0013"],
+        ["`Anchor.tla`", "ADR-0029 §5, bootstrap module 2 of 5; ADR-0025, ADR-0026 §1", "`FloorPreserved`",
+         "`M_FLOOR` (issuance accepted without the floor check)", "`NeverIssued`", "`bootstrap-run.sh`",
+         "`bootstrap-results-2026.09.23.txt`", "ADR-0029 · drafted and checked"],
+        ["`BreakGlass.tla`", "ADR-0029 §5, bootstrap module 5 of 5; ADR-0009, ADR-0026 R7",
+         "`BreakGlassNeverChangesAuthority`", "`M_SCOPE` (mechanism ignores `bgScope`); R7 dropped from `Active`",
+         "`NeverBreakGlass`", "`bootstrap-run.sh`", "`bootstrap-results-2026.09.23.txt`",
+         "ADR-0029 · drafted and checked"],
+        {"group": "The policy floor's composition and routing", "accent": "blue"},
+        ["`FloorComposition.tla`", "ADR-0030 §1, §3, §4 (§9)", "`AdmitImpliesFloorPermit`, `FloorErrorIsDeny`, "
+         "`BundleRefusalHonored`, `BundleCannotWriteFloorInputs`, `EnvelopeHolds`",
+         "`M_OVERRIDE`, `M_ERR`, `M_FAILOPEN`, `M_WRITE` (each also breaks `EnvelopeHolds`, except `M_FAILOPEN`)",
+         "`NeverAdmitted`, `NeverNarrowed`, `NeverFloorError`", "`floor-run.sh`",
+         "`FloorComposition-results-2026.09.24.txt`", "ADR-0030, ADR-0033 · **pinned**"],
+        ["`FloorRouting.tla`", "ADR-0030 §5", "`NoWideningWithoutIssuance`, `FloorNeverVacuous`",
+         "`M_ROUTE` (only a strict superset is a relaxation), `M_GATE` (non-vacuity off)",
+         "`NeverIncomparable`, `NeverRelaxIssued`, `NeverTightened`", "`floor-run.sh`",
+         "same file as above. Checks the routing logic, not the analyzer: it assumes the implies answers",
+         "ADR-0030, ADR-0033"],
+        {"group": "The lease and confinement", "accent": "teal"},
+        ["`Lease.tla`", "ADR-0031 §8", "`LeaseAuthorityMonotone`, `NoActionUnderFencedEpoch`, "
+         "`Rung0NeverContained`, `RevokedStaysStopped`", "`M_RENEW`, `M_FENCE`, `M_RUNG`, `M_ROLE`, `M_REVOKE`",
+         "`NeverActed`, `NeverRenewed`, `NeverRevoked`, `NeverStaleLease`, `NeverSelectiveRevoke`", "`lease-run.sh`",
+         "`Lease-results-2026.09.23.txt`, `-25.txt`; `MaxEpoch = 2`, `MaxFence = 3`",
+         "ADR-0031 · frozen at `7636c6c3364bca9c` · **pinned**"],
+        ["`Lease_A1.tla`", "ADR-0031 A1 (renewal keeps the rung)", "as `Lease.tla`, rungs 0..3",
+         "as `Lease.tla`, and `M_LOWER` (renewal may lower the rung)", "as `Lease.tla`, and `NeverRenewedAbove0`",
+         "`Lease_A1-run.sh`", "`Lease_A1-results-2026.09.28.txt`; `MaxEpoch = 2`, `MaxFence = 3`",
+         "ADR-0031 · successor of the frozen module · **pinned**"],
+        ["`Confinement.tla`", "ADR-0034 §7, A1", "`ContainedMeansConfined`, `NoSilentDowngrade`, `ContestedStopped`, "
+         "`FreshAppraisal`", "`M_HOST` (rungs 1, 2), `M_HW` (3), `M_CONTESTED`, `M_UNBOUND`, `M_STALE`, "
+         "`M_DOWNGRADE`, `M_PROFILE`, `M_RENEWLOW`", "`NeverContainedEffect`, `NeverMediatedEffect`, "
+         "`NeverContested`, `NeverRefused`, `NeverTamperKilled`, `NeverRenewed`, `NeverLapsed`, per declared rung",
+         "`confinement-run.sh`; `confinement-gen-results.sh`", "`Confinement-results-2026.09.25.txt`, `-28.txt`, "
+         "`-30.txt` (the rung-0 row, D-0034-4); `MaxEpoch = 1`, `MaxIdx = 4`, `MaxGen = 2`, two principals",
+         "ADR-0034"],
+        {"group": "Seats, Observers and coupling (Build cells)", "accent": "pink"},
+        ["`Seats.tla`", "ADR-0037 §9", "`OnlyThinkersAuthor`, `OneSeatPerPrincipal`", "`M_KIND`, `M_SEAT` (the "
+         "reference before ADR-0037)", "`NeverActed`, `NeverTwoLive`, `NeverObserverVoted`", "`seats-run.sh`",
+         "`Seats-results-2026.09.29.txt`; 2 principals, 3 seats, 4 actions", "ADR-0037 · **pinned**"],
+        ["`Observers.tla`", "ADR-0038 §8", "`DenyByAnyOf`, `ReachIsBounded`", "`M_QUORUM`, `M_REACH`",
+         "`NeverFound`, `NeverRefused`, `CorrelatorNeverFinds`", "`observers-run.sh`",
+         "`Observers-results-2026.09.29.txt`; 2 cells, 1 correlator", "ADR-0038 · **pinned**"],
+        ["`Coupling.tla`", "ADR-0039 §8", "`NoAdmitWithoutLiveObserver`, `UnreadBounded`, `CorrelatorNeverGates`",
+         "`M_NOCOUPLE`, `M_MARK`, `M_ROUNDS`, `M_CORR`", "`NeverRoundTwo`, `NeverRefused`, `NeverStaleRefusal`, "
+         "`NeverBacklogRefusal`", "`coupling-run.sh`", "`Coupling-results-2026.09.29.txt`; `K = 1`, `R = 3`, "
+         "`MaxRound = 2`", "ADR-0039 · **pinned**"],
+        {"group": "Run", "accent": "green"},
+        ["`RunCoupling.tla`", "ADR-0042 §8; ADR-0039 §2 as ADR-0041 §2 reads it", "`NoEffectWithoutLiveObserver`, "
+         "`UnreadEffectsBounded`, `ConsultNeverCoupled`, `SealCountsEffects`, `RoundBoundCountsAll`",
+         "`M_EMITSEQ` (the reference before ADR-0042), `M_COUPLEALL`, `M_ROUNDS`, `M_MARK`, `M_NOCOUPLE`, "
+         "`M_BOUNDEFF`", "`NeverRoundTwo`, `NeverRefused`, `NeverRefusedOnActuates`, `NeverConsultedWhileStalled`, "
+         "`NeverSealedOnActuates`", "`runcoupling-run.sh`", "`RunCoupling-results-2026.09.29.txt`; `K = 1`, `R = 4`, "
+         "`MaxRound = 2`", "ADR-0042 · **pinned**"],
+        ["`RunSeats.tla`", "ADR-0043 §8; ADR-0040 §2", "`OnlyThinkersActuate`, `ObserversConsultAndReport`, "
+         "`NoNameCrossesDomains`", "`M_KIND`, `M_DOMAIN`; `M_OBSEMIT` is the provisional column, under which every "
+         "property holds", "`NeverActuated`, `NeverObserverReported`, `NeverObserverConsulted`", "`runseats-run.sh`",
+         "`RunSeats-results-2026.09.29.txt`; 4 seats, 6 actions", "ADR-0043 · **pinned**"],
+        {"group": "The operational model of the reference", "accent": "teal"},
+        ["`Mechanism.tla`", "ADR-0045 T-0045-28; ADR-0033 A5, A6", "`TraceMatches` (each recorded step's projected "
+         "state and result equal the model's)", "a step that differs (the first `ttl` test was caught this way: the "
+         "test was wrong, G7 §3)", "—", "`mechanism-trace-run.sh`; `mechanism-trace-results.sh`; `trace2tla.py`",
+         "`Mechanism-trace-results-2026.09.30.txt` (21 traces, 163 steps); `-2026.10.01.txt` (22 traces, 168 "
+         "steps), digest `3bfbc88be6cf7fe7`", "pinned, **not frozen**: moves with the code"],
+    ]
+    y += c.table(X0, y, cols, rows, size=13.5) + 50
+
+    # ================================================================ 3. gates + bootstrap
+    y += c.heading(X0, y, "3 · The floor gates, and the bootstrap specification", size=22)
+    wl = W * 0.56
+    wr = W - wl - 40
+    gy = y
+    h1 = c.table(X0, gy, [("Gate (ADR-0030 §5)", 300), ("What it checks", wl * 0.42 - 0), ("2026.10.01", wl - 300 -
+                                                                                             wl * 0.42)], [
+        ["**Totality**", "never-errors, per policy per applicable action (23 checks)", "all `holds°`: cedar folds "
+         "them without a solver query; pass"],
+        ["**Non-vacuity**", "always-allows refuted, per action (10 actions)", "pass"],
+        ["**Discrimination**", "always-denies refuted, per action", "pass"],
+        ["**Every entry matters**", "the floor minus one policy is not equivalent to the floor (17 policies)",
+         "pass, each differs"],
+        ["**Routing**", "candidate revisions classified by implies both ways (ToO §3.2): tightening, two relaxations, "
+         "an incomparable", "pass; the three `holds✓` rest on checked proofs"],
+        ["**Negative controls**", "vacuous floor (Read, Consult), erroring policy, dead entry: each gate must catch a "
+         "defective floor", "all four caught"],
+        ["**Checker controls**", "a solver that answers `unsat` with no proof, a proof of another query, a proof "
+         "missing a step", "all three caught; `holds` without a checked proof, whole run: 0"],
+        ["**Evidence**", "every solver query, its proof and the checker's verdict", "81 cedar calls, 56 queries, 4 "
+         "`unsat` checked, 49 `sat`, 3 `unknown` (the controls); tree `f8b1196a427a35ed`"],
+        {"group": "Gate runs: every run before 2026.10.01 is a D-0030-2 run (no checked proofs)", "accent": "grey"},
+        ["09.24", "before ADR-0037", "—"],
+        ["09.29", "after ADR-0037 §4: `Seat.kind`, B6 tightened, B10", "all pass; 47/47 cases"],
+        ["09.29-adr0039", "`observerLive`, R3-observer-live, the values file digested", "all pass; 51/51 cases"],
+        ["09.29-adr0041", "`Consult`, `Actuate`, `Report`; R4-consult-pinned; R3 over effects only",
+         "all pass; 62/62; **the digests the mechanism pins**"],
+        ["09.30", "`persona.T_persona_ms` joins the values file", "identical to 09.29-adr0041"],
+        ["10.01", "**proof-carrying** (ADR-0030 A1, Batch 24); floor, schema, values unchanged",
+         "all pass; header names checker, signature, wrapper"],
+    ], size=13.5, accent="blue")
+    h2 = c.table(X0 + wl + 40, gy, [("Bootstrap module (ADR-0029 §5)", wr * 0.3), ("Invariant", wr * 0.36),
+                                    ("Status", wr * 0.34)], [
+        ["`Genesis`", "`GenesisSatisfiesFloor`", "[[red|not drafted]]; the reference checks genesis rules at "
+         "startup instead (T-0045-10)"],
+        ["`Anchor`", "`FloorPreserved`", "[[teal|drafted and checked]] 2026.09.23"],
+        ["`RulesFloor`", "`PromotionMeetsIssuedQuorum` (A1, replacing `NoPromotionWithoutAllGrantSeats`)",
+         "[[red|not drafted]]"],
+        ["`Promotion`", "`StaleVotesNeverCount`", "[[red|not drafted]]; owes decide-then-commit (G3), the ADR-0035 "
+         "§5 tally condition, A2.2 and A2.3"],
+        ["`BreakGlass`", "`BreakGlassNeverChangesAuthority`", "[[teal|drafted and checked]] 2026.09.23"],
+    ], size=13.5, accent="brown")
+    hb = c.card(X0 + wl + 40, gy + h2 + 24, wr, "Bootstrap specification: partial (G5 §4; G7 §4)", [
+        "The anchor **may** bootstrap once a drafted TLA+ bootstrap specification exists: five modules, five "
+        "invariants, each with a mutation that must fail. TLC checking is recommended, not required.",
+        "Two of five exist. The trigger is unmet and remains optional; bootstrap itself is deliberately not on the "
+        "open list (G7 §7).",
+    ], accent="brown", size=14)
+    hs = c.card(X0 + wl + 40, gy + h2 + 24 + hb + 24, wr, "Lineage gate suite: ADR-0035 §8's ratification items", [
+        "1 · cases for E1–E5 and distillation, each seen to fire: **passes**.",
+        "2 · monotonicity property check: **holds** in `bounded` (ADR-0035 R2, 09.28); failed as first drafted "
+        "(`ratio`, E3 13/2000, distillation 241/2000).",
+        "3 · E3 overlap: tool ready; first measurements at 20 MB; θ needs slices at training size.",
+        "4 · a lineage projected from the reference's log matches its manifest: **done**; three tampers Contested.",
+        "5 · an outside review of the bounded-share construction: [[red|owed]].",
+    ], accent="amber", status="proposed", status_extra="ADR-0035", size=14)
+    y = gy + max(h1, h2 + 24 + hb + 24 + hs) + 50
+
+    # ================================================================ 4. the restatements
+    y += c.heading(X0, y, "4 · The Rust tests that restate each property (`mechanism/GAPS-AND-ASSUMPTIONS.md` §6, "
+                          "in full)", size=22)
+    y += c.para(X0, y, W, "Since 2026.09.30 the restatement is checked, not asserted, on every path a test takes: "
+                "each state these tests build records its applied entries and `spec/mechanism-trace-run.sh` replays "
+                "them through `Mechanism.tla`. Nothing a test does not reach is checked. The same kind of evidence the "
+                "TLA+ runs are, by the same hand.", 15, "muted") + 14
+    t = [
+        ["`Lease.tla`", "`LeaseAuthorityMonotone` / `M_RENEW`", "`mutations.rs` `lease_renewal_is_monotone_and_m_renew_is_refused`"],
+        ["`Lease.tla`", "C1 one live lease", "`one_live_lease_per_principal`"],
+        ["`Lease.tla`", "`NoActionUnderFencedEpoch` / `M_FENCE`", "`no_action_under_a_fenced_epoch_and_m_fence_is_refused`; e2e `FencedEpoch`"],
+        ["`Lease.tla`", "`Rung0NeverContained` / `M_RUNG`", "`rung_zero_is_never_contained_and_nothing_is_contained_yet`"],
+        ["`Lease.tla`", "`LeaseAuthorityMonotone` / `M_ROLE` (ADR-0031 R1)", "`renewal_cannot_change_round_or_role_and_m_role_is_refused`"],
+        ["`Lease.tla`", "`NeverSelectiveRevoke` witness (ADR-0031 R3)", "`a_targeted_revocation_ends_one_round_and_not_the_fleet`; e2e targeted revocation leaves a bystander live"],
+        ["`Lease.tla`", "`RevokedStaysStopped` / `M_REVOKE` (ADR-0031 R3)", "`a_revoked_principal_persona_or_profile_is_not_granted_again_and_m_revoke_is_refused`"],
+        ["`Seats.tla`", "`OnlyThinkersAuthor` / `M_KIND` (ADR-0037 §4)", "`alphabets_are_bounded_by_seat_kind_and_m_kind_is_refused`; `floor.rs` replays B10 and the tightened B6 (47 cases); e2e: the author's voter grant is refused"],
+        ["`Seats.tla`", "`OneSeatPerPrincipal` / `M_SEAT` (ADR-0037 §1; finding 1: the reference's behavior before 2026.09.29)", "`one_seat_per_principal_and_m_seat_is_refused`"],
+        ["`Observers.tla`", "`DenyByAnyOf` / `M_QUORUM` (ADR-0038 §5)", "`a_correlator_on_the_veto_roster_vetoes_and_its_silence_does_not` (the tally is any-of over the veto roster); e2e: two veto seats silent, promotion completes"],
+        ["`Observers.tla`", "`ReachIsBounded` / `M_REACH` (ADR-0038 §1)", "`a_cell_names_a_thinker_seat_in_its_domain_and_only_observers_have_one` (declared reach); **not enforced**: no topic read ACL (I8)"],
+        ["`Coupling.tla`", "`NoAdmitWithoutLiveObserver` / `M_NOCOUPLE` (ADR-0039 §2)", "e2e `observer_liveness_couples_run_admits`: refused with no Observer lease, no heartbeat, and after `T_obs` (floor R3); `floor.rs` replays R3"],
+        ["`Coupling.tla`", "`UnreadBounded` / `M_MARK`, `M_ROUNDS` (ADR-0039 §2)", "same e2e: refused at a backlog of `K`, refused on a fresh heartbeat with an unchanged watermark, refused a round-2 grant while round 1 is unread (`apply_grant`); `State::observer_covers` is the strict form"],
+        ["`RunCoupling.tla`", "`UnreadEffectsBounded` / `M_EMITSEQ` (ADR-0042 §2; **the reference's behaviour before 2026.09.29**, D-0042-1)", "`mutations.rs` `the_sequence_counts_effects_and_m_emitseq_is_refused`; e2e `actuate_is_counted_recorded_and_sealed`: `K` invocations and no report, the next refused by R3"],
+        ["`RunCoupling.tla`", "`ConsultNeverCoupled` / `M_COUPLEALL` (ADR-0041 §2)", "same two tests: a `Consult` admitted with no heartbeat at all, and again while `Actuate` and `Report` are refused for the backlog; `floor.rs` replays \"R3 does not couple Consult\""],
+        ["`RunCoupling.tla`", "`SealCountsEffects`, and `M_ROUNDS` carried over (ADR-0042 §5)", "`a_run_round_seals_with_its_lease_and_a_run_seat_cannot_abstain`: a renewal does not seal, the seal is 3 after three invocations, and the round-2 grant waits on it; e2e: the grant refused with one invocation unread"],
+        ["`RunCoupling.tla`", "`RoundBoundCountsAll` / `M_BOUNDEFF` (ADR-0042 §2)", "`the_round_bound_counts_consult`"],
+        ["`RunSeats.tla`", "`OnlyThinkersActuate`, `ObserversConsultAndReport` / `M_KIND`; `NoNameCrossesDomains` / `M_DOMAIN` (ADR-0043 §2; ADR-0040 §2)", "`run_alphabets_are_bounded_by_seat_kind_and_domain`; `floor.rs` replays B10 over `Actuate` and R4 for an observer seat"],
+        ["ADR-0042 §3, §4", "the `Actuate` record; `unknown` ahead of the seal; the late result withheld", "e2e `actuate_is_counted_recorded_and_sealed`. **Not modeled in TLA+**: `RunCoupling.tla` assumes a record at every sequence number"],
+        ["ADR-0040 §1, ADR-0041 §4", "a retired name is an error, and an error is a deny", "`floor.rs` `a_retired_run_action_is_an_error_not_a_decision`"],
+        ["`Coupling.tla`", "`CorrelatorNeverGates` / `M_CORR` (ADR-0039 §4)", "`Rules::cell_observers` excludes correlators from `live(o)`; e2e: the correlator is never granted a Run lease and Run admits proceed"],
+        ["ADR-0039 §3 (ADR-0024 A2.3)", "coverage to the seal completes a promotion", "e2e `build_round_promotion_and_fencing`: every grant seat granted, `Tally::Stalled` until `o1` heartbeats `a1`'s seal"],
+        ["`FloorComposition.tla`", "`AdmitImpliesFloorPermit` / `M_OVERRIDE`", "`admit_implies_floor_permit_and_m_override_is_refused`; e2e allow-all bundle still floor-bounded"],
+        ["`FloorComposition.tla`", "`FloorErrorIsDeny` / `M_ERR`", "same test; `floor.rs` `an_incomplete_slice_is_a_deny_not_a_skipped_forbid`"],
+        ["`FloorComposition.tla`", "`BundleRefusalHonored` / `M_FAILOPEN`", "`bundle_refusal_is_honored…`; `fallback.rs` (6 cases)"],
+        ["`FloorComposition.tla`", "narrowing witness", "e2e: `Invoke` floor-permitted, bundle-refused"],
+        ["`RulesFloorNV_rev5.tla`", "each entry's mutation fails", "`every_rules_floor_entry_has_a_violation_it_catches`; e2e issuance rejections (R1+R9, R2, Authentic)"],
+        ["`RulesFloorNV.tla`", "dropping R2 promotes with zero votes", "`without_r2_an_empty_roster_promotes_with_zero_votes`"],
+        ["G2 §3", "a threshold needs ≥ 3 counted seats", "`a_threshold_needs_three_counted_seats_to_differ_from_unanimity`"],
+        ["ADR-0024", "recusal, timeout ≠ grant, stale votes, veto", "four `tally` tests; e2e promotion"],
+        ["`Voting` (cheat sheet)", "`OneValuePerBallot`, chosen-unique, agreement", "`topak-paxos/tests/sim.rs`, both mutations caught"],
+    ]
+    y += c.table(X0, y, [("Artifact", 330), ("Property / mutation", 1000), ("Rust test", W - 1330)], t,
+                 size=13.5, accent="teal") + 50
+
+    # ================================================================ 5. honesty layer
+    y += c.heading(X0, y, "5 · The honesty layer: what none of the above claims", "red", size=22)
+    y += 6
+    g = 24
+    w3 = (W - 2 * g) / 3
+    cards = [
+        ("Evidence, not proofs", [
+            "\"No theorem is proved.\" The TLA+ artifacts discriminate and check non-vacuity at small constants; the "
+            "trace validation is drift detection against a model of the code; a checked proof certifies an "
+            "implication between two Cedar encodings, not the encoding (G7 §8; spec/README).",
+            "The theorem-to-premise table says what each check **assumed**; it does not strengthen the check."], "red"),
+        ("Small constants", [
+            "\"A property that holds at two principals and one epoch is evidence, not a proof\" (T-0045-29, G5 §8). "
+            "The constants are printed in each results file: `MaxEpoch = 1` for confinement, `K = 1` for coupling.",
+            "TLC itself is a trust-root row: \"no error has been found\" is taken to mean what it says."], "red"),
+        ("The same hand", [
+            "Every record, run and ratification of 2026.10.01 was made by the person who ratified it, or drafted at "
+            "that person's request, on the day; the wrapper and the controls that test it are the same hand's "
+            "(G7 §8).",
+            "The operational model was written from the code by the same hand on the same day: the link is "
+            "mechanized, not independent (ADR-0033 A5)."], "red"),
+        ("What runs is not what is checked", [
+            "\"What runs is not the specification\" (ADR-0045 §5, R1): no refinement from the modules to the Rust "
+            "exists, TLC runs at small constants, the build is asserted and not reproduced. Each is a trust-root row, "
+            "T-0045-28 to 30, for every deployment.",
+            "\"The gap is a debt, not a residual the archetype keeps\" (R2): its owner is ADR-0033."], "red"),
+        ("What the checker does not cover", [
+            "A `holds°` is cedar's own term folding with no query to check: 25 of the run's 29 `holds` rest on the "
+            "engine's row (T-0045-3), not the checker's (G7 item 69).",
+            "The CPC signature is cvc5's own formalization, trusted as written; the three lying-solver controls test "
+            "the wrapper's refusals, not the signature's rules (G7 §4)."], "red"),
+        ("The chain still owed (ADR-0033)", [
+            "Stage 1, trace validation: A5 (Batch 21), rerun at A6. Stage 2, a Lean model with differential testing, "
+            "and stage 3, its compilation: \"the chain proper\", **not begun**.",
+            "The reproducible build (T-0045-30) is untouched. Each addendum says which stage it discharges, and the "
+            "rows leave Annex A only on that addendum."], "red"),
+    ]
+    hh = max(c.card(0, 0, w3, t_, b, accent=a, draw=False, size=14.5) for t_, b, a in cards)
+    for i, (t_, b, a) in enumerate(cards):
+        cx = X0 + (i % 3) * (w3 + g)
+        cy = y + (i // 3) * (hh + g)
+        c.card(cx, cy, w3, t_, b, accent=a, h=hh, size=14.5, tint=(i % 2 == 0), dash=None if i % 2 == 0 else "6 4")
+    y += 2 * hh + g
+    return c
