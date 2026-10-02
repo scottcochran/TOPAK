@@ -3,6 +3,9 @@
 tools/cvc5-*/
 # The proof checker build (tools/install-ethos.sh): its binary digest is printed in the gate header.
 tools/ethos-*/
+# The TLAPS release (tools/install-tlaps.sh): its binary digest is printed in the proof results header.
+tools/tlaps-*/
+.tlacache/
 spec/*.cfg
 spec/Trace_*.tla
 spec/states/

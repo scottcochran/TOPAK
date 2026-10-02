@@ -1,0 +1,11 @@
+TOPAK — Anchor.tla proved in TLAPS: FloorPreserved and EpochMonotone for every Active ⊆ AllEntries and MaxEpoch ∈ Nat (ADR-0029 §5, bootstrap module 2 of 5)
+Modules: Anchor_proof.tla (sha256 b80ba11ae7b3f5c9) · Anchor.tla (sha256 a70187ef43058848) · RulesFloorBase.tla (sha256 cf2351de2b39cccf)
+Prover: tlapm 7824dab (binary sha256 e150fb793fb28592) · backends: Z3 version 4.8.9 - 64 bit · zenon version 0.8.4 [a268] 2017-11-14 · Isabelle2025 · LS4 for PTL · driver: anchor-proof-results.sh
+Assumptions: ActiveEntries (Active ⊆ AllEntries), MaxEpochNat (MaxEpoch ∈ Nat); FloorPreservedAlways takes Mut = "none" as its hypothesis.
+Not proved here: the mutation M_FLOOR and the witness NeverIssued are behaviours, and remain TLC's (bootstrap-results-2026.09.23.txt). MutAdmitsAll states why M_FLOOR must fail.
+A proved obligation is a theorem of the module under its assumptions; the prover, not the constants, bounds the claim.
+
+Statements: lemma GenesisEntries · lemma GenesisFloor · lemma InitFloor · lemma NextFloor · THEOREM FloorPreservedAlways · lemma MutAdmitsAll · lemma InitEpoch · lemma NextEpoch · THEOREM EpochMonotoneAlways
+
+File "./Anchor_proof.tla", line 1, character 1 to line 99, character 77:
+[INFO]: All 40 obligations proved.

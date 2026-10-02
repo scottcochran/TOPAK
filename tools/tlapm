@@ -1,0 +1,11 @@
+#!/bin/bash
+# TLAPS proof manager wrapper. The prover is installed, not tracked: tools/install-tlaps.sh fetches the pinned
+# release into tools/tlaps-<version>/ beside this script, and every proof results file prints the binary's
+# sha256, so a different build is a change the results show. TLAPM=<path> overrides the binary.
+TLAPS_VERSION="1.6.0-pre"
+bin="${TLAPM:-$(dirname "$0")/tlaps-$TLAPS_VERSION/bin/tlapm}"
+if [ ! -x "$bin" ]; then
+  echo "tlapm not found at $bin; run tools/install-tlaps.sh (or set TLAPM=<path>)" >&2
+  exit 1
+fi
+exec "$bin" "$@"

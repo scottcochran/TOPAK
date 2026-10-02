@@ -36,13 +36,15 @@ deployable system.
 | [`derived/`](derived/) | Dated, frozen analyses, reviews and assessments ([index](derived/README.md)) |
 | [`manifests/`](manifests/) | Digest manifests for checkpoint, reference and rehearsal cuts, with an index of what each measures ([README](manifests/README.md)) |
 | [`process/`](process/) | The genesis cleanup's process logs ([README](process/README.md)) |
-| [`tools/`](tools/) | The TLC jar and wrappers, the installer, and the manifest and reference checkers |
+| [`tools/`](tools/) | The TLC jar and wrappers, the TLAPS wrapper, the installers, and the manifest and reference checkers |
 | [`diagrams/`](diagrams/) | Diagrams and their generators |
 
 ## Running things
 
 - **Model checking:** `tools/tlc` and `tools/tlc-workers` wrap TLC over the tracked `tools/tla2tools.jar`; each
   module has a `*-run.sh` in `spec/` ([README](spec/README.md)).
+- **Proofs:** `tools/tlapm` wraps the TLA+ Proof System, which `tools/install-tlaps.sh` installs beside it (1.9 GB,
+  not tracked); `spec/anchor-proof-results.sh` checks `spec/Anchor_proof.tla` and prints its results file.
 - **Verifying a cut:** `tools/verify-manifest.sh --all` checks every manifest at the commit it measured;
   `tools/check-refs.py` checks every path a document cites.
 - **Floor, mechanism, SLM:** see the README in each directory.
