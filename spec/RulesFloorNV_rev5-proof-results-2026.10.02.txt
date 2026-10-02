@@ -1,0 +1,11 @@
+TOPAK — TLAPS proof results for RulesFloorNV_rev5.tla: every obligation of RulesFloorNV_rev5_proof.tla, checked by the prover below
+Modules: RulesFloorNV_rev5.tla (sha256 3034df144d75ec3a) · RulesFloorNV_rev5_proof.tla (sha256 8ecd73b3451018c5)
+Prover: tlapm 7824dab (binary sha256 e150fb793fb28592) · backends: Z3 version 4.8.9 - 64 bit · zenon version 0.8.4 [a268] 2017-11-14 · Isabelle2025 · LS4 for PTL · driver: proof-results.sh
+Assumptions: ActiveEntries == Active \subseteq AllEntries
+Theorems: P1Always · P2Always · P3Always · P5Always · P7Always · P9Always · SafeAlways
+Lemmas: GenesisEntries · GenesisRules · EntriesIndependent · R9IndependentUnderThreshold · InitBase · NextBase · InForce · Steps · PromoteSets · RecordedWithin · HumansFinite · RecordedCardinality · NextP1 · NextP2 · NextP3 · NextP5 · NextP9 · NextP7 · InitAll · MutNoRecuseCountsAuthor
+A proved obligation is a theorem of the module under its assumptions and the hypotheses the statement names; the prover, not the constants, bounds the claim. Mutations and witnesses are behaviours and stay with TLC.
+
+Zenon error: could not find a proof within the memory size limit
+File "./RulesFloorNV_rev5_proof.tla", line 1, character 1 to line 371, character 77:
+[INFO]: All 262 obligations proved.

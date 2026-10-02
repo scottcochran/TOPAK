@@ -25,7 +25,7 @@ hand-assembled TLC output with a dated name and never change; the two generators
 
 ## TLAPS proofs
 
-Ten modules also have deductive proofs, checked with the TLA+ Proof System (2026.10.02). Each proof module
+Eleven modules also have deductive proofs, checked with the TLA+ Proof System (2026.10.02). Each proof module
 extends a frozen module without editing it and proves the invariants that module states, for every value of its
 constants that the named assumptions admit. A proof is bounded by its assumptions and the prover rather than by
 constants, so it is a different kind of evidence from a TLC row. Mutations and reachability witnesses are
@@ -40,6 +40,7 @@ chain and of the prover binary; `$TLAPM` overrides the binary, and the proof cac
 
 | Proof module | Over | Record | Theorems | Assumptions | Results |
 |---|---|---|---|---|---|
+| `RulesFloorNV_rev5_proof.tla` | `RulesFloorNV_rev5.tla` | ADR-0026 R1, R2, R5, R7, R9; ADR-0024 rev 5 | `P1_Unanimity` to `P9_NoSoloGrant`, each under the entry it rests on; the module's three ASSUMEs as theorems | `Active ⊆ AllEntries` | `RulesFloorNV_rev5-proof-results-2026.10.02.txt` |
 | `NonComposition_proof.tla` | `NonComposition.tla` | ADR-0013 §4 | `NC1`, `NC2` | none | `NonComposition-proof-results-2026.10.02.txt` |
 | `Anchor_proof.tla` | `Anchor.tla` | ADR-0029 §5 | `FloorPreserved`, `EpochMonotone` | `Active ⊆ AllEntries`, `MaxEpoch ∈ Nat` | `Anchor-proof-results-2026.10.02.txt` |
 | `BreakGlass_proof.tla` | `BreakGlass.tla` | ADR-0029 §5; ADR-0026 R7 | `BreakGlassNeverChangesAuthority` | `Active ⊆ AllEntries`, `"R7" ∈ Active` | `BreakGlass-proof-results-2026.10.02.txt` |
