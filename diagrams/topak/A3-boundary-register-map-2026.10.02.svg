@@ -262,7 +262,7 @@ svg[data-theme=dark]{--bg:#12151b;--ink:#e6e9ef;--muted:#b0b8c6;--faint:#7f8898;
 <text x="2984.0" y="1522.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12.5" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">audited</tspan></text>
 <text x="2984.0" y="1558.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12.5" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">operationally</tspan></text>
 <text x="2984.0" y="1574.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12.5" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">audited</tspan></text>
-<text x="2161.3" y="1598.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12.5" fill="#7d8596" class="f-faint" text-anchor="start">Stack vocabulary from Moon &amp; Varshney Figure 1 (register §10.1)</text>
+<text x="2161.3" y="1598.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12.5" fill="#7d8596" class="f-faint" text-anchor="start">Deployment-stack vocabulary (register §10.1)</text>
 <rect x="2161.3" y="1614.0" width="962.7" height="98.8" rx="8" fill="#ffffff" stroke="#a4262c" class="f-bg s-red" stroke-width="1.6" stroke-dasharray="6 4"/>
 <text x="2177.3" y="1644.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="16" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">Below the membrane</tspan></text>
 <text x="2177.3" y="1672.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="14" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">•</tspan></text>

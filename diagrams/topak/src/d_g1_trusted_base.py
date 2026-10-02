@@ -2,7 +2,7 @@
 import pathlib
 import re
 
-from lib import Canvas
+from lib import strip_external, Canvas
 
 ID, SLUG = "G1", "trusted-base"
 
@@ -95,7 +95,7 @@ def _klass(cls_cell):
 
 
 def build():
-    text = ADR.read_text(encoding="utf-8")
+    text = strip_external(ADR.read_text(encoding="utf-8"))
     annex_a_text = text.split("## Annex A")[1].split("## Annex B")[0]
     annex_b_text = text.split("## Annex B")[1].split("## History")[0]
     sec1 = text.split("### 1. A row has a fixed schema")[1].split("### 2.")[0]

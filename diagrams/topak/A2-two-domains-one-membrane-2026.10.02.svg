@@ -172,8 +172,8 @@ svg[data-theme=dark]{--bg:#12151b;--ink:#e6e9ef;--muted:#b0b8c6;--faint:#7f8898;
 <rect x="56.0" y="1316.3" width="746.7" height="121.7" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
 <text x="72.0" y="1346.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="16" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">The inversion</tspan></text>
 <text x="72.0" y="1374.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="14" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">•</tspan></text>
-<text x="84.7" y="1374.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="14" fill="#1e2430" class="f-ink" text-anchor="start">Build agents write what Run is judged against. Moon &amp; Varshney's empirical failure, silent abstention, a</text>
-<text x="84.7" y="1394.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="14" fill="#1e2430" class="f-ink" text-anchor="start">vacuously true predicate and green gates, is a Build failure.</text>
+<text x="84.7" y="1374.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="14" fill="#1e2430" class="f-ink" text-anchor="start">Build agents write what Run is judged against. The failure that matters, silent abstention, a vacuously true</text>
+<text x="84.7" y="1394.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="14" fill="#1e2430" class="f-ink" text-anchor="start">predicate and green gates, is a Build failure.</text>
 <text x="72.0" y="1417.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="14" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">•</tspan></text>
 <text x="84.7" y="1417.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="14" fill="#1e2430" class="f-ink" text-anchor="start">Every Build choice that looks expensive pays for that.</text>
 <rect x="826.7" y="1316.3" width="746.7" height="121.7" rx="8" fill="#e8f5f1" stroke="#166b5b" class="ft-teal s-teal" stroke-width="1.6"/>

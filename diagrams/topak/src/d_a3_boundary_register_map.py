@@ -237,13 +237,13 @@ def build():
         c.rect(x3 + 20, ly, colw - 40 - 150, lh, acc, tint=True, dash=d, rx=6)
         c.text(x3 + 36, ly + 28, lab, 15, acc, bold=True)
         ly += lh + 8
-    # side labels: the stack vocabulary of Moon & Varshney Figure 1 (register §10.1)
+    # side labels: the deployment-stack vocabulary (register §10.1)
     c.text(x3 + colw - 160, r_top + 34 + 20, "formally", 12.5, "teal", bold=True)
     c.text(x3 + colw - 160, r_top + 34 + 36, "verified", 12.5, "teal", bold=True)
     for i in (1, 2, 3):
         c.text(x3 + colw - 160, r_top + 34 + i * (lh + 8) + 20, "operationally", 12.5, "red", bold=True)
         c.text(x3 + colw - 160, r_top + 34 + i * (lh + 8) + 36, "audited", 12.5, "red", bold=True)
-    c.text(x3 + 20, ly + 8, "Stack vocabulary from Moon & Varshney Figure 1 (register §10.1)", 12.5, "faint")
+    c.text(x3 + 20, ly + 8, "Deployment-stack vocabulary (register §10.1)", 12.5, "faint")
     ly += 14
     sh = c.card(x3 + 20, ly + 10, colw - 40, "Below the membrane", [
         "**Effect exclusivity is assumed, not enforced** (register §10.1). ADR-0034 now designs the discharge: "

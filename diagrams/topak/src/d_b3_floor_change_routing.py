@@ -221,7 +221,7 @@ def build():
     y += c.para(X0, y, X1 - X0,
                 "A failing check returns a counterexample request. The gate run adds **every entry matters** (the floor "
                 "minus any one policy is not equivalent to it), routing controls and negative controls. Three gates are "
-                "not enough by Moon & Varshney's own result: a fourth, **floor fitness**, is required and unowned "
+                "not enough: a fourth, **floor fitness**, is required and unowned "
                 "(ToO §11.1; G7 item 2). The gates say the text is well-formed, non-vacuous and minimal, not that it is "
                 "the right floor.", 15, "muted") + 50
 

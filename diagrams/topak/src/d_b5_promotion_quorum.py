@@ -206,7 +206,7 @@ def build():
           "**A2 adds a second**: weak fairness on an independent Observer's lease and its coverage, an assumption "
           "about a deployment."]
     k2 = ["**Correlated review failure is untouched**: unanimous humans reading the same vacuous gate output fail "
-          "together (Moon & Varshney §4.6; Knight & Leveson).",
+          "together (Knight & Leveson).",
           "Floor fitness, a fourth gate (NIST MEASURE 2.13), is still unowned.",
           "**One compromised seat is a veto** until the anchor reissues the roster.",
           "Voters are `Mediated`: promotion gains attribution and authorization, not safety properties."]

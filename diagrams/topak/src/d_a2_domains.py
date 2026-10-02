@@ -133,8 +133,8 @@ def build():
     y = bottom + 40
     w3 = (X1 - X0 - 2 * 24) / 3
     hh = c.card(X0, y, w3, "The inversion", [
-        "Build agents write what Run is judged against. Moon & Varshney's empirical failure, silent abstention, a "
-        "vacuously true predicate and green gates, is a Build failure.",
+        "Build agents write what Run is judged against. The failure that matters, silent abstention, a vacuously "
+        "true predicate and green gates, is a Build failure.",
         "Every Build choice that looks expensive pays for that.",
     ], accent="red")
     c.card(X0 + w3 + 24, y, w3, "Contain claims two conjuncts", [

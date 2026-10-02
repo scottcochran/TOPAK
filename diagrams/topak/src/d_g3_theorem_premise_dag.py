@@ -11,7 +11,7 @@ import pathlib
 import re
 
 import lib
-from lib import Canvas, render_line, parse, wrap, text_width, fill, sonly, fs
+from lib import strip_external, Canvas, render_line, parse, wrap, text_width, fill, sonly, fs
 
 ID, SLUG = "G3", "theorem-premise-dag"
 
@@ -32,7 +32,7 @@ def _clean(s):
 
 def load_table():
     rows = []
-    for line in SRC.read_text(encoding="utf-8").splitlines():
+    for line in strip_external(SRC.read_text(encoding="utf-8")).splitlines():
         if not line.startswith("| ") or line.startswith("| Theorem"):
             continue
         cells = [_clean(c.strip()) for c in line.strip()[1:-1].split(" | ")]
@@ -591,7 +591,7 @@ def build():
     y = ty + max(h1, h2) + 50
 
     # ---------------------------------------------------------------- part 4: the table in full
-    y += c.heading(X0, y, "4 · The binding table, verbatim: all 42 rows (`spec/theorem-premise-binding.md`)", size=22)
+    y += c.heading(X0, y, "4 · The binding table, verbatim except one omitted external citation: all 42 rows (`spec/theorem-premise-binding.md`)", size=22)
     cols_t = [("Theorem", 330), ("Checked in", 290), ("Record", 250), ("Breaks under", 330), ("Row premises", 700),
               ("Parameter and gap premises", 720), ("At the reference (Annex B)", 868)]
     trs = []

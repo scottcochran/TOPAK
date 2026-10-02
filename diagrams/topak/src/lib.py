@@ -80,6 +80,14 @@ def _css():
     return "\n".join(lines)
 
 
+_EXTERNAL = re.compile(r"\s*[^.|]*Moon & Varshney[^.|]*(?:\.|(?=\s*\|)|$)")
+
+
+def strip_external(text):
+    """Drop every sentence that cites Moon & Varshney from record text read at build time."""
+    return _EXTERNAL.sub("", text)
+
+
 def light(name):
     if name in BASE:
         return BASE[name][0]
