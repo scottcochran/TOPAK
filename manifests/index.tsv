@@ -16,4 +16,4 @@ SHA256SUMS-REF-2026.09.30b	reference	2026.09.30	8cf9bd1	66	66	ADR-0033 A5; the p
 SHA256SUMS-SLM-2026.09.28	rehearsal	2026.09.28	7542730	40	40	ADR-0035 §8
 SHA256SUMS-REF-2026.10.01	reference	2026.10.01	dacbb0c	66	66	ADR-0033 A6; the pin moves in the next commit
 SHA256SUMS-G7	checkpoint	2026.10.01	97d1b81	336	336	first cut under the 2026.09.30 layout; measures tools/cpc (ADR-0045 T-0045-14) beside the jar; the index itself is excluded from G7 on
-SHA256SUMS-G8	checkpoint	2026.10.02	HEAD	372	372	first cut with a prover in the trusted base (ADR-0046, T-0045-31); tools/tlapm excluded with the TLC wrappers
+SHA256SUMS-G8	checkpoint	2026.10.02	1151832	372	372	first cut with a prover in the trusted base (ADR-0046, T-0045-31); tools/tlapm excluded with the TLC wrappers
