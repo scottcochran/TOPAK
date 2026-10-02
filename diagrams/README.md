@@ -6,7 +6,7 @@ record is the latest checkpoint.
 
 ## The TOPAK diagram family (2026.10.02)
 
-Twenty-eight diagrams covering the pattern's logical hierarchies and domain boundaries, drawn against Genesis
+Thirty diagrams covering the pattern's logical hierarchies and domain boundaries, drawn against Genesis
 Checkpoint G7 (2026.10.01) and Theory of Operation revision 11. Each diagram is an SVG that adapts to light and
 dark themes (`prefers-color-scheme`; renderers without CSS fall back to light). The diagrams are sized for
 reading zoomed in and print at poster scale. Where a record has a table, the diagram draws all of it.
