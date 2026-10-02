@@ -2,15 +2,17 @@
 
 **2026.10.02** · narrative · the glossary head, revised in place · DRAFT
 
-**Basis.** Genesis Checkpoint G8 (2026.10.02) and Theory of Operation revision 12 (`narrative/theory-of-operation.md`,
-tag `ToO-rev12`), with the record files they cite. Where the two disagree, G8 wins. The three Proposed records
-(ADR-0005, ADR-0035, ADR-0036) and the one Proposed section (ADR-0042 §6) appear under their subjects, tagged **[P]**,
-and are collected in §10.
+**Basis.** Genesis Checkpoint G9 (2026.10.02) and Theory of Operation revision 13 (`narrative/theory-of-operation.md`,
+tag `ToO-rev13`), with the record files they cite. Where the two disagree, G9 wins. The three Proposed records
+(ADR-0005, ADR-0035, ADR-0036), the one Proposed section (ADR-0042 §6) and the pending amendments (ADR-0034 A2,
+ADR-0033 A7 and A8) appear under their subjects, tagged **[P]**, and are collected in §10.
 
-**What this supersedes.** This file's 2026.10.01 revision (tag `glossary-2026.10.01`), cut against G7 and revision
-11; `git diff glossary-2026.10.01 glossary-2026.10.02 -- narrative/glossary.md` reads the two side by side. The
-entries Batch 25 changed are rewritten: *proved* and *checked* as two words for two methods, the prover's row, the
-proof modules, and the binding table's five corrections; §14 lists the wording that retired. Before that, the
+**What this supersedes.** This file's first 2026.10.02 revision (tag `glossary-2026.10.02`), cut against G8 and
+revision 12; `git diff glossary-2026.10.02 glossary-2026.10.02b -- narrative/glossary.md` reads the two side by side.
+The entries G9 changed are rewritten: `Contained` as the reference computes it, channel fidelity and its owner, the
+Run profile, the launcher in the node, the attestation rungs the reference issues, and four new terms (*SIMULATED*,
+*session proof*, *Wasm tool host*, *refinement check*); §14 lists the wording that retired. Before that, the
+2026.10.01 revision (tag `glossary-2026.10.01`, against G7, which rewrote the entries Batch 25 changed). Before that, the
 2026.09.30 revision (tag `glossary-2026.09.30`, against G6) and the 2026.09.29 glossary
 (`derived/topak-glossary-2026.09.29.md` until the reorganization; `git log --follow` reads it). The glossary has no
 dated copies: a revision is a commit to this file, and the checkpoint cut with it measures the head.
@@ -28,12 +30,12 @@ sources disagree.
 | **[A·CR]** | Defined by an Accepted record, or amendment, marked confirmation-required. Cite as *author-ratified* |
 | **[P]** | Defined by a Proposed record, a pending amendment, or a DRAFT artifact. The wording can still move |
 | **[D]** | Derived: used in the narrative, with no record of its own |
-| **[C]** | Checkpoint convention, fixed by G1–G8 |
+| **[C]** | Checkpoint convention, fixed by G1–G9 |
 | **[R]** | The reference implementation (ADR-0033). It is evidence, not the verified object |
-| **[O]** | Outstanding: the term names a hole rather than a mechanism. Numbers refer to the G8 §7 open list |
+| **[O]** | Outstanding: the term names a hole rather than a mechanism. Numbers refer to the G9 §7 open list |
 | **[X]** | Superseded: the term's record is superseded and its text is no longer in force |
 
-Record status is G8 §1 and is not restated here except where the status changes what a term means.
+Record status is G9 §1 and is not restated here except where the status changes what a term means.
 
 ---
 
@@ -88,7 +90,9 @@ principals. `Mediated` principals get attribution and authorization, not contain
 always.** `Contained(p)` has **four conjuncts** (ADR-0034 §4): a live lease at rung ≥ 1 on an *Attested* verdict at
 the declared rung; a profile meeting P3–P5; an in-house Persona; and the lineage-independence criterion in force.
 The fourth is ADR-0035, Proposed, so **`Contained` is unreachable at every rung today.** ADR-0037, ADR-0038 and
-ADR-0039 add and remove no conjunct.
+ADR-0039 add and remove no conjunct. The reference computes the conjuncts as a lookup and names each that fails
+(ADR-0033 A7, pending); it answers yes only for a *SIMULATED* rung-3 lease under a criterion a test issued, which shows
+the lookup reachable and claims nothing. For a Run principal, P4 reads as channel fidelity (ADR-0034 A2, pending).
 
 **Cell** [A·CR]: the principals seated around one Thinker for a round (ADR-0037 §1). A cell holds no lease, speaks no
 alphabet and cannot be evicted as a unit; it names a binding, as a round does. **An LTRO is a cell, not a
@@ -116,10 +120,12 @@ ADR-0043.
 **Run root** [A·CR]: a second pinned, content-addressed set, as Build's corpus root is; `Consult` is scoped to it
 (ADR-0040 §3). What may enter it, and who admits it, is open (ADR-0041 open obligations).
 
-**Effect channel** · **channel fidelity** [A·CR / O, 58]: a Run tool's allowlist entry declares the channel the tool
-opens; the tool is not hermetic and is not asked to be, only to open that channel and no other (ADR-0040 §3). Nothing
-checks it: the declaration is an operator's assertion (`mechanism/` G19, I33), and channel fidelity has no owner
-(ADR-0042 §6, Proposed).
+**Effect channel** · **channel fidelity** [A·CR / P, 58]: a Run tool's allowlist entry declares the channel the tool
+opens; the tool is not hermetic and is not asked to be, only to open that channel and no other (ADR-0040 §3).
+**ADR-0034 A2 (pending) names its owner**: the tool host's Wasm runtime, which hands a Run tool one network
+capability, a connection to its declared target, and nothing else; the target is bound and the protocol on it is
+recorded, not enforced. The reference builds it (ADR-0033 A8, pending). For a native Run tool nothing checks it: the
+declaration is an operator's assertion (`mechanism/` G19, I33), D-0034-6.
 
 **`Actuate` record** [A·CR]: for every admitted `Actuate` the mechanism writes one record to the principal's round
 topic when the call returns: seat, fence, log index, sequence number, tool, break-glass flag and digests of inputs
@@ -131,7 +137,19 @@ the task, each admitted `Consult`'s content, each admitted `Actuate`'s result (A
 
 **Run's confinement obligation** [P]: ADR-0042 §6, the one section of the Run records left Proposed. The effect
 channels are the tools', not the principal's, so **P4 cannot hold for a Run tool** and channel fidelity replaces it.
-Stated, not delivered; the Run profile that would carry it is unwritten (item 58).
+Stated, not delivered; **the Run profile that would carry it is drafted** as ADR-0034 A2, pending (items 26, 58, 80).
+
+**Run profile** [P, 80]: ADR-0034 A2. The same schema with `domain: run`, appraised at the same rungs. P2 mounts
+nothing: an admitted `Consult` delivers its object over the channel. P4 is channel fidelity, held by the tool host's
+Wasm runtime. P6 ends with the lease. A native Run tool is **D-0034-5** behind an egress filter (a trust, no theorem
+voided) or **D-0034-6** without one (Run `Contained` voided: the reference before A8). `RunConfinement.tla` checks and
+proves that every effect under a contained Run lease reached its tool's declared target. Until A2 and ADR-0042 §6 are
+ratified, Run principals are `Mediated` by the records.
+
+**Wasm tool host** [R / P]: the reference's Run tool host (`topak-contain` `wasmtool`, ADR-0033 A8, pending): a core
+Wasm module instantiated per call whose only imports are its inputs, its output, and `connect`/`send`/`recv` on its
+declared target, which it cannot name; any other import is refused before it runs. Narrower than the component A2
+names, because the build host has no WASI component target (`mechanism/` I44).
 
 **Finite in variants, not in instances** [A]: the floor is analysed per action variant over schema S with symbolic
 parameters. It is not analysed by enumeration.
@@ -157,7 +175,8 @@ allowlisted tool with a socket collapses the envelope to vacuity.** It is assump
 today, and the article has to say so first.
 
 **Front door** [R]: the reference exposes the six variants as MCP tools and nothing else. That makes the alphabet
-the whole **protocol**, not the whole **channel**: an agent with a shell never has to ask.
+the whole **protocol**, not the whole **channel**: an agent with a shell never has to ask. For a guest the node
+launches, the launcher's bridge is the channel and the protocol at once (ADR-0036 §2, ADR-0033 A7, pending).
 
 ---
 
@@ -706,7 +725,8 @@ confinement. **D-0037-1** (no Observer in a cell), **D-0037-2** (no raw emission
 group only: ADR-0008 as ratified), **D-0038-2** (no correlator), **D-0039-1** (Run uncoupled), **D-0042-1** (effects
 counted and recorded as reports only: the reference before 09.29), **D-0044-1** (bundle signing off: the reference
 before 10.01), **D-0045-1** (no trusted-base declaration: the bottom of every axis), **D-0030-2** (routing verdicts
-unchecked: every gate run before 10.01, and a run without the checker). In Proposed records, D-0035-1 and D-0036-1.
+unchecked: every gate run before 10.01, and a run without the checker). In Proposed records, D-0035-1 and D-0036-1; in
+a pending amendment, D-0034-5 and D-0034-6 (a native Run tool, filtered or not; ADR-0034 A2).
 None is a deployment declaration.
 
 **Properties lost** [O, 40]: the field ADR-0023 §6's schema lacks. The five Observer and retention degeneracies void
@@ -715,12 +735,23 @@ no safety theorem and state their losses in prose: a detection claim, an audit, 
 **Attestation rung** [A·CR]: **0** none · **1** asserted by the launcher · **2** measured boot · **3** confidential VM
 with an independent verifier (ADR-0034, Accepted at G4). **The archetype is rung 3**; rungs 1 and 2 are declared
 degeneracies, rung 0 is `Mediated` always. Attestation is a condition of the grant and lands in the lease's
-`confinement` field; **no silent downgrade** at grant or renewal.
+`confinement` field; **no silent downgrade** at grant or renewal. The reference issues rung 1 under its own
+assertion and rung 3 only *SIMULATED*; rung 2 is a seam it refuses (ADR-0033 A7, pending).
+
+***SIMULATED*** [R]: a trust root played by test keys, at the reference: the CPU vendor's root (T-0045-16) and the
+verifier (T-0045-17) in the rung-3 runs. Accepted only under a key an anchor issuance put in the rules, and said on
+every surface that shows a lease resting on it. A result reached under it is a witness, not a claim.
+
+**Session proof** [R]: at rungs 2 and 3, each action carries the attested guest's signature, under the session key
+its appraisal bound, over the fence, the epoch, a counter and the action; checked at decide and, for the counter, at
+apply, where it is the binding `ContainedMeansConfined` rests on (ADR-0034 §3.5; ADR-0033 A7, pending). At rung 1 the
+bridge is the session, and no token exists.
 
 **Confinement profile** [A·CR / P]: a promoted artifact fixing seven clauses **P1–P7**: one channel, a measured
 read-only root, no interpreter reachable, Wasm tools only, inference inside, one principal per guest and one guest
 per round, its own reference values (ADR-0034 §1). In the reference a JSON file whose digest is the lease's
-confinement digest (ADR-0036 §1, Proposed), each clause `pass`, `fail` or `vacuous` with a reason.
+confinement digest (ADR-0036 §1, Proposed), each clause `pass`, `fail` or `vacuous` with a reason, registered only
+once its one-file workspace is promoted, and confining only seats of its own domain. A Run profile is ADR-0034 A2's.
 
 **Declared profile** [P]: a rung-0 grant may name a profile; its verdict is then derived from the declared clauses,
 *declared by the operator and verified by nobody* (ADR-0036 R1). The trusted base at rung 0 stays empty: the host is
@@ -860,7 +891,14 @@ step whose projected state or result differs. Two runs: 2026.09.30, 21 traces an
 2026.10.01, 22 and 168 after Batch 17's debts changed the model (A6), every step matching in both. The second caught
 a test that changed a floor constant between entries, not the code. **A mechanized link and a drift harness, not a refinement and not independent evidence**: the model was
 written from the code by the same hand on the same day. Three facts it takes from the trace rather than computing:
-issuance validity, approval signatures, the parameter digest.
+issuance validity, approval signatures, the parameter digest; since 2026.10.02 three more, for confinement: an
+appraisal's signature and key, a session proof, a profile's parse. On 2026.10.02, 57 and then 62 traces, 709 steps,
+every one matching (ADR-0033 A7, A8, pending).
+
+**Refinement check** [R]: `spec/ConfinementRefinement.tla`, which reads every state trace validation replays against
+`Confinement_A1.tla`'s invariants: no silent downgrade (per seat), *Contested* stopped, a fresh appraisal under every
+live lease, and `contained` only where its premises hold. A check on tested paths, not a refinement; it cannot check
+`ContainedMeansConfined`, which is about the image the host ran.
 
 **Reference implementation** [R]: `mechanism/`, the admit path end to end. It is **evidence, not the verified
 object** (ADR-0033 §1). It is cited by manifest and commit (last `SHA256SUMS-REF-2026.10.01` at `dacbb0c`), it has
@@ -939,7 +977,7 @@ effect ratifies without C3, and its row names the reading under which C3 would a
 
 ## 10. Proposed records
 
-Three records and one section are Proposed at G8. **None is Accepted.** ADR-0021 left this list in Batch 18 and
+Three records and one section are Proposed at G9, and four amendments are pending. **None is in force.** ADR-0021 left this list in Batch 18 and
 ADR-0045 in Batch 22. ADR-0046 was drafted and ratified between G7 and G8 and never stood here at a checkpoint.
 
 **ADR-0005** [P, 5]: Kafka's role. The reference's use of Kafka is a debt against it.
@@ -955,19 +993,25 @@ computes is an upper bound** (R2), after the rehearsal refuted the first draft's
 shared curators. Plus the **distillation rule**. The rehearsal is in `slm/`; the θ values live in the values file
 and are unset.
 
-**Launcher** [P, 34]: ADR-0036. At rung 1 the launcher is the channel: **launch, appraise, grant, bridge**, with the
+**Launcher** [P, 34, 35]: ADR-0036. At rung 1 the launcher is the channel: **launch, appraise, grant, bridge**, with the
 token never entering the guest. Its first profile fails P3. R1 adds the rung-0 declared profile and the ladder; R2
-points finding 1 at ADR-0035 R4. Its ratification run is item 34, with five missing pieces.
+points finding 1 at ADR-0035 R4. Its ratification run is item 34, with five missing pieces. **The launcher in the
+node**, its §6 step, is built (ADR-0033 A7, pending): a `launch` operator request, a host-process, container and
+*SIMULATED* rung-3 backend, and no token for a launched lease.
+
+**Pending amendments** [P]: ADR-0034 A2, the Run profile (C2, C4; item 80); ADR-0033 A7 and A8, the reference's
+addenda for the launcher and for Run's tools (items 81, 80); ADR-0026 A1, R8 (item 8). Each is marked where it would
+apply and is not in force.
 
 ---
 
 ## 11. Outstanding
 
-These terms name a hole. Each one points to the G8 §7 open list.
+These terms name a hole. Each one points to the G9 §7 open list.
 
 | Term | Item |
 |---|---|
-| **Sandbox gap** (mechanism half; Run's half has a record and no mechanism) | 1 · 58 |
+| **Sandbox gap** (mechanism half narrowed: rung 1 built, rung 3 *SIMULATED*; Run's half drafted and built, pending) | 1 · 58 |
 | **Floor fitness** | 2 |
 | ADR-0005 (Kafka) | 5 |
 | ADR-0017 supersession | 6 · 50 |
@@ -1015,11 +1059,17 @@ These terms name a hole. Each one points to the G8 §7 open list.
 | **The prover pinned for reproducibility** · Isabelle checking of the SMT proofs | 73 · 74 |
 | Model checking at practical constants · simulation at large bounds | 75 |
 | The diagrams, unmeasured | 76 |
-| The containment-features document, unindexed | 77 |
 | One driver per TLC results file | 78 |
+| Tags owed · revision 13 against G9 | 79 |
+| The Run profile's review and ratification · ADR-0045's T-0045-24 | 80 |
+| ADR-0036's ratification, then the launcher's addendum | 81 |
+| A measurement cannot cover its profile's digest (ADR-0034 §2 against P7) | 82 |
+| Build's P4 at the reference | 83 |
+| A Run tool's channel declared twice · the component tool interface | 84 |
+| Six reference choices owed to records | 85 |
 
 Unowned and not numbered: **`Invoke` hermeticity** for native tools (an excluded row, T-0045-23) · **channel
-fidelity** for Run tools (T-0045-24; G19) · **flow** (CR-6) · the **residual-risk statement**, headed by anchor
+fidelity** for native Run tools (T-0045-24; D-0034-6; G19) · **flow** (CR-6) · the **residual-risk statement**, headed by anchor
 capture and now carrying collusion.
 
 ---
@@ -1108,6 +1158,10 @@ crypto-shredding as mechanism, Kafka as system of record, "strictly stronger tha
 | "Clock model: unstated" | Stated | ADR-0032 |
 | Denials not recorded | Recorded, unordered, as digests | ADR-0020; reference finding 11 |
 | Monotonicity "at five layers" | Twelve layers | ToO rev 9 §7.8 |
+| "Every lease the reference issues is rung 0" | Rung 0, rung 1 under the launcher's assertion, or rung 3 *SIMULATED* | ADR-0033 A7 (pending); G9 |
+| "Channel fidelity has no owner" | The tool host's Wasm runtime, for Wasm-hosted tools; nobody, for native ones | ADR-0034 A2, ADR-0033 A8 (pending) |
+| "The Run profile is unwritten" | Drafted, pending | ADR-0034 A2 |
+| "The correction waits for a successor module" (finding 6) | `Confinement_A1.tla`, checked and proved | G9 §2.3 |
 | "Principals are agent LTROs"; the LTRO as one principal | An LTRO is a cell of principals; a principal holds one seat | ADR-0037 §1 |
 | The Reader as a cognitive seat with its own Persona | A stage producing facts for the cell Observer | ADR-0037 §3; ADR-0018 B12 |
 | "Human principals are atomic", as a contrast | Every principal is atomic; a human holds one seat | ADR-0037 §7 |
@@ -1153,10 +1207,11 @@ crypto-shredding as mechanism, Kafka as system of record, "strictly stronger tha
 
 ## Sources
 
-**Basis.** `checkpoints/topak-genesis-checkpoint-G8-2026.10.02.md` · `narrative/theory-of-operation.md` at tag
-`ToO-rev12` · the records they cite, at their G8 digests.
+**Basis.** `checkpoints/topak-genesis-checkpoint-G9-2026.10.02.md` · `narrative/theory-of-operation.md` at tag
+`ToO-rev13` · the records they cite, at their G9 digests.
 
-**Superseded.** This file's previous revision (tag `glossary-2026.10.01`, measured by `manifests/SHA256SUMS-G8` at its
-commit), before it the 2026.09.30 revision (tag `glossary-2026.09.30`, measured by `manifests/SHA256SUMS-G7`), the
+**Superseded.** This file's previous revision (tag `glossary-2026.10.02`, measured by `manifests/SHA256SUMS-G9` at its
+commit), before it the 2026.10.01 revision (tag `glossary-2026.10.01`, measured by `manifests/SHA256SUMS-G8`), the
+2026.09.30 revision (tag `glossary-2026.09.30`, measured by `manifests/SHA256SUMS-G7`), the
 2026.09.29 glossary (`derived/topak-glossary-2026.09.29.md` before the reorganization, measured
 by `manifests/SHA256SUMS-G6`), and through it the 09.26 and 09.17 glossaries whose §12 is carried by reference.

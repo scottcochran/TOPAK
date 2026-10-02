@@ -1,24 +1,25 @@
 # TOPAK — Theory of Operation
 
-**2026.10.02** · revision 12 · **narrative only** · cut from Genesis Checkpoint G8 · supersedes revision 11 as narrative
+**2026.10.02** · revision 13 · **narrative only** · cut from Genesis Checkpoint G9 · supersedes revision 12 as narrative
 
-Revision 12 is revision 11 corrected against G8. Between the cuts the corpus's formal layer changed kind, and
-nothing else did. **Thirteen of the fourteen TLA+ modules are proved** with the TLA+ Proof System: every invariant
-each module states holds of every behaviour of the module, for every constant the module's named assumptions admit,
-under the hypothesis that the mutations which break it are absent; 2,417 obligations. **The method is declared**
-(ADR-0046, Batch 25, C2 and C4): TLC checks the mutations and witnesses at small constants, the prover proves the
-invariants, *proved* and *checked* name the two, and MAP 2.3 closes. The prover is a trusted-base row, T-0045-31,
-and the proof modules are frozen by digest. Writing the proofs found five errors in the binding table, each corrected
-with TLC rows. **Nothing about the running reference changed**: a proof is of a module, and T-0045-28 stands.
-Passages those changes made false are rewritten, with one sentence in §15 that revision 11 should have corrected and
-did not; the narrative spine is revision 11's and no section is added. Appendix H lists every change.
+Revision 13 is revision 12 corrected against G9. Between the cuts one erratum was ratified, ADR-0046 E1, and
+everything else is drafted, built and checked, and pending. **The reference issues its first leases above rung 0**:
+the launcher in the node, which ADR-0036 §6 describes, starts a guest from a promoted profile, appraises it, grants
+to itself at the seat's declared rung and bridges its actions, with the appraisal re-checked at apply on every
+replica (ADR-0033 A7, pending). Rung 1 is real; rung 3 is SIMULATED, under test keys standing in for the CPU vendor's
+root and the verifier; rung 2 is a seam. **The Run profile is drafted** as ADR-0034 A2 (pending, C2 and C4): P4
+becomes channel fidelity, and its owner is the tool host's Wasm runtime, which the reference builds (ADR-0033 A8,
+pending). ADR-0034 finding 6 has its successor module, `Confinement_A1.tla`, and Run its own, `RunConfinement.tla`;
+both are checked and proved. **No real principal is `Contained`**: `contained = true` appears only in a simulated run
+under a criterion the test issues. Passages those changes made false are rewritten; the narrative spine is revision
+12's and no section is added. Appendix I lists every change.
 
 ---
 
 ## 0. How to read this
 
 **This document explains how the design fits together. It is not the state of record.** Status, readiness,
-digests, the ratification queue, the genesis debt ledger, and the open list are in **G8**.
+digests, the ratification queue, the genesis debt ledger, and the open list are in **G9**.
 
 The narrative describes what the records say. Status words appear only where status changes the meaning — a
 reversal in effect, a claim still carrying a confirmation marker, or a section of a record that was deliberately
@@ -34,7 +35,9 @@ ratified: ADR-0044 (Batch 17), ADR-0045 (Batch 22), ADR-0030 A1 (Batch 24) and A
 the custodian's request, with every choice marked as the drafter's, and the custodian settled them by ratifying the
 text; A1's one open choice, the proof format and the checker, was settled by the first run, and ADR-0046's
 condition that the custodian regenerate its evidence was run by the drafter at the custodian's direction. That is one step further
-from review than the records they draw on, and each says so on its face.
+from review than the records they draw on, and each says so on its face. **Three more texts are drafted by the
+assistant and pending**: ADR-0034 A2, the Run profile, and ADR-0033 A7 and A8, the addenda for the code under it and
+under the launcher. Nothing in them is ratified, and this document cites them as pending wherever it uses them.
 
 **Findings.** Revision 5 carried ⟨S6-n⟩ markers where records disagreed. All are dispositioned; §14 lists each with
 its outcome. Markers that remain in this text point to findings from the 09.16 critical review and the 09.17
@@ -118,7 +121,10 @@ conjuncts (ADR-0034 §4): a live lease at rung 1 or above, granted on an Atteste
 rung; a profile that meets P3–P5, so no launcher, Wasm tools only, inference inside; an in-house Persona on
 ADR-0017's axis; and **ADR-0017's lineage-independence criterion in force**. The fourth is ADR-0035, which is
 Proposed, so **`Contained` is still unreachable at every rung today**. What changed is the reason: at revision 7 no
-rung had semantics; now the criterion is the only missing premise. The draft of ADR-0034 read independence as not a
+rung had semantics; now the criterion is the only missing premise. The reference computes the four conjuncts as a
+lookup over the lease, the profile and the issued rules, and names each that fails (ADR-0033 A7, pending); the only
+leases for which it answers yes are SIMULATED rung-3 leases under a criterion a test issued, which shows the lookup is
+reachable and claims nothing. The draft of ADR-0034 read independence as not a
 conjunct, on the ground that it serves the Observer and not effect exclusivity; the custodian kept ADR-0031's
 stricter reading, and the option is recorded.
 
@@ -171,10 +177,10 @@ Each domain has a typed alphabet of its own, and no name is shared between them 
 **Confinement is an obligation, and it now has a design** (ADR-0022 §6; ADR-0034): no shell, no network egress, no
 filesystem outside workspace and corpus, no path to the artifactory except `Submit`. ADR-0034 discharges §6 for
 Build as a specification: seven profile clauses, three attestation rungs and an appraisal at grant (§2.6). It does
-not discharge it as a mechanism. The reference issues every lease at rung 0, the first launcher is a Proposed record
-(§2.7), and until a guest runs under an attested profile **Build principals are `Mediated`** and every Build
-containment theorem is conditional. The *sandbox gap* is now two halves: the design half is closed, the mechanism
-half is not, and `Contained` may still have no members at all.
+not discharge it as a mechanism. The reference now launches guests at rung 1 under its own assertion, and at rung 3
+only in simulation (§2.7, §15); every real guest's profile declares P3 failing, so **Build principals are
+`Mediated`** and every Build containment theorem is conditional. The *sandbox gap* is now two halves: the design half
+is closed, the mechanism half is narrowed and not closed, and `Contained` may still have no members at all.
 
 **Capability cost.** This is not how agents write code today: no shell, no package installation, no network, no
 git. The article has to say so before a reader who has used a coding harness says it for us.
@@ -246,8 +252,8 @@ VM with an independent verifier; rungs 2 and 1 are declared degeneracies, and ru
   manager or interpreter reachable from the principal (P3); tools as Wasm components, per call, with a workspace
   capability only (P4); the Persona's weights inside the guest and in the launch measurement (P5); one principal per
   guest and one guest per round (P6); and its own reference values (P7). Build's profile is fully determined by the
-  alphabet. Run's is unwritten still, and has a shape now: ADR-0042 §6, the one section of the Run records left
-  Proposed, says P4 cannot hold for a Run tool and channel fidelity must replace it (§2.9).
+  alphabet. Run's is drafted as ADR-0034 A2, pending: ADR-0042 §6, the one section of the Run records left
+  Proposed, says P4 cannot hold for a Run tool and channel fidelity must replace it, and A2 does that (§2.9).
 - **Appraisal is a condition of the grant**, not a protocol of its own. The nonce is a hash of epoch, log index,
   principal and round, so freshness comes from the log and not a clock. One replica appraises and the verdict is
   ordered; at apply, each replica checks the verifier's signature and that the nonce's epoch is current.
@@ -277,8 +283,10 @@ changes nothing at rung 3, which is the rung ladder checked rather than asserted
 mutation breaks no-silent-downgrade at rung 3, which is the case A1 closed. **Rung 0 is now in the run too**
 (ADR-0034 A1, Batch 17): the deployment D-0034-4 declares produces no `Contained` effect, checked rather than
 declared, and cannot produce *Contested*, as at rung 1. The run also found that the module reads a launch
-measurement at rung 0 under the host mutation, which rung 0 has no more than rung 1 does; the correction waits for
-a successor module, since the digest is cited.
+measurement at rung 0 under the host mutation, which rung 0 has no more than rung 1 does. **The successor module
+carries the correction** (`Confinement_A1.tla`, 2026.10.02): rung 0 reads no measurement, `Safe` holds at rungs 0 to 3,
+the host mutation breaks rungs 1 and 2 and changes nothing at 0 and 3, and a contained effect is reachable at 1 and 3
+and not at 0; its proof is the first module's with one case split moved. `Confinement.tla` stays frozen beside it.
 
 **Author-ratified.** ADR-0034 is confirmation-required under C2 and C4, and was drafted, revised twice and ratified by
 its author within three days. **Almost nobody can afford the archetype**, as with ADR-0017: it needs confidential
@@ -318,11 +326,14 @@ session is the pipe, the pipe belongs to one launched instance, and no other pro
   records (§16).
 - **Every failure subtracts.** No attestation, no grant; a dead guest closes the pipe and the round ends; a dead
   launcher takes the token with it and the lease expires.
-- **The second step moves the launcher into the node**, as a `launch` operator request with a promoted profile. That
-  is a mechanism change and gets its own addendum. Rung 2 is not on this path: a container has no launch
-  measurement.
+- **The second step moves the launcher into the node**, as a `launch` operator request with a promoted profile. **It
+  is built** (ADR-0033 A7, pending): the node refuses an unpromoted profile before anything starts, takes the nonce
+  from the log, appraises, proposes the grant with the appraisal in the entry, and bridges; a launched lease mints no
+  token at all. Its backends are a host process, which confines nothing and declares so, ADR-0036 §4's container, and
+  a simulated rung 3. Rung 2 is not on this path: a container has no launch measurement.
 
-Nothing in §2.7 is ratified, and no rung-1 lease has been issued.
+Nothing in §2.7 is ratified. Rung-1 leases are issued in the reference's tests, and §7's three refusals are seen there;
+the ratification run on `slm/serve`'s image is unrun.
 
 ### 2.8 Principals, seats and cells
 
@@ -409,9 +420,15 @@ ADR-0015's two effect classes in the floor and the reference since the reference
   Observer's lease must outlast its Thinker's to reach the seal.
 - **What is left Proposed is confinement.** ADR-0042 §6 states Run's confinement obligation and does not deliver it:
   the effect channels are the tools', not the principal's, so **P4 cannot hold for a Run tool**, and channel fidelity,
-  a tool opening the channel its entry declares and no other, replaces it. Nothing checks it (`mechanism/` G19), the
-  Run profile that would carry it is unwritten, and the custodian left §6 out of the batch, as ADR-0022 §6 was left
-  out at B2. Every Run containment theorem is conditional on it.
+  a tool opening the channel its entry declares and no other, replaces it. The custodian left §6 out of the batch, as
+  ADR-0022 §6 was left out at B2, until a Run profile and an owner existed. **Both are now drafted, and pending**:
+  ADR-0034 A2 writes the Run profile, with P2 mounting nothing (an admitted `Consult` delivers its object over the
+  channel) and P4 replaced by channel fidelity, and names the owner, the tool host's Wasm runtime, which hands a Run
+  tool one network capability, its declared target, and nothing else; a native tool is a declared degeneracy, behind
+  a filter (D-0034-5) or not (D-0034-6). `RunConfinement.tla` checks and proves that every effect under a contained
+  Run lease reached its tool's declared target, and the reference builds the runtime and refuses at apply a tool
+  outside it under a profile that claims P4 (ADR-0033 A8, pending). Until A2 and §6 are ratified, every Run
+  containment theorem is conditional, and Run principals are `Mediated` by the records.
 
 **Checked.** `RunCoupling.tla` separates the counters `Coupling.tla` had merged, and its mutation `M_EMITSEQ`, the
 sequence counting reports only, is the reference's behaviour before 2026.09.29: a Thinker that never reported could
@@ -1151,7 +1168,11 @@ batch gave the binding table a proof column and five corrections that writing th
 hypothesis is the set of mutations that break it, derived and checked apart from the table, and where the two
 disagreed TLC sided with the proof. The binding table is a draft
 revised with the records it binds; its versioning, with the table's, is still the archetype-evolution record's
-(§8.2).
+(§8.2). **Annex B is now behind the code**: it says the reference instantiates none of T-0045-16 to 21 and issues
+rung 0 only, and the reference issues rung-1 leases, which instantiate T-0045-19 and 20, and plays T-0045-16 and 17
+with test keys in its simulated runs. Annex B moves with ADR-0033 A7's dependent entries, and T-0045-24, a Run tool's
+channel, moves from excluded to delegated with ADR-0034 A2's. The binding table's confinement rows, its trace row and
+a row for `RunConfinement` changed with them, marked pending.
 
 ---
 
@@ -1268,7 +1289,9 @@ ADR-0042 (C4), ADR-0043 (C4), ADR-0044 (C1), ADR-0045 (C2, C4), **ADR-0046 (C2, 
 ADR-0003 A2 (C1) and ADR-0029 A2 (C3). Batches 17 to 21, all of 2026.09.30, ratified six amendments and ADR-0044
 (17), ADR-0021 (18), ADR-0033 A4 (19), the four Run records with three amendments (20), and ADR-0033 A5 (21).
 Batches 22 to 24, all of 2026.10.01, ratified ADR-0045 (22), ADR-0033 A6 (23) and ADR-0030 A1 (24); Batch 25, of
-2026.10.02, ratified ADR-0046, with dependent entries in thirteen records. Two records are
+2026.10.02, ratified ADR-0046, with dependent entries in thirteen records; Batch 26, the same day, ratified its
+erratum E1, that `RulesFloorBase.tla` is live and not frozen. **Four amendments are pending**: ADR-0026 A1 (R8),
+ADR-0033 A7 and A8, and ADR-0034 A2, the Run profile, which would carry C2 and C4. Two records are
 ratified in part: ADR-0022 §1–§5, §7 and §8, with **§6 not**, since ADR-0034 discharges its obligation for Build and
 not for Run; and ADR-0042 §1–§5, §7 and §8, with **§6 not**, Run's confinement obligation, left out by the custodian
 as ADR-0022 §6 was. Accepted records carry **debts on their face** — ADR-0030's, ADR-0033's Kafka row and its
@@ -1278,8 +1301,8 @@ ADR-0033 A6. **One marking has no criterion:** ADR-0035 R2 is confirmation-requi
 its measurement rule is a novel construction to be reviewed against practice; G4 carries it as a ledger line and asks
 whether ADR-0029 needs a criterion for markings of that kind. **One kind of debt is new**: four texts were drafted
 by the assistant at the custodian's request, ADR-0044, ADR-0045, ADR-0030 A1 and ADR-0046, each marking every choice
-as the drafter's, and the custodian settled all four by ratifying the text. ADR-0029 has no criterion for that either,
-and G8 carries it beside the ADR-0035 line.
+as the drafter's, and the custodian settled all four by ratifying the text; three more, ADR-0034 A2 and ADR-0033 A7
+and A8, are pending. ADR-0029 has no criterion for that either, and G9 carries it beside the ADR-0035 line.
 
 **Bootstrap trigger.** The anchor *may* bootstrap once a drafted TLA+ bootstrap specification exists: five modules
 (`Genesis`, `Anchor`, `RulesFloor`, `Promotion`, `BreakGlass`), five invariants, and a mutation for each that must
@@ -1409,7 +1432,7 @@ mechanism claim for effect exclusivity; the rules floor, which carries the same 
    already accepted is ADR-0030 §3's: a Rust engine differentially tested against a Lean model whose theorems a
    small kernel checks. **The corpus now has a verifier in that position too.** The TLA+ Proof System proves the
    modules' invariants through Z3, Zenon and a temporal-logic backend and emits no certificate a kernel checks
-   unless its Isabelle backend is asked to, which it has not been (G8, item 74). ADR-0046 made it a trust-root row,
+   unless its Isabelle backend is asked to, which it has not been (G9, item 74). ADR-0046 made it a trust-root row,
    T-0045-31, which is what this item said the paper accepts and the corpus would have to say; the corpus has said it.
 
 The co-author's name is spelled **Varshney**. Check any draft outside the Project before publishing.
@@ -1492,17 +1515,26 @@ The narrative expectation for that pass:
 - **Some constants that look like premises are not.** The unread bounds hold for every `K` and `R`; `K < R` is what
   lets the bound refuse at all, which is non-vacuity, and stays TLC's. A counterexample's state count is not
   reproducible with every worker searching; its outcome is.
+- **A successor module can move its proof.** `Confinement_A1.tla` changes one definition, `Evidence` at rung 0, and the
+  proof of its predecessor failed one obligation of 502 against it: the step that expanded `Evidence` had split on
+  rung 1 alone. Moving rung 0 into the case the low-rung invariant covers was the whole repair.
+- **Trace validation can check the abstract module too.** `ConfinementRefinement.tla` reads every state the operational
+  model replays against `Confinement_A1`'s invariants, with the declared rung per seat. It is still a check on tested
+  paths and not a refinement, and it cannot check `ContainedMeansConfined`, which is about the image the host ran.
+- **Absence is tested on the printed form.** `Mechanism.tla`'s sentinel test refused an integer once a trace first read
+  a promoted candidate's index; `ToString(x) = ToString("none")` works for every value.
 
 ---
 
 ## 12. Where the argument is thin
 
-The open list is G8. In narrative terms, the argument is weakest in sixteen places.
+The open list is G9. In narrative terms, the argument is weakest in sixteen places.
 
 1. **The sandbox gap.** Effect exclusivity, ADR-0015's exhaustiveness, and ADR-0022 §6's confinement all rest on a
-   mechanism that is now specified (ADR-0034) and not built. The reference issues every lease at rung 0; the first
-   launcher is Proposed, and its first profile fails P3 on its face. Until a guest runs under an attested profile,
-   the strongest claim TOPAK makes is an assertion. **This is still the single largest gap in the pattern**, and the
+   mechanism that is now specified (ADR-0034) and built only at rung 1, where the host is trusted by construction,
+   and in simulation at rung 3 (ADR-0033 A7, pending). Every real guest's profile fails P3 on its face, and no host
+   the reference runs on can attest. Until a guest runs under an attested profile that passes P3 to P5, the strongest
+   claim TOPAK makes is an assertion. **This is still the single largest gap in the pattern**, and the
    record that closed its design half says so: only a mechanism can close the other.
 2. **Correlated review failure.** Unanimity multiplies reviewers without making them independent. Floor fitness is
    the missing gate, and it is still unowned.
@@ -1510,7 +1542,9 @@ The open list is G8. In narrative terms, the argument is weakest in sixteen plac
    the pace has not slowed: the five batches of 2026.09.29 and the five of 2026.09.30 ratified seven records and
    eleven amendments in two days. Four records were drafted by the assistant at the custodian's request and settled
    by ratification, which is one step further from review than the rest; the fourth, ADR-0046, asked the custodian
-   to regenerate its evidence so the digests would not be the drafter's alone, and the drafter ran it. Twenty-two
+   to regenerate its evidence so the digests would not be the drafter's alone, and the drafter ran it. Three more,
+   the Run profile and the two addenda under it and under the launcher, are drafted, built, checked and proved by the
+   same hand on one day, and pending. Twenty-two
    carry confirmation markers and will be reviewed after bootstrap; the
    bootstrap set gets no confirmation promotion, by construction — confirmation runs under those records — and
    since ADR-0029 A2 it is instead reviewed at the bootstrap gate with the entire corpus. Until a reviewer is
@@ -1528,7 +1562,8 @@ The open list is G8. In narrative terms, the argument is weakest in sixteen plac
    the invariants and leaves it standing for the mutations and witnesses. It changes nothing else here: the proofs
    were written, checked and regenerated by the hand that wrote the records, the prover is trusted as written
    (T-0045-31), and **agreement among records, checks, proofs and code written by one hand is not independence**
-   (ADR-0033). The
+   (ADR-0033). Two modules since G8, `Confinement_A1` and `RunConfinement`, are checked and proved as well: fifteen
+   proof modules, 3,036 obligations. The
    trace harness makes the link between modules and code mechanized for the first time, and ADR-0045 T-0045-28 says
    what it is not: a refinement.
 8. **No floor is ratified.** The machinery that checks a floor is accepted; the genesis floor itself is a draft that
@@ -1545,8 +1580,9 @@ The open list is G8. In narrative terms, the argument is weakest in sixteen plac
     dilute the bound, and that only the behavioral test can see it.
 11. **Rung 1 trusts the operator.** The only cage the corpus has designed puts the person who runs the launcher, the
     launcher script and the container runtime in the trusted base for guest integrity, by ADR-0034's own table. That
-    is honest and it is not much; rung 3 is the archetype because it is the first rung at which the host can only
-    subtract, and nobody has built it.
+    is honest and it is not much, and the reference shows it: a launcher that reports the image it was asked for
+    while running another is believed, by test. Rung 3 is the archetype because it is the first rung at which the
+    host can only subtract, and nobody has built it on hardware; the reference's rung 3 is two test keys.
 12. **Collusion is uncovered.** Coupling separates a present, keeping-up Observer from an absent one and cannot
     separate an honest one from a colluding one; every fact it reads is the Observer's own assertion. Lineage
     independence is the only cover, it is unbuilt in the reference, and the correlated-miss test that would measure it
@@ -1564,7 +1600,8 @@ The open list is G8. In narrative terms, the argument is weakest in sixteen plac
     and is unissued (§7.9).
 16. **What runs is not what is proved.** The modules' invariants are proved and their mutations checked at small
     constants; the Rust is asserted to follow them, and since 2026.09.30 shown to agree with a model of itself on every
-    tested path, which is a harness and not a refinement. A proof of a module makes the refinement's target precise
+    tested path, and since 2026.10.02 to keep the abstract confinement invariants on those paths, which is a harness
+    and not a refinement. A proof of a module makes the refinement's target precise
     and does nothing else for it. The implementation, the model checker, the prover and the build toolchain are trust
     roots for every deployment,
     and the reproducible build that would fix the last one's identity is not declared (§7.9, §15).
@@ -1642,8 +1679,9 @@ one instrument, by role:
 
 **What it is not.** It is **evidence, not the verified object** (ADR-0033 §1) — the same kind of evidence as a TLA+
 check, cited by a manifest digest and a commit, with the claim scoped to what its tests check. It has never been
-promoted, no promotion pipeline exists to promote it, and nothing in it is in any TCB. It is not a deployment: every
-lease it issues is rung 0, so every principal it serves is `Mediated`, and it fails assumption of use A1. **A running
+promoted, no promotion pipeline exists to promote it, and nothing in it is in any TCB. It is not a deployment: a
+lease it issues is rung 0, or rung 1 under its own assertion on a profile that declares P3 failing, or rung 3 under
+test keys, so every principal it serves in earnest is `Mediated`, and it fails assumption of use A1. **A running
 program invites being mistaken for the mechanism**, and this paragraph exists because saying so once is not enough.
 
 **It moved once since revision 7**, again at revision 9, and four times since. Batch 10 made the reference refuse
@@ -1658,16 +1696,26 @@ a refused abstain, twenty-four files, fifty-five tests, and the first addendum w
 `T_persona` with no behaviour change (A4, Batch 19), and the trace recorder (A5, Batch 21, below). On 2026.10.01 it
 built Batch 17's three debts (A6, Batch 23): the `ttl` bound refused at grant and at every renewal, the two key
 fields in the issued rules, and a bundle loaded only under a signature that verifies against those keys, with a
-renamed tarball under a forged manifest refused by test; eighteen files, 381 lines, sixty-one tests. The register
-stands at thirty-four assumptions and eighteen gaps; the bundle-signing gap retired, and the newest gap is still
-channel fidelity, G19, which nothing checks.
+renamed tarball under a forged manifest refused by test; eighteen files, 381 lines, sixty-one tests. **On 2026.10.02
+it took the launcher in the node** (A7, pending): profiles registered from promoted artifacts, the nonce from the log,
+the appraisal in the grant entry and re-checked at apply, Contested ending in a revoked principal, renewal that
+re-attests the same guest, the session proof at rungs 2 and 3, `Contained` as a lookup, and a host-process, container
+and simulated rung-3 backend; 96 tests. **The same day it held Run's tools to their channel** (A8, pending): a Run tool
+runs as a Wasm module whose one network capability is its declared target, and a Run profile's P4 is refused at apply
+for any other tool; 103 tests. Both follow records that are pending or Proposed, as A3 once did. The register stands
+at forty-two assumptions and eighteen gaps; channel fidelity, G19, is now checked for Wasm-hosted tools and for no
+native one.
 
 **What it showed.** The records compose, subject to what it does not show (below): every link of §4.1's audit chain
 has running code. Making them run took the assumptions and gaps above, each tagged in the code, which turns "the
 mechanism will handle it" into a list. And it produced eleven findings about the records themselves, and on
 2026.09.29 three more: the reference had enforced one live lease per *seat* where the records meant per *principal*;
 a coupling rule written for every Run emission refused the heartbeat it depended on; and `T_obs` cannot be
-re-checked at apply, because it is a per-replica clock, so only the deterministic half of liveness is.
+re-checked at apply, because it is a per-replica clock, so only the deterministic half of liveness is. On 2026.10.02,
+four more: the core's canonical JSON was not canonical in any build that links the floor, because a dependency turned
+on `serde_json`'s insertion order, and only a separately built signer showed it; a launch measurement cannot cover the
+profile digest that names it, against ADR-0034 §2; the operational model could not test an absent number; and a Build
+profile could confine a Run seat, found by a question in review and closed before the commit.
 
 | # | Finding | Where it went |
 |---|---|---|
@@ -1688,13 +1736,14 @@ never compared; finding 4 because a live topic received two chains' records; fin
 out of memory. Finding 11 is the other kind: it was found in review, and it was the clause ADR-0020 had predicted an
 implementer would drop.
 
-**What it does not show.** Confinement — the MCP front door makes the alphabet the whole protocol, not the whole
-channel, and the guest launcher that would make them the same pipe is designed (§2.7) and not built. Tool
-hermeticity: tools are pinned by binary and schema digest and run in a cleared environment, and their behaviour is
-unchecked; in Run, the channel a tool opens is declared and nobody checks it (G19). The Observer as a detector: the
+**What it does not show.** Confinement — the launcher makes the alphabet the whole channel for a guest it starts
+(§2.7), and no guest it starts passes P3, no host it runs on attests, and an agent outside a launcher still has a
+shell. Tool hermeticity: a Build tool is pinned by binary and schema digest and runs in a cleared environment, and its
+behaviour is unchecked. In Run, a tool hosted as a Wasm module reaches only its declared target, and a native one is
+checked by nobody (G19); the module interface is narrower than the component ADR-0034 A2 names. The Observer as a detector: the
 reference seats one, hears its heartbeats and stalls on its absence, and the Observer that would produce a finding
 is an e2e fixture with nothing behind it. `W(p)` as an ACL: cells are declared, not enforced. Bundle custody:
-bundles verify under a dev key with custody (1, 0), and signing at promotion is not a pipeline step (G8, item 67).
+bundles verify under a dev key with custody (1, 0), and signing at promotion is not a pipeline step (G9, item 67).
 The archive, erasure, masking, Persona attestation and bootstrap: none
 is built. Scale and long-running behaviour: there are no snapshots, and every admit waits for a consensus round. And
 that the floor is the right floor.
@@ -1711,11 +1760,13 @@ an entry: the harness working as intended, on the test and not the code. Three f
 issuance passed `validate_issuance`, whether a break-glass approval's signature verified, and whether an admit's
 parameter digest matched. What it is: the first mechanized link between `spec/` and `mechanism/`, and a harness
 that catches drift at the exact step. What it is not: a refinement, or independent evidence, since the model was
-written from the code by the same hand on the same day; agreement was expected. ADR-0045 T-0045-28 stays a
+written from the code by the same hand on the same day; agreement was expected. Since 2026.10.02 the model also
+takes an appraisal's signature, a session proof and a profile's parse from the trace, and every replayed state is read
+against `Confinement_A1`'s invariants: 62 traces, 709 steps, every one matching. ADR-0045 T-0045-28 stays a
 trust-root row, and ADR-0033 owns the chain's next two stages, a Lean model with differential testing and then its
 compilation.
 
-**How it stays honest.** The reference pins the digest of every record and TLA+ module it follows, forty-four pins
+**How it stays honest.** The reference pins the digest of every record and TLA+ module it follows, forty-nine pins
 now, and a test fails when one changes or when the code cites one that is not pinned (G3 §5). Every change to a
 record in this revision's window was followed by a failing drift check, a review against the code, and a re-pin.
 That is the discipline in miniature: the reference is not trusted to track the corpus; it is checked for it. The
@@ -1757,6 +1808,25 @@ directories are not tracked, and G4 measures the tree by manifest.
 **What it does not show.** That θ is right, that the near-duplicate tool is the right tool, that two lineages the
 rule calls independent fail independently (only §6's test can), and that the bound is how anyone else measures
 overlap. The last is why ADR-0035 R2 is marked for review before ratification (§12, item 10).
+
+---
+
+## Appendix I. Changes from revision 12
+
+- **State of record repointed** from G8 to G9 (§0, §12). Batch 26, ADR-0046 E1, recorded; four amendments pending,
+  three of them the assistant's and drafted 2026.10.02 (§0, §9, §12 item 3).
+- **The header** says what changed between G8 and G9.
+- **§2.3:** the reference's lookup, and the only leases for which it answers yes, simulated ones.
+- **§2.4:** the mechanism half of the sandbox gap narrowed, not closed.
+- **§2.6:** the Run profile drafted; finding 6's successor module carries the correction and is proved.
+- **§2.7:** the launcher in the node built, pending; rung-1 leases issued in tests; the ratification run still unrun.
+- **§2.9:** ADR-0042 §6's conditions drafted and built, pending: ADR-0034 A2, `RunConfinement.tla`, ADR-0033 A8.
+- **§7.9:** Annex B behind the code; the binding table's pending changes.
+- **§11.3:** three bullets: a successor's proof, the refinement check, absence on the printed form.
+- **§12:** items 1, 3, 7, 11 and 16 brought to G9.
+- **§15:** what the reference is and is not; the 2026.10.02 moves and four findings; what it does not show; the
+  trace harness's second check; forty-nine pins.
+- **Appendices A to H retained.**
 
 ---
 
