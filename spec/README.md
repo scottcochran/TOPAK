@@ -49,7 +49,8 @@ chain and of the prover binary; `$TLAPM` overrides the binary, and the proof cac
 | `Lease_A1_proof.tla` | `Lease_A1.tla` | ADR-0031 §4, A1 | all four: `LeaseAuthorityMonotone`, `NoActionUnderFencedEpoch`, `Rung0NeverContained`, `RevokedStaysStopped` | none | `Lease_A1-proof-results-2026.10.02.txt` |
 | `Confinement_proof.tla` | `Confinement.tla` | ADR-0034 §7, A1 | all four: `ContainedMeansConfined`, `NoSilentDowngrade`, `ContestedStopped`, `FreshAppraisal`, for every rung at once | `Declared ∈ 0..3` | `Confinement-proof-results-2026.10.02.txt` |
 
-None is cited by digest in a record yet.
+None is cited by digest in a record yet. **`proof-method.md`** records how they were written, the patterns they
+share, the prover's habits, and a dated assessment of why they were cheap and where that stops.
 
 **`theorem-premise-binding.md`** is the table ADR-0045 §3 owes: for every property above, the trusted-base rows,
 degeneracy parameters and declared gaps it rests on, with the reference's inventory computed in its last column.
