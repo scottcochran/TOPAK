@@ -1,0 +1,11 @@
+TOPAK — TLAPS proof results for Coupling.tla: every obligation of Coupling_proof.tla, checked by the prover below
+Modules: Coupling.tla (sha256 6d1e7a07f3d102ef) · Coupling_proof.tla (sha256 9c37a36c2e607d54)
+Prover: tlapm 7824dab (binary sha256 e150fb793fb28592) · backends: Z3 version 4.8.9 - 64 bit · zenon version 0.8.4 [a268] 2017-11-14 · Isabelle2025 · LS4 for PTL · driver: proof-results.sh
+Assumptions: KNat == K \in Nat · RNat == R \in Nat · MaxRoundNat == MaxRound \in Nat
+Theorems: UnreadBoundedAlways · NoAdmitWithoutLiveObserverAlways · CorrelatorNeverGatesAlways · SafeAlways
+Lemmas: InitShape · QuietActions · NextShape · InitInvU · NextInvU · InvUBounded · NextNoAdmit · NextCorr · MutNoCoupleAllowsAll · MutMarkIgnoresBacklog · MutRoundsGrantsUncovered · MutCorrGates
+A proved obligation is a theorem of the module under its assumptions and the hypotheses the statement names; the prover, not the constants, bounds the claim. Mutations and witnesses are behaviours and stay with TLC.
+
+Zenon error: exhausted search space without finding a proof
+File "./Coupling_proof.tla", line 1, character 1 to line 277, character 77:
+[INFO]: All 320 obligations proved.

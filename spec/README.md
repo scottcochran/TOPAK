@@ -25,7 +25,7 @@ hand-assembled TLC output with a dated name and never change; the two generators
 
 ## TLAPS proofs
 
-Eleven modules also have deductive proofs, checked with the TLA+ Proof System (2026.10.02). Each proof module
+Thirteen modules also have deductive proofs, checked with the TLA+ Proof System (2026.10.02). Each proof module
 extends a frozen module without editing it and proves the invariants that module states, for every value of its
 constants that the named assumptions admit. A proof is bounded by its assumptions and the prover rather than by
 constants, so it is a different kind of evidence from a TLC row. Mutations and reachability witnesses are
@@ -49,6 +49,8 @@ chain and of the prover binary; `$TLAPM` overrides the binary, and the proof cac
 | `Seats_proof.tla` | `Seats.tla` | ADR-0037 §9 | `OnlyThinkersAuthor`, `OneSeatPerPrincipal` | none | `Seats-proof-results-2026.10.02.txt` |
 | `Observers_proof.tla` | `Observers.tla` | ADR-0038 §8 | `DenyByAnyOf`, `ReachIsBounded` | none | `Observers-proof-results-2026.10.02.txt` |
 | `RunSeats_proof.tla` | `RunSeats.tla` | ADR-0043 §8 | `OnlyThinkersActuate`, `ObserversConsultAndReport`, `NoNameCrossesDomains` | none | `RunSeats-proof-results-2026.10.02.txt` |
+| `Coupling_proof.tla` | `Coupling.tla` | ADR-0039 §8 | `NoAdmitWithoutLiveObserver`, `UnreadBounded`, `CorrelatorNeverGates`, for every K, R and MaxRound | `K, R, MaxRound ∈ Nat` | `Coupling-proof-results-2026.10.02.txt` |
+| `RunCoupling_proof.tla` | `RunCoupling.tla` | ADR-0042 §8; ADR-0041 §2 | all five, including the `ENABLED` invariant `ConsultNeverCoupled`, for every K, R and MaxRound | `K, R, MaxRound ∈ Nat` | `RunCoupling-proof-results-2026.10.02.txt` |
 | `Lease_A1_proof.tla` | `Lease_A1.tla` | ADR-0031 §4, A1 | all four: `LeaseAuthorityMonotone`, `NoActionUnderFencedEpoch`, `Rung0NeverContained`, `RevokedStaysStopped` | none | `Lease_A1-proof-results-2026.10.02.txt` |
 | `Confinement_proof.tla` | `Confinement.tla` | ADR-0034 §7, A1 | all four: `ContainedMeansConfined`, `NoSilentDowngrade`, `ContestedStopped`, `FreshAppraisal`, for every rung at once | `Declared ∈ 0..3` | `Confinement-proof-results-2026.10.02.txt` |
 

@@ -2,7 +2,7 @@
 
 **2026.10.02** · the method behind the `spec/*_proof.tla` modules and `spec/proof-results.sh` · DRAFT, revised with the proofs it describes
 
-**What this is.** How the eleven proof modules written on 2026.10.02 were made, what each claims and does not claim,
+**What this is.** How the thirteen proof modules written on 2026.10.02 were made, what each claims and does not claim,
 the patterns they share, the prover's habits that cost time, and a dated assessment of why they were cheap and where
 that stops. It is a method note, not a record. Nothing here is ratified, no record cites a proof yet, and the
 TLC-versus-TLAPS declaration (MAP 2.3, open in every checkpoint's §8) remains the custodian's to make. A later
@@ -26,12 +26,14 @@ declared, in the place T-0045-29 declares TLC.
   so the theorem holds for every value of it, where TLC ran one value.
 - **Each theorem takes as hypothesis only the mutations that break it,** written `ASSUME Mut # "M_X"`. A combined
   `SafeAlways` takes `Mut = "none"`. The hypotheses restate the "Breaks under" column of
-  `spec/theorem-premise-binding.md`, and writing them produced three corrections to it: RunSeats' `M_OBSEMIT` breaks
+  `spec/theorem-premise-binding.md`, and writing them produced four corrections to it: RunSeats' `M_OBSEMIT` breaks
   none of that module's three invariants (it narrows an observer's bound, and the invariants are upper bounds);
   Confinement's binding of a lease to a guest is enforced by Act's generation check, not by `SameGuest` at grant,
   which the proof never uses; and in FloorComposition, `M_OVERRIDE` breaks `FloorErrorIsDeny` and
   `BundleRefusalHonored` as well as `AdmitImpliesFloorPermit`, and `M_ERR` breaks `AdmitImpliesFloorPermit` as well
-  as `FloorErrorIsDeny`, rows TLC did not run.
+  as `FloorErrorIsDeny`, rows TLC did not run; and RunCoupling's `SealCountsEffects` breaks under `M_EMITSEQ`, not
+  `M_ROUNDS`, which the table names and which never touches a seal. The last is a transcription error: the results
+  file's own rows (`rc-emitseq-seal`, `rc-rounds-seal`) say what the proof says.
 - **Mutations and reachability witnesses stay with TLC.** A counterexample and a witness are behaviours, and the
   prover proves universal statements. Each proof module instead carries one lemma per mutation stating what the
   mutation admits (the guard it removes): `MutAdmitsAll`, `MutAdmitsAuthority`, `MutRevokeGrantsAgain` and the
@@ -52,6 +54,8 @@ declared, in the place T-0045-29 declares TLC.
 | `Confinement_proof.tla` | 502 | 4 | a type invariant, plus six generation-binding clauses (§3) |
 | `NonComposition_proof.tla` | 58 | 2 | NC2, plus "the records NC1 needs were created" and "only admitted effects went via break-glass" |
 | `FloorComposition_proof.tla` | 171 | 5 | the flags themselves; EnvelopeHolds adds the type invariant and "the floor's inputs are the truth" |
+| `Coupling_proof.tla` | 320 | 3 | a shape invariant under every mutation (future rounds zero, mark at most the sequence, an idle round's seal is its sequence), plus "past marks equal seals" and "the backlog is at most K" |
+| `RunCoupling_proof.tla` | 469 | 5 | the Coupling shape with effect seals, plus "the sequence counts effects" and "past seals agree"; the `ENABLED` invariant is a state lemma |
 | `RulesFloorNV_rev5_proof.tla` | 262 | 6 | "the issued rules are in the rule space and satisfy the floor"; each property is established at Promote and frozen, since Issue and Vote need `~promoted` |
 
 ## 2. Process, per module
@@ -110,6 +114,13 @@ declared, in the place T-0045-29 declares TLC.
 - **Established and frozen.** When every action after a commit point needs the commit flag false (Issue and Vote
   need `~promoted`), a property of the committed values is proved once at the commit action and carried by a
   lemma that every step either is the commit or leaves the values alone.
+- **Arithmetic invariants in layers.** Coupling's unread bound needed five auxiliary clauses, found by asking what
+  each action needs of the state to keep the bound: future rounds untouched for the grant, the mark below the
+  sequence for the heartbeat, the idle seal equal to the sequence and past marks equal to seals for the next grant.
+  The clauses that hold under every mutation (`Shape`) are proved once; the two that need the coupling sit on top.
+  RunCoupling adds one layer (the sequence counts effects) and reuses the rest.
+- **ENABLED as an invariant.** `ConsultNeverCoupled` is `(tLive /\ acts < R) => ENABLED Consult`. Under its
+  hypothesis it holds in every state, so it is a state lemma `BY ExpandENABLED` and PTL lifts it; no induction.
 - **A module's unnamed ASSUMEs as theorems.** TLC evaluates an `ASSUME`; the prover can prove it. The three in
   `RulesFloorNV_rev5.tla`, that genesis satisfies the floor and that every entry is independently droppable, are
   lemmas with explicit witness records. The witnesses are the "why dropping must fail" lemmas for that module.
@@ -131,6 +142,9 @@ declared, in the place T-0045-29 declares TLC.
   known to be a natural: `FS_CardinalityType` after `FS_Subset` from a finite superset, and a literal set is
   finite `BY FS_EmptySet, FS_AddElement DEF` its name. That was the only FiniteSetTheorems use in
   `RulesFloorNV_rev5`.
+- An index into a function over `1..MaxRound` needs `DEF Rounds` and the Nat assumptions in scope at every step
+  that reads `mark[round]`; omitting them was the single cause of sixteen failures across Coupling and RunCoupling.
+  Chaining inequalities through such a value needs an explicit "`mark[round] \in Nat`" step.
 - A `WITNESS` step takes no `DEF`, so it cannot show a record is in a record set. Use `DEFINE w == ...`, prove
   `w \in S` and the property as two steps, and let the QED find the witness. `ExpandENABLED` proved an `ENABLED` goal over seven variables at the first attempt. A Zenon failure
   line is noise when the obligation count says proved; only the final count and the exit status matter.
@@ -169,13 +183,15 @@ difficult part.
 
 **Where it stopped being easy.** Confinement's `ContainedMeansConfined` is not flag-shaped: the record appended at
 Act depends on state established three actions earlier, at launch, appraisal and grant, and the generation-binding
-invariant had to be invented. The remaining modules are harder for the same reason. `Coupling` and `RunCoupling`
-have arithmetic invariants over counters and marks (`seq - mark[round] <= K`, marks never exceeding seals, the
-sealed round equal to the counter while idle) that must be found rather than read off a guard, and `RunCoupling`
-states an `ENABLED` invariant. `RulesFloorNV_rev5` was expected to need cardinality lemmas and needed one fact: `PromotionEnabled` states the
+invariant had to be invented. `Coupling` and `RunCoupling` were the other place: their unread bounds are
+arithmetic invariants over counters and marks (`seq - mark[round] <= K`, marks never exceeding seals, the sealed
+round equal to the counter while idle) that had to be found rather than read off a guard; the invariant sketched
+in the first assessment held as sketched, and the remaining cost was the prover's need to see the index domain at
+every step. `RunCoupling`'s `ENABLED` invariant was a state lemma. `RulesFloorNV_rev5` was expected to need cardinality lemmas and needed one fact: `PromotionEnabled` states the
 cardinalities the properties compare, so the proofs carry them as terms, and only the threshold case had to know
 the term is a natural.
-`NonComposition` and `FloorComposition` were flag-shaped and cheap, as expected; NonComposition's one surprise was
+Every module the first assessment listed is now proved except `Mechanism`. `NonComposition` and
+`FloorComposition` were flag-shaped and cheap, as expected; NonComposition's one surprise was
 a missing clause, that only admitted effects are recorded as via break-glass, which the prover found and TLC could
 not have. `Mechanism` is not in this class:
 it is a trace replay over a concrete trace constant, and the meaningful target is a refinement from it to the
