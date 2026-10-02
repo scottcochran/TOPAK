@@ -1,6 +1,7 @@
 #!/bin/bash
 # usage: mechanism-trace-run.sh <trace.jsonl>...
-# Checks each recorded trace of the reference against Mechanism.tla (ADR-0045 T-0045-28, stage 1).
+# Checks each recorded trace of the reference against Mechanism.tla (ADR-0045 T-0045-28, stage 1), and its
+# states against ConfinementRefinement.tla (the abstract confinement invariants).
 # Prints one line per trace: name | steps | MATCH, or the first mismatching step.
 # Jar location: $TLA_JAR, else ../tools/tla2tools.jar, else ./tla2tools.jar
 jar=${TLA_JAR:-../tools/tla2tools.jar}
@@ -13,7 +14,8 @@ for t in "$@"; do
   if echo "$out" | grep -q "No error has been found"; then r="MATCH"
   elif echo "$out" | grep -q "is violated"; then
     at=$(echo "$out" | grep -oE "^/\\\\ i = [0-9]+" | tail -1 | grep -oE "[0-9]+")
-    r="MISMATCH at step $((at + 1))"
+    if echo "$out" | grep -q "Invariant TraceMatches is violated"; then r="MISMATCH at step $((at + 1))"
+    else r="REFINEMENT $(echo "$out" | grep -oE "Invariant [A-Za-z]+ is violated" | head -1 | cut -d' ' -f2) violated at step $at"; fi
   else r="ERROR"; fi
   echo "$mod | $steps steps | $r"
   [ "$r" = "ERROR" ] && echo "$out" | grep -v "^$" | tail -15

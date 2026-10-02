@@ -22,6 +22,20 @@
 (*                     rules floor (RulesFloorNV_rev5 checks the floor itself)    *)
 (*   BreakGlassApprove whether the approval's signature verified                  *)
 (*   Admit             whether the admit's parameter digest matched the replica's *)
+(*                     and, under an attested session key, whether the session    *)
+(*                     proof verified under it (`proofOk`)                        *)
+(*   Grant Renew       whether the appraisal's signature verified (`sigOk`), and  *)
+(*   Contested         the key it names (`sigKey`); the model checks the key is   *)
+(*                     an issued verifier key (ADR-0025 §1 (f))                   *)
+(*   ProfileRegister   what the file parses to: well-formed (`ok`), its domain,   *)
+(*                     its digest, its artifact digest, and the summary below     *)
+(*                                                                                *)
+(* Confinement (ADR-0034 §3, ADR-0036 §6) is modelled as the code checks it at    *)
+(* apply: the appraisal against the registered profile, the nonce's epoch, the    *)
+(* session proof at Admit. `contained` is the set of fences `State::contained`    *)
+(* holds for, recomputed by the model after every step, so the lookup itself is   *)
+(* validated. `ConfinementRefinement.tla` reads the same traces against the        *)
+(* abstract `Confinement_A1.tla`.                                                 *)
 (*                                                                                *)
 (* Not modelled: the floor and bundle decisions (an Admit entry is already a      *)
 (* decision; apply re-checks the mechanism conditions only, as the code does),    *)
@@ -34,11 +48,17 @@
 (*                                                                                *)
 (* State: epoch rulesEpoch seats grantRoster vetoRoster quorum minGrant bgIssued  *)
 (*        bgRoster (a set, empty when no break-glass roster is issued)            *)
-(*        verifierKeys bundleKeys (ADR-0025 §1 (f); carried, read by nothing here) *)
+(*        verifierKeys bundleKeys (ADR-0025 §1 (f)) personas criterion           *)
 (*        leases liveBySeat lastRound candidates gates approvals revoked          *)
-(*        appliedIds lastApplied k tPersona marks seals buildBound runBound       *)
+(*        appliedIds lastApplied k tPersona marks seals profiles contested        *)
+(*        contained buildBound runBound                                           *)
+(* Seat: domain kind cell rung                                                    *)
 (* Lease: principal seat persona epoch rulesEpoch conf rung alphabet round role   *)
-(*        ttl ended actions seq                                                   *)
+(*        ttl ended actions seq att sessionCtr                                    *)
+(* Att: verdict nEpoch nIndex gen key platform · Profile: artifact summary        *)
+(*        registeredAt · Summary: image persona measurement minTcb domain p3 p4 p5*)
+(* Appraisal: verdict rung profile persona nEpoch nIndex principal round key      *)
+(*        measurement tcb platform gen evidence                                   *)
 (* Candidate: artifact author votes promotedAt · Vote: verdict evidence rulesEpoch*)
 (* Result: kind, plus fence | seq promoted | ended | epoch | rulesEpoch | approvals*)
 EXTENDS Naturals, Sequences, FiniteSets, TLC
@@ -51,6 +71,7 @@ RunEffects == {"Actuate", "Report"}
 EmptyFn == [x \in {} |-> x]
 
 DomainOf(k) == IF k \in RunKinds THEN "run" ELSE "build"
+InHouse == {"in_house_pretrain", "in_house_finetune"}   \* ADR-0017's axis, Provenance::in_house
 
 \* SeatKind::allows (ADR-0037 §4, ADR-0043 §2)
 KindAllows(kind, k) ==
@@ -59,8 +80,9 @@ KindAllows(kind, k) ==
     [] kind = "grant"    -> k \in {"Read", "Emit", "Vote"}
     [] OTHER             -> FALSE
 
-\* TLC refuses `=` between an integer and a string, so an absent value is tested by type.
-IsNone(x)       == x \in STRING /\ x = NONE
+\* TLC refuses `=` between an integer and a string, and `\in STRING` on an integer or a
+\* record, so an absent value is tested on its printed form, which every value has.
+IsNone(x)       == ToString(x) = ToString(NONE)
 Remove(f, x)    == [y \in DOMAIN f \ {x} |-> f[y]]
 Put(f, x, v)    == (x :> v) @@ f
 Sat(a, b)       == IF a >= b THEN a - b ELSE 0
@@ -172,6 +194,71 @@ EndAllLive(s, reason) ==
       newSeals == [x \in thinkers |-> SealOf(s.leases[s.liveBySeat[x]])]
   IN [s EXCEPT !.leases = leases2, !.liveBySeat = EmptyFn, !.seals = newSeals @@ @]
 
+\* --- confinement (ADR-0034, ADR-0036; confine.rs) ----------------------------------
+
+TcbOf(x) == IF IsNone(x) THEN 0 ELSE x
+
+\* Profile::check_for_rung: what P7 names, by rung
+ProfileForRung(p, r) ==
+  \/ r = 0
+  \/ /\ p.image
+     /\ ~IsNone(p.persona)
+     /\ (r >= 2 => ~IsNone(p.measurement))
+     /\ (r >= 3 => ~IsNone(p.minTcb))
+
+\* Profile::meets_p3_p5 (ADR-0034 §4; D-0034-3)
+MeetsP3P5(p, alphabet) ==
+  /\ p.p3 = "pass"
+  /\ (p.p4 = "pass" \/ (p.p4 = "vacuous" /\ "Invoke" \notin alphabet))
+  /\ p.p5 = "pass"
+
+\* State::check_appraisal (ADR-0034 §3.2): w names what the request fixes
+AppraisalOk(s, idx, e, w) ==
+  LET a == e.appraisal IN
+  /\ a.verdict = "attested"
+  /\ a.rung = w.rung
+  /\ a.profile = w.conf
+  /\ w.conf \in DOMAIN s.profiles
+  /\ LET p == s.profiles[w.conf].summary IN
+     /\ p.domain = w.domain                        \* ADR-0034 §1: schema shared, profile not
+     /\ ProfileForRung(p, w.rung)
+     /\ a.persona = w.persona
+     /\ p.persona = w.persona
+     /\ a.principal = w.principal
+     /\ a.round = w.round
+     /\ a.nEpoch = s.epoch                         \* FreshEpoch
+     /\ a.nIndex < idx
+     /\ a.nIndex >= w.minIndex
+     /\ (w.rung >= 2 => /\ ~IsNone(a.key)
+                        /\ a.measurement = p.measurement
+                        /\ TcbOf(a.tcb) >= TcbOf(p.minTcb))
+     /\ IF w.rung = 1 THEN a.platform = "launcher"
+        ELSE IF w.rung = 2 THEN FALSE              \* the rung-2 seam
+        ELSE e.sigOk /\ e.sigKey \in s.verifierKeys
+
+AttOf(a) == [verdict |-> a.verdict, nEpoch |-> a.nEpoch, nIndex |-> a.nIndex,
+             gen |-> a.gen, key |-> a.key, platform |-> a.platform]
+
+HasKey(lr) == ~IsNone(lr.att) /\ ~IsNone(lr.att.key)
+
+\* State::contained (ADR-0034 §4): a lookup over the lease, the profile and the issued rules
+ContainedF(s, f) ==
+  LET l == s.leases[f] IN
+  /\ l.ended = NONE
+  /\ l.rung >= 1
+  /\ l.seat \in DOMAIN s.seats
+  /\ s.seats[l.seat].rung = l.rung
+  /\ ~IsNone(l.att)
+  /\ l.att.verdict = "attested"
+  /\ l.conf \in DOMAIN s.profiles
+  /\ MeetsP3P5(s.profiles[l.conf].summary, l.alphabet)
+  /\ l.persona \in DOMAIN s.personas
+  /\ s.personas[l.persona] \in InHouse
+  /\ s.criterion
+  /\ SeatDomain(s, l.seat) = "build"
+
+ContainedSet(s) == {f \in DOMAIN s.leases : ContainedF(s, f)}
+
 TargetMatches(t, lr) ==
   \/ t.kind = "principal"   /\ t.id = lr.principal
   \/ t.kind = "persona"     /\ t.id = lr.persona
@@ -194,13 +281,20 @@ ApplyGrant(s, idx, e) ==
      ELSE IF e.role = "voter" /\ dom # "build" THEN Rej(s)
      ELSE IF revokedHit THEN Rej(s)
      ELSE IF e.rung > 3 THEN Rej(s)
+     ELSE IF e.rung # s.seats[e.seat].rung THEN Rej(s)   \* ADR-0034 §3.4, M_DOWNGRADE
+     ELSE IF e.rung = 0 /\ ~IsNone(e.appraisal) THEN Rej(s)
+     ELSE IF e.rung > 0 /\ IsNone(e.appraisal) THEN Rej(s)
+     ELSE IF e.rung > 0 /\ ~AppraisalOk(s, idx, e, [principal |-> e.principal, round |-> e.round,
+                              conf |-> e.conf, persona |-> e.persona, rung |-> e.rung, domain |-> dom, minIndex |-> 0])
+       THEN Rej(s)
      ELSE IF e.ttl > s.tPersona THEN Rej(s)      \* ADR-0031 A2
      ELSE IF unread THEN Rej(s)
      ELSE IF reused THEN Rej(s)
      ELSE LET lr == [principal |-> e.principal, seat |-> e.seat, persona |-> e.persona,
                      epoch |-> s.epoch, rulesEpoch |-> s.rulesEpoch, conf |-> e.conf, rung |-> e.rung,
                      alphabet |-> e.alphabet, round |-> e.round, role |-> e.role, ttl |-> e.ttl,
-                     ended |-> NONE, actions |-> 0, seq |-> 0]
+                     ended |-> NONE, actions |-> 0, seq |-> 0,
+                     att |-> IF e.rung = 0 THEN NONE ELSE AttOf(e.appraisal), sessionCtr |-> 0]
           IN [st  |-> [s EXCEPT !.leases = Put(@, idx, lr), !.liveBySeat = Put(@, e.seat, idx),
                                 !.lastRound = Put(@, e.seat, e.round)],
               res |-> [kind |-> "LeaseGranted", fence |-> idx]]
@@ -215,7 +309,16 @@ ApplyRenew(s, idx, e) ==
     ELSE IF ~(e.alphabet \subseteq old.alphabet) THEN Rej(s)
     ELSE IF e.rung # old.rung THEN Rej(s)
     ELSE IF e.ttl > old.ttl THEN Rej(s)
-    ELSE LET new == [old EXCEPT !.alphabet = e.alphabet, !.ttl = e.ttl]
+    \* ADR-0034 §3.6: an attested lease renews on a fresh appraisal of the same guest
+    ELSE IF IsNone(old.att) /\ ~IsNone(e.appraisal) THEN Rej(s)
+    ELSE IF ~IsNone(old.att) /\ IsNone(e.appraisal) THEN Rej(s)
+    ELSE IF ~IsNone(old.att) /\ ~AppraisalOk(s, idx, e, [principal |-> old.principal, round |-> old.round,
+                                  conf |-> old.conf, persona |-> old.persona, rung |-> old.rung,
+                                  domain |-> SeatDomain(s, old.seat), minIndex |-> e.fence])
+      THEN Rej(s)
+    ELSE IF ~IsNone(old.att) /\ (e.appraisal.gen # old.att.gen \/ e.appraisal.key # old.att.key) THEN Rej(s)
+    ELSE LET new == [old EXCEPT !.alphabet = e.alphabet, !.ttl = e.ttl,
+                                !.att = IF IsNone(old.att) THEN NONE ELSE AttOf(e.appraisal)]
          IN [st  |-> [s EXCEPT !.leases = Put([@ EXCEPT ![e.fence].ended = "renewed"], idx, new),
                                !.liveBySeat = Put(@, e.seat, idx)],
              res |-> [kind |-> "Renewed", fence |-> idx]]
@@ -242,9 +345,13 @@ ApplyAdmit(s, idx, e) ==
   IF ~e.ok THEN Rej(s)
   ELSE IF ~CheckLive(s, e) THEN Rej(s)
   ELSE IF e.action.kind \in RunEffects /\ SeatKindOf(s, e.seat) = "thinker" /\ ~ObserverCovers(s, e.seat) THEN Rej(s)
+  \* ADR-0034 §3.5: under a session key, the attested guest's proof with a fresh counter
+  ELSE IF HasKey(s.leases[e.lease])
+          /\ (IsNone(e.session) \/ ~e.proofOk \/ e.session.ctr <= s.leases[e.lease].sessionCtr) THEN Rej(s)
   ELSE LET f   == e.lease
            a   == e.action
-           lr1 == [s.leases[f] EXCEPT !.actions = @ + 1]
+           lr1 == [s.leases[f] EXCEPT !.actions = @ + 1,
+                                      !.sessionCtr = IF HasKey(s.leases[f]) THEN e.session.ctr ELSE @]
        IN CASE a.kind \in {"Emit", "Report", "Actuate"} ->
                LET lr2 == [lr1 EXCEPT !.seq = @ + 1]
                IN [st |-> [s EXCEPT !.leases = Put(@, f, lr2)], res |-> Admitted(lr2.seq, NONE)]
@@ -288,7 +395,8 @@ ApplyIssue(s, e) ==
            s1 == [s EXCEPT !.rulesEpoch = r.rulesEpoch, !.seats = r.seats, !.grantRoster = r.grantRoster,
                            !.vetoRoster = r.vetoRoster, !.quorum = r.quorum, !.minGrant = r.minGrant,
                            !.bgIssued = r.bgIssued, !.bgRoster = r.bgRoster,
-                           !.verifierKeys = r.verifierKeys, !.bundleKeys = r.bundleKeys]
+                           !.verifierKeys = r.verifierKeys, !.bundleKeys = r.bundleKeys,
+                           !.personas = r.personas, !.criterion = r.criterion]
        IN [st |-> EndAllLive(s1, "rules_changed"), res |-> [kind |-> "Issued", rulesEpoch |-> r.rulesEpoch]]
 
 ApplyBreakGlass(s, e) ==
@@ -300,8 +408,28 @@ ApplyBreakGlass(s, e) ==
        IN [st  |-> [s EXCEPT !.approvals = Put(@, e.seat, Put(bySeat, e.epoch, keys))],
            res |-> [kind |-> "BreakGlassApproved", approvals |-> Cardinality(keys)]]
 
+\* State::apply_contested (ADR-0034 §3.3, §3.7): a signed rung-3 Contested revokes the principal
+ApplyContested(s, e) ==
+  LET a == e.appraisal IN
+  IF a.verdict # "contested" THEN Rej(s)
+  ELSE IF a.rung <= 2 THEN Rej(s)
+  ELSE IF ~(e.sigOk /\ e.sigKey \in s.verifierKeys) THEN Rej(s)
+  ELSE LET r == ApplyRevoke(s, [target |-> [kind |-> "principal", id |-> a.principal]])
+       IN [st  |-> [r.st EXCEPT !.contested = Put(@, a.principal, a.evidence)],
+           res |-> [kind |-> "Contested", ended |-> r.res.ended]]
+
+\* State::apply_profile_register (ADR-0034 §1): only a promoted artifact is a reference value
+ApplyProfileRegister(s, idx, e) ==
+  IF ~e.ok THEN Rej(s)
+  ELSE IF ~e.build THEN Rej(s)
+  ELSE IF ~(e.artifact \in DOMAIN s.candidates /\ ~IsNone(s.candidates[e.artifact].promotedAt)) THEN Rej(s)
+  ELSE [st  |-> IF e.digest \in DOMAIN s.profiles THEN s
+                ELSE [s EXCEPT !.profiles = Put(@, e.digest,
+                        [artifact |-> e.artifact, summary |-> e.profile, registeredAt |-> idx])],
+        res |-> [kind |-> "ProfileRegistered", digest |-> e.digest]]
+
 \* State::apply
-Apply(s0, idx, e) ==
+ApplyRaw(s0, idx, e) ==
   LET s == [s0 EXCEPT !.lastApplied = idx] IN
   IF e.id \in s.appliedIds THEN [st |-> s, res |-> [kind |-> "Duplicate"]]
   ELSE LET s1 == [s EXCEPT !.appliedIds = @ \cup {e.id}] IN
@@ -316,6 +444,12 @@ Apply(s0, idx, e) ==
       [] e.kind = "GatesPassed"       -> [st |-> [s1 EXCEPT !.gates = Put(@, e.artifact, e.evidence)],
                                           res |-> [kind |-> "GatesRecorded"]]
       [] e.kind = "BreakGlassApprove" -> ApplyBreakGlass(s1, e)
+      [] e.kind = "Contested"         -> ApplyContested(s1, e)
+      [] e.kind = "ProfileRegister"   -> ApplyProfileRegister(s1, idx, e)
+
+\* The projection carries `contained`, which the model recomputes after every step.
+Apply(s0, idx, e) ==
+  LET r == ApplyRaw(s0, idx, e) IN [st |-> [r.st EXCEPT !.contained = ContainedSet(r.st)], res |-> r.res]
 
 \* --- trace validation ---------------------------------------------------------
 

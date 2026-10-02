@@ -15,6 +15,7 @@ use std::fmt;
 
 use crate::action::{ActionRequest, tool_id};
 use crate::authentic::{self, KeyHex, Signed};
+use crate::confine::*;
 use crate::lease::{Confinement, Lease, MAX_RUNG};
 use crate::observer::{Heartbeat, ObserverValues, PersonaValues};
 use crate::promotion::{Candidate, Tally, VoteRecord, tally_with_coverage};
@@ -106,6 +107,13 @@ pub struct LeaseRecord {
     /// admits, `Actuate` and `Report`, and not `Consult` (ADR-0042 §2). Counting reports only is
     /// D-0042-1, and `RunCoupling.tla`'s `M_EMITSEQ`.
     pub seq: u64,
+    /// The appraisal the lease was granted, or last renewed, on (ADR-0034 §3.2). `None` at rung 0.
+    #[serde(default)]
+    pub attestation: Option<Attestation>,
+    /// The last session-proof counter admitted under this lease's session key (ADR-0034 §3.5).
+    /// Carried across renewal: the session is the guest's, not the fence's.
+    #[serde(default)]
+    pub session_ctr: u64,
 }
 
 impl LeaseRecord {
@@ -281,19 +289,32 @@ pub struct AdmitRecord {
     pub params: Digest,
     /// The replica that decided. Its host runs the effect after the entry commits.
     pub decided_by: u32,
+    /// At rungs 2 and 3, the attested guest's proof that it sent this action (ADR-0034 §3.5).
+    /// Checked again at apply, because the generation binding at `Act` is what
+    /// `ContainedMeansConfined` rests on (`spec/theorem-premise-binding.md`).
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub session: Option<SessionProof>,
 }
 
 /// One log entry. `id` is unique per proposal so a retried proposal applies at most once.
 #[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
 #[serde(tag = "entry")]
 pub enum Entry {
+    /// At rung ≥ 1 the grant carries the appraisal it rests on: profile digest and rung in `req`,
+    /// verdict, nonce, evidence digest and session key in the statement (ADR-0034 §3.2). Every
+    /// replica re-checks it at apply.
     Grant {
         id: String,
         req: GrantRequest,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        appraisal: Option<Appraisal>,
     },
+    /// A renewal of an attested lease re-attests the same guest with a fresh nonce (ADR-0034 §3.6).
     Renew {
         id: String,
         req: RenewRequest,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        appraisal: Option<Appraisal>,
     },
     Admit {
         id: String,
@@ -320,6 +341,20 @@ pub enum Entry {
         id: String,
         reason: String,
         attribution: String,
+    },
+    /// A Contested verdict (ADR-0034 §3.3, §3.7): a targeted, permanent revocation of the
+    /// principal the statement names, never its profile or Persona, with the evidence by digest.
+    /// Ordered, no quorum. Stop attribution, forensic class F2.
+    Contested {
+        id: String,
+        appraisal: Appraisal,
+        attribution: String,
+    },
+    /// Registers a confinement profile whose single-file workspace was promoted (ADR-0034 §1).
+    /// A digest nobody promoted is not a reference value. The file's bytes, verbatim.
+    ProfileRegister {
+        id: String,
+        profile: String,
     },
     /// An anchor issuance: forensic class F4.
     Issue {
@@ -352,6 +387,8 @@ impl Entry {
             | Entry::EndRound { id, .. }
             | Entry::Revoke { id, .. }
             | Entry::EpochIncrement { id, .. }
+            | Entry::Contested { id, .. }
+            | Entry::ProfileRegister { id, .. }
             | Entry::Issue { id, .. }
             | Entry::GatesPassed { id, .. }
             | Entry::BreakGlassApprove { id, .. } => id,
@@ -419,6 +456,13 @@ pub enum Applied {
     EpochIncremented {
         epoch: Epoch,
     },
+    /// A Contested principal was revoked; `ended` live leases matched.
+    Contested {
+        ended: usize,
+    },
+    ProfileRegistered {
+        digest: Digest,
+    },
     Issued {
         rules_epoch: RulesEpoch,
     },
@@ -469,10 +513,38 @@ pub struct State {
     /// number. Read by the cross-round grant condition (ADR-0039 §2) and by coverage (§3).
     #[serde(default)]
     pub seals: BTreeMap<SeatId, Seal>,
+    /// Registered confinement profiles by file digest (ADR-0034 §1, ADR-0036 §1).
+    #[serde(default)]
+    pub profiles: BTreeMap<Digest, ProfileRecord>,
+    /// Principals revoked on a Contested verdict, with the evidence digest (ADR-0034 §3.7). The
+    /// set `ContestedStopped` quantifies over.
+    #[serde(default)]
+    pub contested: BTreeMap<String, Digest>,
     /// A trace name, set by a test or an operator: with `TOPAK_TRACE_DIR`, every `apply` is
     /// recorded for checking against `spec/Mechanism.tla` (`trace.rs`). Never replicated state.
     #[serde(skip)]
     pub trace: Option<String>,
+}
+
+#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+pub struct ProfileRecord {
+    pub profile: Profile,
+    /// The promoted workspace the profile was registered from.
+    pub artifact: Digest,
+    pub registered_at: LogIndex,
+}
+
+/// What an appraisal must match, from the request it is attached to.
+struct Want<'a> {
+    principal: &'a str,
+    round: Round,
+    profile: &'a Digest,
+    persona: &'a Digest,
+    rung: u8,
+    /// The seat's domain: Build and Run share the schema, not the profile (ADR-0034 §1).
+    domain: Domain,
+    /// A renewal's nonce is from no earlier than the lease it renews.
+    min_index: LogIndex,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -510,6 +582,8 @@ impl State {
             persona: PersonaValues::default(),
             marks: BTreeMap::new(),
             seals: BTreeMap::new(),
+            profiles: BTreeMap::new(),
+            contested: BTreeMap::new(),
             trace: None,
         })
     }
@@ -703,8 +777,10 @@ impl State {
             return Applied::Duplicate;
         }
         match entry {
-            Entry::Grant { req, .. } => self.apply_grant(index, req),
-            Entry::Renew { req, .. } => self.apply_renew(index, req),
+            Entry::Grant { req, appraisal, .. } => self.apply_grant(index, req, appraisal.as_ref()),
+            Entry::Renew { req, appraisal, .. } => self.apply_renew(index, req, appraisal.as_ref()),
+            Entry::Contested { appraisal, .. } => self.apply_contested(appraisal),
+            Entry::ProfileRegister { profile, .. } => self.apply_profile_register(index, profile),
             Entry::Admit { rec, .. } => self.apply_admit(index, rec, params),
             // ADR-0042 §5: a Run principal cannot end its own round. Abstention is `Submit(⊥)`
             // and belongs to Build; a Run round ends when its lease ends.
@@ -760,7 +836,7 @@ impl State {
         }
     }
 
-    fn apply_grant(&mut self, index: LogIndex, req: &GrantRequest) -> Applied {
+    fn apply_grant(&mut self, index: LogIndex, req: &GrantRequest, appraisal: Option<&Appraisal>) -> Applied {
         let Some(domain) = self.rules.seat_domain(&req.seat) else {
             return Applied::Rejected(format!("seat {} is not declared in the rules", req.seat));
         };
@@ -797,6 +873,37 @@ impl State {
         if req.confinement.rung > MAX_RUNG {
             return Applied::Rejected("no such confinement rung".into());
         }
+        // ADR-0034 §3.4: a grant is at the seat's declared rung or not at all. Without this an
+        // Unattestable principal could be granted at rung 0 (`Confinement.tla` `M_DOWNGRADE`).
+        let declared = self.rules.seats.get(&req.seat).map_or(0, |d| d.rung);
+        if req.confinement.rung != declared {
+            return Applied::Rejected(format!(
+                "rung {} is not seat {}'s declared rung {declared}: no silent downgrade (ADR-0034 §3.4)",
+                req.confinement.rung, req.seat
+            ));
+        }
+        let attestation = match (req.confinement.rung, appraisal) {
+            (0, None) => None,
+            (0, Some(_)) => return Applied::Rejected("a rung-0 grant rests on no appraisal".into()),
+            (_, None) => {
+                return Applied::Rejected("a grant at rung 1 or above carries its appraisal (ADR-0034 §3.2)".into());
+            }
+            (rung, Some(a)) => {
+                let want = Want {
+                    principal: &req.principal,
+                    round: req.round,
+                    profile: &req.confinement.digest,
+                    persona: &req.persona,
+                    rung,
+                    domain,
+                    min_index: 0,
+                };
+                match self.check_appraisal(index, a, &want) {
+                    Ok(att) => Some(att),
+                    Err(e) => return Applied::Rejected(e),
+                }
+            }
+        };
         // ADR-0031 A2: a lease's ttl is at most T_persona, so the Persona is re-attested at least
         // that often (ADR-0016 §6). Refused by the mechanism, not by policy.
         if req.ttl_ms > self.persona.t_persona_ms {
@@ -834,7 +941,7 @@ impl State {
             role: req.role,
             ttl_ms: req.ttl_ms,
         };
-        self.leases.insert(index, LeaseRecord { lease, ended: None, actions: 0, seq: 0 });
+        self.leases.insert(index, LeaseRecord { lease, ended: None, actions: 0, seq: 0, attestation, session_ctr: 0 });
         self.live_by_seat.insert(req.seat.clone(), index);
         self.last_round.insert(req.seat.clone(), req.round);
         Applied::LeaseGranted { fence: index }
@@ -860,7 +967,7 @@ impl State {
     }
 
     /// A renewal replaces the live lease with a narrower one at a new fence (ADR-0031 §4).
-    fn apply_renew(&mut self, index: LogIndex, req: &RenewRequest) -> Applied {
+    fn apply_renew(&mut self, index: LogIndex, req: &RenewRequest, appraisal: Option<&Appraisal>) -> Applied {
         let Some(old) = self.leases.get(&req.fence) else {
             return Applied::Rejected("unknown lease".into());
         };
@@ -885,7 +992,37 @@ impl State {
         if let Err(e) = old.lease.check_renewal(&new) {
             return Applied::Rejected(e);
         }
-        let rec = LeaseRecord { lease: new, ..old.clone() };
+        // ADR-0034 §3.6: an attested lease renews only on a fresh appraisal of the same guest.
+        // Unattestable lets it lapse; nothing renews it at a lower rung (`M_RENEWLOW`).
+        let attestation = match (&old.attestation, appraisal) {
+            (None, None) => None,
+            (None, Some(_)) => return Applied::Rejected("a rung-0 lease renews on no appraisal".into()),
+            (Some(_), None) => {
+                return Applied::Rejected("an attested lease renews only on a fresh appraisal (ADR-0034 §3.6)".into());
+            }
+            (Some(prev), Some(a)) => {
+                let l = &old.lease;
+                let want = Want {
+                    principal: &l.principal,
+                    round: l.round,
+                    profile: &l.confinement.digest,
+                    persona: &l.persona,
+                    rung: l.confinement.rung,
+                    domain: self.rules.seat_domain(&l.seat).unwrap_or(Domain::Build),
+                    min_index: l.fence,
+                };
+                let att = match self.check_appraisal(index, a, &want) {
+                    Ok(att) => att,
+                    Err(e) => return Applied::Rejected(e),
+                };
+                // `Confinement.tla` `SameGuest`: the renewal is the guest the lease was granted to.
+                if att.instance != prev.instance || att.session_key != prev.session_key {
+                    return Applied::Rejected("renewal appraises another guest (ADR-0034 §3.6)".into());
+                }
+                Some(att)
+            }
+        };
+        let rec = LeaseRecord { lease: new, attestation, ..old.clone() };
         let old_fence = req.fence;
         if let Some(o) = self.leases.get_mut(&old_fence) {
             o.ended = Some(EndReason::Renewed);
@@ -917,9 +1054,31 @@ impl State {
         {
             return Applied::Rejected("no cell Observer covers this seat at commit (ADR-0039 §2)".into());
         }
+        // ADR-0034 §3.5: under an attested session key, the action is the attested guest's. The
+        // generation binding at `Act`: a proof under any other key, or a replayed counter, is void.
+        let key = self.leases[&rec.lease].attestation.as_ref().and_then(|a| a.session_key.clone());
+        let ctr = match (&key, &rec.session) {
+            (None, _) => None,
+            (Some(_), None) => {
+                return Applied::Rejected("the lease's session key signed nothing (ADR-0034 §3.5)".into());
+            }
+            (Some(k), Some(proof)) => {
+                let body = session_body(rec.lease, rec.epoch, proof.ctr, &proof.op);
+                if !authentic::verify(AGENT_OP_PURPOSE, &body, &Signed { key: k.clone(), sig: proof.sig.clone() }) {
+                    return Applied::Rejected("the session proof is not the attested guest's (ADR-0034 §3.5)".into());
+                }
+                if proof.ctr <= self.leases[&rec.lease].session_ctr {
+                    return Applied::Rejected("the session proof's counter is replayed".into());
+                }
+                Some(proof.ctr)
+            }
+        };
         let fence = rec.lease;
         let lr = self.leases.get_mut(&fence).expect("checked");
         lr.actions += 1;
+        if let Some(c) = ctr {
+            lr.session_ctr = c;
+        }
         let mut seq = None;
         let mut promoted = None;
         match &rec.action {
@@ -977,6 +1136,174 @@ impl State {
             _ => {}
         }
         Applied::Admitted { seq, promoted }
+    }
+
+    /// The conditions ADR-0034 §3.2 adds to ADR-0033 §4's apply-time re-check, in the order
+    /// `Mechanism.tla` `AppraisalOk` states them. One replica appraised; every replica checks.
+    fn check_appraisal(&self, index: LogIndex, a: &Appraisal, w: &Want) -> Result<Attestation, String> {
+        let st = &a.statement;
+        if st.verdict != Appraised::Attested {
+            return Err(format!("the verdict is {}: only Attested grants (ADR-0034 §3.3)", st.verdict.as_str()));
+        }
+        if st.rung != w.rung {
+            return Err(format!("the appraisal is at rung {}, the request at {}", st.rung, w.rung));
+        }
+        if &st.profile != w.profile {
+            return Err("the appraisal is of another profile".into());
+        }
+        let Some(pr) = self.profiles.get(w.profile) else {
+            return Err("the profile is not registered from a promoted artifact (ADR-0034 §1)".into());
+        };
+        // ADR-0034 §1: Build and Run share the schema, not the profile. A Run seat is never
+        // granted on a Build profile, and no Run profile exists to register (ADR-0042 §6).
+        if pr.profile.domain != w.domain {
+            return Err(format!(
+                "a {} profile does not confine a {} seat (ADR-0034 §1)",
+                pr.profile.domain.as_str(),
+                w.domain.as_str()
+            ));
+        }
+        pr.profile.check_for_rung(w.rung)?;
+        // F26: one Persona digest across the lease, the profile and the statement.
+        if &st.persona != w.persona || pr.profile.persona.model_json_sha256.as_ref() != Some(w.persona) {
+            return Err("the Persona is not the profile's (ADR-0034 P5, P7)".into());
+        }
+        if st.nonce.principal != w.principal || st.nonce.round != w.round {
+            return Err("the nonce names another principal or round".into());
+        }
+        // `Confinement.tla` `FreshEpoch`: an epoch fence invalidates every pending appraisal.
+        if st.nonce.epoch != self.epoch {
+            return Err(format!("the nonce is from epoch {}, fenced (ADR-0034 §3.6)", st.nonce.epoch));
+        }
+        if st.nonce.index >= index || st.nonce.index < w.min_index {
+            return Err("the nonce is not from the log between the lease and this entry".into());
+        }
+        if w.rung >= 2 {
+            if st.session_key.is_none() {
+                return Err("rungs 2 and 3 bind a session key (ADR-0034 §3.5)".into());
+            }
+            // The verifier's verdict is checked against the profile's own reference values too:
+            // a measurement or TCB the profile does not admit is not Attested whoever signs it.
+            if st.measurement != pr.profile.reference.launch_measurement {
+                return Err("the measurement is not the profile's reference value (P7)".into());
+            }
+            if st.tcb.unwrap_or(0) < pr.profile.reference.min_tcb.unwrap_or(0) {
+                return Err("the platform TCB is below the profile's minimum (P7)".into());
+            }
+        }
+        let verified_by = match w.rung {
+            1 => {
+                if st.platform != PLATFORM_LAUNCHER {
+                    return Err("rung 1 is the launcher's assertion".into());
+                }
+                None
+            }
+            2 => return Err("rung 2 appraisal is not implemented (no measured-boot quote check)".into()),
+            _ => Some(self.verifier_signer(a)?),
+        };
+        Ok(Attestation {
+            verdict: st.verdict,
+            n_epoch: st.nonce.epoch,
+            nonce_index: st.nonce.index,
+            instance: a.instance.clone(),
+            session_key: st.session_key.clone(),
+            evidence: st.evidence.clone(),
+            verified_by,
+            platform: st.platform.clone(),
+        })
+    }
+
+    /// ADR-0025 §1 (f): the issued verifier key that signed the statement.
+    fn verifier_signer(&self, a: &Appraisal) -> Result<KeyHex, String> {
+        let sigs: Vec<Signed> = a.signature.iter().cloned().collect();
+        authentic::valid_signers(APPRAISAL_PURPOSE, &a.body(), &sigs, &self.rules.verifier_keys)
+            .into_iter()
+            .next()
+            .ok_or_else(|| "the appraisal is not signed by an issued verifier key (ADR-0025 §1 (f))".into())
+    }
+
+    /// ADR-0034 §3.3, §3.7: a Contested verdict revokes the principal, permanently, with the
+    /// evidence. Rung 1 has no measurement to diverge from (`NeverContested`), so only a signed
+    /// rung-3 statement may order one; the operator's `Revoke` remains for everything else.
+    fn apply_contested(&mut self, a: &Appraisal) -> Applied {
+        let st = &a.statement;
+        if st.verdict != Appraised::Contested {
+            return Applied::Rejected("the statement is not Contested".into());
+        }
+        match st.rung {
+            0 | 1 => return Applied::Rejected("rungs 0 and 1 cannot produce Contested (ADR-0034 §7)".into()),
+            2 => return Applied::Rejected("rung 2 appraisal is not implemented".into()),
+            _ => {}
+        }
+        if let Err(e) = self.verifier_signer(a) {
+            return Applied::Rejected(e);
+        }
+        let principal = st.nonce.principal.clone();
+        let evidence = st.evidence.clone();
+        let Applied::Revoked { ended } = self.apply_revoke(&RevocationTarget::Principal(principal.clone())) else {
+            unreachable!("apply_revoke reports Revoked")
+        };
+        self.contested.insert(principal, evidence);
+        Applied::Contested { ended }
+    }
+
+    /// ADR-0034 §1: a profile is a reference value only once its artifact is promoted. A Run
+    /// profile is refused while ADR-0042 §6 is Proposed: Run principals are `Mediated`.
+    fn apply_profile_register(&mut self, index: LogIndex, text: &str) -> Applied {
+        let profile = match Profile::parse(text) {
+            Ok(p) => p,
+            Err(e) => return Applied::Rejected(e),
+        };
+        let bad = profile.check_well_formed();
+        if !bad.is_empty() {
+            return Applied::Rejected(format!("malformed profile: {}", bad.join("; ")));
+        }
+        if profile.domain != Domain::Build {
+            return Applied::Rejected("no Run profile exists yet (ADR-0042 §6)".into());
+        }
+        let artifact = profile_artifact(text.as_bytes());
+        if !self.candidates.get(&artifact).is_some_and(|c| c.promoted_at.is_some()) {
+            return Applied::Rejected("the profile's artifact is not promoted (ADR-0034 §1)".into());
+        }
+        let digest = Digest::of(text.as_bytes());
+        self.profiles.entry(digest.clone()).or_insert(ProfileRecord { profile, artifact, registered_at: index });
+        Applied::ProfileRegistered { digest }
+    }
+
+    /// `Contained(p)` (ADR-0034 §4) for the lease at `fence`: a lookup, never a judgment. Every
+    /// conjunct that fails is named. Rung 0 is `Mediated`, always (ADR-0031 §3).
+    pub fn contained(&self, fence: LogIndex) -> Containment {
+        let mut because = Vec::new();
+        let Some(lr) = self.leases.get(&fence) else {
+            return Containment { contained: false, because: vec!["no such lease".into()], simulated: false };
+        };
+        let l = &lr.lease;
+        if !lr.live() {
+            because.push("the lease is not live".into());
+        }
+        if l.confinement.rung == 0 {
+            because.push("rung 0 is Mediated (ADR-0031 §3)".into());
+        } else if self.rules.seats.get(&l.seat).map_or(0, |d| d.rung) != l.confinement.rung {
+            because.push("the lease is not at its seat's declared rung".into());
+        }
+        if lr.attestation.as_ref().map(|a| a.verdict) != Some(Appraised::Attested) {
+            because.push("no Attested appraisal".into());
+        }
+        match self.profiles.get(&l.confinement.digest) {
+            None => because.push("the profile is not registered".into()),
+            Some(pr) => because.extend(pr.profile.meets_p3_p5(&l.alphabet)),
+        }
+        if !self.rules.personas.get(&l.persona).is_some_and(|p| p.in_house()) {
+            because.push("the Persona is not in house on ADR-0017's axis".into());
+        }
+        if self.rules.criterion.is_none() {
+            because.push("ADR-0035's criterion is not in force in the issued rules".into());
+        }
+        if self.rules.seat_domain(&l.seat) != Some(Domain::Build) {
+            because.push("Run principals are Mediated until the Run profile exists (ADR-0042 §6)".into());
+        }
+        let simulated = lr.attestation.as_ref().is_some_and(|a| a.platform == PLATFORM_SIM_SNP);
+        Containment { contained: because.is_empty(), because, simulated }
     }
 }
 

@@ -96,6 +96,7 @@ pub async fn start_node(cfg: NodeConfig) -> anyhow::Result<Arc<Mechanism>> {
         corpus_dir: cfg.corpus_dir.clone(),
         data_dir: cfg.data_dir.clone(),
         proposals: prop_tx,
+        contain: cfg.contain.as_ref().map(|c| c.build(&cfg.data_dir)).transpose()?,
     })?;
     tokio::spawn(driver::Driver { replica, wal: Some(wal), net, mech: mech.clone() }.run(in_rx, prop_rx));
     spawn_sweeper(mech.clone());

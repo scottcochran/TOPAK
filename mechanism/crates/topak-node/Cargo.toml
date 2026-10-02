@@ -14,6 +14,10 @@ path = "src/main.rs"
 name = "topak-demo-tool"
 path = "src/bin/topak-demo-tool.rs"
 
+[features]
+# Accept a `sim-cvm` backend and a `sim` verifier in the node's config (topak-contain `sim`).
+sim = ["topak-contain/sim"]
+
 [dependencies]
 topak-core.workspace = true
 topak-paxos.workspace = true
@@ -21,6 +25,7 @@ topak-floor.workspace = true
 topak-bundle.workspace = true
 topak-transport.workspace = true
 topak-mcp.workspace = true
+topak-contain.workspace = true
 rmcp = { workspace = true, features = ["server", "transport-io"] }
 tokio.workspace = true
 serde.workspace = true
@@ -32,3 +37,6 @@ clap.workspace = true
 hex.workspace = true
 ed25519-dalek = { workspace = true, features = ["rand_core"] }
 rand = "0.8"
+
+[dev-dependencies]
+topak-contain = { workspace = true, features = ["sim"] }

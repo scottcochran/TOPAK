@@ -1,0 +1,2462 @@
+TOPAK — ADR-0034 attested confinement: Confinement_A1.tla, the successor carrying finding 6, run 2026.10.02 at rungs 0 to 3 (feature item 3; design record derived/topak-contain-wrapper-design-2026.10.02.md)
+Module: Confinement_A1.tla (sha256 715b1c291771c527) · TLC Version 2.19 of 08 August 2024 (jar sha256 936a262061c91469) · openjdk version "25.0.1" 2025-10-21
+Runner: confinement-run.sh · Constants: MaxEpoch = 1 · MaxIdx = 4 · MaxGen = 2 · Principals = {p1, p2} · Promoted = {arch, med}
+
+=== safe0 · Declared=0 · Mut=none · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 6.9E-10
+  based on the actual fingerprints:  val = 1.7E-9
+262539 states generated, 64562 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 21.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 7 and the 95th percentile is 3).
+Finished in 05s at (2026-10-02 08:50:23)
+
+=== safe1 · Declared=1 · Mut=none · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 6.9E-10
+  based on the actual fingerprints:  val = 9.7E-10
+262539 states generated, 64562 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 21.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 7 and the 95th percentile is 3).
+Finished in 05s at (2026-10-02 08:50:29)
+
+=== safe2 · Declared=2 · Mut=none · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.5E-9
+  based on the actual fingerprints:  val = 4.8E-10
+509240 states generated, 118042 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 21.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 9 and the 95th percentile is 4).
+Finished in 05s at (2026-10-02 08:50:35)
+
+=== safe3 · Declared=3 · Mut=none · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 7.1E-7
+  based on the actual fingerprints:  val = 7.4E-8
+9775563 states generated, 1594644 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 26.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 11 and the 95th percentile is 4).
+Finished in 10s at (2026-10-02 08:50:47)
+
+=== wc0 · Declared=0 · Mut=none · INVARIANT NeverContainedEffect
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 6.9E-10
+  based on the actual fingerprints:  val = 5.6E-10
+262539 states generated, 64562 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 21.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 7 and the 95th percentile is 3).
+Finished in 05s at (2026-10-02 08:50:53)
+
+=== wc1 · Declared=1 · Mut=none · INVARIANT NeverContainedEffect
+Error: Invariant NeverContainedEffect is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ epoch = 0
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 0, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 0
+/\ refused = FALSE
+/\ contested = {}
+State 2: <Fence line 268, col 3 to line 272, col 118 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 0, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 3: <Launch line 102, col 3 to line 108, col 117 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "arch", asked |-> "arch", boot |-> "arch", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 4: <Appraise line 160, col 3 to line 179, col 87 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 1, v |-> "Attested", prof |-> "arch", nEpoch |-> 1],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "arch", asked |-> "arch", boot |-> "arch", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 5: <Grant line 194, col 3 to line 207, col 109 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 1,
+        prof |-> "arch",
+        nEpoch |-> 1,
+        live |-> TRUE,
+        rung |-> 1,
+        epoch |-> 1 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "arch", asked |-> "arch", boot |-> "arch", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 2
+/\ refused = FALSE
+/\ contested = {}
+State 6: <Act line 219, col 3 to line 224, col 123 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {[img |-> "arch", principal |-> "p1", contained |-> TRUE]}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 1,
+        prof |-> "arch",
+        nEpoch |-> 1,
+        live |-> TRUE,
+        rung |-> 1,
+        epoch |-> 1 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "arch", asked |-> "arch", boot |-> "arch", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 2
+/\ refused = FALSE
+/\ contested = {}
+620 states generated, 340 distinct states found, 205 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 5 and the 95th percentile is 5).
+Finished in 05s at (2026-10-02 08:50:58)
+
+=== wc3 · Declared=3 · Mut=none · INVARIANT NeverContainedEffect
+Error: Invariant NeverContainedEffect is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ epoch = 0
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 0, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 0
+/\ refused = FALSE
+/\ contested = {}
+State 2: <Fence line 268, col 3 to line 272, col 118 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 0, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 3: <Launch line 102, col 3 to line 108, col 117 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "arch", asked |-> "arch", boot |-> "arch", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 4: <Appraise line 160, col 3 to line 179, col 87 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 1, v |-> "Attested", prof |-> "arch", nEpoch |-> 1],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "arch", asked |-> "arch", boot |-> "arch", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 5: <Grant line 194, col 3 to line 207, col 109 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 1,
+        prof |-> "arch",
+        nEpoch |-> 1,
+        live |-> TRUE,
+        rung |-> 3,
+        epoch |-> 1 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "arch", asked |-> "arch", boot |-> "arch", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 2
+/\ refused = FALSE
+/\ contested = {}
+State 6: <Act line 219, col 3 to line 224, col 123 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {[img |-> "arch", principal |-> "p1", contained |-> TRUE]}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 1,
+        prof |-> "arch",
+        nEpoch |-> 1,
+        live |-> TRUE,
+        rung |-> 3,
+        epoch |-> 1 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "arch", asked |-> "arch", boot |-> "arch", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 2
+/\ refused = FALSE
+/\ contested = {}
+2388 states generated, 986 distinct states found, 670 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 10 and the 95th percentile is 8).
+Finished in 05s at (2026-10-02 08:51:04)
+
+=== wm0 · Declared=0 · Mut=none · INVARIANT NeverMediatedEffect
+Error: Invariant NeverMediatedEffect is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ epoch = 0
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 0, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 0
+/\ refused = FALSE
+/\ contested = {}
+State 2: <Fence line 268, col 3 to line 272, col 118 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 0, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 3: <Launch line 102, col 3 to line 108, col 117 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "arch", asked |-> "arch", boot |-> "arch", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 4: <Kill line 113, col 3 to line 115, col 123 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 5: <Launch line 102, col 3 to line 108, col 117 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 2, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "med", asked |-> "med", boot |-> "med", gen |-> 2],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 6: <Appraise line 160, col 3 to line 179, col 87 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 2, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 2, v |-> "Attested", prof |-> "med", nEpoch |-> 1],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "med", asked |-> "med", boot |-> "med", gen |-> 2],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 7: <Grant line 194, col 3 to line 207, col 109 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 2, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 2,
+        prof |-> "med",
+        nEpoch |-> 1,
+        live |-> TRUE,
+        rung |-> 0,
+        epoch |-> 1 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "med", asked |-> "med", boot |-> "med", gen |-> 2],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 2
+/\ refused = FALSE
+/\ contested = {}
+State 8: <Act line 219, col 3 to line 224, col 123 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 2, p2 |-> 0]
+/\ acted = {[img |-> "med", principal |-> "p1", contained |-> FALSE]}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 2,
+        prof |-> "med",
+        nEpoch |-> 1,
+        live |-> TRUE,
+        rung |-> 0,
+        epoch |-> 1 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "med", asked |-> "med", boot |-> "med", gen |-> 2],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 2
+/\ refused = FALSE
+/\ contested = {}
+603 states generated, 336 distinct states found, 195 states left on queue.
+The depth of the complete state graph search is 9.
+The average outdegree of the complete state graph is 2 (minimum is 1, the maximum 5 and the 95th percentile is 4).
+Finished in 05s at (2026-10-02 08:51:09)
+
+=== wx0 · Declared=0 · Mut=none · INVARIANT NeverContested
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 6.9E-10
+  based on the actual fingerprints:  val = 3.5E-10
+262539 states generated, 64562 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 21.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 7 and the 95th percentile is 3).
+Finished in 05s at (2026-10-02 08:51:15)
+
+=== wx1 · Declared=1 · Mut=none · INVARIANT NeverContested
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 6.9E-10
+  based on the actual fingerprints:  val = 8.0E-10
+262539 states generated, 64562 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 21.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 7 and the 95th percentile is 3).
+Finished in 05s at (2026-10-02 08:51:21)
+
+=== wx3 · Declared=3 · Mut=none · INVARIANT NeverContested
+Error: Invariant NeverContested is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ epoch = 0
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 0, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 0
+/\ refused = FALSE
+/\ contested = {}
+State 2: <Fence line 268, col 3 to line 272, col 118 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 0, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 3: <Launch line 102, col 3 to line 108, col 117 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "rogue", asked |-> "arch", boot |-> "rogue", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 4: <Appraise line 160, col 3 to line 179, col 87 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {"p1"}
+/\ guest = [ p1 |-> [img |-> "rogue", asked |-> "arch", boot |-> "rogue", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 2
+/\ refused = FALSE
+/\ contested = {"p1"}
+354 states generated, 238 distinct states found, 188 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 6 (minimum is 1, the maximum 10 and the 95th percentile is 8).
+Finished in 05s at (2026-10-02 08:51:27)
+
+=== h0 · Declared=0 · Mut=M_HOST · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.3E-7
+  based on the actual fingerprints:  val = 4.2E-8
+3873494 states generated, 746310 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 25.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 9 and the 95th percentile is 4).
+Finished in 07s at (2026-10-02 08:51:35)
+
+=== hx0 · Declared=0 · Mut=M_HOST · INVARIANT NeverContested
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.3E-7
+  based on the actual fingerprints:  val = 6.0E-9
+3873494 states generated, 746310 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 25.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 9 and the 95th percentile is 4).
+Finished in 07s at (2026-10-02 08:51:43)
+
+=== h1 · Declared=1 · Mut=M_HOST · INVARIANT ContainedMeansConfined
+Error: Invariant ContainedMeansConfined is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ epoch = 0
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 0, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 0
+/\ refused = FALSE
+/\ contested = {}
+State 2: <Fence line 268, col 3 to line 272, col 118 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 0, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 3: <Launch line 102, col 3 to line 108, col 117 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "rogue", asked |-> "arch", boot |-> "rogue", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 4: <Appraise line 160, col 3 to line 179, col 87 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 1, v |-> "Attested", prof |-> "arch", nEpoch |-> 1],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "rogue", asked |-> "arch", boot |-> "rogue", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 5: <Grant line 194, col 3 to line 207, col 109 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 1,
+        prof |-> "arch",
+        nEpoch |-> 1,
+        live |-> TRUE,
+        rung |-> 1,
+        epoch |-> 1 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "rogue", asked |-> "arch", boot |-> "rogue", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 2
+/\ refused = FALSE
+/\ contested = {}
+State 6: <Act line 219, col 3 to line 224, col 123 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {[img |-> "rogue", principal |-> "p1", contained |-> TRUE]}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 1,
+        prof |-> "arch",
+        nEpoch |-> 1,
+        live |-> TRUE,
+        rung |-> 1,
+        epoch |-> 1 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "rogue", asked |-> "arch", boot |-> "rogue", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 2
+/\ refused = FALSE
+/\ contested = {}
+1016 states generated, 519 distinct states found, 351 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 3 (minimum is 1, the maximum 9 and the 95th percentile is 7).
+Finished in 05s at (2026-10-02 08:51:49)
+
+=== h2 · Declared=2 · Mut=M_HOST · INVARIANT ContainedMeansConfined
+Error: Invariant ContainedMeansConfined is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ epoch = 0
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 0, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 0
+/\ refused = FALSE
+/\ contested = {}
+State 2: <Launch line 102, col 3 to line 108, col 117 of module Confinement_A1>
+/\ epoch = 0
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "arch", asked |-> "arch", boot |-> "arch", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 0
+/\ refused = FALSE
+/\ contested = {}
+State 3: <Tamper line 123, col 3 to line 133, col 109 of module Confinement_A1>
+/\ epoch = 0
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "rogue", asked |-> "arch", boot |-> "arch", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 0
+/\ refused = FALSE
+/\ contested = {}
+State 4: <Appraise line 160, col 3 to line 179, col 87 of module Confinement_A1>
+/\ epoch = 0
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 1, v |-> "Attested", prof |-> "arch", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "rogue", asked |-> "arch", boot |-> "arch", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 0
+/\ refused = FALSE
+/\ contested = {}
+State 5: <Grant line 194, col 3 to line 207, col 109 of module Confinement_A1>
+/\ epoch = 0
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 1,
+        prof |-> "arch",
+        nEpoch |-> 0,
+        live |-> TRUE,
+        rung |-> 2,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "rogue", asked |-> "arch", boot |-> "arch", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 6: <Act line 219, col 3 to line 224, col 123 of module Confinement_A1>
+/\ epoch = 0
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {[img |-> "rogue", principal |-> "p1", contained |-> TRUE]}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 1,
+        prof |-> "arch",
+        nEpoch |-> 0,
+        live |-> TRUE,
+        rung |-> 2,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "rogue", asked |-> "arch", boot |-> "arch", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+1167 states generated, 577 distinct states found, 391 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 3 (minimum is 1, the maximum 9 and the 95th percentile is 7).
+Finished in 05s at (2026-10-02 08:51:55)
+
+=== h3 · Declared=3 · Mut=M_HOST · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 7.1E-7
+  based on the actual fingerprints:  val = 7.4E-8
+9775563 states generated, 1594644 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 26.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 11 and the 95th percentile is 4).
+Finished in 10s at (2026-10-02 08:52:05)
+
+=== hw3 · Declared=3 · Mut=M_HW · INVARIANT ContainedMeansConfined
+Error: Invariant ContainedMeansConfined is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ epoch = 0
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 0, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 0
+/\ refused = FALSE
+/\ contested = {}
+State 2: <Fence line 268, col 3 to line 272, col 118 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 0, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 3: <Launch line 102, col 3 to line 108, col 117 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "arch", asked |-> "arch", boot |-> "arch", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 4: <Tamper line 123, col 3 to line 133, col 109 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "rogue", asked |-> "arch", boot |-> "arch", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 5: <Appraise line 160, col 3 to line 179, col 87 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 1, v |-> "Attested", prof |-> "arch", nEpoch |-> 1],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "rogue", asked |-> "arch", boot |-> "arch", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 6: <Grant line 194, col 3 to line 207, col 109 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 1,
+        prof |-> "arch",
+        nEpoch |-> 1,
+        live |-> TRUE,
+        rung |-> 3,
+        epoch |-> 1 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "rogue", asked |-> "arch", boot |-> "arch", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 2
+/\ refused = FALSE
+/\ contested = {}
+State 7: <Act line 219, col 3 to line 224, col 123 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {[img |-> "rogue", principal |-> "p1", contained |-> TRUE]}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 1,
+        prof |-> "arch",
+        nEpoch |-> 1,
+        live |-> TRUE,
+        rung |-> 3,
+        epoch |-> 1 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "rogue", asked |-> "arch", boot |-> "arch", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 2
+/\ refused = FALSE
+/\ contested = {}
+5260 states generated, 1850 distinct states found, 1119 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 10 and the 95th percentile is 7).
+Finished in 05s at (2026-10-02 08:52:11)
+
+=== c3 · Declared=3 · Mut=M_CONTESTED · INVARIANT ContestedStopped
+Error: Invariant ContestedStopped is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ epoch = 0
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 0, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 0
+/\ refused = FALSE
+/\ contested = {}
+State 2: <Launch line 102, col 3 to line 108, col 117 of module Confinement_A1>
+/\ epoch = 0
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "rogue", asked |-> "arch", boot |-> "rogue", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 0
+/\ refused = FALSE
+/\ contested = {}
+State 3: <Appraise line 160, col 3 to line 179, col 87 of module Confinement_A1>
+/\ epoch = 0
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 1, v |-> "Attested", prof |-> "arch", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "rogue", asked |-> "arch", boot |-> "rogue", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 0
+/\ refused = FALSE
+/\ contested = {"p1"}
+371 states generated, 240 distinct states found, 187 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 6 (minimum is 1, the maximum 10 and the 95th percentile is 9).
+Finished in 05s at (2026-10-02 08:52:17)
+
+=== u3 · Declared=3 · Mut=M_UNBOUND · INVARIANT ContainedMeansConfined
+Error: Invariant ContainedMeansConfined is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ epoch = 0
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 0, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 0
+/\ refused = FALSE
+/\ contested = {}
+State 2: <Fence line 268, col 3 to line 272, col 118 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 0, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 3: <Launch line 102, col 3 to line 108, col 117 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "arch", asked |-> "arch", boot |-> "arch", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 4: <Appraise line 160, col 3 to line 179, col 87 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 1, v |-> "Attested", prof |-> "arch", nEpoch |-> 1],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "arch", asked |-> "arch", boot |-> "arch", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 5: <Kill line 113, col 3 to line 115, col 123 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 1, v |-> "Attested", prof |-> "arch", nEpoch |-> 1],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 6: <Launch line 102, col 3 to line 108, col 117 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 2, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 1, v |-> "Attested", prof |-> "arch", nEpoch |-> 1],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "rogue", asked |-> "arch", boot |-> "rogue", gen |-> 2],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 7: <Grant line 194, col 3 to line 207, col 109 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 2, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 1,
+        prof |-> "arch",
+        nEpoch |-> 1,
+        live |-> TRUE,
+        rung |-> 3,
+        epoch |-> 1 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "rogue", asked |-> "arch", boot |-> "rogue", gen |-> 2],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 2
+/\ refused = FALSE
+/\ contested = {}
+State 8: <Act line 219, col 3 to line 224, col 123 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 2, p2 |-> 0]
+/\ acted = {[img |-> "rogue", principal |-> "p1", contained |-> TRUE]}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 1,
+        prof |-> "arch",
+        nEpoch |-> 1,
+        live |-> TRUE,
+        rung |-> 3,
+        epoch |-> 1 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "rogue", asked |-> "arch", boot |-> "rogue", gen |-> 2],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 2
+/\ refused = FALSE
+/\ contested = {}
+15282 states generated, 4975 distinct states found, 2997 states left on queue.
+The depth of the complete state graph search is 9.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 11 and the 95th percentile is 6).
+Finished in 05s at (2026-10-02 08:52:22)
+
+=== s3 · Declared=3 · Mut=M_STALE · INVARIANT FreshAppraisal
+Error: Invariant FreshAppraisal is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ epoch = 0
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 0, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 0
+/\ refused = FALSE
+/\ contested = {}
+State 2: <Launch line 102, col 3 to line 108, col 117 of module Confinement_A1>
+/\ epoch = 0
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "arch", asked |-> "arch", boot |-> "arch", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 0
+/\ refused = FALSE
+/\ contested = {}
+State 3: <Appraise line 160, col 3 to line 179, col 87 of module Confinement_A1>
+/\ epoch = 0
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 1, v |-> "Attested", prof |-> "arch", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "arch", asked |-> "arch", boot |-> "arch", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 0
+/\ refused = FALSE
+/\ contested = {}
+State 4: <Fence line 268, col 3 to line 272, col 118 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 1, v |-> "Attested", prof |-> "arch", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "arch", asked |-> "arch", boot |-> "arch", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 5: <Grant line 194, col 3 to line 207, col 109 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 1,
+        prof |-> "arch",
+        nEpoch |-> 0,
+        live |-> TRUE,
+        rung |-> 3,
+        epoch |-> 1 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "arch", asked |-> "arch", boot |-> "arch", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 2
+/\ refused = FALSE
+/\ contested = {}
+2646 states generated, 1051 distinct states found, 702 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 10 and the 95th percentile is 8).
+Finished in 05s at (2026-10-02 08:52:28)
+
+=== d3 · Declared=3 · Mut=M_DOWNGRADE · INVARIANT NoSilentDowngrade
+Error: Invariant NoSilentDowngrade is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ epoch = 0
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 0, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 0
+/\ refused = FALSE
+/\ contested = {}
+State 2: <Fence line 268, col 3 to line 272, col 118 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 0, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 3: <VerifierFlip line 137, col 3 to line 139, col 118 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = FALSE
+/\ renewOut = {}
+/\ gens = [p1 |-> 0, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 4: <Launch line 102, col 3 to line 108, col 117 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = FALSE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "arch", asked |-> "arch", boot |-> "arch", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 5: <Appraise line 160, col 3 to line 179, col 87 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = FALSE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 1, v |-> "Unattestable", prof |-> "arch", nEpoch |-> 1],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "arch", asked |-> "arch", boot |-> "arch", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 6: <Grant line 194, col 3 to line 207, col 109 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = FALSE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 1,
+        prof |-> "arch",
+        nEpoch |-> 1,
+        live |-> TRUE,
+        rung |-> 0,
+        epoch |-> 1 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "arch", asked |-> "arch", boot |-> "arch", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 2
+/\ refused = FALSE
+/\ contested = {}
+646 states generated, 361 distinct states found, 271 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 4 (minimum is 1, the maximum 10 and the 95th percentile is 9).
+Finished in 05s at (2026-10-02 08:52:34)
+
+=== p3 · Declared=3 · Mut=M_PROFILE · INVARIANT ContainedMeansConfined
+Error: Invariant ContainedMeansConfined is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ epoch = 0
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 0, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 0
+/\ refused = FALSE
+/\ contested = {}
+State 2: <Launch line 102, col 3 to line 108, col 117 of module Confinement_A1>
+/\ epoch = 0
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "med", asked |-> "med", boot |-> "med", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 0
+/\ refused = FALSE
+/\ contested = {}
+State 3: <Appraise line 160, col 3 to line 179, col 87 of module Confinement_A1>
+/\ epoch = 0
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 1, v |-> "Attested", prof |-> "med", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "med", asked |-> "med", boot |-> "med", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 0
+/\ refused = FALSE
+/\ contested = {}
+State 4: <Grant line 194, col 3 to line 207, col 109 of module Confinement_A1>
+/\ epoch = 0
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 1,
+        prof |-> "med",
+        nEpoch |-> 0,
+        live |-> TRUE,
+        rung |-> 3,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "med", asked |-> "med", boot |-> "med", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 5: <Act line 219, col 3 to line 224, col 123 of module Confinement_A1>
+/\ epoch = 0
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {[img |-> "med", principal |-> "p1", contained |-> TRUE]}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 1,
+        prof |-> "med",
+        nEpoch |-> 0,
+        live |-> TRUE,
+        rung |-> 3,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "med", asked |-> "med", boot |-> "med", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+2816 states generated, 1110 distinct states found, 740 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 10 and the 95th percentile is 8).
+Finished in 05s at (2026-10-02 08:52:39)
+
+=== rl3 · Declared=3 · Mut=M_RENEWLOW · INVARIANT NoSilentDowngrade
+Error: Invariant NoSilentDowngrade is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ epoch = 0
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 0, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 0
+/\ refused = FALSE
+/\ contested = {}
+State 2: <Fence line 268, col 3 to line 272, col 118 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 0, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 3: <Launch line 102, col 3 to line 108, col 117 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "med", asked |-> "med", boot |-> "med", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 4: <Appraise line 160, col 3 to line 179, col 87 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = TRUE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 1, v |-> "Attested", prof |-> "med", nEpoch |-> 1],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "med", asked |-> "med", boot |-> "med", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 5: <VerifierFlip line 137, col 3 to line 139, col 118 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = FALSE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 1, v |-> "Attested", prof |-> "med", nEpoch |-> 1],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "med", asked |-> "med", boot |-> "med", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 1
+/\ refused = FALSE
+/\ contested = {}
+State 6: <Grant line 194, col 3 to line 207, col 109 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = FALSE
+/\ renewOut = {}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 1,
+        prof |-> "med",
+        nEpoch |-> 1,
+        live |-> TRUE,
+        rung |-> 3,
+        epoch |-> 1 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "med", asked |-> "med", boot |-> "med", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 2
+/\ refused = FALSE
+/\ contested = {}
+State 7: <Renew line 233, col 3 to line 257, col 88 of module Confinement_A1>
+/\ epoch = 1
+/\ verifierUp = FALSE
+/\ renewOut = {"lowered"}
+/\ gens = [p1 |-> 1, p2 |-> 0]
+/\ acted = {}
+/\ pending = [ p1 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0],
+  p2 |-> [gen |-> 0, v |-> "none", prof |-> "none", nEpoch |-> 0] ]
+/\ lease = [ p1 |->
+      [ gen |-> 1,
+        prof |-> "med",
+        nEpoch |-> 1,
+        live |-> TRUE,
+        rung |-> 0,
+        epoch |-> 1 ],
+  p2 |->
+      [ gen |-> 0,
+        prof |-> "none",
+        nEpoch |-> 0,
+        live |-> FALSE,
+        rung |-> 0,
+        epoch |-> 0 ] ]
+/\ tamperKilled = FALSE
+/\ revoked = {}
+/\ guest = [ p1 |-> [img |-> "med", asked |-> "med", boot |-> "med", gen |-> 1],
+  p2 |-> [img |-> "none", asked |-> "none", boot |-> "none", gen |-> 0] ]
+/\ idx = 3
+/\ refused = FALSE
+/\ contested = {}
+7011 states generated, 2474 distinct states found, 1511 states left on queue.
+The depth of the complete state graph search is 9.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 10 and the 95th percentile is 7).
+Finished in 05s at (2026-10-02 08:52:45)
+
+=== wrc3 · Declared=3 · Mut=none · INVARIANT NeverRenewContested
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 7.1E-7
+  based on the actual fingerprints:  val = 4.2E-8
+9775563 states generated, 1594644 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 26.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 11 and the 95th percentile is 4).
+Finished in 10s at (2026-10-02 08:52:56)
+

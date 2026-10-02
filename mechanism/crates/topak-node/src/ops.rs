@@ -15,6 +15,8 @@ use topak_core::rules::Issuance;
 use topak_core::state::{EndReason, RevocationTarget};
 use topak_core::*;
 
+// One request per connection, parsed and dropped: a variant's size costs nothing here.
+#[allow(clippy::large_enum_variant)]
 #[derive(Clone, Debug, Serialize, Deserialize)]
 #[serde(tag = "op", rename_all = "snake_case")]
 pub enum OperatorOp {
@@ -64,6 +66,25 @@ pub enum OperatorOp {
         seat: SeatId,
         epoch: Epoch,
         approval: Signed,
+    },
+    /// ADR-0036 §6: the node starts the guest from a registered profile, appraises, grants to
+    /// itself at the seat's declared rung, and bridges. The Persona is the profile's (F26); there
+    /// is no token, because the bridge, or at rungs 2 and 3 the guest's session key, is the
+    /// session. Rung 0 launches nothing: it is a `Grant`.
+    Launch {
+        principal: String,
+        seat: SeatId,
+        profile: Digest,
+        bundle: Digest,
+        alphabet: BTreeSet<ActionKind>,
+        ttl_ms: u64,
+        round: Round,
+        role: RoundRole,
+    },
+    /// Register a profile whose single-file workspace was promoted (ADR-0034 §1). The file's
+    /// bytes, verbatim: its digest is what a lease's `confinement` names.
+    RegisterProfile {
+        profile: String,
     },
     Status,
 }

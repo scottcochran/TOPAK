@@ -99,7 +99,8 @@ async fn fixture(name: &str) -> Fixture {
     };
 
     let keys = Keys { anchors: (0..3).map(|_| key()).collect(), bg: (0..2).map(|_| key()).collect(), bundle: key() };
-    let seat = |d: Domain, k: topak_core::SeatKind| SeatDecl { domain: d, kind: k, cell: None, key: pubhex(&key()) };
+    let seat =
+        |d: Domain, k: topak_core::SeatKind| SeatDecl { domain: d, kind: k, cell: None, key: pubhex(&key()), rung: 0 };
     let rules = Rules {
         rules_epoch: 0,
         quorum: Quorum::All,
@@ -127,6 +128,8 @@ async fn fixture(name: &str) -> Fixture {
         erasure_roster: None,
         verifier_keys: BTreeSet::new(),
         bundle_keys: BTreeSet::from([pubhex(&keys.bundle)]),
+        personas: BTreeMap::new(),
+        criterion: None,
     };
 
     // ADR-0044: the fixture's bundle key signs a copy of the built bundle into its own bundles
@@ -140,7 +143,11 @@ async fn fixture(name: &str) -> Fixture {
     let rev = tarball.file_name().unwrap().to_string_lossy().trim_end_matches(".tar.gz").to_string();
     std::fs::create_dir_all(dir.join("bundles")).unwrap();
     std::fs::copy(&tarball, dir.join("bundles").join(format!("{rev}.tar.gz"))).unwrap();
-    let sig = topak_core::authentic::sign(topak_bundle::BUNDLE_PURPOSE, &topak_bundle::bundle_body(&rev), &keys.bundle.to_bytes());
+    let sig = topak_core::authentic::sign(
+        topak_bundle::BUNDLE_PURPOSE,
+        &topak_bundle::bundle_body(&rev),
+        &keys.bundle.to_bytes(),
+    );
     std::fs::write(dir.join("bundles").join(format!("{rev}.sig")), serde_json::to_vec(&sig).unwrap()).unwrap();
     let l = LocalBundles::load_dir(&dir.join("bundles"), &rules.bundle_keys).await.unwrap();
     let bundle_rev = l.revisions().next().expect("the signed copy loads").clone();
@@ -191,6 +198,7 @@ async fn cluster(f: &Fixture, real_bundle: bool) -> Cluster {
             corpus_dir: f.dir.join("corpus"),
             data_dir: f.dir.join(format!("n{id}")),
             proposals: prop_tx,
+            contain: None,
         })
         .unwrap();
         let mut pcfg = topak_paxos::Config::new(id, vec![1, 2, 3]);
@@ -206,7 +214,12 @@ async fn cluster(f: &Fixture, real_bundle: bool) -> Cluster {
     // Trace validation (ADR-0045 T-0045-28, stage 1): with TOPAK_TRACE_DIR set, replica 1's
     // every `apply` is recorded for `spec/Mechanism.tla`; the others converge to the same state.
     let fixture = f.dir.file_name().unwrap().to_string_lossy().to_string();
-    let fixture = fixture.strip_prefix("topak-e2e-").unwrap_or(&fixture).rsplit_once('-').map(|(n, _pid)| n.to_string()).unwrap_or(fixture);
+    let fixture = fixture
+        .strip_prefix("topak-e2e-")
+        .unwrap_or(&fixture)
+        .rsplit_once('-')
+        .map(|(n, _pid)| n.to_string())
+        .unwrap_or(fixture);
     if let Some(name) = topak_core::trace::name_from_env(&format!("e2e-{fixture}")) {
         nodes[0].state.write().unwrap().trace = Some(name);
     }
@@ -610,7 +623,7 @@ async fn tools_break_glass_issuance_and_partition() {
     good.rules_epoch = 1;
     good.seats.insert(
         "g4".into(),
-        SeatDecl { domain: Domain::Build, kind: topak_core::SeatKind::Grant, cell: None, key: pubhex(&key()) },
+        SeatDecl { domain: Domain::Build, kind: topak_core::SeatKind::Grant, cell: None, key: pubhex(&key()), rung: 0 },
     );
     let mut unsigned = sign_all(&good);
     unsigned.signatures.pop();

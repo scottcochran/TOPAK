@@ -18,11 +18,11 @@ use topak_core::state::*;
 use topak_core::*;
 
 fn seat(d: Domain, kind: SeatKind, key: &str) -> SeatDecl {
-    SeatDecl { domain: d, kind, cell: None, key: key.into() }
+    SeatDecl { domain: d, kind, cell: None, key: key.into(), rung: 0 }
 }
 
 fn cell_observer(d: Domain, cell: &str, key: &str) -> SeatDecl {
-    SeatDecl { domain: d, kind: SeatKind::Observer, cell: Some(cell.into()), key: key.into() }
+    SeatDecl { domain: d, kind: SeatKind::Observer, cell: Some(cell.into()), key: key.into(), rung: 0 }
 }
 
 fn rules() -> Rules {
@@ -45,6 +45,8 @@ fn rules() -> Rules {
         erasure_roster: None,
         verifier_keys: BTreeSet::new(),
         bundle_keys: BTreeSet::new(),
+        personas: BTreeMap::new(),
+        criterion: None,
     }
 }
 
@@ -67,7 +69,8 @@ fn grant_req(seat: &str, alphabet: &[ActionKind]) -> GrantRequest {
         seat: seat.into(),
         persona: Digest::of(b"persona"),
         bundle: Digest::of(b"bundle"),
-        confinement: Confinement { digest: Digest::of(b"profile"), rung: 1 },
+        // Rung 0: a grant at rung 1 or above rests on an appraisal (`tests/confinement.rs`).
+        confinement: Confinement { digest: Digest::of(b"profile"), rung: 0 },
         alphabet: alphabet.iter().copied().collect(),
         ttl_ms: 1000,
         round: 1,
@@ -92,7 +95,15 @@ fn lease_renewal_is_monotone_and_m_renew_is_refused() {
     let p = params();
     let mut s = state();
     assert_eq!(
-        s.apply(1, &Entry::Grant { id: "g".into(), req: grant_req("a1", &[ActionKind::Read, ActionKind::Emit]) }, &p),
+        s.apply(
+            1,
+            &Entry::Grant {
+                id: "g".into(),
+                req: grant_req("a1", &[ActionKind::Read, ActionKind::Emit]),
+                appraisal: None
+            },
+            &p
+        ),
         Applied::LeaseGranted { fence: 1 }
     );
     let renew = |alphabet: &[ActionKind], rung, ttl| RenewRequest {
@@ -103,25 +114,23 @@ fn lease_renewal_is_monotone_and_m_renew_is_refused() {
         ttl_ms: ttl,
     };
 
-    // M_RENEW: every widening is refused.
+    // M_RENEW: every widening is refused, a higher rung among them.
     for (i, r) in [
-        renew(&[ActionKind::Read, ActionKind::Emit, ActionKind::Draft], 1, 1000),
-        renew(&[ActionKind::Read], 2, 1000),
-        renew(&[ActionKind::Read], 1, 2000),
+        renew(&[ActionKind::Read, ActionKind::Emit, ActionKind::Draft], 0, 1000),
+        renew(&[ActionKind::Read], 1, 1000),
+        renew(&[ActionKind::Read], 0, 2000),
     ]
     .into_iter()
     .enumerate()
     {
-        let a = s.apply(10 + i as u64, &Entry::Renew { id: format!("w{i}"), req: r }, &p);
+        let a = s.apply(10 + i as u64, &Entry::Renew { id: format!("w{i}"), req: r, appraisal: None }, &p);
         assert!(matches!(a, Applied::Rejected(_)), "widening {i} accepted: {a:?}");
     }
-    // Lease_A1.tla `M_LOWER`: a lower rung is refused too (ADR-0031 A1, ADR-0034 §3.4). The
-    // lease stays live at its rung; a principal that cannot re-attest lets it lapse instead.
-    let a = s.apply(15, &Entry::Renew { id: "l".into(), req: renew(&[ActionKind::Read], 0, 500) }, &p);
-    assert!(matches!(a, Applied::Rejected(_)), "M_LOWER: a renewal lowered the rung: {a:?}");
+    // Lease_A1.tla `M_LOWER` (a lower rung) needs a lease above rung 0, which needs an appraisal:
+    // `tests/confinement.rs` `m_lower_and_m_renewlow_are_refused`.
     assert_eq!(s.live_by_seat["a1"], 1, "a refused renewal leaves the lease as it was");
     // Narrowing is accepted at the same rung, at a new fence, and the old lease stops being live.
-    let a = s.apply(20, &Entry::Renew { id: "n".into(), req: renew(&[ActionKind::Read], 1, 500) }, &p);
+    let a = s.apply(20, &Entry::Renew { id: "n".into(), req: renew(&[ActionKind::Read], 0, 500), appraisal: None }, &p);
     assert_eq!(a, Applied::Renewed { fence: 20 });
     assert_eq!(s.live_by_seat["a1"], 20);
     assert!(s.check_live(&read("a1", 1, 0), &p).is_err());
@@ -157,7 +166,7 @@ fn renewal_cannot_change_round_or_role_and_m_role_is_refused() {
     let mut s = state();
     let mut req = grant_req("a1", &[ActionKind::Read]);
     req.role = RoundRole::Voter;
-    s.apply(1, &Entry::Grant { id: "g".into(), req }, &p);
+    s.apply(1, &Entry::Grant { id: "g".into(), req, appraisal: None }, &p);
     let old = s.leases[&1].lease.clone();
     assert_eq!((old.round, old.role), (1, RoundRole::Voter), "the grant's round and role are in the lease");
 
@@ -176,10 +185,10 @@ fn renewal_cannot_change_round_or_role_and_m_role_is_refused() {
 fn one_live_lease_per_principal() {
     let p = params();
     let mut s = state();
-    s.apply(1, &Entry::Grant { id: "g1".into(), req: grant_req("a1", &[ActionKind::Read]) }, &p);
+    s.apply(1, &Entry::Grant { id: "g1".into(), req: grant_req("a1", &[ActionKind::Read]), appraisal: None }, &p);
     let mut wide = grant_req("a1", &[ActionKind::Read, ActionKind::Draft, ActionKind::Invoke]);
     wide.round = 2;
-    let a = s.apply(2, &Entry::Grant { id: "g2".into(), req: wide }, &p);
+    let a = s.apply(2, &Entry::Grant { id: "g2".into(), req: wide, appraisal: None }, &p);
     assert!(matches!(a, Applied::Rejected(ref r) if r.contains("live lease")), "{a:?}");
 }
 
@@ -187,7 +196,7 @@ fn one_live_lease_per_principal() {
 fn no_action_under_a_fenced_epoch_and_m_fence_is_refused() {
     let p = params();
     let mut s = state();
-    s.apply(1, &Entry::Grant { id: "g".into(), req: grant_req("a1", &[ActionKind::Read]) }, &p);
+    s.apply(1, &Entry::Grant { id: "g".into(), req: grant_req("a1", &[ActionKind::Read]), appraisal: None }, &p);
     assert!(s.check_live(&read("a1", 1, 0), &p).is_ok(), "reachability: an action is admissible");
     s.apply(2, &Entry::EpochIncrement { id: "e".into(), reason: "revoke".into(), attribution: "t".into() }, &p);
     // The fence is checked first, so the reason is the fence, not the lease's end.
@@ -202,10 +211,10 @@ fn no_action_under_a_fenced_epoch_and_m_fence_is_refused() {
 fn a_targeted_revocation_ends_one_round_and_not_the_fleet() {
     let p = params();
     let mut s = state();
-    s.apply(1, &Entry::Grant { id: "g1".into(), req: grant_req("a1", &[ActionKind::Read]) }, &p);
+    s.apply(1, &Entry::Grant { id: "g1".into(), req: grant_req("a1", &[ActionKind::Read]), appraisal: None }, &p);
     let mut other = grant_req("g1", &[ActionKind::Read]);
     other.persona = Digest::of(b"another persona");
-    s.apply(2, &Entry::Grant { id: "g2".into(), req: other }, &p);
+    s.apply(2, &Entry::Grant { id: "g2".into(), req: other, appraisal: None }, &p);
     s.break_glass.entry("a1".into()).or_default().entry(0).or_default().insert("kA".into());
 
     let revoke = Entry::Revoke {
@@ -236,14 +245,21 @@ fn a_revoked_principal_persona_or_profile_is_not_granted_again_and_m_revoke_is_r
         let mut s = state();
         let r = Entry::Revoke { id: "r".into(), target, reason: "t".into(), attribution: "t".into() };
         assert_eq!(s.apply(1, &r, &p), Applied::Revoked { ended: 0 }, "a revocation needs no live lease");
-        let a = s.apply(2, &Entry::Grant { id: "g".into(), req: grant_req("a1", &[ActionKind::Read]) }, &p);
+        let a = s.apply(
+            2,
+            &Entry::Grant { id: "g".into(), req: grant_req("a1", &[ActionKind::Read]), appraisal: None },
+            &p,
+        );
         assert!(matches!(a, Applied::Rejected(ref m) if m.contains("revoked")), "target {i} re-granted: {a:?}");
         // Reachability: a principal the target does not match is still granted.
         let mut other = grant_req("g1", &[ActionKind::Read]);
         other.principal = "p-other".into();
         other.persona = Digest::of(b"another persona");
         other.confinement.digest = Digest::of(b"another profile");
-        assert_eq!(s.apply(3, &Entry::Grant { id: "o".into(), req: other }, &p), Applied::LeaseGranted { fence: 3 });
+        assert_eq!(
+            s.apply(3, &Entry::Grant { id: "o".into(), req: other, appraisal: None }, &p),
+            Applied::LeaseGranted { fence: 3 }
+        );
     }
 }
 
@@ -258,32 +274,25 @@ fn every_floor_deny_names_a_reason() {
     assert_eq!(floor_gate(&FloorOutcome::Permit { reasons: vec![] }), None);
 }
 
+/// ADR-0034 §4 as a lookup: rung 0 is `Mediated`, always, and says why. The conjuncts above
+/// rung 0 are `tests/confinement.rs`.
 #[test]
-fn rung_zero_is_never_contained_and_nothing_is_contained_yet() {
-    let mut l = Lease {
-        principal: "p".into(),
-        seat: "a1".into(),
-        persona: Digest::of(b"p"),
-        epoch: 0,
-        fence: 1,
-        rules_epoch: 0,
-        bundle: Digest::of(b"b"),
-        confinement: Confinement { digest: Digest::of(b"c"), rung: 0 },
-        alphabet: BTreeSet::new(),
-        round: 1,
-        role: RoundRole::Author,
-        ttl_ms: 1,
-    };
-    assert!(!l.is_contained());
-    l.confinement.rung = 3;
-    assert!(!l.is_contained(), "the provenance criterion is unwritten, so no rung suffices");
+fn rung_zero_is_never_contained_and_says_why() {
+    let p = params();
+    let mut s = state();
+    s.apply(1, &Entry::Grant { id: "g".into(), req: grant_req("a1", &[ActionKind::Read]), appraisal: None }, &p);
+    let c = s.contained(1);
+    assert!(!c.contained);
+    assert!(c.because.iter().any(|r| r.contains("rung 0")), "{c:?}");
+    assert!(c.because.iter().any(|r| r.contains("criterion")), "{c:?}");
+    assert!(!s.contained(99).contained, "no lease is not contained");
 }
 
 #[test]
 fn the_round_bound_terminates_a_round() {
     let p = params();
     let mut s = state();
-    s.apply(1, &Entry::Grant { id: "g".into(), req: grant_req("a1", &[ActionKind::Read]) }, &p);
+    s.apply(1, &Entry::Grant { id: "g".into(), req: grant_req("a1", &[ActionKind::Read]), appraisal: None }, &p);
     for i in 0..p.round_bound {
         s.leases.get_mut(&1).unwrap().actions = i;
         assert!(s.check_live(&read("a1", 1, 0), &p).is_ok());
@@ -500,13 +509,24 @@ fn workspace_paths_are_syntactic_and_fail_closed() {
 fn alphabets_are_bounded_by_seat_kind_and_m_kind_is_refused() {
     let p = params();
     let mut s = state();
-    let a =
-        s.apply(1, &Entry::Grant { id: "g1".into(), req: grant_req("o1", &[ActionKind::Read, ActionKind::Draft]) }, &p);
+    let a = s.apply(
+        1,
+        &Entry::Grant {
+            id: "g1".into(),
+            req: grant_req("o1", &[ActionKind::Read, ActionKind::Draft]),
+            appraisal: None,
+        },
+        &p,
+    );
     assert!(matches!(a, Applied::Rejected(ref r) if r.contains("observer alphabet")), "{a:?}");
-    let a =
-        s.apply(2, &Entry::Grant { id: "g2".into(), req: grant_req("a1", &[ActionKind::Read, ActionKind::Vote]) }, &p);
+    let a = s.apply(
+        2,
+        &Entry::Grant { id: "g2".into(), req: grant_req("a1", &[ActionKind::Read, ActionKind::Vote]), appraisal: None },
+        &p,
+    );
     assert!(matches!(a, Applied::Rejected(ref r) if r.contains("thinker alphabet")), "{a:?}");
-    let a = s.apply(3, &Entry::Grant { id: "g3".into(), req: grant_req("g1", &[ActionKind::Submit]) }, &p);
+    let a =
+        s.apply(3, &Entry::Grant { id: "g3".into(), req: grant_req("g1", &[ActionKind::Submit]), appraisal: None }, &p);
     assert!(matches!(a, Applied::Rejected(ref r) if r.contains("grant alphabet")), "{a:?}");
     // Reachability: each kind is granted what it may hold.
     for (seat, alpha) in [
@@ -516,8 +536,11 @@ fn alphabets_are_bounded_by_seat_kind_and_m_kind_is_refused() {
     ] {
         let mut req = grant_req(seat, &alpha);
         req.role = if seat == "a1" { RoundRole::Author } else { RoundRole::Voter };
-        let a =
-            s.apply(10 + seat.len() as u64 + alpha.len() as u64, &Entry::Grant { id: format!("ok-{seat}"), req }, &p);
+        let a = s.apply(
+            10 + seat.len() as u64 + alpha.len() as u64,
+            &Entry::Grant { id: format!("ok-{seat}"), req, appraisal: None },
+            &p,
+        );
         assert!(matches!(a, Applied::LeaseGranted { .. }), "{seat}: {a:?}");
     }
 }
@@ -531,17 +554,23 @@ fn one_seat_per_principal_and_m_seat_is_refused() {
     let mut s = state();
     let mut first = grant_req("a1", &[ActionKind::Read]);
     first.principal = "p-shared".into();
-    assert!(matches!(s.apply(1, &Entry::Grant { id: "g1".into(), req: first }, &p), Applied::LeaseGranted { .. }));
+    assert!(matches!(
+        s.apply(1, &Entry::Grant { id: "g1".into(), req: first, appraisal: None }, &p),
+        Applied::LeaseGranted { .. }
+    ));
     let mut second = grant_req("g1", &[ActionKind::Read]);
     second.principal = "p-shared".into();
     second.role = RoundRole::Voter;
-    let a = s.apply(2, &Entry::Grant { id: "g2".into(), req: second }, &p);
+    let a = s.apply(2, &Entry::Grant { id: "g2".into(), req: second, appraisal: None }, &p);
     assert!(matches!(a, Applied::Rejected(ref r) if r.contains("holds a live lease on seat a1")), "M_SEAT: {a:?}");
     // Reachability: another principal takes g1; and after a1's round ends, p-shared may take g1.
     let mut other = grant_req("g1", &[ActionKind::Read]);
     other.principal = "p-other".into();
     other.role = RoundRole::Voter;
-    assert!(matches!(s.apply(3, &Entry::Grant { id: "g3".into(), req: other }, &p), Applied::LeaseGranted { .. }));
+    assert!(matches!(
+        s.apply(3, &Entry::Grant { id: "g3".into(), req: other, appraisal: None }, &p),
+        Applied::LeaseGranted { .. }
+    ));
 }
 
 // ---- Observers.tla (ADR-0038) --------------------------------------------------------------
@@ -587,7 +616,7 @@ fn a_cell_names_a_thinker_seat_in_its_domain_and_only_observers_have_one() {
     let mut r = rules();
     r.seats.insert(
         "gx".into(),
-        SeatDecl { domain: Domain::Build, kind: SeatKind::Grant, cell: Some("a1".into()), key: "kgx".into() },
+        SeatDecl { domain: Domain::Build, kind: SeatKind::Grant, cell: Some("a1".into()), key: "kgx".into(), rung: 0 },
     );
     assert!(check_well_formed(&r).iter().any(|v| v.detail.contains("cannot have a cell")));
 }
@@ -625,6 +654,7 @@ fn admit(id: &str, seat: &str, lease: LogIndex, action: Admitted, p: &Params) ->
             engine: BundleEngine::LocalWasm,
             params: p.digest(),
             decided_by: 1,
+            session: None,
         },
     }
 }
@@ -648,8 +678,8 @@ fn the_sequence_counts_effects_and_m_emitseq_is_refused() {
     let mut s = run_state();
     let k = s.observer.k;
     assert!(k < p.round_bound, "K < R, or the check is vacuous (ADR-0039 §1)");
-    s.apply(1, &Entry::Grant { id: "gt".into(), req: grant_req("r1", RUN_THINKER) }, &p);
-    s.apply(2, &Entry::Grant { id: "go".into(), req: grant_req("ro1", RUN_OBSERVER) }, &p);
+    s.apply(1, &Entry::Grant { id: "gt".into(), req: grant_req("r1", RUN_THINKER), appraisal: None }, &p);
+    s.apply(2, &Entry::Grant { id: "go".into(), req: grant_req("ro1", RUN_OBSERVER), appraisal: None }, &p);
 
     // Three invocations, two reads, one report: four effects, six admits.
     let mut at = 10;
@@ -692,7 +722,7 @@ fn the_sequence_counts_effects_and_m_emitseq_is_refused() {
 fn the_round_bound_counts_consult() {
     let p = params();
     let mut s = run_state();
-    s.apply(1, &Entry::Grant { id: "gt".into(), req: grant_req("r1", &[ActionKind::Consult]) }, &p);
+    s.apply(1, &Entry::Grant { id: "gt".into(), req: grant_req("r1", &[ActionKind::Consult]), appraisal: None }, &p);
     for i in 0..p.round_bound {
         let a = s.apply(10 + i, &admit(&format!("c{i}"), "r1", 1, consult(), &p), &p);
         assert_eq!(a, Applied::Admitted { seq: None, promoted: None });
@@ -709,8 +739,8 @@ fn a_run_round_seals_with_its_lease_and_a_run_seat_cannot_abstain() {
     let mut p = params();
     p.round_bound = 40;
     let mut s = run_state();
-    s.apply(1, &Entry::Grant { id: "gt".into(), req: grant_req("r1", RUN_THINKER) }, &p);
-    s.apply(2, &Entry::Grant { id: "go".into(), req: grant_req("ro1", RUN_OBSERVER) }, &p);
+    s.apply(1, &Entry::Grant { id: "gt".into(), req: grant_req("r1", RUN_THINKER), appraisal: None }, &p);
+    s.apply(2, &Entry::Grant { id: "go".into(), req: grant_req("ro1", RUN_OBSERVER), appraisal: None }, &p);
     for i in 0..2 {
         s.apply(10 + i, &admit(&format!("a{i}"), "r1", 1, actuate(), &p), &p);
     }
@@ -731,10 +761,13 @@ fn a_run_round_seals_with_its_lease_and_a_run_seat_cannot_abstain() {
         seat: "r1".into(),
         fence: 1,
         alphabet: RUN_THINKER.iter().copied().collect(),
-        rung: 1,
+        rung: 0,
         ttl_ms: 500,
     };
-    assert_eq!(s.apply(21, &Entry::Renew { id: "rn".into(), req: renew }, &p), Applied::Renewed { fence: 21 });
+    assert_eq!(
+        s.apply(21, &Entry::Renew { id: "rn".into(), req: renew, appraisal: None }, &p),
+        Applied::Renewed { fence: 21 }
+    );
     assert!(!s.seals.contains_key("r1"), "a renewal does not seal");
     assert_eq!((s.leases[&21].seq, s.leases[&21].actions), (2, 2));
     s.apply(22, &admit("a2", "r1", 21, actuate(), &p), &p);
@@ -746,15 +779,18 @@ fn a_run_round_seals_with_its_lease_and_a_run_seat_cannot_abstain() {
     // Cross-round coverage now means something for invocations (ADR-0039 §2).
     let mut next = grant_req("r1", RUN_THINKER);
     next.round = 2;
-    let a = s.apply(24, &Entry::Grant { id: "g2".into(), req: next.clone() }, &p);
+    let a = s.apply(24, &Entry::Grant { id: "g2".into(), req: next.clone(), appraisal: None }, &p);
     assert!(matches!(a, Applied::Rejected(ref r) if r.contains("unread")), "M_EMITSEQ would seal at 0: {a:?}");
     let beat = Admitted::Heartbeat { via: ActionKind::Report, topic: s.seals["r1"].topic.clone(), watermark: 3 };
     assert!(matches!(s.apply(25, &admit("hb", "ro1", 2, beat, &p), &p), Applied::Admitted { .. }));
-    assert!(matches!(s.apply(26, &Entry::Grant { id: "g3".into(), req: next }, &p), Applied::LeaseGranted { .. }));
+    assert!(matches!(
+        s.apply(26, &Entry::Grant { id: "g3".into(), req: next, appraisal: None }, &p),
+        Applied::LeaseGranted { .. }
+    ));
 
     // Abstention is Build's, and stays Build's.
     let mut b = state();
-    b.apply(1, &Entry::Grant { id: "ga".into(), req: grant_req("a1", &[ActionKind::Read]) }, &p);
+    b.apply(1, &Entry::Grant { id: "ga".into(), req: grant_req("a1", &[ActionKind::Read]), appraisal: None }, &p);
     let abstain = Entry::EndRound {
         id: "ab".into(),
         seat: "a1".into(),
@@ -771,15 +807,24 @@ fn a_run_round_seals_with_its_lease_and_a_run_seat_cannot_abstain() {
 fn run_alphabets_are_bounded_by_seat_kind_and_domain() {
     let p = params();
     let mut s = run_state();
-    let a = s.apply(1, &Entry::Grant { id: "g1".into(), req: grant_req("ro1", &[ActionKind::Actuate]) }, &p);
+    let a = s.apply(
+        1,
+        &Entry::Grant { id: "g1".into(), req: grant_req("ro1", &[ActionKind::Actuate]), appraisal: None },
+        &p,
+    );
     assert!(matches!(a, Applied::Rejected(ref r) if r.contains("observer alphabet")), "M_KIND: {a:?}");
-    let a = s.apply(2, &Entry::Grant { id: "g2".into(), req: grant_req("r1", &[ActionKind::Read]) }, &p);
+    let a =
+        s.apply(2, &Entry::Grant { id: "g2".into(), req: grant_req("r1", &[ActionKind::Read]), appraisal: None }, &p);
     assert!(matches!(a, Applied::Rejected(ref r) if r.contains("outside the run alphabet")), "{a:?}");
-    let a = s.apply(3, &Entry::Grant { id: "g3".into(), req: grant_req("a1", &[ActionKind::Consult]) }, &p);
+    let a = s.apply(
+        3,
+        &Entry::Grant { id: "g3".into(), req: grant_req("a1", &[ActionKind::Consult]), appraisal: None },
+        &p,
+    );
     assert!(matches!(a, Applied::Rejected(ref r) if r.contains("outside the build alphabet")), "{a:?}");
-    let a = s.apply(4, &Entry::Grant { id: "g4".into(), req: grant_req("ro1", RUN_OBSERVER) }, &p);
+    let a = s.apply(4, &Entry::Grant { id: "g4".into(), req: grant_req("ro1", RUN_OBSERVER), appraisal: None }, &p);
     assert!(matches!(a, Applied::LeaseGranted { .. }), "{a:?}");
-    let a = s.apply(5, &Entry::Grant { id: "g5".into(), req: grant_req("r1", RUN_THINKER) }, &p);
+    let a = s.apply(5, &Entry::Grant { id: "g5".into(), req: grant_req("r1", RUN_THINKER), appraisal: None }, &p);
     assert!(matches!(a, Applied::LeaseGranted { .. }), "{a:?}");
     assert!(ActionKind::RUN.iter().all(|k| k.domain() == Domain::Run));
     assert!(ActionKind::BUILD.iter().all(|k| k.domain() == Domain::Build));
@@ -799,13 +844,26 @@ fn a_ttl_over_t_persona_is_refused_at_grant_and_at_renewal() {
     let p = params();
     let mut over = grant_req("a1", &[ActionKind::Read]);
     over.ttl_ms = 5_001;
-    assert!(matches!(s.apply(1, &Entry::Grant { id: "g-over".into(), req: over }, &p), Applied::Rejected(_)));
+    assert!(matches!(
+        s.apply(1, &Entry::Grant { id: "g-over".into(), req: over, appraisal: None }, &p),
+        Applied::Rejected(_)
+    ));
     let mut at = grant_req("a1", &[ActionKind::Read]);
     at.ttl_ms = 5_000;
-    assert_eq!(s.apply(2, &Entry::Grant { id: "g-at".into(), req: at }, &p), Applied::LeaseGranted { fence: 2 });
+    assert_eq!(
+        s.apply(2, &Entry::Grant { id: "g-at".into(), req: at, appraisal: None }, &p),
+        Applied::LeaseGranted { fence: 2 }
+    );
     let renew = |fence: LogIndex, ttl_ms: u64| Entry::Renew {
         id: format!("r-{fence}-{ttl_ms}"),
-        req: RenewRequest { seat: "a1".into(), fence, alphabet: [ActionKind::Read].into_iter().collect(), rung: 1, ttl_ms },
+        req: RenewRequest {
+            seat: "a1".into(),
+            fence,
+            alphabet: [ActionKind::Read].into_iter().collect(),
+            rung: 0,
+            ttl_ms,
+        },
+        appraisal: None,
     };
     assert!(matches!(s.apply(3, &renew(2, 5_001), &p), Applied::Rejected(_)), "over the bound, and over the lease");
     assert_eq!(s.apply(4, &renew(2, 5_000), &p), Applied::Renewed { fence: 4 }, "at the bound");

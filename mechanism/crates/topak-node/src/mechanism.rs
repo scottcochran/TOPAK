@@ -18,6 +18,13 @@
 //! Denials are never ordered (ADR-0015). Each is written to the principal's round topic while
 //! that topic is open (ADR-0020: the replayable record includes actions attempted and denied),
 //! by the deciding replica, and logged locally with attribution.
+//!
+//! A session is a bearer token for an operator's grant (I14), or, for a launched guest, the lease
+//! itself: the bridge holds it at rung 1, and at rungs 2 and 3 every action carries the attested
+//! guest's proof (ADR-0034 §3.5; `launch.rs`).
+
+mod launch;
+pub use launch::{Contain, GuestCtl};
 
 use std::collections::{BTreeMap, HashMap};
 use std::future::Future;
@@ -25,7 +32,7 @@ use std::io::Write;
 use std::path::{Path, PathBuf};
 use std::pin::Pin;
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
-use std::sync::{Arc, Mutex, RwLock};
+use std::sync::{Arc, Mutex, RwLock, Weak};
 use std::time::{Duration, Instant};
 
 use serde_json::{Value, json};
@@ -34,6 +41,7 @@ use topak_bundle::BundleTier;
 use topak_core::action::{Action, ActionRequest, tool_id};
 use topak_core::admit::{BundleOutcome, Decision, DenyReason, compose, floor_gate, via_break_glass};
 use topak_core::clock::{MonoMillis, MonotonicClock, SystemMonotonic, subtracting_interval_elapsed};
+use topak_core::confine::{AGENT_OP_PURPOSE, SessionProof, session_body};
 use topak_core::lift::{self, after_topic_name, lift, topic_name, workspace_id, workspace_relative};
 use topak_core::promotion::tally;
 use topak_core::state::*;
@@ -84,6 +92,8 @@ pub struct Parts {
     pub corpus_dir: PathBuf,
     pub data_dir: PathBuf,
     pub proposals: mpsc::Sender<Entry>,
+    /// The launcher's backends and appraisers, by rung. `None`: this replica launches nothing.
+    pub contain: Option<Contain>,
 }
 
 pub struct Mechanism {
@@ -120,6 +130,10 @@ pub struct Mechanism {
     /// from each observer seat. Per replica, like lease expiry: a subtracting interval on the
     /// mechanism's own clock (ADR-0032 §2), never replicated state.
     heard: Mutex<HashMap<SeatId, MonoMillis>>,
+    contain: Option<Contain>,
+    /// Guests this replica launched, by seat. Local: a guest is one host's process (P6).
+    launched: Mutex<HashMap<SeatId, GuestCtl>>,
+    me: Weak<Mechanism>,
 }
 
 const COMMIT_DEADLINE: Duration = Duration::from_secs(5);
@@ -148,7 +162,7 @@ impl Mechanism {
         genesis.persona = p.floor.persona_values().clone();
         // The archive is a projection of the log, rebuilt as the log is re-delivered.
         let archive = std::fs::File::create(p.data_dir.join("archive.jsonl"))?;
-        Ok(Arc::new(Self {
+        Ok(Arc::new_cyclic(|me| Self {
             id: p.id,
             params: p.params,
             floor: p.floor,
@@ -171,6 +185,9 @@ impl Mechanism {
             run_work: p.data_dir.join("run"),
             in_flight: tokio::sync::Mutex::new(HashMap::new()),
             archive: Mutex::new(Some(archive)),
+            contain: p.contain,
+            launched: Mutex::new(HashMap::new()),
+            me: me.clone(),
         }))
     }
 
@@ -242,7 +259,9 @@ impl Mechanism {
         // Seal the topics of rounds that just ended, for sessions this replica serves. A call
         // still in flight is written as `unknown` ahead of the seal marker (ADR-0042 §3), in
         // sequence order, so the sealed topic has a record at every sequence number.
-        let local: Vec<LogIndex> = self.sessions.lock().unwrap().values().map(|s| s.fence).collect();
+        let mut local: Vec<LogIndex> = self.sessions.lock().unwrap().values().map(|s| s.fence).collect();
+        local.extend(self.launched.lock().unwrap().values().map(|g| g.fence));
+        let ended_fences = ended.clone();
         for (fence, topic, reason) in ended {
             if !local.contains(&fence) {
                 continue;
@@ -257,6 +276,11 @@ impl Mechanism {
             if let Err(e) = self.transport.seal(&topic, &reason).await {
                 tracing::warn!(topic, error = %e, "seal marker not written");
             }
+        }
+        // P6: a launched guest is destroyed when its round ends, whatever ended it. A renewal is
+        // not an end; the launcher moves the guest to the new fence itself.
+        for (fence, _, _) in &ended_fences {
+            self.end_launched(*fence).await;
         }
         if let Some(tx) = self.waiters.lock().unwrap().remove(entry.id()) {
             let _ = tx.send((slot, applied));
@@ -318,7 +342,45 @@ impl Mechanism {
             tracing::warn!(target: "security", "action with an unknown session token refused");
             return deny(DenyReason::Mechanism(MechanismDeny::UnknownLease));
         };
-        let action = match req.op {
+        Box::pin(self.act_session(&sess, req.op, None)).await
+    }
+
+    /// An action from a launched guest, under the lease at `fence` (ADR-0036 §2.4). Under an
+    /// attested session key the guest's proof is checked here, at decide, against the action it
+    /// names; and again at apply, where it binds (ADR-0034 §3.5; `State::apply_admit`).
+    pub async fn act_bound(&self, fence: LogIndex, op: AgentOp, proof: Option<SessionProof>) -> AgentResponse {
+        let looked = {
+            let st = self.state.read().unwrap();
+            st.leases.get(&fence).map(|r| {
+                let key = r.attestation.as_ref().and_then(|a| a.session_key.clone());
+                (Session { seat: r.lease.seat.clone(), fence, epoch: r.lease.epoch }, key)
+            })
+        };
+        let Some((sess, key)) = looked else { return deny(DenyReason::Mechanism(MechanismDeny::UnknownLease)) };
+        if let Some(key) = key {
+            let bad = |why: &str| {
+                tracing::warn!(target: "security", seat = %sess.seat, fence, "{why}");
+                deny(DenyReason::Mechanism(MechanismDeny::Other(format!("{why} (ADR-0034 §3.5)"))))
+            };
+            let Some(p) = &proof else { return bad("the attested session signed nothing") };
+            if p.op != Digest::of_json(&op) {
+                return bad("the session proof is for another action");
+            }
+            let body = session_body(fence, sess.epoch, p.ctr, &p.op);
+            if !topak_core::authentic::verify(
+                AGENT_OP_PURPOSE,
+                &body,
+                &topak_core::authentic::Signed { key, sig: p.sig.clone() },
+            ) {
+                return bad("the session proof is not the attested guest's");
+            }
+        }
+        Box::pin(self.act_session(&sess, op, proof)).await
+    }
+
+    async fn act_session(&self, sess: &Session, op: AgentOp, proof: Option<SessionProof>) -> AgentResponse {
+        let sess = sess.clone();
+        let action = match op {
             AgentOp::Act { action } => action,
             AgentOp::SubmitWorkspace => match self.workspace_digest(&sess) {
                 Ok(artifact) => Action::Submit { artifact },
@@ -350,7 +412,7 @@ impl Mechanism {
         };
         let kind = action.kind();
         let attempted = action.clone();
-        let resp = self.admit(&sess, action).await;
+        let resp = self.admit(&sess, action, proof).await;
         if !resp.admitted {
             tracing::info!(seat = %sess.seat, lease = sess.fence, action = %kind, detail = %resp.detail, "denied");
             self.record_denial(&sess, &attempted, &resp).await;
@@ -434,7 +496,7 @@ impl Mechanism {
         }
     }
 
-    async fn admit(&self, sess: &Session, action: Action) -> AgentResponse {
+    async fn admit(&self, sess: &Session, action: Action, proof: Option<SessionProof>) -> AgentResponse {
         let req = ActionRequest { seat: sess.seat.clone(), lease: sess.fence, epoch: sess.epoch, action };
 
         // 3–4: mechanism checks, then the lift, against one snapshot.
@@ -507,6 +569,7 @@ impl Mechanism {
             engine,
             params: self.params.digest(),
             decided_by: self.id,
+            session: proof,
         };
         let (slot, applied) = match self.propose(Entry::Admit { id: self.fresh_id(), rec }).await {
             Ok(r) => r,
@@ -554,15 +617,12 @@ impl Mechanism {
         let dir = self.session_workspace(sess)?;
         let mut files = Vec::new();
         walk(&dir, &dir, &mut files).map_err(|e| e.to_string())?;
-        files.sort();
-        let mut bytes = Vec::new();
+        let mut contents = Vec::new();
         for rel in files {
-            bytes.extend(rel.as_bytes());
-            bytes.push(0);
-            bytes.extend(std::fs::read(dir.join(&rel)).map_err(|e| e.to_string())?);
-            bytes.push(0);
+            let bytes = std::fs::read(dir.join(&rel)).map_err(|e| e.to_string())?;
+            contents.push((rel, bytes));
         }
-        Ok(Digest::of(&bytes))
+        Ok(topak_core::confine::workspace_digest(contents))
     }
 
     async fn effect(&self, req: &ActionRequest, cx: &EffectCtx<'_>) -> anyhow::Result<Value> {
@@ -659,6 +719,11 @@ impl Mechanism {
         let id = self.fresh_id();
         let entry = match op {
             OperatorOp::Status => return self.status(),
+            OperatorOp::Launch { principal, seat, profile, bundle, alphabet, ttl_ms, round, role } => {
+                let req = launch::LaunchOp { principal, seat, profile, bundle, alphabet, ttl_ms, round, role };
+                return Box::pin(self.launch(req)).await;
+            }
+            OperatorOp::RegisterProfile { profile } => Entry::ProfileRegister { id, profile },
             OperatorOp::Grant { principal, seat, persona, bundle, confinement, alphabet, ttl_ms, round, role } => {
                 // ADR-0044 §3: a grant naming a revision with no verified signature is refused,
                 // here at decide, as a grant under superseded rules is at apply (I6). The
@@ -680,19 +745,18 @@ impl Mechanism {
                     round,
                     role,
                 };
-                return match self.propose(Entry::Grant { id, req }).await {
+                return match self.propose(Entry::Grant { id, req, appraisal: None }).await {
                     Ok((_, Applied::LeaseGranted { fence })) => {
-                        let (epoch, lease) = {
+                        let (epoch, lease, containment) = {
                             let st = self.state.read().unwrap();
                             let l = st.leases[&fence].lease.clone();
-                            (l.epoch, l)
+                            (l.epoch, l, st.contained(fence))
                         };
                         let token = hex::encode(rand::random::<[u8; 32]>());
                         self.sessions.lock().unwrap().insert(token.clone(), Session { seat, fence, epoch });
                         json!({
                             "ok": true, "fence": fence, "token": token, "lease": lease,
-                            "contained": lease.is_contained(),
-                            "note": "rung 0 and no provenance criterion: this principal is Mediated",
+                            "contained": containment.contained, "because": containment.because,
                         })
                     }
                     Ok((_, a)) => json!({ "ok": false, "applied": a }),
@@ -702,7 +766,7 @@ impl Mechanism {
             OperatorOp::Renew { token, alphabet, rung, ttl_ms } => {
                 let Some(sess) = self.session(&token) else { return json!({ "ok": false, "error": "unknown token" }) };
                 let req = RenewRequest { seat: sess.seat.clone(), fence: sess.fence, alphabet, rung, ttl_ms };
-                return match self.propose(Entry::Renew { id, req }).await {
+                return match self.propose(Entry::Renew { id, req, appraisal: None }).await {
                     Ok((_, Applied::Renewed { fence })) => {
                         if let Some(s) = self.sessions.lock().unwrap().get_mut(&token) {
                             s.fence = fence;
@@ -743,7 +807,7 @@ impl Mechanism {
                 json!({
                     "seat": r.lease.seat, "fence": r.lease.fence, "epoch": r.lease.epoch, "round": r.lease.round,
                     "role": r.lease.role, "actions": r.actions, "alphabet": r.lease.alphabet,
-                    "rung": r.lease.confinement.rung, "contained": r.lease.is_contained(),
+                    "rung": r.lease.confinement.rung, "contained": st.contained(r.lease.fence),
                 })
             })
             .collect();
@@ -770,6 +834,9 @@ impl Mechanism {
             "params": self.params.digest(),
             "live_leases": live,
             "candidates": candidates,
+            "launched": self.launched.lock().unwrap().iter().map(|(seat, g)| json!({
+                "seat": seat, "fence": g.fence, "instance": g.handle.instance(),
+            })).collect::<Vec<_>>(),
         })
     }
 }

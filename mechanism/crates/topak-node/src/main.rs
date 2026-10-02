@@ -65,6 +65,9 @@ enum Cmd {
     },
     /// Check a rules file against the rules floor.
     CheckRules { rules: PathBuf },
+    /// A confinement profile's two digests: the file's, which a lease's `confinement` names, and
+    /// the single-file workspace's, which promotion keys on (ADR-0034 §1, ADR-0036 §1).
+    ProfileDigest { profile: PathBuf },
 }
 
 fn read_arg(s: &str) -> anyhow::Result<String> {
@@ -130,6 +133,21 @@ async fn main() -> anyhow::Result<()> {
         Cmd::ToolDigest { command, tool, args } => {
             let (bin, digest) = ToolHost::digest_of(&command, &args, &tool).await?;
             println!("{}", serde_json::json!({ "id": format!("{tool}@{digest}"), "binary_sha256": bin }));
+        }
+        Cmd::ProfileDigest { profile } => {
+            let bytes = std::fs::read(&profile)?;
+            let text = String::from_utf8(bytes.clone())?;
+            let p = topak_core::confine::Profile::parse(&text).map_err(|e| anyhow::anyhow!(e))?;
+            println!(
+                "{}",
+                serde_json::json!({
+                    "profile": topak_core::Digest::of(&bytes),
+                    "artifact": topak_core::confine::profile_artifact(&bytes),
+                    "malformed": p.check_well_formed(),
+                    "rung_1": p.check_for_rung(1).err(),
+                    "rung_3": p.check_for_rung(3).err(),
+                })
+            );
         }
         Cmd::CheckRules { rules } => {
             let floor = topak_floor::Floor::load()?;

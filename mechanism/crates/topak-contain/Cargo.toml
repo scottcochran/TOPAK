@@ -1,0 +1,34 @@
+[package]
+name = "topak-contain"
+description = "The launcher in the node (ADR-0036 §6): launch, appraise, bridge. Rung 1 real; rung 3 simulated behind `sim`."
+version.workspace = true
+edition.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[features]
+default = []
+# The simulated rung-3 platform and verifier. Test doubles for T-0045-16 and T-0045-17: a node
+# built with this feature still refuses a `sim` backend or verifier unless its config asks, and a
+# simulated appraisal is accepted only under a verifier key an anchor issuance put in the rules.
+sim = []
+
+[[bin]]
+name = "topak-demo-guest"
+path = "src/bin/topak-demo-guest.rs"
+
+[dependencies]
+topak-core.workspace = true
+topak-mcp.workspace = true
+tokio.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+anyhow.workspace = true
+tracing.workspace = true
+hex.workspace = true
+ed25519-dalek = { workspace = true, features = ["rand_core"] }
+rand = "0.8"
+
+[dev-dependencies]
+# The tests exercise the simulator; the library builds without it.
+topak-contain = { path = ".", features = ["sim"] }

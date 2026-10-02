@@ -10,8 +10,9 @@ use crate::types::*;
 pub struct Confinement {
     pub digest: Digest,
     /// 0 none declared · 1 asserted by launcher · 2 measured boot · 3 confidential VM + verifier.
-    /// Rung semantics are ADR-0034 §2. The reference has no launcher, so it issues rung 0 only.
-    /// Fixed across renewal (ADR-0031 A1).
+    /// Rung semantics are ADR-0034 §2. A rung of 1 or more is granted only on an appraisal
+    /// (`confine.rs`, `State::apply_grant`). Fixed across renewal (ADR-0031 A1).
+    /// `Contained(p)` is `State::contained`, a lookup over the lease and the issued rules.
     pub rung: u8,
 }
 
@@ -39,18 +40,7 @@ pub struct Lease {
     pub ttl_ms: u64,
 }
 
-/// PROVISIONAL (provenance criterion): ADR-0034 §4 makes ADR-0017's independence criterion a
-/// conjunct of `Contained` (ADR-0031 §3 read with its open obligations). The criterion is ADR-0035,
-/// still Proposed. Until it is in force nothing is `Contained`, whatever the rung; then this
-/// becomes a check of the issued rules, not a constant.
-pub const PROVENANCE_CRITERION_DEFINED: bool = false;
-
 impl Lease {
-    /// `Contained(p)` as far as the lease can say. Rung 0 is `Mediated`, always (§3).
-    pub fn is_contained(&self) -> bool {
-        self.confinement.rung >= 1 && PROVENANCE_CRITERION_DEFINED
-    }
-
     /// ADR-0031 §4: `new ⊑ self`. A renewal may narrow the alphabet or shorten the TTL. It may
     /// never add authority.
     ///

@@ -1,12 +1,15 @@
 #!/usr/bin/env python3
 """Turn a `topak-core` trace (`TOPAK_TRACE_DIR/<name>.jsonl`) into a TLA+ module that TLC
-checks against `Mechanism.tla` (ADR-0045 T-0045-28, stage 1: trace validation).
+checks against `Mechanism.tla` (ADR-0045 T-0045-28, stage 1: trace validation), and against
+`ConfinementRefinement.tla`, which reads the same states as `Confinement_A1.tla`'s.
 
 Usage: trace2tla.py <trace.jsonl> [outdir]   → writes Trace_<name>.tla and Trace_<name>.cfg
 
 Encoding (see `trace.rs`): {"$f": [[k, v], ...]} is a function, {"$s": [...]} a set, an array a
 tuple, any other object a record. The module defines `TraceInitState` and `TraceSeq`, which the
-cfg binds to Mechanism's constants.
+cfg binds to Mechanism's constants. Two invariants: `TraceMatches` (the code agrees with the
+operational model at every step) and `ConfinementRefined` (that state keeps the abstract
+confinement invariants).
 """
 import json
 import os
@@ -48,7 +51,7 @@ def main():
     init = lines[0]["init"]
     steps = lines[1:]
     mod = f"Trace_{name}"
-    body = [f"---- MODULE {mod} ----", "EXTENDS Mechanism", "", f"TraceInitState == {tla(init)}", ""]
+    body = [f"---- MODULE {mod} ----", "EXTENDS ConfinementRefinement", "", f"TraceInitState == {tla(init)}", ""]
     if steps:
         body.append("TraceSeq == <<")
         body.append(",\n".join(
@@ -61,7 +64,7 @@ def main():
     with open(os.path.join(outdir, mod + ".tla"), "w") as f:
         f.write("\n".join(body) + "\n")
     with open(os.path.join(outdir, mod + ".cfg"), "w") as f:
-        f.write("SPECIFICATION TraceSpec\nINVARIANT TraceMatches\nCONSTANTS\n  InitState <- TraceInitState\n  Trace <- TraceSeq\n")
+        f.write("SPECIFICATION TraceSpec\nINVARIANT TraceMatches\nINVARIANT ConfinementRefined\nCONSTANTS\n  InitState <- TraceInitState\n  Trace <- TraceSeq\n")
     print(f"{mod} {len(steps)}")
 
 

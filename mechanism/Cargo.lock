@@ -3307,6 +3307,23 @@ dependencies = [
 ]
 
 [[package]]
+name = "topak-contain"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "ed25519-dalek",
+ "hex",
+ "rand 0.8.8",
+ "serde",
+ "serde_json",
+ "tokio",
+ "topak-contain",
+ "topak-core",
+ "topak-mcp",
+ "tracing",
+]
+
+[[package]]
 name = "topak-core"
 version = "0.1.0"
 dependencies = [
@@ -3357,6 +3374,7 @@ dependencies = [
  "serde_json",
  "tokio",
  "topak-bundle",
+ "topak-contain",
  "topak-core",
  "topak-floor",
  "topak-mcp",

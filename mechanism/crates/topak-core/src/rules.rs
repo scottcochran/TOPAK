@@ -11,6 +11,8 @@ use std::collections::{BTreeMap, BTreeSet};
 use std::fmt;
 
 use crate::authentic::{self, KeyHex, Signed};
+use crate::confine::{Criterion, Provenance};
+use crate::lease::MAX_RUNG;
 use crate::types::*;
 
 /// `quorum` is `"all"` or a grant-vote threshold *k* (ADR-0024 §2). `"any"` is withdrawn.
@@ -59,6 +61,17 @@ pub struct SeatDecl {
     pub cell: Option<SeatId>,
     /// The key that identifies the seat's holder. R5 compares these against the anchor key set.
     pub key: KeyHex,
+    /// The seat's declared confinement rung (ADR-0034 §3.4): a grant is at this rung or refused,
+    /// never lower. PROVISIONAL (declared-rung): ADR-0045's deployment declaration is unwritten,
+    /// so the rung is declared per seat, which lets a rung-0 principal run beside a rung-3 one.
+    #[serde(default, skip_serializing_if = "is_zero")]
+    pub rung: u8,
+}
+
+/// The fields added for confinement serialize only when set, so a rules file that does not use
+/// them keeps its bytes, its chain digest and its issuance signatures.
+fn is_zero(r: &u8) -> bool {
+    *r == 0
 }
 
 /// The break-glass roster and envelope, issued with the rules (ADR-0009, ADR-0013 §1).
@@ -90,14 +103,21 @@ pub struct Rules {
     #[serde(default)]
     pub erasure_roster: Option<BTreeSet<KeyHex>>,
     /// ADR-0025 §1 (f): the keys the mechanism accepts a signature from in place of its own check.
-    /// The rung-3 verifier's appraisal keys (ADR-0034 §2). Empty means no rung-3 grant; the
-    /// reference issues rung 0 only and never reads them.
+    /// The rung-3 verifier's appraisal keys (ADR-0034 §2), read at every rung-3 grant, renewal and
+    /// Contested entry. Empty means no rung-3 grant.
     #[serde(default)]
     pub verifier_keys: BTreeSet<KeyHex>,
     /// ADR-0025 §1 (f): the bundle-signing keys (ADR-0044 §1). A bundle loads only under a
     /// signature that verifies under one of these; empty means the bundle tier loads nothing.
     #[serde(default)]
     pub bundle_keys: BTreeSet<KeyHex>,
+    /// ADR-0017's provenance axis, per Persona digest. A Persona not named is not in house.
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub personas: BTreeMap<Digest, Provenance>,
+    /// ADR-0035's criterion, in force exactly when set (ADR-0034 §4). Unset in every rules file
+    /// the reference ships: ADR-0035 is Proposed and its θ values are unset.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub criterion: Option<Criterion>,
 }
 
 impl Rules {
@@ -231,6 +251,15 @@ pub fn check_well_formed(r: &Rules) -> Vec<Violation> {
     }
     if r.anchor_keys.is_empty() {
         out.push(v("WF", "anchor key set is empty"));
+    }
+    // ADR-0034 §2: a declared rung exists, and rung 3 has an issued verifier to appraise it.
+    for (id, d) in &r.seats {
+        if d.rung > MAX_RUNG {
+            out.push(v("WF", format!("seat {id} declares rung {}, above {MAX_RUNG}", d.rung)));
+        }
+        if d.rung == 3 && r.verifier_keys.is_empty() {
+            out.push(v("WF", format!("seat {id} declares rung 3 and no verifier key is issued")));
+        }
     }
     // ADR-0025 §1 (f): a vouching key is a 32-byte Ed25519 public key, like every other key issued.
     for (what, keys) in [("verifier", &r.verifier_keys), ("bundle", &r.bundle_keys)] {

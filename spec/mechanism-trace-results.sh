@@ -13,11 +13,13 @@ tlcv=$(java -cp "$jar" tlc2.TLC -h 2>&1 | grep -oE "Version [0-9.]+ of [^ ]+ [^ 
 echo "TOPAK — Mechanism.tla trace validation: the reference's recorded behaviours replayed through the operational model (ADR-0045 T-0045-28, stage 1)"
 echo "Module: Mechanism.tla (sha256 $(shasum -a 256 "$here/Mechanism.tla" | cut -c1-16)) · TLC $tlcv (jar sha256 $(shasum -a 256 "$jar" | cut -c1-16)) · $(java -version 2>&1 | head -1)"
 echo "Reference: mechanism/ at $(cd "$root" && git rev-parse --short HEAD)$(cd "$root" && git diff --quiet -- mechanism || echo ' + working tree') · recorder: crates/topak-core/src/trace.rs · converter: trace2tla.py · driver: mechanism-trace-run.sh"
-echo "Suites traced: topak-core tests/mutations.rs (every state the helpers build) · topak-node tests/e2e.rs (replica 1 of every cluster)"
+echo "Suites traced: topak-core tests/mutations.rs and tests/confinement.rs (every state the helpers build) · topak-node tests/e2e.rs and tests/contain.rs (replica 1 of every cluster; contain.rs launches the demo guest, rung 3 SIMULATED)"
 echo "A MATCH line means every recorded step's projected state and result equal the model's. A trace is one test; steps are applied log entries."
 echo
 (cd "$root/mechanism" && TOPAK_TRACE_DIR=$traces cargo test -p topak-core --release --test mutations 2>&1 | grep "^test result")
+(cd "$root/mechanism" && TOPAK_TRACE_DIR=$traces cargo test -p topak-core --release --test confinement 2>&1 | grep "^test result")
 (cd "$root/mechanism" && TOPAK_TRACE_DIR=$traces cargo test -p topak-node --release --test e2e 2>&1 | grep "^test result")
+(cd "$root/mechanism" && cargo build -p topak-contain --release --bins 2>&1 | grep -E "^error" ; TOPAK_TRACE_DIR=$traces cargo test -p topak-node --release --test contain 2>&1 | grep "^test result")
 echo
 TLA_JAR=$jar "$here/mechanism-trace-run.sh" "$traces"/*.jsonl | sed 's/^Trace_//'
 echo

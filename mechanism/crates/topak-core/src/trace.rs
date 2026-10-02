@@ -10,8 +10,10 @@
 //! The projection is the state the module models, in the shapes the module's header fixes.
 //! What is *not* modelled is carried as an **oracle** on the entry: whether an issuance passed
 //! `validate_issuance` (signatures and the rules floor), whether a break-glass approval's
-//! signature verified, and whether an admit's parameter digest matched. Those three are the
-//! trace's trusted inputs, and the module says so.
+//! signature verified, and whether an admit's parameter digest matched; and, for confinement
+//! (ADR-0034), whether an appraisal's signature verified and under which key, whether a session
+//! proof verified under the lease's key, and what a registered profile file parses to. Those are
+//! the trace's trusted inputs, and the module says so.
 //!
 //! JSON encoding: `{"$f": [[k, v], ...]}` is a TLA+ function, `{"$s": [...]}` a set, an array a
 //! tuple, any other object a record. A round topic is the tuple `<<seat, epoch, round>>`.
@@ -20,7 +22,8 @@ use serde_json::{Value, json};
 use std::io::Write;
 use std::sync::atomic::{AtomicU64, Ordering};
 
-use crate::authentic;
+use crate::authentic::{self, Signed};
+use crate::confine::*;
 use crate::rules::{self, Quorum, Rules};
 use crate::state::*;
 use crate::types::*;
@@ -42,9 +45,40 @@ pub fn enabled(state: &State) -> bool {
     state.trace.is_some() && std::env::var(ENV_DIR).is_ok()
 }
 
-/// The three facts the module takes from the trace rather than computing (see the module header).
+/// Whether an appraisal's signature verifies, and the key it names. The model checks the key is
+/// an issued verifier key; the cryptography is the trace's.
+fn sig_oracle(a: &Appraisal) -> Value {
+    let ok = a.signature.as_ref().is_some_and(|s| authentic::verify(APPRAISAL_PURPOSE, &a.body(), s));
+    json!({ "sigOk": ok, "sigKey": none_or(a.signature.as_ref().map(|s| s.key.clone())) })
+}
+
+/// The facts the module takes from the trace rather than computing (see the module header).
 pub fn oracle(state: &State, entry: &Entry, params: &Params) -> Value {
     match entry {
+        Entry::Grant { appraisal: Some(a), .. }
+        | Entry::Renew { appraisal: Some(a), .. }
+        | Entry::Contested { appraisal: a, .. } => sig_oracle(a),
+        Entry::ProfileRegister { profile, .. } => {
+            let parsed = Profile::parse(profile);
+            let ok = parsed.as_ref().is_ok_and(|p| p.check_well_formed().is_empty());
+            json!({
+                "ok": ok,
+                "build": parsed.as_ref().is_ok_and(|p| p.domain == Domain::Build),
+                "digest": Digest::of(profile.as_bytes()).0,
+                "artifact": profile_artifact(profile.as_bytes()).0,
+                "profile": parsed.as_ref().map(project_profile).unwrap_or_else(|_| json!("none")),
+            })
+        }
+        Entry::Admit { rec, .. } if rec.session.is_some() => {
+            let proof = rec.session.as_ref().expect("checked");
+            let key =
+                state.leases.get(&rec.lease).and_then(|l| l.attestation.as_ref()).and_then(|a| a.session_key.clone());
+            let body = session_body(rec.lease, rec.epoch, proof.ctr, &proof.op);
+            let proof_ok = key.is_some_and(|k| {
+                authentic::verify(AGENT_OP_PURPOSE, &body, &Signed { key: k, sig: proof.sig.clone() })
+            });
+            json!({ "ok": rec.params == params.digest(), "proofOk": proof_ok })
+        }
         Entry::Issue { issuance, .. } => {
             json!({ "ok": rules::validate_issuance(&state.rules, issuance, state.floor_exceptions).is_ok() })
         }
@@ -57,7 +91,15 @@ pub fn oracle(state: &State, entry: &Entry, params: &Params) -> Value {
     }
 }
 
-pub fn record(pre: &State, post: &State, index: LogIndex, entry: &Entry, applied: &Applied, oracle: Value, params: &Params) {
+pub fn record(
+    pre: &State,
+    post: &State,
+    index: LogIndex,
+    entry: &Entry,
+    applied: &Applied,
+    oracle: Value,
+    params: &Params,
+) {
     let (Some(name), Ok(dir)) = (post.trace.as_ref(), std::env::var(ENV_DIR)) else { return };
     let path = std::path::Path::new(&dir).join(format!("{name}.jsonl"));
     let fresh = !path.exists();
@@ -104,7 +146,7 @@ fn project_rules(r: &Rules) -> Value {
     json!({
         "rulesEpoch": r.rules_epoch,
         "seats": fnv(r.seats.iter().map(|(id, d)| (id.clone(), json!({
-            "domain": d.domain.as_str(), "kind": d.kind.as_str(), "cell": none_or(d.cell.clone()),
+            "domain": d.domain.as_str(), "kind": d.kind.as_str(), "cell": none_or(d.cell.clone()), "rung": d.rung,
         })))),
         "grantRoster": setv(r.grant_roster.iter().cloned()),
         "vetoRoster": setv(r.veto_roster.iter().cloned()),
@@ -114,6 +156,38 @@ fn project_rules(r: &Rules) -> Value {
         "bgRoster": setv(r.break_glass.iter().flat_map(|bg| bg.roster.iter().cloned())),
         "verifierKeys": setv(r.verifier_keys.iter().cloned()),
         "bundleKeys": setv(r.bundle_keys.iter().cloned()),
+        "personas": fnv(r.personas.iter().map(|(d, p)| (d.0.clone(), p.as_str()))),
+        "criterion": r.criterion.is_some(),
+    })
+}
+
+/// A registered profile, as far as the model reads it: what P7 names and P3–P5's verdicts.
+fn project_profile(p: &Profile) -> Value {
+    let verdict = |c| p.verdict(c).map_or("none", ClauseVerdict::as_str);
+    json!({
+        "image": p.image.is_some(),
+        "persona": none_or(p.persona.model_json_sha256.as_ref().map(|d| d.0.clone())),
+        "measurement": none_or(p.reference.launch_measurement.clone()),
+        "minTcb": none_or(p.reference.min_tcb), "domain": p.domain.as_str(),
+        "p3": verdict(Clause::P3), "p4": verdict(Clause::P4), "p5": verdict(Clause::P5),
+    })
+}
+
+fn project_appraisal(a: &Appraisal) -> Value {
+    let st = &a.statement;
+    json!({
+        "verdict": st.verdict.as_str(), "rung": st.rung, "profile": st.profile.0, "persona": st.persona.0,
+        "nEpoch": st.nonce.epoch, "nIndex": st.nonce.index, "principal": st.nonce.principal,
+        "round": st.nonce.round, "key": none_or(st.session_key.clone()),
+        "measurement": none_or(st.measurement.clone()), "tcb": none_or(st.tcb), "platform": st.platform,
+        "gen": a.instance.0, "evidence": st.evidence.0,
+    })
+}
+
+fn project_attestation(a: &Attestation) -> Value {
+    json!({
+        "verdict": a.verdict.as_str(), "nEpoch": a.n_epoch, "nIndex": a.nonce_index, "gen": a.instance.0,
+        "key": none_or(a.session_key.clone()), "platform": a.platform,
     })
 }
 
@@ -128,6 +202,8 @@ pub fn project_state(s: &State, params: &Params) -> Value {
             "round": l.round, "role": l.role.as_str(), "ttl": l.ttl_ms,
             "ended": none_or(lr.ended.map(|e| serde_json::to_value(e).unwrap())),
             "actions": lr.actions, "seq": lr.seq,
+            "att": lr.attestation.as_ref().map_or_else(|| json!("none"), project_attestation),
+            "sessionCtr": lr.session_ctr,
         })
     };
     json!({
@@ -136,6 +212,7 @@ pub fn project_state(s: &State, params: &Params) -> Value {
         "vetoRoster": r["vetoRoster"], "quorum": r["quorum"], "minGrant": r["minGrant"],
         "bgIssued": r["bgIssued"], "bgRoster": r["bgRoster"],
         "verifierKeys": r["verifierKeys"], "bundleKeys": r["bundleKeys"],
+        "personas": r["personas"], "criterion": r["criterion"],
         "tPersona": s.persona.t_persona_ms,
         "leases": fnv(s.leases.iter().map(|(f, lr)| (*f, lease(lr)))),
         "liveBySeat": fnv(s.live_by_seat.iter().map(|(k, v)| (k.clone(), *v))),
@@ -157,6 +234,11 @@ pub fn project_state(s: &State, params: &Params) -> Value {
         "marks": fnv(s.marks.iter().map(|(o, m)| (o.clone(),
             fnv(m.iter().map(|(topic, wm)| (topic_tuple(topic), *wm)))))),
         "seals": fnv(s.seals.iter().map(|(seat, sl)| (seat.clone(), json!({ "topic": topic_tuple(&sl.topic), "seq": sl.seq })))),
+        "profiles": fnv(s.profiles.iter().map(|(d, pr)| (d.0.clone(), json!({
+            "artifact": pr.artifact.0, "summary": project_profile(&pr.profile), "registeredAt": pr.registered_at,
+        })))),
+        "contested": fnv(s.contested.iter().map(|(p, e)| (p.clone(), e.0.clone()))),
+        "contained": setv(s.leases.keys().filter(|f| s.contained(**f).contained).copied()),
         "buildBound": params.round_bound_for(Domain::Build),
         "runBound": params.round_bound_for(Domain::Run),
     })
@@ -178,24 +260,36 @@ fn project_action(a: &Admitted) -> Value {
 
 pub fn project_entry(e: &Entry, oracle: Value) -> Value {
     let mut v = match e {
-        Entry::Grant { id, req } => json!({
+        Entry::Grant { id, req, appraisal } => json!({
             "kind": "Grant", "id": id, "principal": req.principal, "seat": req.seat, "persona": req.persona.0,
             "conf": req.confinement.digest.0, "rung": req.confinement.rung,
             "alphabet": setv(req.alphabet.iter().map(|k| k.as_str())), "ttl": req.ttl_ms,
             "round": req.round, "role": req.role.as_str(),
+            "appraisal": appraisal.as_ref().map_or_else(|| json!("none"), project_appraisal),
+            "sigOk": false, "sigKey": "none",
         }),
-        Entry::Renew { id, req } => json!({
+        Entry::Renew { id, req, appraisal } => json!({
             "kind": "Renew", "id": id, "seat": req.seat, "fence": req.fence,
             "alphabet": setv(req.alphabet.iter().map(|k| k.as_str())), "rung": req.rung, "ttl": req.ttl_ms,
+            "appraisal": appraisal.as_ref().map_or_else(|| json!("none"), project_appraisal),
+            "sigOk": false, "sigKey": "none",
         }),
         Entry::Admit { id, rec } => json!({
             "kind": "Admit", "id": id, "seat": rec.seat, "lease": rec.lease, "epoch": rec.epoch,
             "action": project_action(&rec.action),
+            "session": rec.session.as_ref().map_or_else(|| json!("none"), |p| json!({ "ctr": p.ctr })),
+            "proofOk": false,
         }),
+        Entry::Contested { id, appraisal, .. } => json!({
+            "kind": "Contested", "id": id, "appraisal": project_appraisal(appraisal),
+        }),
+        Entry::ProfileRegister { id, .. } => json!({ "kind": "ProfileRegister", "id": id }),
         Entry::EndRound { id, seat, fence, reason, .. } => json!({
             "kind": "EndRound", "id": id, "seat": seat, "fence": fence, "reason": serde_json::to_value(reason).unwrap(),
         }),
-        Entry::Revoke { id, target, .. } => json!({ "kind": "Revoke", "id": id, "target": serde_json::to_value(target).unwrap() }),
+        Entry::Revoke { id, target, .. } => {
+            json!({ "kind": "Revoke", "id": id, "target": serde_json::to_value(target).unwrap() })
+        }
         Entry::EpochIncrement { id, .. } => json!({ "kind": "EpochIncrement", "id": id }),
         Entry::Issue { id, issuance } => json!({ "kind": "Issue", "id": id, "rules": project_rules(&issuance.rules) }),
         Entry::GatesPassed { id, artifact, evidence } => json!({
@@ -223,6 +317,8 @@ pub fn project_applied(a: &Applied) -> Value {
         Applied::RoundEnded => json!({ "kind": "RoundEnded" }),
         Applied::Revoked { ended } => json!({ "kind": "Revoked", "ended": ended }),
         Applied::EpochIncremented { epoch } => json!({ "kind": "EpochIncremented", "epoch": epoch }),
+        Applied::Contested { ended } => json!({ "kind": "Contested", "ended": ended }),
+        Applied::ProfileRegistered { digest } => json!({ "kind": "ProfileRegistered", "digest": digest.0 }),
         Applied::Issued { rules_epoch } => json!({ "kind": "Issued", "rulesEpoch": rules_epoch }),
         Applied::GatesRecorded => json!({ "kind": "GatesRecorded" }),
         Applied::BreakGlassApproved { approvals } => json!({ "kind": "BreakGlassApproved", "approvals": approvals }),

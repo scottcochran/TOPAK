@@ -15,6 +15,7 @@ topak-floor = { path = "crates/topak-floor" }
 topak-bundle = { path = "crates/topak-bundle" }
 topak-transport = { path = "crates/topak-transport" }
 topak-mcp = { path = "crates/topak-mcp" }
+topak-contain = { path = "crates/topak-contain" }
 
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"

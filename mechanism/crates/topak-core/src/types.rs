@@ -20,8 +20,7 @@ impl Digest {
         Digest(hex::encode(Sha256::digest(bytes)))
     }
 
-    /// Digest of a value's canonical JSON. `serde_json` with the default (non-`preserve_order`)
-    /// features serializes maps with sorted keys, so equal values give equal bytes.
+    /// Digest of a value's canonical JSON: equal values give equal bytes, in every build.
     pub fn of_json<T: Serialize>(value: &T) -> Self {
         Digest::of(&canonical_json(value))
     }
@@ -38,10 +37,27 @@ impl fmt::Display for Digest {
 }
 
 /// Canonical JSON bytes: sorted object keys, no insignificant whitespace.
+///
+/// The keys are sorted here, not left to `serde_json`: a dependency that enables its
+/// `preserve_order` feature (`cedar-policy-core` does) makes `Value` keep insertion order in every
+/// crate of that build, and a binary built without it (the guest, a signing tool) would then
+/// disagree about the bytes a signature or a digest is over.
 pub fn canonical_json<T: Serialize>(value: &T) -> Vec<u8> {
-    // Round-trip through `Value` so struct field order does not leak into the bytes.
-    let v = serde_json::to_value(value).expect("serializable");
+    let v = sorted(serde_json::to_value(value).expect("serializable"));
     serde_json::to_vec(&v).expect("serializable")
+}
+
+fn sorted(v: serde_json::Value) -> serde_json::Value {
+    use serde_json::Value;
+    match v {
+        Value::Object(m) => {
+            let mut entries: Vec<(String, Value)> = m.into_iter().collect();
+            entries.sort_by(|a, b| a.0.cmp(&b.0));
+            Value::Object(entries.into_iter().map(|(k, v)| (k, sorted(v))).collect())
+        }
+        Value::Array(a) => Value::Array(a.into_iter().map(sorted).collect()),
+        other => other,
+    }
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
