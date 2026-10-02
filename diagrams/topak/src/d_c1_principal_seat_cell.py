@@ -10,10 +10,11 @@ def build():
                "them: two positions are seats that hold a Persona, a lease and a topic, two are stages that hold none, "
                "and **a principal holds exactly one seat** (ADR-0037 §1). Who is a principal is decided by one test: "
                "evictability by an authority other than itself (ADR-0002 A2).",
-               3000, "ToO rev 11 §1, §2.5, §2.8, §2.9, §5.1, §7.5; ADR-0002 A2; ADR-0037 §1–§8 (R1–R5, A1, B12, B20, B22); "
+               3000, "ToO rev 13 §1, §2.5, §2.8, §2.9, §5.1, §7.5; ADR-0002 A2; ADR-0037 §1–§8 (R1–R5, A1, B12, B20, B22); "
                "ADR-0038 §1–§7; ADR-0043 §1, §2, §5; ADR-0031 §1, §2, §5; ADR-0035 §5; ADR-0018; ADR-0019; ADR-0045 "
                "T-0045-26; spec/Seats.tla and spec/Seats-results-2026.09.29.txt; spec/Seats_proof.tla and "
-               "Seats-proof-results-2026.10.02.txt; ADR-0037 B25; G7 §1.1")
+               "Seats-proof-results-2026.10.02.txt; ADR-0037 B25; ADR-0033 A7 (pending); mechanism topak-core rules.rs "
+               "(`SeatDecl`); G9 §1.2, §7 items 40, 41, 43, 64, 85")
     X0, X1 = c.x0, c.x1
     y = c.y
 
@@ -83,7 +84,9 @@ def build():
           "No lease, no alphabet, not evictable as a unit."]),
         ("Seat", "pink", None,
          ["A slot declared in the issued rules, with a **kind**: `thinker`, `observer` or `grant` (ADR-0037 §1, §2).",
-          "Held by exactly one principal."]),
+          "Held by exactly one principal.",
+          "At the reference it also declares a **rung** (`SeatDecl.rung`, default 0): a grant is at that rung or "
+          "refused, never lower (PROVISIONAL; G9 items 64, 85)."]),
         ("Principal", "brown", None,
          ["Holds **exactly one seat**, fixed when the seat is declared; every principal is atomic (ADR-0037 §1, §7).",
           "Evictable by an authority other than itself."]),
@@ -217,11 +220,11 @@ def build():
           "Reads facts, envelopes and payloads of every cell at the archetype; a facts-only correlator is a permitted "
           "narrowing (D-0038-2's mitigation).",
           "A finding may name any principal in its domain, and is still deny-only. **No admit waits on it** "
-          "(ADR-0043 §6). Its detection function is unspecified (G7 item 43)."]
+          "(ADR-0043 §6). Its detection function is unspecified (G9 item 43)."]
     bG = ["**A human holds one seat too**: a `grant` seat (ADR-0024 §5) or a `thinker` seat as an author, **never "
           "both** (ADR-0037 §7).",
           "A person who authors and approves is two principals; recusal is per seat and does not see through them "
-          "(finding 2; no seat-registration record, G7 item 41).",
+          "(finding 2; no seat-registration record, G9 item 41).",
           "Build only: `grant` seats read, emit and vote; in Run they hold no variant (ADR-0043 §2)."]
     h2 = max(c.card(0, 0, w3, "Cell B", bB, size=14, draw=False),
              c.card(0, 0, w3, "Correlator", bC, size=14, draw=False),
@@ -242,7 +245,8 @@ def build():
              "blue", dash=None, sw=2.4, size=15)
     dep_bot = max(dom_bot + 30, ladder_bottom)
     c.region(RX0, dep_top, RX1 - RX0, dep_bot - dep_top,
-             "Deployment: one rung and its declared degeneracies (ADR-0023); every reference lease is rung 0",
+             "Deployment: its declared rung and degeneracies (ADR-0023); at the reference each seat declares its rung, "
+             "default 0 (PROVISIONAL; launcher, ADR-0033 A7, pending)",
              "grey", dash=None, sw=2.6, size=16)
     y = max(dep_bot, ladder_bottom) + 60
 
@@ -341,6 +345,6 @@ def build():
     y += max(t1, t2) + 30
     c.para(X0, y, X1 - X0,
            "Every row writes \"none\" under \"theorems voided\" and states the real loss in prose: ADR-0023 §6's schema "
-           "has no \"properties lost\" field (ADR-0037 finding 6; G7 item 40). The Reader's admitting use is owed to "
+           "has no \"properties lost\" field (ADR-0037 finding 6; G9 item 40). The Reader's admitting use is owed to "
            "ADR-0045 T-0045-26, a trust root at rung 3 only, which no theorem cites yet.", 14, "muted")
     return c

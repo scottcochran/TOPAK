@@ -13,8 +13,9 @@ def build():
                3200, "ADR-0031 §1–§8 with R1–R3, C1, E1, A1, A2 and History B5, B8, B10, B17, B23; ADR-0034 §3; "
                      "ADR-0037 §1; ADR-0040 §4; ADR-0033 §4 and A6; ADR-0032; ADR-0016 §6; spec/Lease_A1.tla "
                      "(0b5eac7a7309be2f) and spec/Lease_A1-results-2026.09.28.txt; spec/Lease_A1_proof.tla (6f39c7711252c8de) "
-                     "and Lease_A1-proof-results-2026.10.02.txt; ADR-0046 §4; ToO rev 11 §2.5; G7 §1.1, §2.2, §2.7, "
-                     "§7 items 21, 22, 62")
+                     "and Lease_A1-proof-results-2026.10.02.txt; ADR-0046 §4; ADR-0033 A7 (pending); mechanism topak-core "
+                     "lease.rs, state.rs (`LeaseRecord`); ToO rev 13 §2.5; G7 §1.1; G9 §1.2, §2.3, §2.7, "
+                     "§7 items 21, 22, 62, 85")
     X0, X1 = c.x0, c.x1
     y = c.y
 
@@ -40,7 +41,7 @@ def build():
         ["confinement", "`[digest, rung]`: the confinement-profile digest and its attestation rung", "§3; ADR-0034",
          "Checked (appraisal at rung ≥ 1) · **assumed**", K + ", digest and rung (A1); re-attested"],
         ["bundle", "The bundle version this principal is admitted against", "ADR-0010",
-         "Checked (signed revision, G7 §2.7) · **assumed**", K + " (R2): nothing orders two bundles"],
+         "Checked (signed revision, G9 §2.7) · **assumed**", K + " (R2): nothing orders two bundles"],
         ["alphabet", "The action variants this seat may express", "ADR-0007, ADR-0022 §1",
          "Checked (kind's row, ADR-0037 §4) · **assumed**", "[[green|may narrow]]"],
         ["round", "The round this lease is granted for. Never reused per seat", "ADR-0003, §2",
@@ -77,7 +78,11 @@ def build():
     n2 = [
         "**The field list is the per-round TCB** (§6): the one slice of the trusted base that is derived rather than "
         "declared; the rest is ADR-0045's table.",
-        "**Rung 0 is** `Mediated`**, always** (§3). Every lease the reference issues is rung 0 (G7).",
+        "**Rung 0 is** `Mediated`**, always** (§3). The reference grants rung 0 by operator and, through its "
+        "launcher, rung 1 and a **SIMULATED** rung 3 (ADR-0033 A7, pending; G9 §2.3): no real principal is "
+        "`Contained`.",
+        "**The appraisal is not a field**: the reference keeps it beside the lease, on its record, so the closed "
+        "set stays closed (PROVISIONAL; G9 §1.2, item 85).",
         "**Confinement is necessary, not sufficient** for `Contained`: the provenance axis must also clear (§3; "
         "ADR-0034 §4; ADR-0035 Proposed).",
     ]
@@ -111,9 +116,10 @@ def build():
         "**None live** for the principal (§2); the target is **not in the revocation set** (§5).",
         "`ttl ≤ T_persona`, refused by the mechanism, not policy (A2; built, ADR-0033 A6).",
         "The `alphabet` is inside the seat kind's row and domain (ADR-0037 §4).",
-        "The bundle revision verifies under the rules' `bundle_keys` (ADR-0033 A6; G7 §2.7).",
+        "The bundle revision verifies under the rules' `bundle_keys` (ADR-0033 A6; G9 §2.7).",
         "At rung ≥ 1: an **Attested** appraisal at the declared rung, nonce = hash(epoch, log index, principal, "
-        "round); Unattestable or Contested refuses, never a lower rung (ADR-0034 §3).",
+        "round); Unattestable or Contested refuses, never a lower rung (ADR-0034 §3). At the reference it is "
+        "re-checked at apply on every replica (A7, pending).",
         "`fence` := the Paxos log index of the grant entry; consensus-ordered, like every authority increase.",
     ]
     gh = c.card(gx, gy, gw, "grant (§2): an admit decision at a fresh fence", grant_body, accent="blue", size=13.5)
@@ -232,7 +238,7 @@ def build():
     p5 = c.para(X0, y5 + 40 + t1 + 14, TW,
                 "Both are enforced by the mechanism ahead of the floor; both subtract, so neither needs a quorum; both "
                 "change replicated state, so both are consensus-ordered (ADR-0033 §4). **Lifting a revocation** would "
-                "add authority and no record says who may (G7 item 22, open).", 14, "muted")
+                "add authority and no record says who may (G9 item 22, open).", 14, "muted")
     left_bot = y5 + 40 + t1 + 14 + p5
     y = max(left_bot, sm_bot) + 60
     tp = [
@@ -241,7 +247,7 @@ def build():
         "**Built at the reference** (ADR-0033 A6, Batch 23): refused at grant and renewal in `apply`, with a mutation "
         "test at the bound's edge; `Mechanism.tla` carries both checks.",
         "**The value is a placeholder** (one hour) and **expiry runs on the local clock**: the bound is enforced, the "
-        "interval still drifts (G7 item 62; ADR-0045 finding 2).",
+        "interval still drifts (G9 item 62; ADR-0045 finding 2).",
         "Between two re-attestations a substituted Persona is undetected for at most `T_persona` (Consequences).",
     ]
     clk = [

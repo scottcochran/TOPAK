@@ -12,14 +12,16 @@ def build():
                "Each domain has its own typed alphabet and **no variant name is shared**; only the carrier, epoch and "
                "lease on every action, is common. Which seat kind may express which variant is bounded twice: by the "
                "grant path, which refuses an alphabet outside the kind's row, and by the policy floor at admit "
-               "(ADR-0037 §4, ADR-0043 §2). The floor text cited here is **DRAFT, not ratified** (G7 §2.2).",
+               "(ADR-0037 §4, ADR-0043 §2). The floor text cited here is **DRAFT, not ratified** (G9 §2.2).",
                3000, "ADR-0022 §1–§7 (A1, A2); ADR-0040 §1–§6; ADR-0041 §1–§3; ADR-0042 §1–§6; ADR-0043 §1, §2, §4; "
-                     "ADR-0037 §4; ADR-0024 §2, §5; ADR-0038 §6; ADR-0034 P4, D-0034-3; ADR-0015; "
-                     "floor/genesis-floor.cedar (DRAFT, 17 policies; digest 28ec0e4552c6a915 per G7 §2.2); "
+                     "ADR-0037 §4; ADR-0024 §2, §5; ADR-0038 §6; ADR-0034 P4, D-0034-3, A2 (pending: the Run profile, D-0034-5, "
+                     "D-0034-6); ADR-0033 A8 (pending); ADR-0015; "
+                     "floor/genesis-floor.cedar (DRAFT, 17 policies; digest 28ec0e4552c6a915 per G7 §2.2, unchanged at G9 §2.2); "
                      "spec/Seats-results-2026.09.29.txt; spec/RunSeats-results-2026.09.29.txt; spec/Seats_proof.tla, "
                      "spec/RunSeats_proof.tla and their 2026.10.02 proof results; ADR-0037 B25; ADR-0043 B25; "
                      "ADR-0046 §4, §5; mechanism/"
-                     "GAPS-AND-ASSUMPTIONS.md I14, I33, G19; ToO rev 11 §2.4, §2.9, §4.1; G7 §1.1, §2.2, §7")
+                     "GAPS-AND-ASSUMPTIONS.md I14, I33, I43, I44, G19; ToO rev 13 §2.4, §2.9, §4.1; G7 §1.1; "
+                     "G9 §2.2, §2.5, §7 items 58, 80, 83, 84")
     X0, X1 = c.x0, c.x1
     y = c.y
 
@@ -87,8 +89,9 @@ def build():
                 "ADR-0040 §2)", [
         "Actions under a fenced epoch are rejected **by the mechanism, not by policy**, ahead of the floor; the floor "
         "states no epoch fence (genesis-floor.cedar header). The lease (ADR-0031) carries the seat, its `alphabet` "
-        "and its domain; at the reference the bearer token carries (seat, lease, epoch) into every action "
-        "(`mechanism/` I14).",
+        "and its domain; at the reference the bearer token carries (seat, lease, epoch) into every action, and a "
+        "lease the launcher issues mints none: at rung 1 the bridge is the session (`mechanism/` I14; ADR-0033 A7, "
+        "pending).",
     ], accent="teal", size=14.5, bullets=False)
     for xx in (bx + pw / 2, rx + pw / 2):
         c.arrow([(xx, cy2), (xx, pbot)], "teal", sw=2.4)
@@ -116,13 +119,19 @@ def build():
             "directory capability only; no sockets, no wall clock, no free entropy.",
             "**Native tools: unowned.** Using one is declared degeneracy **D-0034-3**: P4 falsified, the principals "
             "reaching it are `Mediated`.",
+            "At the reference a Build profile that says P4 passes is **not yet held to Wasm tools** for `Invoke` "
+            "(G9 item 83).",
         ]),
         ("`Actuate` declares its channel: channel fidelity", "amber", "proposed", [
             "P4 cannot hold for a Run tool; **channel fidelity** replaces it: a tool opens the channel its entry "
             "declares and no other (ADR-0042 §6, **Proposed**).",
-            "**Nothing checks it** (`mechanism/` G19): the bundle checks only that `channel: {kind, target}` is "
-            "present and well-shaped (I33, a schema invented at the reference).",
-            "The Run profile that would carry it is unwritten (G7 items 26, 58).",
+            "**Owner drafted**: ADR-0034 **A2** (pending, C2, C4) writes the Run profile with P4 as channel "
+            "fidelity, held by the tool host's **Wasm runtime** by construction; ADR-0033 **A8** (pending) builds it: "
+            "a Wasm-hosted Run tool reaches only its declared target (I44).",
+            "**Native Run tools: checked by nobody** (G19): **D-0034-6**, or **D-0034-5** behind an egress filter, a "
+            "trust. The bundle checks only that `channel: {kind, target}` is well-shaped (I33); the channel is "
+            "declared twice and not checked to agree (G9 item 84).",
+            "Until A2 and §6 are ratified, Run principals are `Mediated` (G9 §2.5, items 58, 80).",
         ]),
     ]
     ph = max(c.card(0, 0, w4, t, b, size=14, status=s, draw=False) for t, _, s, b in pcards)
@@ -190,7 +199,7 @@ def build():
 
     # ------------------------------------------------------------------ the floor, verbatim policy by policy
     c.heading(X0, y, "floor/genesis-floor.cedar: all 17 policies, as the draft states them", size=21)
-    c.status(X1, y + 3, "draft", "G7 §2.2 · gates pass, 2026.10.01", anchor="end")
+    c.status(X1, y + 3, "draft", "G9 §2.2 · gates pass, 2026.10.01", anchor="end")
     y += 44
     cols = [("Policy id", TW * 0.14, {"mono": True}), ("Effect", TW * 0.05, {"bold": True}),
             ("Action", TW * 0.12), ("Condition (paraphrased from the Cedar text)", TW * 0.47),

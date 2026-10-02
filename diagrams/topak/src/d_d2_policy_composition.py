@@ -48,7 +48,9 @@ def build():
                "to refuse, and only after the floor permits. Composition is a mechanism constant, so `bundle ⊑ floor` "
                "holds for every bundle at every age.",
                W, "ADR-0030 §1–§8 with A1; ADR-0044 §1–§5; ADR-0033 §2, §5, A6; ADR-0031 §1; ADR-0013 §2; ADR-0028 §2; "
-               "ADR-0039 §1, §2; ADR-0041 §1, §2; ToO rev 11 §3.1, §3.3; G7 §1.1, §2.2, §2.7, item 67; "
+               "ADR-0039 §1, §2; ADR-0041 §1, §2; ADR-0034 A2 and ADR-0033 A8 (pending); ADR-0042 §6 (Proposed); "
+               "mechanism/GAPS-AND-ASSUMPTIONS.md G19, I33, I44; ToO rev 13 §3.1, §3.3; G7 §1.1; G9 §2.2, §2.5, §2.7, "
+               "§7 items 67, 80, 84; "
                "floor/genesis-floor.cedar, genesis.cedarschema, genesis-values.json; policies/bundle.rego, "
                "tool_invocation.rego, actuate.rego, tool_schema.rego, data.json; mechanism/crates/topak-core/src/admit.rs, "
                "lift.rs; topak-floor/src/lib.rs; topak-bundle/src/lib.rs; scripts/build-bundle.sh")
@@ -136,7 +138,7 @@ def build():
         "`bundle_keys` (ADR-0044 §1–§3); implemented at the reference by ADR-0033 A6 (Batch 23). A sidecar's answer counts "
         "only from a verified revision; a grant naming an unverified one is refused.",
         "Today the key is a dev key with custody (1, 0); signing at promotion is a script step, since no promotion "
-        "pipeline exists (G7 item 67).",
+        "pipeline exists (G9 item 67).",
     ], accent="amber", size=14, status="accepted", status_extra="C1 · ADR-0044")
     sy = by + bhd + 22
     c.text(bx + pad, sy + 18, "Engine fallback, bound to the lease (ADR-0030 §1, folded from ADR-0033 §5)", 17,
@@ -163,7 +165,10 @@ def build():
                         "below"],
         ["tool_invocation.rego", "Build `Invoke` whose inputs do not match the tool's declared schema"],
         ["actuate.rego", "Run `Actuate` whose inputs do not match, or whose tool's entry declares **no effect "
-                         "channel**. The channel is declared, not interpreted: fidelity is G19, unowned"],
+                         "channel**. The channel is declared here, not interpreted: fidelity is **owned** by the tool "
+                         "host's Wasm runtime under ADR-0034 A2 and **built** for Wasm-hosted tools by ADR-0033 A8 "
+                         "(both pending); a native tool's is G19. The node's config declares it again, unchecked "
+                         "against this (G9 item 84)"],
         ["tool_schema.rego", "Decides nothing alone: the flat-object schema check both domains share"],
         ["data.json", "Tool schemas keyed `name@digest` (`tlc@d1`, `search@d3`) and `search@d3`'s declared channel; "
                       "bundle data, not a re-fetch"],

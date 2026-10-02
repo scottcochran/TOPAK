@@ -8,9 +8,10 @@ COLS = [
      "Specify every guarantee against what an agent's alphabet allows, and check it, with a mutation that must fail "
      "for every property.",
      "TLA+: TLC over the tracked `tools/tla2tools.jar` **checks** every mutation and witness; since 2026.10.02 the "
-     "TLA+ Proof System (`tlapm`, T-0045-31) **proves** the invariants of thirteen modules (ADR-0046). Properties "
+     "TLA+ Proof System (`tlapm`, T-0045-31) **proves** the invariants of fifteen modules, 3,036 obligations (ADR-0046; G9 §2.9). Properties "
      "restated as Rust tests with the same mutations; since 2026.09.30 every tested behaviour replayed through "
-     "`spec/Mechanism.tla`",
+     "`spec/Mechanism.tla`, and since 2026.10.02 every replayed state read against the abstract confinement "
+     "invariants",
      ["Mutations and witnesses checked at small constants; invariants proved **of the modules**, not of the code "
       "(ADR-0046 §2).",
       "The trace harness is a mechanized link, **not a refinement** (T-0045-28 stays a trust root)."]),
@@ -33,9 +34,11 @@ COLS = [
      "Every agent is Byzantine at every position. It reaches the world only through a typed alphabet; models stay out "
      "of the trusted computing base.",
      "The alphabet as MCP tools and nothing else, on a front door the mechanism owns (`topak mcp`, stdio, bearer "
-     "token); downstream tools reached as MCP servers.",
+     "token); downstream tools reached as MCP servers. A guest the node launches is bridged on stdio and mints "
+     "no token (ADR-0033 A7, pending).",
      ["The alphabet is the whole **protocol**, not the whole **channel**: a process with a shell never has to ask.",
-      "Every lease at the reference is rung 0, so every principal is `Mediated`."]),
+      "The reference grants rung 0 by operator, launches rung 1 on profiles that declare P3 `fail` and rung 3 only "
+      "**SIMULATED** (A7, pending): **every real principal is** `Mediated` (G9 §2.3)."]),
     ("K", "Event transport", "amber",
      "Transport with a durability window. Neither the ordering authority (that is the Paxos log) nor the system of "
      "record (that is the archive).",
@@ -50,8 +53,8 @@ def build():
     c = Canvas(ID, "The letters name roles, not products",
                "Each letter of TOPAK carries an obligation. Any instrument that meets the obligation may be substituted "
                "for the reference's choice; the floor tier cannot change language without ADR-0030.",
-               2200, "ToO rev 11 §1, §3.1, §15; ADR-0030 §1–§3; ADR-0033 §2–§3; ADR-0005; ADR-0045 T-0045-1, T-0045-28, "
-               "T-0045-29, T-0045-31; ADR-0046 §1, §2; G8 §2.9; README.md")
+               2200, "ToO rev 13 §1, §2.3, §3.1, §12, §15; ADR-0030 §1–§3; ADR-0033 §2–§3; ADR-0005; ADR-0045 T-0045-1, T-0045-28, "
+               "T-0045-29, T-0045-31; ADR-0046 §1, §2; ADR-0033 A7 (pending); G9 §2.3, §2.9, §3; README.md")
     x0, gap = c.x0, 24
     n = len(COLS)
     w = (c.x1 - x0 - gap * (n - 1)) / n

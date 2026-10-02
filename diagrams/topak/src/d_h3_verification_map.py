@@ -25,24 +25,29 @@ def lane(c, x0, y, w, cards, gap=56, size=14, label_fn=None):
 
 def build():
     c = Canvas(ID, "Verification map: what is checked, what is proved, what must fail, and what neither claims",
-               "Every check and proof in the corpus. Two methods, two words (ADR-0046 §1): TLC **checks** seventeen "
+               "Every check and proof in the corpus. Two methods, two words (ADR-0046 §1): TLC **checks** twenty "
                "TLA+ modules at small constants, each mutation failing the property it targets and each reachability "
-               "witness violated; the TLA+ Proof System **proves** the invariants of thirteen of them, 2,417 "
+               "witness violated; the TLA+ Proof System **proves** the invariants of fifteen of them, 3,036 "
                "obligations, under named assumptions and the absence of the mutations that break each. Then the "
                "policy floor's gates with a pinned proof checker; the reference's tests restating the properties; the "
-               "trace harness that replays those tests through an operational model; the drift pins; and the lineage "
+               "trace harness that replays those tests through an operational model and reads every state against the "
+               "abstract confinement invariants; the drift pins; and the lineage "
                "gate suite. Then the honesty layer: a proof is of the module, and what runs is neither checked nor "
                "proved.",
                3400,
                "spec/README.md and every spec/*.tla header and results file; spec/<Module>_proof.tla and "
-               "spec/<Module>-proof-results-2026.10.02.txt (13 each); spec/proof-method.md; spec/proof-results.sh, "
-               "proof-sync.sh, simulate-run.sh, premise-corrections-results.sh and its results file; "
-               "spec/theorem-premise-binding.md; ADR-0046 §1–§5, §7, open obligations; "
+               "spec/<Module>-proof-results-2026.10.02.txt (15 each); spec/Confinement_A1-results-2026.10.02.txt, "
+               "spec/RunConfinement-results-2026.10.02.txt, spec/ConfinementRefinement.tla, "
+               "spec/Mechanism-trace-results-2026.10.02.txt and -2026.10.02b.txt; spec/proof-method.md; "
+               "spec/proof-results.sh, proof-sync.sh, simulate-run.sh, confinement-run.sh, confinement-gen-results.sh, "
+               "runconfinement-run.sh, runconfinement-gen-results.sh, premise-corrections-results.sh and its results "
+               "file; spec/theorem-premise-binding.md; ADR-0046 §1–§5, §7, E1, open obligations; "
                "floor/README.md, floor/run-gates.py, floor/genesis-gates-results-2026.10.01.txt; "
                "mechanism/README.md, mechanism/GAPS-AND-ASSUMPTIONS.md §6, mechanism/corpus-pins.sha256; "
                "slm/README.md Part B, slm/gate-suite-results-2026.09.28.txt; ADR-0029 §5 (A1); ADR-0030 §5 A1; "
-               "ADR-0033 A5, A6, open obligations; ADR-0045 §5, T-0045-14, T-0045-28 to 31; G5 §4; G7 §2.2, §2.8, §3; "
-               "G8 §2.9, §3, §4, §5, §7 items 56, 73–75, 78, §8")
+               "ADR-0033 A5, A6, A7 and A8 (pending), open obligations; ADR-0034 finding 6, A2 (pending); "
+               "ADR-0045 §5, T-0045-14, T-0045-28 to 31; G5 §4; G7 §2.2, §2.8, §3; G8 §1, §3, §4, §5, §8, §9; "
+               "G9 §2.2, §2.3, §2.5, §2.9, §3, §4, §5, §7 items 56, 69, 73–75, 78, §8, §9")
     X0, X1 = c.x0, c.x1
     W = X1 - X0
     y = c.y
@@ -59,23 +64,27 @@ def build():
         ("Records", ["The ADRs state each property against what an agent's alphabet allows. A module is cited by "
                      "digest in the accepted record it checks; a change is a successor module (`Lease_A1`, "
                      "`RulesFloorNV_rev5`)."], "blue", None, "", None, None),
-        ("17 TLA+ modules, TLC", ["Each property with a **mutation that must fail** and a `Never…` "
+        ("20 TLA+ modules, TLC", ["Each property with a **mutation that must fail** and a `Never…` "
                                   "**witness that must be violated** (non-vacuity, G2 §3): existential claims, "
                                   "**checked**. Small constants; `tools/tla2tools.jar` 1.7.4, TLC 2.19, tracked for "
-                                  "its digest (T-0045-29). The invariants of 13 are also proved (lane 2)."],
+                                  "its digest (T-0045-29). The invariants of 15 are also proved (lane 2)."],
          "teal", None, "", None, None),
-        ("Rust tests restate them", ["`mechanism/`: **61 tests** across six binaries (2026.10.01), each named for "
-                                     "the property and the mutation it refuses (GAPS §6). Discrimination tests, "
-                                     "not proofs, by the same hand."], "teal", "built", "", None, None),
+        ("Rust tests restate them", ["`mechanism/`: **103 tests** across ten binaries (2026.10.02b, ADR-0033 A8, "
+                                     "pending; 96 at A7, 61 at A6), each named for the property and the mutation it "
+                                     "refuses (GAPS §6). Discrimination tests, not proofs, by the same hand."],
+         "teal", "built", "", None, None),
         ("Trace validation: stage 1", ["Tests record every `apply`; `trace2tla.py` converts; `Mechanism.tla` "
                                        "replays and checks `TraceMatches`. **21 traces, 163 steps** (09.30); "
-                                       "**22 traces, 168 steps** (10.01), every step matching."],
+                                       "**22 traces, 168 steps** (10.01); "
+                                       "**62 traces, 709 steps** (10.02b), every step matching and every state "
+                                       "also read against `ConfinementRefinement.tla`."],
          "teal", "built", "", None, None),
-        ("No refinement (T-0045-28)", ["What no test reaches is asserted, and three oracles come from the trace "
-                                       "(issuance validity, approval signatures, the parameter digest). T-0045-28 "
-                                       "stays a **trust root** for every deployment."], "red", "open", "", "6 4",
-         None),
-        ("Stage 2: a Lean model", ["With differential testing against the code (ADR-0033 open obligations; G8 "
+        ("Tested paths only (T-0045-28)", ["What no test reaches is asserted, and six facts come from the trace "
+                                           "(issuance validity, approval signatures, the parameter digest; an "
+                                           "appraisal's signature, a session proof, a profile's parse). "
+                                           "T-0045-28 stays a **trust root** for every deployment."], "red", "open",
+         "", "6 4", None),
+        ("Stage 2: a Lean model", ["With differential testing against the code (ADR-0033 open obligations; G9 "
                                    "item 56). **Not begun.** The proofs make its target precise and do nothing "
                                    "else for it (ADR-0046 §2)."], "red", "notbuilt", "", None, None),
         ("Stage 3: compilation", ["The Lean model compiled; with a reproducible build (T-0045-30), the rows "
@@ -90,9 +99,10 @@ def build():
     top = y
     y += 40
     hP = lane(c, X0 + LP, y, W - 2 * LP, [
-        ("A frozen module", ["Cited by digest in an accepted record. Thirteen have a proof: every module but "
-                             "`Mechanism.tla` (a trace replay), `Lease.tla` (its invariants are `Lease_A1`'s), "
-                             "`RulesFloorNV.tla` (superseded by rev 5) and `RulesFloorBase.tla` (definitions)."],
+        ("A frozen module", ["Cited by digest in a record. Fifteen have a proof: every module but "
+                             "`Mechanism.tla` (a trace replay), `ConfinementRefinement.tla` (predicates over its "
+                             "replayed states), `Lease.tla` (its invariants are `Lease_A1`'s), `RulesFloorNV.tla` "
+                             "(superseded by rev 5) and `RulesFloorBase.tla` (definitions)."],
          "blue", None, "", None, None),
         ("`spec/<Module>_proof.tla`", ["**Extends the module without editing it.** Each invariant as `Spec => []P`; "
                                        "its hypothesis is only the mutations that break it; a combined `Safe` under "
@@ -103,11 +113,13 @@ def build():
                                     "tracked**, run through `tools/tlapm`."], "blue", "accepted", "C2, C4 · B25",
          None, None),
         ("`*-proof-results-2026.10.02.txt`", ["`proof-results.sh` regenerates each, printing the digest of every "
-                                              "module in the EXTENDS chain and of the prover. **2,417 obligations, "
-                                              "every one proved**; each regenerated byte for byte at ratification."],
+                                              "module in the EXTENDS chain and of the prover. **3,036 obligations, "
+                                              "every one proved**; Batch 25's thirteen regenerated byte for byte at "
+                                              "ratification; G9's two (503, 116) are not ratified."],
          "teal", None, "", None, None),
-        ("Frozen; kept in step", ["Cited by digest in ADR-0046 §4, so frozen: a change is a successor module with a "
-                                  "successor proof. `proof-sync.sh` reports any proof whose specification moved."],
+        ("Frozen; kept in step", ["Thirteen cited by digest in ADR-0046 §4, two frozen from G9 on (G9 §3): a change "
+                                  "is a successor module with a successor proof. `proof-sync.sh` reports any proof "
+                                  "whose specification moved, and every proof is in sync."],
          "teal", None, "", None, None),
         ("Of the module only", ["**Proved** holds of every behaviour of the module, for every constant its "
                                 "assumptions admit. It is not a claim about `mechanism/` (T-0045-28) and replaces "
@@ -157,7 +169,7 @@ def build():
          "amber", "proposed", "", None, None),
     ], size=14)
     hD = lane(c, X0 + half + 40 + LP, yy, half - 2 * LP, [
-        ("`corpus-pins.sha256`", ["The whole-file digest of every record (34) and TLA+ module (10) the reference "
+        ("`corpus-pins.sha256`", ["The whole-file digest of every record (35) and TLA+ module (14) the reference "
                                   "follows, as it last followed them."], "grey", None, "", None, None),
         ("`cargo test -p topak-core --test drift`", ["Fails when a pinned file changes, or when the code cites a "
                                                       "record that is not pinned."], "teal", "built", "", None, None),
@@ -175,13 +187,14 @@ def build():
     # ================================================================ 2. the module table
     y += c.heading(X0, y, "2 · Every TLA+ module in `spec/`: what it checks, what must fail, what is proved, and "
                           "where its result is", size=22)
-    y += c.para(X0, y, W, "Seventeen modules and thirteen proof modules (G8 §9). Properties are invariants checked under "
+    y += c.para(X0, y, W, "Twenty modules and fifteen proof modules (G9 §9: G8's seventeen and thirteen, "
+                "with `Confinement_A1`, `RunConfinement` and `ConfinementRefinement`, and two proofs). Properties are invariants checked under "
                 "`Mut = \"none\"`; each mutation changes the mechanism, never the property, and must produce a "
                 "counterexample; each `Never…` witness must be violated, which shows the behaviour it names is "
                 "reachable. The proof column gives each proof module and its obligations (ADR-0046 §4); its results "
                 "file is `<Module>-proof-results-2026.10.02.txt`. Results files are dated and never change; every "
-                "proof results file and three TLC results files regenerate from a script, the rest are hand-assembled "
-                "(G8 item 78). **Pinned** means listed in `mechanism/corpus-pins.sha256`.", 15, "muted") + 14
+                "proof results file, three TLC results files at G8 and the two new modules' since regenerate from a "
+                "script, the rest are hand-assembled (G9 item 78). **Pinned** means listed in `mechanism/corpus-pins.sha256`.", 15, "muted") + 14
     cols = [("Module", 230, {"mono": False}), ("Record it checks", 240), ("Properties (invariants)", 420),
             ("Mutations that must fail", 400), ("Witnesses that must be violated", 380),
             ("Driver", 232), ("Results file, constants", 500), ("Proved in (ADR-0046 §4)", 448),
@@ -255,7 +268,18 @@ def build():
          "`confinement-run.sh`; `confinement-gen-results.sh`", "`Confinement-results-2026.09.25.txt`, `-28.txt`, "
          "`-30.txt` (the rung-0 row, D-0034-4); `MaxEpoch = 1`, `MaxIdx = 4`, `MaxGen = 2`, two principals",
          "`Confinement_proof.tla` · **502**: every rung at once, assuming `Declared ∈ 0..3`; `SameGuest` at "
-         "grant is not load-bearing", "ADR-0034, ADR-0046"],
+         "grant is not load-bearing", "ADR-0034, ADR-0046 · frozen; succeeded by `Confinement_A1` (finding 6) · "
+         "**pinned**"],
+        ["`Confinement_A1.tla`", "ADR-0034 finding 6's successor: `Evidence` reads no measurement at rung 0 "
+         "(ADR-0033 A7, pending)", "as `Confinement.tla`; `Safe` holds at every rung",
+         "as `Confinement.tla`; `M_HOST` breaks rungs 1 and 2 and changes nothing at 0 and 3",
+         "`NeverContainedEffect` (holds at rung 0, violated at 1 and 3), `NeverMediatedEffect`, `NeverContested` "
+         "(3); the rung-0 row that reached Contested under `M_HOST` now holds",
+         "`confinement-run.sh`; `confinement-gen-results.sh` over `confinement-A1-rows-2026.10.02.txt`",
+         "`Confinement_A1-results-2026.10.02.txt` (24 rows, rungs 0–3); constants as `Confinement.tla`",
+         "`Confinement_A1_proof.tla` · **503**: `Confinement_proof` with one case split changed, `Declared <= 1`: "
+         "rung 0 joins rung 1 under the low-rung invariant",
+         "ADR-0033 A7 (pending) · frozen from G9 (G9 §3) · **pinned**"],
         {"group": "Seats, Observers and coupling (Build cells)", "accent": "pink"},
         ["`Seats.tla`", "ADR-0037 §9", "`OnlyThinkersAuthor`, `OneSeatPerPrincipal`", "`M_KIND`, `M_SEAT` (the "
          "reference before ADR-0037)", "`NeverActed`, `NeverTwoLive`, `NeverObserverVoted`", "`seats-run.sh`",
@@ -284,13 +308,30 @@ def build():
          "`NeverActuated`, `NeverObserverReported`, `NeverObserverConsulted`", "`runseats-run.sh`",
          "`RunSeats-results-2026.09.29.txt`; 4 seats, 6 actions", "`RunSeats_proof.tla` · **147**",
          "ADR-0043, ADR-0046 · **pinned**"],
+        ["`RunConfinement.tla`", "ADR-0034 A2 (pending), condition (ii): P4 for Run is channel fidelity",
+         "`EffectsOnDeclaredChannels`, `ContainedEffectsUseHeldTools`; both also hold under D-0034-5's filter",
+         "`M_CHANNEL` (the runtime does not bind the target), `M_NATIVE` (breaks both), `M_FILTER` (only where "
+         "D-0034-5 is declared)", "`NeverContainedEffect`, `NeverMediatedEffect`, `NeverRefused` (with and "
+         "without the filter), `NeverUndeclaredTarget`: five rows", "`runconfinement-run.sh`; "
+         "`runconfinement-gen-results.sh`", "`RunConfinement-results-2026.10.02.txt` (13 rows); 2 principals; "
+         "a Wasm, a filtered and a native tool; 3 targets", "`RunConfinement_proof.tla` · **116**: both invariants "
+         "inductive on their own; one `ASSUME`, `FilteredBool`",
+         "ADR-0034 A2, ADR-0033 A8 (both pending) · frozen from G9 (G9 §3) · **pinned**"],
         {"group": "The operational model of the reference", "accent": "teal"},
         ["`Mechanism.tla`", "ADR-0045 T-0045-28; ADR-0033 A5, A6", "`TraceMatches` (each recorded step's projected "
          "state and result equal the model's)", "a step that differs (the first `ttl` test was caught this way: the "
          "test was wrong, G7 §3)", "—", "`mechanism-trace-run.sh`; `mechanism-trace-results.sh`; `trace2tla.py`",
-         "`Mechanism-trace-results-2026.09.30.txt` (21 traces, 163 steps); `-2026.10.01.txt` (22 traces, 168 "
-         "steps), digest `3bfbc88be6cf7fe7`", "[[grey|no proof]]: a trace replay states no invariants; its target is "
+         "`Mechanism-trace-results-2026.09.30.txt` (21 traces, 163 steps); `-2026.10.01.txt` (22, 168); "
+         "`-2026.10.02.txt` (57, 642); `-2026.10.02b.txt` (62 traces, 709 steps); module `73e03ad487c5e4ff`, "
+         "`3bfbc88be6cf7fe7` at G8", "[[grey|no proof]]: a trace replay states no invariants; its target is "
          "the refinement (T-0045-28)", "pinned, **not frozen**: moves with the code"],
+        ["`ConfinementRefinement.tla`", "ADR-0045 T-0045-28, stage one; ADR-0034 §3, §4 as `Confinement_A1` "
+         "states them (ADR-0033 A7, pending)", "`ConfinementRefined`: `RNoSilentDowngrade` (per seat), "
+         "`RContestedStopped`, `RFreshAppraisal`, `RContainedAttested` (`Contained`'s premises; "
+         "`ContainedMeansConfined` is not checkable here)", "a negative control, a broken invariant, must fire",
+         "—", "`mechanism-trace-run.sh`, on every replayed state", "the trace results files from "
+         "`-2026.10.02.txt` on: every state keeps the invariants", "[[grey|no proof]]: predicates over replayed "
+         "trace states, not a specification (`proof-sync.sh`)", "pinned"],
     ]
     y += c.table(X0, y, cols, rows, size=13.5) + 50
 
@@ -339,12 +380,12 @@ def build():
         ["`BreakGlass`", "`BreakGlassNeverChangesAuthority`", "[[teal|drafted and checked]] 2026.09.23; "
          "[[teal|proved]] 2026.10.02 (`BreakGlass_proof.tla`, 37 obligations)"],
     ], size=13.5, accent="brown")
-    hb = c.card(X0 + wl + 40, gy + h2 + 24, wr, "Bootstrap specification: partial (G5 §4; G8 §4)", [
+    hb = c.card(X0 + wl + 40, gy + h2 + 24, wr, "Bootstrap specification: partial (G5 §4; G9 §4)", [
         "The anchor **may** bootstrap once a drafted TLA+ bootstrap specification exists: five modules, five "
         "invariants, each with a mutation that must fail. TLC checking is recommended, not required.",
         "Two of five exist, `Anchor` and `BreakGlass`, and are now **proved and not only checked** (ADR-0046 §4; "
         "ADR-0029 B25). `Genesis`, `RulesFloor` and `Promotion` are still owed. The trigger is unmet and remains "
-        "optional; bootstrap itself is deliberately not on the open list (G8 §7).",
+        "optional; bootstrap itself is deliberately not on the open list (G9 §7).",
     ], accent="brown", size=14)
     hs = c.card(X0 + wl + 40, gy + h2 + 24 + hb + 24, wr, "Lineage gate suite: ADR-0035 §8's ratification items", [
         "1 · cases for E1–E5 and distillation, each seen to fire: **passes**.",
@@ -361,7 +402,8 @@ def build():
                           "in full)", size=22)
     y += c.para(X0, y, W, "Since 2026.09.30 the restatement is checked, not asserted, on every path a test takes: "
                 "each state these tests build records its applied entries and `spec/mechanism-trace-run.sh` replays "
-                "them through `Mechanism.tla`. Nothing a test does not reach is checked. The same kind of evidence the "
+                "them through `Mechanism.tla`, and since 2026.10.02 every traced state is also read against `Confinement_A1.tla`'s "
+                "invariants (`ConfinementRefinement.tla`). Nothing a test does not reach is checked. The same kind of evidence the "
                 "TLC runs are, by the same hand. Row `SealCountsEffects, and M_ROUNDS carried over` is GAPS §6's "
                 "text; the binding table now says the seal breaks under `M_EMITSEQ`, not `M_ROUNDS` (ADR-0046 §5).",
                 15, "muted") + 14
@@ -369,7 +411,13 @@ def build():
         ["`Lease.tla`", "`LeaseAuthorityMonotone` / `M_RENEW`", "`mutations.rs` `lease_renewal_is_monotone_and_m_renew_is_refused`"],
         ["`Lease.tla`", "C1 one live lease", "`one_live_lease_per_principal`"],
         ["`Lease.tla`", "`NoActionUnderFencedEpoch` / `M_FENCE`", "`no_action_under_a_fenced_epoch_and_m_fence_is_refused`; e2e `FencedEpoch`"],
-        ["`Lease.tla`", "`Rung0NeverContained` / `M_RUNG`", "`rung_zero_is_never_contained_and_nothing_is_contained_yet`"],
+        ["`Lease.tla`", "`Rung0NeverContained` / `M_RUNG`", "`rung_zero_is_never_contained_and_says_why`; `confinement.rs` `contained_is_a_lookup_and_each_conjunct_matters`"],
+        ["`Confinement.tla`", "`ContestedStopped` / `M_CONTESTED`; `NeverContested` at rung 1", "`confinement.rs` `a_contested_verdict_never_grants_and_revokes_the_principal`, `a_contested_verdict_ends_a_live_lease`; e2e `contain.rs` rogue image"],
+        ["`Confinement.tla`", "`ContainedMeansConfined` / `M_UNBOUND` (at `Act`)", "`the_session_is_the_attested_guests_and_m_unbound_is_refused`, `renewal_re_attests_the_same_guest`; `contain.rs` `the_session_is_the_attested_guests`"],
+        ["`Confinement.tla`", "`FreshAppraisal` / `M_STALE`", "`an_epoch_fence_invalidates_a_pending_appraisal`; `contain.rs` with the verifier held"],
+        ["`Confinement.tla`", "`NoSilentDowngrade` / `M_DOWNGRADE`, `M_RENEWLOW`; `Lease_A1.tla` `M_LOWER`", "`no_silent_downgrade_at_grant`, `m_lower_and_m_renewlow_are_refused`; `contain.rs` renewal lapses"],
+        ["`Confinement.tla`", "`ContainedMeansConfined` / `M_PROFILE`", "`contained_is_a_lookup_and_each_conjunct_matters`"],
+        ["`Confinement.tla`", "`ContainedMeansConfined` / `M_HOST` at rung 1", "`contain.rs` `every_host_power_subtracts`: a lying rung-1 launcher is believed (T-0045-19)"],
         ["`Lease.tla`", "`LeaseAuthorityMonotone` / `M_ROLE` (ADR-0031 R1)", "`renewal_cannot_change_round_or_role_and_m_role_is_refused`"],
         ["`Lease.tla`", "`NeverSelectiveRevoke` witness (ADR-0031 R3)", "`a_targeted_revocation_ends_one_round_and_not_the_fleet`; e2e targeted revocation leaves a bystander live"],
         ["`Lease.tla`", "`RevokedStaysStopped` / `M_REVOKE` (ADR-0031 R3)", "`a_revoked_principal_persona_or_profile_is_not_granted_again_and_m_revoke_is_refused`"],
@@ -412,38 +460,42 @@ def build():
     w3 = (W - 2 * g) / 3
     cards = [
         ("Proved and checked: two words", [
-            "**Proved** names a claim TLAPS discharged and the hypotheses it was discharged under: thirteen modules' "
+            "**Proved** names a claim TLAPS discharged and the hypotheses it was discharged under: fifteen modules' "
             "invariants. **Checked** names TLC's evidence: the mutations and witnesses at small constants. Neither is "
             "used of the running reference (ADR-0046 §1; G8 §5).",
-            "The trace validation is drift detection against a model of the code; a checked gate proof certifies an "
+            "The trace validation is drift detection against a model of the code, and its refinement check reads "
+            "tested paths only and cannot check `ContainedMeansConfined` (G9 §3); a checked gate proof certifies an "
             "implication between two Cedar encodings, not the encoding (G8 §8). The theorem-to-premise table says "
             "what each property **assumed**; it does not strengthen it."], "red"),
         ("Small constants; the prover as written", [
             "\"A property that holds at two principals and one epoch is evidence, not a proof\" (T-0045-29, G5 §8): "
             "since B25 that residual bounds the mutations and witnesses only. Model checking at practical constants: "
-            "none yet (G8 item 75).",
+            "none yet (G9 item 75).",
             "TLC and the prover are trust-root rows (T-0045-29, T-0045-31), trusted as written: no mutation of either "
-            "is run, and the SMT backends' proofs are not rechecked by Isabelle, `tlapm -C` (G8 item 74)."], "red"),
+            "is run, and the SMT backends' proofs are not rechecked by Isabelle, `tlapm -C` (G9 item 74; §8)."], "red"),
         ("The same hand", [
             "Batch 25's proofs were drafted, checked, mutation-tested and regenerated by the assistant and ratified by "
             "the custodian on the day; the condition meant to make the cited digests someone else's was run by the "
-            "drafter (G8 §4, §8).",
+            "drafter (G8 §4, §8). G9's two proofs, their modules and the code under A7 and A8 are one hand's, in "
+            "one day, with no second reader (G9 §4, §8).",
             "The operational model was written from the code by the same hand on the same day: the link is "
             "mechanized, not independent (ADR-0033 A5)."], "red"),
         ("What runs is neither checked nor proved", [
-            "\"Thirteen modules' invariants are proved, and nothing about the running reference is\" (G8 §8). "
+            "\"Fifteen modules' invariants are proved, and nothing about the running reference is. The refinement "
+            "check covers tested paths; T-0045-28 stands\" (G9 §8). "
             "\"What runs is not the specification\" (ADR-0045 §5, R1): no refinement from the modules to the Rust "
             "exists and the build is asserted, not reproduced: trust-root rows T-0045-28 to 30, for every deployment.",
             "\"The gap is a debt, not a residual the archetype keeps\" (R2): its owner is ADR-0033."], "red"),
         ("What the checker does not cover", [
             "A `holds°` is cedar's own term folding with no query to check: 25 of the run's 29 `holds` rest on the "
-            "engine's row (T-0045-3), not the checker's (G8 item 69).",
+            "engine's row (T-0045-3), not the checker's (G9 item 69).",
             "The CPC signature is cvc5's own formalization, trusted as written; the three lying-solver controls test "
             "the wrapper's refusals, not the signature's rules (G7 §4)."], "red"),
         ("The chain still owed (ADR-0033)", [
-            "Stage 1, trace validation: A5 (Batch 21), rerun at A6. Stage 2, a Lean model with differential testing, "
+            "Stage 1, trace validation: A5 (Batch 21), rerun at A6, widened at A7 and A8 (pending) to launch, "
+            "appraise, grant and revoke. Stage 2, a Lean model with differential testing, "
             "and stage 3, its compilation: \"the chain proper\", **not begun**. The proofs make stage 2's target "
-            "precise and do nothing else for it (ADR-0046 §2; G8 item 56).",
+            "precise and do nothing else for it (ADR-0046 §2; G9 item 56).",
             "The reproducible build (T-0045-30) is untouched. Each addendum says which stage it discharges, and the "
             "rows leave Annex A only on that addendum."], "red"),
     ]

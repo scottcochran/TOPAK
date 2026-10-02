@@ -14,12 +14,14 @@ def build():
                "Every boundary the 2026.09.13 register names, placed on the system it divides and tagged with its id. "
                "The register is dated: it was written against the 09.12 checkpoint, nothing in it is a ratified "
                "decision, and rows marked † are analysis with no record behind them. Where a later record has since "
-               "changed a boundary, the change is stated as G7 and ToO rev 11 have it, in the last column of the "
+               "changed a boundary, the change is stated as G9 and ToO rev 13 have it, in the last column of the "
                "register below.",
-               3200, "derived/topak-boundary-register-2026.09.13.md §0–§2, §6; ToO rev 11 §1, §2.3–§2.9, §3.1, §4.1, "
-               "§4.3–§4.4, §5.4, §6, §7.5, §8.1, §10; G7 §1.1, §2.3, §7 items 1, 17, 21, 62; ADR-0002 A2, ADR-0003 A1–A3, "
+               3200, "derived/topak-boundary-register-2026.09.13.md §0–§2, §6; ToO rev 13 §1, §2.3–§2.9, §3.1, §4.1, "
+               "§4.3–§4.4, §5.4, §6, §7.5, §8.1, §10, §15; G9 §1.1, §2.3, §2.5, §8, §7 items 1, 17, 21, 36, 62, 64, 85; "
+               "mechanism/GAPS-AND-ASSUMPTIONS.md G1, G19, I43, I44; ADR-0002 A2, ADR-0003 A1–A3, "
                "ADR-0004, ADR-0015, ADR-0023, ADR-0024, ADR-0025, ADR-0028, ADR-0030 §1, §3, ADR-0031 §3, A2, ADR-0032, "
-               "ADR-0034, ADR-0035, ADR-0036, ADR-0037, ADR-0039, ADR-0044")
+               "ADR-0034, A2 (pending), ADR-0035, ADR-0036, ADR-0037, ADR-0039, ADR-0042 §6 (Proposed), ADR-0044; "
+               "ADR-0033 A6, A7 and A8 (pending)")
     X0, X1 = c.x0, c.x1
     y = c.y
 
@@ -247,7 +249,8 @@ def build():
     ly += 14
     sh = c.card(x3 + 20, ly + 10, colw - 40, "Below the membrane", [
         "**Effect exclusivity is assumed, not enforced** (register §10.1). ADR-0034 now designs the discharge: "
-        "rungs 0–3 and profile clauses P1–P7, attested at lease grant. **Not built**: every lease is rung 0.",
+        "rungs 0–3 and profile clauses P1–P7, attested at lease grant. **Narrowed, not closed**: the node's launcher issues rung 1 on profiles that declare "
+        "P3 `fail`, rung 3 only SIMULATED (ADR-0033 A7, pending); **no real principal is** `Contained`.",
     ], accent="red", size=14, tint=False, dash="6 4")
     r_h = max(r_h, ly + 10 + sh + 24 - r_top)
     c.region(X0, r_top, colw, r_h, "B5 · Plane: control plane / cognitive", "violet")
@@ -264,12 +267,12 @@ def build():
     y += c.para(X0, y, X1 - X0,
                 "The first five columns are the register's §1 verbatim. **†** marks a row the register says is "
                 "analysis with no ADR behind it; [[red|red]] marks the empty or undefined cells. The last column is "
-                "this diagram's, drawn from G7 and ToO rev 11: what a later record changed at that boundary.",
+                "this diagram's, drawn from G9 and ToO rev 13: what a later record changed at that boundary.",
                 14.5, "muted") + 14
     T = "red"
     cols = [("Boundary", 250, {"bold": True}), ("Cadence (outer / inner)", 270), ("Instant", 310),
             ("Interval of untruth", 300), ("If the check is unavailable", 400),
-            ("Since the register (state per G7, narrative per ToO rev 11)", X1 - X0 - 1530)]
+            ("Since the register (state per G9, narrative per ToO rev 13)", X1 - X0 - 1530)]
     rows = [
         ["B1 Domain `Build | Run`", "Release / incident", "**Promotion**: signature over provenance",
          "None claimed; `Submit` is sole egress", "Fail-closed. Pipeline stalls; PC/EC makes this affordable (ADR-0002)",
@@ -285,7 +288,7 @@ def build():
          "monotone (ADR-0018)",
          "Raw emission is retained at the archetype so the decoder can be re-run and compared: recovers "
          "faithfulness, not intent (ADR-0037 §3; D-0037-2 if not retained). Decoder–alphabet compatibility is "
-         "still open (G7 item 17)."],
+         "still open (G9 item 17)."],
         ["B4 Verified / parameterized", "Release / deploy / incident", "**Promotion**: `bundle ⊑ floor`",
          "Bundle staleness, **unbounded but floor-bounded below**", "Fail-closed and safe while stalled. The "
          "model case (ADR-0010)",
@@ -299,8 +302,9 @@ def build():
         ["B6 Principal type `Contained` / `Mediated`", "Per-principal, static", "**Lease grant**",
          "Whole lease, for `Mediated`", "N/A: predicate, not a runtime check (09.12 §5)",
          "The lease carries `[profile digest, rung]` (ADR-0031 §3). `Contained` has four conjuncts (ADR-0034 §4); "
-         "the fourth, lineage independence, is ADR-0035, **Proposed**, so `Contained` has **no members at any rung** "
-         "(G7 §2.3)."],
+         "the fourth, lineage independence, is ADR-0035, **Proposed**, so **no real principal is** `Contained`. The "
+         "reference's lookup answers yes only for a **SIMULATED** rung-3 lease under a test-issued criterion: a "
+         "witness, not a claim (G9 §2.3; ADR-0033 A7, pending)."],
         ["B7 Seat LTRO separation of duties", "Release / Persona", "**Seat binding** in Persona", "None claimed",
          "Fail-closed if binding is verified; [[red|unstated †]] (ADR-0016)",
          "Seats are principals: **a principal holds exactly one seat**, the LTRO is a cell; Thinker and Observer are "
@@ -310,7 +314,7 @@ def build():
                    "**Persona promotion only**", "[[red|Unbounded: no expiry, no re-attestation †]]",
                    "[[red|Undefined.]] Largest empty cell in the grid (§8)",
                    "Persona expiry now has a **bound, not a clock**: `ttl ≤ T_persona` at grant and every renewal "
-                   "(ADR-0031 A2; built, ADR-0033 A6), still read on the local clock (G7 item 62). A revoked Persona "
+                   "(ADR-0031 A2; built, ADR-0033 A6), still read on the local clock (G9 item 62). A revoked Persona "
                    "is a targeted revocation (ToO §6). ToO §10 still calls B8 the most critical boundary."],
          "accent": "red"},
         ["B9 Retention / erasure", "Deploy / per-round", "**Seal** on emit completion", "Between emit and seal",
@@ -328,13 +332,17 @@ def build():
         ["B11 Deployment rung archetype / profile", "Release / per-deployment", "**Rung manifest**", "None claimed",
          "Fail-closed by subtraction; monotone (open: axis question)",
          "The axis question is answered: degeneracy, not a ladder; rungs are per axis and every degeneracy carries a "
-         "declaration record (ADR-0023, C3). No deployment declaration has been written (G7 §8)."],
+         "declaration record (ADR-0023, C3). No deployment declaration has been written (G9 §8); the reference "
+         "declares a rung per seat meanwhile, accepted in conversation and owed to a record (G9 items 64, 85)."],
         {"cells": ["B12 Deployment stack sandbox and below", "—", "[[red|None: no mechanism exists]]",
                    "[[red|Permanent]]", "[[red|Undefined.]] Effect exclusivity is assumed, not enforced (§10.1)",
                    "The instant now exists: **lease grant**, the confinement field (ADR-0031 §3). The design exists: "
                    "attestation rungs 0–3 and profile clauses P1–P7 (ADR-0034, C2, C4); the rung-1 launcher is "
-                   "ADR-0036, **Proposed**. The mechanism does not: every lease is rung 0 (G7 item 1, the sandbox "
-                   "gap)."],
+                   "ADR-0036, **Proposed**. The mechanism is **narrowed, not closed** (G9 item 1, the sandbox gap): "
+                   "the node's launcher issues rung 1 on profiles that declare P3 `fail`, rung 3 only SIMULATED, "
+                   "rung 2 a seam (ADR-0033 A7, pending); no image passes P3 (item 36). For Run, P4 becomes "
+                   "**channel fidelity** (ADR-0034 A2, pending; ADR-0042 §6, Proposed), built for Wasm-hosted "
+                   "tools (ADR-0033 A8, pending) and checked for no native one (`mechanism/` G19)."],
          "accent": "red"},
         ["B13 Epoch / lease temporal fence", "Deploy / per-round", "**Fence** / **expiry**", "≤ TTL for passive stop",
          "Fail-closed. Expiry is a local clock read: [[red|but see §9.1 †]]",
@@ -368,7 +376,8 @@ def build():
     h1b = c.card(X0, y + h1 + 20, lw, "What the register said to act on, and where it stands", [
         "**B12 and B14 are structural and known**; **B8 is the one to act on**: the only row whose outer side "
         "changes at a cadence TOPAK does not control, does not observe by default, and cannot fence (§2).",
-        "Since: B12 has an instant and a design and no mechanism; B8 has a bound, `T_persona`, on a local clock, "
+        "Since: B12 has an instant, a design and, at the reference, a rung-1 launcher and a SIMULATED rung 3, "
+        "pending, with no real principal `Contained`; B8 has a bound, `T_persona`, on a local clock, "
         "and a lineage criterion that is Proposed; B14 is narrowed to the anchor and stays axiomatic.",
     ], accent="grey", size=14)
     cx = X0 + lw + 50

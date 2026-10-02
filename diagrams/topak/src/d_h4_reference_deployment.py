@@ -16,6 +16,8 @@ CRATES = [
                      "(ADR-0044)", "HTTP"),
     ("topak-transport", "Round topics over `rskafka`, or in memory", "Kafka"),
     ("topak-mcp", "The alphabet as MCP tools (`rmcp` server); downstream tool host (`rmcp` client)", "stdio"),
+    ("topak-contain", "The launcher's backends (host process, Docker, SIMULATED rung 3), appraisal, bridge; the Run "
+                      "tool host for Wasm modules; `topak-demo-guest`", "stdio"),
 ]
 
 
@@ -23,25 +25,29 @@ def build():
     c = Canvas(ID, "The reference implementation, as deployed in development",
                "`mechanism/` runs the admit path end to end for Build's six actions and Run's three: three replicas of "
                "one Rust binary, an MCP front door on stdio, an operator socket, a linked Cedar floor, an OPA sidecar "
-               "with a WASM fallback, and Kafka or an in-memory transport. It is evidence, not the verified object.",
+               "with a WASM fallback, and Kafka or an in-memory transport. It carries a launcher and a Run tool host that the dev "
+               "configuration does not turn on. It is evidence, not the verified object.",
                W, "mechanism/README.md; mechanism/docker-compose.yml; mechanism/scripts/dev-init.sh, build-bundle.sh, "
                "smoke.py; mechanism/crates/*/src (topak-node main.rs, lib.rs, api.rs, ops.rs, net.rs, wal.rs, config.rs, "
-               "mechanism.rs; topak-mcp lib.rs, server.rs, toolhost.rs; topak-bundle lib.rs; topak-transport lib.rs; "
-               "topak-floor lib.rs; topak-core lib.rs, trace.rs); mechanism/corpus-pins.sha256; GAPS-AND-ASSUMPTIONS "
-               "G1–G19, I8; ADR-0033 §1–§6, A5, A6; ADR-0044; ToO rev 11 §15; G7 §2.7, §3, §7 items 52, 67; "
-               "spec/Mechanism-trace-results-2026.10.01.txt")
+               "mechanism.rs, mechanism/launch.rs; topak-mcp lib.rs, server.rs, toolhost.rs; topak-bundle lib.rs; "
+               "topak-transport lib.rs; topak-floor lib.rs; topak-core lib.rs, confine.rs, trace.rs; topak-contain "
+               "lib.rs, wasmtool.rs); mechanism/corpus-pins.sha256; GAPS-AND-ASSUMPTIONS G1–G19, I8, I40–I44; "
+               "ADR-0033 §1–§6, A5, A6, A7 and A8 (pending); ADR-0044; ToO rev 13 §15; G9 §2.3, §2.5, §7 items 34–36, "
+               "52, 67, 80, 83, 84; spec/Mechanism-trace-results-2026.10.02b.txt")
     X0, X1 = c.x0, c.x1
     y = c.y
 
     # ---- evidence banner
     bh = c.card(X0, y, X1 - X0, "Evidence, not the verified object (ADR-0033 §1)", [
-        "**Rung 0 only**: every lease it issues is rung 0, so every principal it serves is `Mediated`; it fails "
-        "assumption of use A1, and no containment theorem describes it. **Never promoted**: no promotion pipeline exists, "
+        "**Rung 0 as deployed**: the dev configuration has no `contain` section, so every lease it issues is rung 0. "
+        "In its tests the launcher (ADR-0033 A7, pending) issues rung 1 on profiles that declare P3 `fail`, and rung 3 "
+        "only SIMULATED under test keys: every principal it serves in earnest is `Mediated`; it fails assumption of use "
+        "A1, and no containment theorem describes it. **Never promoted**: no promotion pipeline exists, "
         "and nothing in it is in any TCB. **Dev rules are not genesis rules**: `dev-init.sh` generates keys and writes "
         "their secrets to `dev/secrets/` in the clear (G6).",
-        "Cited like a TLA+ check, by manifest and commit: `SHA256SUMS-REF-2026.10.01`, digest `48f92ab89086adce`, at "
-        "`dacbb0c` (ADR-0033 A6). **A running program invites being mistaken for the mechanism** (ToO §15).",
-    ], accent="red", size=14.5, status="built", status_extra="evidence · rung 0", tint=False, dash="6 4")
+        "Cited like a TLA+ check, by manifest and commit: `SHA256SUMS-REF-2026.10.02b`, digest `8fa797e317120e54`, at "
+        "`c534a42` (ADR-0033 A8, pending; the last inserted addendum is A6, `48f92ab89086adce` at `dacbb0c`). **A running program invites being mistaken for the mechanism** (ToO §15).",
+    ], accent="red", size=14.5, status="built", status_extra="evidence · rung 0 as deployed", tint=False, dash="6 4")
     y += bh + 50
 
     # ---- columns
@@ -58,7 +64,7 @@ def build():
         "Any MCP-capable agent. **Byzantine at every position** (ADR-0007).",
         "Launches `topak mcp --socket dev/run/n1/agent.sock --token <token> --domain build|run` as its MCP server.",
         "**Not confined**: an agent process with a shell, a network stack or a filesystem bypasses the front door "
-        "entirely (G1, the sandbox gap).",
+        "entirely (G1, the sandbox gap). A guest the node launches is the other way in: no token, stdio only (C5).",
     ], accent="pink", size=14)
     a_mid = cy + 60
     cy += ah + 60
@@ -80,7 +86,7 @@ def build():
         "`topak op --socket dev/run/n1/operator.sock '{\"op\": …}'`, one JSON line in, one out.",
         "**PROVISIONAL (operator authentication)**: the socket is protected by file mode 0600 only. Issuances and "
         "break-glass approvals carry their own signatures; grants, revocations and gate evidence do not (G5).",
-        "Helpers: `topak keygen`, `topak sign`, `topak tool-digest`, `topak check-rules`.",
+        "Helpers: `topak keygen`, `topak sign`, `topak tool-digest`, `topak check-rules`, `topak profile-digest`.",
     ], accent="brown", size=14)
     o_mid = oy + 34 + 60
     oty = oy + 34 + oh + 16
@@ -95,6 +101,9 @@ def build():
         ["issue", "Issue", "**Signed** by anchor keys; validated against the rules floor (F4)"],
         ["gates_passed", "GatesPassed", "Unsigned; gate evidence asserted (G8)"],
         ["break_glass_approve", "BreakGlassApprove", "**Signed** by a break-glass roster key"],
+        ["register_profile", "ProfileRegister", "Unsigned; refused unless the profile is a promoted artifact"],
+        ["launch", "Grant · Contested", "Unsigned; the node launches, appraises, and orders the grant with the "
+                                        "appraisal in it (A7, pending; needs `contain`)"],
         ["status", "—", "Read-only; nothing ordered"],
     ], size=13, accent="brown") + 18
     op_bot = oty + 10
@@ -103,7 +112,8 @@ def build():
     # centre: three replicas
     ry = top
     n1h_body = [
-        ("agent socket", "`run/n1/agent.sock`, mode 0660; a bearer token names seat, lease, epoch"),
+        ("agent socket", "`run/n1/agent.sock`, mode 0660; a bearer token names seat, lease, epoch; a launched lease "
+                         "mints none"),
         ("operator socket", "`run/n1/operator.sock`, mode 0600"),
         ("admit pipeline", "the eight steps of D1, in `topak-node` over `topak-core`"),
         ("floor", "`topak-floor`: Cedar **linked**; refuses to start unless the floor, schema and values bytes match "
@@ -114,6 +124,10 @@ def build():
         ("WAL", "`run/n1/wal.jsonl`: promises and accepted votes, durable before replies"),
         ("expiry sweeper", "every 250 ms, proposes `EndRound(Expired)` for leases this replica saw expire"),
         ("local files", "`workspaces/` (not replicated, G9); `archive.jsonl`, a projection of the log, not the archive"),
+        ("launcher", "`mechanism/launch.rs` over `topak-contain`: launch, appraise, grant, bridge; renews against the "
+                     "same guest; destroys it when the round ends (A7, pending). **Off in dev**: no `contain` section"),
+        ("Run tool host", "`topak-contain` `wasmtool`: a Wasm module per call whose one network capability is its "
+                          "declared target (A8, pending). **None in dev**: `wasm_tools` is empty"),
     ]
     tw = cw - 40
     th_title = 34
@@ -122,19 +136,21 @@ def build():
     tyy += c.table(cx_ + 20, tyy, [("Part", tw * 0.2, {"bold": True}), ("What it is", tw * 0.8)],
                    [list(r) for r in n1h_body], size=13.5, accent="teal") + 18
     # crates table: which process each lives in
-    c.text(cx_ + 20, tyy + 18, "The seven crates, and the process each runs in", 18, "teal", bold=True)
+    c.text(cx_ + 20, tyy + 18, "The eight crates, and the process each runs in", 18, "teal", bold=True)
     tyy += 32
     crows = []
     for name, what, io in CRATES:
         where = {"topak-node": "`topak node`", "topak-core": "`topak node`", "topak-paxos": "`topak node`",
                  "topak-floor": "`topak node` (linked)", "topak-bundle": "`topak node`; talks to the OPA sidecar",
                  "topak-transport": "`topak node`; talks to Kafka",
-                 "topak-mcp": "server half in `topak mcp`; tool-host half in `topak node`"}[name]
+                 "topak-mcp": "server half in `topak mcp`; tool-host half in `topak node`",
+                 "topak-contain": "`topak node`; each guest is its own process or container"}[name]
         crows.append([f"`{name}`", what, io, where])
     tyy += c.table(cx_ + 20, tyy, [("Crate", tw * 0.17), ("What", tw * 0.45), ("I/O", tw * 0.08),
                                    ("Runs in", tw * 0.30)], crows, size=13.5, accent="teal") + 12
     tyy += c.para(cx_ + 20, tyy, tw, "One binary, `topak`, carries every crate; `topak-demo-tool` is a second binary in "
-                  "`topak-node`, the downstream tool the dev configuration allowlists.", 13.5, "muted") + 14
+                  "`topak-node`, the downstream tool the dev configuration allowlists; `topak-demo-guest`, in `topak-contain`, is "
+                  "the scripted occupant the tests launch.", 13.5, "muted") + 14
     n1_bot = tyy + 10
     c.region(cx_, ry, cw, n1_bot - ry, "Replica n1 · one process", "teal", dash=None, size=15)
     # n2, n3
@@ -187,8 +203,9 @@ def build():
         ("Downstream MCP tool · `topak-demo-tool`", "brown", None, [
             "Spawned per call by the tool host over stdio, as `wordcount@<digest>`; digest = SHA-256(binary digest ‖ "
             "canonical JSON of its MCP input schema), both halves checked on every call.",
-            "Cleared environment, the workspace as working directory, **and nothing more**: hermeticity and channel "
-            "fidelity are unchecked (G4, G19).",
+            "Cleared environment, the workspace as working directory, **and nothing more**: hermeticity is unchecked "
+            "(G4), and a native Run tool's channel is checked by nobody (G19). A Run tool hosted as Wasm reaches only "
+            "its declared target (I44); dev hosts none.",
         ]),
         ("Signed bundles · `dev/bundles/`", "amber", None, [
             "`build-bundle.sh`: `policies/` → OPA WASM `bundles/<revision>.tar.gz`; revision = SHA-256 over sorted "
@@ -233,7 +250,9 @@ def build():
         ["—", "—", "—", "—", "`anchor_keys`: three generated keys"],
         ["—", "—", "—", "—", "`break_glass`: two roster keys, `quorum` 2, the demo tool, `actions` [\"Actuate\"]"],
         ["—", "—", "—", "—", "`erasure_roster`: **null** (as genesis rules issue none)"],
-        ["—", "—", "—", "—", "`verifier_keys`: [] (never read: rung 0 only) · `bundle_keys`: the dev bundle key"],
+        ["—", "—", "—", "—", "`verifier_keys`: [] (read at rung 3, so none is granted) · `bundle_keys`: the dev "
+                              "bundle key"],
+        ["—", "—", "—", "—", "No seat declares a `rung` (0 by default); `personas` empty; `criterion` unset (G2)"],
     ], size=13.5, accent="brown")
     h2 = c.table(X0 + hw + 50, y, [("File", hw * 0.2, {"mono": True}), ("What it holds", hw * 0.8)], [
         {"group": "`params.json`", "accent": "brown"},
@@ -260,19 +279,21 @@ def build():
     y += 42
     w4 = (X1 - X0 - 3 * 36) / 4
     hs = [
-        ("Tests: 61 across six binaries", "violet", [
-            "`mutations.rs` (core), `sim.rs` (Paxos deterministic simulation with `Voting` invariants), `floor.rs`, "
-            "`fallback.rs` (bundle tier, signatures), `e2e.rs`, `drift.rs` (ADR-0033 A6).",
+        ("Tests: 103 across ten binaries", "violet", [
+            "`mutations.rs`, `confinement.rs` (core), `sim.rs` (Paxos deterministic simulation with `Voting` "
+            "invariants), `floor.rs`, `fallback.rs` (bundle tier, signatures), `e2e.rs`, `contain.rs` (the launcher in "
+            "the node), `launch.rs`, `wasmtool.rs` (`topak-contain`), `drift.rs` (ADR-0033 A6).",
             "TLA+ properties restated as Rust tests with the same mutations.",
         ]),
         ("Trace recorder → `spec/Mechanism.tla`", "violet", [
             "`TOPAK_TRACE_DIR` makes every `apply` write a step: index, entry, result and a projected state "
             "(`trace.rs`). `trace2tla.py` converts; `mechanism-trace-run.sh` replays in TLC.",
-            "2026.10.01: **22 traces, 168 applied entries, every step matching**. A first mechanized link, **not a "
-            "refinement**; T-0045-28 stays a trust root.",
+            "2026.10.02: **62 traces, 709 steps, every step matching**, each state also read against "
+            "`Confinement_A1`'s invariants (`ConfinementRefinement`). A mechanized link, **not a refinement**; "
+            "T-0045-28 stays a trust root.",
         ]),
         ("Corpus pins and the drift test", "blue", [
-            "`corpus-pins.sha256`: **44 pins**, one per record and TLA+ module the reference follows.",
+            "`corpus-pins.sha256`: **49 pins**, one per record and TLA+ module the reference follows.",
             "`cargo test -p topak-core --test drift` fails when a pinned file changes, or when the code cites a record "
             "that is not pinned. `PROVISIONAL (<tag>)` marks every gap in the code.",
         ]),
@@ -288,16 +309,18 @@ def build():
     y += hh + 60
 
     # ---- not built panel
-    c.text(X0, y + 21, "What it does not show (ToO §15; ADR-0033 §6; the register, as at G7)", 21, "red", bold=True)
+    c.text(X0, y + 21, "What it does not show (ToO §15; ADR-0033 §6; the register, as at G9)", 21, "red", bold=True)
     c.status(X0 + 780, y + 3, "notbuilt")
     y += 42
     nb = [
-        ["Confinement; the rung-1 guest launcher", "The front door makes the alphabet the whole **protocol**, not the "
-         "whole **channel**; the launcher is designed (ADR-0036, Proposed) and not built", "G1; item 35"],
+        ["Confinement", "The launcher makes the alphabet the whole channel for a guest it starts; no guest it starts "
+         "passes P3, no host it runs on attests (rung 3 is SIMULATED, rung 2 a seam), and an agent outside a launcher "
+         "still has a shell", "G1; items 34, 36"],
         ["Tool hermeticity", "Tools are pinned by binary and schema and run in a cleared environment; their behaviour "
          "is unchecked", "G4"],
-        ["Channel fidelity", "A Run tool's channel is declared in bundle data and checked for shape; nothing sees a tool "
-         "open another", "G19"],
+        ["Channel fidelity", "A Wasm-hosted Run tool reaches only its declared target; a native one is checked by "
+         "nobody, the channel is declared twice and not checked to agree, and a P4-pass Build profile is not held to "
+         "Wasm tools", "G19; items 83, 84"],
         ["The Observer as a detector", "One is seated, its heartbeats are heard and its absence stalls; the Observer that "
          "would produce a finding is an e2e fixture with nothing behind it", "G12"],
         ["`W(p)` as an ACL", "Cells are declared, not enforced", "I8; item 46"],
@@ -305,16 +328,18 @@ def build():
                                                 "store, no horizon, no audit-authority read path", "G9"],
         ["Erasure", "Not implemented; no erasure roster exists, so `X2-erasure` admits nothing", "G11"],
         ["Write-time masking", "Wrapper-Rego masking (ADR-0003 0003.6) is not built", "ToO §15"],
-        ["Persona attestation", "`persona` is an operator-supplied digest; silent substitution is undetected", "G13"],
+        ["Persona attestation", "For an operator grant, `persona` is an operator-supplied digest; a launch's appraisal "
+         "must name the profile's, which is all the rung detects", "G13"],
         ["Bootstrap and genesis rules", "Dev rules, not genesis rules; no anchor ceremony", "G6"],
         ["Snapshots and compaction", "None; scale and long-running behaviour are not shown", "G14"],
         ["Replica and operator authentication", "Plain TCP between replicas; socket file modes and bearer tokens", "G5"],
         ["Signing at promotion", "A script step under a dev key with custody (1, 0); no pipeline, no custody row",
          "G7 item 67"],
         ["That the floor is the right floor", "Floor fitness (MEASURE 2.13) is unowned", "G16"],
-        {"cells": ["(built since ADR-0033 A6)", "Bundle signing, the `ttl ≤ T_persona` bound and the two key fields are "
-                   "**built** (G7 §2.7, item 55). ToO rev 11 §15's \"what it does not show\" still lists them as "
-                   "unbuilt; the checkpoint wins", "G7 §2.7"], "accent": "teal"},
+        {"cells": ["(built since G8)", "The rung-1 launcher, a SIMULATED rung 3, the session proof, `Contained` as a "
+                   "lookup, and the Run tool host for Wasm modules: **built**, under addenda that are pending (A7, A8) "
+                   "on records that are not ratified (ADR-0036; ADR-0034 A2)", "G9 §2.3, §2.5; items 35, 80"],
+         "accent": "teal"},
     ]
     c.table(X0, y, [("Not built", (X1 - X0) * 0.2, {"bold": True}), ("What stands in, and what that leaves",
                                                                       (X1 - X0) * 0.68),

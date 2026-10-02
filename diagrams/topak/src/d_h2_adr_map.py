@@ -59,13 +59,13 @@ R = {
          "0003, 0007, 0016, 0022, 0026, 0032", ""),
     32: ("The clock model: intervals trusted by failure direction", "accepted", "", "0007, 0022, 0031", ""),
     33: ("The mechanism has a reference implementation: evidence, not the verified object", "accepted", "",
-         "0010, 0015, 0022, 0024, 0026, 0029, 0032", "A1–A6; K row a debt on 0005"),
+         "0010, 0015, 0022, 0024, 0026, 0029, 0032", "A1–A6; **A7, A8 pending**; K row a debt on 0005"),
     34: ("Confinement is attested at lease grant; the archetype rung is a confidential VM", "accepted", "C2, C4",
-         "0016, 0017, 0022, 0023, 0024, 0031, 0032, 0033, 0035", "Discharges 0022 §6 for Build"),
+         "0016, 0017, 0022, 0023, 0024, 0031, 0032, 0033, 0035", "Discharges 0022 §6 for Build; **A2**, the Run profile, pending (C2, C4)"),
     35: ("Persona lineage is a projection of the Build log; independence is an exclusion rule", "proposed", "",
          "0015, 0016, 0017, 0022, 0024, 0034", "R2 marked by custodian instruction"),
     36: ("At rung 1 the launcher is the channel: a principal `Mediated` by declaration", "proposed", "",
-         "0017, 0022, 0031, 0033, 0034", ""),
+         "0017, 0022, 0031, 0033, 0034", "§6's launcher built at the reference (0033 A7, pending)"),
     37: ("The LTRO decomposes into principals: Thinker and Observer are seats", "accepted", "C3, C4",
          "0002, 0007, 0016, 0018, 0019, 0022, 0024, 0031", ""),
     38: ("Observers are per cell; the shared group becomes the correlator", "accepted", "C3, C4",
@@ -77,7 +77,8 @@ R = {
     41: ("Policy obligations for Run: one envelope per variant; coupling on effects only", "accepted", "C1, C4",
          "0009, 0013, 0026, 0030, 0037, 0039, 0040", ""),
     42: ("Mechanism obligations for Run: effects counted, every `Actuate` recorded", "accepted",
-         "§1–§5, §7, §8 · C4", "0003, 0004, 0015, 0018, 0031, 0033, 0039, 0040", "§6 Proposed"),
+         "§1–§5, §7, §8 · C4", "0003, 0004, 0015, 0018, 0031, 0033, 0039, 0040",
+         "§6 Proposed; drafted (0034 A2) and built (0033 A8), pending"),
     43: ("Cell obligations for Run: Listener, seats, what the Observer must read", "accepted", "C4",
          "0018, 0037, 0038, 0039, 0040, 0042", ""),
     44: ("A bundle is trusted by its signature, not its file name", "accepted", "C1", "0025, 0030, 0031, 0033",
@@ -85,7 +86,7 @@ R = {
     45: ("The trusted base is declared row by row", "accepted", "C2, C4", "0015, 0023, 0025, 0029, 0031, 0034",
          "Drafted by the assistant; new at G7; T-0045-31 by B25"),
     46: ("The formal layer's method is declared: TLC checks, TLAPS proves, the prover is a trusted-base row",
-         "accepted", "C2, C4", "0023, 0026, 0029, 0045", "Drafted by the assistant; new at G8 (Batch 25)"),
+         "accepted", "C2, C4", "0023, 0026, 0029, 0045", "Drafted by the assistant; new at G8 (Batch 25); E1 (Batch 26)"),
 }
 
 # rows of regions: (label, accent, ncols, [ids in grid order, None for an empty slot])
@@ -120,11 +121,12 @@ EDGE = {"dep": ("blue", None, 1.6), "sup": ("grey", None, 3.0), "rev": ("red", "
 
 def build():
     c = Canvas(ID, "The decision records, ADR-0001 to ADR-0046, by area",
-               "Every record with its status and confirmation markers at G8. Solid blue edges are dependencies taken "
+               "Every record with its status and confirmation markers at G9. Solid blue edges are dependencies taken "
                "from each record's \"Depends on\" line, drawn where both records sit in the same row of tiles (every "
                "tile lists its full line); the grey edge is the one supersession; red dashed edges are the reversals "
                "in effect (ToO §8.3) and ADR-0040's.",
-               3600, "decisions/README.md; G8 §1, §1.1, §1.2, §4, §6; ToO rev 11 §0, §8.3, §9; the Status, Status note, "
+               3600, "decisions/README.md; G8 §1, §6; G9 §1, §1.1, §1.2, §4, §6, §7 items 6, 80, 81; ToO rev 13 §0, §8.3, §9; "
+               "the History tables of ADR-0033 (A7, A8), ADR-0034 (A2) and ADR-0046 (E1); the Status, Status note, Pending, "
                "Depends on, Supersedes, Amends, Revises, Narrows and Split from lines of ADR-0001 to ADR-0046; ADR-0018 "
                "Status note on 0037 §3; ADR-0023 Status note; ADR-0038 Supersedes; ADR-0040 Status note")
     X0 = c.x0
@@ -267,13 +269,14 @@ def build():
     c.legend(lx, ly, [("arrow", "blue", "depends on"), ("arrow", "grey", "supersedes"),
                       ("arrow", "red", "reverses in effect", "7 5")], title="Edges", maxw=lw)
     ly += 60
-    c.card(lx, ly, lw, "Counts at G8 (§1.1)", [
+    c.card(lx, ly, lw, "Counts at G9 (§1.1)", [
         "**40 Accepted** (18 + 22 confirmation-required), 2 in part · **3 Proposed** · **1 superseded** · "
-        "**1 tombstone** · **1 reserved**: 45 files, numbered to 0046.",
-        "**New at G8**: ADR-0046 (Batch 25, C2, C4). Its dependent entries (B25) landed in 0013, 0026, 0029, 0030, "
-        "0031, 0034, 0037, 0038, 0039, 0041, 0042, 0043 and 0045; no decision text changed in any of them (G8 §6).",
+        "**1 tombstone** · **1 reserved**: 45 files, numbered to 0046, as at G8.",
+        "**No new record at G9.** The one ratification since G8 is **Batch 26, ADR-0046 E1**, an erratum. **Four "
+        "pending amendments**, up from one: 0026 A1 (R8); 0033 **A7** and **A8**; 0034 **A2** (C2, C4), marked "
+        "inline and not applied (G9 §1.1, §6). The last record added is ADR-0046 (Batch 25, G8).",
         "**Reversals in effect** (ToO §8.3), all by the author alone in genesis: 0008 by 0038 (superseded); 0017's "
-        "ordering-primacy clause (supersession unwritten, G8 item 6); 0018's Reader scope by 0037 §3 (not "
+        "ordering-primacy clause (supersession unwritten, G9 item 6); 0018's Reader scope by 0037 §3 (not "
         "superseded).",
     ], accent="grey", size=13.5)
     return c

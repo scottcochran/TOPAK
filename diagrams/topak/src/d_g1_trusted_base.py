@@ -106,12 +106,15 @@ def build():
                "base row by row: a fixed schema, three classes and a refusal, thirty-one archetype rows in five groups "
                "(Annex A), and the reference's own declaration (Annex B), with the two rows that changed class after "
                "ratification and the one added since: T-0045-31, the TLA+ Proof System (B25, ADR-0046 §3). Tables "
-               "below are drawn in full from the record.",
+               "below are drawn in full from the record; where the code has moved past Annex B (G9 §2.6, pending "
+               "ADR-0033 A7 and ADR-0034 A2), the row's note says so.",
                3600, "ADR-0045 §1–§9, Findings 1–7, Annex A, Annex B, History (R1–R6, B22, B23, B24, B25); ADR-0046 §1–§3 (B25); "
                "ADR-0015 (authority "
-               "changes); ADR-0023 §4a, §6a, §6b; ADR-0025 §1; ADR-0030 A1 (B24); ADR-0033 A6 (B23); ADR-0034 §5, §6; "
-               "G8 §1, §2.6, §2.8, §2.9, §4, §7 items 56, 57, 62, 67–69, 73, 74, §8; ToO rev 11 §7.9; "
-               "spec/theorem-premise-binding.md (BASE paragraph, 2026.10.02)")
+               "changes); ADR-0023 §4a, §6a, §6b; ADR-0025 §1; ADR-0030 A1 (B24); ADR-0033 A6 (B23), A7 and A8 "
+               "(pending); ADR-0034 §5, §6, A2 (pending); ADR-0036 §5, §6; G8 §2.6; "
+               "G9 §1.1, §2.3, §2.6, §2.7, §2.9, §3, §7 items 35, 56, 57, 64, 67, 69, 73, 74, 80, 81, §8; "
+               "ToO rev 13 §7.9; spec/theorem-premise-binding.md (BASE paragraph; 43 rows, revised 2026.10.02 "
+               "pending A7 and A2)")
     X0, X1 = c.x0, c.x1
     y = c.y
 
@@ -119,7 +122,7 @@ def build():
     sx = X0
     sx += c.status(sx, y, "accepted", "C2, C4 · Batch 22, 2026.10.01") + 12
     c.text(sx, y + 16, "Annexes A and B are **declaration records** under ADR-0023, ratified with the record as "
-                       "record-level entries; **no deployment declaration has been written** (G8 §8). Drafted by the "
+                       "record-level entries; **no deployment declaration has been written** (G9 §8). Drafted by the "
                        "assistant at the custodian's request; every drafter's choice settled by ratification.", 14.5, "muted")
     y += 48
 
@@ -218,8 +221,9 @@ def build():
     ry += 12
     ry += c.para(RX, ry, RW, "**Also sorted:** the gate runner (G8) is refused as delegated and admissible as a trust "
                  "root once its evidence is signed under a key in issued rules (ADR-0025 §1 (f)); until then T-0045-13 "
-                 "is **excluded** and gate evidence is an operator's assertion (I18; G8 item 57). The rung-1 launcher is "
-                 "a trust root by ADR-0036 §5's own list.", 14, "ink")
+                 "is **excluded** and gate evidence is an operator's assertion (I18; G9 item 57). The rung-1 launcher is "
+                 "a trust root by ADR-0036 §5's own list; the launcher in the node is **built**, pending ADR-0033 A7 "
+                 "(G9 item 35), and gives T-0045-19 and T-0045-20 a rung-1 instance (G9 §2.6).", 14, "ink")
 
     y = max(ly, ry) + 50
 
@@ -229,11 +233,11 @@ def build():
         ("§3 · Rows are premise nodes", [
             "**An undeclared row is false**: a deployment sits below every theorem whose premises include it.",
             "**Type changes are rows**: an ADR-0023 §4a degeneracy changes a row's class or rung range; §6b's field is "
-            "a list of row ids (amendment owed, G8 item 64).",
+            "a list of row ids (amendment owed, G9 item 64).",
             "**Membership per rung is the Rungs column**; the per-round slice (ADR-0031 §6) is derived from the lease.",
-            "The binding table exists: `spec/theorem-premise-binding.md`, 42 rows (R6). Three rows no theorem cites "
-            "yet: T-0045-7, 21, 26. Since B25 the 37 rows with a proof module rest on **T-0045-31** for the "
-            "invariant, in place of T-0045-29 (ADR-0046 §5).",
+            "The binding table exists: `spec/theorem-premise-binding.md` (R6), **43 rows** at G9, revised pending "
+            "A7 and A2 (G9 §2.6). At R6, three rows no theorem cited: T-0045-7, 21, 26. Since B25 the rows with a "
+            "proof module (38 at G9) rest on **T-0045-31** for the invariant, in place of T-0045-29 (ADR-0046 §5).",
         ], "teal", None),
         ("§4 · Changing the table has a direction", [
             "**Removing** a row, or trust root → delegated: a tightening; an ordinary promotion (archetype version at "
@@ -247,13 +251,14 @@ def build():
         ("§5 · The verified object is the specification; what runs is a row", [
             "Admit path, linked floor, `Authentic`, tally, rules floor, log: **checked as specified** (TLA+ with "
             "mutations at small constants, floor gates, tests) and not trusted.",
-            "**Since B25 (ADR-0046)** thirteen modules' invariants are **proved** with TLAPS, for every constant their "
-            "assumptions admit; the prover is trust root **T-0045-31**, and TLC (T-0045-29) keeps the mutations and "
-            "witnesses.",
+            "**Since B25 (ADR-0046)** the modules' invariants are **proved** with TLAPS, for every constant their "
+            "assumptions admit: fifteen proof modules at G9, 3,036 obligations (G9 §2.9). The prover is trust root "
+            "**T-0045-31**, and TLC (T-0045-29) keeps the mutations and witnesses.",
             "**What runs is not the specification** (R1): no refinement from TLA+ to Rust, an asserted build. Hence "
             "trust roots **T-0045-28 to 30** for every deployment; a proof is of the module, not of what runs.",
             "**A debt, owned by ADR-0033** (R2): the rows leave when a machine-checked chain is cited. Stage 1, trace "
-            "validation, exists (R4); stages 2–3 open (G8 item 56).",
+            "validation, exists (R4), and since G9 reads every traced state against the abstract confinement "
+            "invariants (A7, A8 pending); stages 2–3 open (G9 item 56).",
         ], "teal", None),
         ("§8 · D-0045-1: no declaration at all", [
             "**Kind**: declaration (ADR-0023 §6a). **Parameter**: the trusted-base declaration, published → absent.",
@@ -331,8 +336,18 @@ def build():
         if r[0].strip() == "T-0045-31":
             cells[3] = ("[[brown|Added by dependent entry (B25, ADR-0046 §3).]] " + cells[3])
         if r[0].strip() == "T-0045-6":
-            cells[3] += (" [[red|Stale against G8 §2.7 (unchanged since G7): since ADR-0033 A6 (B23) the reference "
+            cells[3] += (" [[red|Stale against G9 §2.7 (unchanged since G7): since ADR-0033 A6 (B23) the reference "
                          "loads a bundle only under a verified signature; the checkpoint wins.]]")
+        if r[0].strip() == "T-0045-16 to 21":
+            cells[3] += (" [[red|No longer matches the code (G9 §2.6): T-0045-19 and T-0045-20 have a rung-1 instance, "
+                         "the node's launcher and its backends; T-0045-16 and T-0045-17 are played by test keys in "
+                         "simulated runs only. Annex B moves with A7's dependent entries (pending; item 81).]]")
+        if r[0].strip() == "T-0045-24":
+            cells[3] += (" [[amber|Excluded → delegated is owed to an ADR-0045 amendment on ADR-0034 A2's "
+                         "ratification (G9 §2.6, item 80).]]")
+        if r[0].strip() == "T-0045-28":
+            cells[3] += (" [[brown|At G9 (A7, A8 pending): 62 traces, 709 steps, every step matching and every state "
+                         "keeping ConfinementRefinement.tla's invariants (G9 §3).]]")
         rows.append({"cells": cells, "accent": acc} if acc else cells)
     y += c.table(X0, y, [("Row", 150), ("Instance at the reference", 1340), ("Class here", 520),
                          ("Note", (X1 - X0) - 2010)], rows, size=13.5, accent="brown") + 18
@@ -347,21 +362,27 @@ def build():
         "**T-0045-14: refused solver → trust root proof checker** (B24, ADR-0030 A1): `ethos` 8dc85c4 against cvc5's "
         "CPC signature, with `floor/cvc5-checked` binding a proof to its query. The solver is trusted for nothing; an "
         "`unsat` the checker does not accept reaches cedar as `unknown`.",
-        "**Still on the face** (G8 §8, item 69): 25 of the 10.01 run's `holds` are `holds°`, folded by cedar with no "
-        "query, and rest on T-0045-3, not the checker.",
+        "**Still on the face** (G9 item 69, open): 25 of the 10.01 run's `holds` are `holds°`, folded by cedar with "
+        "no query, and rest on T-0045-3, not the checker.",
         "**T-0045-31, the TLA+ Proof System, added** (B25, ADR-0046 §3): a toolchain trust root beside TLC's "
         "T-0045-29, since an unsound prover adds by accepting a false theorem. T-0045-29's residual gains a clause "
         "(small constants bound the mutations and witnesses only), and the inventory sentence one (the thirteen "
         "proved invariants rest on T-0045-31 in place of T-0045-29). The inventory is otherwise unchanged; "
         "T-0045-28 is untouched.",
-        "**Still on the face** (G8 §4, items 73, 74): the prover's soundness is trusted as written; its 1.9 GB "
-        "install is not tracked, and the SMT backends' proofs are not rechecked by Isabelle (`tlapm -C`).",
+        "**Still on the face** (G9 §8; items 73, 74, open): the prover's soundness is trusted as written; its "
+        "1.9 GB install is not tracked, and the SMT backends' proofs are not rechecked by Isabelle (`tlapm -C`).",
+        "**At G9 the record is unchanged** (G9 §2.6): thirty-one rows, no class change. The code moved under "
+        "pending addenda: T-0045-19 and 20 have a rung-1 instance, 16 and 17 are test keys in simulated runs only "
+        "(A7; Annex B's dependent entries owed, item 81), and T-0045-24's move to **delegated** is owed on A2's "
+        "ratification (item 80).",
     ]
-    h2 = c.card(0, 0, w2, "After ratification: two class changes and one new row (G8 §2.6)", chg, accent="blue",
+    h2 = c.card(0, 0, w2, "After ratification: two class changes and one new row (G8 §2.6); none since (G9 §2.6)",
+                chg, accent="blue",
                 size=14.5, draw=False)
     hh = max(h1, h2)
     c.card(X0, y, w2, "Inventory at the reference (Annex B)", [_clean(" ".join(inv.split()))], accent="brown",
            bullets=False, size=14.5, h=hh)
-    c.card(X0 + w2 + 24, y, w2, "After ratification: two class changes and one new row (G8 §2.6)", chg,
+    c.card(X0 + w2 + 24, y, w2, "After ratification: two class changes and one new row (G8 §2.6); none since (G9 §2.6)",
+           chg,
            accent="blue", size=14.5, h=hh)
     return c

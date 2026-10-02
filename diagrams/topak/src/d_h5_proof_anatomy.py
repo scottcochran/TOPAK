@@ -8,7 +8,8 @@ ID, SLUG = "H5", "proof-anatomy"
 
 def build():
     c = Canvas(ID, "How a proof is built and kept in step",
-               "Thirteen of the fourteen modules under `spec/` have a **proof module** (ADR-0046, Batch 25). This "
+               "Fifteen of the twenty modules under `spec/` have a **proof module** (ADR-0046, Batch 25; G9 §2.9), and "
+               "`spec/proof-sync.sh` records why each of the other five has none. This "
                "diagram is the mechanism, not the inventory: one proof module part by part, the four shapes its "
                "inductive invariants took, and the loop that keeps each proof the proof of its specification. TLC "
                "**checks** the mutations and witnesses, which are existential claims; the prover **proves** the "
@@ -18,10 +19,11 @@ def build():
                3200, "spec/proof-method.md §2, §3, §5, §6; spec/README.md, practice items 6 to 8; "
                      "spec/Lease_A1_proof.tla (6f39c7711252c8de) and spec/Lease_A1-proof-results-2026.10.02.txt "
                      "(d4b39bd7094c38d1) over spec/Lease_A1.tla (0b5eac7a7309be2f); spec/Observers_proof.tla, "
-                     "spec/Seats_proof.tla, spec/Confinement_proof.tla, spec/Coupling_proof.tla, "
+                     "spec/Seats_proof.tla, spec/Confinement_proof.tla, spec/Confinement_A1_proof.tla and its results file, "
+                     "spec/RunConfinement_proof.tla and its results file, spec/Coupling_proof.tla, "
                      "spec/RunCoupling_proof.tla, spec/Anchor_proof.tla; spec/proof-results.sh; spec/proof-sync.sh; "
                      "tools/tlapm; ADR-0046 §1 to §5, §7, R2, B25 and E1 (Batch 26); ADR-0045 T-0045-28, T-0045-31; "
-                     "spec/RulesFloorBase.tla; ADR-0026 A1 note; G8 §2.9, §3, §5, §7 items 73, 74")
+                     "spec/RulesFloorBase.tla; ADR-0026 A1 note; G8 §5; G9 §2.3, §2.9, §3 (finding 5), §5, §7 items 73, 74")
     X0, X1 = c.x0, c.x1
     W = X1 - X0
     y = c.y
@@ -36,7 +38,8 @@ def build():
             "`EXTENDS Lease_A1, TLAPS`. `Lease_A1.tla` (`0b5eac7a7309be2f`) is frozen by the records that cite it; "
             "the proof restates nothing from it (ADR-0046 §4).",
             "A constant a run script set per row becomes a named `ASSUME` where a proof needs it: "
-            "`Active \\subseteq AllEntries` in `Anchor`, `Declared \\in 0..3` in `Confinement`. `Lease_A1` needs "
+            "`Active \\subseteq AllEntries` in `Anchor`, `Declared \\in 0..3` in `Confinement`, `Filtered \\in "
+            "BOOLEAN` in `RunConfinement` (`FilteredBool`). `Lease_A1` needs "
             "none: `MaxEpoch` and `MaxFence` only cut the state space, so its theorems hold for every value.",
             "An unnamed `ASSUME` in a base module is a fact to TLC and nothing to the prover; it is restated as a "
             "lemma proved from the definitions (`GenesisEntries` in `Anchor_proof`).",
@@ -150,7 +153,8 @@ def build():
             "an invariant.",
             "Where: `Seats` and `RunSeats` (the alphabet), `BreakGlass` (`bgDid`; the floor holds of the issued "
             "rules), `NonComposition` (`created` and `retained`; the records NC1 needs were created, and only "
-            "admitted effects went via break-glass).",
+            "admitted effects went via break-glass). `RunConfinement`'s `effects` needs no auxiliary: both "
+            "invariants are inductive on their own (116 obligations).",
         ]),
         ("Generation binding: the one that was invented", [
             "`ContainedMeansConfined`: the record `Act` appends depends on state set three actions earlier, at "
@@ -161,7 +165,9 @@ def build():
             "generation, and while that guest stands its asked image is the profile and was booted), and the "
             "property.",
             "**Preserved because a relaunch strictly raises the generation**, and `Act` admits only against the "
-            "lease's, the check `M_UNBOUND` removes. 502 obligations, every rung at once.",
+            "lease's, the check `M_UNBOUND` removes. 502 obligations, every rung at once; the successor "
+            "`Confinement_A1_proof`, 503, changes one case split to `Declared <= 1`: rung 0 joins rung 1 under "
+            "`LowRungHonest`.",
         ]),
         ("Arithmetic in layers", [
             "`UnreadBounded`: what the Observer has not read stays within `K`.",
@@ -195,7 +201,7 @@ def build():
             "`Lease_A1_proof.tla`: `EXTENDS Lease_A1, TLAPS`, with the hypotheses the base module must not carry.",
         ]),
         ("The prover, T-0045-31", "grey", [
-            "`tools/tlapm --cleanfp --strict`; binary `e150fb793fb28592`, not tracked (G8 item 73). Its SMT proofs "
+            "`tools/tlapm --cleanfp --strict`; binary `e150fb793fb28592`, not tracked (G9 item 73). Its SMT proofs "
             "are not rechecked by Isabelle (item 74).",
         ]),
         ("Results file, dated, never edited", "teal", [
@@ -204,7 +210,7 @@ def build():
         ]),
         ("Cited by digest, so frozen", "blue", [
             "ADR-0046 §4 cites base, proof and results digests; the proof and its results file are frozen from "
-            "Batch 25.",
+            "Batch 25; the two added since, from G9 (G9 §3).",
         ]),
     ]
     l1h = max(c.card(0, 0, bw, t, b, a, size=14, draw=False) for t, a, b in lane1)
@@ -223,7 +229,8 @@ def build():
             "For each `<M>_proof.tla`, the newest results file's digests against the tree: **IN SYNC**, or "
             "**STALE** naming the module that moved, or **MISSING RESULTS**.",
             "Then every base module without a proof, with the reason recorded: `Mechanism` (a trace replay), "
-            "`Lease` and `RulesFloorNV` (superseded), `RulesFloorBase` (definitions). Exits 1 on a stale proof, a "
+            "`ConfinementRefinement` (predicates over replayed trace states), `Lease` and `RulesFloorNV` "
+            "(superseded), `RulesFloorBase` (definitions). Exits 1 on a stale proof, a "
             "missing results file, or a proofless module with no reason.",
         ]),
         (xs[2], bw, "`--run`: did the drift break the proof?", "red", [
@@ -236,6 +243,8 @@ def build():
             "Generate its results file with `proof-results.sh`; commit the successor, its TLC results, the "
             "successor proof and its results together. The record that cites the successor cites its proof by "
             "digest. The frozen pair stays as it was.",
+            "`Confinement` to `Confinement_A1`: its proof needed one case split changed, `Declared = 1` to "
+            "`Declared <= 1`, not unchanged as the drafter first wrote (G9 §3, finding 5).",
         ]),
     ]
     l2h = max(c.card(0, 0, w_, t, b, a, size=14, draw=False) for _, w_, t, a, b in lane2)

@@ -7,10 +7,10 @@ looked at as rendered images.
 
 ## Content rules
 
-- **Every statement traces to a record.** Draw from the records themselves (ADRs, G8, ToO rev 12,
-  `spec/`, `floor/`, `mechanism/`), not from memory. Cite the record (ADR-00nn §n, ToO §n, G8 §n) in
+- **Every statement traces to a record.** Draw from the records themselves (ADRs, G9, ToO rev 13,
+  `spec/`, `floor/`, `mechanism/`), not from memory. Cite the record (ADR-00nn §n, ToO §n, G9 §n) in
   the card or table and list every source in the Canvas `sources` string.
-- **G8 is the state of record.** Where the narrative and the checkpoint disagree, the checkpoint wins.
+- **G9 is the state of record.** Where the narrative and the checkpoint disagree, the checkpoint wins.
 - **Proved and checked are distinct words** (ADR-0046 §1). *Proved* only of an invariant a proof module
   discharged, with its hypotheses; *checked* of TLC's mutations and witnesses and of the gates. Neither of
   the running reference.

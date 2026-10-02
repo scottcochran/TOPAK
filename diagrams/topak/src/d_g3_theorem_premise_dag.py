@@ -1,9 +1,9 @@
 """G3 — Theorem-to-premise DAG: the binding table ADR-0045 §3 owes, drawn in full, as an incidence matrix and as
 three node-link chains (Contained, promotion, floor routing), with the proof column and the corrections ADR-0046 §5
-made at Batch 25.
+made at Batch 25, and the launcher's revision of 2026.10.02 (pending ADR-0033 A7 and ADR-0034 A2; G9 §2.6).
 
 The table is read at build time from spec/theorem-premise-binding.md (relative to the repository root), so the
-42-row table below is the file's text. The premise incidences are computed from its "Row premises" column (every
+43-row table below is the file's text. The premise incidences are computed from its "Row premises" column (every
 T-0045-n token, ranges expanded, BASE expanded to its five rows, and to T-0045-31 as well for a row whose "Checked in"
 column names a proof module); parameter and gap premises, the verdict labels, the rung-conditional marks, the proof
 status and the 2026.10.02 corrections are transcribed here and asserted against the parsed rows (parameter tokens
@@ -64,7 +64,7 @@ def explicit_t(cell):
 # ---------------------------------------------------------------------------------------------
 # Transcription: one entry per table row, in file order.
 # (match, matrix label, group, verdict class, verdict label, parameter/gap premises, rung-conditional T rows)
-# verdict classes: holds, holdsq (holds, qualified), void, notenf, owed, harness
+# verdict classes: holds, holdsq (holds, qualified), void, notenf, owed, harness, pending (a record not ratified)
 
 META = [
     ("LeaseAuthorityMonotone", "`LeaseAuthorityMonotone`", "Lease", "holds", "holds", [], set()),
@@ -92,10 +92,13 @@ META = [
      set()),
     ("ContainedMeansConfined", "`ContainedMeansConfined`", "Confinement", "void", "void", ["c1", "indep"],
      {16, 17, 18, 19}),
-    ("NoSilentDowngrade", "`NoSilentDowngrade`", "Confinement", "holdsq", "holds trivially (rung 0)", [],
+    ("NoSilentDowngrade", "`NoSilentDowngrade`", "Confinement", "holdsq", "holds, per seat (A7 pending)", [],
      {17, 18, 19}),
-    ("ContestedStopped", "`ContestedStopped`", "Confinement", "void", "void", ["c2"], {16, 18}),
-    ("FreshAppraisal", "`FreshAppraisal`", "Confinement", "void", "void", ["c1"], set()),
+    ("ContestedStopped", "`ContestedStopped`", "Confinement", "void", "void: no real measurement", ["c2"],
+     {16, 18}),
+    ("FreshAppraisal", "`FreshAppraisal`", "Confinement", "holdsq", "holds at rung 1 (A7 pending)", ["c1"], set()),
+    ("EffectsOnDeclaredChannels", "`EffectsOnDeclaredChannels`, `Contained…`", "RunConfinement", "pending",
+     "pending: A2 not ratified", ["p4run", "runc"], set()),
     ("OnlyThinkersAuthor", "`OnlyThinkersAuthor`", "Seats", "holds", "holds", [], set()),
     ("OneSeatPerPrincipal", "`OneSeatPerPrincipal`", "Seats", "holds", "holds", [], set()),
     ("DenyByAnyOf", "`DenyByAnyOf`", "Observers", "holdsq", "holds of the tally", ["obs"], set()),
@@ -120,8 +123,8 @@ META = [
     ("OneValuePerBallot", "`OneValuePerBallot`, agreement", "Unmodelled", "holdsq", "holds of the simulation", [],
      set()),
     ("The floor gates", "The floor gates", "Unmodelled", "harness", "pass (2026.10.01)", ["rchk"], set()),
-    ("Trace validation", "Trace validation `TraceMatches`", "Unmodelled", "harness", "21 traces match", ["orc"],
-     set()),
+    ("Trace validation", "Trace validation, refinement check", "Unmodelled", "harness", "57 traces match; invariants kept",
+     ["orc"], set()),
 ]
 
 GROUPS = {
@@ -130,7 +133,8 @@ GROUPS = {
     "NonComposition": "`NonComposition.tla` · ADR-0013",
     "Rules": "`RulesFloorNV_rev5.tla` · the rules floor, ADR-0026, ADR-0024",
     "Bootstrap": "`Anchor.tla`, `BreakGlass.tla` · the bootstrap pair, ADR-0029 §5",
-    "Confinement": "`Confinement.tla` · ADR-0034",
+    "Confinement": "`Confinement.tla`, `Confinement_A1.tla`; on traces `ConfinementRefinement.tla` · ADR-0034",
+    "RunConfinement": "`RunConfinement.tla` · ADR-0034 A2 (pending), ADR-0042 §6 (Proposed)",
     "Seats": "`Seats.tla` · ADR-0037",
     "Observers": "`Observers.tla` · ADR-0038",
     "Coupling": "`Coupling.tla` · ADR-0039",
@@ -147,6 +151,7 @@ VERDICT = {
     "notenf":  ("red", "5 3", "declared, not enforced"),
     "owed":    ("red", "5 3", "owed: module unwritten, evidence an operator's assertion"),
     "harness": ("teal", None, "a harness or gate run, not a theorem"),
+    "pending": ("amber", "5 3", "pending: the record it rests on is drafted, not ratified"),
 }
 
 # Premise columns. Trusted-base rows: Annex A group, short name, class at the reference (Annex B).
@@ -158,6 +163,8 @@ ST = {
     "excl":   ("red", "excluded"),
     "none":   ("red", "no instance (—)"),
     "noinst": ("grey", "not yet instantiated"),
+    "sim":    ("red", "SIMULATED only (test keys)"),
+    "inst1":  ("amber", "rung-1 instance, A7 pending"),
 }
 TROWS = {
     1: ("replicas, crash-fault", "root"), 2: ("signature primitive", "root"), 3: ("Cedar engine", "root"),
@@ -166,8 +173,8 @@ TROWS = {
     10: ("resident genesis rules", "root"), 11: ("corpus and custodian", "root"),
     12: ("break-glass approvers", "root"), 13: ("gate runner, evidence", "excl"),
     14: ("proof checker (B24)", "root"), 15: ("lineage gate tools", "noinst"),
-    16: ("CPU root of trust", "none"), 17: ("independent verifier", "none"), 18: ("firmware, hypervisor", "none"),
-    19: ("host operator", "none"), 20: ("image, profile P1–P7", "none"), 21: ("inference attestation", "none"),
+    16: ("CPU root of trust", "sim"), 17: ("independent verifier", "sim"), 18: ("firmware, hypervisor", "none"),
+    19: ("host operator", "inst1"), 20: ("image, profile P1–P7", "inst1"), 21: ("inference attestation", "none"),
     22: ("the host at rung 0", "excl"), 23: ("native tool (Invoke)", "excl"), 24: ("Run tool channel", "excl"),
     25: ("tool host", "root"), 26: ("decoding conformance", "none"), 27: ("bundle signer (B23)", "rootd"),
     28: ("code refines spec", "root"), 29: ("TLC, its constants", "root"), 30: ("build toolchain", "root"),
@@ -184,7 +191,7 @@ TGROUPS = [
 PARAMS = [
     ("fver", "floor verified", "floor verified", "D-0030-1 drops the proven status", "green"),
     ("fdraft", "floor text DRAFT", "the floor text is DRAFT, so the envelope it permits is the draft's",
-     "qualifier: no floor is ratified (G8 §8)", "violet"),
+     "qualifier: no floor is ratified (G9 §8)", "violet"),
     ("rchk", "routing checked", "routing checked (ADR-0030 §5 A1)", "D-0030-2: gates run without the checker",
      "green"),
     ("bsig", "bundle signed", "bundle signed", "D-0044-1: the revision is a file name", "green"),
@@ -193,8 +200,11 @@ PARAMS = [
     ("ming", "minGrant ≥ 2", "`minGrant ≥ 2`", "dropping R2", "green"),
     ("qge2", "threshold ≥ 2", "`quorum ≥ 2` when a threshold",
      "dropping R9 with R1 relaxed; the proof's hypothesis is R2 and (R1 or R9)", "green"),
-    ("c1", "confinement ≥ 1", "confinement ≥ 1", "D-0034-1, -2 lower it; D-0034-4 is rung 0", "red"),
-    ("c2", "confinement ≥ 2", "confinement ≥ 2", "rungs 0 and 1 cannot produce Contested", "red"),
+    ("c1", "confinement ≥ 1", "confinement ≥ 1",
+     "D-0034-1, -2 lower it; D-0034-4 is rung 0. Per seat at the reference (G9 item 85): rung 1 real, A7 pending",
+     "amber"),
+    ("c2", "confinement ≥ 2", "confinement ≥ 2",
+     "rungs 0 and 1 cannot produce Contested; at the reference rung 3 is SIMULATED, rung 2 a seam", "red"),
     ("obs", "Observer per cell", "an Observer per cell", "D-0037-1: no Observer; D-0038-1: the shared group only",
      "green"),
     ("coup", "coupling on", "coupling on", "D-0039-1", "green"),
@@ -207,12 +217,17 @@ GAPS = [
     ("wm", "gap: honest watermark", "gap: the watermark is honest", "ADR-0039 §5: collusion uncovered; A13",
      "red"),
     ("indep", "independence criterion", "the independence criterion in force", "ADR-0035, Proposed", "amber"),
-    ("runc", "Run's confinement", "Run's confinement delivered", "ADR-0042 §6, Proposed", "amber"),
+    ("runc", "Run's confinement", "Run's confinement delivered; ADR-0042 §6 in force",
+     "ADR-0042 §6, Proposed; drafted as ADR-0034 A2 (pending), built pending ADR-0033 A8", "amber"),
+    ("p4run", "Run profile's P4", "the Run profile's P4 passes",
+     "ADR-0034 A2 (pending): P4 for Run is channel fidelity, owned by the tool host's Wasm runtime", "amber"),
     ("g18", "gap: independence table", "gap: no independence table", "G18", "red"),
-    ("orc", "three trace oracles", "the three oracles: issuance validity, approval signatures, the parameter digest",
-     "taken from the trace, not computed", "blue"),
+    ("orc", "trace oracles", "the oracles: issuance validity, approval signatures, the parameter digest; an "
+     "appraisal's signature and key, a session proof, a profile's parse", "taken from the trace, not computed", "blue"),
 ]
 PCODE = {p[0]: p for p in PARAMS + GAPS}
+# Status at the reference where the accent's default word would mislead.
+PSTAT = {"c1": "per seat (A7 pending)", "p4run": "pending record (A2)"}
 
 # How each parameter, gap or input premise is written in the file (searched in the "Row premises" and "Parameter and
 # gap premises" cells with struck text removed). Every token found must be transcribed in META, and vice versa.
@@ -223,7 +238,8 @@ TOKENS = {
     "coup": r"coupling on", "corr": r"a correlator exists", "effc": r"effects counted",
     "root": r"the Run root is pinned", "a22": r"A2\.2 and A2\.3 as tally constants",
     "wm": r"watermark is honest|honest watermark", "indep": r"independence criterion in force",
-    "runc": r"Run's confinement delivered", "g18": r"no independence table", "orc": r"the three oracles",
+    "runc": r"Run's confinement delivered|ADR-0042 §6 in force", "p4run": r"the Run profile's P4 passes",
+    "g18": r"no independence table", "orc": r"the oracles \(",
 }
 # Premises the table struck on 2026.10.02 (ADR-0046 §5): drawn in the key, cited by no row.
 STRUCK = [("K < R", "struck from `UnreadBounded` and `UnreadEffectsBounded` (ADR-0046 §5): both are proved for "
@@ -253,7 +269,7 @@ def _unstruck(s):
 
 def model():
     table = load_table()
-    assert len(table) == len(META) == 42, (len(table), len(META))
+    assert len(table) == len(META) == 43, (len(table), len(META))
     out = []
     for cells, meta in zip(table, META):
         match, label, group, vcls, vlab, params, cond = meta
@@ -263,14 +279,16 @@ def model():
         prem = _unstruck(cells[4] + " ; " + cells[5])
         found = {k for k, t in TOKENS.items() if re.search(t, prem)}
         assert found == set(params), (match, "parameter premises", sorted(found), sorted(params))
-        noted = any("2026.10.02" in x or "proof's hypothesis" in x for x in cells)
+        # a results file's date is not a correction note
+        nofile = [re.sub(r"[\w.-]*2026\.10\.02[\w.-]*\.txt", "", x) for x in cells]
+        noted = any("2026.10.02" in x or "proof's hypothesis" in x for x in nofile)
         assert noted == (match in CORR and match not in UNNOTED), (match, "correction note", noted)
         ts = t_rows(cells[4], proved)
         assert cond <= ts, (match, cond, ts)
         out.append(dict(cells=cells, label=label, group=group, vcls=vcls, vlab=vlab, params=params, cond=cond,
                         ts=ts, explicit=explicit_t(cells[4]), base="BASE" in cells[4], proved=proved,
                         corr=CORR.get(match), match=match))
-    assert sum(r["proved"] for r in out) == 37, "proved rows"
+    assert sum(r["proved"] for r in out) == 38, "proved rows"
     return out
 
 
@@ -309,19 +327,23 @@ def build():
     rows = model()
     c = Canvas(ID, "Theorem to premise: what every checked or proved property rests on, and what is void at the "
                "reference",
-               "`spec/theorem-premise-binding.md` (2026.09.30, revised 2026.10.01 and 2026.10.02 with ADR-0046, "
-               "**DRAFT**, revised with the records it binds) is the table ADR-0045 §3 owes and ADR-0023 §2 assumes: "
+               "`spec/theorem-premise-binding.md` (2026.09.30, revised 2026.10.01, 2026.10.02 with ADR-0046, and "
+               "2026.10.02 for the launcher, pending ADR-0033 A7 and ADR-0034 A2; **DRAFT**, revised with the records it "
+               "binds) is the table ADR-0045 §3 owes and ADR-0023 §2 assumes: "
                "one row per checked property, naming the trusted-base rows (ADR-0045 Annex A), the degeneracy "
                "parameters (ADR-0023 §6a) and the declared gaps it rests on. A property holds for a deployment when "
                "every row it names is declared delegated or trust root, every parameter holds and no gap premise is "
-               "false; otherwise it is void. Since Batch 25 the table names the proof module of 37 rows and carries "
-               "five corrections the proofs found. Drawn three ways: the key chains as a DAG, the full incidence "
-               "matrix, and the table itself, all 42 rows.",
+               "false; otherwise it is void. Since Batch 25 the table names a proof module and carries five corrections "
+               "the proofs found; at G9 it gained the launcher's verdicts and a `RunConfinement` row, and 38 rows name "
+               "a proof module. Drawn three ways: the key chains as a DAG, the full incidence matrix, and the table "
+               "itself, all 43 rows.",
                3600,
-               "spec/theorem-premise-binding.md (all 42 rows, read at build time); ADR-0045 §3, §5, Annex A, Annex B "
+               "spec/theorem-premise-binding.md (all 43 rows, read at build time); ADR-0045 §3, §5, Annex A, Annex B "
                "(with the B23, B24 and B25 dependent entries); ADR-0046 §1–§5 (Batch 25); "
-               "spec/premise-corrections-results-2026.10.02.txt; ADR-0023 §2, §6a; ADR-0033 A5, A6; ADR-0030 §5 A1; "
-               "G8 §2.1–§2.3, §2.6, §2.9, §3, §8; G7 §3; spec/Mechanism-trace-results-2026.10.01.txt")
+               "spec/premise-corrections-results-2026.10.02.txt; ADR-0023 §2, §6a; ADR-0033 A5, A6, A7 and A8 "
+               "(pending); ADR-0034 A2 (pending); ADR-0042 §6 (Proposed); ADR-0030 §5 A1; G8 §2.2, §3; "
+               "G9 §1.1, §2.3, §2.5, §2.6, §2.9, §3, §7 items 7, 80, 81, 85, §8; "
+               "spec/Mechanism-trace-results-2026.10.02.txt, spec/Mechanism-trace-results-2026.10.02b.txt")
     X0, X1 = c.x0, c.x1
     W = X1 - X0
     y = c.y
@@ -334,8 +356,8 @@ def build():
             "One row per checked property: what it **assumed**. A property is **void** for a deployment when a row it "
             "names is excluded, undeclared (ADR-0045 §3 rule 1) or refused, or a parameter or gap premise is false.",
             "The last column computes ADR-0023 §2's inventory for the reference against ADR-0045 Annex B.",
-            "Since B25 the **Checked in** column names the proof module beside the base module for 37 rows "
-            "(ADR-0046 §5).",
+            "Since B25 the **Checked in** column names the proof module beside the base module (ADR-0046 §5); "
+            "38 rows name one at G9.",
         ], "blue"),
         ("What it is not", [
             "The file's words: \"**A proof by itself.** Every property here was checked by TLC at small constants, "
@@ -357,8 +379,8 @@ def build():
             "ADR-0045 is **Accepted (genesis)**, confirmation required C2, C4 (Batch 22, R6 added the table). "
             "**ADR-0046** revised it in place (Batch 25, 2026.10.02; C2, C4): the proof column and five corrections.",
             "The table itself is a **DRAFT**, revised with the records it binds; its versioning belongs to the "
-            "archetype-evolution record, still unwritten (G8 item 7). `Never…` witnesses are not theorems and are "
-            "omitted.",
+            "archetype-evolution record, still unwritten (G9 item 7). Revised again at G9, **pending** ADR-0033 A7 "
+            "and ADR-0034 A2 (G9 §2.6). `Never…` witnesses are not theorems and are omitted.",
         ], "violet"),
     ]
     hh = max(c.card(0, 0, w4, t, b, accent=a, draw=False, size=14.5) for t, b, a in intro)
@@ -376,12 +398,14 @@ def build():
                 "2026.10.02.txt` (`2669499135d2ea42`), every outcome as predicted.", 15, "muted") + 16
     b25 = [
         ("The proof column", [
-            "**37 of 42 rows** name a proof module: thirteen modules, **2,417 obligations**, each invariant proved "
-            "as `Spec => []P` under the module's named assumptions and the absence of the mutations that break it.",
+            "**38 of 43 rows** name a proof module: fifteen modules at G9 (thirteen at B25), **3,036 obligations** "
+            "(2,417 at B25), each invariant proved as `Spec => []P` under the module's named assumptions and the "
+            "absence of the mutations that break it (G9 §2.9).",
             "**No proof**: effect exclusivity (a claim), `PromotionMeetsIssuedQuorum` (module unwritten), the Paxos "
-            "simulation, the floor gates, and trace validation (`Mechanism.tla` is a trace replay; its target is the "
-            "refinement, T-0045-28).",
-            "The last column is **unchanged**: a proof of a module adds nothing at the reference (G8 §2.3).",
+            "simulation, the floor gates, and trace validation (`Mechanism.tla` is a trace replay and "
+            "`ConfinementRefinement.tla` a predicate set; the target is the refinement, T-0045-28).",
+            "A proof of a module **adds nothing at the reference** (G9 §8): the last column moved at G9 for the "
+            "launcher, not for the proofs.",
         ], "teal"),
         ("1 · RunSeats", [
             "`M_OBSEMIT` breaks **none** of the three invariants: it narrows an observer's bound, and they are upper "
@@ -428,7 +452,8 @@ def build():
     # ---------------------------------------------------------------- part 1: the key chains as a DAG
     y += c.heading(X0, y, "1 · Three chains, drawn as a DAG: each property points at the premises it rests on "
                           "(BASE omitted)", size=22)
-    y += c.para(X0, y, W, "Left: premise nodes, coloured by their class at the reference (ADR-0045 Annex B). Right: "
+    y += c.para(X0, y, W, "Left: premise nodes, coloured by their class at the reference (ADR-0045 Annex B, and the "
+                "code where G9 §2.6 says Annex B no longer matches it). Right: "
                 "properties, coloured by the table's last column; a teal **proved** pill marks a property whose "
                 "invariant is proved in a proof module (ADR-0046), which changes no verdict. An edge runs from a "
                 "property to a premise it names; a dashed edge is a premise that applies only at one declared rung. "
@@ -436,13 +461,16 @@ def build():
                 15, "muted") + 18
     panels = [
         ("Contained: confinement and effect exclusivity", "teal",
-         ["ContainedMeansConfined", "NoSilentDowngrade", "ContestedStopped", "FreshAppraisal", "Effect exclusivity"],
+         ["ContainedMeansConfined", "NoSilentDowngrade", "ContestedStopped", "FreshAppraisal",
+          "EffectsOnDeclaredChannels", "Effect exclusivity"],
          [("T", 16), ("T", 17), ("T", 18), ("T", 19), ("T", 20), ("T", 21), ("T", 22), ("T", 23), ("T", 24),
-          ("T", 25), ("P", "c1"), ("P", "c2"), ("P", "indep"), ("P", "runc")],
-         "Every property premised on confinement is void: the reference issues rung 0 only, T-0045-16 to 21 have no "
-         "instance, T-0045-22 to 24 are excluded rows. `NoSilentDowngrade` holds trivially because rung 0 is the "
-         "declared rung. `Contained` **is empty** (G8 §8). The four `Confinement` invariants are proved for every "
-         "rung at once (ADR-0034 B25), which adds nothing at the reference (G8 §2.3)."),
+          ("T", 25), ("P", "c1"), ("P", "c2"), ("P", "indep"), ("P", "runc"), ("P", "p4run")],
+         "The reference issues rung 1 for real and rung 3 only SIMULATED (ADR-0033 A7, pending; G9 §2.3): T-0045-19 "
+         "and 20 have a rung-1 instance, 16 and 17 are test keys in simulated runs only (G9 §2.6). "
+         "`NoSilentDowngrade` and `FreshAppraisal` **hold**, per seat; `ContainedMeansConfined` and "
+         "`ContestedStopped` are **void** for a real deployment. `Contained` **has members only in SIMULATED runs**, "
+         "under a test-issued criterion: a witness, not a claim (G9 §8). Run's two invariants are proved and "
+         "**pending** A2; effect exclusivity stays void."),
         ("Promotion and the rules floor", "blue",
          ["PromotionMeetsIssuedQuorum", "P1_Unanimity", "P2_TwoSeatsCounted", "P5_AnchorNotApprover",
           "P9_NoSoloGrant", "FloorPreserved"],
@@ -470,10 +498,11 @@ def build():
         if kind == "T":
             name, st = TROWS[k]
             acc, stl = ST[st]
-            return f"**T-0045-{k}**", name, acc, stl, st in ("none", "excl")
+            return f"**T-0045-{k}**", name, acc, stl, st in ("none", "excl", "sim", "inst1")
         p = PCODE[k]
-        stl = {"green": "holds at the reference", "red": "false at the reference" if k in ("c1", "c2", "a22")
-               else "declared open", "amber": "Proposed record", "violet": "draft", "blue": "asserted input"}[p[4]]
+        stl = PSTAT.get(k) or {"green": "holds at the reference", "red": "false at the reference" if k in ("c2", "a22")
+                               else "declared open", "amber": "Proposed record", "violet": "draft",
+                               "blue": "asserted input"}[p[4]]
         note = p[3] if p[4] in ("amber", "violet", "blue") or k in ("wm", "g18") else f"[falsified by {p[3]}]"
         return f"**{p[1]}**", note, p[4], stl, p[4] in ("red", "amber")
 
@@ -567,25 +596,27 @@ def build():
         ("box", "blue", "premise: trust root at the reference"),
         ("box", "green", "premise: delegated, or a parameter that holds"),
         ("box", "red", "premise: excluded, no instance, or false", "5 3"),
-        ("box", "amber", "premise: a Proposed record", "5 3"),
+        ("box", "amber", "premise: a Proposed or pending record", "5 3"),
         ("box", "violet", "qualifier: draft text"),
         ("line", "green", "property holds"),
         ("line", "red", "property void"),
+        ("line", "amber", "property pending"),
         ("line", "grey", "premise only at one declared rung", "6 4"),
         ("box", "teal", "proved: a proof module proves the invariant (ADR-0046)"),
     ], title="Key")
     y += 64
 
     # ---------------------------------------------------------------- part 2: the incidence matrix
-    y += c.heading(X0, y, "2 · The full incidence matrix: 42 rows × 31 trusted-base rows, 16 parameters, "
-                          "5 gaps and inputs, with the proof column", size=22)
+    y += c.heading(X0, y, "2 · The full incidence matrix: 43 rows × 31 trusted-base rows, 16 parameters, "
+                          "6 gaps, Proposed or pending premises and inputs, with the proof column", size=22)
     y += c.para(X0, y, W, "Rows in the table's order, grouped by module. A column's chip and every dot in it carry the "
                 "premise's class at the reference, so a void row shows the red dot that voids it. A large dot is a "
                 "premise the row names; a ring is one it names only at a declared rung; a small grey dot is a BASE "
                 "premise; a square is a parameter, gap or input premise. Uncited rows (T-0045-7, T-0045-26) are drawn "
-                "so their absence shows. T-0045-31, the prover, is a BASE premise of the 37 proved rows only, for "
+                "so their absence shows. T-0045-31, the prover, is a BASE premise of the 38 proved rows only, for "
                 "the invariant; T-0045-29 stays in every row's BASE for the mutations and witnesses. The struck "
-                "`K < R` has no column.", 15, "muted") + 14
+                "`K < R` has no column. Annex B still reads T-0045-16 to 21 as none; the chips for 16, 17, 19 and 20 "
+                "show the code at the reference (G9 §2.6).", 15, "muted") + 14
 
     LBL, VW, PFW, CW, GG = 420, 270, 190, 46, 18
     cols = []   # (x, kind, key)
@@ -608,7 +639,7 @@ def build():
     for p in GAPS:
         cols.append((cx + CW / 2, "P", p[0]))
         cx += CW
-    col_groups.append(("Gaps, Proposed premises, inputs", gx0, cx, "grey"))
+    col_groups.append(("Gaps, Proposed and pending premises, inputs", gx0, cx, "grey"))
     mx1 = cx
     assert mx1 <= X1 + 1, mx1
 
@@ -683,7 +714,8 @@ def build():
     y += 22
     c.legend(X0, y, [
         ("box", "green", "holds"), ("box", "green", "holds, qualified", "5 3"), ("box", "red", "void"),
-        ("box", "red", "not enforced, or owed", "5 3"), ("box", "teal", "harness or gate run"),
+        ("box", "red", "not enforced, or owed", "5 3"), ("box", "amber", "pending", "5 3"),
+        ("box", "teal", "harness or gate run"),
         ("box", "teal", "proof column: proved in a proof module"),
         ("box", "blue", "corrected 2026.10.02 (number as in the band above)"),
     ], title="Row verdict (last column)")
@@ -722,12 +754,12 @@ def build():
     prow = [{"group": "Parameter premises: archetype value, with the degeneracy that falsifies it", "accent": "grey"}]
     for code, short, written, falsified, acc in PARAMS:
         n = sum(1 for r in rows if code in r["params"])
-        prow.append([written, falsified, f"[[{acc}|{ {'green': 'holds', 'red': 'false', 'violet': 'draft'}[acc]}]]",
-                     str(n)])
-    prow.append({"group": "Gap premises, Proposed premises and asserted inputs", "accent": "grey"})
+        lab = PSTAT.get(code) or {'green': 'holds', 'red': 'false', 'violet': 'draft'}[acc]
+        prow.append([written, falsified, f"[[{acc}|{lab}]]", str(n)])
+    prow.append({"group": "Gap premises, Proposed and pending premises, and asserted inputs", "accent": "grey"})
     for code, short, written, note, acc in GAPS:
         n = sum(1 for r in rows if code in r["params"])
-        lab = {"red": "open", "amber": "Proposed", "blue": "asserted"}[acc]
+        lab = PSTAT.get(code) or {"red": "open", "amber": "Proposed", "blue": "asserted"}[acc]
         prow.append([written, note, f"[[{acc}|{lab}]]", str(n)])
     prow.append({"group": "Struck 2026.10.02 (ADR-0046 §5)", "accent": "grey"})
     for written, note in STRUCK:
@@ -737,7 +769,7 @@ def build():
     y = ty + max(h1, h2) + 50
 
     # ---------------------------------------------------------------- part 4: the table in full
-    y += c.heading(X0, y, "4 · The binding table, verbatim except one omitted external citation: all 42 rows (`spec/theorem-premise-binding.md`)", size=22)
+    y += c.heading(X0, y, "4 · The binding table, verbatim except one omitted external citation: all 43 rows (`spec/theorem-premise-binding.md`)", size=22)
     cols_t = [("Theorem", 330), ("Checked in (and, since B25, proved in)", 330), ("Record", 220),
               ("Breaks under", 420), ("Row premises", 640), ("Parameter and gap premises", 680),
               ("At the reference (Annex B)", 868)]
@@ -767,7 +799,10 @@ def build():
         "A premise edge added into an existing theorem weakens it and needs its own record (ADR-0023 carried scope); "
         "the archetype-evolution record owns that rule (G6 item 7).",
         "[[red|Stale as drawn:]] the inventory sentence still says \"the bundle's revision is a file name\" while its "
-        "own `BundleRefusalHonored` row says the revision is verified since 2026.10.01; the trace row says 21 traces, "
-        "where G7 §3 records **22 traces, 168 steps** at 2026.10.01.",
+        "own `BundleRefusalHonored` row says the revision is verified since 2026.10.01, and calls every theorem "
+        "premised on confinement void while `FreshAppraisal` now holds at rung 1; \"What this is not\" says "
+        "thirty-seven rows are proved, where 38 name a proof module; the trace row says **57 traces, 642 steps** "
+        "(`Mechanism-trace-results-2026.10.02.txt`), where G9 §3 records **62 traces, 709 steps** at 2026.10.02b, "
+        "every step matching and every state keeping `ConfinementRefinement.tla`'s invariants.",
     ], accent="amber", size=14.5, h=hh)
     return c

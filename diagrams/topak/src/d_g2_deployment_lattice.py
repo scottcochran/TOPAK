@@ -35,10 +35,14 @@ def build():
 
 # ---------------------------------------------------------------------------------------------
 # Axes. Each: (axis name, source record + status line, archetype (title, body), nodes)
-# node: dict(id, title, status, extra, body, parent: "prev" | "arch", accent)
+# node: dict(id, title, status, extra, body, parent: "prev" | "arch", accent, dash, sub)
 
-def N(id_, title, status, extra, body, parent="prev", accent="red", dash=None):
-    return dict(id=id_, title=title, status=status, extra=extra, body=body, parent=parent, accent=accent, dash=dash)
+def N(id_, title, status, extra, body, parent="prev", accent="red", dash=None, sub=None):
+    return dict(id=id_, title=title, status=status, extra=extra, body=body, parent=parent, accent=accent, dash=dash,
+                sub=sub)
+
+
+PENDING_A2 = "Pending: ADR-0034 A2, drafted 2026.10.02, not in force (C2, C4)"
 
 
 TIER1 = [
@@ -71,7 +75,7 @@ TIER1 = [
          "**Sacrificed**: a k-coalition can issue rules over n−k objections. **Gained**: liveness under n−k losses."]),
       N("(1, 0)", "Single custodian: no record", None, "",
         ["The annex lists the row with a dash. Genesis custody, which ADR-0029 names **not a degeneracy**; the corpus's "
-         "own custody row is T-0045-11. The reference's dev keys and bundle key are also (1, 0) (G7 item 11, 67)."],
+         "own custody row is T-0045-11. The reference's dev keys and bundle key are also (1, 0) (G9 items 11, 67)."],
         accent="grey", dash="2 3"),
       ]),
     ("Floor verification", "ADR-0030 §8 · Accepted (genesis), C1",
@@ -93,30 +97,48 @@ TIER1 = [
     ("Confinement rung", "ADR-0034 §8 · Accepted (genesis), C2, C4 · numbers ascend with strength",
      ("Rung 3: a confidential VM", ["Hardware report covering firmware, kernel, initrd, root hash, profile and Persona "
                                     "digests, appraised by an **independent verifier** (§2). The only rung where every "
-                                    "residual host power is excluded (`M_HOST` holds)."]),
+                                    "residual host power is excluded (`M_HOST` holds). The reference reaches it only "
+                                    "**SIMULATED**, under test keys (ADR-0033 A7, pending)."]),
      [N("D-0034-1", "Rung 2: measured boot", "accepted", "declaration",
         ["Premises falsified: none. Theorems voided: none.",
          "**Type change / TCB**: the hypervisor and host firmware enter the trusted base (T-0045-18). `M_HOST` at rung "
-         "2 is a counterexample: launch-time only."]),
+         "2 is a counterexample: launch-time only.",
+         "At the reference rung 2 is a seam: `apply_grant` refuses it."]),
       N("D-0034-2", "Rung 1: a launcher asserts", "accepted", "declaration",
         ["Premises falsified: none. Theorems voided: none.",
-         "**TCB**: the host operator and orchestrator enter (T-0045-19); Contested becomes unreachable."]),
+         "**TCB**: the host operator and orchestrator enter (T-0045-19); Contested becomes unreachable.",
+         "The reference's launcher issues it in tests, on profiles that declare P3 `fail` (A7, pending)."]),
       N("D-0034-4", "Rung 0: no attestation", "accepted", "declaration",
         ["**Premise falsified**: A1. **Voided**: every `Contained` theorem; every principal is `Mediated`.",
-         "**The reference's position**: every lease it issues is rung 0 (G7). `NeverContainedEffect` holds there, the "
-         "declared vacuity."]),
+         "**The reference's position as deployed** in dev: rung 0; rung 1 and a SIMULATED rung 3 only in its tests "
+         "(A7, pending; G9 §2.3). `NeverContainedEffect` holds at rung 0, the declared vacuity."]),
       ]),
-    ("Confinement profile clauses", "ADR-0034 §8 · ADR-0036 §8 (Proposed)",
+    ("Confinement profile clauses", "ADR-0034 §8, A2 (pending) · ADR-0036 §8 (Proposed)",
      ("Profile P1–P7 all hold", ["At the archetype the promoted profile fixes P1–P7, among them P3 (no interpreter "
-                                 "reachable) and P4 (tools are Wasm, hermetic by construction)."]),
+                                 "reachable) and P4 (tools are Wasm, hermetic by construction). For Run, P4 is "
+                                 "**channel fidelity** (A2, pending): each tool a Wasm component whose one network "
+                                 "capability is its declared target."]),
      [N("D-0034-3", "Profile admits a native tool", "accepted", "declaration",
         ["**Premise falsified**: P4. **Voided**: every `Contained` theorem, for principals whose alphabet reaches that "
          "tool; they become `Mediated` (T-0045-23 excluded).",
-         "The reference: every tool is native (`topak-demo-tool`, the MLX trainer)."], parent="arch"),
+         "The reference: every tool it runs in dev is native (`topak-demo-tool`, the MLX trainer); a Build profile "
+         "that says P4 passes is not yet held to Wasm tools (G9 item 83)."], parent="arch"),
       N("D-0036-1", "Profile has a reachable interpreter", "proposed", "as D-0034-3",
         ["**Premise falsified**: P3. **Voided**: every `Contained` theorem, for principals under that profile; they are "
          "`Mediated` (ADR-0034 §4). No participant changes type.",
          "D-0034-2 (rung 1) is inherited, not restated."], parent="arch", accent="amber"),
+      N("D-0034-5", "A native Run tool behind an egress filter", None, "",
+        ["**Deployed**: a native Run tool, under an egress filter in the tool host that admits only its declared "
+         "target.",
+         "**Premise falsified**: P4 (Run), as stated: channel fidelity moves from a check to a **trust**. **Voided**: "
+         "none.",
+         "**TCB**: the tool host enters for channel fidelity (T-0045-25 widens; T-0045-24 delegated on trust). "
+         "`RunConfinement`'s invariants hold under it."], parent="arch", accent="amber", dash="6 4", sub=PENDING_A2),
+      N("D-0034-6", "A native Run tool, unfiltered", None, "",
+        ["**Premise falsified**: P4 (Run). **Voided**: every `Contained` theorem, for Run principals whose alphabet "
+         "reaches that tool; they become `Mediated`.",
+         "The Run counterpart of D-0034-3. **The reference before A8**; a native Run tool there is still checked by "
+         "nobody (G19)."], accent="amber", dash="6 4", sub=PENDING_A2),
       ]),
     ("Lineage strength", "ADR-0035 §9 · Proposed",
      ("Projected", ["The lineage record is computed by the gate from the log, every round ingress-bounded (rung ≥ 1, "
@@ -207,7 +229,7 @@ def _column(c, x, y, w, axis, src, arch, nodes):
     for nd in nodes:
         title = (nd["id"] + " · " + nd["title"]) if nd["id"] else nd["title"]
         h = c.card(cx, yy, cw, title, nd["body"], nd["accent"], status=nd["status"], status_extra=nd["extra"],
-                   size=13.5, dash=nd["dash"])
+                   size=13.5, dash=nd["dash"], sub=nd["sub"])
         if nd["parent"] == "prev" or prev_bottom == arch_bottom:
             if nd["accent"] == "grey":
                 c.arrow([(cx + cw / 2, prev_bottom), (cx + cw / 2, yy)], "grey", dash="2 3")
@@ -232,13 +254,14 @@ def _build():
                    "placed",
                "ADR-0023 (Accepted (genesis) 2026.09.23, confirmation required C3) replaces the ladder: a deployment is "
                "the archetype with named parameters driven to limiting values, the effect is premise loss, and rungs are "
-               "per axis. Below, every axis ToO rev 11 §8.2 names, and every record-level degeneracy entry placed on its "
+               "per axis. Below, every axis ToO rev 13 §8.2 names, and every record-level degeneracy entry placed on its "
                "axis with its deployed value and what it voids. Arrows point down the lattice, toward degeneracy.",
                3600, "ADR-0023 §1–§7 and carried scope (B3, R3, R4, B13); ADR-0024 Degeneracies; ADR-0025 Annex; "
-               "ADR-0030 §8; ADR-0034 §2, §8; ADR-0035 §9 (Proposed); ADR-0036 §8 (Proposed); ADR-0037 §8; ADR-0038 §7; "
+               "ADR-0030 §8; ADR-0034 §2, §8, A2 (pending); ADR-0033 A7, A8 (pending); ADR-0035 §9 (Proposed); ADR-0036 §8 (Proposed); ADR-0037 §8; ADR-0038 §7; "
                "ADR-0039 §7; ADR-0042 §7; ADR-0044 §5; ADR-0045 §8, Annex B; ADR-0017; ADR-0028 §3; ADR-0005 (Proposed); "
-               "ADR-0029; ToO rev 11 §8.1–§8.3; derived/topak-rungs-axes-degeneracies-accounting-2026.09.26.md; "
-               "G7 §1.1, §7 items 6, 7, 38, 40, 64")
+               "ADR-0029; ToO rev 13 §8.1–§8.3; derived/topak-rungs-axes-degeneracies-accounting-2026.09.26.md; "
+               "mechanism/GAPS-AND-ASSUMPTIONS.md G19; G9 §1.1, §2.3, §2.5, §8, §7 items 5, 6, 7, 11, 38, 40, 64, "
+               "67, 80, 83, 85")
     X0, X1 = c.x0, c.x1
     W = X1 - X0
     y = c.y
@@ -246,7 +269,7 @@ def _build():
     sx += c.status(sx, y, "accepted", "C3 · Batch 3, 2026.09.23") + 14
     c.text(sx, y + 16, "C3 because §5 reversed ADR-0008's Observer scoping (now superseded by ADR-0038) and ADR-0017's "
                        "ordering-primacy clause (supersession unwritten) in effect. **Nobody ships the archetype.** No "
-                       "deployment declaration has been written (G7 §8).", 14.5, "muted")
+                       "deployment declaration has been written (G9 §8).", 14.5, "muted")
     y += 52
 
     # ======================================================================== the relation
@@ -279,7 +302,7 @@ def _build():
             "**Archetype versioning**: conformance binds to (archetype version, rung tuple); published versions freeze.",
             "**Dominance rule**: on a paired axis the archetype moves only to Pareto-dominating values.",
             "**Non-increasing TCB** across versions (now checkable row set against row set, ADR-0045 §4).",
-            "**Until it exists, nothing bounds how the archetype grows** under §4 (ToO §8.2; G7 item 7). Also open: the "
+            "**Until it exists, nothing bounds how the archetype grows** under §4 (ToO §8.2; G9 item 7). Also open: the "
             "axis set is not enumerated; finiteness of each chain is unproven.",
         ], "red"),
     ]
@@ -301,10 +324,10 @@ def _build():
         ["Deployed value", "Its limiting value in this deployment"],
         ["Premises falsified", "The theorem premises the limit falsifies"],
         ["Theorems voided", "The inventory loss. No field exists for a checkable property that is not a safety theorem: "
-         "a properties-lost field is proposed (ADR-0037 finding 6; G7 item 40)"],
+         "a properties-lost field is proposed (ADR-0037 finding 6; G9 item 40)"],
         ["Type changes (§6b)", "For each participant whose type changes: archetype type, deployed type, where the gate "
          "sits, what enters or leaves the trusted base. Empty is a claim: \"no participant changes type\". To be stated "
-         "as ADR-0045 row ids (amendment owed, G7 item 64)"],
+         "as ADR-0045 row ids (amendment owed, G9 item 64; the reference declares a rung per seat meanwhile, item 85)"],
         ["Mitigation", "Optional"],
         ["Composition note", "Mandatory above one parameter (§7a)"],
     ], size=13.5, accent="blue")
@@ -330,7 +353,8 @@ def _build():
     y += c.legend(X0, y, [("box", "blue", "archetype value (the top of the axis)"),
                           ("arrow", "red", "degeneracy: a parameter driven toward its limit", "7 5"),
                           ("box", "red", "record-level entry (Accepted)"),
-                          ("box", "amber", "entry in a Proposed record, not in force", "6 4"),
+                          ("box", "amber", "entry in a Proposed record or a pending amendment, not in force",
+                           "6 4"),
                           ("box", "grey", "a position with no record", "2 3")], title="Reading") + 20
     for tier in (TIER1, TIER2):
         n = len(tier)
@@ -348,7 +372,7 @@ def _build():
         ("Persona provenance (ADR-0017)", [
             "**Archetype**: in-house pre-train, two independent lineages. Rungs 1 to 3 (fine-tune, attested external, "
             "asserted external) are positions in ADR-0017's table, not D-records.",
-            "Its claim to be the axis is reversed in effect by ADR-0023 §5; supersession unwritten (G7 item 6). "
+            "Its claim to be the axis is reversed in effect by ADR-0023 §5; supersession unwritten (G9 item 6). "
             "ADR-0035 (Proposed) adds distillation at rung 1.",
         ]),
         ("Event-log legibility (ADR-0028 §3)", [
@@ -360,7 +384,7 @@ def _build():
         ("Effect-stream role (ADR-0005, Proposed)", [
             "At the archetype Kafka is a transport with a durability window, and the archive is the system of record; "
             "lower profiles may subtract toward native-log ordering (09.12 review note).",
-            "The record is **Proposed** (G7 item 5); no entry declared.",
+            "The record is **Proposed** (G9 item 5); no entry declared.",
         ]),
         ("HITL / HOTL / HOOTL posture (\"arguably\")", [
             "Named as a candidate parameter by ADR-0023's obligations and ToO §8.2 (\"arguably\"). Build's gate is a "
@@ -375,6 +399,7 @@ def _build():
     y += hh + 30
     c.para(X0, y, W, "**The five Observer and retention entries** (D-0037-1, D-0037-2, D-0038-1, D-0038-2, D-0039-1) "
            "**void no safety theorem**, because the Observer is deny-only, and state their losses in prose; so do D-0042-1 "
-           "and D-0030-2. Confinement rungs 1 and 2 void no theorem and move what the theorems rest on."
+           "and D-0030-2. Confinement rungs 1 and 2 void no theorem and move what the theorems rest on, as D-0034-5 "
+           "(pending) would."
            "", 14.5)
     return c

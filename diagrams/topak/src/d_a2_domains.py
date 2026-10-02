@@ -9,8 +9,9 @@ def build():
                "`Build` produces artifacts and `Run` operates them. The arrow is authority flow; the parentheses are a "
                "refinement boundary (specification conjunction plus existential hiding of internal variables). "
                "`Contain` is one component instantiated twice, not a third domain.",
-               2400, "ToO rev 11 §1, §2.4, §2.9, §5.2, §5.4, §7.1; ADR-0001, ADR-0002, ADR-0021, ADR-0022, ADR-0024, "
-               "ADR-0039, ADR-0040; boundary register B1, B2, B3")
+               2400, "ToO rev 13 §1, §2.3, §2.4, §2.9, §5.2, §5.4, §7.1; ADR-0001, ADR-0002, ADR-0021, ADR-0022, ADR-0024, "
+               "ADR-0039, ADR-0040; ADR-0034 §4, A2 (pending); ADR-0042 §6 (Proposed); ADR-0033 A7, A8 (pending); "
+               "G9 §2.3, §2.5, §8; boundary register B1, B2, B3")
     X0, X1 = c.x0, c.x1
     y = c.y + 10
 
@@ -132,19 +133,26 @@ def build():
 
     y = bottom + 40
     w3 = (X1 - X0 - 2 * 24) / 3
-    hh = c.card(X0, y, w3, "The inversion", [
-        "Build agents write what Run is judged against. The failure that matters, silent abstention, a vacuously "
-        "true predicate and green gates, is a Build failure.",
-        "Every Build choice that looks expensive pays for that.",
-    ], accent="red")
-    c.card(X0 + w3 + 24, y, w3, "Contain claims two conjuncts", [
+    contain_body = [
         "**Proved**: a property class over the action vocabulary and its envelope, by mechanical extraction.",
         "**Assumed, operationally discharged**: effect exclusivity, the principal reaches the world only through the "
         "alphabet (ADR-0015).",
-    ], accent="teal", h=hh)
-    c.card(X0 + 2 * (w3 + 24), y, w3, "Contained or Mediated (B6)", [
+    ]
+    cm_body = [
         "Safety theorems quantify over `Contained` principals; a `Mediated` one (shell, egress, git) gets attribution "
         "and authorization, not containment.",
-        "`Contained` has **no members** at any rung today; the reference issues rung 0 only.",
-    ], accent="amber", h=hh)
+        "**No real principal is** `Contained`: the reference's lookup has members only in a **SIMULATED** rung-3 run "
+        "under a test-issued criterion, a witness and not a claim (G9 §2.3, ADR-0033 A7 pending).",
+        "**Run principals are** `Mediated` **by the records**: ADR-0034 A2 (pending) drafts Run's profile, with P4 "
+        "replaced by channel fidelity, and ADR-0042 §6 stays Proposed (G9 §2.5).",
+    ]
+    hh = max(c.card(0, 0, w3, "Contain claims two conjuncts", contain_body, accent="teal", draw=False),
+             c.card(0, 0, w3, "Contained or Mediated (B6)", cm_body, accent="amber", draw=False))
+    c.card(X0, y, w3, "The inversion", [
+        "Build agents write what Run is judged against. The failure that matters, silent abstention, a vacuously "
+        "true predicate and green gates, is a Build failure.",
+        "Every Build choice that looks expensive pays for that.",
+    ], accent="red", h=hh)
+    c.card(X0 + w3 + 24, y, w3, "Contain claims two conjuncts", contain_body, accent="teal", h=hh)
+    c.card(X0 + 2 * (w3 + 24), y, w3, "Contained or Mediated (B6)", cm_body, accent="amber", h=hh)
     return c

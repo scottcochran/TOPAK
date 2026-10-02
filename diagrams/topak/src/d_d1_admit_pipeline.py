@@ -10,6 +10,9 @@ STEPS = [
     ("1", "Session → `ActionRequest`", "teal",
      ["The bearer token on the replica's agent socket names the **seat**, the **lease** (its fence, a log index) and "
       "the **epoch**; every action carries all three (ADR-0022 §2).",
+      "A launched guest has no token: at rung 1 the launcher's bridge is its session; under an attested session key "
+      "each action carries the guest's **session proof**, checked here against the action (I14, I41; ADR-0033 A7, "
+      "pending).",
       "`SubmitWorkspace` becomes `Submit(digest)` over the round workspace; an abstain from a Run seat is refused "
       "here, before ordering (ADR-0042 §5)."],
      "No session: `UnknownLease`",
@@ -27,11 +30,13 @@ STEPS = [
       "request epoch = lease epoch; lease rules epoch = current rules epoch; lease not ended; action in the lease's "
       "alphabet; round bound not reached; action preconditions (`Submit` once; `Vote` only on a submitted artifact "
       "whose gates passed).",
+      "Then **channel fidelity**: under an attested lease whose Run profile says P4 passes, an `Actuate` naming a "
+      "tool not hosted as Wasm is refused (`channel_fidelity`; ADR-0034 A2, ADR-0033 A8, both pending).",
       "**Mechanism, not policy**: the floor never decides whether an epoch is current (ADR-0030 §4)."],
      "Mechanism deny",
      ["`FencedEpoch`, `RequestEpochMismatch`, `FencedRulesEpoch`, `LeaseEnded`, `NotInAlphabet`, "
       "`RoundBoundReached`, `ArtifactNotSubmitted`, `ArtifactAlreadySubmitted`, `GatesNotPassed`, "
-      "`EvidenceMismatch`, `AlreadyPromoted`."]),
+      "`EvidenceMismatch`, `AlreadyPromoted`; `Other`, for a Run tool not held to its channel."]),
     ("4", "Syntactic lift → **one frozen input**", "teal",
      ["Mechanical and total: every fact is a set membership, an equality or a path-syntax check; nothing interprets "
       "meaning (ADR-0007, ADR-0018 validator side).",
@@ -69,10 +74,12 @@ def build():
                "but never ordered. `admit ⟺ floor_permit ∧ ¬bundle_deny` (ADR-0030 §1).",
                W, "mechanism/README.md (steps 1–8); mechanism/crates/topak-node/src/mechanism.rs (`act`, `admit`, "
                "`effect`, `record_denial`, `apply_committed`); topak-core/src/admit.rs, state.rs (`check_live`, "
-               "`apply_admit`, `Entry`, `MechanismDeny`), lift.rs; ToO rev 11 §4.1, §4.2, §15; ADR-0015 (with E1); "
+               "`apply_admit`, `apply_grant`, `apply_contested`, `channel_fidelity`, `Entry`, `MechanismDeny`), lift.rs; "
+               "mechanism.rs `act_bound`, mechanism/launch.rs; ToO rev 13 §4.1, §4.2, §15; ADR-0015 (with E1); "
                "ADR-0020; ADR-0003 A1, A2; ADR-0022 §2; ADR-0030 §1, §4; ADR-0031 §5, E1; ADR-0032 §2; ADR-0033 §1–§4, A6; "
+               "ADR-0033 A7, A8 (pending); ADR-0034 §1, §3, A2 (pending); "
                "ADR-0039 §1, §2; ADR-0041 §2; ADR-0042 §2, §3, §5; ADR-0044; ADR-0045 T-0045-1; GAPS-AND-ASSUMPTIONS "
-               "G5, G8; G7 §1.1, §2.7")
+               "G4, G5, G8, G19, I14, I41, I44; G7 §1.1; G9 §2.3, §2.5, §2.7")
     y0 = c.y
     # columns
     AX, AW = c.x0, 1180               # phase regions
@@ -92,7 +99,7 @@ def build():
                             ("ADR-0003 A2", "accepted", "C1"), ("ADR-0039", "accepted", "C4"),
                             ("ADR-0044", "accepted", "C1"), ("ADR-0005 (Kafka)", "proposed", ""),
                             ("genesis floor text", "draft", ""), ("bundle `policies/`", "draft", "placeholder"),
-                            ("the reference", "built", "evidence, rung 0")]:
+                            ("the reference", "built", "evidence · rung 0 as deployed")]:
         c.text(px, sy + 15, lab, 13.5, "ink", bold=True)
         px += text_width(lab, 13.5, True) + 8
         px += c.status(px, sy, key, extra) + 22
@@ -138,12 +145,15 @@ def build():
         ("commit at slot `i`", ["Crash-recovery Multi-Paxos over 3 replicas; promises and votes fsynced to the WAL "
                                 "before any reply leaves (ADR-0033 §3)."]),
         ("apply at slot `i`: re-check", ["`check_live` again at the log position; the parameter digest; for "
-                                         "`Actuate`/`Report` under a Thinker, the deterministic half of `live(o)`."]),
+                                         "`Actuate`/`Report` under a Thinker, the deterministic half of `live(o)`; "
+                                         "channel fidelity; under a session key, the guest's proof with a fresh "
+                                         "counter."]),
     ]
     sh = max(c.card(0, 0, sw3, t, b, accent="violet", draw=False, size=13.5, bullets=False) for t, b in subs)
     vy = sub_y + sh + 34
     void_body = ["Fails the re-check (fenced between decision and commit; decided under other parameters; no cell "
-                 "Observer covers the seat at commit): **ordered, recorded, without effect**. Returned as "
+                 "Observer covers the seat at commit; a Run tool not held to its channel; a session proof that is not "
+                 "the attested guest's, or a replayed counter): **ordered, recorded, without effect**. Returned as "
                  "`NotCommitted`, and so recorded as a denial too."]
     vh = c.card(0, 0, aw - 36, "Void", void_body, accent="red", draw=False, size=13.5, bullets=False)
     h7 = (vy + vh + 18) - y
@@ -185,10 +195,12 @@ def build():
         ("`Read` · `Consult`", "teal", ["Bytes from the content-addressed corpus store, checked against their address. "
                                         "`Consult` is **ingress, no effect** (ADR-0040)."]),
         ("`Draft`", "teal", ["Write into the round-scoped workspace `ws-<seat>-e<epoch>-r<round>`, on the deciding "
-                             "replica only (workspaces are not replicated, G9)."]),
+                             "replica only (workspaces are not replicated, register G9)."]),
         ("`Invoke` · `Actuate` → downstream MCP tool", "brown",
-         ["The tool host spawns `name@digest`, checks binary and schema digests, cleared environment, workspace as "
-          "cwd. Hermeticity and channel fidelity are **not checked** (G4, G19).",
+         ["A native tool: the tool host spawns `name@digest`, checks binary and schema digests, cleared environment, "
+          "workspace as cwd. Hermeticity is **not checked** (G4), nor a native Run tool's channel (G19).",
+          "A tool the node hosts as Wasm runs as a module whose one network capability is its declared target (I44; "
+          "A8, pending). Dev hosts none.",
           "`Actuate` leaves a mechanism-written record (ADR-0042 §3): `returned`, `failed`, or `unknown` if the round "
           "sealed first."]),
         ("`Emit` · `Report` → Kafka round topic", "amber",
@@ -265,10 +277,13 @@ def build():
             ("Forensic class", CW * 0.16)]
     rows_t = [
         {"group": "Grants and admits", "accent": "blue"},
-        ["`Grant`", "operator `grant`", "Operator socket, unsigned (PROVISIONAL, G5); apply checks seat kind, one live "
-         "lease per principal, `ttl ≤ T_persona`; decide refuses an unverified bundle revision", "—"],
-        ["`Renew`", "operator `renew`", "As `Grant`; keeps the round and the bundle, refuses a changed rung "
-         "(ADR-0031 A1)", "—"],
+        ["`Grant`", "operator `grant` (rung 0); the launcher, on an operator `launch` (rung ≥ 1)",
+         "Operator socket, unsigned (PROVISIONAL, G5); apply checks seat kind, one live lease per principal, the "
+         "seat's declared rung, `ttl ≤ T_persona`, and at rung ≥ 1 **the appraisal, re-checked on every replica** "
+         "(A7, pending); decide refuses an unverified bundle revision", "—"],
+        ["`Renew`", "operator `renew`; the launcher, for a guest it launched", "As `Grant`; keeps the round and the "
+         "bundle, refuses a changed rung (ADR-0031 A1); an attested lease renews only on a fresh appraisal of the "
+         "same guest", "—"],
         ["`Admit`", "the deciding replica", "`floor_permit ∧ ¬bundle_deny` at decide; mechanism checks again at apply",
          "F1; F3 for a vote; F5 under X1"],
         {"group": "Subtractions: ordered, approved by nobody", "accent": "green"},
@@ -278,12 +293,18 @@ def build():
                    "None needed (ADR-0031 §5 R3)", "F2"], "accent": "green"},
         {"cells": ["`EpochIncrement`", "operator `fence_epoch`", "None needed: the fleet fence (ADR-0031 §5)", "F2"],
          "accent": "green"},
+        {"cells": ["`Contested`", "the launcher, on a Contested verdict at launch or renewal",
+                   "Revokes the principal, with its evidence by digest; apply refuses all but a rung-3 statement "
+                   "signed by an issued verifier key (ADR-0034 §3.7; SIMULATED at the reference)", "F2"],
+         "accent": "green"},
         {"group": "Authority facts", "accent": "brown"},
         ["`Issue`", "operator relays an anchor issuance", "`Authentic` signatures and the rules floor "
          "(`validate_issuance`, ADR-0026)", "F4"],
         ["`GatesPassed`", "operator `gates_passed`", "Asserted: who runs the gates is unspecified (PROVISIONAL, G8)", "—"],
         ["`BreakGlassApprove`", "operator relays a signed approval", "A break-glass roster key; quorum per (seat, epoch)",
          "F5 is the admit under it"],
+        ["`ProfileRegister`", "operator `register_profile`", "The profile's one-file workspace is promoted (ADR-0034 "
+         "§1); a Run profile registers under A2, pending", "—"],
     ]
     cy += c.table(CX, cy, cols, rows_t, size=13.5, accent="violet") + 34
 
@@ -319,10 +340,13 @@ def build():
         ["engine", "Which bundle engine decided: sidecar or local WASM"],
         ["params", "Digest of the mechanism parameters; a mismatch at apply voids the admit"],
         ["decided_by", "The deciding replica, which alone performs the effect"],
+        ["session", "Under an attested session key (rungs 2 and 3), the guest's proof that it sent this action, "
+                    "checked again at apply (ADR-0034 §3.5; I41)"],
     ], size=13.5, accent="blue") + 30
     c.card(CX, cy, CW, "What this path does not show (ADR-0033 §1, §3, §6)", [
-        "**Confinement**: the MCP front door makes the alphabet the whole protocol, not the whole channel. Every lease "
-        "is rung 0; every principal is `Mediated`.",
+        "**Confinement**: for an operator grant the MCP front door makes the alphabet the whole protocol, not the "
+        "whole channel. The launcher (A7, pending) makes it the whole channel for a guest it starts, at rung 1 on "
+        "profiles that declare P3 `fail`, or at rung 3 only SIMULATED: **no real principal is `Contained`**.",
         "**A Byzantine replica**: replicas are crash-recovery. The apply re-check stops **stale** admits, not **forged** "
         "ones; replica authentication is unbuilt (T-0045-1).",
         "The reference is **evidence, not the verified object**: never promoted, in no TCB.",

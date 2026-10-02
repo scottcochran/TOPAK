@@ -10,9 +10,9 @@ def build():
                "the rules floor, issued rules, the promotion quorum, the policy floor and its bundles, the lease, and "
                "the admit, to an effect. The audit chain runs the same links back up, and no link is assumed except "
                "the last. This is how the authority regress ends: one axiom, bounded by two verified floors.",
-               3000, "ToO rev 11 §2.5, §3.1, §3.2, §4.1, §4.4, §7.1–§7.7, §9; G7 §1.1, §2.1, §2.2, §2.7, §7 items 8, 11, "
-               "25, 67; ADR-0015, ADR-0024 (§1–§9, A2), ADR-0025 (§1 with A1, §2, Annex), ADR-0026 (§1–§5, A1 pending), "
-               "ADR-0027, ADR-0029, ADR-0030 §1, §5, ADR-0031 §1–§3, A2, ADR-0033 §4, A6, ADR-0044")
+               3000, "ToO rev 13 §2.5, §3.1, §3.2, §4.1, §4.4, §7.1–§7.7, §9, §12; G9 header, §1.1, §2.1, §2.2, §2.3, §2.7, §5, "
+               "§7 items 8, 11, 25, 27, 67; ADR-0015, ADR-0024 (§1–§9, A2), ADR-0025 (§1 with A1, §2, Annex), ADR-0026 (§1–§5, A1 pending), "
+               "ADR-0027, ADR-0029, ADR-0030 §1, §5, ADR-0031 §1–§3, A2, ADR-0033 §4, A6, A7 (pending), ADR-0044")
     X0, X1 = c.x0, c.x1
     y = c.y
 
@@ -65,7 +65,7 @@ def build():
         "Part of the verified object: the mechanism **rejects** any issuance that violates it. **Two keys, both "
         "directions**: a rules-floor change needs an anchor issuance and a promotion under the rules being replaced.",
     ], "teal", status="accepted", table=(
-        [("Entry", 90, {"bold": True}), ("Bound (ToO §7.3, every row)", CW - 32 - 90 - 210), ("State at G7", 210)],
+        [("Entry", 90, {"bold": True}), ("Bound (ToO §7.3, every row)", CW - 32 - 90 - 210), ("State at G9", 210)],
         [["R1", "`quorum = \"all\"` over counted grant seats", "In force"],
          ["R2", "`minGrant ≥ 2`", "In force"],
          {"cells": ["R3", "Withdrawn: recusal is enforced by the `Vote` envelope, so no issued value exists to bound",
@@ -79,7 +79,7 @@ def build():
           "In force"],
          {"cells": ["R8", "Drafted, pending (ADR-0026 A1): a break-glass grant TTL. Vacuous until a mechanism "
                           "clause makes a grant end, and by ADR-0032 it needs trusted time",
-                    "[[amber|Pending]]: none of four conditions met (G7 item 8)"], "accent": "amber"}]))
+                    "[[amber|Pending]]: none of four conditions met (G9 item 8)"], "accent": "amber"}]))
     node("rules", "3 · Issued rules: the authority-defining set (ADR-0025 §1, with A1)", [
         "**(a)** the promotion roster and its parameters, `quorum` and `minGrant`; **(b)** the break-glass and erasure "
         "rosters; **(c)** the anchor's own key set; **(d)** any relaxation of the policy floor or new floor exception; "
@@ -87,7 +87,9 @@ def build():
         "**(f)** the keys the mechanism accepts a signature from in place of its own check: the **rung-3 verifier's "
         "appraisal key** and the **bundle-signing key** (A1, Batch 17). Replacing either adds authority, so it is an "
         "issuance. Both exist at the reference as `verifier_keys` and `bundle_keys` (ADR-0033 A6); the verifier key "
-        "is never read, since every lease is rung 0.",
+        "is **now read** at every rung-3 grant, renewal and Contested entry (A7, pending), and the only keys in it are "
+        "test keys, in **SIMULATED** runs; a simulated key counts only if an anchor issuance puts it in the rules "
+        "(G9 item 27, §5).",
         "**Genesis rules are resident** (ADR-0027): they ship with the mechanism release, are fetched from nowhere, "
         "and are epoch 0, the root of the rules-epoch chain. Anchor unavailability blocks change, never operation. "
         "At bootstrap genesis issues **no erasure roster**.",
@@ -104,7 +106,7 @@ def build():
     ], "blue", status="accepted", extra="bootstrap set")
     node("floor", "5 · Policy floor and bundle: `admit ⟺ floor_permit ∧ ¬bundle_deny` (ADR-0030 §1)", [
         "**The policy floor** is in the verified object, Cedar linked into the mechanism and resident; the genesis "
-        "text (17 policies, schema S, values file) is **DRAFT**, not ratified (G7 §2.2). Tightening it is an ordinary "
+        "text (17 policies, schema S, values file) is **DRAFT**, not ratified (G9 §2.2, item 25). Tightening it is an ordinary "
         "promotion; relaxing it adds an anchor issuance; the route is computed (ADR-0030 §5).",
         "**The bundle** is a promoted parameter that can only subtract, at every age; it loads only under a signature "
         "from a key in the issued rules (ADR-0044; built at the reference under a dev key, custody (1, 0)).",
@@ -157,7 +159,7 @@ def build():
         ["A-0025 (archetype)", "Strict unanimity, n ≥ 3", "(n, 0)"],
         ["D-0025-2", "n−1 eviction with replacement", "(n−1, 1)"],
         ["D-0025-1", "Threshold with recovery, in the shape of The Update Framework (TUF) root role", "(k, n−k)"],
-        {"cells": ["—", "Single custodian: **genesis today**, Scott (G7 header; item 11)", "(1, 0)"],
+        {"cells": ["—", "Single custodian: **genesis today**, Scott (G9 header; item 11)", "(1, 0)"],
          "accent": "red"},
     ], size=14, accent="brown")
     ly3 = ly2 + ch + 20

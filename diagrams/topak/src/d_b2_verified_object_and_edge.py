@@ -11,9 +11,10 @@ def build():
                "floor entries. Outside: operational bundles, Personas and rungs, versioned parameters that may "
                "subtract authority and never add it. The genesis policy floor's seventeen policies are drawn in full; "
                "the text is a DRAFT, not ratified.",
-               3200, "ToO rev 11 §2.5, §2.6, §3.1–§3.3, §4.4, §6, §7.3, §7.4; G7 §2.1, §2.2, §2.7, §7 items 25, 67; "
+               3200, "ToO rev 13 §2.5, §2.6, §2.9, §3.1–§3.3, §4.4, §6, §7.3, §7.4; G9 §2.1, §2.2, §2.3, §2.5, §2.7, §8, "
+               "§7 items 25, 67, 83; "
                "ADR-0010 (A1, A2), ADR-0012, ADR-0013, ADR-0016, ADR-0018, ADR-0023, ADR-0026, ADR-0027, ADR-0028, "
-               "ADR-0030 §1–§5, ADR-0031 §3, A2, ADR-0033 §5, A6, ADR-0034, ADR-0044; floor/genesis-floor.cedar, "
+               "ADR-0030 §1–§5, ADR-0031 §3, A2, ADR-0033 §5, A6, A7 and A8 (pending), ADR-0034, A2 (pending), ADR-0044; floor/genesis-floor.cedar, "
                "floor/README.md, floor/genesis-values.json, floor/genesis-gates-results-2026.10.01.txt; "
                "boundary register §6")
     X0, X1 = c.x0, c.x1
@@ -72,7 +73,7 @@ def build():
     pf_head = ("The policy floor: Cedar, linked into the mechanism (ADR-0030 §2–§3)",
                ["**No process, no socket, no fetch.** The floor's only inputs are the typed lift and the issued rules, "
                 "so no bundle can write a value the floor reads. Composition is a mechanism constant (§1, below).",
-                "**The genesis floor is three files** (G7 §2.2), gated six times, last on 2026.10.01, the first run "
+                "**The genesis floor is three files**, unchanged since G7 (G9 §2.2), gated six times, last on 2026.10.01, the first run "
                 "with checked proofs. ADR-0030 ratified the language and the machinery, **not a floor**; ADR-0041 "
                 "ratified what a Run floor must contain, not this one."])
     files = [
@@ -127,7 +128,7 @@ def build():
             "verifies; a sidecar's revision counts only if its signature was verified; a grant naming an unverified "
             "revision is refused.",
             "**Built** at the reference (ADR-0033 A6) under a dev key, custody (1, 0). **Not built**: signing at "
-            "promotion as a pipeline step, and the key's custody row (G7 item 67).",
+            "promotion as a pipeline step, and the key's custody row (G9 item 67).",
         ], "accepted", "C1"),
         ("Personas (ADR-0016 to ADR-0020)", "grey", [
             "Model, provenance, prompt, decoding parameters, **decoder** and seat binding, pinned; promoted, and a lease "
@@ -136,7 +137,11 @@ def build():
         ], None, ""),
         ("Rungs: deployment degeneracies (ADR-0023, ADR-0034)", "grey", [
             "Per-axis declarations: degenerate forms lose theorems, never gain capability. The confinement rung is a "
-            "lease field, `[profile digest, rung]`; every lease at the reference is rung 0, so `Mediated`.",
+            "lease field, `[profile digest, rung]`. The reference grants rung 0 by operator, launches rung 1 on profiles "
+            "that declare P3 `fail`, and rung 3 only **SIMULATED** (ADR-0033 A7, pending): **every real principal is** "
+            "`Mediated` (G9 §2.3).",
+            "Run's profile, with P4 replaced by **channel fidelity**, is ADR-0034 A2 (pending); the reference holds a "
+            "Run profile's P4 at decide and at apply (A8, pending) and does not yet hold a Build profile's (G9 item 83).",
         ], None, ""),
     ]
     for t, a, b, s, e in edge:

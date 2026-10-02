@@ -8,8 +8,9 @@ P, F, V = "[[green|pass]]", "[[red|fail]]", "[[grey|vacuous]]"
 
 def build():
     c = Canvas(ID, "At rung 1 the launcher is the channel: launch, appraise, grant, bridge",
-               "ADR-0036 (**Proposed**, not ratified; no rung-1 lease has been issued and no launcher exists) designs "
-               "the reference's first step toward confinement. The guest has one channel, stdio; a launcher on the host "
+               "ADR-0036 (**Proposed**, not ratified) designs the reference's first step toward confinement; its second "
+               "step, the launcher in the node, is **built** (ADR-0033 A7, pending), and rung-1 leases are issued in the "
+               "reference's tests. The guest has one channel, stdio; a launcher on the host "
                "starts it, appraises it, asks the node for a grant at `[profile digest, 1]`, and bridges every action "
                "line to the node's agent socket. **The token never enters the guest.** Every principal it launches is "
                "`Mediated`, by a declared profile clause rather than by the absence of a profile.",
@@ -17,14 +18,15 @@ def build():
                      "ADR-0033 §2, I14; ADR-0035 R4; ADR-0045 T-0045-19, T-0045-20, T-0045-22; "
                      "slm/serve/profile-host-rung0.json (DRAFT 2026.09.29, not a corpus record); slm/serve/README.md; "
                      "slm/serve/serve.py; mechanism/README.md; mechanism/GAPS-AND-ASSUMPTIONS.md G1, G5, I14; "
-                     "ToO rev 11 §2.7; G7 §7 items 34–36")
+                     "ADR-0033 A7 (pending); mechanism/crates/topak-contain, topak-node launch.rs; "
+                     "ToO rev 13 §2.7; G9 §2.3, §7 items 34–36, 81")
     X0, X1 = c.x0, c.x1
     y = c.y
     sx = X0
     c.text(sx, y + 16, "ADR-0036", 16, "ink", bold=True)
     sx += 92
     sx += c.status(sx, y, "proposed", "C2, C4 on ratification · revised R1–R3") + 12
-    sx += c.status(sx, y, "notbuilt", "no launcher at the reference (G1); G7 items 34, 35, 36 open") + 14
+    sx += c.status(sx, y, "built", "in the node, ADR-0033 A7 pending (G9 item 35); items 34, 36 open") + 14
     c.text(sx, y + 16, "Deployment position: rung 1 (D-0034-2); the first profile fails P3 (D-0036-1).", 14, "muted")
     y += 54
 
@@ -158,12 +160,14 @@ def build():
             "It reaches the launcher's log and nothing else, carries no protocol and is read by nothing; listed in the "
             "profile so P1's \"one channel\" means one channel **for actions**.",
         ]),
-        ("The second step: the launcher moves into the node (§6)", "blue", "notbuilt", [
+        ("The second step: the launcher moves into the node (§6)", "blue", "built", [
             "A `launch` operator request: the node starts the guest, appraises, grants to itself and bridges. **The "
             "attester becomes the mechanism** (its assertion recorded in the grant entry); **the profile becomes a "
             "promoted artifact**, and the node refuses an unpromoted digest.",
-            "A change under `mechanism/`: an ADR-0033 addendum and a full rerun (G7 item 35). Rung 2 is not on this "
-            "path: a container has no launch measurement (Firecracker or Kata, the rung-2 record's problem).",
+            "**Built**, under ADR-0033 A7 (pending; `c536e21`): backends a host process (it declares P1–P3 `fail`), "
+            "this container, and a SIMULATED rung 3; a launched lease mints **no token**, the bridge is the session; "
+            "§7's three refusals are seen in tests (G9 §2.3). Rung 2 is not on this path: a container has no launch "
+            "measurement (Firecracker or Kata, the rung-2 record's problem).",
         ]),
     ]
     for t, a, s, b in side:
@@ -173,7 +177,7 @@ def build():
 
     # ------------------------------------------------------------------ contrast: the reference path today
     c.heading(X0, y, "For contrast: the reference's front door today (ADR-0033 §2; `mechanism/README.md`)", size=21)
-    c.status(X1, y + 3, "built", "rung 0 only", anchor="end")
+    c.status(X1, y + 3, "built", "operator grants: rung 0", anchor="end")
     y += 50
     bxw = 420
     gap = 170
@@ -199,6 +203,7 @@ def build():
         "is stdio.",
         "The rung-0 host-run occupant keeps the token **inside** the occupant (its profile says so), since there is no "
         "launcher to hold it.",
+        "In the node, a launched lease has **no token at all**: the bridge is the session (ADR-0033 A7, pending).",
     ], accent="amber", size=14, h=chh, tint=False)
     y += chh + 60
 
