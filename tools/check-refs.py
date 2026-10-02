@@ -16,7 +16,6 @@ KNOWN = {
     ("slm/README.md", "mechanism/dev"),  # a runtime directory dev-init.sh creates, gitignored
     ("derived/topak-vs-nvidia-open-agent-safety-platform-2026.09.28.md", "2026-09-10"),  # an external release date, quoted
     ("derived/topak-contain-wrapper-design-2026.10.02.md", "mechanism/README"),  # mechanism/README.md, in a frozen file A7 cites by digest
-    ("mechanism/GAPS-AND-ASSUMPTIONS.md", "mechanism/launch.rs"),  # crates/topak-node/src/mechanism/launch.rs; the register is in A7's manifest, fix at the next addendum
 }
 # Files exempt as a whole: they describe paths rather than cite them.
 KNOWN_FILES = {"derived/topak-repo-reorganization-proposal-2026.09.30.md", "checkpoints/README.md"}  # the proposal and the layout map name old paths on purpose
