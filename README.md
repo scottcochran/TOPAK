@@ -44,7 +44,7 @@ deployable system.
 - **Model checking:** `tools/tlc` and `tools/tlc-workers` wrap TLC over the tracked `tools/tla2tools.jar`; each
   module has a `*-run.sh` in `spec/` ([README](spec/README.md)).
 - **Proofs:** `tools/tlapm` wraps the TLA+ Proof System, which `tools/install-tlaps.sh` installs beside it (1.9 GB,
-  not tracked); `spec/anchor-proof-results.sh` checks `spec/Anchor_proof.tla` and prints its results file.
+  not tracked); `spec/proof-results.sh` checks a `spec/*_proof.tla` module and prints its results file.
 - **Verifying a cut:** `tools/verify-manifest.sh --all` checks every manifest at the commit it measured;
   `tools/check-refs.py` checks every path a document cites.
 - **Floor, mechanism, SLM:** see the README in each directory.

@@ -1,0 +1,10 @@
+TOPAK — TLAPS proof results for BreakGlass.tla: every obligation of BreakGlass_proof.tla, checked by the prover below
+Modules: RulesFloorBase.tla (sha256 cf2351de2b39cccf) · BreakGlass.tla (sha256 2c3c3d75aba2a599) · BreakGlass_proof.tla (sha256 d6d49a5329a27e1c)
+Prover: tlapm 7824dab (binary sha256 e150fb793fb28592) · backends: Z3 version 4.8.9 - 64 bit · zenon version 0.8.4 [a268] 2017-11-14 · Isabelle2025 · LS4 for PTL · driver: proof-results.sh
+Assumptions: ActiveEntries == Active \subseteq AllEntries · R7InForce == "R7" \in Active
+Theorems: NeverChangesAuthority
+Lemmas: GenesisEntries · InitInv · NextInv · MutAdmitsAuthority
+A proved obligation is a theorem of the module under its assumptions and the hypotheses the statement names; the prover, not the constants, bounds the claim. Mutations and witnesses are behaviours and stay with TLC.
+
+File "./BreakGlass_proof.tla", line 1, character 1 to line 82, character 77:
+[INFO]: All 37 obligations proved.

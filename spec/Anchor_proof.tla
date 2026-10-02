@@ -12,7 +12,7 @@
 (* mutation must fail.                                                           *)
 (*                                                                               *)
 (* Check with:  ../tools/tlapm Anchor_proof.tla   (from spec/; see               *)
-(*              anchor-proof-results.sh for the results file)                    *)
+(*              proof-results.sh for the results file)                           *)
 EXTENDS Anchor, TLAPS
 
 (* Anchor.tla leaves Active, MaxEpoch and Mut unconstrained; bootstrap-run.sh    *)
