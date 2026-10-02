@@ -1,7 +1,7 @@
 # Checkpoints
 
-**Current state of record: [Genesis Checkpoint G8](topak-genesis-checkpoint-G8-2026.10.02.md)** (2026.10.02, tag
-`G8`). Each checkpoint is one cut, never revised: what each record says, what was ratified and by whom, what is owed,
+**Current state of record: [Genesis Checkpoint G9](topak-genesis-checkpoint-G9-2026.10.02.md)** (2026.10.02, tag
+`G9`). Each checkpoint is one cut, never revised: what each record says, what was ratified and by whom, what is owed,
 what is open, and the manifest that measures it. The narrative cut with it is `narrative/theory-of-operation.md`,
 and where the two disagree the checkpoint wins. The v1 corpus manifest (2026.09.15) is the first cut of all.
 
@@ -33,10 +33,11 @@ which `manifests/index.tsv` records.
 **G7 (2026.10.01) is the first cut under this layout**; its manifest also measures `tools/cpc/`, the proof checker's
 rule signature, beside the TLC jar, and excludes `manifests/index.tsv`, which names the commit each manifest is
 verified at. **G8 (2026.10.02)** is the first cut whose trusted base names a prover (ADR-0046, T-0045-31); its
-manifest excludes the TLAPS wrapper with the TLC wrappers and measures every proof module and proof results file.
+manifest excludes the TLAPS wrapper with the TLC wrappers and measures every proof module and proof results file. **G9 (2026.10.02)** is the first cut at which the reference issues a
+lease above rung 0: a rung-1 launcher in the node, and rung 3 SIMULATED, under addenda still pending.
 
 ## Tags
 
-`G3` to `G8` mark the commit that added each checkpoint; `glossary-<date>` each revision of the glossary in place;
+`G3` to `G9` mark the commit that added each checkpoint; `glossary-<date>` each revision of the glossary in place;
 `ToO-rev7` to `ToO-rev12` each Theory of Operation revision; `REF-<date>` the reference tree each ADR-0033 addendum cites; `SLM-2026.09.28` the rehearsal tree. G1, G2
 and revisions before 7 predate git and have no tag.

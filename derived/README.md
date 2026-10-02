@@ -28,4 +28,5 @@ marked *superseded* point at what replaced them. The glossary head moved to `nar
 | `topak-vs-nvidia-open-agent-safety-platform-2026.09.28.md` | Comparison with OpenShell, NemoClaw and NeMo Guardrails; a source of ADR-0040 |
 | `topak-repo-reorganization-proposal-2026.09.30.md` | The proposal the 2026.09.30 reorganization commit carries out, with one sequencing change (`checkpoints/README.md`) |
 | `topak-competitive-design-assessment-2026.10.01.md` | Design-level comparison with Moon & Varshney, OpenShell (delta since 09.28), Temporal, AgentCore/Dogwood, CaMeL, FIDES and others; no functional assessment |
+| `topak-containment-features-2026.10.01.md` | The archetype's confinement requirements as 28 items, each traced to a record clause: what must be checked, what the mechanism must do, what it must be handed; the basis of the 10.02 design record |
 | `topak-contain-wrapper-design-2026.10.02.md` | Design for the launcher in the node (ADR-0036 §6): rung-generic pipeline, rung 1 real, rung 3 simulated; six questions for the custodian and a draft ADR-0033 addendum; answers `topak-containment-features-2026.10.01.md` |

@@ -46,6 +46,7 @@ for bf in "$here"/*.tla; do
     RulesFloorNV)   why="frozen (G1) and superseded by RulesFloorNV_rev5, which is proved" ;;
     Lease)          why="frozen and superseded by Lease_A1, which is proved; its invariants are Lease_A1's at rungs 0..2" ;;
     Mechanism)      why="a trace replay, not a transition system with invariants; its target is the refinement (T-0045-28)" ;;
+    ConfinementRefinement) why="predicates over Mechanism's replayed trace states, checked on every trace; no Spec of its own (T-0045-28, stage one)" ;;
     *)              why="NO REASON RECORDED: write the proof or add the reason here"; status=1 ;;
   esac
   echo "  $b.tla: $why"
