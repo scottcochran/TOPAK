@@ -16,7 +16,7 @@ marked *superseded* point at what replaced them. The glossary head moved to `nar
 | `topak-feature-list-2026.09.15.md` | Feature list drawn from the 09.12 checkpoint; superseded as basis |
 | `topak-critical-review-2026.09.16.md` | CR-1 to CR-20 against revision 5 and G1; superseded by the 09.25 review |
 | `topak-glossary-2026.09.17.md` | Frozen; cited by ADR-0032 and ADR-0037; vocabulary predates ADR-0030 |
-| `topak-critical-review-2026.09.25.md` | CR-1 to CR-25 against revision 7 and G3, with the external grades |
+| `topak-critical-review-2026.09.25.md` | CR-1 to CR-26 against revision 7 and G3, with the external grades; superseded as the current review by the 10.02 review |
 | `topak-glossary-2026.09.26.md` | Frozen; the 09.29 glossary's supersession line cites it |
 | `topak-rungs-axes-degeneracies-accounting-2026.09.26.md` | The 09.26 accounting of rung orderings and declarations; its discrepancy list is G5 item 38 |
 | `topak-fable-conceptual-commentary-2026.09.26.md` | A conceptual commentary on the pattern |
@@ -30,3 +30,4 @@ marked *superseded* point at what replaced them. The glossary head moved to `nar
 | `topak-competitive-design-assessment-2026.10.01.md` | Design-level comparison with Moon & Varshney, OpenShell (delta since 09.28), Temporal, AgentCore/Dogwood, CaMeL, FIDES and others; no functional assessment |
 | `topak-containment-features-2026.10.01.md` | The archetype's confinement requirements as 28 items, each traced to a record clause: what must be checked, what the mechanism must do, what it must be handed; the basis of the 10.02 design record |
 | `topak-contain-wrapper-design-2026.10.02.md` | Design for the launcher in the node (ADR-0036 §6): rung-generic pipeline, rung 1 real, rung 3 simulated; six questions for the custodian and a draft ADR-0033 addendum; answers `topak-containment-features-2026.10.01.md` |
+| `topak-critical-review-2026.10.02.md` | The current review: re-grades the 09.16 and 09.25 findings against revision 13 and G9, adds CR-27 to CR-39, re-marks all 72 Playbook subcategories (M 11 · P 24 · C 4 · G 5 · X 28), and re-reads TACIP 2026.09.13(b) and Moon & Varshney against the PDF; manifests, proof sync, one TLC regeneration and the reference's tests were run against the tree |
