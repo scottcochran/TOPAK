@@ -31,9 +31,13 @@ declared, in the place T-0045-29 declares TLC.
   Confinement's binding of a lease to a guest is enforced by Act's generation check, not by `SameGuest` at grant,
   which the proof never uses; and in FloorComposition, `M_OVERRIDE` breaks `FloorErrorIsDeny` and
   `BundleRefusalHonored` as well as `AdmitImpliesFloorPermit`, and `M_ERR` breaks `AdmitImpliesFloorPermit` as well
-  as `FloorErrorIsDeny`, rows TLC did not run; and RunCoupling's `SealCountsEffects` breaks under `M_EMITSEQ`, not
+  as `FloorErrorIsDeny`, rows the original results file did not run and
+  `premise-corrections-results-2026.10.02.txt` now does; and RunCoupling's `SealCountsEffects` breaks under `M_EMITSEQ`, not
   `M_ROUNDS`, which the table names and which never touches a seal. The last is a transcription error: the results
-  file's own rows (`rc-emitseq-seal`, `rc-rounds-seal`) say what the proof says.
+  file's own rows (`rc-emitseq-seal`, `rc-rounds-seal`) say what the proof says. A fifth correction is to the
+  parameter column: `K < R` was listed as a premise of the two unread bounds, and both are proved for every K and R
+  with no ordering between them; ADR-0039 §1 needs the ordering so that the bound can refuse at all, which is
+  non-vacuity and stays with TLC.
 - **Mutations and reachability witnesses stay with TLC.** A counterexample and a witness are behaviours, and the
   prover proves universal statements. Each proof module instead carries one lemma per mutation stating what the
   mutation admits (the guard it removes): `MutAdmitsAll`, `MutAdmitsAuthority`, `MutRevokeGrantsAgain` and the
@@ -197,10 +201,49 @@ not have. `Mechanism` is not in this class:
 it is a trace replay over a concrete trace constant, and the meaningful target is a refinement from it to the
 small modules, which is the gap T-0045-28 declares.
 
-## 6. Open, for the custodian
+## 6. Keeping proofs in step with specifications
 
-- The TLC-versus-TLAPS declaration (MAP 2.3) and the checkpoints' §8 wording.
-- A trusted-base row for the prover and its backends, in the place T-0045-29 holds TLC, and whether the premise
-  table's rows for proved properties cite it.
-- Whether and where a record cites a proof module by digest, which would freeze it.
-- The three corrections to the "Breaks under" column in §1.
+A proof module extends the module it proves, so the two can drift in exactly one way: the base module changes.
+Under the freezing rule that change is a successor module, and the process is the one the corpus already has for
+successors, with the proof carried along.
+
+**The binding.** Every proof results file prints, on its `Modules:` line, the digest of each module in the proof's
+EXTENDS chain as it was when the obligations were proved. That line is the only record of which specification a
+proof is a proof of, and `proof-sync.sh` reads it: for every `<M>_proof.tla` it takes the newest
+`<M>-proof-results-*.txt`, compares each digest with the tree, and reports `IN SYNC` or `STALE` naming the module
+that moved; it then lists the base modules with no proof and the reason recorded for each. It exits non-zero on
+a stale proof, a missing results file, or a proofless module with no reason. With `--run` it re-checks each stale
+proof with the prover, which says whether the drift broke the proof or only the digest.
+
+**When a specification changes.**
+1. Write the successor module (`Lease_A1.tla` beside the frozen `Lease.tla`), as the records require.
+2. Copy the proof module to `<Successor>_proof.tla`, point its `EXTENDS` at the successor, and re-prove. A changed
+   guard shows up as a failed obligation at the action; a changed property as a failed `Init` or `Next` step; a
+   changed mutation as a hypothesis that no longer discharges. Each is the prover saying what moved.
+3. Generate the successor's results file with `proof-results.sh`, and commit the successor module, its TLC results,
+   the successor proof and its results together. `proof-sync.sh` is clean again.
+4. The record that cites the successor by digest cites its proof the same way (ADR-0046 §4's table is the form).
+   The frozen pair stays as it was, cited by the records that cite it.
+
+**When a proof changes and the specification does not.** Re-prove, regenerate the results file, and commit both.
+The results file's date moves and the base digests do not; `proof-sync.sh` stays clean. A proof's hypotheses are
+part of what it proves, so a weaker hypothesis is a stronger theorem and is worth a results file of its own.
+
+**Why the proofs are not merged into the modules.** Three reasons, each sufficient. A base module is frozen by
+digest, and adding a proof to it would make it a successor of itself. TLC runs the base module through
+`tools/tla2tools.jar` without the prover's library; a merged module would carry `EXTENDS TLAPS` into every TLC
+run. And the proof carries hypotheses (`Mut # "M_X"`, `"R7" \in Active`) that the module must not: the module is
+written so TLC can flip each mutation, and a hypothesis is the proof's way of naming which flip breaks what.
+The cost of keeping them apart is one line per module in `proof-sync.sh` and one digest line per results file.
+
+## 7. Drafted for the custodian, 2026.10.02: ADR-0046
+
+The four items this section listed are drafted in `decisions/ADR-0046.md` (Proposed), which the custodian ratifies
+or not under ADR-0029 §2: the TLC-versus-TLAPS declaration (its §1, §2); the prover as trusted-base row T-0045-31,
+with the row text for ADR-0045's annexes (§3), which lands there as a dependent entry at ratification; every proof module and results
+file cited by digest, which freezes them on ratification (§4); and the four "Breaks under" corrections and the struck `K < R` premise, applied to
+`spec/theorem-premise-binding.md` with the proof module named in each proved row (§5). Its Closes line names the
+record claims the proofs discharge as written (ADR-0025's Integrity row, ADR-0034 §7's "every rung", ADR-0026's
+scope notes, ADR-0023 §6a) and the one they discharge in part (ADR-0029 §5's bootstrap specification). The Theory of Operation and the glossary are untouched until the next checkpoint cuts; ADR-0046 §6 and its open
+obligations carry the wording they take then. Its ratification condition (§7) asks the custodian to regenerate the results files and
+flip one hypothesis before ratifying, so that the digests cited are ones the drafter did not produce alone.

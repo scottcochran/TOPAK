@@ -1,0 +1,28 @@
+TOPAK — TLC rows for ADR-0046 §5: the premise-table corrections the proofs found, checked by model checking
+Modules: FloorComposition.tla (sha256 3d30a058d8f8d9d1) · Coupling.tla (sha256 6d1e7a07f3d102ef) · RunCoupling.tla (sha256 781fdbc135f37491)
+TLC Version 2.19 of 08 August 2024 (jar sha256 936a262061c91469) · openjdk version "25.0.1" 2025-10-21 · drivers: floor-run.sh, coupling-run.sh, runcoupling-run.sh
+Corpus at cd2dd68
+Each row: name | module or Mut | invariant | result | states | expected | verdict. A COUNTEREXAMPLE row is a mutation
+breaking the invariant; a HOLDS row at K >= R is the bound holding without K < R; a Never… row at K >= R that
+HOLDS is the backlog refusal unreachable, and its control at the original constants is a COUNTEREXAMPLE.
+
+-- FloorComposition: mutations TLC did not run (correction 2 of ADR-0046 §5)
+FloorComposition | pc-override-err | Mut=M_OVERRIDE | FloorErrorIsDeny | COUNTEREXAMPLE | 52 distinct states found | expected COUNTEREXAMPLE | AS EXPECTED
+FloorComposition | pc-override-bundle | Mut=M_OVERRIDE | BundleRefusalHonored | COUNTEREXAMPLE | 40 distinct states found | expected COUNTEREXAMPLE | AS EXPECTED
+FloorComposition | pc-err-floor | Mut=M_ERR | AdmitImpliesFloorPermit | COUNTEREXAMPLE | 64 distinct states found | expected COUNTEREXAMPLE | AS EXPECTED
+
+-- Coupling: UnreadBounded without K < R (the struck parameter premise), K R MaxRound as shown
+pc-c-k3r2 | Mut=none | UnreadBounded | HOLDS | 772 distinct states found | expected HOLDS | AS EXPECTED
+pc-c-k5r2 | Mut=none | UnreadBounded | HOLDS | 772 distinct states found | expected HOLDS | AS EXPECTED
+pc-c-k3r2-backlog | Mut=none | NeverBacklogRefusal | HOLDS | 772 distinct states found | expected HOLDS | AS EXPECTED
+pc-c-k1r3-backlog | Mut=none | NeverBacklogRefusal | COUNTEREXAMPLE | 137 distinct states found | expected COUNTEREXAMPLE | AS EXPECTED
+
+-- RunCoupling: UnreadEffectsBounded without K < R, K R MaxRound as shown
+pc-rc-k3r2 | Mut=none | UnreadEffectsBounded | HOLDS | 2114 distinct states found | expected HOLDS | AS EXPECTED
+pc-rc-k3r2-actuates | Mut=none | NeverRefusedOnActuates | HOLDS | 2114 distinct states found | expected HOLDS | AS EXPECTED
+pc-rc-k1r4-actuates | Mut=none | NeverRefusedOnActuates | COUNTEREXAMPLE | 283 distinct states found | expected COUNTEREXAMPLE | AS EXPECTED
+
+Not rerun here: RunSeats' correction (1) is in RunSeats-results-2026.09.29.txt (rs-obsemit-safe HOLDS,
+rs-mdomain-observer COUNTEREXAMPLE); RunCoupling's (3) in RunCoupling-results-2026.09.29.txt (rc-emitseq-seal
+COUNTEREXAMPLE, rc-rounds-seal HOLDS); Confinement's (4) is a statement about the proof (SameGuest appears only
+in Confinement_proof.tla's M_UNBOUND lemma) and has no TLC row.
