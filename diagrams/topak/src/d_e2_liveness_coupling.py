@@ -42,7 +42,9 @@ def _build():
                3000, "ADR-0039 §1–§8, Options, Findings 1–4, History R1–R5, A1, B14, B20; ADR-0042 §1–§5, §7, §8 (B20; §6 "
                "Proposed); ADR-0041 §2; ADR-0032 §1–§6 (B5); ADR-0007; ADR-0024 §2; ADR-0038 §2; floor/genesis-floor.cedar "
                "R3-observer-live (DRAFT floor); floor/genesis-values.json (DRAFT, placeholders); spec/Coupling.tla, "
-               "spec/RunCoupling.tla and their 2026.09.29 results; ToO rev 11 §5.4, §10; G7 §2.2, §7 items 46–49, 60")
+               "spec/RunCoupling.tla and their 2026.09.29 results; spec/Coupling_proof.tla, spec/RunCoupling_proof.tla and "
+               "their 2026.10.02 proof results; spec/premise-corrections-results-2026.10.02.txt; ADR-0039 B25; ADR-0041 "
+               "B25; ADR-0042 B25; ADR-0046 §4, §5; ToO rev 11 §5.4, §10; G7 §2.2, §7 items 47–49, 60; G8 §2.6, item 46")
     X0, X1 = c.x0, c.x1
     W = X1 - X0
     y = c.y
@@ -77,8 +79,9 @@ def _build():
          "**Condition 2 is checked at decide only**: it is a per-replica clock, as lease expiry is. A heartbeat gone "
          "stale in that window is caught at the next admit.",
          "**`K < R` is required** and refused at startup for each domain: with `K ≥ R` condition 3 never refuses what "
-         "the round bound has not (the ground on which ADR-0026 R3 was withdrawn). The gate-side `K < R` check is not "
-         "realized (G7 item 46).",
+         "the round bound has not (the ground on which ADR-0026 R3 was withdrawn). It is **not a premise of the "
+         "bound**: the unread bounds are proved for every K and R; `K < R` is what lets condition 3 refuse at all "
+         "(ADR-0046 §5). The gate-side `K < R` check is not realized (G8 item 46).",
          "`K = 0` admits nothing until the quarantine hold exists (finding 1; G7 item 48)."]
     hs = [c.card(0, 0, w3, t, bb, acc, draw=False, size=14) for t, bb, acc in
           (("§1 · The heartbeat and two values in mechanism state", a, "pink"),
@@ -475,7 +478,8 @@ def _build():
     y = max(y + h1, yy) + 50
 
     # ======================================================================== checks
-    y += c.heading(X0, y, "What was checked (each property broken by its mutation, small constants)", "ink", 18)
+    y += c.heading(X0, y, "What was checked (each property broken by its mutation, small constants), and what is "
+                          "proved", "ink", 18)
     y += c.table(X0, y, [("Module", 300, {"bold": True}), ("Property", 520, {"mono": False}),
                          ("Mutation that must break it", 900), ("Result", W - 1720)], [
         ["`Coupling.tla` (B14)", "`NoAdmitWithoutLiveObserver`", "`M_NOCOUPLE`: the check dropped",
@@ -490,9 +494,17 @@ def _build():
         ["", "`ConsultNeverCoupled`", "`M_COUPLEALL`: `Consult` coupled", "Breaks only it"],
         ["", "`RoundBoundCountsAll`", "`M_BOUNDEFF`", "Breaks it"],
     ], size=13.5, accent="grey") + 10
+    y += c.para(X0, y, W, "**Proved since 2026.10.02** (ADR-0039, ADR-0041, ADR-0042 B25; ADR-0046 §4): "
+                "`Coupling_proof.tla` (320 obligations) and `RunCoupling_proof.tla` (469) prove every property above "
+                "**for every K, R and round bound**, each not under the mutations that break it: `UnreadBounded` not "
+                "under `M_MARK`, `M_ROUNDS`, `M_NOCOUPLE`; `UnreadEffectsBounded` not under `M_EMITSEQ`, `M_MARK`, "
+                "`M_ROUNDS`, `M_NOCOUPLE`; `SealCountsEffects` not under `M_EMITSEQ` alone (the binding table had "
+                "named `M_ROUNDS`, which never touches a seal: ADR-0046 §5). The form proved after an admit is "
+                "`seq − mark ≤ K`, from the strict check at the guard. The rows above stay with TLC; neither proof is "
+                "a claim about the reference.", 14, "teal") + 12
     c.para(X0, y, W, "At the reference (R4): every refusal seen to fire: no Observer lease, no heartbeat, a dishonest "
            "heartbeat, a backlog of `K`, presence without progress, staleness after `T_obs`, a round-2 grant while round "
            "1 is unread; one Build promotion stalled for coverage and completed by a heartbeat to the seal. Not realized: "
-           "`W(p)` as an ACL and the gate-side `K < R` check (G7 item 46); a scripted cell Observer (item 45); how "
+           "`W(p)` as an ACL and the gate-side `K < R` check (G8 item 46); a scripted cell Observer (item 45); how "
            "Observer rounds are laid out against Thinker rounds (finding 3; item 60).", 14, "muted")
     return c

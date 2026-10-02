@@ -41,7 +41,8 @@ def _build():
                "no quorum. Every finding is still deny-only (ADR-0007): nothing here touches the admit path.",
                3000, "ADR-0038 §1–§8, Options, Consequences, Findings 1–4, History R1–R3, B13, B18; ADR-0008 (Superseded); "
                "ADR-0007; ADR-0016 §5; ADR-0024 §2, §5 and A2; ADR-0035 §5; ADR-0037 §1–§3; ADR-0039 §4; "
-               "spec/Observers.tla and Observers-results-2026.09.29.txt; mechanism/GAPS-AND-ASSUMPTIONS.md I8; "
+               "spec/Observers.tla and Observers-results-2026.09.29.txt; spec/Observers_proof.tla and "
+               "Observers-proof-results-2026.10.02.txt; ADR-0038 B25; mechanism/GAPS-AND-ASSUMPTIONS.md I8; "
                "ToO rev 11 §5.1; G7 §1.1, §7 items 43, 44, 46")
     X0, X1 = c.x0, c.x1
     y = c.y
@@ -178,6 +179,9 @@ def _build():
         "**Reach is bounded (§1).** A cell Observer's finding never blocks an admit outside its cell: "
         "`ReachIsBounded` holds; `M_REACH` (domain-wide reach for cell Observers) breaks it. Reach is declared "
         "and not enforced at the reference (I8).",
+        "**Both proved** since 2026.10.02 (ADR-0038 B25): `Observers_proof.tla`, 65 obligations, `DenyByAnyOf` "
+        "not under `M_QUORUM` and `ReachIsBounded` not under `M_REACH`. A proof of the module: reach stays declared, "
+        "not enforced, at the reference.",
         "**More Observers never lower safety and may lower availability**: the monotone direction. Each added seat "
         "can raise detection if its lineage is independent, and adds a way to raise a false denial.",
     ], "red", size=14, tint=False, dash="6 4")

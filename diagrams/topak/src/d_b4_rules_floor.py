@@ -1,4 +1,4 @@
-"""B4 — The rules floor: what bounds the anchor, entry by entry, and the two runs that checked it."""
+"""B4 — The rules floor: what bounds the anchor, entry by entry, the two runs that checked it, and the proof."""
 from lib import Canvas
 
 ID, SLUG = "B4", "rules-floor"
@@ -8,11 +8,15 @@ def build():
     c = Canvas(ID, "The rules floor bounds every anchor issuance",
                "ADR-0010's move applied one layer up: the anchor is a havoc issuer (ADR-0025), and the rules floor "
                "(ADR-0026) joins the verified object so the mechanism rejects any issuance that violates it. Genesis "
-               "rules floor at G7: **R1, R2, R5, R6, R7, R9**; R3 and R4 withdrawn; R8 drafted and pending.",
-               2800, "ADR-0026 §1–§7, History A1, B2, B4, R1–R3 and the A1 note; ADR-0025 §1 (a)–(f) with A1; "
+               "rules floor at G8: **R1, R2, R5, R6, R7, R9**; R3 and R4 withdrawn; R8 drafted and pending. Since "
+               "2026.10.02 its properties are proved, each under the entry it rests on.",
+               2800, "ADR-0026 §1–§7, History A1, B2, B4, B25, R1–R3 and the A1 note; ADR-0025 §1 (a)–(f) with A1; "
+               "ADR-0046 §4, §5; ADR-0029 B25; "
                "ADR-0024 §2, §6, A2 and Degeneracies; ADR-0029 §5; ADR-0032 §2; ToO rev 11 §7.2, §7.3, §7.7, §9; "
-               "G7 §1.1, §2.1, §7 items 8 and 39; spec/RulesFloorNV.tla, RulesFloorNV-results-2026.09.15.txt, "
-               "RulesFloorNV_rev5.tla, RulesFloorNV-rev5-results-2026.09.23.txt, bootstrap-results-2026.09.23.txt")
+               "G8 §1.1, §2.1, §3, §7 items 8 and 39; spec/RulesFloorNV.tla, RulesFloorNV-results-2026.09.15.txt, "
+               "RulesFloorNV_rev5.tla, RulesFloorNV-rev5-results-2026.09.23.txt, bootstrap-results-2026.09.23.txt, "
+               "RulesFloorNV_rev5_proof.tla, RulesFloorNV_rev5-proof-results-2026.10.02.txt, "
+               "Anchor-proof-results-2026.10.02.txt, BreakGlass-proof-results-2026.10.02.txt")
     X0, X1 = c.x0, c.x1
     W = X1 - X0
     gap = 28
@@ -104,12 +108,13 @@ def build():
                    "relaxation: an anchor issuance plus a promotion (§4)."], "accent": "blue"},
         {"cells": ["R7", "No break-glass grant may authorize `Issue`, `Vote`, or promotion",
                    "ADR-0009 / ADR-0013", "[[blue|In force]] · ratified 09.23 (B2)",
-                   "Discharges break-glass × issuance and break-glass × promotion. Checked in the bootstrap module "
-                   "`BreakGlass` (`BreakGlassNeverChangesAuthority`)."], "accent": "blue"},
+                   "Discharges break-glass × issuance and break-glass × promotion. Checked, and since 2026.10.02 "
+                   "proved, in the bootstrap module `BreakGlass` (`BreakGlassNeverChangesAuthority`)."],
+         "accent": "blue"},
         {"cells": ["R8", "`0 < rules.breakGlass.ttl ≤ T_BG`: a finite break-glass grant TTL",
                    "ADR-0009 / ADR-0013",
                    "[[violet|Drafted, pending]]: ADR-0026 A1, 2026.09.24 · none of its four conditions met "
-                   "(G7 §1.1, item 8)",
+                   "(G8 §1.1, item 8)",
                    "Vacuous until a mechanism clause makes a grant end (companion clause would carry C1); `T_BG` has "
                    "no archetype value; a TTL needs trusted time (ADR-0032 §2); a new non-vacuity artifact with "
                    "`P8_BreakGlassEnds` is owed."], "accent": "violet", "dash": True},
@@ -127,8 +132,10 @@ def build():
     sw = X1 - sx
     sy = y
     hh = c.card(sx, sy, sw, "The genesis rules floor today", [
-        "**R1, R2, R5, R6, R7, R9** (G7 §2.1, unchanged since G6).",
-        "R3, R4 withdrawn; their IDs stay reserved. R8 is the one pending amendment in the corpus (G7 §1.1).",
+        "**R1, R2, R5, R6, R7, R9** (G8 §2.1, unchanged since G6).",
+        "R3, R4 withdrawn; their IDs stay reserved. R8 is the one pending amendment in the corpus (G8 §1.1).",
+        "`RulesFloorNV_rev5`'s six properties are **proved**, each under the entry it rests on; P9's premise is "
+        "exact: R2, and R1 or R9 (G8 §2.1; ADR-0026 B25).",
         "`verifier_keys` and `bundle_keys` are now in the reference's issued rules (ADR-0033 A6, I36); the floor "
         "is unchanged by them.",
     ], accent="blue", status="accepted", status_extra="bootstrap set · no confirmation marker")
@@ -217,7 +224,7 @@ def build():
         "`Vote` envelope **is modeled for the first time**. Five humans; author h1; anchor key-holder h4; one havoc "
         "issuance; recusal enforced at both sites. Floor R1, R2, R5, R7, R9.",
         "**Scope:** no veto seats. The rerun with A2.2 and A2.3 as conjuncts of `PromotionEnabled` is owed "
-        "(G7 item 39).",
+        "(G8 item 39).",
     ]
     mh = max(c.card(0, 0, hw, "Run 1 · 2026.09.15 · RulesFloorNV", m1, draw=False),
              c.card(0, 0, hw, "Run 2 · 2026.09.23 · RulesFloorNV_rev5", m2, draw=False))
@@ -284,8 +291,27 @@ def build():
     c.card(lx, y, hw, "Findings, 09.15 (ADR-0026 §6)", f1, accent="grey", h=fh, size=14)
     c.card(rx2, y, hw, "Findings, 09.23 (ADR-0026 §7)", f2, accent="teal", h=fh, size=14)
     y += fh + 30
+    pr = [
+        "`spec/RulesFloorNV_rev5_proof.tla` (`8ecd73b3451018c5`) extends the frozen rev 5 module without editing it "
+        "and proves, for every behaviour and every floor subset (`Active ⊆ AllEntries`): **P1** with R1 in force, "
+        "**P2** with R2, **P3** with recusal, **P5** with R5, **P7** with R7, and **P9** with R2 and either R1 or R9. "
+        "262 obligations, every one proved, by the prover T-0045-31 (ADR-0046); results "
+        "`RulesFloorNV_rev5-proof-results-2026.10.02.txt` (`131804673137f4fd`).",
+        "The module's three `ASSUME`s (genesis satisfies the floor; each entry independently droppable) were not "
+        "premises the prover could use; each is now a **lemma proved from the definitions, with witness records** "
+        "(G8 §3, result 4).",
+        "P9's hypothesis corrected the binding table: it rests on **R2 and (R1 or R9)**, so dropping R2 breaks it too "
+        "(ADR-0046 §5). The TLC row above, drop R1 and R9, is one of the two ways.",
+        "ADR-0026 §6 and §7's \"non-vacuity and discrimination, not proof\" stands of the TLC runs and no longer of "
+        "the properties. **The dropped-entry rows stay with TLC**: that a mutation reaches a bad state is an "
+        "existential claim (ADR-0046 §2). The rerun with A2.2 and A2.3 is still owed (G8 item 39).",
+    ]
+    ph = c.card(X0, y, W, "Since 2026.10.02: the six properties are proved (ADR-0026 B25; ADR-0046 §4)", pr,
+                accent="teal", size=14, status="accepted", status_extra="ADR-0046 · C2, C4 · B25")
+    y += ph + 30
     c.para(X0, y, W, "Both runs are precursors to the `RulesFloor` and `Promotion` bootstrap modules (ADR-0029 §5, "
            "invariant `PromotionMeetsIssuedQuorum` since A1), not substitutes; neither module is drafted yet. "
            "The `Anchor` module (`FloorPreserved`) was drafted and checked 2026.09.23 against the floor as ratified "
-           "(R1, R2, R5, R6, R7, R9).", 14.5, "muted")
+           "(R1, R2, R5, R6, R7, R9), and proved 2026.10.02 for every floor subset and epoch bound "
+           "(`Anchor_proof.tla`, 40 obligations; ADR-0029 B25).", 14.5, "muted")
     return c

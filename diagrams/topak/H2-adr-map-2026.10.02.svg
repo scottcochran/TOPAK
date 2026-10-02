@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="3600" height="2584" viewBox="0 0 3600 2584" role="img" aria-labelledby="t d">
-<title id="t">TOPAK H2 — The decision records, ADR-0001 to ADR-0045, by area</title>
-<desc id="d">Every record with its status and confirmation markers at G7. Solid blue edges are dependencies taken from each record's "Depends on" line, drawn where both records sit in the same row of tiles (every tile lists its full line); the grey edge is the one supersession; red dashed edges are the reversals in effect (ToO §8.3) and ADR-0040's.</desc>
+<svg xmlns="http://www.w3.org/2000/svg" width="3600" height="2599" viewBox="0 0 3600 2599" role="img" aria-labelledby="t d">
+<title id="t">TOPAK H2 — The decision records, ADR-0001 to ADR-0046, by area</title>
+<desc id="d">Every record with its status and confirmation markers at G8. Solid blue edges are dependencies taken from each record's "Depends on" line, drawn where both records sit in the same row of tiles (every tile lists its full line); the grey edge is the one supersession; red dashed edges are the reversals in effect (ToO §8.3) and ADR-0040's.</desc>
 <style>
 svg{--bg:#ffffff;--ink:#1e2430;--muted:#4a5262;--faint:#7d8596;--panel:#f5f6f8;--line:#d4d8e0;--zebra:#fafbfc;--blue:#2f5aa8;--blue-t:#edf2fb;--teal:#166b5b;--teal-t:#e8f5f1;--amber:#a35a00;--amber-t:#fdf3e4;--violet:#6b46a8;--violet-t:#f3eefb;--red:#a4262c;--red-t:#fcefef;--grey:#5f6878;--grey-t:#f1f2f4;--brown:#8a4b14;--brown-t:#f9f0e6;--pink:#9d2f6e;--pink-t:#fbeef5;--green:#2e7d32;--green-t:#edf6ee;}
 @media (prefers-color-scheme: dark){svg:not([data-theme=light]){--bg:#12151b;--ink:#e6e9ef;--muted:#b0b8c6;--faint:#7f8898;--panel:#1a1e26;--line:#363d4a;--zebra:#161a21;--blue:#8fb0ec;--blue-t:#1a2540;--teal:#6cc7b0;--teal-t:#12302a;--amber:#f0b15c;--amber-t:#33260f;--violet:#b9a0e8;--violet-t:#261d38;--red:#f08a8f;--red-t:#3a1a1d;--grey:#a3abb9;--grey-t:#22262e;--brown:#e0a56b;--brown-t:#2f2215;--pink:#ec8cc2;--pink-t:#351a2a;--green:#85c98a;--green-t:#17291a;}}
@@ -23,12 +23,12 @@ svg[data-theme=dark]{--bg:#12151b;--ink:#e6e9ef;--muted:#b0b8c6;--faint:#7f8898;
 .f-green{fill:var(--green)} .ft-green{fill:var(--green-t)} .s-green{stroke:var(--green)}
 </style>
 <defs><marker id="arw-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="13" markerHeight="13" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2f5aa8" class="f-blue"/></marker><marker id="arw-teal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="13" markerHeight="13" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#166b5b" class="f-teal"/></marker><marker id="arw-amber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="13" markerHeight="13" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#a35a00" class="f-amber"/></marker><marker id="arw-violet" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="13" markerHeight="13" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#6b46a8" class="f-violet"/></marker><marker id="arw-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="13" markerHeight="13" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#a4262c" class="f-red"/></marker><marker id="arw-grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="13" markerHeight="13" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#5f6878" class="f-grey"/></marker><marker id="arw-brown" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="13" markerHeight="13" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#8a4b14" class="f-brown"/></marker><marker id="arw-pink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="13" markerHeight="13" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#9d2f6e" class="f-pink"/></marker><marker id="arw-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="13" markerHeight="13" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2e7d32" class="f-green"/></marker><marker id="arw-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="13" markerHeight="13" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#1e2430" class="f-ink"/></marker><marker id="arw-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="13" markerHeight="13" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5262" class="f-muted"/></marker><marker id="arw-faint" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="13" markerHeight="13" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#7d8596" class="f-faint"/></marker></defs>
-<rect width="3600" height="2584" fill="#ffffff" class="f-bg"/>
+<rect width="3600" height="2599" fill="#ffffff" class="f-bg"/>
 <text x="56" y="64" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" letter-spacing="1.5" font-weight="bold" fill="#7d8596" class="f-faint">TOPAK · H2</text>
-<text x="56.0" y="100.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="30" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">The decision records, ADR-0001 to ADR-0045, by area</tspan></text>
-<text x="56.0" y="140.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="16" fill="#4a5262" class="f-muted" text-anchor="start">Every record with its status and confirmation markers at G7. Solid blue edges are dependencies taken from each record's "Depends on" line, drawn where both records sit in the same row of tiles (every tile lists its full line); the grey edge is the one supersession; red dashed edges are the reversals in effect (ToO §8.3) and ADR-0040's.</text>
+<text x="56.0" y="100.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="30" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">The decision records, ADR-0001 to ADR-0046, by area</tspan></text>
+<text x="56.0" y="140.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="16" fill="#4a5262" class="f-muted" text-anchor="start">Every record with its status and confirmation markers at G8. Solid blue edges are dependencies taken from each record's "Depends on" line, drawn where both records sit in the same row of tiles (every tile lists its full line); the grey edge is the one supersession; red dashed edges are the reversals in effect (ToO §8.3) and ADR-0040's.</text>
 <line x1="56" y1="173" x2="3544" y2="173" fill="none" stroke="#d4d8e0" class="s-line" stroke-width="1.5"/>
-<rect x="56.0" y="237.0" width="1774.0" height="395.6" rx="14" fill="none" stroke="#8a4b14" class="s-brown" stroke-width="2.2"/>
+<rect x="56.0" y="237.0" width="1774.0" height="410.6" rx="14" fill="none" stroke="#8a4b14" class="s-brown" stroke-width="2.2"/>
 <rect x="74.0" y="223.5" width="190.8" height="27" rx="6" fill="#ffffff" stroke="#8a4b14" class="f-bg s-brown" stroke-width="1.4"/>
 <text x="84.0" y="243.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="15" fill="#8a4b14" class="f-brown" text-anchor="start"><tspan font-weight="bold">Authority and bootstrap</tspan></text>
 <rect x="78.0" y="273.0" width="330.0" height="174.6" rx="8" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.6"/>
@@ -65,7 +65,7 @@ svg[data-theme=dark]{--bg:#12151b;--ink:#e6e9ef;--muted:#b0b8c6;--faint:#7f8898;
 <rect x="1491.0" y="346.6" width="157.9" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
 <text x="1500.0" y="360.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C3 for A2 only</tspan></text>
 <text x="1491.0" y="393.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0024, 0025, 0026, 0027</text>
-<rect x="1890.0" y="237.0" width="374.0" height="395.6" rx="14" fill="none" stroke="#6b46a8" class="s-violet" stroke-width="2.2"/>
+<rect x="1890.0" y="237.0" width="374.0" height="410.6" rx="14" fill="none" stroke="#6b46a8" class="s-violet" stroke-width="2.2"/>
 <rect x="1908.0" y="223.5" width="172.5" height="27" rx="6" fill="#ffffff" stroke="#6b46a8" class="f-bg s-violet" stroke-width="1.4"/>
 <text x="1918.0" y="243.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="15" fill="#6b46a8" class="f-violet" text-anchor="start"><tspan font-weight="bold">Deployment variation</tspan></text>
 <rect x="1912.0" y="273.0" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
@@ -76,9 +76,9 @@ svg[data-theme=dark]{--bg:#12151b;--ink:#e6e9ef;--muted:#b0b8c6;--faint:#7f8898;
 <text x="1934.0" y="360.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C3</tspan></text>
 <text x="1925.0" y="393.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">§5 reverses 0008 scoping and 0017</text>
 <text x="1925.0" y="410.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">ordering-primacy in effect</text>
-<rect x="2324.0" y="237.0" width="724.0" height="395.6" rx="14" fill="none" stroke="#166b5b" class="s-teal" stroke-width="2.2"/>
-<rect x="2342.0" y="223.5" width="216.7" height="27" rx="6" fill="#ffffff" stroke="#166b5b" class="f-bg s-teal" stroke-width="1.4"/>
-<text x="2352.0" y="243.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="15" fill="#166b5b" class="f-teal" text-anchor="start"><tspan font-weight="bold">Reference and trusted base</tspan></text>
+<rect x="2324.0" y="237.0" width="1074.0" height="410.6" rx="14" fill="none" stroke="#166b5b" class="s-teal" stroke-width="2.2"/>
+<rect x="2342.0" y="223.5" width="279.2" height="27" rx="6" fill="#ffffff" stroke="#166b5b" class="f-bg s-teal" stroke-width="1.4"/>
+<text x="2352.0" y="243.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="15" fill="#166b5b" class="f-teal" text-anchor="start"><tspan font-weight="bold">Reference, trusted base and method</tspan></text>
 <rect x="2346.0" y="273.0" width="330.0" height="174.6" rx="8" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.6"/>
 <text x="2359.0" y="301.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">ADR-0033</tspan></text>
 <text x="2359.0" y="319.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">The mechanism has a reference implementation:</text>
@@ -93,283 +93,292 @@ svg[data-theme=dark]{--bg:#12151b;--ink:#e6e9ef;--muted:#b0b8c6;--faint:#7f8898;
 <text x="2709.0" y="319.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">The trusted base is declared row by row</text>
 <rect x="2709.0" y="329.8" width="115.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
 <text x="2718.0" y="343.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C2, C4</tspan></text>
-<text x="2709.0" y="376.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">Drafted by the assistant; new at G7</text>
-<text x="2709.0" y="396.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0015, 0023, 0025, 0029, 0031, 0034</text>
-<rect x="56.0" y="742.6" width="1774.0" height="320.6" rx="14" fill="none" stroke="#166b5b" class="s-teal" stroke-width="2.2"/>
-<rect x="74.0" y="729.1" width="366.7" height="27" rx="6" fill="#ffffff" stroke="#166b5b" class="f-bg s-teal" stroke-width="1.4"/>
-<text x="84.0" y="748.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="15" fill="#166b5b" class="f-teal" text-anchor="start"><tspan font-weight="bold">Domains, membrane and Build alphabet (B1–B3)</tspan></text>
-<rect x="78.0" y="778.6" width="330.0" height="174.6" rx="8" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.6"/>
-<text x="91.0" y="806.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">ADR-0001</tspan></text>
-<text x="91.0" y="824.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Rename the CI domain to <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">Build</tspan>; adopt</text>
-<text x="91.0" y="841.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">Build(Contain) → Run(Contain)</tspan></text>
-<rect x="91.0" y="852.2" width="69.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
-<text x="100.0" y="866.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted</tspan></text>
-<rect x="428.0" y="778.6" width="330.0" height="174.6" rx="8" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.6"/>
-<text x="441.0" y="806.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">ADR-0002</tspan></text>
-<text x="441.0" y="824.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Apply the membrane in <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">Build</tspan> as well</text>
-<rect x="441.0" y="835.4" width="69.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
-<text x="450.0" y="849.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted</tspan></text>
-<text x="441.0" y="881.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">A2: the evictability test</text>
-<rect x="778.0" y="778.6" width="330.0" height="174.6" rx="8" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.6"/>
-<text x="791.0" y="806.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">ADR-0007</tspan></text>
-<text x="791.0" y="824.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Semantic judgment is never a lift</text>
-<rect x="791.0" y="835.4" width="69.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
-<text x="800.0" y="849.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted</tspan></text>
-<rect x="1128.0" y="778.6" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
-<text x="1141.0" y="806.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0015</tspan></text>
-<text x="1141.0" y="824.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Effects are boundary crossings; every crossing</text>
-<text x="1141.0" y="841.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">authorized, ordered, auditable</text>
-<rect x="1141.0" y="852.2" width="94.7" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
-<text x="1150.0" y="866.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C2</tspan></text>
-<text x="1141.0" y="898.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">Revised by 0025</text>
-<rect x="1478.0" y="778.6" width="330.0" height="174.6" rx="8" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.6"/>
-<text x="1491.0" y="806.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">ADR-0022</tspan></text>
-<text x="1491.0" y="824.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Typed action alphabet for Build principals</text>
-<rect x="1491.0" y="835.4" width="177.2" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
-<text x="1500.0" y="849.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · §1–§5, §7, §8 only</tspan></text>
-<text x="1491.0" y="881.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">§6 (confinement) stays Proposed</text>
-<rect x="1890.0" y="742.6" width="1424.0" height="320.6" rx="14" fill="none" stroke="#2e7d32" class="s-green" stroke-width="2.2"/>
-<rect x="1908.0" y="729.1" width="49.2" height="27" rx="6" fill="#ffffff" stroke="#2e7d32" class="f-bg s-green" stroke-width="1.4"/>
-<text x="1918.0" y="748.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="15" fill="#2e7d32" class="f-green" text-anchor="start"><tspan font-weight="bold">Run</tspan></text>
-<rect x="1912.0" y="778.6" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
-<text x="1925.0" y="806.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0040</tspan></text>
-<text x="1925.0" y="824.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Run has its own alphabet: <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">Consult</tspan>, <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">Actuate</tspan>, <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">Report</tspan></text>
-<rect x="1925.0" y="835.4" width="115.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
-<text x="1934.0" y="849.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C3, C4</tspan></text>
-<text x="1925.0" y="881.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">Reverses in effect 0022 §5's shared <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">Read</tspan>/<tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">Emit</tspan></text>
-<text x="1925.0" y="902.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0007, 0010, 0015, 0018, 0022, 0031</text>
-<rect x="2262.0" y="778.6" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
-<text x="2275.0" y="806.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0041</tspan></text>
-<text x="2275.0" y="824.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Policy obligations for Run: one envelope per variant;</text>
-<text x="2275.0" y="841.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">coupling on effects only</text>
-<rect x="2275.0" y="852.2" width="115.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
-<text x="2284.0" y="866.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C1, C4</tspan></text>
-<text x="2275.0" y="898.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0009, 0013, 0026, 0030, 0037, 0039,</text>
-<text x="2275.0" y="916.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">0040</text>
-<rect x="2612.0" y="778.6" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
-<text x="2625.0" y="806.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0042</tspan></text>
-<text x="2625.0" y="824.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Mechanism obligations for Run: effects counted, every</text>
-<text x="2625.0" y="841.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">Actuate</tspan> recorded</text>
-<rect x="2625.0" y="852.2" width="175.3" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
-<text x="2634.0" y="866.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · §1–§5, §7, §8 · C4</tspan></text>
-<text x="2625.0" y="898.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">§6 Proposed</text>
-<text x="2625.0" y="919.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0003, 0004, 0015, 0018, 0031, 0033,</text>
-<text x="2625.0" y="936.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">0039, 0040</text>
-<rect x="2962.0" y="778.6" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
-<text x="2975.0" y="806.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0043</tspan></text>
-<text x="2975.0" y="824.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Cell obligations for Run: Listener, seats, what the</text>
-<text x="2975.0" y="841.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Observer must read</text>
-<rect x="2975.0" y="852.2" width="94.7" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
-<text x="2984.0" y="866.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C4</tspan></text>
-<text x="2975.0" y="898.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0018, 0037, 0038, 0039, 0040, 0042</text>
-<rect x="56.0" y="1173.2" width="1424.0" height="601.2" rx="14" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="2.2"/>
-<rect x="74.0" y="1159.7" width="140.9" height="27" rx="6" fill="#ffffff" stroke="#2f5aa8" class="f-bg s-blue" stroke-width="1.4"/>
-<text x="84.0" y="1179.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="15" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Policy and floors</tspan></text>
-<rect x="78.0" y="1209.2" width="330.0" height="174.6" rx="8" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.6"/>
-<text x="91.0" y="1237.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">ADR-0010</tspan></text>
-<text x="91.0" y="1255.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">The verified object: the mechanism, its epoch discipline,</text>
-<text x="91.0" y="1272.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">a minimal policy floor</text>
-<rect x="91.0" y="1282.8" width="69.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
-<text x="100.0" y="1296.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted</tspan></text>
-<text x="91.0" y="1329.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">Amended by 0026</text>
-<rect x="428.0" y="1209.2" width="330.0" height="174.6" rx="8" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.6"/>
-<text x="441.0" y="1237.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">ADR-0012</tspan></text>
-<text x="441.0" y="1255.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">The default-deny bundle is the policy floor: pre-blessed,</text>
-<text x="441.0" y="1272.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">resident, verified</text>
-<rect x="441.0" y="1282.8" width="69.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
-<text x="450.0" y="1296.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted</tspan></text>
-<rect x="778.0" y="1209.2" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
-<text x="791.0" y="1237.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0030</tspan></text>
-<text x="791.0" y="1255.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Bundles cannot add authority by construction; the floor</text>
-<text x="791.0" y="1272.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">runs on a verified evaluator</text>
-<rect x="791.0" y="1282.8" width="94.7" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
-<text x="800.0" y="1296.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C1</tspan></text>
-<text x="791.0" y="1329.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">Floor text and schema S stay DRAFT; A1 (B24)</text>
-<text x="791.0" y="1349.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0007, 0010, 0012, 0018, 0023</text>
-<rect x="1128.0" y="1209.2" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
-<text x="1141.0" y="1237.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0044</tspan></text>
-<text x="1141.0" y="1255.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">A bundle is trusted by its signature, not its file name</text>
-<rect x="1141.0" y="1266.0" width="94.7" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
-<text x="1150.0" y="1280.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C1</tspan></text>
-<text x="1141.0" y="1312.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">Drafted by the assistant</text>
-<text x="1141.0" y="1333.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0025, 0030, 0031, 0033</text>
-<rect x="78.0" y="1534.8" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
-<text x="91.0" y="1562.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0013</tspan></text>
-<text x="91.0" y="1580.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Exception mechanism for privileged paths through the</text>
-<text x="91.0" y="1597.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">floor</text>
-<rect x="91.0" y="1608.4" width="115.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
-<text x="100.0" y="1622.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C1, C4</tspan></text>
-<text x="91.0" y="1654.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0010, 0025, 0026, 0028</text>
-<rect x="428.0" y="1534.8" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
-<text x="441.0" y="1562.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0006</tspan></text>
-<text x="441.0" y="1580.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Erasure is a privileged, modeled, consensus-ordered</text>
-<text x="441.0" y="1597.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">event</text>
-<rect x="441.0" y="1608.4" width="163.7" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
-<text x="450.0" y="1622.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C1, C4 via 0013</tspan></text>
-<rect x="778.0" y="1534.8" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
-<text x="791.0" y="1562.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0009</tspan></text>
-<text x="791.0" y="1580.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Break-glass is a modeled, quorum-witnessed path, not a</text>
-<text x="791.0" y="1597.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">prohibition</text>
-<rect x="791.0" y="1608.4" width="163.7" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
-<text x="800.0" y="1622.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C1, C4 via 0013</tspan></text>
-<rect x="1128.0" y="1534.8" width="330.0" height="174.6" rx="8" fill="#ffffff" stroke="#5f6878" class="f-bg s-grey" stroke-width="1.6" stroke-dasharray="2 3"/>
-<text x="1141.0" y="1562.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">ADR-0014</tspan></text>
-<text x="1141.0" y="1580.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">— (the per-class floor question)</text>
-<text x="1141.0" y="1608.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">Reserved, no file; narrowed by 0024</text>
-<rect x="1231.0" y="1546.8" width="110.0" height="21.5" rx="10.75" fill="#f1f2f4" stroke="#5f6878" class="ft-grey s-grey" stroke-width="1.2" stroke-dasharray="2 3"/>
-<text x="1240.0" y="1560.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">Reserved, no file</tspan></text>
-<rect x="1540.0" y="1173.2" width="1074.0" height="601.2" rx="14" fill="none" stroke="#5f6878" class="s-grey" stroke-width="2.2"/>
-<rect x="1558.0" y="1159.7" width="235.1" height="27" rx="6" fill="#ffffff" stroke="#5f6878" class="f-bg s-grey" stroke-width="1.4"/>
-<text x="1568.0" y="1179.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="15" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">Record, transport and erasure</tspan></text>
-<rect x="1562.0" y="1209.2" width="330.0" height="174.6" rx="8" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.6"/>
-<text x="1575.0" y="1237.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">ADR-0004</tspan></text>
-<text x="1575.0" y="1255.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Separate control-plane facts from cognitive payloads</text>
-<rect x="1575.0" y="1266.0" width="69.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
-<text x="1584.0" y="1280.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted</tspan></text>
-<rect x="1912.0" y="1209.2" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
-<text x="1925.0" y="1237.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0003</tspan></text>
-<text x="1925.0" y="1255.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Topic per principal per round, sealed on emit, as the unit</text>
-<text x="1925.0" y="1272.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">of erasure</text>
-<rect x="1925.0" y="1282.8" width="157.9" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
-<text x="1934.0" y="1296.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C1 for A2 only</tspan></text>
-<rect x="2262.0" y="1209.2" width="330.0" height="174.6" rx="8" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.6"/>
-<text x="2275.0" y="1237.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">ADR-0020</tspan></text>
-<text x="2275.0" y="1255.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Replay scope is boundary events only</text>
-<rect x="2275.0" y="1266.0" width="69.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
-<text x="2284.0" y="1280.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted</tspan></text>
-<text x="2275.0" y="1312.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0003, 0004, 0006</text>
-<rect x="1562.0" y="1534.8" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
-<text x="1575.0" y="1562.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0028</tspan></text>
-<text x="1575.0" y="1580.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">The forensic floor: authority facts survive erasure and</text>
-<text x="1575.0" y="1597.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">break-glass</text>
-<rect x="1575.0" y="1608.4" width="94.7" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
-<text x="1584.0" y="1622.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C1</tspan></text>
-<text x="1575.0" y="1654.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">Split from 0013</text>
-<text x="1575.0" y="1675.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0004, 0006, 0010, 0020</text>
-<rect x="1912.0" y="1534.8" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
-<text x="1925.0" y="1562.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0021</tspan></text>
-<text x="1925.0" y="1580.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Build emits to the effect stream; Build has an Observer</text>
-<rect x="1925.0" y="1591.6" width="94.7" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
-<text x="1934.0" y="1605.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C4</tspan></text>
-<rect x="2262.0" y="1534.8" width="330.0" height="174.6" rx="8" fill="#fdf3e4" stroke="#a35a00" class="ft-amber s-amber" stroke-width="1.6" stroke-dasharray="6 4"/>
-<text x="2275.0" y="1562.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a35a00" class="f-amber" text-anchor="start"><tspan font-weight="bold">ADR-0005</tspan></text>
-<text x="2275.0" y="1580.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Kafka is neither the ordering authority nor the system of</text>
-<text x="2275.0" y="1597.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">record</text>
-<rect x="2275.0" y="1608.4" width="71.0" height="21.5" rx="10.75" fill="#fdf3e4" stroke="#a35a00" class="ft-amber s-amber" stroke-width="1.2" stroke-dasharray="6 4"/>
-<text x="2284.0" y="1622.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#a35a00" class="f-amber" text-anchor="start"><tspan font-weight="bold">Proposed</tspan></text>
-<text x="2275.0" y="1654.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">Blocked on a decision; ADR-0033's K row is a debt</text>
-<text x="2275.0" y="1672.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">on it</text>
-<rect x="2674.0" y="1173.2" width="724.0" height="601.2" rx="14" fill="none" stroke="#a35a00" class="s-amber" stroke-width="2.2"/>
-<rect x="2692.0" y="1159.7" width="225.9" height="27" rx="6" fill="#ffffff" stroke="#a35a00" class="f-bg s-amber" stroke-width="1.4"/>
-<text x="2702.0" y="1179.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="15" fill="#a35a00" class="f-amber" text-anchor="start"><tspan font-weight="bold">Lease, time and confinement</tspan></text>
-<rect x="2696.0" y="1209.2" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
-<text x="2709.0" y="1237.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0031</tspan></text>
-<text x="2709.0" y="1255.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">The lease is the composite credential, and its grant is the</text>
-<text x="2709.0" y="1272.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">instant</text>
-<rect x="2709.0" y="1282.8" width="152.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
-<text x="2718.0" y="1296.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C1; C2 for A1</tspan></text>
-<text x="2709.0" y="1329.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0003, 0007, 0016, 0022, 0026, 0032</text>
-<rect x="3046.0" y="1209.2" width="330.0" height="174.6" rx="8" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.6"/>
-<text x="3059.0" y="1237.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">ADR-0032</tspan></text>
-<text x="3059.0" y="1255.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">The clock model: intervals trusted by failure direction</text>
-<rect x="3059.0" y="1266.0" width="69.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
-<text x="3068.0" y="1280.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted</tspan></text>
-<text x="3059.0" y="1312.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0007, 0022, 0031</text>
-<rect x="2696.0" y="1534.8" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
-<text x="2709.0" y="1562.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0034</tspan></text>
-<text x="2709.0" y="1580.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Confinement is attested at lease grant; the archetype</text>
-<text x="2709.0" y="1597.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">rung is a confidential VM</text>
-<rect x="2709.0" y="1608.4" width="115.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
-<text x="2718.0" y="1622.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C2, C4</tspan></text>
-<text x="2709.0" y="1654.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">Discharges 0022 §6 for Build</text>
-<text x="2709.0" y="1675.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0016, 0017, 0022, 0023, 0024, 0031,</text>
-<text x="2709.0" y="1692.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">0032, 0033, 0035</text>
-<rect x="3046.0" y="1534.8" width="330.0" height="174.6" rx="8" fill="#fdf3e4" stroke="#a35a00" class="ft-amber s-amber" stroke-width="1.6" stroke-dasharray="6 4"/>
-<text x="3059.0" y="1562.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a35a00" class="f-amber" text-anchor="start"><tspan font-weight="bold">ADR-0036</tspan></text>
-<text x="3059.0" y="1580.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">At rung 1 the launcher is the channel: a principal</text>
-<text x="3059.0" y="1597.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">Mediated</tspan> by declaration</text>
-<rect x="3059.0" y="1608.4" width="71.0" height="21.5" rx="10.75" fill="#fdf3e4" stroke="#a35a00" class="ft-amber s-amber" stroke-width="1.2" stroke-dasharray="6 4"/>
-<text x="3068.0" y="1622.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#a35a00" class="f-amber" text-anchor="start"><tspan font-weight="bold">Proposed</tspan></text>
-<text x="3059.0" y="1654.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0017, 0022, 0031, 0033, 0034</text>
-<rect x="56.0" y="1884.4" width="1074.0" height="556.2" rx="14" fill="none" stroke="#9d2f6e" class="s-pink" stroke-width="2.2"/>
-<rect x="74.0" y="1870.9" width="203.4" height="27" rx="6" fill="#ffffff" stroke="#9d2f6e" class="f-bg s-pink" stroke-width="1.4"/>
-<text x="84.0" y="1890.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="15" fill="#9d2f6e" class="f-pink" text-anchor="start"><tspan font-weight="bold">Seats, cells and detection</tspan></text>
-<rect x="78.0" y="1920.4" width="330.0" height="174.6" rx="8" fill="#f1f2f4" stroke="#5f6878" class="ft-grey s-grey" stroke-width="1.6" stroke-dasharray="2 3"/>
-<text x="91.0" y="1948.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">ADR-0008</tspan></text>
-<text x="91.0" y="1966.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Observer replicas are not colocated with the Thinker</text>
-<rect x="91.0" y="1977.2" width="136.2" height="21.5" rx="10.75" fill="#f1f2f4" stroke="#5f6878" class="ft-grey s-grey" stroke-width="1.2" stroke-dasharray="2 3"/>
-<text x="100.0" y="1991.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">Superseded · by 0038</tspan></text>
-<text x="91.0" y="2023.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">Colocation rule carried forward by 0038 §4</text>
-<rect x="428.0" y="1920.4" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
-<text x="441.0" y="1948.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0038</tspan></text>
-<text x="441.0" y="1966.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Observers are per cell; the shared group becomes the</text>
-<text x="441.0" y="1983.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">correlator</text>
-<rect x="441.0" y="1994.0" width="115.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
-<text x="450.0" y="2008.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C3, C4</tspan></text>
-<text x="441.0" y="2040.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">Supersedes 0008</text>
-<text x="441.0" y="2061.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0003, 0004, 0007, 0023, 0031, 0037</text>
-<rect x="778.0" y="1920.4" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
-<text x="791.0" y="1948.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0039</tspan></text>
-<text x="791.0" y="1966.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Observer liveness is progress, not presence</text>
-<rect x="791.0" y="1977.2" width="94.7" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
-<text x="800.0" y="1991.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C4</tspan></text>
-<text x="791.0" y="2023.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0007, 0022, 0024, 0031, 0032, 0037,</text>
-<text x="791.0" y="2041.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">0038</text>
-<rect x="78.0" y="2201.0" width="330.0" height="174.6" rx="8" fill="#ffffff" stroke="#5f6878" class="f-bg s-grey" stroke-width="1.6" stroke-dasharray="2 3"/>
-<text x="91.0" y="2229.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">ADR-0011</tspan></text>
-<text x="91.0" y="2247.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Observer placement and fault-domain independence</text>
-<text x="91.0" y="2274.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">No decision content</text>
-<rect x="181.0" y="2213.0" width="80.0" height="21.5" rx="10.75" fill="#f1f2f4" stroke="#5f6878" class="ft-grey s-grey" stroke-width="1.2" stroke-dasharray="2 3"/>
-<text x="190.0" y="2227.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">Tombstone</tspan></text>
-<rect x="428.0" y="2201.0" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
-<text x="441.0" y="2229.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0037</tspan></text>
-<text x="441.0" y="2247.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">The LTRO decomposes into principals: Thinker and</text>
-<text x="441.0" y="2263.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Observer are seats</text>
-<rect x="441.0" y="2274.6" width="115.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
-<text x="450.0" y="2288.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C3, C4</tspan></text>
-<text x="441.0" y="2321.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0002, 0007, 0016, 0018, 0019, 0022,</text>
-<text x="441.0" y="2338.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">0024, 0031</text>
-<rect x="1190.0" y="1884.4" width="1074.0" height="556.2" rx="14" fill="none" stroke="#6b46a8" class="s-violet" stroke-width="2.2"/>
-<rect x="1208.0" y="1870.9" width="158.4" height="27" rx="6" fill="#ffffff" stroke="#6b46a8" class="f-bg s-violet" stroke-width="1.4"/>
-<text x="1218.0" y="1890.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="15" fill="#6b46a8" class="f-violet" text-anchor="start"><tspan font-weight="bold">Persona and model</tspan></text>
-<rect x="1212.0" y="1920.4" width="330.0" height="174.6" rx="8" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.6"/>
-<text x="1225.0" y="1948.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">ADR-0016</tspan></text>
-<text x="1225.0" y="1966.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">The model enters the system as a Persona</text>
-<rect x="1225.0" y="1977.2" width="69.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
-<text x="1234.0" y="1991.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted</tspan></text>
-<text x="1225.0" y="2023.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0002, 0007, 0010</text>
-<rect x="1562.0" y="1920.4" width="330.0" height="174.6" rx="8" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.6"/>
-<text x="1575.0" y="1948.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">ADR-0017</tspan></text>
-<text x="1575.0" y="1966.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Archetype admits only in-house pre-trained Personas</text>
-<rect x="1575.0" y="1977.2" width="69.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
-<text x="1584.0" y="1991.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted</tspan></text>
-<text x="1575.0" y="2023.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">Ordering-primacy clause reversed in effect;</text>
-<text x="1575.0" y="2041.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">supersession unwritten</text>
-<text x="1575.0" y="2061.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0008, 0016</text>
-<rect x="1912.0" y="1920.4" width="330.0" height="174.6" rx="8" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.6"/>
-<text x="1925.0" y="1948.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">ADR-0019</tspan></text>
-<text x="1925.0" y="1966.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Optional decode observability</text>
-<rect x="1925.0" y="1977.2" width="69.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
-<text x="1934.0" y="1991.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted</tspan></text>
-<text x="1925.0" y="2023.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">Narrow form</text>
-<text x="1925.0" y="2044.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0004, 0006, 0008, 0016</text>
-<rect x="1212.0" y="2201.0" width="330.0" height="174.6" rx="8" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.6"/>
-<text x="1225.0" y="2229.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">ADR-0018</tspan></text>
-<text x="1225.0" y="2247.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">The typed lift splits: decoder in the Persona, validator in</text>
-<text x="1225.0" y="2263.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">the mechanism</text>
-<rect x="1225.0" y="2274.6" width="69.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
-<text x="1234.0" y="2288.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted</tspan></text>
-<text x="1225.0" y="2321.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">Reader scope correction reversed in effect by 0037</text>
-<text x="1225.0" y="2338.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">§3</text>
-<text x="1225.0" y="2359.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0004, 0007, 0010, 0016</text>
-<rect x="1562.0" y="2201.0" width="330.0" height="174.6" rx="8" fill="#fdf3e4" stroke="#a35a00" class="ft-amber s-amber" stroke-width="1.6" stroke-dasharray="6 4"/>
-<text x="1575.0" y="2229.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a35a00" class="f-amber" text-anchor="start"><tspan font-weight="bold">ADR-0035</tspan></text>
-<text x="1575.0" y="2247.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Persona lineage is a projection of the Build log;</text>
-<text x="1575.0" y="2263.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">independence is an exclusion rule</text>
-<rect x="1575.0" y="2274.6" width="71.0" height="21.5" rx="10.75" fill="#fdf3e4" stroke="#a35a00" class="ft-amber s-amber" stroke-width="1.2" stroke-dasharray="6 4"/>
-<text x="1584.0" y="2288.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#a35a00" class="f-amber" text-anchor="start"><tspan font-weight="bold">Proposed</tspan></text>
-<text x="1575.0" y="2321.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">R2 marked by custodian instruction</text>
-<text x="1575.0" y="2341.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0015, 0016, 0017, 0022, 0024, 0034</text>
+<text x="2709.0" y="376.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">Drafted by the assistant; new at G7; T-0045-31 by</text>
+<text x="2709.0" y="393.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">B25</text>
+<text x="2709.0" y="414.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0015, 0023, 0025, 0029, 0031, 0034</text>
+<rect x="3046.0" y="273.0" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
+<text x="3059.0" y="301.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0046</tspan></text>
+<text x="3059.0" y="319.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">The formal layer's method is declared: TLC checks,</text>
+<text x="3059.0" y="335.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">TLAPS proves, the prover is a trusted-base row</text>
+<rect x="3059.0" y="346.6" width="115.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
+<text x="3068.0" y="360.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C2, C4</tspan></text>
+<text x="3059.0" y="393.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">Drafted by the assistant; new at G8 (Batch 25)</text>
+<text x="3059.0" y="413.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0023, 0026, 0029, 0045</text>
+<rect x="56.0" y="757.6" width="1774.0" height="320.6" rx="14" fill="none" stroke="#166b5b" class="s-teal" stroke-width="2.2"/>
+<rect x="74.0" y="744.1" width="366.7" height="27" rx="6" fill="#ffffff" stroke="#166b5b" class="f-bg s-teal" stroke-width="1.4"/>
+<text x="84.0" y="763.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="15" fill="#166b5b" class="f-teal" text-anchor="start"><tspan font-weight="bold">Domains, membrane and Build alphabet (B1–B3)</tspan></text>
+<rect x="78.0" y="793.6" width="330.0" height="174.6" rx="8" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.6"/>
+<text x="91.0" y="821.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">ADR-0001</tspan></text>
+<text x="91.0" y="839.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Rename the CI domain to <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">Build</tspan>; adopt</text>
+<text x="91.0" y="856.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">Build(Contain) → Run(Contain)</tspan></text>
+<rect x="91.0" y="867.2" width="69.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
+<text x="100.0" y="881.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted</tspan></text>
+<rect x="428.0" y="793.6" width="330.0" height="174.6" rx="8" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.6"/>
+<text x="441.0" y="821.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">ADR-0002</tspan></text>
+<text x="441.0" y="839.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Apply the membrane in <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">Build</tspan> as well</text>
+<rect x="441.0" y="850.4" width="69.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
+<text x="450.0" y="864.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted</tspan></text>
+<text x="441.0" y="896.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">A2: the evictability test</text>
+<rect x="778.0" y="793.6" width="330.0" height="174.6" rx="8" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.6"/>
+<text x="791.0" y="821.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">ADR-0007</tspan></text>
+<text x="791.0" y="839.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Semantic judgment is never a lift</text>
+<rect x="791.0" y="850.4" width="69.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
+<text x="800.0" y="864.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted</tspan></text>
+<rect x="1128.0" y="793.6" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
+<text x="1141.0" y="821.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0015</tspan></text>
+<text x="1141.0" y="839.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Effects are boundary crossings; every crossing</text>
+<text x="1141.0" y="856.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">authorized, ordered, auditable</text>
+<rect x="1141.0" y="867.2" width="94.7" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
+<text x="1150.0" y="881.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C2</tspan></text>
+<text x="1141.0" y="913.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">Revised by 0025</text>
+<rect x="1478.0" y="793.6" width="330.0" height="174.6" rx="8" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.6"/>
+<text x="1491.0" y="821.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">ADR-0022</tspan></text>
+<text x="1491.0" y="839.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Typed action alphabet for Build principals</text>
+<rect x="1491.0" y="850.4" width="177.2" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
+<text x="1500.0" y="864.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · §1–§5, §7, §8 only</tspan></text>
+<text x="1491.0" y="896.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">§6 (confinement) stays Proposed</text>
+<rect x="1890.0" y="757.6" width="1424.0" height="320.6" rx="14" fill="none" stroke="#2e7d32" class="s-green" stroke-width="2.2"/>
+<rect x="1908.0" y="744.1" width="49.2" height="27" rx="6" fill="#ffffff" stroke="#2e7d32" class="f-bg s-green" stroke-width="1.4"/>
+<text x="1918.0" y="763.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="15" fill="#2e7d32" class="f-green" text-anchor="start"><tspan font-weight="bold">Run</tspan></text>
+<rect x="1912.0" y="793.6" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
+<text x="1925.0" y="821.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0040</tspan></text>
+<text x="1925.0" y="839.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Run has its own alphabet: <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">Consult</tspan>, <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">Actuate</tspan>, <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">Report</tspan></text>
+<rect x="1925.0" y="850.4" width="115.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
+<text x="1934.0" y="864.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C3, C4</tspan></text>
+<text x="1925.0" y="896.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">Reverses in effect 0022 §5's shared <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">Read</tspan>/<tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">Emit</tspan></text>
+<text x="1925.0" y="917.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0007, 0010, 0015, 0018, 0022, 0031</text>
+<rect x="2262.0" y="793.6" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
+<text x="2275.0" y="821.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0041</tspan></text>
+<text x="2275.0" y="839.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Policy obligations for Run: one envelope per variant;</text>
+<text x="2275.0" y="856.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">coupling on effects only</text>
+<rect x="2275.0" y="867.2" width="115.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
+<text x="2284.0" y="881.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C1, C4</tspan></text>
+<text x="2275.0" y="913.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0009, 0013, 0026, 0030, 0037, 0039,</text>
+<text x="2275.0" y="931.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">0040</text>
+<rect x="2612.0" y="793.6" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
+<text x="2625.0" y="821.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0042</tspan></text>
+<text x="2625.0" y="839.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Mechanism obligations for Run: effects counted, every</text>
+<text x="2625.0" y="856.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">Actuate</tspan> recorded</text>
+<rect x="2625.0" y="867.2" width="175.3" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
+<text x="2634.0" y="881.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · §1–§5, §7, §8 · C4</tspan></text>
+<text x="2625.0" y="913.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">§6 Proposed</text>
+<text x="2625.0" y="934.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0003, 0004, 0015, 0018, 0031, 0033,</text>
+<text x="2625.0" y="951.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">0039, 0040</text>
+<rect x="2962.0" y="793.6" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
+<text x="2975.0" y="821.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0043</tspan></text>
+<text x="2975.0" y="839.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Cell obligations for Run: Listener, seats, what the</text>
+<text x="2975.0" y="856.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Observer must read</text>
+<rect x="2975.0" y="867.2" width="94.7" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
+<text x="2984.0" y="881.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C4</tspan></text>
+<text x="2975.0" y="913.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0018, 0037, 0038, 0039, 0040, 0042</text>
+<rect x="56.0" y="1188.2" width="1424.0" height="601.2" rx="14" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="2.2"/>
+<rect x="74.0" y="1174.7" width="140.9" height="27" rx="6" fill="#ffffff" stroke="#2f5aa8" class="f-bg s-blue" stroke-width="1.4"/>
+<text x="84.0" y="1194.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="15" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Policy and floors</tspan></text>
+<rect x="78.0" y="1224.2" width="330.0" height="174.6" rx="8" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.6"/>
+<text x="91.0" y="1252.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">ADR-0010</tspan></text>
+<text x="91.0" y="1270.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">The verified object: the mechanism, its epoch discipline,</text>
+<text x="91.0" y="1287.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">a minimal policy floor</text>
+<rect x="91.0" y="1297.8" width="69.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
+<text x="100.0" y="1311.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted</tspan></text>
+<text x="91.0" y="1344.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">Amended by 0026</text>
+<rect x="428.0" y="1224.2" width="330.0" height="174.6" rx="8" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.6"/>
+<text x="441.0" y="1252.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">ADR-0012</tspan></text>
+<text x="441.0" y="1270.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">The default-deny bundle is the policy floor: pre-blessed,</text>
+<text x="441.0" y="1287.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">resident, verified</text>
+<rect x="441.0" y="1297.8" width="69.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
+<text x="450.0" y="1311.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted</tspan></text>
+<rect x="778.0" y="1224.2" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
+<text x="791.0" y="1252.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0030</tspan></text>
+<text x="791.0" y="1270.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Bundles cannot add authority by construction; the floor</text>
+<text x="791.0" y="1287.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">runs on a verified evaluator</text>
+<rect x="791.0" y="1297.8" width="94.7" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
+<text x="800.0" y="1311.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C1</tspan></text>
+<text x="791.0" y="1344.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">Floor text and schema S stay DRAFT; A1 (B24)</text>
+<text x="791.0" y="1364.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0007, 0010, 0012, 0018, 0023</text>
+<rect x="1128.0" y="1224.2" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
+<text x="1141.0" y="1252.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0044</tspan></text>
+<text x="1141.0" y="1270.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">A bundle is trusted by its signature, not its file name</text>
+<rect x="1141.0" y="1281.0" width="94.7" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
+<text x="1150.0" y="1295.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C1</tspan></text>
+<text x="1141.0" y="1327.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">Drafted by the assistant</text>
+<text x="1141.0" y="1348.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0025, 0030, 0031, 0033</text>
+<rect x="78.0" y="1549.8" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
+<text x="91.0" y="1577.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0013</tspan></text>
+<text x="91.0" y="1595.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Exception mechanism for privileged paths through the</text>
+<text x="91.0" y="1612.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">floor</text>
+<rect x="91.0" y="1623.4" width="115.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
+<text x="100.0" y="1637.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C1, C4</tspan></text>
+<text x="91.0" y="1669.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0010, 0025, 0026, 0028</text>
+<rect x="428.0" y="1549.8" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
+<text x="441.0" y="1577.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0006</tspan></text>
+<text x="441.0" y="1595.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Erasure is a privileged, modeled, consensus-ordered</text>
+<text x="441.0" y="1612.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">event</text>
+<rect x="441.0" y="1623.4" width="163.7" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
+<text x="450.0" y="1637.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C1, C4 via 0013</tspan></text>
+<rect x="778.0" y="1549.8" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
+<text x="791.0" y="1577.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0009</tspan></text>
+<text x="791.0" y="1595.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Break-glass is a modeled, quorum-witnessed path, not a</text>
+<text x="791.0" y="1612.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">prohibition</text>
+<rect x="791.0" y="1623.4" width="163.7" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
+<text x="800.0" y="1637.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C1, C4 via 0013</tspan></text>
+<rect x="1128.0" y="1549.8" width="330.0" height="174.6" rx="8" fill="#ffffff" stroke="#5f6878" class="f-bg s-grey" stroke-width="1.6" stroke-dasharray="2 3"/>
+<text x="1141.0" y="1577.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">ADR-0014</tspan></text>
+<text x="1141.0" y="1595.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">— (the per-class floor question)</text>
+<text x="1141.0" y="1623.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">Reserved, no file; narrowed by 0024</text>
+<rect x="1231.0" y="1561.8" width="110.0" height="21.5" rx="10.75" fill="#f1f2f4" stroke="#5f6878" class="ft-grey s-grey" stroke-width="1.2" stroke-dasharray="2 3"/>
+<text x="1240.0" y="1575.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">Reserved, no file</tspan></text>
+<rect x="1540.0" y="1188.2" width="1074.0" height="601.2" rx="14" fill="none" stroke="#5f6878" class="s-grey" stroke-width="2.2"/>
+<rect x="1558.0" y="1174.7" width="235.1" height="27" rx="6" fill="#ffffff" stroke="#5f6878" class="f-bg s-grey" stroke-width="1.4"/>
+<text x="1568.0" y="1194.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="15" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">Record, transport and erasure</tspan></text>
+<rect x="1562.0" y="1224.2" width="330.0" height="174.6" rx="8" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.6"/>
+<text x="1575.0" y="1252.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">ADR-0004</tspan></text>
+<text x="1575.0" y="1270.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Separate control-plane facts from cognitive payloads</text>
+<rect x="1575.0" y="1281.0" width="69.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
+<text x="1584.0" y="1295.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted</tspan></text>
+<rect x="1912.0" y="1224.2" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
+<text x="1925.0" y="1252.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0003</tspan></text>
+<text x="1925.0" y="1270.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Topic per principal per round, sealed on emit, as the unit</text>
+<text x="1925.0" y="1287.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">of erasure</text>
+<rect x="1925.0" y="1297.8" width="157.9" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
+<text x="1934.0" y="1311.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C1 for A2 only</tspan></text>
+<rect x="2262.0" y="1224.2" width="330.0" height="174.6" rx="8" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.6"/>
+<text x="2275.0" y="1252.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">ADR-0020</tspan></text>
+<text x="2275.0" y="1270.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Replay scope is boundary events only</text>
+<rect x="2275.0" y="1281.0" width="69.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
+<text x="2284.0" y="1295.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted</tspan></text>
+<text x="2275.0" y="1327.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0003, 0004, 0006</text>
+<rect x="1562.0" y="1549.8" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
+<text x="1575.0" y="1577.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0028</tspan></text>
+<text x="1575.0" y="1595.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">The forensic floor: authority facts survive erasure and</text>
+<text x="1575.0" y="1612.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">break-glass</text>
+<rect x="1575.0" y="1623.4" width="94.7" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
+<text x="1584.0" y="1637.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C1</tspan></text>
+<text x="1575.0" y="1669.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">Split from 0013</text>
+<text x="1575.0" y="1690.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0004, 0006, 0010, 0020</text>
+<rect x="1912.0" y="1549.8" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
+<text x="1925.0" y="1577.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0021</tspan></text>
+<text x="1925.0" y="1595.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Build emits to the effect stream; Build has an Observer</text>
+<rect x="1925.0" y="1606.6" width="94.7" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
+<text x="1934.0" y="1620.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C4</tspan></text>
+<rect x="2262.0" y="1549.8" width="330.0" height="174.6" rx="8" fill="#fdf3e4" stroke="#a35a00" class="ft-amber s-amber" stroke-width="1.6" stroke-dasharray="6 4"/>
+<text x="2275.0" y="1577.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a35a00" class="f-amber" text-anchor="start"><tspan font-weight="bold">ADR-0005</tspan></text>
+<text x="2275.0" y="1595.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Kafka is neither the ordering authority nor the system of</text>
+<text x="2275.0" y="1612.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">record</text>
+<rect x="2275.0" y="1623.4" width="71.0" height="21.5" rx="10.75" fill="#fdf3e4" stroke="#a35a00" class="ft-amber s-amber" stroke-width="1.2" stroke-dasharray="6 4"/>
+<text x="2284.0" y="1637.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#a35a00" class="f-amber" text-anchor="start"><tspan font-weight="bold">Proposed</tspan></text>
+<text x="2275.0" y="1669.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">Blocked on a decision; ADR-0033's K row is a debt</text>
+<text x="2275.0" y="1687.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">on it</text>
+<rect x="2674.0" y="1188.2" width="724.0" height="601.2" rx="14" fill="none" stroke="#a35a00" class="s-amber" stroke-width="2.2"/>
+<rect x="2692.0" y="1174.7" width="225.9" height="27" rx="6" fill="#ffffff" stroke="#a35a00" class="f-bg s-amber" stroke-width="1.4"/>
+<text x="2702.0" y="1194.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="15" fill="#a35a00" class="f-amber" text-anchor="start"><tspan font-weight="bold">Lease, time and confinement</tspan></text>
+<rect x="2696.0" y="1224.2" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
+<text x="2709.0" y="1252.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0031</tspan></text>
+<text x="2709.0" y="1270.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">The lease is the composite credential, and its grant is the</text>
+<text x="2709.0" y="1287.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">instant</text>
+<rect x="2709.0" y="1297.8" width="152.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
+<text x="2718.0" y="1311.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C1; C2 for A1</tspan></text>
+<text x="2709.0" y="1344.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0003, 0007, 0016, 0022, 0026, 0032</text>
+<rect x="3046.0" y="1224.2" width="330.0" height="174.6" rx="8" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.6"/>
+<text x="3059.0" y="1252.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">ADR-0032</tspan></text>
+<text x="3059.0" y="1270.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">The clock model: intervals trusted by failure direction</text>
+<rect x="3059.0" y="1281.0" width="69.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
+<text x="3068.0" y="1295.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted</tspan></text>
+<text x="3059.0" y="1327.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0007, 0022, 0031</text>
+<rect x="2696.0" y="1549.8" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
+<text x="2709.0" y="1577.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0034</tspan></text>
+<text x="2709.0" y="1595.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Confinement is attested at lease grant; the archetype</text>
+<text x="2709.0" y="1612.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">rung is a confidential VM</text>
+<rect x="2709.0" y="1623.4" width="115.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
+<text x="2718.0" y="1637.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C2, C4</tspan></text>
+<text x="2709.0" y="1669.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">Discharges 0022 §6 for Build</text>
+<text x="2709.0" y="1690.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0016, 0017, 0022, 0023, 0024, 0031,</text>
+<text x="2709.0" y="1707.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">0032, 0033, 0035</text>
+<rect x="3046.0" y="1549.8" width="330.0" height="174.6" rx="8" fill="#fdf3e4" stroke="#a35a00" class="ft-amber s-amber" stroke-width="1.6" stroke-dasharray="6 4"/>
+<text x="3059.0" y="1577.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a35a00" class="f-amber" text-anchor="start"><tspan font-weight="bold">ADR-0036</tspan></text>
+<text x="3059.0" y="1595.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">At rung 1 the launcher is the channel: a principal</text>
+<text x="3059.0" y="1612.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">Mediated</tspan> by declaration</text>
+<rect x="3059.0" y="1623.4" width="71.0" height="21.5" rx="10.75" fill="#fdf3e4" stroke="#a35a00" class="ft-amber s-amber" stroke-width="1.2" stroke-dasharray="6 4"/>
+<text x="3068.0" y="1637.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#a35a00" class="f-amber" text-anchor="start"><tspan font-weight="bold">Proposed</tspan></text>
+<text x="3059.0" y="1669.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0017, 0022, 0031, 0033, 0034</text>
+<rect x="56.0" y="1899.4" width="1074.0" height="556.2" rx="14" fill="none" stroke="#9d2f6e" class="s-pink" stroke-width="2.2"/>
+<rect x="74.0" y="1885.9" width="203.4" height="27" rx="6" fill="#ffffff" stroke="#9d2f6e" class="f-bg s-pink" stroke-width="1.4"/>
+<text x="84.0" y="1905.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="15" fill="#9d2f6e" class="f-pink" text-anchor="start"><tspan font-weight="bold">Seats, cells and detection</tspan></text>
+<rect x="78.0" y="1935.4" width="330.0" height="174.6" rx="8" fill="#f1f2f4" stroke="#5f6878" class="ft-grey s-grey" stroke-width="1.6" stroke-dasharray="2 3"/>
+<text x="91.0" y="1963.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">ADR-0008</tspan></text>
+<text x="91.0" y="1981.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Observer replicas are not colocated with the Thinker</text>
+<rect x="91.0" y="1992.2" width="136.2" height="21.5" rx="10.75" fill="#f1f2f4" stroke="#5f6878" class="ft-grey s-grey" stroke-width="1.2" stroke-dasharray="2 3"/>
+<text x="100.0" y="2006.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">Superseded · by 0038</tspan></text>
+<text x="91.0" y="2038.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">Colocation rule carried forward by 0038 §4</text>
+<rect x="428.0" y="1935.4" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
+<text x="441.0" y="1963.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0038</tspan></text>
+<text x="441.0" y="1981.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Observers are per cell; the shared group becomes the</text>
+<text x="441.0" y="1998.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">correlator</text>
+<rect x="441.0" y="2009.0" width="115.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
+<text x="450.0" y="2023.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C3, C4</tspan></text>
+<text x="441.0" y="2055.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">Supersedes 0008</text>
+<text x="441.0" y="2076.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0003, 0004, 0007, 0023, 0031, 0037</text>
+<rect x="778.0" y="1935.4" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
+<text x="791.0" y="1963.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0039</tspan></text>
+<text x="791.0" y="1981.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Observer liveness is progress, not presence</text>
+<rect x="791.0" y="1992.2" width="94.7" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
+<text x="800.0" y="2006.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C4</tspan></text>
+<text x="791.0" y="2038.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0007, 0022, 0024, 0031, 0032, 0037,</text>
+<text x="791.0" y="2056.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">0038</text>
+<rect x="78.0" y="2216.0" width="330.0" height="174.6" rx="8" fill="#ffffff" stroke="#5f6878" class="f-bg s-grey" stroke-width="1.6" stroke-dasharray="2 3"/>
+<text x="91.0" y="2244.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">ADR-0011</tspan></text>
+<text x="91.0" y="2262.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Observer placement and fault-domain independence</text>
+<text x="91.0" y="2289.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">No decision content</text>
+<rect x="181.0" y="2228.0" width="80.0" height="21.5" rx="10.75" fill="#f1f2f4" stroke="#5f6878" class="ft-grey s-grey" stroke-width="1.2" stroke-dasharray="2 3"/>
+<text x="190.0" y="2242.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">Tombstone</tspan></text>
+<rect x="428.0" y="2216.0" width="330.0" height="174.6" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
+<text x="441.0" y="2244.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">ADR-0037</tspan></text>
+<text x="441.0" y="2262.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">The LTRO decomposes into principals: Thinker and</text>
+<text x="441.0" y="2278.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Observer are seats</text>
+<rect x="441.0" y="2289.6" width="115.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
+<text x="450.0" y="2303.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C3, C4</tspan></text>
+<text x="441.0" y="2336.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0002, 0007, 0016, 0018, 0019, 0022,</text>
+<text x="441.0" y="2353.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">0024, 0031</text>
+<rect x="1190.0" y="1899.4" width="1074.0" height="556.2" rx="14" fill="none" stroke="#6b46a8" class="s-violet" stroke-width="2.2"/>
+<rect x="1208.0" y="1885.9" width="158.4" height="27" rx="6" fill="#ffffff" stroke="#6b46a8" class="f-bg s-violet" stroke-width="1.4"/>
+<text x="1218.0" y="1905.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="15" fill="#6b46a8" class="f-violet" text-anchor="start"><tspan font-weight="bold">Persona and model</tspan></text>
+<rect x="1212.0" y="1935.4" width="330.0" height="174.6" rx="8" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.6"/>
+<text x="1225.0" y="1963.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">ADR-0016</tspan></text>
+<text x="1225.0" y="1981.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">The model enters the system as a Persona</text>
+<rect x="1225.0" y="1992.2" width="69.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
+<text x="1234.0" y="2006.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted</tspan></text>
+<text x="1225.0" y="2038.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0002, 0007, 0010</text>
+<rect x="1562.0" y="1935.4" width="330.0" height="174.6" rx="8" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.6"/>
+<text x="1575.0" y="1963.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">ADR-0017</tspan></text>
+<text x="1575.0" y="1981.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Archetype admits only in-house pre-trained Personas</text>
+<rect x="1575.0" y="1992.2" width="69.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
+<text x="1584.0" y="2006.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted</tspan></text>
+<text x="1575.0" y="2038.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">Ordering-primacy clause reversed in effect;</text>
+<text x="1575.0" y="2056.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">supersession unwritten</text>
+<text x="1575.0" y="2076.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0008, 0016</text>
+<rect x="1912.0" y="1935.4" width="330.0" height="174.6" rx="8" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.6"/>
+<text x="1925.0" y="1963.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">ADR-0019</tspan></text>
+<text x="1925.0" y="1981.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Optional decode observability</text>
+<rect x="1925.0" y="1992.2" width="69.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
+<text x="1934.0" y="2006.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted</tspan></text>
+<text x="1925.0" y="2038.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">Narrow form</text>
+<text x="1925.0" y="2059.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0004, 0006, 0008, 0016</text>
+<rect x="1212.0" y="2216.0" width="330.0" height="174.6" rx="8" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.6"/>
+<text x="1225.0" y="2244.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">ADR-0018</tspan></text>
+<text x="1225.0" y="2262.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">The typed lift splits: decoder in the Persona, validator in</text>
+<text x="1225.0" y="2278.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">the mechanism</text>
+<rect x="1225.0" y="2289.6" width="69.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
+<text x="1234.0" y="2303.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted</tspan></text>
+<text x="1225.0" y="2336.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">Reader scope correction reversed in effect by 0037</text>
+<text x="1225.0" y="2353.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">§3</text>
+<text x="1225.0" y="2374.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0004, 0007, 0010, 0016</text>
+<rect x="1562.0" y="2216.0" width="330.0" height="174.6" rx="8" fill="#fdf3e4" stroke="#a35a00" class="ft-amber s-amber" stroke-width="1.6" stroke-dasharray="6 4"/>
+<text x="1575.0" y="2244.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="17" fill="#a35a00" class="f-amber" text-anchor="start"><tspan font-weight="bold">ADR-0035</tspan></text>
+<text x="1575.0" y="2262.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">Persona lineage is a projection of the Build log;</text>
+<text x="1575.0" y="2278.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#4a5262" class="f-muted" text-anchor="start">independence is an exclusion rule</text>
+<rect x="1575.0" y="2289.6" width="71.0" height="21.5" rx="10.75" fill="#fdf3e4" stroke="#a35a00" class="ft-amber s-amber" stroke-width="1.2" stroke-dasharray="6 4"/>
+<text x="1584.0" y="2303.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#a35a00" class="f-amber" text-anchor="start"><tspan font-weight="bold">Proposed</tspan></text>
+<text x="1575.0" y="2336.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">R2 marked by custodian instruction</text>
+<text x="1575.0" y="2356.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#7d8596" class="f-faint">Depends on</tspan> 0015, 0016, 0017, 0022, 0024, 0034</text>
 <path d="M 499.2 447.6 L 499.2 463.6 L 149.2 463.6 L 149.2 448.6" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
 <path d="M 859.7 447.6 L 859.7 478.6 L 211.8 478.6 L 211.8 448.6" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
 <path d="M 943.0 447.6 L 943.0 493.6 L 561.8 493.6 L 561.8 448.6" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
@@ -379,56 +388,60 @@ svg[data-theme=dark]{--bg:#12151b;--ink:#e6e9ef;--muted:#b0b8c6;--faint:#7f8898;
 <path d="M 1611.8 447.6 L 1611.8 553.6 L 336.8 553.6 L 336.8 448.6" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
 <path d="M 1674.2 447.6 L 1674.2 568.6 L 686.8 568.6 L 686.8 448.6" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
 <path d="M 1736.8 447.6 L 1736.8 583.6 L 1376.3 583.6 L 1376.3 448.6" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
-<path d="M 2427.0 953.2 L 2427.0 969.2 L 1993.7 969.2 L 1993.7 954.2" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
-<path d="M 2714.5 953.2 L 2714.5 984.2 L 2077.0 984.2 L 2077.0 954.2" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
-<path d="M 3064.5 953.2 L 3064.5 999.2 L 2160.3 999.2 L 2160.3 954.2" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
-<path d="M 3189.5 953.2 L 3189.5 1014.2 L 2839.5 1014.2 L 2839.5 954.2" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
-<path d="M 859.7 1383.8 L 859.7 1399.8 L 243.0 1399.8 L 243.0 1384.8" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
-<path d="M 943.0 1383.8 L 943.0 1414.8 L 593.0 1414.8 L 593.0 1384.8" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
-<path d="M 1293.0 1383.8 L 1293.0 1429.8 L 1026.3 1429.8 L 1026.3 1384.8" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
-<path d="M 2364.5 1383.8 L 2364.5 1444.8 L 1727.0 1444.8 L 1727.0 1384.8" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
-<path d="M 2489.5 1383.8 L 2489.5 1459.8 L 2077.0 1459.8 L 2077.0 1384.8" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
-<path d="M 2798.5 1383.8 L 2798.5 1474.8 L 3148.5 1474.8 L 3148.5 1384.8" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
-<path d="M 3273.5 1383.8 L 3273.5 1489.8 L 2923.5 1489.8 L 2923.5 1384.8" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
-<path d="M 3211.0 1709.4 L 3211.0 1725.4 L 2861.0 1725.4 L 2861.0 1710.4" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
-<path d="M 530.5 2095.0 L 530.5 2111.0 L 243.0 2111.0 L 243.0 2096.0" fill="none" stroke="#5f6878" class="s-grey" stroke-width="3.0" marker-end="url(#arw-grey)" stroke-linejoin="round"/>
-<path d="M 943.0 2095.0 L 943.0 2126.0 L 655.5 2126.0 L 655.5 2096.0" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
-<path d="M 1727.0 2095.0 L 1727.0 2141.0 L 1314.5 2141.0 L 1314.5 2096.0" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
-<path d="M 2077.0 2095.0 L 2077.0 2156.0 L 1439.5 2156.0 L 1439.5 2096.0" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
-<path d="M 593.0 2375.6 L 593.0 2391.6 L 1377.0 2391.6 L 1377.0 2376.6" fill="none" stroke="#a4262c" class="s-red" stroke-width="2.4" stroke-dasharray="7 5" marker-end="url(#arw-red)" stroke-linejoin="round"/>
-<path d="M 1912.0 857.2 L 1808.0 857.2" fill="none" stroke="#a4262c" class="s-red" stroke-width="2.4" stroke-dasharray="7 5" marker-end="url(#arw-red)" stroke-linejoin="round"/>
-<rect x="1816.9" y="804.6" width="86.2" height="37.0" rx="5" fill="#ffffff" stroke="#a4262c" class="f-bg s-red" stroke-width="1"/>
-<text x="1860.0" y="817.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#a4262c" class="f-red" text-anchor="middle">reverses §5 in</text>
-<text x="1860.0" y="832.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#a4262c" class="f-red" text-anchor="middle">effect</text>
-<path d="M 2027.5 447.6 L 2027.5 662.6 L 3518.0 662.6 L 3518.0 1812.4 L 342.0 1812.4 L 342.0 1920.4" fill="none" stroke="#a4262c" class="s-red" stroke-width="2.4" stroke-dasharray="7 5" marker-end="url(#arw-red)" stroke-linejoin="round"/>
-<path d="M 2126.5 447.6 L 2126.5 684.6 L 3496.0 684.6 L 3496.0 1834.4 L 1727.0 1834.4 L 1727.0 1920.4" fill="none" stroke="#a4262c" class="s-red" stroke-width="2.4" stroke-dasharray="7 5" marker-end="url(#arw-red)" stroke-linejoin="round"/>
-<rect x="3415.9" y="1231.2" width="182.1" height="54.6" rx="5" fill="#ffffff" stroke="#a4262c" class="f-bg s-red" stroke-width="1"/>
-<text x="3507.0" y="1244.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#a4262c" class="f-red" text-anchor="middle">0023 §5 reverses in effect 0008</text>
-<text x="3507.0" y="1260.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#a4262c" class="f-red" text-anchor="middle">scoping and 0017</text>
-<text x="3507.0" y="1276.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#a4262c" class="f-red" text-anchor="middle">ordering-primacy</text>
-<rect x="2324.0" y="1884.4" width="1124.0" height="122.6" rx="8" fill="#f1f2f4" stroke="#5f6878" class="ft-grey s-grey" stroke-width="1.6"/>
-<text x="2340.0" y="1914.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="16" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">Reading a tile</tspan></text>
-<text x="2340.0" y="1941.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">•</tspan></text>
-<text x="2352.2" y="1941.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">Tile colour is status: <tspan font-weight="bold" fill="#2f5aa8" class="f-blue">blue</tspan> Accepted (genesis), <tspan font-weight="bold" fill="#a4262c" class="f-red">red</tspan> Accepted with a confirmation marker (C1–C4, ADR-0029 §4), <tspan font-weight="bold" fill="#a35a00" class="f-amber">amber</tspan> Proposed, <tspan font-weight="bold" fill="#5f6878" class="f-grey">grey</tspan> superseded, tombstone or reserved.</text>
-<text x="2340.0" y="1964.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">•</tspan></text>
-<text x="2352.2" y="1964.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">"bootstrap set": ADR-0024 to 0027, which cannot carry a marker (ADR-0029 §4).</text>
-<text x="2340.0" y="1986.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">•</tspan></text>
-<text x="2352.2" y="1986.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">"§1–§5, §7, §8": ratified in part; §6 stays Proposed (ADR-0022, ADR-0042).</text>
-<text x="2324.0" y="2038.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#7d8596" class="f-faint" text-anchor="start"><tspan font-weight="bold">Edges</tspan></text>
-<path d="M 2381.013 2033.5 L 2405.013 2033.5" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="2" marker-end="url(#arw-blue)"/>
-<text x="2415.0" y="2038.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#4a5262" class="f-muted" text-anchor="start">depends on</text>
-<path d="M 2508.9692 2033.5 L 2532.9692 2033.5" fill="none" stroke="#5f6878" class="s-grey" stroke-width="2" marker-end="url(#arw-grey)"/>
-<text x="2543.0" y="2038.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#4a5262" class="f-muted" text-anchor="start">supersedes</text>
-<path d="M 2636.1818 2033.5 L 2660.1818 2033.5" fill="none" stroke="#a4262c" class="s-red" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#arw-red)"/>
-<text x="2670.2" y="2038.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#4a5262" class="f-muted" text-anchor="start">reverses in effect</text>
-<rect x="2324.0" y="2085.0" width="1124.0" height="119.6" rx="8" fill="#f1f2f4" stroke="#5f6878" class="ft-grey s-grey" stroke-width="1.6"/>
-<text x="2340.0" y="2115.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="16" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">Counts at G7 (§1.1)</tspan></text>
-<text x="2340.0" y="2142.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">•</tspan></text>
-<text x="2352.2" y="2142.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">39 Accepted</tspan> (18 + 21 confirmation-required), 2 in part · <tspan font-weight="bold">3 Proposed</tspan> · <tspan font-weight="bold">1 superseded</tspan> · <tspan font-weight="bold">1 tombstone</tspan> · <tspan font-weight="bold">1 reserved</tspan>: 44 files, numbered to 0045.</text>
-<text x="2340.0" y="2164.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">•</tspan></text>
-<text x="2352.2" y="2164.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">Reversals in effect</tspan> (ToO §8.3), all by the author alone in genesis: 0008 by 0038 (superseded); 0017's ordering-primacy clause (supersession unwritten, G7 item 6); 0018's Reader</text>
-<text x="2352.2" y="2183.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">scope by 0037 §3 (not superseded).</text>
-<line x1="56" y1="2484.6" x2="3544" y2="2484.6" fill="none" stroke="#d4d8e0" class="s-line" stroke-width="1.2"/>
-<text x="56.0" y="2510.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#7d8596" class="f-faint" text-anchor="start">Sources: decisions/README.md; G7 §1.1, §1.2, §4; ToO rev 11 §0, §8.3, §9; the Status, Status note, Depends on, Supersedes, Amends, Revises, Narrows and Split from lines of ADR-0001 to ADR-0045; ADR-0018 Status note on 0037 §3; ADR-0023 Status note; ADR-0038 Supersedes; ADR-0040 Status note</text>
-<text x="56.0" y="2529.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#7d8596" class="f-faint" text-anchor="start">State of record: Genesis Checkpoint G7 (2026.10.01) · narrative: Theory of Operation rev 11 · generated 2026.10.02 by diagrams/gen-topak-family.py · documentation licence CC BY 4.0 (LICENSE-DOCS)</text>
+<path d="M 3211.0 447.6 L 3211.0 598.6 L 2861.0 598.6 L 2861.0 448.6" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
+<path d="M 2427.0 968.2 L 2427.0 984.2 L 1993.7 984.2 L 1993.7 969.2" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
+<path d="M 2714.5 968.2 L 2714.5 999.2 L 2077.0 999.2 L 2077.0 969.2" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
+<path d="M 3064.5 968.2 L 3064.5 1014.2 L 2160.3 1014.2 L 2160.3 969.2" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
+<path d="M 3189.5 968.2 L 3189.5 1029.2 L 2839.5 1029.2 L 2839.5 969.2" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
+<path d="M 859.7 1398.8 L 859.7 1414.8 L 243.0 1414.8 L 243.0 1399.8" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
+<path d="M 943.0 1398.8 L 943.0 1429.8 L 593.0 1429.8 L 593.0 1399.8" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
+<path d="M 1293.0 1398.8 L 1293.0 1444.8 L 1026.3 1444.8 L 1026.3 1399.8" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
+<path d="M 2364.5 1398.8 L 2364.5 1459.8 L 1727.0 1459.8 L 1727.0 1399.8" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
+<path d="M 2489.5 1398.8 L 2489.5 1474.8 L 2077.0 1474.8 L 2077.0 1399.8" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
+<path d="M 2798.5 1398.8 L 2798.5 1489.8 L 3148.5 1489.8 L 3148.5 1399.8" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
+<path d="M 3273.5 1398.8 L 3273.5 1504.8 L 2923.5 1504.8 L 2923.5 1399.8" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
+<path d="M 3211.0 1724.4 L 3211.0 1740.4 L 2861.0 1740.4 L 2861.0 1725.4" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
+<path d="M 530.5 2110.0 L 530.5 2126.0 L 243.0 2126.0 L 243.0 2111.0" fill="none" stroke="#5f6878" class="s-grey" stroke-width="3.0" marker-end="url(#arw-grey)" stroke-linejoin="round"/>
+<path d="M 943.0 2110.0 L 943.0 2141.0 L 655.5 2141.0 L 655.5 2111.0" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
+<path d="M 1727.0 2110.0 L 1727.0 2156.0 L 1314.5 2156.0 L 1314.5 2111.0" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
+<path d="M 2077.0 2110.0 L 2077.0 2171.0 L 1439.5 2171.0 L 1439.5 2111.0" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="1.6" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
+<path d="M 593.0 2390.6 L 593.0 2406.6 L 1377.0 2406.6 L 1377.0 2391.6" fill="none" stroke="#a4262c" class="s-red" stroke-width="2.4" stroke-dasharray="7 5" marker-end="url(#arw-red)" stroke-linejoin="round"/>
+<path d="M 1912.0 872.2 L 1808.0 872.2" fill="none" stroke="#a4262c" class="s-red" stroke-width="2.4" stroke-dasharray="7 5" marker-end="url(#arw-red)" stroke-linejoin="round"/>
+<rect x="1816.9" y="819.6" width="86.2" height="37.0" rx="5" fill="#ffffff" stroke="#a4262c" class="f-bg s-red" stroke-width="1"/>
+<text x="1860.0" y="832.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#a4262c" class="f-red" text-anchor="middle">reverses §5 in</text>
+<text x="1860.0" y="847.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#a4262c" class="f-red" text-anchor="middle">effect</text>
+<path d="M 2027.5 447.6 L 2027.5 677.6 L 3518.0 677.6 L 3518.0 1827.4 L 342.0 1827.4 L 342.0 1935.4" fill="none" stroke="#a4262c" class="s-red" stroke-width="2.4" stroke-dasharray="7 5" marker-end="url(#arw-red)" stroke-linejoin="round"/>
+<path d="M 2126.5 447.6 L 2126.5 699.6 L 3496.0 699.6 L 3496.0 1849.4 L 1727.0 1849.4 L 1727.0 1935.4" fill="none" stroke="#a4262c" class="s-red" stroke-width="2.4" stroke-dasharray="7 5" marker-end="url(#arw-red)" stroke-linejoin="round"/>
+<rect x="3415.9" y="1246.2" width="182.1" height="54.6" rx="5" fill="#ffffff" stroke="#a4262c" class="f-bg s-red" stroke-width="1"/>
+<text x="3507.0" y="1259.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#a4262c" class="f-red" text-anchor="middle">0023 §5 reverses in effect 0008</text>
+<text x="3507.0" y="1275.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#a4262c" class="f-red" text-anchor="middle">scoping and 0017</text>
+<text x="3507.0" y="1291.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#a4262c" class="f-red" text-anchor="middle">ordering-primacy</text>
+<rect x="2324.0" y="1899.4" width="1124.0" height="122.6" rx="8" fill="#f1f2f4" stroke="#5f6878" class="ft-grey s-grey" stroke-width="1.6"/>
+<text x="2340.0" y="1929.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="16" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">Reading a tile</tspan></text>
+<text x="2340.0" y="1956.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">•</tspan></text>
+<text x="2352.2" y="1956.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">Tile colour is status: <tspan font-weight="bold" fill="#2f5aa8" class="f-blue">blue</tspan> Accepted (genesis), <tspan font-weight="bold" fill="#a4262c" class="f-red">red</tspan> Accepted with a confirmation marker (C1–C4, ADR-0029 §4), <tspan font-weight="bold" fill="#a35a00" class="f-amber">amber</tspan> Proposed, <tspan font-weight="bold" fill="#5f6878" class="f-grey">grey</tspan> superseded, tombstone or reserved.</text>
+<text x="2340.0" y="1979.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">•</tspan></text>
+<text x="2352.2" y="1979.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">"bootstrap set": ADR-0024 to 0027, which cannot carry a marker (ADR-0029 §4).</text>
+<text x="2340.0" y="2001.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">•</tspan></text>
+<text x="2352.2" y="2001.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">"§1–§5, §7, §8": ratified in part; §6 stays Proposed (ADR-0022, ADR-0042).</text>
+<text x="2324.0" y="2053.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#7d8596" class="f-faint" text-anchor="start"><tspan font-weight="bold">Edges</tspan></text>
+<path d="M 2381.013 2048.5 L 2405.013 2048.5" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="2" marker-end="url(#arw-blue)"/>
+<text x="2415.0" y="2053.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#4a5262" class="f-muted" text-anchor="start">depends on</text>
+<path d="M 2508.9692 2048.5 L 2532.9692 2048.5" fill="none" stroke="#5f6878" class="s-grey" stroke-width="2" marker-end="url(#arw-grey)"/>
+<text x="2543.0" y="2053.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#4a5262" class="f-muted" text-anchor="start">supersedes</text>
+<path d="M 2636.1818 2048.5 L 2660.1818 2048.5" fill="none" stroke="#a4262c" class="s-red" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#arw-red)"/>
+<text x="2670.2" y="2053.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#4a5262" class="f-muted" text-anchor="start">reverses in effect</text>
+<rect x="2324.0" y="2100.0" width="1124.0" height="161.0" rx="8" fill="#f1f2f4" stroke="#5f6878" class="ft-grey s-grey" stroke-width="1.6"/>
+<text x="2340.0" y="2130.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="16" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">Counts at G8 (§1.1)</tspan></text>
+<text x="2340.0" y="2157.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">•</tspan></text>
+<text x="2352.2" y="2157.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">40 Accepted</tspan> (18 + 22 confirmation-required), 2 in part · <tspan font-weight="bold">3 Proposed</tspan> · <tspan font-weight="bold">1 superseded</tspan> · <tspan font-weight="bold">1 tombstone</tspan> · <tspan font-weight="bold">1 reserved</tspan>: 45 files, numbered to 0046.</text>
+<text x="2340.0" y="2179.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">•</tspan></text>
+<text x="2352.2" y="2179.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">New at G8</tspan>: ADR-0046 (Batch 25, C2, C4). Its dependent entries (B25) landed in 0013, 0026, 0029, 0030, 0031, 0034, 0037, 0038, 0039, 0041, 0042, 0043 and 0045; no decision</text>
+<text x="2352.2" y="2198.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">text changed in any of them (G8 §6).</text>
+<text x="2340.0" y="2221.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">•</tspan></text>
+<text x="2352.2" y="2221.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">Reversals in effect</tspan> (ToO §8.3), all by the author alone in genesis: 0008 by 0038 (superseded); 0017's ordering-primacy clause (supersession unwritten, G8 item 6); 0018's Reader</text>
+<text x="2352.2" y="2240.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">scope by 0037 §3 (not superseded).</text>
+<line x1="56" y1="2499.6" x2="3544" y2="2499.6" fill="none" stroke="#d4d8e0" class="s-line" stroke-width="1.2"/>
+<text x="56.0" y="2525.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#7d8596" class="f-faint" text-anchor="start">Sources: decisions/README.md; G8 §1, §1.1, §1.2, §4, §6; ToO rev 11 §0, §8.3, §9; the Status, Status note, Depends on, Supersedes, Amends, Revises, Narrows and Split from lines of ADR-0001 to ADR-0046; ADR-0018 Status note on 0037 §3; ADR-0023 Status note; ADR-0038 Supersedes; ADR-0040 Status note</text>
+<text x="56.0" y="2544.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#7d8596" class="f-faint" text-anchor="start">State of record: Genesis Checkpoint G8 (2026.10.02) · narrative: Theory of Operation rev 12 · generated 2026.10.02 by diagrams/gen-topak-family.py · documentation licence CC BY 4.0 (LICENSE-DOCS)</text>
 </svg>

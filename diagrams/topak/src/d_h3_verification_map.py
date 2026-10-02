@@ -24,25 +24,31 @@ def lane(c, x0, y, w, cards, gap=56, size=14, label_fn=None):
 
 
 def build():
-    c = Canvas(ID, "Verification map: what is checked, what must fail, and what the checks do not claim",
-               "Every check in the corpus: seventeen TLA+ modules run in TLC at small constants, each property with a "
-               "mutation that must fail and a reachability witness that must be violated; the policy floor's gates with "
-               "a pinned proof checker; the reference's tests restating the properties; the trace harness that replays "
-               "those tests through an operational model; the drift pins; and the lineage gate suite. Then the honesty "
-               "layer: these are evidence, not proofs, and what runs is not what is checked.",
+    c = Canvas(ID, "Verification map: what is checked, what is proved, what must fail, and what neither claims",
+               "Every check and proof in the corpus. Two methods, two words (ADR-0046 §1): TLC **checks** seventeen "
+               "TLA+ modules at small constants, each mutation failing the property it targets and each reachability "
+               "witness violated; the TLA+ Proof System **proves** the invariants of thirteen of them, 2,417 "
+               "obligations, under named assumptions and the absence of the mutations that break each. Then the "
+               "policy floor's gates with a pinned proof checker; the reference's tests restating the properties; the "
+               "trace harness that replays those tests through an operational model; the drift pins; and the lineage "
+               "gate suite. Then the honesty layer: a proof is of the module, and what runs is neither checked nor "
+               "proved.",
                3400,
-               "spec/README.md and every spec/*.tla header and results file; spec/theorem-premise-binding.md; "
+               "spec/README.md and every spec/*.tla header and results file; spec/<Module>_proof.tla and "
+               "spec/<Module>-proof-results-2026.10.02.txt (13 each); spec/proof-method.md; spec/proof-results.sh, "
+               "proof-sync.sh, simulate-run.sh, premise-corrections-results.sh and its results file; "
+               "spec/theorem-premise-binding.md; ADR-0046 §1–§5, §7, open obligations; "
                "floor/README.md, floor/run-gates.py, floor/genesis-gates-results-2026.10.01.txt; "
                "mechanism/README.md, mechanism/GAPS-AND-ASSUMPTIONS.md §6, mechanism/corpus-pins.sha256; "
                "slm/README.md Part B, slm/gate-suite-results-2026.09.28.txt; ADR-0029 §5 (A1); ADR-0030 §5 A1; "
-               "ADR-0033 A5, A6, open obligations; ADR-0045 §5, T-0045-14, T-0045-28 to 30; G5 §4; G7 §2.2, §2.8, §3, "
-               "§4, §8")
+               "ADR-0033 A5, A6, open obligations; ADR-0045 §5, T-0045-14, T-0045-28 to 31; G5 §4; G7 §2.2, §2.8, §3; "
+               "G8 §2.9, §3, §4, §5, §7 items 56, 73–75, 78, §8")
     X0, X1 = c.x0, c.x1
     W = X1 - X0
     y = c.y
 
     # ================================================================ 1. the chains
-    y += c.heading(X0, y, "1 · Four chains of evidence, from the record to the running code", size=22)
+    y += c.heading(X0, y, "1 · Five chains of evidence, from the record to the running code", size=22)
     y += 14
     LP = 30
 
@@ -54,8 +60,9 @@ def build():
                      "digest in the accepted record it checks; a change is a successor module (`Lease_A1`, "
                      "`RulesFloorNV_rev5`)."], "blue", None, "", None, None),
         ("17 TLA+ modules, TLC", ["Each property with a **mutation that must fail** and a `Never…` "
-                                  "**witness that must be violated** (non-vacuity, G2 §3). Small constants; "
-                                  "`tools/tla2tools.jar` 1.7.4, TLC 2.19, tracked for its digest (T-0045-29)."],
+                                  "**witness that must be violated** (non-vacuity, G2 §3): existential claims, "
+                                  "**checked**. Small constants; `tools/tla2tools.jar` 1.7.4, TLC 2.19, tracked for "
+                                  "its digest (T-0045-29). The invariants of 13 are also proved (lane 2)."],
          "teal", None, "", None, None),
         ("Rust tests restate them", ["`mechanism/`: **61 tests** across six binaries (2026.10.01), each named for "
                                      "the property and the mutation it refuses (GAPS §6). Discrimination tests, "
@@ -68,14 +75,47 @@ def build():
                                        "(issuance validity, approval signatures, the parameter digest). T-0045-28 "
                                        "stays a **trust root** for every deployment."], "red", "open", "", "6 4",
          None),
-        ("Stage 2: a Lean model", ["With differential testing against the code (ADR-0033 open obligations; G7 "
-                                   "item 56). **Not begun.**"], "red", "notbuilt", "", None, None),
+        ("Stage 2: a Lean model", ["With differential testing against the code (ADR-0033 open obligations; G8 "
+                                   "item 56). **Not begun.** The proofs make its target precise and do nothing "
+                                   "else for it (ADR-0046 §2)."], "red", "notbuilt", "", None, None),
         ("Stage 3: compilation", ["The Lean model compiled; with a reproducible build (T-0045-30), the rows "
                                   "leave Annex A only on the addendum that cites the chain. **Not begun.**"],
          "red", "notbuilt", "", None, None),
     ], size=14)
     y += hA + 26
     c.region(X0, top, W, y - top, "Protocol properties: spec/ → mechanism/", "teal", dash=None, sw=2, size=15)
+    y += 44
+
+    # lane P: the proofs (ADR-0046)
+    top = y
+    y += 40
+    hP = lane(c, X0 + LP, y, W - 2 * LP, [
+        ("A frozen module", ["Cited by digest in an accepted record. Thirteen have a proof: every module but "
+                             "`Mechanism.tla` (a trace replay), `Lease.tla` (its invariants are `Lease_A1`'s), "
+                             "`RulesFloorNV.tla` (superseded by rev 5) and `RulesFloorBase.tla` (definitions)."],
+         "blue", None, "", None, None),
+        ("`spec/<Module>_proof.tla`", ["**Extends the module without editing it.** Each invariant as `Spec => []P`; "
+                                       "its hypothesis is only the mutations that break it; a combined `Safe` under "
+                                       "`Mut = \"none\"`; one lemma per mutation saying what it admits."],
+         "teal", None, "", None, None),
+        ("The prover (T-0045-31)", ["`tlapm` 1.6.0-pre at `7824dab` (binary `e150fb793fb28592…`) with Z3 4.8.9, "
+                                    "Zenon 0.8.4, Isabelle2025; installed by `tools/install-tlaps.sh`, **not "
+                                    "tracked**, run through `tools/tlapm`."], "blue", "accepted", "C2, C4 · B25",
+         None, None),
+        ("`*-proof-results-2026.10.02.txt`", ["`proof-results.sh` regenerates each, printing the digest of every "
+                                              "module in the EXTENDS chain and of the prover. **2,417 obligations, "
+                                              "every one proved**; each regenerated byte for byte at ratification."],
+         "teal", None, "", None, None),
+        ("Frozen; kept in step", ["Cited by digest in ADR-0046 §4, so frozen: a change is a successor module with a "
+                                  "successor proof. `proof-sync.sh` reports any proof whose specification moved."],
+         "teal", None, "", None, None),
+        ("Of the module only", ["**Proved** holds of every behaviour of the module, for every constant its "
+                                "assumptions admit. It is not a claim about `mechanism/` (T-0045-28) and replaces "
+                                "no mutation row (ADR-0046 §2)."], "red", None, "", "6 4", None),
+    ], size=14)
+    y += hP + 26
+    c.region(X0, top, W, y - top, "Proofs (ADR-0046, Batch 25): spec/<Module>.tla → spec/<Module>_proof.tla → TLAPS",
+             "teal", dash=None, sw=2, size=15)
     y += 44
 
     # lane B: the floor
@@ -133,97 +173,124 @@ def build():
     y = top + hh + 60
 
     # ================================================================ 2. the module table
-    y += c.heading(X0, y, "2 · Every TLA+ module in `spec/`: what it checks, what must fail, and where its result is",
-                   size=22)
-    y += c.para(X0, y, W, "Seventeen modules (G7 §9). Properties are invariants checked under `Mut = \"none\"`; each "
-                "mutation changes the mechanism, never the property, and must produce a counterexample; each `Never…` "
-                "witness must be violated, which shows the behaviour it names is reachable. Results files are "
-                "hand-assembled TLC output with a dated name and never change. **Pinned** means listed in "
-                "`mechanism/corpus-pins.sha256`.", 15, "muted") + 14
-    cols = [("Module", 250, {"mono": False}), ("Record it checks", 270), ("Properties (invariants)", 470),
-            ("Mutations that must fail", 440), ("Witnesses that must be violated", 450),
-            ("Driver", 220), ("Results file, constants", 590), ("Cited by digest in · status", 598)]
+    y += c.heading(X0, y, "2 · Every TLA+ module in `spec/`: what it checks, what must fail, what is proved, and "
+                          "where its result is", size=22)
+    y += c.para(X0, y, W, "Seventeen modules and thirteen proof modules (G8 §9). Properties are invariants checked under "
+                "`Mut = \"none\"`; each mutation changes the mechanism, never the property, and must produce a "
+                "counterexample; each `Never…` witness must be violated, which shows the behaviour it names is "
+                "reachable. The proof column gives each proof module and its obligations (ADR-0046 §4); its results "
+                "file is `<Module>-proof-results-2026.10.02.txt`. Results files are dated and never change; every "
+                "proof results file and three TLC results files regenerate from a script, the rest are hand-assembled "
+                "(G8 item 78). **Pinned** means listed in `mechanism/corpus-pins.sha256`.", 15, "muted") + 14
+    cols = [("Module", 230, {"mono": False}), ("Record it checks", 240), ("Properties (invariants)", 420),
+            ("Mutations that must fail", 400), ("Witnesses that must be violated", 380),
+            ("Driver", 232), ("Results file, constants", 500), ("Proved in (ADR-0046 §4)", 448),
+            ("Cited by digest in · status", 438)]
     rows = [
         {"group": "The rules floor and the bootstrap modules", "accent": "blue"},
         ["`RulesFloorBase.tla`", "ADR-0029 §5 shared definitions; the floor as ratified 2026.09.23 (R1, R2, R5, "
          "R6, R7, R9)", "— (the live definition of the floor; no property of its own)", "—", "—",
-         "via `bootstrap-run.sh`", "—", "— · live; the frozen modules carry their own copies"],
+         "via `bootstrap-run.sh`", "—", "— (extended by `Anchor` and `BreakGlass` and their proofs)",
+         "ADR-0026; **live**: ADR-0046 §4 cites the digest proved (`cf2351de2b39cccf`), and its erratum E1, "
+         "pending, corrects that record's \"frozen\""],
         ["`RulesFloorNV.tla`", "ADR-0026 §6", "`P1_AllSeatsGranted`, `P2_AtLeastTwo`, `P3_AuthorNotCounted`, "
          "`P4_NoTimeoutGrant`, `P5_AnchorNotApprover`, `P7_BGNoAuthority` (in `Safe`)",
          "drop R1, R2, R3, R4, R5, R7, under `Mech` = `param`, `as0024`, `rev4`", "`NeverPromoted`",
-         "`RulesFloorNV-run.sh`", "`RulesFloorNV-results-2026.09.15.txt` (26 runs)", "ADR-0026 · frozen (G1)"],
+         "`RulesFloorNV-run.sh`", "`RulesFloorNV-results-2026.09.15.txt` (26 runs)", "[[grey|not proved]]",
+         "ADR-0026 · frozen (G1)"],
         ["`RulesFloorNV_rev5.tla`", "ADR-0026 R1; ADR-0024 rev 5", "`P1_Unanimity`, `P2_TwoSeatsCounted`, "
          "`P3_AuthorNotCounted`, `P5_AnchorNotApprover`, `P7_BGNoAuthority`, `P9_NoSoloGrant`",
          "drop R1; drop R1 and R9; drop R2; `Mech = \"norecuse\"` (withdrawn R3); drop R5; drop R7",
          "`NeverPromoted`", "`RulesFloorNV_rev5-run.sh`", "`RulesFloorNV-rev5-results-2026.09.23.txt`; five humans "
-         "(at four, threshold equals unanimity)", "ADR-0026, ADR-0033 · **pinned**"],
+         "(at four, threshold equals unanimity)", "`RulesFloorNV_rev5_proof.tla` · **262**: each property under "
+         "the entry it rests on, `P9` under R2 and (R1 or R9); the three `ASSUME`s proved as lemmas",
+         "ADR-0026, ADR-0033, ADR-0046 · **pinned**"],
         ["`NonComposition.tla`", "ADR-0013 §4 (erasure, ADR-0006, with break-glass, ADR-0009, against ADR-0028)",
          "`NC1`, `NC2`", "`M1` (F1 decisions erasable), `M2` (break-glass widens erasure)",
          "`NeverErased`, `NeverBGEffect`, `NeverBGErased`", "`NonComposition-run.sh`",
-         "`NonComposition-results-2026.09.23.txt`", "ADR-0013"],
+         "`NonComposition-results-2026.09.23.txt`", "`NonComposition_proof.tla` · **58**: `NC1`, `NC2` not "
+         "under `M1`, `M2`", "ADR-0013, ADR-0046"],
         ["`Anchor.tla`", "ADR-0029 §5, bootstrap module 2 of 5; ADR-0025, ADR-0026 §1", "`FloorPreserved`",
          "`M_FLOOR` (issuance accepted without the floor check)", "`NeverIssued`", "`bootstrap-run.sh`",
-         "`bootstrap-results-2026.09.23.txt`", "ADR-0029 · drafted and checked"],
+         "`bootstrap-results-2026.09.23.txt`", "`Anchor_proof.tla` · **40**: `FloorPreserved` under `Mut = "
+         "\"none\"`, for every floor subset and epoch bound; `EpochMonotone`", "ADR-0029, ADR-0046 · checked and "
+         "**proved**"],
         ["`BreakGlass.tla`", "ADR-0029 §5, bootstrap module 5 of 5; ADR-0009, ADR-0026 R7",
          "`BreakGlassNeverChangesAuthority`", "`M_SCOPE` (mechanism ignores `bgScope`); R7 dropped from `Active`",
          "`NeverBreakGlass`", "`bootstrap-run.sh`", "`bootstrap-results-2026.09.23.txt`",
-         "ADR-0029 · drafted and checked"],
+         "`BreakGlass_proof.tla` · **37**: under `Mut = \"none\"`, assuming `\"R7\" ∈ Active`",
+         "ADR-0029, ADR-0046 · checked and **proved**"],
         {"group": "The policy floor's composition and routing", "accent": "blue"},
         ["`FloorComposition.tla`", "ADR-0030 §1, §3, §4 (§9)", "`AdmitImpliesFloorPermit`, `FloorErrorIsDeny`, "
          "`BundleRefusalHonored`, `BundleCannotWriteFloorInputs`, `EnvelopeHolds`",
-         "`M_OVERRIDE`, `M_ERR`, `M_FAILOPEN`, `M_WRITE` (each also breaks `EnvelopeHolds`, except `M_FAILOPEN`)",
+         "`M_OVERRIDE`, `M_ERR`, `M_FAILOPEN`, `M_WRITE` (each also breaks `EnvelopeHolds`, except `M_FAILOPEN`); "
+         "`M_OVERRIDE` also breaks `FloorErrorIsDeny` and `BundleRefusalHonored`, `M_ERR` also "
+         "`AdmitImpliesFloorPermit` (ADR-0046 §5; three new TLC rows)",
          "`NeverAdmitted`, `NeverNarrowed`, `NeverFloorError`", "`floor-run.sh`",
-         "`FloorComposition-results-2026.09.24.txt`", "ADR-0030, ADR-0033 · **pinned**"],
+         "`FloorComposition-results-2026.09.24.txt`; `premise-corrections-results-2026.10.02.txt`",
+         "`FloorComposition_proof.tla` · **171**: each property not under the mutations that break it",
+         "ADR-0030, ADR-0033, ADR-0046 · **pinned**"],
         ["`FloorRouting.tla`", "ADR-0030 §5", "`NoWideningWithoutIssuance`, `FloorNeverVacuous`",
          "`M_ROUTE` (only a strict superset is a relaxation), `M_GATE` (non-vacuity off)",
          "`NeverIncomparable`, `NeverRelaxIssued`, `NeverTightened`", "`floor-run.sh`",
          "same file as above. Checks the routing logic, not the analyzer: it assumes the implies answers",
-         "ADR-0030, ADR-0033"],
+         "`FloorRouting_proof.tla` · **36**: both under `Mut = \"none\"`; a proof of the routing model, not "
+         "of the floor's Cedar text", "ADR-0030, ADR-0033, ADR-0046"],
         {"group": "The lease and confinement", "accent": "teal"},
         ["`Lease.tla`", "ADR-0031 §8", "`LeaseAuthorityMonotone`, `NoActionUnderFencedEpoch`, "
          "`Rung0NeverContained`, `RevokedStaysStopped`", "`M_RENEW`, `M_FENCE`, `M_RUNG`, `M_ROLE`, `M_REVOKE`",
          "`NeverActed`, `NeverRenewed`, `NeverRevoked`, `NeverStaleLease`, `NeverSelectiveRevoke`", "`lease-run.sh`",
          "`Lease-results-2026.09.23.txt`, `-25.txt`; `MaxEpoch = 2`, `MaxFence = 3`",
+         "[[grey|not proved]]: its invariants are `Lease_A1`'s at rungs 0..2",
          "ADR-0031 · frozen at `7636c6c3364bca9c` · **pinned**"],
         ["`Lease_A1.tla`", "ADR-0031 A1 (renewal keeps the rung)", "as `Lease.tla`, rungs 0..3",
          "as `Lease.tla`, and `M_LOWER` (renewal may lower the rung)", "as `Lease.tla`, and `NeverRenewedAbove0`",
          "`Lease_A1-run.sh`", "`Lease_A1-results-2026.09.28.txt`; `MaxEpoch = 2`, `MaxFence = 3`",
-         "ADR-0031 · successor of the frozen module · **pinned**"],
+         "`Lease_A1_proof.tla` · **200**: each property not under its mutations",
+         "ADR-0031, ADR-0046 · successor of the frozen module · **pinned**"],
         ["`Confinement.tla`", "ADR-0034 §7, A1", "`ContainedMeansConfined`, `NoSilentDowngrade`, `ContestedStopped`, "
          "`FreshAppraisal`", "`M_HOST` (rungs 1, 2), `M_HW` (3), `M_CONTESTED`, `M_UNBOUND`, `M_STALE`, "
          "`M_DOWNGRADE`, `M_PROFILE`, `M_RENEWLOW`", "`NeverContainedEffect`, `NeverMediatedEffect`, "
          "`NeverContested`, `NeverRefused`, `NeverTamperKilled`, `NeverRenewed`, `NeverLapsed`, per declared rung",
          "`confinement-run.sh`; `confinement-gen-results.sh`", "`Confinement-results-2026.09.25.txt`, `-28.txt`, "
          "`-30.txt` (the rung-0 row, D-0034-4); `MaxEpoch = 1`, `MaxIdx = 4`, `MaxGen = 2`, two principals",
-         "ADR-0034"],
+         "`Confinement_proof.tla` · **502**: every rung at once, assuming `Declared ∈ 0..3`; `SameGuest` at "
+         "grant is not load-bearing", "ADR-0034, ADR-0046"],
         {"group": "Seats, Observers and coupling (Build cells)", "accent": "pink"},
         ["`Seats.tla`", "ADR-0037 §9", "`OnlyThinkersAuthor`, `OneSeatPerPrincipal`", "`M_KIND`, `M_SEAT` (the "
          "reference before ADR-0037)", "`NeverActed`, `NeverTwoLive`, `NeverObserverVoted`", "`seats-run.sh`",
-         "`Seats-results-2026.09.29.txt`; 2 principals, 3 seats, 4 actions", "ADR-0037 · **pinned**"],
+         "`Seats-results-2026.09.29.txt`; 2 principals, 3 seats, 4 actions", "`Seats_proof.tla` · **110**",
+         "ADR-0037, ADR-0046 · **pinned**"],
         ["`Observers.tla`", "ADR-0038 §8", "`DenyByAnyOf`, `ReachIsBounded`", "`M_QUORUM`, `M_REACH`",
          "`NeverFound`, `NeverRefused`, `CorrelatorNeverFinds`", "`observers-run.sh`",
-         "`Observers-results-2026.09.29.txt`; 2 cells, 1 correlator", "ADR-0038 · **pinned**"],
+         "`Observers-results-2026.09.29.txt`; 2 cells, 1 correlator", "`Observers_proof.tla` · **65**",
+         "ADR-0038, ADR-0046 · **pinned**"],
         ["`Coupling.tla`", "ADR-0039 §8", "`NoAdmitWithoutLiveObserver`, `UnreadBounded`, `CorrelatorNeverGates`",
          "`M_NOCOUPLE`, `M_MARK`, `M_ROUNDS`, `M_CORR`", "`NeverRoundTwo`, `NeverRefused`, `NeverStaleRefusal`, "
          "`NeverBacklogRefusal`", "`coupling-run.sh`", "`Coupling-results-2026.09.29.txt`; `K = 1`, `R = 3`, "
-         "`MaxRound = 2`", "ADR-0039 · **pinned**"],
+         "`MaxRound = 2`", "`Coupling_proof.tla` · **320**: for every K, R and MaxRound; `K < R` is not a "
+         "premise of `UnreadBounded` (ADR-0046 §5)", "ADR-0039, ADR-0046 · **pinned**"],
         {"group": "Run", "accent": "green"},
         ["`RunCoupling.tla`", "ADR-0042 §8; ADR-0039 §2 as ADR-0041 §2 reads it", "`NoEffectWithoutLiveObserver`, "
          "`UnreadEffectsBounded`, `ConsultNeverCoupled`, `SealCountsEffects`, `RoundBoundCountsAll`",
          "`M_EMITSEQ` (the reference before ADR-0042), `M_COUPLEALL`, `M_ROUNDS`, `M_MARK`, `M_NOCOUPLE`, "
          "`M_BOUNDEFF`", "`NeverRoundTwo`, `NeverRefused`, `NeverRefusedOnActuates`, `NeverConsultedWhileStalled`, "
          "`NeverSealedOnActuates`", "`runcoupling-run.sh`", "`RunCoupling-results-2026.09.29.txt`; `K = 1`, `R = 4`, "
-         "`MaxRound = 2`", "ADR-0042 · **pinned**"],
+         "`MaxRound = 2`", "`RunCoupling_proof.tla` · **469**: for every K, R and MaxRound; "
+         "`SealCountsEffects` not under `M_EMITSEQ` (the table said `M_ROUNDS`)", "ADR-0042, ADR-0046 · **pinned**"],
         ["`RunSeats.tla`", "ADR-0043 §8; ADR-0040 §2", "`OnlyThinkersActuate`, `ObserversConsultAndReport`, "
-         "`NoNameCrossesDomains`", "`M_KIND`, `M_DOMAIN`; `M_OBSEMIT` is the provisional column, under which every "
-         "property holds", "`NeverActuated`, `NeverObserverReported`, `NeverObserverConsulted`", "`runseats-run.sh`",
-         "`RunSeats-results-2026.09.29.txt`; 4 seats, 6 actions", "ADR-0043 · **pinned**"],
+         "`NoNameCrossesDomains`", "`M_KIND`, `M_DOMAIN` (which also breaks `ObserversConsultAndReport`); "
+         "`M_OBSEMIT` is the provisional column, under which every property holds",
+         "`NeverActuated`, `NeverObserverReported`, `NeverObserverConsulted`", "`runseats-run.sh`",
+         "`RunSeats-results-2026.09.29.txt`; 4 seats, 6 actions", "`RunSeats_proof.tla` · **147**",
+         "ADR-0043, ADR-0046 · **pinned**"],
         {"group": "The operational model of the reference", "accent": "teal"},
         ["`Mechanism.tla`", "ADR-0045 T-0045-28; ADR-0033 A5, A6", "`TraceMatches` (each recorded step's projected "
          "state and result equal the model's)", "a step that differs (the first `ttl` test was caught this way: the "
          "test was wrong, G7 §3)", "—", "`mechanism-trace-run.sh`; `mechanism-trace-results.sh`; `trace2tla.py`",
          "`Mechanism-trace-results-2026.09.30.txt` (21 traces, 163 steps); `-2026.10.01.txt` (22 traces, 168 "
-         "steps), digest `3bfbc88be6cf7fe7`", "pinned, **not frozen**: moves with the code"],
+         "steps), digest `3bfbc88be6cf7fe7`", "[[grey|no proof]]: a trace replay states no invariants; its target is "
+         "the refinement (T-0045-28)", "pinned, **not frozen**: moves with the code"],
     ]
     y += c.table(X0, y, cols, rows, size=13.5) + 50
 
@@ -261,19 +328,23 @@ def build():
     h2 = c.table(X0 + wl + 40, gy, [("Bootstrap module (ADR-0029 §5)", wr * 0.3), ("Invariant", wr * 0.36),
                                     ("Status", wr * 0.34)], [
         ["`Genesis`", "`GenesisSatisfiesFloor`", "[[red|not drafted]]; the reference checks genesis rules at "
-         "startup instead (T-0045-10)"],
-        ["`Anchor`", "`FloorPreserved`", "[[teal|drafted and checked]] 2026.09.23"],
+         "startup instead (T-0045-10). Its shape is a lemma in both proofs below, proved of the floor's definition "
+         "and not of genesis contents, which are unwritten"],
+        ["`Anchor`", "`FloorPreserved`", "[[teal|drafted and checked]] 2026.09.23; [[teal|proved]] 2026.10.02 "
+         "(`Anchor_proof.tla`, 40 obligations)"],
         ["`RulesFloor`", "`PromotionMeetsIssuedQuorum` (A1, replacing `NoPromotionWithoutAllGrantSeats`)",
          "[[red|not drafted]]"],
         ["`Promotion`", "`StaleVotesNeverCount`", "[[red|not drafted]]; owes decide-then-commit (G3), the ADR-0035 "
          "§5 tally condition, A2.2 and A2.3"],
-        ["`BreakGlass`", "`BreakGlassNeverChangesAuthority`", "[[teal|drafted and checked]] 2026.09.23"],
+        ["`BreakGlass`", "`BreakGlassNeverChangesAuthority`", "[[teal|drafted and checked]] 2026.09.23; "
+         "[[teal|proved]] 2026.10.02 (`BreakGlass_proof.tla`, 37 obligations)"],
     ], size=13.5, accent="brown")
-    hb = c.card(X0 + wl + 40, gy + h2 + 24, wr, "Bootstrap specification: partial (G5 §4; G7 §4)", [
+    hb = c.card(X0 + wl + 40, gy + h2 + 24, wr, "Bootstrap specification: partial (G5 §4; G8 §4)", [
         "The anchor **may** bootstrap once a drafted TLA+ bootstrap specification exists: five modules, five "
         "invariants, each with a mutation that must fail. TLC checking is recommended, not required.",
-        "Two of five exist. The trigger is unmet and remains optional; bootstrap itself is deliberately not on the "
-        "open list (G7 §7).",
+        "Two of five exist, `Anchor` and `BreakGlass`, and are now **proved and not only checked** (ADR-0046 §4; "
+        "ADR-0029 B25). `Genesis`, `RulesFloor` and `Promotion` are still owed. The trigger is unmet and remains "
+        "optional; bootstrap itself is deliberately not on the open list (G8 §7).",
     ], accent="brown", size=14)
     hs = c.card(X0 + wl + 40, gy + h2 + 24 + hb + 24, wr, "Lineage gate suite: ADR-0035 §8's ratification items", [
         "1 · cases for E1–E5 and distillation, each seen to fire: **passes**.",
@@ -291,7 +362,9 @@ def build():
     y += c.para(X0, y, W, "Since 2026.09.30 the restatement is checked, not asserted, on every path a test takes: "
                 "each state these tests build records its applied entries and `spec/mechanism-trace-run.sh` replays "
                 "them through `Mechanism.tla`. Nothing a test does not reach is checked. The same kind of evidence the "
-                "TLA+ runs are, by the same hand.", 15, "muted") + 14
+                "TLC runs are, by the same hand. Row `SealCountsEffects, and M_ROUNDS carried over` is GAPS §6's "
+                "text; the binding table now says the seal breaks under `M_EMITSEQ`, not `M_ROUNDS` (ADR-0046 §5).",
+                15, "muted") + 14
     t = [
         ["`Lease.tla`", "`LeaseAuthorityMonotone` / `M_RENEW`", "`mutations.rs` `lease_renewal_is_monotone_and_m_renew_is_refused`"],
         ["`Lease.tla`", "C1 one live lease", "`one_live_lease_per_principal`"],
@@ -331,37 +404,46 @@ def build():
     # ================================================================ 5. honesty layer
     y += c.heading(X0, y, "5 · The honesty layer: what none of the above claims", "red", size=22)
     y += 6
+    y += c.para(X0, y, W, "G7 said, as every checkpoint since G3 had: \"no theorem is proved\". G8 is the first "
+                "checkpoint under which a property of the corpus is **proved**, in ADR-0046 §1's sense; MAP 2.3, "
+                "the undeclared TLC-versus-TLAPS method, is closed (G8 §1).", 15, "muted")
+    y += 6
     g = 24
     w3 = (W - 2 * g) / 3
     cards = [
-        ("Evidence, not proofs", [
-            "\"No theorem is proved.\" The TLA+ artifacts discriminate and check non-vacuity at small constants; the "
-            "trace validation is drift detection against a model of the code; a checked proof certifies an "
-            "implication between two Cedar encodings, not the encoding (G7 §8; spec/README).",
-            "The theorem-to-premise table says what each check **assumed**; it does not strengthen the check."], "red"),
-        ("Small constants", [
-            "\"A property that holds at two principals and one epoch is evidence, not a proof\" (T-0045-29, G5 §8). "
-            "The constants are printed in each results file: `MaxEpoch = 1` for confinement, `K = 1` for coupling.",
-            "TLC itself is a trust-root row: \"no error has been found\" is taken to mean what it says."], "red"),
+        ("Proved and checked: two words", [
+            "**Proved** names a claim TLAPS discharged and the hypotheses it was discharged under: thirteen modules' "
+            "invariants. **Checked** names TLC's evidence: the mutations and witnesses at small constants. Neither is "
+            "used of the running reference (ADR-0046 §1; G8 §5).",
+            "The trace validation is drift detection against a model of the code; a checked gate proof certifies an "
+            "implication between two Cedar encodings, not the encoding (G8 §8). The theorem-to-premise table says "
+            "what each property **assumed**; it does not strengthen it."], "red"),
+        ("Small constants; the prover as written", [
+            "\"A property that holds at two principals and one epoch is evidence, not a proof\" (T-0045-29, G5 §8): "
+            "since B25 that residual bounds the mutations and witnesses only. Model checking at practical constants: "
+            "none yet (G8 item 75).",
+            "TLC and the prover are trust-root rows (T-0045-29, T-0045-31), trusted as written: no mutation of either "
+            "is run, and the SMT backends' proofs are not rechecked by Isabelle, `tlapm -C` (G8 item 74)."], "red"),
         ("The same hand", [
-            "Every record, run and ratification of 2026.10.01 was made by the person who ratified it, or drafted at "
-            "that person's request, on the day; the wrapper and the controls that test it are the same hand's "
-            "(G7 §8).",
+            "Batch 25's proofs were drafted, checked, mutation-tested and regenerated by the assistant and ratified by "
+            "the custodian on the day; the condition meant to make the cited digests someone else's was run by the "
+            "drafter (G8 §4, §8).",
             "The operational model was written from the code by the same hand on the same day: the link is "
             "mechanized, not independent (ADR-0033 A5)."], "red"),
-        ("What runs is not what is checked", [
+        ("What runs is neither checked nor proved", [
+            "\"Thirteen modules' invariants are proved, and nothing about the running reference is\" (G8 §8). "
             "\"What runs is not the specification\" (ADR-0045 §5, R1): no refinement from the modules to the Rust "
-            "exists, TLC runs at small constants, the build is asserted and not reproduced. Each is a trust-root row, "
-            "T-0045-28 to 30, for every deployment.",
+            "exists and the build is asserted, not reproduced: trust-root rows T-0045-28 to 30, for every deployment.",
             "\"The gap is a debt, not a residual the archetype keeps\" (R2): its owner is ADR-0033."], "red"),
         ("What the checker does not cover", [
             "A `holds°` is cedar's own term folding with no query to check: 25 of the run's 29 `holds` rest on the "
-            "engine's row (T-0045-3), not the checker's (G7 item 69).",
+            "engine's row (T-0045-3), not the checker's (G8 item 69).",
             "The CPC signature is cvc5's own formalization, trusted as written; the three lying-solver controls test "
             "the wrapper's refusals, not the signature's rules (G7 §4)."], "red"),
         ("The chain still owed (ADR-0033)", [
             "Stage 1, trace validation: A5 (Batch 21), rerun at A6. Stage 2, a Lean model with differential testing, "
-            "and stage 3, its compilation: \"the chain proper\", **not begun**.",
+            "and stage 3, its compilation: \"the chain proper\", **not begun**. The proofs make stage 2's target "
+            "precise and do nothing else for it (ADR-0046 §2; G8 item 56).",
             "The reproducible build (T-0045-30) is untouched. Each addendum says which stage it discharges, and the "
             "rows leave Annex A only on that addendum."], "red"),
     ]

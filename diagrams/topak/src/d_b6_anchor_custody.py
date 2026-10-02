@@ -13,7 +13,7 @@ def build():
                "obligations, Annex (A-0025, D-0025-1, D-0025-2, axis position), History R1, B2, B17, B23; ADR-0002 A2; "
                "ADR-0024 §2, 'Why this rule is modeled'; ADR-0026 §4; ADR-0027 §3, §4; ADR-0028 §3; ADR-0029 §1, §5; "
                "ADR-0045 Annex A T-0045-8, T-0045-9, T-0045-11, Annex B T-0045-27; ToO rev 11 §7.2, §7.5, §7.6, §7.7, "
-               "§9; G7 header, §7 items 10, 11, 67; boundary register B14")
+               "§9; G7 header, §7 items 10, 11, 67; ADR-0046 header (Discharges), §4; ADR-0029 B25; boundary register B14")
     X0, X1 = c.x0, c.x1
     W = X1 - X0
     y = c.y + 6
@@ -49,7 +49,9 @@ def build():
         {"cells": ["Integrity", "**MODELED** under havoc",
                    "`Issue` is an environment action, constrained only by `Authentic`, epoch increment and the rules "
                    "floor (ADR-0026). Safety is proven for every issuance sequence satisfying those constraints.",
-                   "Inside the specification and the verified object"], "accent": "teal"},
+                   "Inside the specification and the verified object. **Discharged as written** since 2026.10.02: "
+                   "`Anchor_proof.tla` proves `FloorPreserved` for every floor subset and epoch bound (ADR-0046; "
+                   "ADR-0029 B25), of the module"], "accent": "teal"},
         {"cells": ["Custody", "**DECLARED** per rung (ADR-0023)",
                    "The pair (capture threshold, loss tolerance), plus the composition and eviction rules that make "
                    "it true. Not in the model.",

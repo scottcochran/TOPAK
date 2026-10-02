@@ -12,7 +12,8 @@ def build():
                "evictability by an authority other than itself (ADR-0002 A2).",
                3000, "ToO rev 11 §1, §2.5, §2.8, §2.9, §5.1, §7.5; ADR-0002 A2; ADR-0037 §1–§8 (R1–R5, A1, B12, B20, B22); "
                "ADR-0038 §1–§7; ADR-0043 §1, §2, §5; ADR-0031 §1, §2, §5; ADR-0035 §5; ADR-0018; ADR-0019; ADR-0045 "
-               "T-0045-26; spec/Seats.tla and spec/Seats-results-2026.09.29.txt; G7 §1.1")
+               "T-0045-26; spec/Seats.tla and spec/Seats-results-2026.09.29.txt; spec/Seats_proof.tla and "
+               "Seats-proof-results-2026.10.02.txt; ADR-0037 B25; G7 §1.1")
     X0, X1 = c.x0, c.x1
     y = c.y
 
@@ -268,12 +269,14 @@ def build():
             "Enforced where refusal stalls: the promotion tally and the deployment declaration (ADR-0035 §5).",
             "Correlation across cells from shared Personas is the correlator's concern (ADR-0023 §5).",
         ]),
-        ("Checked (ADR-0037 R5, 2026.09.29)", "blue", [
+        ("Checked (ADR-0037 R5, 2026.09.29) and proved (B25)", "blue", [
             "`spec/Seats.tla`: `OnlyThinkersAuthor` and `OneSeatPerPrincipal` hold (6,656 states); `M_KIND` breaks "
             "only the first, `M_SEAT` only the second; three witnesses reachable.",
             "`M_SEAT` was the reference's behaviour (finding 1); the grant path now refuses a principal with a live "
             "lease on another seat.",
             "Floor: B10 total and discriminating on all four authoring actions.",
+            "**Proved** 2026.10.02: `Seats_proof.tla`, 110 obligations, each invariant for every behaviour of the "
+            "module, not under its mutation (ADR-0037 B25; ADR-0046).",
         ]),
     ]
     hh = max(c.card(0, 0, w4, t, b, size=14, draw=False) for t, _, b in cards)

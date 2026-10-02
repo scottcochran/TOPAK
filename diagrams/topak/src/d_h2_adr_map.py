@@ -1,4 +1,4 @@
-"""H2 — The decision record map: ADR-0001 to ADR-0045 by area, with status, markers and edges."""
+"""H2 — The decision record map: ADR-0001 to ADR-0046 by area, with status, markers and edges."""
 import math
 
 from lib import Canvas
@@ -83,14 +83,16 @@ R = {
     44: ("A bundle is trusted by its signature, not its file name", "accepted", "C1", "0025, 0030, 0031, 0033",
          "Drafted by the assistant"),
     45: ("The trusted base is declared row by row", "accepted", "C2, C4", "0015, 0023, 0025, 0029, 0031, 0034",
-         "Drafted by the assistant; new at G7"),
+         "Drafted by the assistant; new at G7; T-0045-31 by B25"),
+    46: ("The formal layer's method is declared: TLC checks, TLAPS proves, the prover is a trusted-base row",
+         "accepted", "C2, C4", "0023, 0026, 0029, 0045", "Drafted by the assistant; new at G8 (Batch 25)"),
 }
 
 # rows of regions: (label, accent, ncols, [ids in grid order, None for an empty slot])
 ROWS = [
     [("Authority and bootstrap", "brown", 5, [25, 26, 24, 27, 29]),
      ("Deployment variation", "violet", 1, [23]),
-     ("Reference and trusted base", "teal", 2, [33, 45])],
+     ("Reference, trusted base and method", "teal", 3, [33, 45, 46])],
     [("Domains, membrane and Build alphabet (B1–B3)", "teal", 5, [1, 2, 7, 15, 22]),
      ("Run", "green", 4, [40, 41, 42, 43])],
     [("Policy and floors", "blue", 4, [10, 12, 30, 44, 13, 6, 9, 14]),
@@ -103,7 +105,7 @@ ROWS = [
 # edges drawn under a tile row: (src, dst, kind) — kind: dep | sup | rev
 UNDER = [
     (26, 25, "dep"), (24, 25, "dep"), (24, 26, "dep"), (27, 25, "dep"), (27, 26, "dep"),
-    (29, 24, "dep"), (29, 25, "dep"), (29, 26, "dep"), (29, 27, "dep"),
+    (29, 24, "dep"), (29, 25, "dep"), (29, 26, "dep"), (29, 27, "dep"), (46, 45, "dep"),
     (41, 40, "dep"), (42, 40, "dep"), (43, 40, "dep"), (43, 42, "dep"),
     (30, 10, "dep"), (30, 12, "dep"), (44, 30, "dep"),
     (20, 4, "dep"), (20, 3, "dep"),
@@ -117,13 +119,13 @@ EDGE = {"dep": ("blue", None, 1.6), "sup": ("grey", None, 3.0), "rev": ("red", "
 
 
 def build():
-    c = Canvas(ID, "The decision records, ADR-0001 to ADR-0045, by area",
-               "Every record with its status and confirmation markers at G7. Solid blue edges are dependencies taken "
+    c = Canvas(ID, "The decision records, ADR-0001 to ADR-0046, by area",
+               "Every record with its status and confirmation markers at G8. Solid blue edges are dependencies taken "
                "from each record's \"Depends on\" line, drawn where both records sit in the same row of tiles (every "
                "tile lists its full line); the grey edge is the one supersession; red dashed edges are the reversals "
                "in effect (ToO §8.3) and ADR-0040's.",
-               3600, "decisions/README.md; G7 §1.1, §1.2, §4; ToO rev 11 §0, §8.3, §9; the Status, Status note, Depends "
-               "on, Supersedes, Amends, Revises, Narrows and Split from lines of ADR-0001 to ADR-0045; ADR-0018 "
+               3600, "decisions/README.md; G8 §1, §1.1, §1.2, §4, §6; ToO rev 11 §0, §8.3, §9; the Status, Status note, "
+               "Depends on, Supersedes, Amends, Revises, Narrows and Split from lines of ADR-0001 to ADR-0046; ADR-0018 "
                "Status note on 0037 §3; ADR-0023 Status note; ADR-0038 Supersedes; ADR-0040 Status note")
     X0 = c.x0
     tw, ig, rp = 330, 20, 22       # tile width, inner gap, region padding
@@ -265,11 +267,13 @@ def build():
     c.legend(lx, ly, [("arrow", "blue", "depends on"), ("arrow", "grey", "supersedes"),
                       ("arrow", "red", "reverses in effect", "7 5")], title="Edges", maxw=lw)
     ly += 60
-    c.card(lx, ly, lw, "Counts at G7 (§1.1)", [
-        "**39 Accepted** (18 + 21 confirmation-required), 2 in part · **3 Proposed** · **1 superseded** · "
-        "**1 tombstone** · **1 reserved**: 44 files, numbered to 0045.",
+    c.card(lx, ly, lw, "Counts at G8 (§1.1)", [
+        "**40 Accepted** (18 + 22 confirmation-required), 2 in part · **3 Proposed** · **1 superseded** · "
+        "**1 tombstone** · **1 reserved**: 45 files, numbered to 0046.",
+        "**New at G8**: ADR-0046 (Batch 25, C2, C4). Its dependent entries (B25) landed in 0013, 0026, 0029, 0030, "
+        "0031, 0034, 0037, 0038, 0039, 0041, 0042, 0043 and 0045; no decision text changed in any of them (G8 §6).",
         "**Reversals in effect** (ToO §8.3), all by the author alone in genesis: 0008 by 0038 (superseded); 0017's "
-        "ordering-primacy clause (supersession unwritten, G7 item 6); 0018's Reader scope by 0037 §3 (not "
+        "ordering-primacy clause (supersession unwritten, G8 item 6); 0018's Reader scope by 0037 §3 (not "
         "superseded).",
     ], accent="grey", size=13.5)
     return c

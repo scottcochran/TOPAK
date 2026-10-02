@@ -7,9 +7,12 @@ COLS = [
     ("T", "Formal specification and model checking", "teal",
      "Specify every guarantee against what an agent's alphabet allows, and check it, with a mutation that must fail "
      "for every property.",
-     "TLA+ / TLC over the tracked `tools/tla2tools.jar`; properties restated as Rust tests with the same mutations; "
-     "since 2026.09.30 every tested behaviour replayed through `spec/Mechanism.tla`",
-     ["Checked at small constants: a discrimination test, not a proof.",
+     "TLA+: TLC over the tracked `tools/tla2tools.jar` **checks** every mutation and witness; since 2026.10.02 the "
+     "TLA+ Proof System (`tlapm`, T-0045-31) **proves** the invariants of thirteen modules (ADR-0046). Properties "
+     "restated as Rust tests with the same mutations; since 2026.09.30 every tested behaviour replayed through "
+     "`spec/Mechanism.tla`",
+     ["Mutations and witnesses checked at small constants; invariants proved **of the modules**, not of the code "
+      "(ADR-0046 §2).",
       "The trace harness is a mechanized link, **not a refinement** (T-0045-28 stays a trust root)."]),
     ("O", "Policy as code: a verified floor and a per-request bundle", "blue",
      "Floor tier: an evaluator with a mechanized semantics, an implementation checked against it, and a decidable "
@@ -47,8 +50,8 @@ def build():
     c = Canvas(ID, "The letters name roles, not products",
                "Each letter of TOPAK carries an obligation. Any instrument that meets the obligation may be substituted "
                "for the reference's choice; the floor tier cannot change language without ADR-0030.",
-               2200, "ToO rev 11 §1, §3.1, §15; ADR-0030 §1–§3; ADR-0033 §2–§3; ADR-0005; ADR-0045 T-0045-1, T-0045-28; "
-               "README.md")
+               2200, "ToO rev 11 §1, §3.1, §15; ADR-0030 §1–§3; ADR-0033 §2–§3; ADR-0005; ADR-0045 T-0045-1, T-0045-28, "
+               "T-0045-29, T-0045-31; ADR-0046 §1, §2; G8 §2.9; README.md")
     x0, gap = c.x0, 24
     n = len(COLS)
     w = (c.x1 - x0 - gap * (n - 1)) / n

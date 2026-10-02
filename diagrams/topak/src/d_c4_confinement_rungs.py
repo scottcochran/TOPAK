@@ -13,12 +13,15 @@ def build():
                "clauses, four rungs that say how the belief in the profile was established, an appraisal folded into "
                "the grant, and the four conjuncts of `Contained(p)`. One test decides the archetype: **delegate by "
                "failure direction**. Every lease the reference issues is rung 0, and `Contained` **has no members at "
-               "any rung** (G7 §2.3).",
-               3200, "ADR-0034 §1–§8, Findings, R1, R2, A1, B10, B17, B20, B22; ADR-0031 §3, §4 (A1), §5; ADR-0036 §1 "
+               "any rung** (G8 §2.3). Since 2026.10.02 the module's four invariants are proved for every rung at once "
+               "(ADR-0034 B25), which adds no confinement to the reference.",
+               3200, "ADR-0034 §1–§8, Findings, R1, R2, A1, B10, B17, B20, B22, B25; ADR-0046 §2, §4, §5; "
+                     "ADR-0031 §3, §4 (A1), §5; ADR-0036 §1 "
                      "(R1), §2 (Proposed); ADR-0035 (Proposed); ADR-0022 §6 (Proposed), B10, R3; ADR-0042 §6 (Proposed); "
                      "ADR-0045 T-0045-16 to T-0045-22; spec/Confinement.tla (d0dcf21ce9774885), "
                      "Confinement-results-2026.09.28.txt and -2026.09.30.txt; boundary register (2026.09.13) B6, B12; "
-                     "ToO rev 11 §2.3, §2.6; G7 §2.3, §8")
+                     "spec/Confinement_proof.tla (2f4b4bb96d1f83f3), Confinement-proof-results-2026.10.02.txt; "
+                     "spec/theorem-premise-binding.md; ToO rev 11 §2.3, §2.6; G7 §2.3; G8 §2.3, §3, §8")
     X0, X1 = c.x0, c.x1
     y = c.y
     sx = X0
@@ -347,10 +350,29 @@ def build():
         ["The host is untrusted", "0", "M_HOST", "Safe", H + " (646,635 states)"],
     ]
     y += c.table(X0, y, cols, rows, size=13.5, accent="teal") + 14
-    c.para(X0, y, TW, "**The** `M_HOST` **rows are the rung ladder, checked**: the same mutation breaks containment at rungs "
+    y += c.para(X0, y, TW, "**The** `M_HOST` **rows are the rung ladder, checked**: the same mutation breaks containment at rungs "
            "1 and 2 and changes nothing at rung 3; `M_HW` shows rung 3 rests on the hardware assumption. Under "
            "`M_STALE`, `M_DOWNGRADE` and `M_RENEWLOW`, `ContainedMeansConfined` still holds: those clauses are about "
            "honest declaration, not containment. **Finding 6**: under `M_HOST` at rung 0 the module reaches Contested "
            "(it reads a launch measurement rung 0 does not have); the correction waits for a successor module, and the "
            "table carries only the rung-0 rows the defect does not affect.", 14, "muted")
+    y += 30
+    pr = [
+        "`spec/Confinement_proof.tla` (`2f4b4bb96d1f83f3`) extends the frozen module and proves its four invariants "
+        "**for every declared rung in 0..3 at once**, assuming `Declared ∈ 0..3`: 502 obligations, every one proved "
+        "by the prover T-0045-31 (ADR-0046 §4). That is §7's ratification condition, `Safe` at every rung, stated as "
+        "a theorem (ADR-0034 B25).",
+        "Each theorem takes as hypothesis only the mutations that break it: `ContainedMeansConfined` not under "
+        "`M_HOST`, `M_HW`, `M_CONTESTED`, `M_UNBOUND`, `M_PROFILE`; `NoSilentDowngrade` not under `M_DOWNGRADE`, "
+        "`M_RENEWLOW`; `ContestedStopped` not under `M_CONTESTED`; `FreshAppraisal` not under `M_STALE`. The rows "
+        "above stay with TLC: that a mutation reaches a bad state is existential (ADR-0046 §2).",
+        "**Correction 4** (ADR-0046 §5): a lease is bound to its guest by `Act`'s generation check, which `M_UNBOUND` "
+        "removes, **not by `SameGuest` at grant**, which the proof never uses. The proof needed an invariant of six "
+        "clauses binding a lease to the guest generation it was granted against (G8 §3, result 1).",
+        "**A proof of the module adds nothing at the reference**: `ContainedMeansConfined`, `ContestedStopped` and "
+        "`FreshAppraisal` stay void there and `NoSilentDowngrade` holds trivially; `Contained` has no members at any "
+        "rung (G8 §2.3, §8).",
+    ]
+    c.card(X0, y, TW, "Since 2026.10.02: the four invariants are proved, every rung at once (ADR-0034 B25)", pr,
+           accent="teal", size=14, status="accepted", status_extra="ADR-0046 · C2, C4 · B25")
     return c

@@ -1,40 +1,39 @@
 # TOPAK — Theory of Operation
 
-**2026.10.01** · revision 11 · **narrative only** · cut from Genesis Checkpoint G7 · supersedes revision 10 as narrative
+**2026.10.02** · revision 12 · **narrative only** · cut from Genesis Checkpoint G8 · supersedes revision 11 as narrative
 
-Revision 11 is revision 10 corrected against G7. Between the cuts three things that revision 10 said were owed were
-delivered. **The trusted base is in force** (ADR-0045, Batch 22): the admission rule, the thirty rows, the
-reference's own declaration, and the theorem-to-premise binding table its §3 owed, forty-two rows that compute which
-properties hold at the reference and which are void. **The reference built Batch 17's debts** (ADR-0033 A6, Batch
-23): the `ttl` bound refused at grant and renewal, the two key fields in the issued rules, and a bundle loaded only
-under a signature. **The solver is trusted for nothing** (ADR-0030 A1, Batch 24): a routing `holds` counts only with
-a proof that a pinned, independent checker accepted from the query's own declarations and assertions, and the gate
-run of 2026.10.01 carries one for every solver-backed `holds`, with three controls showing a lying solver producing
-a failure. Two trusted-base rows changed class on the way, the bundle signer and the solver's. The repository was
-reorganized between G6 and these batches with no byte changed, and the glossary was revised in place. Passages those
-changes made false are rewritten; the narrative spine is revision 10's and no section is added. Appendix G lists
-every change.
+Revision 12 is revision 11 corrected against G8. Between the cuts the corpus's formal layer changed kind, and
+nothing else did. **Thirteen of the fourteen TLA+ modules are proved** with the TLA+ Proof System: every invariant
+each module states holds of every behaviour of the module, for every constant the module's named assumptions admit,
+under the hypothesis that the mutations which break it are absent; 2,417 obligations. **The method is declared**
+(ADR-0046, Batch 25, C2 and C4): TLC checks the mutations and witnesses at small constants, the prover proves the
+invariants, *proved* and *checked* name the two, and MAP 2.3 closes. The prover is a trusted-base row, T-0045-31,
+and the proof modules are frozen by digest. Writing the proofs found five errors in the binding table, each corrected
+with TLC rows. **Nothing about the running reference changed**: a proof is of a module, and T-0045-28 stands.
+Passages those changes made false are rewritten, with one sentence in §15 that revision 11 should have corrected and
+did not; the narrative spine is revision 11's and no section is added. Appendix H lists every change.
 
 ---
 
 ## 0. How to read this
 
 **This document explains how the design fits together. It is not the state of record.** Status, readiness,
-digests, the ratification queue, the genesis debt ledger, and the open list are in **G7**.
+digests, the ratification queue, the genesis debt ledger, and the open list are in **G8**.
 
 The narrative describes what the records say. Status words appear only where status changes the meaning — a
 reversal in effect, a claim still carrying a confirmation marker, or a section of a record that was deliberately
 left unratified.
 
-**What "ratified" means here, and what it does not.** Thirty-nine records are now Accepted (genesis), two of them
-in part, and one is superseded. Twenty-one of the accepted carry a confirmation-required marker — three, ADR-0003,
+**What "ratified" means here, and what it does not.** Forty records are now Accepted (genesis), two of them
+in part, and one is superseded. Twenty-two of the accepted carry a confirmation-required marker — three, ADR-0003,
 ADR-0029 and ADR-0031's C2, for a single amendment only — which means they were ratified by one person and must pass
-an independent confirmation promotion after bootstrap. **Until then, any claim resting on those twenty-one is
+an independent confirmation promotion after bootstrap. **Until then, any claim resting on those twenty-two is
 author-ratified, and this document says so at each point rather than once in a footnote.** Ratification by a sole
-custodian is a declaration, not a review. Since 2026.09.30 a further qualification applies to three texts, all now
-ratified: ADR-0044 (Batch 17), ADR-0045 (Batch 22) and ADR-0030 A1 (Batch 24) were **drafted by the assistant** at
+custodian is a declaration, not a review. Since 2026.09.30 a further qualification applies to four texts, all now
+ratified: ADR-0044 (Batch 17), ADR-0045 (Batch 22), ADR-0030 A1 (Batch 24) and ADR-0046 (Batch 25) were **drafted by the assistant** at
 the custodian's request, with every choice marked as the drafter's, and the custodian settled them by ratifying the
-text; A1's one open choice, the proof format and the checker, was settled by the first run. That is one step further
+text; A1's one open choice, the proof format and the checker, was settled by the first run, and ADR-0046's
+condition that the custodian regenerate its evidence was run by the drafter at the custodian's direction. That is one step further
 from review than the records they draw on, and each says so on its face.
 
 **Findings.** Revision 5 carried ⟨S6-n⟩ markers where records disagreed. All are dispositioned; §14 lists each with
@@ -47,7 +46,7 @@ narrative log that are open, not to corpus contradictions.
 
 TOPAK is an architecture pattern for autonomous multi-agent collaboration that is safe by design. The letters
 name its five components:
-- **T**, TLA+ (Temporal Logic of Actions): the formal specification and model checking;
+- **T**, TLA+ (Temporal Logic of Actions): the formal specification, model checking and proof;
 - **O**, policy as code: a verified floor evaluator and a per-request bundle engine — Cedar and Open Policy Agent
   (OPA) with Rego at the reference;
 - **P**, Paxos: consensus over the control plane;
@@ -1123,7 +1122,7 @@ rules floor would reject, and nothing else.
   described; an undeclared row is false, so a deployment that has not declared a component sits below every theorem
   on it, and type changes are rows, so §6b's field becomes a list of ids. Removing a row is a tightening and adding
   one is a relaxation that needs its own record, which is ADR-0023's non-increasing-TCB rule made checkable.
-- **The archetype's table has thirty rows** in five groups: the assumptions under the mechanism constants
+- **The archetype's table has thirty-one rows** in five groups: the assumptions under the mechanism constants
   (replicas, the signature primitive, the Cedar engine's faithfulness to its model, the clock, the transport, the
   bundle engines, the archive, the key store, the key-holders, the genesis rules, the corpus and its custodian,
   break-glass approvers); the Build toolchain; **the verified object's evidence**; the confinement axis; tools and
@@ -1136,7 +1135,8 @@ rules floor would reject, and nothing else.
   R8 is refused too, which the prioritization already said. And the rule caught the record's own first draft:
   §5 had called the admit path, the tally and the log "checked, not trusted", which is true of the specification and
   false of any code that runs it. **What runs is a row**: the implementation as a refinement of the specification,
-  the model checker at the constants run, and the build toolchain are trust roots for every deployment until a
+  the model checker at the constants run, the prover for the invariants it proves (T-0045-31, since Batch 25), and
+  the build toolchain are trust roots for every deployment until a
   refinement chain exists, and the gap is a debt ADR-0033 owns, not a residual the archetype keeps (§15).
 
 **Ratified, and already moving.** ADR-0045 was ratified in Batch 22 at its sixth revision, once the theorem-to-premise
@@ -1144,7 +1144,12 @@ binding table existed: `spec/theorem-premise-binding.md`, forty-two rows naming 
 the degeneracy parameters and the declared gaps it rests on, with a last column that computes what holds at the
 reference. Two Annex B rows have changed class since, each by a dependent entry on the owing record's ratification:
 the bundle signer from excluded to a trust root under a dev key (Batch 23), and the solver's refused row to a trust
-root for the proof checker, pinned by three digests in the gate header (Batch 24). The binding table is a draft
+root for the proof checker, pinned by three digests in the gate header (Batch 24). A third dependent entry added a
+row: **T-0045-31, the TLA+ Proof System**, a toolchain trust root beside TLC's, pinned by the binary digest every
+proof results file prints (Batch 25, ADR-0046); TLC's row now bounds the mutations and witnesses only. The same
+batch gave the binding table a proof column and five corrections that writing the proofs found: a theorem's
+hypothesis is the set of mutations that break it, derived and checked apart from the table, and where the two
+disagreed TLC sided with the proof. The binding table is a draft
 revised with the records it binds; its versioning, with the table's, is still the archetype-evolution record's
 (§8.2).
 
@@ -1254,15 +1259,16 @@ trusted by declaration and becomes part of the genesis TCB.
   set is reviewed at bootstrap with everything else (below), before the rules it defines take effect.
 - Until confirmed, a publication citing a confirmation-required guarantee says "author-ratified."
 
-**Where ratification stands (2026.10.01).** Thirty-nine records are Accepted (genesis); one, ADR-0008, is
+**Where ratification stands (2026.10.02).** Forty records are Accepted (genesis); one, ADR-0008, is
 superseded; three are Proposed: ADR-0005, blocked on a decision; ADR-0035 and ADR-0036, blocked on evidence and on a
-review. The confirmation-required set is **twenty-one**: ADR-0006 and ADR-0009 (C1, C4 via ADR-0013), ADR-0013 (C1,
+review. The confirmation-required set is **twenty-two**: ADR-0006 and ADR-0009 (C1, C4 via ADR-0013), ADR-0013 (C1,
 C4), ADR-0015 (C2), ADR-0021 (C4), ADR-0023 (C3), ADR-0028 (C1), ADR-0030 (C1), ADR-0031 (C1, and C2 for A1 only),
 ADR-0034 (C2, C4), ADR-0037 (C3, C4), ADR-0038 (C3, C4), ADR-0039 (C4), ADR-0040 (C3, C4), ADR-0041 (C1, C4),
-ADR-0042 (C4), ADR-0043 (C4), ADR-0044 (C1), **ADR-0045 (C2, C4)**, and two records marked for one amendment only:
+ADR-0042 (C4), ADR-0043 (C4), ADR-0044 (C1), ADR-0045 (C2, C4), **ADR-0046 (C2, C4)**, and two records marked for one amendment only:
 ADR-0003 A2 (C1) and ADR-0029 A2 (C3). Batches 17 to 21, all of 2026.09.30, ratified six amendments and ADR-0044
 (17), ADR-0021 (18), ADR-0033 A4 (19), the four Run records with three amendments (20), and ADR-0033 A5 (21).
-Batches 22 to 24, all of 2026.10.01, ratified ADR-0045 (22), ADR-0033 A6 (23) and ADR-0030 A1 (24). Two records are
+Batches 22 to 24, all of 2026.10.01, ratified ADR-0045 (22), ADR-0033 A6 (23) and ADR-0030 A1 (24); Batch 25, of
+2026.10.02, ratified ADR-0046, with dependent entries in thirteen records. Two records are
 ratified in part: ADR-0022 §1–§5, §7 and §8, with **§6 not**, since ADR-0034 discharges its obligation for Build and
 not for Run; and ADR-0042 §1–§5, §7 and §8, with **§6 not**, Run's confinement obligation, left out by the custodian
 as ADR-0022 §6 was. Accepted records carry **debts on their face** — ADR-0030's, ADR-0033's Kafka row and its
@@ -1270,15 +1276,17 @@ refinement chain, ADR-0034's, ADR-0045's — which is ADR-0029 §2 working as wr
 revision 10, ADR-0031's `ttl` check, ADR-0025's two schema fields and ADR-0044's implementation, were struck by
 ADR-0033 A6. **One marking has no criterion:** ADR-0035 R2 is confirmation-required by custodian instruction, because
 its measurement rule is a novel construction to be reviewed against practice; G4 carries it as a ledger line and asks
-whether ADR-0029 needs a criterion for markings of that kind. **One kind of debt is new**: three texts were drafted
-by the assistant at the custodian's request, ADR-0044, ADR-0045 and ADR-0030 A1, each marking every choice as the
-drafter's, and the custodian settled all three by ratifying the text. ADR-0029 has no criterion for that either, and
-G7 carries it beside the ADR-0035 line.
+whether ADR-0029 needs a criterion for markings of that kind. **One kind of debt is new**: four texts were drafted
+by the assistant at the custodian's request, ADR-0044, ADR-0045, ADR-0030 A1 and ADR-0046, each marking every choice
+as the drafter's, and the custodian settled all four by ratifying the text. ADR-0029 has no criterion for that either,
+and G8 carries it beside the ADR-0035 line.
 
 **Bootstrap trigger.** The anchor *may* bootstrap once a drafted TLA+ bootstrap specification exists: five modules
 (`Genesis`, `Anchor`, `RulesFloor`, `Promotion`, `BreakGlass`), five invariants, and a mutation for each that must
-fail. `RulesFloorNV` is a precursor, not a substitute. **Two of the five are drafted and checked** — `Anchor`
-(`FloorPreserved`) and `BreakGlass` (`BreakGlassNeverChangesAuthority`). `Genesis` waits on the genesis rules
+fail. `RulesFloorNV` is a precursor, not a substitute. **Two of the five are drafted, checked and, since
+2026.10.02, proved** — `Anchor` (`FloorPreserved`, for every floor subset and epoch bound) and `BreakGlass`
+(`BreakGlassNeverChangesAuthority`, with R7 in force); `GenesisSatisfiesFloor`'s shape is a lemma in both, proved of
+the floor's definition and not of genesis contents, which are unwritten. `Genesis` waits on the genesis rules
 contents; `RulesFloor` and `Promotion` wait on modeling decisions about epochs, the vote triple, and veto seats.
 `Promotion` also owes a model of deciding before committing, which the reference had to implement (§4.1).
 
@@ -1391,14 +1399,18 @@ mechanism claim for effect exclusivity; the rules floor, which carries the same 
    is now a named row** (ADR-0045 T-0045-28) and a debt with an owner. The first stage of a chain exists since
    2026.09.30: every behaviour the reference's tests exercise is replayed through an operational model of its state
    machine (§15). It is a mechanized link, not a refinement, and the guarantee delivered is still *Empirical* in the
-   paper's own ordering.
+   paper's own ordering. The proofs of the modules (ADR-0046) do not change this: they are of the specification,
+   and they make the refinement's target precise and do nothing else for it.
 7. **Their trusted list is shorter than ours and names the Dafny verifier**, which discharges every obligation
    through Z3 and emits no certificate. ADR-0045 §2 applied to the corpus's own gate refused cvc5 for exactly that
    reason, and ADR-0030 A1 put a proof checker behind it (§3.1), so a Dafny or Verus chain would not remove
    T-0045-28 here; it would replace it with a trust-root
    row for the verifier, which the paper accepts and this corpus would have to say. The chain shape the corpus has
    already accepted is ADR-0030 §3's: a Rust engine differentially tested against a Lean model whose theorems a
-   small kernel checks.
+   small kernel checks. **The corpus now has a verifier in that position too.** The TLA+ Proof System proves the
+   modules' invariants through Z3, Zenon and a temporal-logic backend and emits no certificate a kernel checks
+   unless its Isabelle backend is asked to, which it has not been (G8, item 74). ADR-0046 made it a trust-root row,
+   T-0045-31, which is what this item said the paper accepts and the corpus would have to say; the corpus has said it.
 
 The co-author's name is spelled **Varshney**. Check any draft outside the Project before publishing.
 
@@ -1413,8 +1425,9 @@ The narrative expectation for that pass:
 - **GOVERN 3.2** strengthens on ADR-0024 and the evictability test.
 - **GOVERN 1.3 and MAP 1.5** convert, since ADR-0023 resolves the axis question.
 - **MANAGE 2.4** is resolved by mechanism: legibility, non-erasable stop attribution, and the forensic floor.
-- **Still gaps:** MAP 2.3 (TLC versus TLAPS undeclared), MAP 3.4 (operator proficiency), MEASURE 2.13 (floor
-  fitness), MEASURE 3.2 (`L`, now with a mechanism-enforced count beside it), MANAGE 1.4 (residual-risk statement,
+- **MAP 2.3 is closed** by ADR-0046 (Batch 25): TLC checks the mutations and witnesses, the prover proves the
+  invariants, and the corpus says which claim rests on which.
+- **Still gaps:** MAP 3.4 (operator proficiency), MEASURE 2.13 (floor fitness), MEASURE 3.2 (`L`, now with a mechanism-enforced count beside it), MANAGE 1.4 (residual-risk statement,
   headed by anchor capture and now carrying collusion), MANAGE 3.1 (monoculture, now a per-cell pair).
 
 ### 11.3 TLA+ practice
@@ -1463,12 +1476,28 @@ The narrative expectation for that pass:
 - **A model written from the code by the same hand agrees with the code.** Twenty-one traces matching on the first
   honest run is what that predicts, and is not evidence the code is right. What the harness buys is drift: a change
   to `apply` the model does not share fails at the exact step.
+- **The invariants were provable, and cheap.** No module states liveness, and each property is a flag set at the
+  action that would violate it or a set the property quantifies over, so the inductive step is the guard a mutation
+  removes. The "Breaks under" column was in effect a list of which guard each proof would rest on. One invariant,
+  `ContainedMeansConfined`, had to be invented: six clauses binding a lease to the guest generation it was granted
+  against (`spec/proof-method.md`).
+- **A proof is a second derivation of what a mutation breaks.** Each theorem takes the absence of the mutations that
+  break it as a hypothesis, written apart from the binding table; the two disagreed in five places, and TLC rows
+  run afterwards agreed with the proofs every time.
+- **The prover sees what no model run reaches.** `NonComposition`'s NC1 needs that only admitted effects are
+  recorded as via break-glass; the specification never reaches a state without it, so no TLC run could find the
+  missing clause.
+- **An unnamed `ASSUME` is a fact to TLC and nothing to the prover.** The non-vacuity facts the modules stated that
+  way are now lemmas proved from the definitions, with witness records.
+- **Some constants that look like premises are not.** The unread bounds hold for every `K` and `R`; `K < R` is what
+  lets the bound refuse at all, which is non-vacuity, and stays TLC's. A counterexample's state count is not
+  reproducible with every worker searching; its outcome is.
 
 ---
 
 ## 12. Where the argument is thin
 
-The open list is G7. In narrative terms, the argument is weakest in sixteen places.
+The open list is G8. In narrative terms, the argument is weakest in sixteen places.
 
 1. **The sandbox gap.** Effect exclusivity, ADR-0015's exhaustiveness, and ADR-0022 §6's confinement all rest on a
    mechanism that is now specified (ADR-0034) and not built. The reference issues every lease at rung 0; the first
@@ -1479,8 +1508,9 @@ The open list is G7. In narrative terms, the argument is weakest in sixteen plac
    the missing gate, and it is still unowned.
 3. **Author-only ratification, and now assisted drafting.** Thirty-eight records were ratified by one person, and
    the pace has not slowed: the five batches of 2026.09.29 and the five of 2026.09.30 ratified seven records and
-   eleven amendments in two days. Three of this day's records were drafted by the assistant at the custodian's
-   request and settled by ratification or revision, which is one step further from review than the rest. Twenty
+   eleven amendments in two days. Four records were drafted by the assistant at the custodian's request and settled
+   by ratification, which is one step further from review than the rest; the fourth, ADR-0046, asked the custodian
+   to regenerate its evidence so the digests would not be the drafter's alone, and the drafter ran it. Twenty-two
    carry confirmation markers and will be reviewed after bootstrap; the
    bootstrap set gets no confirmation promotion, by construction — confirmation runs under those records — and
    since ADR-0029 A2 it is instead reviewed at the bootstrap gate with the entire corpus. Until a reviewer is
@@ -1490,10 +1520,15 @@ The open list is G7. In narrative terms, the argument is weakest in sixteen plac
    the declaration records are actually written. None has been.
 6. **The archetype can grow without a bound on how.** Clause 4's admission test forces extension; the record that
    would constrain the direction of that growth is deferred (§8.2).
-7. **Checks are evidence, not attestation.** Fourteen TLA+ modules, an operational model with a trace harness, the
-   floor gates and a running reference now exist, and every mutation fails as it should. They were written and run
-   by the same hands that wrote the records, at small constants. TLC at these sizes is a discrimination test, not a
-   proof, and **agreement among records, checks and code written by one hand is not independence** (ADR-0033). The
+7. **Checks are evidence, not attestation, and proofs are of the model.** Fourteen TLA+ modules, an operational
+   model with a trace harness, the floor gates and a running reference now exist, and every mutation fails as it
+   should. Since 2026.10.02 thirteen of the modules are also proved: every invariant they state holds of every
+   behaviour of the module, for every constant their assumptions admit, under the hypothesis that the mutations
+   which break it are absent (ADR-0046). That retires "TLC at these sizes is a discrimination test, not a proof" for
+   the invariants and leaves it standing for the mutations and witnesses. It changes nothing else here: the proofs
+   were written, checked and regenerated by the hand that wrote the records, the prover is trusted as written
+   (T-0045-31), and **agreement among records, checks, proofs and code written by one hand is not independence**
+   (ADR-0033). The
    trace harness makes the link between modules and code mechanized for the first time, and ADR-0045 T-0045-28 says
    what it is not: a refinement.
 8. **No floor is ratified.** The machinery that checks a floor is accepted; the genesis floor itself is a draft that
@@ -1527,9 +1562,11 @@ The open list is G7. In narrative terms, the argument is weakest in sixteen plac
     to cedar's own folding of the totality gate, which never reaches the solver (§3.1). Every promotion vote still
     binds to a gate-evidence digest an operator asserted; the gate runner's key under ADR-0025 §1 (f) is the repair
     and is unissued (§7.9).
-16. **What runs is not what is checked.** The modules are checked at small constants; the Rust is asserted to follow
-    them, and since 2026.09.30 shown to agree with a model of itself on every tested path, which is a harness and not a
-    refinement. The implementation, the model checker and the build toolchain are trust roots for every deployment,
+16. **What runs is not what is proved.** The modules' invariants are proved and their mutations checked at small
+    constants; the Rust is asserted to follow them, and since 2026.09.30 shown to agree with a model of itself on every
+    tested path, which is a harness and not a refinement. A proof of a module makes the refinement's target precise
+    and does nothing else for it. The implementation, the model checker, the prover and the build toolchain are trust
+    roots for every deployment,
     and the reproducible build that would fix the last one's identity is not declared (§7.9, §15).
 
 ---
@@ -1656,9 +1693,9 @@ channel, and the guest launcher that would make them the same pipe is designed (
 hermeticity: tools are pinned by binary and schema digest and run in a cleared environment, and their behaviour is
 unchecked; in Run, the channel a tool opens is declared and nobody checks it (G19). The Observer as a detector: the
 reference seats one, hears its heartbeats and stalls on its absence, and the Observer that would produce a finding
-is an e2e fixture with nothing behind it. `W(p)` as an ACL: cells are declared, not enforced. Bundle signing: the
-record is in force and the tarball is still trusted by its name (ADR-0044; G7). The `ttl` bound and the two key
-fields Batch 17 put on record faces: unbuilt. The archive, erasure, masking, Persona attestation and bootstrap: none
+is an e2e fixture with nothing behind it. `W(p)` as an ACL: cells are declared, not enforced. Bundle custody:
+bundles verify under a dev key with custody (1, 0), and signing at promotion is not a pipeline step (G8, item 67).
+The archive, erasure, masking, Persona attestation and bootstrap: none
 is built. Scale and long-running behaviour: there are no snapshots, and every admit waits for a consensus round. And
 that the floor is the right floor.
 
@@ -1720,6 +1757,27 @@ directories are not tracked, and G4 measures the tree by manifest.
 **What it does not show.** That θ is right, that the near-duplicate tool is the right tool, that two lineages the
 rule calls independent fail independently (only §6's test can), and that the bound is how anyone else measures
 overlap. The last is why ADR-0035 R2 is marked for review before ratification (§12, item 10).
+
+---
+
+## Appendix H. Changes from revision 11
+
+- **State of record repointed** from G7 to G8. Counts updated: forty records accepted, two in part, one superseded,
+  three Proposed, twenty-two confirmation-required (§0, §9). Four assistant-drafted texts, all ratified, and
+  ADR-0046's condition run by the drafter (§0, §9, §12).
+- **§1:** the T role names proof beside model checking.
+- **§7.9:** thirty-one rows; the prover beside the model checker among what runs; T-0045-31 as Batch 25's dependent
+  entry, TLC's row bounding the mutations and witnesses only, and the binding table's proof column and five
+  corrections.
+- **§9:** ratification at 2026.10.02 and Batch 25; ADR-0046 in the confirmation-required list; the bootstrap
+  trigger's two modules proved, with `GenesisSatisfiesFloor`'s shape as a lemma.
+- **§11.1:** item 6, the proofs are of the specification; item 7, the corpus's own verifier and its row.
+  **§11.2:** MAP 2.3 closed. **§11.3:** five bullets from the proofs.
+- **§12:** the open list is G8; item 3 counts four assisted texts; item 7 says what the proofs retire and what they
+  leave; item 16 says what runs is not what is proved.
+- **§15:** a sentence revision 11 left standing, that bundle signing and Batch 17's two fields were unbuilt, is
+  corrected: ADR-0033 A6 built them before G7, and what is not shown is the bundle key's custody.
+- **Appendices A to G retained.**
 
 ---
 

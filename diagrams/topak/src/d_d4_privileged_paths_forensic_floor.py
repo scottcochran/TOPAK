@@ -26,7 +26,9 @@ def build():
                "effect. ADR-0028 names six classes of authority fact that no erasure may reach.",
                W, "ADR-0006; ADR-0009; ADR-0013 §1–§6; ADR-0026 §2, A1 (R8, pending), B4; ADR-0028 §1–§4, Bootstrap note, "
                "open obligations; ADR-0029 §5; ADR-0030 §5; ADR-0039 §2; ADR-0041 §2, §3; ToO rev 11 §3.3, §4.1, §4.4; "
-               "G7 §1.1, §2.1, §4, §7 items 8, 10, 49; spec/NonComposition.tla; spec/NonComposition-results-2026.09.23.txt; "
+               "G7 §1.1, §2.1, §4, §7 items 8, 10, 49; G8 §3, item 39; spec/NonComposition.tla; "
+               "spec/NonComposition-results-2026.09.23.txt; spec/NonComposition_proof.tla and "
+               "NonComposition-proof-results-2026.10.02.txt; ADR-0013 B25; ADR-0046 §4; "
                "floor/genesis-floor.cedar (X1, X2, F-forensic-classes, R3-observer-live); mechanism/crates/topak-core/src/"
                "rules.rs, state.rs, admit.rs (`via_break_glass`); scripts/dev-init.sh; GAPS-AND-ASSUMPTIONS I9, G10, G11")
     X0, X1 = c.x0, c.x1
@@ -222,11 +224,12 @@ def build():
          "In force; a conditional entry, binding only once R1 is relaxed"],
     ], size=13.5, accent="blue") + 10
     c.para(X0, yy, lw, "The genesis rules floor is **R1, R2, R5, R6, R7, R9**. The ADR-0026 §6 rerun with A2.2 and A2.3 "
-           "is still owed (G7 item 39).", 13.5, "muted")
+           "is still owed (G8 item 39).", 13.5, "muted")
 
     rx = X0 + lw + 70
     rw_ = X1 - rx
-    c.text(rx, y + 21, "Non-composition: NC-1 and NC-2, checked 2026.09.23 (ADR-0013 §4, §6)", 21, "violet", bold=True)
+    c.text(rx, y + 21, "Non-composition: NC-1 and NC-2, checked 2026.09.23 and proved 2026.10.02 (ADR-0013 §4, §6, "
+                       "B25)", 21, "violet", bold=True)
     yy = y + 40
     half = (rw_ - 24) / 2
     hh = c.card(rx, yy, half, "NC-1", ["Break-glass chained with erasure **never yields an effect that is authorized, "
@@ -259,8 +262,11 @@ def build():
     ], size=13.5, accent="violet") + 10
     c.para(rx, yy, rw_, "`NonComposition.tla` (`119f9a7e878f8929`), TLC2 2.19. The third witness matters: without it NC-1 "
            "could hold because the two paths never meet. **Scope**: two effects, one break-glass invocation, small "
-           "constants; `ForensicKinds` = {F1, F5, F6}, three of six classes. Non-composition and reachability, **not "
-           "proof**, run by the author: evidence, not attestation.", 13.5, "muted")
+           "constants; `ForensicKinds` = {F1, F5, F6}, three of six classes. Non-composition and reachability, "
+           "checked. **Since 2026.10.02 NC1 and NC2 are proved** for every behaviour of the module, not under `M1` or "
+           "`M2` (`NonComposition_proof.tla`, 58 obligations; ADR-0013 B25). The proof needed a clause the module never "
+           "states, that only admitted effects are recorded as via break-glass: no TLC run could see that gap (G8 §3, "
+           "result 3). Run by the author: evidence, not attestation.", 13.5, "muted")
     y = c.ymax + 70
 
     # ---- the forensic floor

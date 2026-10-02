@@ -1,7 +1,9 @@
 # Specifications
 
 TLA+ modules checked in TLC at small constants, each with the mutations that must fail and the reachability
-witnesses that must be violated. **They are evidence, not proofs** (every checkpoint's §8). A module cited by digest
+witnesses that must be violated. **TLC's results are evidence, not proofs** (every checkpoint's §8); since G8 the
+invariants of thirteen modules are also proved, under named hypotheses, by the proof modules below (ADR-0046), and
+neither is a claim about the running reference. A module cited by digest
 in an accepted record is frozen; a change is a successor module (`RulesFloorNV_rev5`, `Lease_A1`). Results files are
 hand-assembled TLC output with a dated name and never change; the two generators regenerate one from a row list.
 `tools/tla2tools.jar` is the checker, tracked for its digest, which results files print from 2026.09.30 on.

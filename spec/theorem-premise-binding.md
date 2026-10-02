@@ -11,9 +11,10 @@ property **void** for that deployment. That is ADR-0023 §2's inventory, theorem
 computed from this table instead of listed by hand. The last column computes it for the reference, against
 ADR-0045 Annex B.
 
-**What this is not.** A proof of anything. Every property here was checked by TLC at small constants, or restated
-as a test, by the same hands that wrote the records (every checkpoint's §8). A row says what a check *assumed*; it
-does not strengthen the check.
+**What this is not.** A proof by itself. Every property here was checked by TLC at small constants, or restated as
+a test, by the same hands that wrote the records (every checkpoint's §8), and the invariants of thirty-seven rows
+are also proved, under the hypotheses the "Breaks under" column names, by the proof module the *Checked in* column
+cites (ADR-0046), by the same hands. A row says what a check or a proof *assumed*; it does not strengthen either.
 
 **Premises every row shares (BASE).** T-0045-1 (the replicas apply the ordered log as crash-fault machines),
 T-0045-11 (the records are the records that were ratified), **T-0045-28** (the running code refines the checked

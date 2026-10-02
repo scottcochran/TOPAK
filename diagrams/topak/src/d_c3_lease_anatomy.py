@@ -12,7 +12,8 @@ def build():
                "subtracts authority.",
                3200, "ADR-0031 §1–§8 with R1–R3, C1, E1, A1, A2 and History B5, B8, B10, B17, B23; ADR-0034 §3; "
                      "ADR-0037 §1; ADR-0040 §4; ADR-0033 §4 and A6; ADR-0032; ADR-0016 §6; spec/Lease_A1.tla "
-                     "(0b5eac7a7309be2f) and spec/Lease_A1-results-2026.09.28.txt; ToO rev 11 §2.5; G7 §1.1, §2.2, §2.7, "
+                     "(0b5eac7a7309be2f) and spec/Lease_A1-results-2026.09.28.txt; spec/Lease_A1_proof.tla (6f39c7711252c8de) "
+                     "and Lease_A1-proof-results-2026.10.02.txt; ADR-0046 §4; ToO rev 11 §2.5; G7 §1.1, §2.2, §2.7, "
                      "§7 items 21, 22, 62")
     X0, X1 = c.x0, c.x1
     y = c.y
@@ -287,11 +288,19 @@ def build():
         ["Renewal may lower the rung (the rule as ratified at R3) (A1)", "M_LOWER", "LeaseAuthorityMonotone", CE],
     ]
     y += c.table(X0, y, cols, rows, size=14, accent="teal") + 20
-    c.para(X0, y, X1 - X0,
+    y += c.para(X0, y, X1 - X0,
            "**The finding the check bought (C1):** the first run failed on the full mechanism. A `Grant` replaced a live "
            "lease with wider authority, which satisfied every clause as first written, because §4 governs renewal and "
            "this was a grant. §2 now states the one-live-lease rule. Model: two principals, a two-variant alphabet, "
            "rungs 0–3, roles author and voter; the round number and the bundle are not modelled (the reference checks "
            "the bundle: `renewal_cannot_swap_the_bundle`). Earlier runs: R1 1,605,720 states, R3 1,746,048.", 14,
-           "muted")
+           "muted") + 16
+    c.card(X0, y, X1 - X0, "Since 2026.10.02: the four invariants are proved (ADR-0031 B25; ADR-0046 §4)", [
+        "`spec/Lease_A1_proof.tla` (`6f39c7711252c8de`) proves, for every behaviour and every epoch and fence bound: "
+        "`LeaseAuthorityMonotone` not under `M_RENEW`, `M_ROLE`, `M_LOWER`; `NoActionUnderFencedEpoch` not under "
+        "`M_FENCE`; `Rung0NeverContained` not under `M_RUNG`; `RevokedStaysStopped` not under `M_REVOKE`. 200 "
+        "obligations, by the prover T-0045-31.",
+        "The frozen `Lease.tla` is not separately proved: its invariants are `Lease_A1`'s at rungs 0..2. The rows "
+        "above stay with TLC; the proof is of the module, not of the reference's grant path (T-0045-28).",
+    ], accent="teal", size=14, status="accepted", status_extra="ADR-0046 · C2, C4 · B25")
     return c

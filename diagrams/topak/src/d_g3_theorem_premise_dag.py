@@ -1,11 +1,14 @@
 """G3 — Theorem-to-premise DAG: the binding table ADR-0045 §3 owes, drawn in full, as an incidence matrix and as
-three node-link chains (Contained, promotion, floor routing).
+three node-link chains (Contained, promotion, floor routing), with the proof column and the corrections ADR-0046 §5
+made at Batch 25.
 
 The table is read at build time from spec/theorem-premise-binding.md (relative to the repository root), so the
 42-row table below is the file's text. The premise incidences are computed from its "Row premises" column (every
-T-0045-n token, ranges expanded, BASE expanded to its five rows); parameter and gap premises, the verdict labels and
-the rung-conditional marks are transcribed here and asserted against the parsed rows, so a change to the file
-fails the build instead of drawing a stale matrix.
+T-0045-n token, ranges expanded, BASE expanded to its five rows, and to T-0045-31 as well for a row whose "Checked in"
+column names a proof module); parameter and gap premises, the verdict labels, the rung-conditional marks, the proof
+status and the 2026.10.02 corrections are transcribed here and asserted against the parsed rows (parameter tokens
+outside struck text, "proved in", the correction notes), so a change to the file fails the build instead of drawing
+a stale matrix.
 """
 import pathlib
 import re
@@ -19,12 +22,14 @@ ROOT = pathlib.Path(__file__).resolve().parents[3]
 SRC = ROOT / "spec" / "theorem-premise-binding.md"
 
 BASE = (1, 11, 28, 29, 30)
+PROVER = 31    # T-0045-31: in BASE for a proved row, for the invariant (ADR-0046 §3; the table's BASE paragraph)
 
 
 # ---------------------------------------------------------------------------------------------
 # Parse the binding table
 
 def _clean(s):
+    s = re.sub(r"~~(.+?)~~", lambda m: "[[grey|struck: " + m.group(1).replace("`", "") + "]]", s)  # ~~x~~
     s = re.sub(r"\*\*(`[^`]+`)\*\*", r"\1", s)                     # **`x`** -> `x`
     s = re.sub(r"(?<![*\w])\*(?!\*)([^*]+?)(?<!\*)\*(?![*\w])", r"\1", s)   # *italic* -> plain
     return s
@@ -41,9 +46,9 @@ def load_table():
     return rows
 
 
-def t_rows(cell):
-    """Every T-0045-n named in a Row premises cell; ranges expanded; BASE expanded."""
-    out = set(BASE) if "BASE" in cell else set()
+def t_rows(cell, proved=False):
+    """Every T-0045-n named in a Row premises cell; ranges expanded; BASE expanded (with the prover if proved)."""
+    out = (set(BASE) | ({PROVER} if proved else set())) if "BASE" in cell else set()
     for m in re.finditer(r"T-0045-(\d+)(?:\s+to\s+(\d+))?", cell):
         a = int(m.group(1))
         b = int(m.group(2)) if m.group(2) else a
@@ -97,10 +102,10 @@ META = [
     ("ReachIsBounded", "`ReachIsBounded`", "Observers", "notenf", "declared, not enforced", [], set()),
     ("NoAdmitWithoutLiveObserver", "`NoAdmitWithoutLiveObserver`", "Coupling", "holdsq", "holds, modulo the gap",
      ["coup", "wm"], set()),
-    ("UnreadBounded", "`UnreadBounded`", "Coupling", "holdsq", "holds, modulo the gap", ["coup", "kr", "wm"], set()),
+    ("UnreadBounded", "`UnreadBounded`", "Coupling", "holdsq", "holds, modulo the gap", ["coup", "wm"], set()),
     ("CorrelatorNeverGates", "`CorrelatorNeverGates`", "Coupling", "holds", "holds", ["corr"], set()),
     ("UnreadEffectsBounded", "`UnreadEffectsBounded`", "RunCoupling", "holdsq", "holds, modulo the gap",
-     ["effc", "coup", "kr", "wm"], set()),
+     ["effc", "coup", "wm"], set()),
     ("ConsultNeverCoupled", "`ConsultNeverCoupled`", "RunCoupling", "holds", "holds", ["root"], set()),
     ("SealCountsEffects", "`SealCountsEffects`", "RunCoupling", "holds", "holds", ["effc"], set()),
     ("RoundBoundCountsAll", "`RoundBoundCountsAll`", "RunCoupling", "holds", "holds", [], set()),
@@ -166,11 +171,12 @@ TROWS = {
     22: ("the host at rung 0", "excl"), 23: ("native tool (Invoke)", "excl"), 24: ("Run tool channel", "excl"),
     25: ("tool host", "root"), 26: ("decoding conformance", "none"), 27: ("bundle signer (B23)", "rootd"),
     28: ("code refines spec", "root"), 29: ("TLC, its constants", "root"), 30: ("build toolchain", "root"),
+    31: ("TLA+ Proof System (B25)", "root"),
 }
 TGROUPS = [
     ("Mechanism constants (all rungs)", list(range(1, 13))),
     ("Build-gate toolchain", [13, 14, 15]),
-    ("Verified object's evidence", [28, 29, 30]),
+    ("Verified object's evidence", [28, 29, 30, 31]),
     ("Confinement axis", list(range(16, 23))),
     ("Tools and the cell", [23, 24, 25, 27, 26]),
 ]
@@ -178,20 +184,20 @@ TGROUPS = [
 PARAMS = [
     ("fver", "floor verified", "floor verified", "D-0030-1 drops the proven status", "green"),
     ("fdraft", "floor text DRAFT", "the floor text is DRAFT, so the envelope it permits is the draft's",
-     "qualifier: no floor is ratified (G7 §8)", "violet"),
+     "qualifier: no floor is ratified (G8 §8)", "violet"),
     ("rchk", "routing checked", "routing checked (ADR-0030 §5 A1)", "D-0030-2: gates run without the checker",
      "green"),
     ("bsig", "bundle signed", "bundle signed", "D-0044-1: the revision is a file name", "green"),
     ("r67", "rules floor R6, R7", "rules floor R6, R7 in force", "dropping either entry", "green"),
     ("qall", "quorum = \"all\"", "`quorum = \"all\"`", "D-0024-1 voids it; R9 keeps D-0024-2 out", "green"),
     ("ming", "minGrant ≥ 2", "`minGrant ≥ 2`", "dropping R2", "green"),
-    ("qge2", "threshold ≥ 2", "`quorum ≥ 2` when a threshold", "dropping R9 with R1 relaxed", "green"),
+    ("qge2", "threshold ≥ 2", "`quorum ≥ 2` when a threshold",
+     "dropping R9 with R1 relaxed; the proof's hypothesis is R2 and (R1 or R9)", "green"),
     ("c1", "confinement ≥ 1", "confinement ≥ 1", "D-0034-1, -2 lower it; D-0034-4 is rung 0", "red"),
     ("c2", "confinement ≥ 2", "confinement ≥ 2", "rungs 0 and 1 cannot produce Contested", "red"),
     ("obs", "Observer per cell", "an Observer per cell", "D-0037-1: no Observer; D-0038-1: the shared group only",
      "green"),
     ("coup", "coupling on", "coupling on", "D-0039-1", "green"),
-    ("kr", "K < R", "`K < R`", "values are placeholders", "green"),
     ("corr", "correlator exists", "a correlator exists", "D-0038-2", "green"),
     ("effc", "effects counted", "effects counted", "D-0042-1", "green"),
     ("root", "Run root pinned", "the Run root is pinned (ADR-0040 §3)", "a live Consult would be egress", "green"),
@@ -208,6 +214,42 @@ GAPS = [
 ]
 PCODE = {p[0]: p for p in PARAMS + GAPS}
 
+# How each parameter, gap or input premise is written in the file (searched in the "Row premises" and "Parameter and
+# gap premises" cells with struck text removed). Every token found must be transcribed in META, and vice versa.
+TOKENS = {
+    "fver": r"floor verified", "fdraft": r"the floor text is DRAFT", "rchk": r"routing checked",
+    "bsig": r"bundle signed", "r67": r"R6, R7 in force", "qall": r'quorum = "all"', "ming": r"minGrant ≥ 2",
+    "qge2": r"quorum ≥ 2", "c1": r"confinement ≥ 1", "c2": r"confinement ≥ 2", "obs": r"an Observer per cell",
+    "coup": r"coupling on", "corr": r"a correlator exists", "effc": r"effects counted",
+    "root": r"the Run root is pinned", "a22": r"A2\.2 and A2\.3 as tally constants",
+    "wm": r"watermark is honest|honest watermark", "indep": r"independence criterion in force",
+    "runc": r"Run's confinement delivered", "g18": r"no independence table", "orc": r"the three oracles",
+}
+# Premises the table struck on 2026.10.02 (ADR-0046 §5): drawn in the key, cited by no row.
+STRUCK = [("K < R", "struck from `UnreadBounded` and `UnreadEffectsBounded` (ADR-0046 §5): both are proved for "
+           "every K and R; ADR-0039 §1 keeps it so that condition 3 can refuse, a non-vacuity claim TLC shows")]
+
+# The 2026.10.02 revision (ADR-0046 §5), transcribed per row: (number, what changed). Rows whose cells carry the
+# file's correction notes ("2026.10.02", "the proof's hypothesis") must be exactly the rows marked here, except
+# EnvelopeHolds, whose breakers the revision wrote out without a note.
+CORR = {
+    "AdmitImpliesFloorPermit": ("2", "also breaks under `M_ERR`"),
+    "FloorErrorIsDeny": ("2", "also breaks under `M_OVERRIDE`"),
+    "BundleRefusalHonored": ("2", "also breaks under `M_OVERRIDE`"),
+    "EnvelopeHolds": ("·", "breakers named: `M_WRITE`, `M_ERR`, `M_OVERRIDE`; `M_GATE`"),
+    "P9_NoSoloGrant": ("·", "rests on R2 and (R1 or R9)"),
+    "ContainedMeansConfined": ("4", "`SameGuest` at grant not load-bearing"),
+    "UnreadBounded": ("5", "`K < R` struck"),
+    "UnreadEffectsBounded": ("5", "`K < R` struck"),
+    "SealCountsEffects": ("3", "`M_EMITSEQ`, not `M_ROUNDS`"),
+    "OnlyThinkersActuate": ("1", "`M_OBSEMIT` breaks neither; `M_DOMAIN` breaks `ObserversConsultAndReport`"),
+}
+UNNOTED = {"EnvelopeHolds"}
+
+
+def _unstruck(s):
+    return re.sub(r"\[\[grey\|struck: .*?\]\]", "", s)
+
 
 def model():
     table = load_table()
@@ -216,10 +258,19 @@ def model():
     for cells, meta in zip(table, META):
         match, label, group, vcls, vlab, params, cond = meta
         assert match in cells[0], (match, cells[0])
-        ts = t_rows(cells[4])
+        proved = "proved in" in cells[1]
+        assert proved == (group != "Unmodelled"), (match, "proof column", cells[1])
+        prem = _unstruck(cells[4] + " ; " + cells[5])
+        found = {k for k, t in TOKENS.items() if re.search(t, prem)}
+        assert found == set(params), (match, "parameter premises", sorted(found), sorted(params))
+        noted = any("2026.10.02" in x or "proof's hypothesis" in x for x in cells)
+        assert noted == (match in CORR and match not in UNNOTED), (match, "correction note", noted)
+        ts = t_rows(cells[4], proved)
         assert cond <= ts, (match, cond, ts)
         out.append(dict(cells=cells, label=label, group=group, vcls=vcls, vlab=vlab, params=params, cond=cond,
-                        ts=ts, explicit=explicit_t(cells[4]), base="BASE" in cells[4]))
+                        ts=ts, explicit=explicit_t(cells[4]), base="BASE" in cells[4], proved=proved,
+                        corr=CORR.get(match), match=match))
+    assert sum(r["proved"] for r in out) == 37, "proved rows"
     return out
 
 
@@ -256,17 +307,21 @@ def vpill(c, x, y, row, size=12.5, anchor="start"):
 
 def build():
     rows = model()
-    c = Canvas(ID, "Theorem to premise: what every checked property rests on, and what is void at the reference",
-               "`spec/theorem-premise-binding.md` (2026.09.30, revised 2026.10.01, **DRAFT**, revised with the records "
-               "it binds) is the table ADR-0045 §3 owes and ADR-0023 §2 assumes: one row per checked property, naming "
-               "the trusted-base rows (ADR-0045 Annex A), the degeneracy parameters (ADR-0023 §6a) and the declared "
-               "gaps it rests on. A property holds for a deployment when every row it names is declared delegated or "
-               "trust root, every parameter holds and no gap premise is false; otherwise it is void. Drawn three "
-               "ways: the key chains as a DAG, the full incidence matrix, and the table itself, all 42 rows.",
+    c = Canvas(ID, "Theorem to premise: what every checked or proved property rests on, and what is void at the "
+               "reference",
+               "`spec/theorem-premise-binding.md` (2026.09.30, revised 2026.10.01 and 2026.10.02 with ADR-0046, "
+               "**DRAFT**, revised with the records it binds) is the table ADR-0045 §3 owes and ADR-0023 §2 assumes: "
+               "one row per checked property, naming the trusted-base rows (ADR-0045 Annex A), the degeneracy "
+               "parameters (ADR-0023 §6a) and the declared gaps it rests on. A property holds for a deployment when "
+               "every row it names is declared delegated or trust root, every parameter holds and no gap premise is "
+               "false; otherwise it is void. Since Batch 25 the table names the proof module of 37 rows and carries "
+               "five corrections the proofs found. Drawn three ways: the key chains as a DAG, the full incidence "
+               "matrix, and the table itself, all 42 rows.",
                3600,
                "spec/theorem-premise-binding.md (all 42 rows, read at build time); ADR-0045 §3, §5, Annex A, Annex B "
-               "(with the B23 and B24 dependent entries); ADR-0023 §2, §6a; ADR-0033 A5, A6; ADR-0030 §5 A1; "
-               "G7 §2.6, §3, §8; spec/Mechanism-trace-results-2026.10.01.txt")
+               "(with the B23, B24 and B25 dependent entries); ADR-0046 §1–§5 (Batch 25); "
+               "spec/premise-corrections-results-2026.10.02.txt; ADR-0023 §2, §6a; ADR-0033 A5, A6; ADR-0030 §5 A1; "
+               "G8 §2.1–§2.3, §2.6, §2.9, §3, §8; G7 §3; spec/Mechanism-trace-results-2026.10.01.txt")
     X0, X1 = c.x0, c.x1
     W = X1 - X0
     y = c.y
@@ -279,22 +334,30 @@ def build():
             "One row per checked property: what it **assumed**. A property is **void** for a deployment when a row it "
             "names is excluded, undeclared (ADR-0045 §3 rule 1) or refused, or a parameter or gap premise is false.",
             "The last column computes ADR-0023 §2's inventory for the reference against ADR-0045 Annex B.",
+            "Since B25 the **Checked in** column names the proof module beside the base module for 37 rows "
+            "(ADR-0046 §5).",
         ], "blue"),
         ("What it is not", [
-            "**A proof of anything.** Every property was checked by TLC at small constants, or restated as a test, by "
-            "the same hands that wrote the records (every checkpoint's §8).",
-            "A row says what a check assumed; it does not strengthen the check.",
+            "The file's words: \"**A proof by itself.** Every property here was checked by TLC at small constants, "
+            "or restated as a test, by the same hands that wrote the records, and the invariants of thirty-seven rows "
+            "are also proved\" by the proof module the **Checked in** column cites, by the same hands.",
+            "A row says what a check or a proof assumed; it strengthens neither. **Proved** is of the module and under "
+            "named hypotheses (ADR-0046 §1); neither method claims anything of the running reference (T-0045-28).",
         ], "red"),
         ("BASE: premises every row shares", [
             "T-0045-1 replicas apply the ordered log as crash-fault machines; T-0045-11 the records are the ratified "
             "records; T-0045-29 TLC at the constants run; T-0045-30 the build toolchain.",
             "**T-0045-28**: the running code refines the specification. **No refinement exists**, so for a running "
             "deployment every property is conditional on this row.",
+            "**A row with a proof module** (B25): the invariant rests on **T-0045-31**, the prover, in place of "
+            "T-0045-29, for every constant the proof's assumptions admit; the mutations and witnesses rest on "
+            "T-0045-29 as before.",
         ], "grey"),
-        ("Status of the table and its record", [
-            "ADR-0045 is **Accepted (genesis)**, confirmation required C2, C4 (Batch 22, R6 added the table).",
+        ("Status of the table and its records", [
+            "ADR-0045 is **Accepted (genesis)**, confirmation required C2, C4 (Batch 22, R6 added the table). "
+            "**ADR-0046** revised it in place (Batch 25, 2026.10.02; C2, C4): the proof column and five corrections.",
             "The table itself is a **DRAFT**, revised with the records it binds; its versioning belongs to the "
-            "archetype-evolution record, still unwritten (G7 item 7). `Never…` witnesses are not theorems and are "
+            "archetype-evolution record, still unwritten (G8 item 7). `Never…` witnesses are not theorems and are "
             "omitted.",
         ], "violet"),
     ]
@@ -304,13 +367,73 @@ def build():
     c.status(X0 + 3 * (w4 + gap) + w4 - 16, y + 16, "accepted", "C2, C4", anchor="end")
     y += hh + 54
 
+    # ---------------------------------------------------------------- the B25 band: proofs and corrections
+    y += c.heading(X0, y, "Batch 25 (ADR-0046 §4, §5): the proof column, and five corrections the proofs found",
+                   size=22)
+    y += c.para(X0, y, W, "Each proof module takes as hypothesis only the mutations that break each invariant, written "
+                "independently of the table; where the two disagreed TLC agreed with the proof, and the table was "
+                "corrected (G8 §3, result 2). The corrections' TLC rows are `spec/premise-corrections-results-"
+                "2026.10.02.txt` (`2669499135d2ea42`), every outcome as predicted.", 15, "muted") + 16
+    b25 = [
+        ("The proof column", [
+            "**37 of 42 rows** name a proof module: thirteen modules, **2,417 obligations**, each invariant proved "
+            "as `Spec => []P` under the module's named assumptions and the absence of the mutations that break it.",
+            "**No proof**: effect exclusivity (a claim), `PromotionMeetsIssuedQuorum` (module unwritten), the Paxos "
+            "simulation, the floor gates, and trace validation (`Mechanism.tla` is a trace replay; its target is the "
+            "refinement, T-0045-28).",
+            "The last column is **unchanged**: a proof of a module adds nothing at the reference (G8 §2.3).",
+        ], "teal"),
+        ("1 · RunSeats", [
+            "`M_OBSEMIT` breaks **none** of the three invariants: it narrows an observer's bound, and they are upper "
+            "bounds.",
+            "`ObserversConsultAndReport` breaks under `M_DOMAIN` as well as `M_KIND`.",
+            "TLC: `rs-obsemit-safe` holds; `rs-mdomain-observer` is a counterexample.",
+        ], "blue"),
+        ("2 · FloorComposition", [
+            "`M_OVERRIDE` admits on a bundle allow whatever the floor said: it also breaks `FloorErrorIsDeny` and "
+            "`BundleRefusalHonored`.",
+            "`M_ERR` admits on an engine error: it also breaks `AdmitImpliesFloorPermit`.",
+            "`EnvelopeHolds` is written out: `M_WRITE`, `M_ERR`, `M_OVERRIDE`. Three new TLC rows, each a "
+            "counterexample.",
+        ], "blue"),
+        ("3 · SealCountsEffects", [
+            "Breaks under `M_EMITSEQ`, **not** `M_ROUNDS`, which never touches a seal.",
+            "A transcription error: the results file's rows `rc-emitseq-seal` (counterexample) and `rc-rounds-seal` "
+            "(holds) already said so.",
+        ], "blue"),
+        ("4 · ContainedMeansConfined", [
+            "The five breakers stand. The lease's binding to its guest is enforced by `Act`'s generation check, which "
+            "`M_UNBOUND` removes, and **not by `SameGuest` at grant**, which the proof never uses.",
+            "A statement about the proof; no TLC row.",
+        ], "blue"),
+        ("5 · K < R struck as a premise", [
+            "`UnreadBounded` and `UnreadEffectsBounded` are proved for every K and R; neither rests on `K < R`. TLC: "
+            "both hold at K = 3 (and 5), R = 2.",
+            "ADR-0039 §1 keeps `K < R` so that condition 3 can refuse at all: a non-vacuity claim, shown by the "
+            "control rows (a backlog refusal is reachable only when K < R).",
+        ], "blue"),
+        ("Also made exact: P9_NoSoloGrant", [
+            "Its hypothesis is **R2 and (R1 or R9)**: under unanimity R2 makes the counted approvers at least two; "
+            "under a threshold R9 does; R2 is needed either way.",
+            "The table read \"drop R9 (binds only with R1 relaxed)\"; it now adds \"or drop R2\".",
+        ], "blue"),
+    ]
+    bg = 20
+    bw = (W - (len(b25) - 1) * bg) / len(b25)
+    bh = max(c.card(0, 0, bw, t, b, accent=a, draw=False, size=14) for t, b, a in b25)
+    for i, (t, b, a) in enumerate(b25):
+        c.card(X0 + i * (bw + bg), y, bw, t, b, accent=a, h=bh, size=14)
+    y += bh + 54
+
     # ---------------------------------------------------------------- part 1: the key chains as a DAG
     y += c.heading(X0, y, "1 · Three chains, drawn as a DAG: each property points at the premises it rests on "
                           "(BASE omitted)", size=22)
     y += c.para(X0, y, W, "Left: premise nodes, coloured by their class at the reference (ADR-0045 Annex B). Right: "
-                "checked properties, coloured by the table's last column. An edge runs from a property to a premise "
-                "it names; a dashed edge is a premise that applies only at one declared rung. Edges take the colour "
-                "of the property, so a red edge ends at what makes its property void.", 15, "muted") + 18
+                "properties, coloured by the table's last column; a teal **proved** pill marks a property whose "
+                "invariant is proved in a proof module (ADR-0046), which changes no verdict. An edge runs from a "
+                "property to a premise it names; a dashed edge is a premise that applies only at one declared rung. "
+                "Edges take the colour of the property, so a red edge ends at what makes its property void.",
+                15, "muted") + 18
     panels = [
         ("Contained: confinement and effect exclusivity", "teal",
          ["ContainedMeansConfined", "NoSilentDowngrade", "ContestedStopped", "FreshAppraisal", "Effect exclusivity"],
@@ -318,22 +441,26 @@ def build():
           ("T", 25), ("P", "c1"), ("P", "c2"), ("P", "indep"), ("P", "runc")],
          "Every property premised on confinement is void: the reference issues rung 0 only, T-0045-16 to 21 have no "
          "instance, T-0045-22 to 24 are excluded rows. `NoSilentDowngrade` holds trivially because rung 0 is the "
-         "declared rung. `Contained` **is empty** (G7 §8)."),
+         "declared rung. `Contained` **is empty** (G8 §8). The four `Confinement` invariants are proved for every "
+         "rung at once (ADR-0034 B25), which adds nothing at the reference (G8 §2.3)."),
         ("Promotion and the rules floor", "blue",
          ["PromotionMeetsIssuedQuorum", "P1_Unanimity", "P2_TwoSeatsCounted", "P5_AnchorNotApprover",
           "P9_NoSoloGrant", "FloorPreserved"],
          [("T", 2), ("T", 8), ("T", 9), ("T", 10), ("T", 13), ("T", 15), ("P", "qall"), ("P", "ming"),
           ("P", "qge2"), ("P", "a22"), ("P", "g18")],
-         "The rules floor and the anchor hold, at the dev rules, which are not genesis rules (G6). The promotion "
-         "property has no module: gate evidence is an operator's assertion (T-0045-13 **excluded**), A2.2 is not "
-         "built, and there is no independence table (G18)."),
+         "The rules floor and the anchor hold, at the dev rules, which are not genesis rules (G6); their properties "
+         "are proved (B25), each under the entry it rests on. The promotion property has no module: gate evidence "
+         "is an operator's assertion (T-0045-13 **excluded**), A2.2 is not built, and there is no independence "
+         "table (G18)."),
         ("Floor composition and routing", "blue",
          ["AdmitImpliesFloorPermit", "FloorErrorIsDeny", "BundleRefusalHonored", "EnvelopeHolds",
           "NoWideningWithoutIssuance", "The floor gates"],
          [("T", 3), ("T", 6), ("T", 14), ("T", 27), ("P", "fver"), ("P", "fdraft"), ("P", "rchk"), ("P", "bsig")],
          "Since 2026.10.01 the routing theorem and the gate verdicts rest on checked proofs (T-0045-14, a trust root "
          "since Batch 24), where before they were the solver's assertion. The floor holds **of the draft floor**: "
-         "its text is not ratified."),
+         "its text is not ratified. `FloorComposition` and `FloorRouting` are proved (B25): proofs of the "
+         "composition model, distinct from the gates' checked proofs, which concern the floor's Cedar text "
+         "(G8 §2.2)."),
     ]
     pgap = 40
     pw = (W - 2 * pgap) / 3
@@ -414,7 +541,9 @@ def build():
             for ln in wrap(r["label"], tnw - 24, 14.5, True):
                 c.add(render_line(rx + 12, ly + 13, ln, 14.5, "ink", bold=True))
                 ly += 20
-            vpill(c, rx + 12, ly + 6, r, 12)
+            pw_ = vpill(c, rx + 12, ly + 6, r, 12)
+            if r["proved"]:
+                c.pill(rx + 12 + pw_ + 8, ly + 6, "proved", "teal", 12, solid=True)
             tpos.append((r, rx, yy, h))
             yy += h + 24
         # edges: from the theorem's left edge to the premise's right edge
@@ -443,21 +572,24 @@ def build():
         ("line", "green", "property holds"),
         ("line", "red", "property void"),
         ("line", "grey", "premise only at one declared rung", "6 4"),
+        ("box", "teal", "proved: a proof module proves the invariant (ADR-0046)"),
     ], title="Key")
     y += 64
 
     # ---------------------------------------------------------------- part 2: the incidence matrix
-    y += c.heading(X0, y, "2 · The full incidence matrix: 42 rows × 30 trusted-base rows, 17 parameters, "
-                          "5 gaps and inputs", size=22)
+    y += c.heading(X0, y, "2 · The full incidence matrix: 42 rows × 31 trusted-base rows, 16 parameters, "
+                          "5 gaps and inputs, with the proof column", size=22)
     y += c.para(X0, y, W, "Rows in the table's order, grouped by module. A column's chip and every dot in it carry the "
                 "premise's class at the reference, so a void row shows the red dot that voids it. A large dot is a "
                 "premise the row names; a ring is one it names only at a declared rung; a small grey dot is a BASE "
                 "premise; a square is a parameter, gap or input premise. Uncited rows (T-0045-7, T-0045-26) are drawn "
-                "so their absence shows.", 15, "muted") + 14
+                "so their absence shows. T-0045-31, the prover, is a BASE premise of the 37 proved rows only, for "
+                "the invariant; T-0045-29 stays in every row's BASE for the mutations and witnesses. The struck "
+                "`K < R` has no column.", 15, "muted") + 14
 
-    LBL, VW, CW, GG = 420, 270, 46, 18
+    LBL, VW, PFW, CW, GG = 420, 270, 190, 46, 18
     cols = []   # (x, kind, key)
-    cx = X0 + LBL + VW
+    cx = X0 + LBL + VW + PFW
     col_groups = []
     for gname, ids in TGROUPS:
         gx0 = cx
@@ -502,6 +634,7 @@ def build():
               f'{fs(acc, acc)} stroke-width="1"/>')
     c.text(X0, base_y - 8, "Checked property (table order)", 14, "faint", bold=True)
     c.text(X0 + LBL, base_y - 8, "At the reference", 14, "faint", bold=True)
+    c.text(X0 + LBL + VW, base_y - 8, "Proof (B25)", 14, "faint", bold=True)
     y = base_y + 24
 
     RH = 32
@@ -523,6 +656,13 @@ def build():
         c.add(f'<rect x="{X0}" y="{y:.1f}" width="5" height="{RH}" {fill(vacc)}/>')
         c.text(X0 + 14, cy + 5, r["label"], 14)
         vpill(c, X0 + LBL, y + 5, r, 12)
+        if r["proved"]:
+            px_ = X0 + LBL + VW
+            px_ += c.pill(px_, y + 5, "proved", "teal", 12, solid=True) + 6
+            if r["corr"]:
+                c.pill(px_, y + 5, f"corrected {r['corr'][0]}" if r["corr"][0] != "·" else "corrected", "blue", 12)
+        else:
+            c.text(X0 + LBL + VW, cy + 5, "no proof module", 13, "faint")
         for x, kind, key in cols:
             if kind == "T":
                 acc = ST[TROWS[key][1]][0]
@@ -544,6 +684,8 @@ def build():
     c.legend(X0, y, [
         ("box", "green", "holds"), ("box", "green", "holds, qualified", "5 3"), ("box", "red", "void"),
         ("box", "red", "not enforced, or owed", "5 3"), ("box", "teal", "harness or gate run"),
+        ("box", "teal", "proof column: proved in a proof module"),
+        ("box", "blue", "corrected 2026.10.02 (number as in the band above)"),
     ], title="Row verdict (last column)")
     y += 34
     # glyph legend drawn by hand
@@ -562,15 +704,16 @@ def build():
     kw = (W - 40) / 2
     ty = y
     trows = []
-    count = {t: sum(1 for r in rows if t in r["ts"]) for t in range(1, 31)}
-    expl = {t: sum(1 for r in rows if t in r["explicit"]) for t in range(1, 31)}
+    count = {t: sum(1 for r in rows if t in r["ts"]) for t in range(1, 32)}
+    expl = {t: sum(1 for r in rows if t in r["explicit"]) for t in range(1, 32)}
     for gname, ids in TGROUPS:
         trows.append({"group": gname, "accent": "grey"})
         for t in ids:
             name, st = TROWS[t]
             acc, stl = ST[st]
             n = expl[t]
-            cited = f"{n} by name" + (f", {count[t]} with BASE" if t in BASE else "") if n or t in BASE else \
+            inbase = t in BASE or t == PROVER
+            cited = f"{n} by name" + (f", {count[t]} with BASE" if inbase else "") if n or inbase else \
                 "[[red|uncited]]"
             trows.append([f"**T-0045-{t}**", name, f"[[{acc}|{stl}]]", cited])
     h1 = c.table(X0, ty, [("Row (ADR-0045 Annex A)", kw * 0.24), ("Component, short", kw * 0.34),
@@ -586,14 +729,18 @@ def build():
         n = sum(1 for r in rows if code in r["params"])
         lab = {"red": "open", "amber": "Proposed", "blue": "asserted"}[acc]
         prow.append([written, note, f"[[{acc}|{lab}]]", str(n)])
+    prow.append({"group": "Struck 2026.10.02 (ADR-0046 §5)", "accent": "grey"})
+    for written, note in STRUCK:
+        prow.append([f"[[grey|{written}]]", note, "[[grey|struck]]", "0"])
     h2 = c.table(X0 + kw + 40, ty, [("Premise as the table writes it", kw * 0.38), ("Falsified by, or source", kw * 0.36),
                                     ("At the reference", kw * 0.14), ("Rows", kw * 0.12)], prow, size=13.5)
     y = ty + max(h1, h2) + 50
 
     # ---------------------------------------------------------------- part 4: the table in full
     y += c.heading(X0, y, "4 · The binding table, verbatim except one omitted external citation: all 42 rows (`spec/theorem-premise-binding.md`)", size=22)
-    cols_t = [("Theorem", 330), ("Checked in", 290), ("Record", 250), ("Breaks under", 330), ("Row premises", 700),
-              ("Parameter and gap premises", 720), ("At the reference (Annex B)", 868)]
+    cols_t = [("Theorem", 330), ("Checked in (and, since B25, proved in)", 330), ("Record", 220),
+              ("Breaks under", 420), ("Row premises", 640), ("Parameter and gap premises", 680),
+              ("At the reference (Annex B)", 868)]
     trs = []
     cur = None
     for r in rows:

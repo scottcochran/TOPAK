@@ -7,10 +7,13 @@ looked at as rendered images.
 
 ## Content rules
 
-- **Every statement traces to a record.** Draw from the records themselves (ADRs, G7, ToO rev 11,
-  `spec/`, `floor/`, `mechanism/`), not from memory. Cite the record (ADR-00nn §n, ToO §n, G7 §n) in
+- **Every statement traces to a record.** Draw from the records themselves (ADRs, G8, ToO rev 12,
+  `spec/`, `floor/`, `mechanism/`), not from memory. Cite the record (ADR-00nn §n, ToO §n, G8 §n) in
   the card or table and list every source in the Canvas `sources` string.
-- **G7 is the state of record.** Where the narrative and the checkpoint disagree, the checkpoint wins.
+- **G8 is the state of record.** Where the narrative and the checkpoint disagree, the checkpoint wins.
+- **Proved and checked are distinct words** (ADR-0046 §1). *Proved* only of an invariant a proof module
+  discharged, with its hypotheses; *checked* of TLC's mutations and witnesses and of the gates. Neither of
+  the running reference.
 - **Status is shown, not implied.** Use `status=` pills: `accepted` (add `status_extra="C1, C4"` for
   confirmation-required markers), `proposed`, `draft`, `notbuilt`, `built`, `superseded`,
   `withdrawn`, `open`. Never present a Proposed record, a draft floor or an unbuilt mechanism as in force.

@@ -16,7 +16,9 @@ def build():
                3000, "ADR-0022 §1–§7 (A1, A2); ADR-0040 §1–§6; ADR-0041 §1–§3; ADR-0042 §1–§6; ADR-0043 §1, §2, §4; "
                      "ADR-0037 §4; ADR-0024 §2, §5; ADR-0038 §6; ADR-0034 P4, D-0034-3; ADR-0015; "
                      "floor/genesis-floor.cedar (DRAFT, 17 policies; digest 28ec0e4552c6a915 per G7 §2.2); "
-                     "spec/Seats-results-2026.09.29.txt; spec/RunSeats-results-2026.09.29.txt; mechanism/"
+                     "spec/Seats-results-2026.09.29.txt; spec/RunSeats-results-2026.09.29.txt; spec/Seats_proof.tla, "
+                     "spec/RunSeats_proof.tla and their 2026.10.02 proof results; ADR-0037 B25; ADR-0043 B25; "
+                     "ADR-0046 §4, §5; mechanism/"
                      "GAPS-AND-ASSUMPTIONS.md I14, I33, G19; ToO rev 11 §2.4, §2.9, §4.1; G7 §1.1, §2.2, §7")
     X0, X1 = c.x0, c.x1
     y = c.y
@@ -249,8 +251,8 @@ def build():
 
     # ------------------------------------------------------------------ checks
     half = (X1 - X0 - 40) / 2
-    c.heading(X0, y, "`spec/Seats.tla` (ADR-0037 §9), TLC 2026.09.29")
-    c.heading(X0 + half + 40, y, "`spec/RunSeats.tla` (ADR-0043 §8), TLC 2026.09.29")
+    c.heading(X0, y, "`spec/Seats.tla` (ADR-0037 §9), TLC 2026.09.29; proved 2026.10.02")
+    c.heading(X0 + half + 40, y, "`spec/RunSeats.tla` (ADR-0043 §8), TLC 2026.09.29; proved 2026.10.02")
     y += 40
     cols = [("Mutation", half * 0.2, {"mono": True}), ("Invariant", half * 0.38, {"mono": True}),
             ("Result", half * 0.2, {"bold": True}), ("Distinct states", half * 0.22)]
@@ -286,7 +288,18 @@ def build():
            "Constants: 2 principals, 3 seats (one per kind), 4 actions. Each mutation breaks exactly its property: "
            "`M_KIND` (the grant path ignores the kind bound) and `M_SEAT` (one-live-lease keyed by seat, the "
            "reference's behaviour before R5).", 14, "muted")
-    c.para(X0, y + t1 + 18 + ph2 + 12, half,
+    ph3 = c.para(X0, y + t1 + 18 + ph2 + 12, half,
+           "**Proved** (ADR-0037 B25; ADR-0046 §4): `Seats_proof.tla`, 110 obligations, `OnlyThinkersAuthor` not under "
+           "`M_KIND` and `OneSeatPerPrincipal` not under `M_SEAT`; `RunSeats_proof.tla`, 147 obligations, "
+           "`OnlyThinkersActuate` not under `M_KIND`, `ObserversConsultAndReport` not under `M_KIND`, `M_DOMAIN`, "
+           "`NoNameCrossesDomains` not under `M_DOMAIN`. Of the modules, for every behaviour; the rows here stay "
+           "with TLC.", 14, "teal")
+    c.para(X0 + half + 40, y + t2 + 18, half,
+           "**The binding table now agrees with these rows** (ADR-0046 §5, correction 1): `M_OBSEMIT` breaks none of "
+           "the three invariants, since it narrows an observer's bound and they are upper bounds, and `M_DOMAIN` breaks "
+           "`ObserversConsultAndReport` as well as `NoNameCrossesDomains`. The table had listed `M_OBSEMIT` and missed "
+           "`M_DOMAIN`.", 14, "teal")
+    c.para(X0, y + t1 + 18 + ph2 + 12 + ph3 + 12, half,
            "`M_OBSEMIT` is ADR-0037 §4's struck provisional Run column (an `observer` seat with emission only): every "
            "property holds and no Observer ever consults. The results file's header still reads \"ADR-0043 §8, "
            "Proposed\"; ADR-0043 was ratified in Batch 20.", 14, "muted")

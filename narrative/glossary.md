@@ -1,18 +1,19 @@
 # TOPAK — Glossary
 
-**2026.10.01** · narrative · the glossary head, revised in place · DRAFT
+**2026.10.02** · narrative · the glossary head, revised in place · DRAFT
 
-**Basis.** Genesis Checkpoint G7 (2026.10.01) and Theory of Operation revision 11 (`narrative/theory-of-operation.md`,
-tag `ToO-rev11`), with the record files they cite. Where the two disagree, G7 wins. The three Proposed records
+**Basis.** Genesis Checkpoint G8 (2026.10.02) and Theory of Operation revision 12 (`narrative/theory-of-operation.md`,
+tag `ToO-rev12`), with the record files they cite. Where the two disagree, G8 wins. The three Proposed records
 (ADR-0005, ADR-0035, ADR-0036) and the one Proposed section (ADR-0042 §6) appear under their subjects, tagged **[P]**,
 and are collected in §10.
 
-**What this supersedes.** This file's 2026.09.30 revision (tag `glossary-2026.09.30`), cut against G6 and revision
-10; `git diff glossary-2026.09.30 glossary-2026.10.01 -- narrative/glossary.md` reads the two side by side. The
-entries Batches 22 to 24 changed are rewritten: the trusted base in force, the solver checked, bundles signed at the
-reference; §14 lists the wording that retired. Before that, the 2026.09.29 glossary (`derived/topak-glossary-2026.09.29.md`
-until the reorganization; `git log --follow` reads it). The glossary has no dated copies: a revision is a commit to
-this file, and the checkpoint cut with it measures the head.
+**What this supersedes.** This file's 2026.10.01 revision (tag `glossary-2026.10.01`), cut against G7 and revision
+11; `git diff glossary-2026.10.01 glossary-2026.10.02 -- narrative/glossary.md` reads the two side by side. The
+entries Batch 25 changed are rewritten: *proved* and *checked* as two words for two methods, the prover's row, the
+proof modules, and the binding table's five corrections; §14 lists the wording that retired. Before that, the
+2026.09.30 revision (tag `glossary-2026.09.30`, against G6) and the 2026.09.29 glossary
+(`derived/topak-glossary-2026.09.29.md` until the reorganization; `git log --follow` reads it). The glossary has no
+dated copies: a revision is a commit to this file, and the checkpoint cut with it measures the head.
 
 **This document decides nothing.** It reports what the terms mean in the corpus as it stands, including where two
 sources disagree.
@@ -27,12 +28,12 @@ sources disagree.
 | **[A·CR]** | Defined by an Accepted record, or amendment, marked confirmation-required. Cite as *author-ratified* |
 | **[P]** | Defined by a Proposed record, a pending amendment, or a DRAFT artifact. The wording can still move |
 | **[D]** | Derived: used in the narrative, with no record of its own |
-| **[C]** | Checkpoint convention, fixed by G1–G7 |
+| **[C]** | Checkpoint convention, fixed by G1–G8 |
 | **[R]** | The reference implementation (ADR-0033). It is evidence, not the verified object |
-| **[O]** | Outstanding: the term names a hole rather than a mechanism. Numbers refer to the G7 §7 open list |
+| **[O]** | Outstanding: the term names a hole rather than a mechanism. Numbers refer to the G8 §7 open list |
 | **[X]** | Superseded: the term's record is superseded and its text is no longer in force |
 
-Record status is G7 §1 and is not restated here except where the status changes what a term means.
+Record status is G8 §1 and is not restated here except where the status changes what a term means.
 
 ---
 
@@ -294,7 +295,7 @@ what joins the gate-evidence digest. A verdict names the query, proof, solver an
 the mechanism loads a bundle only when it verifies, counts a sidecar's decision only from a verified revision, and
 refuses a grant naming an unverified one; signing happens at promotion. Implemented at the reference since ADR-0033
 A6 (Batch 23) under a dev key with custody (1, 0) (`mechanism/` I34); **D-0044-1** was the reference's position before
-2026.10.01, and signing at promotion is a script step until a promotion pipeline exists (G7 item 67).
+2026.10.01, and signing at promotion is a script step until a promotion pipeline exists (G8 item 67).
 
 **Floor-change routing** [A·CR]: the classification is **computed, not asserted**. The analyzer decides `F′ ⇒ F`
 and `F ⇒ F′`:
@@ -773,7 +774,8 @@ marking, ADR-0035 R2's, is by custodian instruction outside C1–C4.
 would be circular. **Since ADR-0029 A2 it is reviewed at the bootstrap gate** with the rest of the corpus.
 
 **Bootstrap trigger** [A]: (a) a drafted TLA+ bootstrap specification of five modules (`Genesis`, `Anchor`,
-`RulesFloor`, `Promotion`, `BreakGlass`), of which two exist, **and** (b) an **independent review of the entire
+`RulesFloor`, `Promotion`, `BreakGlass`), of which two exist, `Anchor` and `BreakGlass`, both checked and since
+2026.10.02 proved (ADR-0029 B25), **and** (b) an **independent review of the entire
 corpus** at one manifest digest (ADR-0029 A2). **The trigger is permission, not obligation.**
 
 **Genesis bundle** [A]: the corpus manifest, the specification digest (checked or drafted-only), the review
@@ -821,7 +823,25 @@ convention.
 Four humans made R1's mutation hold vacuously. **A threshold needs at least three counted seats** before any
 threshold property means anything.
 
-**Checked, not proved** [C]: TLC at small constants is a discrimination test. **No theorem is proved** (G3 §8).
+**Checked** · **proved** [A·CR]: two methods and two words (ADR-0046 §1, Batch 25). **Checked** is TLC at small
+constants: every mutation fails the property it targets, every reachability witness is violated, and the property
+holds over every reachable state at those constants. It is a discrimination test, and the method for anything
+existential. **Proved** is the TLA+ Proof System: an invariant holds of every behaviour of its module, for every
+constant the module's named assumptions admit, under the hypothesis that the mutations which break it are absent;
+the hypotheses are part of the claim and are stated with it. Thirteen of the fourteen modules are proved;
+`Mechanism.tla` is checked only. **Neither word is used of the running reference** (T-0045-28). From G3 to G7 the
+corpus said "no theorem is proved", and that was true until G8.
+
+**Proof module** [A·CR]: `spec/<Module>_proof.tla`, which extends a frozen module without editing it and proves the
+invariants it states, each theorem taking as hypothesis only the mutations that break it, with `Safe` under
+`Mut = "none"` and one lemma per mutation saying what it admits. Its results file prints the digest of every module
+in the EXTENDS chain and of the prover; both are frozen once a record cites them by digest (ADR-0046 §4).
+`spec/proof-sync.sh` reports a proof whose specification has moved, and a changed specification is a successor module
+with a successor proof (`spec/proof-method.md`).
+
+**Mutated proof** [C]: a scratch copy of a proof module with one hypothesis flipped to the mutation it excludes. The
+prover must reject it, at the guard the mutation removes. It is the proof's own non-vacuity check, and is never an
+artefact.
 
 **Refinement** [D]: two senses. By composition (policy), which the corpus has. Specification-to-implementation
 (formal methods), which it **does not have**: the gap is a trusted-base row (T-0045-28) and a debt ADR-0033 owns
@@ -865,15 +885,16 @@ trusted-base row **T-0045-1**: a trust root whose residual is the forged admit, 
 delegated mitigation, unbuilt (item 23). BFT is not required.
 
 **Trusted-base record** [A·CR]: ADR-0045, drafted 2026.09.30, revised six times, ratified 2026.10.01 (Batch 22, C2 and
-C4). The rule for entering the trusted base, the archetype's table of thirty **rows** (Annex A), and the reference's
-own declaration (Annex B). Six records owed it rows and it carries all of them. Two Annex B rows changed class after
+C4). The rule for entering the trusted base, the archetype's table of thirty-one **rows** (Annex A), and the
+reference's own declaration (Annex B). Six records owed it rows and it carries all of them. Two Annex B rows changed class after
 ratification, by dependent entry: the bundle signer, excluded to trust root under a dev key (B23), and the solver's,
-refused to trust root for the proof checker (B24).
+refused to trust root for the proof checker (B24). A third dependent entry added a row: T-0045-31, the prover (B25).
 
-**Binding table** [P]: `spec/theorem-premise-binding.md` (ADR-0045 R6), one row per checked property naming the
-trusted-base rows, the degeneracy parameters and the declared gaps it rests on; forty-two rows, DRAFT, revised with
+**Binding table** [P]: `spec/theorem-premise-binding.md` (ADR-0045 R6), one row per checked property, with the proof
+module named in each proved row, naming the trusted-base rows, the degeneracy parameters and the declared gaps it rests on; forty-two rows, DRAFT, revised with
 the records it binds. Its last column computes the reference's inventory: a property holds when every row it names
-is delegated or a trust root, and is void on an excluded, undeclared or refused one.
+is delegated or a trust root, and is void on an excluded, undeclared or refused one. Writing the proofs found five
+errors in it, four in the "Breaks under" column and the `K < R` premise, corrected at Batch 25 (ADR-0046 §5).
 
 **Row** [A·CR]: one entry of the trusted base, `T-0045-n`, with a fixed schema: component, layer, *trusted for* (the
 row's premise), rungs, class, what its failure can produce, what fixes its identity, residual (ADR-0045 §1).
@@ -894,15 +915,22 @@ needs its own record.
 and ADR-0030 A1 moves the trust to a proof checker (§4), which is T-0045-14's trust root since Batch 24 (2026.10.01):
 the checker binary, its rule signature and the wrapper, pinned by the three digests the gate header prints.
 
+**The prover** [A·CR]: T-0045-31, the TLA+ Proof System (`tlapm`, with Z3, Zenon, Isabelle and LS4), a toolchain trust
+root beside TLC's T-0045-29 since Batch 25 (ADR-0046 §3). Trusted for: "all N obligations proved" means each is a
+theorem under the module's assumptions. Pinned by the binary digest every proof results file prints; the 1.9 GB
+install is not tracked (item 73). Residual: its soundness and its backends' are unexamined, and the SMT backends'
+proofs are not rechecked by Isabelle (item 74).
+
 **What runs is a row** [A·CR]: the implementation as a refinement of the specification, the model checker at the
-constants run, and the build toolchain are trust roots for every deployment until a refinement exists
+constants run, the prover for the invariants it proves (T-0045-31), and the build toolchain are trust roots for every deployment until a refinement exists
 (T-0045-28 to 30, ADR-0045 R1). The first draft had called them "checked, not trusted"; a comparison with Moon &
 Varshney caught it (finding 7).
 
-**Assisted drafting** · **drafter's choice** [C]: ADR-0044, ADR-0045 and ADR-0030 A1 were drafted by the assistant at
-the custodian's request, every choice the custodian did not settle marked *(drafter's choice)*; ratification settles
-them, and all three are ratified (Batches 17, 22, 24). One step further from review than author-ratification, and
-ADR-0029 has no criterion for it (G7 item 66).
+**Assisted drafting** · **drafter's choice** [C]: ADR-0044, ADR-0045, ADR-0030 A1 and ADR-0046 were drafted by the
+assistant at the custodian's request, every choice the custodian did not settle marked *(drafter's choice)*;
+ratification settles them, and all four are ratified (Batches 17, 22, 24, 25). ADR-0046's condition that the
+custodian regenerate its evidence was run by the drafter at the custodian's direction. One step further from review
+than author-ratification, and ADR-0029 has no criterion for it (G8 item 66).
 
 **Scoping amendment** [C]: an amendment that narrows what an accepted clause was ever about rather than changing its
 effect ratifies without C3, and its row names the reading under which C3 would attach (ADR-0003 A3, B17).
@@ -911,8 +939,8 @@ effect ratifies without C3, and its row names the reading under which C3 would a
 
 ## 10. Proposed records
 
-Three records and one section are Proposed at G7. **None is Accepted.** ADR-0021 left this list in Batch 18 and
-ADR-0045 in Batch 22.
+Three records and one section are Proposed at G8. **None is Accepted.** ADR-0021 left this list in Batch 18 and
+ADR-0045 in Batch 22. ADR-0046 was drafted and ratified between G7 and G8 and never stood here at a checkpoint.
 
 **ADR-0005** [P, 5]: Kafka's role. The reference's use of Kafka is a debt against it.
 
@@ -935,7 +963,7 @@ points finding 1 at ADR-0035 R4. Its ratification run is item 34, with five miss
 
 ## 11. Outstanding
 
-These terms name a hole. Each one points to the G7 §7 open list.
+These terms name a hole. Each one points to the G8 §7 open list.
 
 | Term | Item |
 |---|---|
@@ -982,7 +1010,13 @@ These terms name a hole. Each one points to the G7 §7 open list.
 | Signing at promotion · the bundle key's custody row | 67 |
 | The checker carried in a release | 68 |
 | What `holds°` rests on: cedar's folding of the totality gate | 69 |
-| Theory of Operation revision 11 (discharged by this cut) · the register's header | 70 · 71 |
+| The register's header | 71 |
+| Theory of Operation revision 12 and this glossary against G8 (discharged by this cut) | 72 |
+| **The prover pinned for reproducibility** · Isabelle checking of the SMT proofs | 73 · 74 |
+| Model checking at practical constants · simulation at large bounds | 75 |
+| The diagrams, unmeasured | 76 |
+| The containment-features document, unindexed | 77 |
+| One driver per TLC results file | 78 |
 
 Unowned and not numbered: **`Invoke` hermeticity** for native tools (an excluded row, T-0045-23) · **channel
 fidelity** for Run tools (T-0045-24; G19) · **flow** (CR-6) · the **residual-risk statement**, headed by anchor
@@ -1030,11 +1064,13 @@ These collisions are live. Several are new since 09.17.
 12. **"Round": Build and Run differ.** A promotion is also a round. Always qualify.
 13. **"Byzantine": agents, not replicas.** Agents are Byzantine. The control-plane replicas are crash-recovery
     (ADR-0033 §3), which is now declared.
-14. **"Proved": retired** (CR-25, rev 7 erratum). Say *checked* or *must hold*.
+14. **"Proved": restored, with one meaning** (ADR-0046 §1). Retired at rev 7 (CR-25) because nothing was; since
+    G8 it names what the prover discharged, with its hypotheses. *Checked* is TLC's; *must hold* is a requirement.
+    None of the three is said of the running reference.
 15. **"Degenerate"** collides with TLA+'s "degenerate behavior" (the ADR-0023 obligation) and reads as pejorative.
     Use *reduced* in operational prose.
-16. **"Confirmation-required" count.** G5 and rev 9 say **fourteen**, three of them for one amendment only; the
-    09.26 glossary's *nine* was G3's.
+16. **"Confirmation-required" count.** G8 says **twenty-two**, three of them for one amendment only; G5 and rev 9
+    said fourteen, and the 09.26 glossary's *nine* was G3's.
 17. **"Seat": two senses, one word.** The LTRO position (ADR-0016, ADR-0037) and the promotion-roster slot
     (ADR-0024). The **kind** field separates them; an Observer holds both at once.
 18. **"R": four uses.** Rules-floor entries, record revisions, the readiness key, and now the **round bound** `R`
@@ -1104,14 +1140,23 @@ crypto-shredding as mechanism, Kafka as system of record, "strictly stronger tha
 | The reference "checked only by restated tests" | Every tested behaviour replayed through the operational model | ADR-0033 A5 |
 | Monotonicity "at twelve layers" | Fourteen: bundle and trusted base | ToO rev 10 §7.8 |
 | Dated glossary and ToO copies after revision 9 | A head file, a commit and a tag | The 2026.09.30 reorganization |
+| "No theorem is proved" | Thirteen modules' invariants proved under named hypotheses; mutations and witnesses checked | ADR-0046; Batch 25 |
+| "Proved" retired; say "checked" | *Proved* for what the prover discharged, with its hypotheses; *checked* for TLC | ADR-0046 §1 |
+| "MAP 2.3: TLC versus TLAPS undeclared" | Declared | ADR-0046 |
+| The trusted base's "thirty rows" | Thirty-one: T-0045-31, the prover | ADR-0045 B25 |
+| `SealCountsEffects` breaks under `M_ROUNDS` | Under `M_EMITSEQ` | ADR-0046 §5 |
+| `K < R` as a premise of the unread bounds | Not a premise; it is what lets the bound refuse | ADR-0046 §5 |
+| `M_OBSEMIT` breaks `RunSeats`' invariants | It breaks none of them | ADR-0046 §5 |
+| Two bootstrap modules "drafted and checked" | Drafted, checked and proved | ADR-0029 B25 |
 
 ---
 
 ## Sources
 
-**Basis.** `checkpoints/topak-genesis-checkpoint-G7-2026.10.01.md` · `narrative/theory-of-operation.md` at tag
-`ToO-rev11` · the records they cite, at their G7 digests.
+**Basis.** `checkpoints/topak-genesis-checkpoint-G8-2026.10.02.md` · `narrative/theory-of-operation.md` at tag
+`ToO-rev12` · the records they cite, at their G8 digests.
 
-**Superseded.** This file's previous revision (tag `glossary-2026.09.30`, measured by `manifests/SHA256SUMS-G7` at its
-commit), before it the 2026.09.29 glossary (`derived/topak-glossary-2026.09.29.md` before the reorganization, measured
+**Superseded.** This file's previous revision (tag `glossary-2026.10.01`, measured by `manifests/SHA256SUMS-G8` at its
+commit), before it the 2026.09.30 revision (tag `glossary-2026.09.30`, measured by `manifests/SHA256SUMS-G7`), the
+2026.09.29 glossary (`derived/topak-glossary-2026.09.29.md` before the reorganization, measured
 by `manifests/SHA256SUMS-G6`), and through it the 09.26 and 09.17 glossaries whose §12 is carried by reference.
