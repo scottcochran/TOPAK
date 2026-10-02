@@ -1,0 +1,10 @@
+TOPAK — TLAPS proof results for Confinement.tla: every obligation of Confinement_proof.tla, checked by the prover below
+Modules: Confinement.tla (sha256 d0dcf21ce9774885) · Confinement_proof.tla (sha256 2f4b4bb96d1f83f3)
+Prover: tlapm 7824dab (binary sha256 e150fb793fb28592) · backends: Z3 version 4.8.9 - 64 bit · zenon version 0.8.4 [a268] 2017-11-14 · Isabelle2025 · LS4 for PTL · driver: proof-results.sh
+Assumptions: DeclaredRung == Declared \in 0..3
+Theorems: ContainedMeansConfinedAlways · NoSilentDowngradeAlways · ContestedStoppedAlways · FreshAppraisalAlways · SafeAlways
+Lemmas: NoRecs · VerdictValues · InitTypeOK · NextTypeOK · InitInvC · TamperKills · NextInvC · InitInvD · NextInvD · InitInvS · NextInvS · InitInvF · NextInvF · MutHostLaunchesRogue · MutHwTamperSwaps · MutContestedHeld · MutUnboundIgnoresGeneration · MutProfileIgnored · MutDowngradeHolds · UnattestableGrantsRung0 · MutRenewLowers · MutStaleAccepted
+A proved obligation is a theorem of the module under its assumptions and the hypotheses the statement names; the prover, not the constants, bounds the claim. Mutations and witnesses are behaviours and stay with TLC.
+
+File "./Confinement_proof.tla", line 1, character 1 to line 593, character 77:
+[INFO]: All 502 obligations proved.
