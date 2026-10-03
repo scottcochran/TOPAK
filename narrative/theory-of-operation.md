@@ -942,8 +942,9 @@ The single promotion signing key was the last privileged human grant. ADR-0024 r
 
 Promotion now obeys consensus-for-grants like every other grant, and no strict subset of grant seats can promote.
 Two costs are stated in the record. **Liveness equals the availability of every grant seat.** **Correlated review
-failure is untouched:** unanimous humans reading the same vacuous gate output fail together (Moon & Varshney §4.6;
-Knight & Leveson). Floor fitness, a fourth gate (NIST MEASURE 2.13), is still unowned.
+failure is untouched:** unanimous humans reading the same vacuous gate output fail together (Knight & Leveson; the
+vacuous gate output is Moon & Varshney §4.6 and Appendix B, which say nothing about human reviewers). Floor fitness, a
+fourth gate (NIST MEASURE 2.13), is still unowned.
 
 **A promotion is a round**, keyed by artifact digest. It does not depend on the Build effect-stream scheme: what
 promotion requires is the vote record in the consensus log (§4.4), which is not a property of any topic scheme. A
@@ -1064,8 +1065,9 @@ The cost is stated: a compromised genesis is a compromised system, covered only 
   They are attributable non-principals; `Mediated` applies to them as attribution only.
 - **At degenerate custody,** the genesis threshold or eviction rule can remove a key-holder, so key-holders become
   principals and the gate moves to that rule. That is a type change, and it moves the TCB (§8.2).
-- **Promotion voters are principals on every rung**, because the anchor can evict them. Promotion therefore enters
-  `Build(Contain)` enforcement coverage.
+- **Promotion voters are principals on every rung**, because the anchor can evict them. Promotion therefore gains
+  what ADR-0024 says it gains: attribution and authorization, with every voter `Mediated`. It does not gain safety:
+  no containment theorem covers a vote, and a vote is a grant like any other.
 
 ADR-0002's amendment, ratified 2026.09.23, carries the custody qualifier: *at archetype custody, the anchor's
 key-holders are at the gate.* The unqualified sentence would have made an archetype-only claim on every deployment,
@@ -1827,6 +1829,12 @@ overlap. The last is why ADR-0035 R2 is marked for review before ratification (�
 - **§15:** what the reference is and is not; the 2026.10.02 moves and four findings; what it does not show; the
   trace harness's second check; forty-nine pins.
 - **Appendices A to H retained.**
+
+**Corrections after the cut, 2026.10.03** (in place; the revision number does not move, as a glossary revision does
+not): §7.1's citation of Moon & Varshney §4.6 for the human half of correlated review failure is corrected, since
+§4.6 and Appendix B carry the silent-abstention result and say nothing about human reviewers (the 10.02 critical
+review's §1); §7.5's "promotion enters `Build(Contain)` enforcement coverage" is replaced with ADR-0024's own
+consequence, attribution and authorization and not safety (CR-8, open since 09.16).
 
 ---
 
