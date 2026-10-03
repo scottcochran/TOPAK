@@ -370,7 +370,9 @@ def build():
         "proved invariants rest on T-0045-31 in place of T-0045-29). The inventory is otherwise unchanged; "
         "T-0045-28 is untouched.",
         "**Still on the face** (G9 §8; items 73, 74, open): the prover's soundness is trusted as written; its "
-        "1.9 GB install is not tracked, and the SMT backends' proofs are not rechecked by Isabelle (`tlapm -C`).",
+        "1.9 GB install is not tracked (since 2026.10.03 `tools/TLAPS-PIN` names its version, commit and short digest in "
+        "the corpus, and the `1.6.0-pre` release tag has since been rebuilt, so a fresh install no longer yields the "
+        "pinned binary), and the SMT backends' proofs are not rechecked by Isabelle (`tlapm -C`).",
         "**At G9 the record is unchanged** (G9 §2.6): thirty-one rows, no class change. The code moved under "
         "pending addenda: T-0045-19 and 20 have a rung-1 instance, 16 and 17 are test keys in simulated runs only "
         "(A7; Annex B's dependent entries owed, item 81), and T-0045-24's move to **delegated** is owed on A2's "

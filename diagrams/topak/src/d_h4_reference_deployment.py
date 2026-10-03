@@ -33,7 +33,7 @@ def build():
                "topak-transport lib.rs; topak-floor lib.rs; topak-core lib.rs, confine.rs, trace.rs; topak-contain "
                "lib.rs, wasmtool.rs); mechanism/corpus-pins.sha256; GAPS-AND-ASSUMPTIONS G1–G19, I8, I40–I44; "
                "ADR-0033 §1–§6, A5, A6, A7 and A8 (pending); ADR-0044; ToO rev 13 §15; G9 §2.3, §2.5, §7 items 34–36, "
-               "52, 67, 80, 83, 84; spec/Mechanism-trace-results-2026.10.02b.txt")
+               "52, 67, 80, 83, 84; spec/Mechanism-trace-results-2026.10.02b.txt; topak-contain/src/guest.rs; topak-core/src/authentic.rs, types.rs, state.rs (`Applied`); topak-paxos/src/replica.rs; derived/topak-format-and-schema-inventory-2026.10.03.md §0, §4, §5, findings 8, 11, 12, 13, 19, 20, 22")
     X0, X1 = c.x0, c.x1
     y = c.y
 
@@ -119,11 +119,13 @@ def build():
         ("floor", "`topak-floor`: Cedar **linked**; refuses to start unless the floor, schema and values bytes match "
                   "the gated digests"),
         ("bundle tier", "`topak-bundle`: loads `bundles_dir` **only under signatures** verifying against "
-                        "`bundle_keys`; sidecar client, WASM fallback"),
+                        "`bundle_keys`; **one file that fails stops the node** (`load_dir` returns an error, it does "
+                        "not skip); sidecar client, WASM fallback"),
         ("Paxos", "`topak-paxos` driven by `driver.rs`: persists fsynced before any send"),
         ("WAL", "`run/n1/wal.jsonl`: promises and accepted votes, durable before replies"),
         ("expiry sweeper", "every 250 ms, proposes `EndRound(Expired)` for leases this replica saw expire"),
-        ("local files", "`workspaces/` (not replicated, G9); `archive.jsonl`, a projection of the log, not the archive"),
+        ("local files", "`workspaces/` (not replicated, G9); `archive.jsonl`, a projection of the log, not the archive; "
+                        "`evidence/<digest>.json` (I40); `run/<seat>-e<epoch>-r<round>/` as a native Run tool's cwd"),
         ("launcher", "`mechanism/launch.rs` over `topak-contain`: launch, appraise, grant, bridge; renews against the "
                      "same guest; destroys it when the round ends (A7, pending). **Off in dev**: no `contain` section"),
         ("Run tool host", "`topak-contain` `wasmtool`: a Wasm module per call whose one network capability is its "
@@ -189,12 +191,14 @@ def build():
     # right: external services
     ey = top
     cards = [
-        ("OPA sidecar · `openpolicyagent/opa`", "amber", None, [
+        ("OPA sidecar · `openpolicyagent/opa:latest`", "amber", None, [
             "`docker compose up opa`: host `:18181` → container `:8181`, serving `bundles/${TOPAK_BUNDLE}.tar.gz`.",
             "Optional: `dev-init.sh --opa` points every replica at it; without it, the **local WASM engine only**.",
             "Its answer counts only from the lease's revision, and only if that revision verified (ADR-0044 §3).",
+            "**Unpinned**: `latest` here and in `build-bundle.sh`, which compiles the Rego to `policy.wasm` with the "
+            "same image; the signed revision hashes the source, not the module (inventory finding 11).",
         ]),
-        ("Kafka · `apache/kafka`, single-node KRaft", "amber", None, [
+        ("Kafka · `apache/kafka:latest`, single-node KRaft (unpinned tag)", "amber", None, [
             "`docker compose up kafka`: `:9092`; `dev-init.sh --kafka` sets brokers `127.0.0.1:9092`, replication 1.",
             "Without it: **in-memory transport**. Round topics `topak.<chain>.<domain>.<seat>.e<epoch>.r<round>` and "
             "their `.after` companions.",
@@ -209,7 +213,8 @@ def build():
         ]),
         ("Signed bundles · `dev/bundles/`", "amber", None, [
             "`build-bundle.sh`: `policies/` → OPA WASM `bundles/<revision>.tar.gz`; revision = SHA-256 over sorted "
-            "non-test `.rego` and `data.json` (today `be46c574…`).",
+            "non-test `.rego` and `data.json` (today `be46c574…`): the source. `policy.wasm` is whatever the unpinned "
+            "OPA produced.",
             "`dev-init.sh` signs a copy into `dev/bundles/` with `<revision>.sig` under a **dev bundle key** whose "
             "public half the rules carry in `bundle_keys`; the tracked tarball stays unsigned. Signing at promotion is "
             "a script step (G7 item 67).",
@@ -262,17 +267,117 @@ def build():
         ["round_bound", "200 (Build) · `run_round_bound` 64 (Run)"],
         ["lease_margin_ms", "500: the asymmetric clock margin (ADR-0032 §2)"],
         ["after_topic_limit", "64: the `after` companion's bound (ADR-0003 A2)"],
-        {"group": "Per replica, and beside them", "accent": "brown"},
-        ["n1.json … n3.json", "id, peers `127.0.0.1:7101–7103`, data dir, both sockets, rules, params, corpus, "
-                              "bundles dir, `opa_sidecar`, `kafka`, the tool spec with its binary SHA-256"],
+        {"group": "Per replica, and beside them (`config.rs`; relative paths resolve against the file)", "accent": "brown"},
+        ["n1.json … n3.json", "`id`, `peers` `127.0.0.1:7101–7103`, `data_dir`, both sockets, `rules`, `params`, "
+                              "`corpus_dir`, `bundles_dir`, `opa_sidecar` (null, or `:18181` with `--opa`), "
+                              "`opa_timeout_ms`, `kafka` (null, or the broker and `replication` 1), `tools` (the demo "
+                              "tool with its binary SHA-256), `wasm_tools` (empty), `heartbeat_ms`, "
+                              "`election_timeout_ms`; **no `contain` block**"],
+        ["contain (absent in dev)", "`backends: {rung: kind}`: `process` or `docker` at rung 1, `sim-cvm` at rung 3 "
+                                    "(feature `sim`), `measured-boot`, `snp`, `tdx` seams that always fail; `verifier`: "
+                                    "`http{url}` (always unreachable) or `sim`; `evidence_dir` (default "
+                                    "`<data_dir>/evidence`); `hello_timeout_ms`. A backend under the wrong rung key is "
+                                    "refused"],
         [".env", "`TOPAK_BUNDLE=<revision>` for `docker compose`"],
         ["secrets/", "Every generated secret, **in the clear**"],
+        {"group": "Timers and limits: the reference's, named by no record (inventory §5.6, §9)", "accent": "brown"},
+        ["Paxos", "`heartbeat_ms` 50 · `election_timeout_ms` 400 in the node's config (the crate's own default is 300, "
+                  "reachable only from its tests; finding 22) · `max_catchup` 256 · frames: `MAX_FRAME` 64 MiB, "
+                  "connect 200 ms, per-peer queue 4096, dropping when full"],
+        ["Admit path", "`COMMIT_DEADLINE` 5 s · `RETRY_EVERY` 750 ms · driver tick 10 ms · expiry sweep 250 ms · "
+                       "channels: proposals 1024, inbound 8192, launcher control 8"],
+        ["Bundle and guests", "`opa_timeout_ms` 250 · `hello_timeout_ms` 10000 · launcher renewal every `ttl_ms / 2` "
+                              "with a fresh nonce · guest-io buffer 64 lines"],
+        ["Wasm Run tools", "`FUEL` 50,000,000 · `NET_TIMEOUT` 2 s · one fresh instance per call (I44)"],
+        {"group": "On disk under `data_dir`", "accent": "brown"},
+        ["wal.jsonl", "One JSON line per persisted Paxos output; append-only, fsync per batch, replay stops at a torn "
+                      "line, never compacted (G14)"],
+        ["archive.jsonl", "`{slot, entry, applied}` per line; truncated at startup and rebuilt: a projection, not the "
+                          "archive (G9)"],
+        ["workspaces/, run/", "`ws-<seat>-e<epoch>-r<round>/` for `Draft`; `run/<seat>-e<epoch>-r<round>/` as a native "
+                              "Run tool's cwd; neither replicated"],
+        ["evidence/<digest>.json", "Appraisal evidence the launcher retained (I40), named by its canonical digest and "
+                                   "written non-canonically, so the file's own SHA-256 is not its name (inventory "
+                                   "finding 13)"],
     ], size=13.5, accent="brown")
     y += max(h1, h2) + 14
     c.para(X0, y, X1 - X0, "`topak check-rules` validates `rules.json` against the rules floor at the end of "
            "`dev-init.sh`, and every replica refuses rules that violate it at startup: the runtime stand-in for the "
            "unwritten `GenesisSatisfiesFloor`.", 14, "muted")
     y += 50
+
+    # ---- wire formats
+    c.text(X0, y + 21, "The wire formats, as the reference serializes them: no record defines any of these", 21,
+           "teal", bold=True)
+    y += 42
+    w3 = (X1 - X0 - 2 * 36) / 3
+    mono = {"mono": True}
+    ta = c.table(X0, y, [("Agent socket", w3 * 0.22, {"bold": True}),
+                         ("`agent.sock`, mode 0660; one JSON line each way; PROVISIONAL (session binding), I14",
+                          w3 * 0.78)], [
+        ["Request", "`{\"token\": <64 hex>, \"op\": \"act\", \"action\": <Action>}`; or `{\"op\": \"submit_workspace\"}` "
+                    "(the node computes the workspace digest, I12); or `{\"op\": \"abstain\"}` (refused for Run seats, "
+                    "I31)"],
+        ["Response", "`{\"admitted\": bool, \"detail\": …}`; `detail` is `{\"decision\": \"deny\", \"reason\": "
+                     "<DenyReason>}`, `{\"decision\": \"admit\", \"slot\", \"floor\": [@ids], \"engine\", \"result\"}`, "
+                     "`{\"abstained\": true}` or `{\"error\"}`"],
+        ["`result` by action", "`Read`, `Consult`: `{object, content}` · `Draft`: `{written, digest}` · `Invoke`: the "
+                               "tool's `CallToolResult`, or the Wasm tool's JSON · `Actuate`: `{topic, offset, seq, "
+                               "outcome, result_digest, result}`, or after a seal `{seq, outcome: \"unknown\", "
+                               "withheld}` · `Emit`, `Report`: `{topic, offset, seq}` · `Submit`: `{submitted}` · "
+                               "`Vote`: `{recorded, artifact, promoted}`"],
+        ["Token", "32 random bytes as hex, minted by the applying replica into a per-replica `sessions` map as "
+                  "`{seat, fence, epoch}`; not replicated; `renew` moves its fence; **a launched lease mints none**"],
+        ["MCP front door", "`topak mcp` maps each tool to an `AgentOp` by adding `kind`: Build `read{object}`, "
+                           "`draft{target, content}`, `invoke{tool, digest, inputs}`, `emit{record}`, "
+                           "`submit{artifact?}`, `abstain{}`, `vote{verdict, artifact, evidence, rules_epoch}`; Run "
+                           "`consult`, `actuate`, `report`. Every input schema is a closed object; the result is one "
+                           "text block holding `detail`; protocol version `2025-06-18`"],
+    ], size=13, accent="teal")
+    tb = c.table(X0 + w3 + 36, y, [("Operator socket, replicas", w3 * 0.22, {"bold": True}),
+                                   ("`operator.sock`, mode 0600, PROVISIONAL (operator authentication); plain TCP "
+                                    "among replicas, PROVISIONAL (replica authentication); G5", w3 * 0.78)], [
+        ["Operator request", "`{\"op\": <name>, …}` with the fields the table at left names: `grant` takes `principal, "
+                             "seat, persona, bundle, confinement{digest, rung}, alphabet[], ttl_ms, round, role`; "
+                             "`launch` takes `profile` in place of `persona` and `confinement`; `revoke` takes "
+                             "`target{kind, id}, reason, attribution`; `issue` an `issuance{rules, signatures[]}`"],
+        ["Operator reply", "`{ok, slot, applied: <Applied>}`, or `{ok: false, error}` after the 5 s deadline. `grant` "
+                           "adds `fence, token, lease, contained, because`; `launch` adds `verdict, rung, instance, "
+                           "evidence, simulated`, or `{ok: false, verdict: refused | unattestable | contested, …}`; "
+                           "`status` returns `{replica, chain, leader, last_applied, epoch, rules_epoch, floor, "
+                           "schema, params, live_leases[], candidates[], launched[]}`: the floor and schema digests, "
+                           "**not the values file's** (inventory finding 12)"],
+        ["`Applied`", "`LeaseGranted{fence}`, `Renewed{fence}`, `Admitted{seq, promoted}`, `RoundEnded`, "
+                      "`Revoked{ended}`, `EpochIncremented{epoch}`, `Contested{ended}`, `ProfileRegistered{digest}`, "
+                      "`Issued{rules_epoch}`, `GatesRecorded`, `BreakGlassApproved{approvals}`, `Rejected(String)`, "
+                      "`Duplicate`"],
+        ["Replica to replica", "A big-endian `u32` length, then the JSON of `[from_node_id, <Msg<Entry>>]`: `Prepare`, "
+                               "`Promise`, `Nack`, `Accept`, `Accepted`, `Commit`, `Heartbeat`, `CatchUp`, `Forward` "
+                               "(`topak-paxos`). Unauthenticated, best-effort"],
+        ["Signatures", "`Signed = {key, sig}` (Ed25519, hex) over `\"topak/<purpose>/v1\\n\"` ‖ canonical JSON; purposes "
+                       "`issuance`, `break-glass`, `bundle`, `appraisal`, `agent-op`, `sim-report`, `key`. Canonical "
+                       "JSON: keys sorted recursively, no whitespace, sorted by hand because `cedar-policy-core` turns "
+                       "on `preserve_order` (register finding 15)"],
+    ], size=13, accent="teal")
+    tc = c.table(X0 + 2 * (w3 + 36), y, [("Wasm Run tool ABI", w3 * 0.22, {"bold": True}),
+                                         ("`topak-contain/src/wasmtool.rs`; PROVISIONAL (tool-abi), I44; ADR-0033 A8 "
+                                          "pending", w3 * 0.78)], [
+        ["Imports, module `topak`", "`input_len() -> i32`, `input_read(ptr)`, `output(ptr, len)`, `connect() -> handle "
+                                    "| -1`, `send(h, ptr, len)`, `recv(h, ptr, cap)`. **Any other import is refused at "
+                                    "load and the node does not start**"],
+        ["Exports", "`memory` and `run() -> i32` (0 is ok). Input is the inputs map as JSON; output must be JSON, "
+                    "empty meaning `null`"],
+        ["Channel", "`connect` reaches only the declared `{kind, target}`; no address crosses the boundary. "
+                    "`channel: None` is hermetic. `ChannelUse{connects, sent, received}` is returned to the caller and "
+                    "recorded nowhere"],
+        ["Spec and limits", "`WasmToolSpec = {module, module_sha256, channel?}` under the node's `wasm_tools`, keyed "
+                            "`name@<module sha256>`; `FUEL` 50,000,000, `NET_TIMEOUT` 2 s, one fresh instance per call. "
+                            "Declared a second time in bundle `data.json`, unchecked against this (G9 item 84)"],
+        ["Native tool host", "`ToolSpec = {command, args[], binary_sha256, mcp_tool}` under `tools`, keyed `name@digest` "
+                             "with digest = SHA-256(`binary_sha256` ‖ 0x00 ‖ canonical MCP input schema) (I13); every "
+                             "call re-hashes the binary, lists tools, recomputes the digest, then makes one call"],
+    ], size=13, accent="teal")
+    y += max(ta, tb, tc) + 60
 
     # ---- verification harness
     c.text(X0, y + 21, "How it is checked, and how it stays honest", 21, "violet", bold=True)
@@ -295,12 +400,15 @@ def build():
         ("Corpus pins and the drift test", "blue", [
             "`corpus-pins.sha256`: **49 pins**, one per record and TLA+ module the reference follows.",
             "`cargo test -p topak-core --test drift` fails when a pinned file changes, or when the code cites a record "
-            "that is not pinned. `PROVISIONAL (<tag>)` marks every gap in the code.",
+            "that is not pinned. `PROVISIONAL (<tag>)` is meant to mark every gap in the code, and the register says it "
+            "does; two items carry no tag (I40 evidence retention, I41 session proof) and two sites a bare "
+            "`PROVISIONAL:` (inventory finding 8).",
         ]),
         ("Live smoke run", "amber", [
             "`scripts/smoke.py`: processes, TCP, operator CLI and an MCP client, in-memory or against Kafka and the "
             "sidecar.",
-            "**Not rerun since 2026.09.25** (G7 item 52).",
+            "**Not rerun since 2026.09.25** (G7 item 52), and as written it would fail at its grant line: it reads a "
+            "`note` key the `grant` reply does not have (inventory finding 19).",
         ]),
     ]
     hh = max(c.card(0, 0, w4, t, b, accent=a, draw=False, size=14) for t, a, b in hs)

@@ -336,9 +336,11 @@ def build():
                "false; otherwise it is void. Since Batch 25 the table names a proof module and carries five corrections "
                "the proofs found; at G9 it gained the launcher's verdicts and a `RunConfinement` row, and 38 rows name "
                "a proof module. Drawn three ways: the key chains as a DAG, the full incidence matrix, and the table "
-               "itself, all 43 rows.",
+               "itself, all 43 rows. Since 2026.10.03 `spec/theorem-premise-binding.json` carries the same table as a "
+               "Boolean incidence matrix, one row per theorem and one column per premise, and `spec/inventory.py "
+               "--check` fails when the two disagree at any rung; this diagram reads the Markdown.",
                3600,
-               "spec/theorem-premise-binding.md (all 43 rows, read at build time); ADR-0045 §3, §5, Annex A, Annex B "
+               "spec/theorem-premise-binding.md (all 43 rows, read at build time); spec/theorem-premise-binding.json (2026.10.03); ADR-0045 §3, §5, Annex A, Annex B "
                "(with the B23, B24 and B25 dependent entries); ADR-0046 §1–§5 (Batch 25); "
                "spec/premise-corrections-results-2026.10.02.txt; ADR-0023 §2, §6a; ADR-0033 A5, A6, A7 and A8 "
                "(pending); ADR-0034 A2 (pending); ADR-0042 §6 (Proposed); ADR-0030 §5 A1; G8 §2.2, §3; "

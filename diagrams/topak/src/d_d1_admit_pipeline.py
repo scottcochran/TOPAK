@@ -36,7 +36,9 @@ STEPS = [
      "Mechanism deny",
      ["`FencedEpoch`, `RequestEpochMismatch`, `FencedRulesEpoch`, `LeaseEnded`, `NotInAlphabet`, "
       "`RoundBoundReached`, `ArtifactNotSubmitted`, `ArtifactAlreadySubmitted`, `GatesNotPassed`, "
-      "`EvidenceMismatch`, `AlreadyPromoted`; `Other`, for a Run tool not held to its channel."]),
+      "`EvidenceMismatch`, `AlreadyPromoted`; `WrongSeat` (the token's lease is another seat's); `BadHeartbeat` "
+      "(a heartbeat from a non-observer, naming no round it watches, above what exists or below its last "
+      "watermark); `Other`, for a Run tool not held to its channel. With steps 1 and 2, sixteen variants."]),
     ("4", "Syntactic lift → **one frozen input**", "teal",
      ["Mechanical and total: every fact is a set membership, an equality or a path-syntax check; nothing interprets "
       "meaning (ADR-0007, ADR-0018 validator side).",
@@ -79,7 +81,7 @@ def build():
                "ADR-0020; ADR-0003 A1, A2; ADR-0022 §2; ADR-0030 §1, §4; ADR-0031 §5, E1; ADR-0032 §2; ADR-0033 §1–§4, A6; "
                "ADR-0033 A7, A8 (pending); ADR-0034 §1, §3, A2 (pending); "
                "ADR-0039 §1, §2; ADR-0041 §2; ADR-0042 §2, §3, §5; ADR-0044; ADR-0045 T-0045-1; GAPS-AND-ASSUMPTIONS "
-               "G4, G5, G8, G19, I14, I41, I44; G7 §1.1; G9 §2.3, §2.5, §2.7")
+               "G4, G5, G8, G14, G19, I14, I23, I41, I44; G7 §1.1; G9 §2.3, §2.5, §2.7; state.rs (`State`, `Applied`, `MechanismDeny`); derived/topak-format-and-schema-inventory-2026.10.03.md §5.1, §5.2, findings 12, 29")
     y0 = c.y
     # columns
     AX, AW = c.x0, 1180               # phase regions
@@ -188,7 +190,7 @@ def build():
     y = ord_bot + 50
     eff_top = y
     y += 36
-    c.arrow([(ax + 40, s7_top + h7), (ax + 40, y)], "teal", sw=2.4, label="`Applied::Admitted { seq }`",
+    c.arrow([(ax + 40, s7_top + h7), (ax + 40, y)], "teal", sw=2.4, label="`Applied::Admitted { seq, promoted }`",
             lpos=0.45, loff=(130, 0))
     s8_top = y
     effects = [
@@ -243,7 +245,8 @@ def build():
         "the deciding replica, content reduced to digests (ADR-0004), and logged locally with attribution.",
         "**Round open** → the principal's round topic.",
         "**Round sealed** → the round's `after` companion (ADR-0003 A2, confirmation-required C1): denials only, same "
-        "subject and round, erased with it; at most `after_topic_limit` records (dev: 64), then **one overflow marker**.",
+        "subject and round, erased with it; at most `after_topic_limit` records (dev: 64) **per deciding replica**, the "
+        "counter not being replicated (I23), then **one overflow marker**.",
         "Finding 11: the reference first dropped this clause; review caught it (ToO §15).",
     ], accent="red", size=13.5)
     c.line(bus, rows[0][0] + rows[0][1] / 2, bus, sink_y - 40, "red", sw=2, dash="7 5")
@@ -306,7 +309,12 @@ def build():
         ["`ProfileRegister`", "operator `register_profile`", "The profile's one-file workspace is promoted (ADR-0034 "
          "§1); a Run profile registers under A2, pending", "—"],
     ]
-    cy += c.table(CX, cy, cols, rows_t, size=13.5, accent="violet") + 34
+    cy += c.table(CX, cy, cols, rows_t, size=13.5, accent="violet") + 14
+    cy += c.para(CX, cy, CW, "**No entry records a promotion.** There is no `Promote` entry and no `promote` op: "
+                 "promotion happens inside `apply` when a `Vote` or `Heartbeat` admit completes the tally "
+                 "(`Applied::Admitted { promoted }`), and `Candidate.promoted_at` in state is derived from that admit. "
+                 "F3 retains the vote; the promotion itself is a derived fact the archive would have to recompute "
+                 "(inventory finding 29).", 13.5, "muted") + 26
 
     hh = c.card(CX, cy, CW, "Observer coupling: `live(o)` at decide and at apply (ADR-0039 §1, §2; ADR-0041 §2)", [
         "**At decide**, the lift computes `live(o)` for the seat's cell Observers: a live Observer lease, a heartbeat "
@@ -335,6 +343,9 @@ def build():
         ["input", "Digest of the frozen input both tiers evaluated (ADR-0030 §4)"],
         ["floor", "Digest of the linked floor text"],
         ["schema", "Digest of schema S"],
+        {"cells": ["(values file)", "**Not recorded.** The values file is pinned at startup beside the floor and schema "
+                   "(step 5), but no admit and no `status` reply carries its digest (inventory finding 12)"],
+         "accent": "red"},
         ["floor_reasons", "The permitting policy ids"],
         ["bundle", "The bundle revision that allowed: the lease's"],
         ["engine", "Which bundle engine decided: sidecar or local WASM"],
@@ -343,6 +354,17 @@ def build():
         ["session", "Under an attested session key (rungs 2 and 3), the guest's proof that it sent this action, "
                     "checked again at apply (ADR-0034 §3.5; I41)"],
     ], size=13.5, accent="blue") + 30
+    hh = c.card(CX, cy, CW, "Mechanism state: what the log rebuilds, and what each replica keeps alone (`State`, "
+                            "state.rs)", [
+        "**Replicated, rebuilt by replaying the log, never snapshotted**: `chain`, `epoch`, `rules`, `floor_exceptions`, "
+        "`leases` (by fence), `live_by_seat`, `last_round`, `candidates`, `gates`, `break_glass` approvals, `revoked`, "
+        "`applied_ids` (PROVISIONAL, G14), `last_applied`, the floor's `observer` and `persona` values, `marks`, "
+        "`seals`, `profiles`, `contested`.",
+        "**Per replica, not replicated**: `sessions` (the bearer tokens, I14), `observed`, `heard(o)` (ADR-0032 §3), "
+        "`after_written` (the after-companion counter, I23), `in_flight` `Actuate` calls, `launched` guests. A replica "
+        "that dies takes its tokens, its heartbeat clock and its bridged guests with it; the leases survive in the log.",
+    ], accent="violet", size=14)
+    cy += hh + 26
     c.card(CX, cy, CW, "What this path does not show (ADR-0033 §1, §3, §6)", [
         "**Confinement**: for an operator grant the MCP front door makes the alphabet the whole protocol, not the "
         "whole channel. The launcher (A7, pending) makes it the whole channel for a guest it starts, at rung 1 on "

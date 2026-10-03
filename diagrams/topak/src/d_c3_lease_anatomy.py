@@ -10,12 +10,12 @@ def build():
                "field is not carried; adding one is a mechanism release. The lease is granted for one round and ends "
                "with it, its fence is the Paxos log index at grant, renewal only narrows, and every way a lease ends "
                "subtracts authority.",
-               3200, "ADR-0031 §1–§8 with R1–R3, C1, E1, A1, A2 and History B5, B8, B10, B17, B23; ADR-0034 §3; "
+               3400, "ADR-0031 §1–§8 with R1–R3, C1, E1, A1, A2 and History B5, B8, B10, B17, B23; ADR-0034 §3; "
                      "ADR-0037 §1; ADR-0040 §4; ADR-0033 §4 and A6; ADR-0032; ADR-0016 §6; spec/Lease_A1.tla "
                      "(0b5eac7a7309be2f) and spec/Lease_A1-results-2026.09.28.txt; spec/Lease_A1_proof.tla (6f39c7711252c8de) "
                      "and Lease_A1-proof-results-2026.10.02.txt; ADR-0046 §4; ADR-0033 A7 (pending); mechanism topak-core "
                      "lease.rs, state.rs (`LeaseRecord`); ToO rev 13 §2.5; G7 §1.1; G9 §1.2, §2.3, §2.7, "
-                     "§7 items 21, 22, 62, 85")
+                     "§7 items 21, 22, 62, 85; ADR-0022 §1; ADR-0042 §5; ADR-0024 §3; state.rs (`EndReason`, `LeaseRecord`, `apply_issue`); GAPS I39, I41; derived/topak-format-and-schema-inventory-2026.10.03.md §1.1")
     X0, X1 = c.x0, c.x1
     y = c.y
 
@@ -67,7 +67,7 @@ def build():
 
     # notes under the schema
     ny = left_bot + 24
-    nw = (TW - 24) / 2
+    nw = (TW - 48) / 3
     n1 = [
         "**Round-coterminous**: no lease outlives its round, and no round outlives its lease (§2).",
         "**At most one live lease per principal; a grant requires that none is live** (§2, C1). Without it, monotone "
@@ -81,15 +81,27 @@ def build():
         "**Rung 0 is** `Mediated`**, always** (§3). The reference grants rung 0 by operator and, through its "
         "launcher, rung 1 and a **SIMULATED** rung 3 (ADR-0033 A7, pending; G9 §2.3): no real principal is "
         "`Contained`.",
-        "**The appraisal is not a field**: the reference keeps it beside the lease, on its record, so the closed "
-        "set stays closed (PROVISIONAL; G9 §1.2, item 85).",
+        "**The appraisal is not a field**: the reference keeps it beside the lease on its `LeaseRecord`, with "
+        "`ended`, the action count, the sequence number and the session counter (I39, I41), so the closed set stays "
+        "closed (PROVISIONAL; G9 §1.2, item 85).",
         "**Confinement is necessary, not sufficient** for `Contained`: the provenance axis must also clear (§3; "
         "ADR-0034 §4; ADR-0035 Proposed).",
     ]
+    n3 = [
+        "Nine reasons, serialized snake_case: `submitted`, `abstained`, `voted`, `expired`, `fenced`, `revoked`, "
+        "`rules_changed`, `operator`, `renewed`.",
+        "**`renewed` is an end**: a renewal closes the old record and opens a narrower one at the new fence, so "
+        "\"same lease, new fence\" is two records in state and one lease in the record's sense (§4).",
+        "ADR-0042 §5's seal table has every one a Run lease can have except `renewed`; `submitted`, `abstained` and "
+        "`voted` are Build's. `rules_changed` and `voted` are ends ADR-0031 does not name (right).",
+    ]
     hn = max(c.card(0, 0, nw, "Rules the schema rests on", n1, size=14, draw=False),
-             c.card(0, 0, nw, "What the schema is", n2, size=14, draw=False))
+             c.card(0, 0, nw, "What the schema is", n2, size=14, draw=False),
+             c.card(0, 0, nw, "How a lease ends at the reference", n3, size=14, draw=False))
     c.card(X0, ny, nw, "Rules the schema rests on (§2)", n1, accent="blue", size=14, h=hn)
     c.card(X0 + nw + 24, ny, nw, "What the schema is (§3, §6)", n2, accent="teal", size=14, h=hn)
+    c.card(X0 + 2 * (nw + 24), ny, nw, "How a lease ends at the reference (`EndReason`, state.rs)", n3,
+           accent="grey", size=14, h=hn, tint=False)
     left_bot = ny + hn
 
     # ------------------------------------------------------------------ right: the state machine
@@ -157,6 +169,8 @@ def build():
     ex_cards = [
         ("Round end", "grey", [
             "**Build**: `Submit` is terminal for the authoring round, or the operator's `end_round`.",
+            "**Build**: `Vote` is terminal for the voter's promotion round, and `Submit(⊥)` abstains (ADR-0022 §1; "
+            "`voted`, `abstained` at the reference).",
             "**Run**: no terminal variant; **the round ends when the lease ends** (ADR-0040 §4).",
             "The topic seals (ADR-0003). A new bundle reaches a live principal only this way: **tightening a live "
             "round ends it** (R2).",
@@ -177,6 +191,12 @@ def build():
             "Increments the epoch: **every lease at the old epoch is fenced**, every live round ends.",
             "Kept for e-stop, suspected compromise of mechanism or anchor, and a bundle that must reach everyone now.",
             "Rejected by the mechanism, ahead of the floor (ADR-0022 §2).",
+        ]),
+        ("New rules epoch (ADR-0042 §5)", "red", [
+            "An admitted issuance moves the rules epoch; the reference ends **every** live lease (`rules_changed`, "
+            "`state.rs`), since each names the old `rulesEpoch`.",
+            "ADR-0042 §5's seal table lists it for Run; **ADR-0031 does not name it.** In-flight votes are voided the "
+            "same way (ADR-0024 §3).",
         ]),
         ("Renewal refused", "amber", [
             "Evidence no longer reaches the lease's rung: **the lease lapses**; it is never renewed at a lower rung, "

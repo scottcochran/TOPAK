@@ -19,7 +19,7 @@ def build():
                      "slm/serve/profile-host-rung0.json (DRAFT 2026.09.29, not a corpus record); slm/serve/README.md; "
                      "slm/serve/serve.py; mechanism/README.md; mechanism/GAPS-AND-ASSUMPTIONS.md G1, G5, I14; "
                      "ADR-0033 A7 (pending); mechanism/crates/topak-contain, topak-node launch.rs; "
-                     "ToO rev 13 §2.7; G9 §2.3, §7 items 34–36, 81")
+                     "ToO rev 13 §2.7; G9 §2.3, §7 items 34–36, 81; topak-contain/src/guest.rs (`GuestMsg`, `HostMsg`); topak-core/src/confine.rs (`Profile`, `check_for_rung`); GAPS I38, I40, I41; derived/topak-format-and-schema-inventory-2026.10.03.md §1.7, §4.4")
     X0, X1 = c.x0, c.x1
     y = c.y
     sx = X0
@@ -207,6 +207,38 @@ def build():
     ], accent="amber", size=14, h=chh, tint=False)
     y += chh + 60
 
+    # ------------------------------------------------------------------ the guest channel as the node speaks it
+    c.heading(X0, y, "What crosses the pipe in the node's launcher (`topak-contain/src/guest.rs`): one JSON object per "
+                     "line, tagged `msg`; no token, ever", size=21)
+    c.status(X1, y + 3, "built", "ADR-0033 A7 pending; Reference: no record defines the wire form", anchor="end")
+    y += 50
+    gw = X1 - X0
+    gcols = [("Direction", gw * 0.1, {"bold": True}), ("`msg`", gw * 0.08, {"mono": True}), ("Fields", gw * 0.34),
+             ("When, and what it means", gw * 0.48)]
+    y += c.table(X0, y, gcols, [
+        ["guest → host", "hello", "`persona` (the `model.json` digest), `family`, `params`, `root`, `session_key?`",
+         "The guest writes first, exactly once, within `hello_timeout_ms` (10 s): the identity line of step 1. A "
+         "second hello is a protocol error, and a guest that cannot verify its bundle never writes one"],
+        ["host → guest", "attest", "`nonce`", "Rungs 2 and 3: bind this nonce before the grant and at every renewal "
+                                               "(ADR-0034 §3.1, §3.6). Rung 1 has nothing to measure and skips it"],
+        ["guest → host", "evidence", "`report_data`", "In answer to `attest`, over `{nonce, sessionKey}`; unsolicited "
+                                                       "evidence is a protocol error"],
+        ["host → guest", "granted", "`fence`, `epoch`", "At grant and after every renewal: the lease the guest acts "
+                                                         "under. At rungs 2 and 3 the guest signs `(fence, epoch, ctr, "
+                                                         "op)` over it (I41)"],
+        ["guest → host", "op", "`op`: an `AgentOp`; `proof?`: `{ctr, op, sig}`",
+         "Every action line of step 4. The bridge hands it to the admit path as the launched lease's session: **a "
+         "launched lease mints no token** (I14); at rungs 2 and 3 the proof is checked against the action at decide "
+         "and its counter at apply"],
+        ["host → guest", "response", "`response`: `{admitted, detail}`", "One per `op`: the admit path's answer, on "
+                                                                           "the guest's stdin"],
+        ["host → guest", "shutdown", "—", "At round end, before the guest is destroyed (P6)"],
+    ], size=14, accent="teal") + 14
+    y += c.para(X0, y, gw, "The guest-io buffer holds 64 lines; the bridge ending while the lease is live proposes "
+                "`EndRound(operator)`. Evidence the node appraises is retained at `<data_dir>/evidence/<digest>.json` "
+                "(I40), written non-canonically under a canonical name. Nothing in this table is a record's: the "
+                "message set is the reference's, and ADR-0036's ratification would fix or change it.", 14, "muted") + 50
+
     # ------------------------------------------------------------------ the profiles: schema and the two declared ones
     half = (X1 - X0 - 40) / 2
     c.heading(X0, y, "§1: the profile is a file whose digest is the lease's confinement digest")
@@ -224,6 +256,11 @@ def build():
         ["clauses", "**P1–P7, each** `pass`**,** `fail` **or** `vacuous`**, with a one-line reason.** A profile that omits a clause "
                     "is malformed"],
         ["subtractions", "For each `fail`: what would have to be removed for it to pass"],
+        {"cells": ["reference", "**At the reference, not in ADR-0036 §1**: P7's reference values as a part of their own, "
+                   "`launch_measurement?` and `min_tcb?` (`ReferenceValues`, confine.rs). `check_for_rung`: rung ≥ 1 "
+                   "needs `image` and `persona`; rung ≥ 2 the launch measurement; rung 3 `min_tcb`"], "accent": "amber"},
+        {"cells": ["domain", "**At the reference, not in ADR-0036 §1**: `build` or `run`, default `build`; the Run "
+                   "profile is ADR-0034 A2, pending"], "accent": "amber"},
     ], size=14, accent="blue")
     cols = [("Trusted for guest integrity at rung 1", half * 0.42, {"bold": True}), ("Why", half * 0.58)]
     t2 = c.table(X0 + half + 40, y, cols, [
@@ -235,11 +272,15 @@ def build():
         ["The image, by digest", "What runs"],
     ], size=14, accent="amber")
     y += max(t1, t2) + 14
+    c.para(X0, y - max(t1, t2) + t1, half,
+           "The profile's identity is the digest of the file's bytes; a missing clause is malformed. The promotion "
+           "artifact is a one-file workspace, `profile.json`, keyed by that digest (R4; PROVISIONAL (profile-artifact), "
+           "I38); `register_profile` carries the text verbatim into the log.", 14, "muted")
     c.para(X0 + half + 40, y - max(t1, t2) + t2, half,
            "D-0034-2's type changes made concrete; ADR-0045 Annex B instantiates them under **T-0045-19** and "
            "**T-0045-20** (R3). On a Linux host Docker is not a VM boundary; gVisor (`SLM_RUNTIME=runsc`) is the nearest "
            "substitute, and the `launch` part must say which.", 14, "muted")
-    y += 60
+    y += 90
 
     c.heading(X0, y, "Two declared profiles, clause by clause: every failure is a subtraction still owed", size=21)
     y += 46

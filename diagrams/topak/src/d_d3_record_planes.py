@@ -26,8 +26,9 @@ STORES = [
 ]
 
 FACTS = [
-    ["Every `Entry`: `Grant`, `Renew`, `Admit`, `EndRound`, `Revoke`, `EpochIncrement`, `Issue`, `GatesPassed`, "
-     "`BreakGlassApprove`.",
+    ["Every `Entry`, eleven kinds: `Grant`, `Renew`, `Admit`, `EndRound`, `Revoke`, `EpochIncrement`, `Contested`, "
+     "`ProfileRegister`, `Issue`, `GatesPassed`, `BreakGlassApprove`. Each carries an `id` "
+     "`n<replica>-<boot>-<counter>`, so a re-proposal applies once.",
      "Admits are **F1**; a vote's admit is **F3**; stops are **F2**; issuances **F4**; break-glass admits **F5**; "
      "erasure events would be **F6** (unbuilt).",
      "**Denials are not here**: a denial changes no state, so it is never proposed."],
@@ -63,11 +64,11 @@ def build():
                "a separately governed store holds plaintext so it can be destroyed. Across all four runs the plane "
                "boundary (B5): control-plane facts cross and survive, cognitive payloads are reduced to a hash and a "
                "pointer.",
-               W, "ToO rev 11 §4.1–§4.4, §15; ADR-0003 (0003.1–0003.7, A1, A2, A3); ADR-0004; ADR-0005; ADR-0006; ADR-0015; "
+               W, "ToO rev 13 §4.1–§4.4, §15; ADR-0003 (0003.1–0003.7, A1, A2, A3); ADR-0004; ADR-0005; ADR-0006; ADR-0015; "
                "ADR-0020; ADR-0021 §3, §4, §7; ADR-0028 §1–§4; ADR-0042 §2, §3, §5; ADR-0033 §2; G7 §1.1; "
                "mechanism/crates/topak-transport/src/lib.rs (`EmitRecord`, `RecordKind`, headers); topak-core/src/lift.rs "
                "(`topic_name`, `after_topic_name`); topak-core/src/state.rs (`Entry`, `Admitted`); topak-node/src/mechanism.rs "
-               "(`record_denial`, `apply_committed`); GAPS-AND-ASSUMPTIONS G9, G14, G15, G17; boundary register B5, B9")
+               "(`record_denial`, `apply_committed`); GAPS-AND-ASSUMPTIONS G9, G14, G15, G17; boundary register B5, B9; state.rs (`EndReason`); GAPS I23, I33; derived/topak-format-and-schema-inventory-2026.10.03.md §4.6, §5.1, findings 13, 14")
     X0, X1 = c.x0, c.x1
     y = c.y
     gap = 170
@@ -128,7 +129,8 @@ def build():
                              "**Build**: at gate submission, the principal's topic set (ADR-0021 §3).",
                              "In-flight `Actuate` calls written `unknown` ahead of the seal marker."]),
         ("`after` companion", "red", ["Denials under the round's lease once its topic is sealed; never an emission.",
-                                      "Bounded: `after_topic_limit` (dev 64), then **one overflow marker**.",
+                                      "Bounded: `after_topic_limit` (dev 64) **per deciding replica**, since the counter is not "
+                                      "replicated (I23), then **one overflow marker**.",
                                       "ADR-0003 A2 · confirmation-required C1."]),
         ("Retained", "blue", ["**Run**: Run's horizon. **Build**: the production lifetime of any artifact promoted "
                               "from the round (ADR-0021 §7).",
@@ -162,11 +164,15 @@ def build():
         ["seat", "The principal's seat"],
         ["fence", "The lease's fence (log index of its grant)"],
         ["kind", "`Emit` (an admitted `Emit` or `Report`), `Actuate`, `Deny` or `Overflow`; the seal is a marker "
-                 "record with a `topak-seal` header"],
+                 "record with a `topak-seal` header whose reason is in Rust's Debug form (`Submitted`), not the serde "
+                 "form (`submitted`) every other surface uses (inventory finding 14)"],
         ["admit", "Log index of the authorizing `Admit`; **none for a denial**"],
         ["seq", "Per-round sequence: emissions in Build, effect-bearing admits in Run (ADR-0042 §2); none for a denial"],
-        ["digest", "Digest of the payload"],
-        ["payload", "The record itself: cognitive payload for an emission; digests only for a denial"],
+        ["digest", "Digest of the payload in canonical JSON. **The Kafka value itself is not canonical** "
+                   "(`serde_json::to_vec`), so a reader re-canonicalizes to check it (inventory finding 13)"],
+        ["payload", "The record itself: cognitive payload for an emission; for a denial `{denied, reason, epoch, "
+                    "round, at, decided_by}` with content as digests; for the overflow marker `{overflow, limit, "
+                    "epoch, round, at, decided_by}`"],
     ], size=13.5, accent="amber")
     h2 = c.table(X0 + t1w + 40, y, [("Field", t1w * 0.2, {"mono": True}), ("What it is", t1w * 0.55),
                                     ("Plane", t1w * 0.25)], [
@@ -178,6 +184,8 @@ def build():
         ["inputs", "Digest of the inputs", "Control plane"],
         ["outcome", "`returned`, `failed` or `unknown`", "Control plane"],
         ["result", "Digest of what the tool returned, when it returned", "Control plane"],
+        {"cells": ["channel", "`{kind, target}` as the allowlist entry declares it, optional. **Reference only**: "
+                   "not a field of ADR-0042 §3 (I33)", "Control plane"], "accent": "amber"},
         {"cells": ["payload", "The inputs and the result themselves", "**Cognitive payload**"], "accent": "pink"},
     ], size=13.5, accent="amber")
     y += max(h1, h2) + 50

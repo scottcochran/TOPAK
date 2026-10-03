@@ -53,7 +53,7 @@ def build():
                "§7 items 67, 80, 84; "
                "floor/genesis-floor.cedar, genesis.cedarschema, genesis-values.json; policies/bundle.rego, "
                "tool_invocation.rego, actuate.rego, tool_schema.rego, data.json; mechanism/crates/topak-core/src/admit.rs, "
-               "lift.rs; topak-floor/src/lib.rs; topak-bundle/src/lib.rs; scripts/build-bundle.sh")
+               "lift.rs (`FrozenInput`, `bundle_input`); topak-floor/src/lib.rs; topak-bundle/src/lib.rs; scripts/build-bundle.sh; floor/gen-tests.py; GAPS G11; derived/topak-format-and-schema-inventory-2026.10.03.md §2.1, §3.1, §3.2, findings 11, 23")
     X0, X1 = c.x0, c.x1
     y = c.y
 
@@ -174,7 +174,9 @@ def build():
                       "bundle data, not a re-fetch"],
     ], size=13.5, accent="amber") + 12
     sy += c.para(bx + pad, sy, btw, "Revision `be46c574dfeeed16…`: SHA-256 over the sorted (path, bytes) of every "
-                 "non-test `.rego` and `data.json`; built to OPA WASM by `build-bundle.sh` and signed into "
+                 "non-test `.rego` and `data.json`, **the source, not the compiled module**. `build-bundle.sh` "
+                 "compiles it to `policy.wasm` in the `openpolicyagent/opa` image at its floating `latest` tag, so one "
+                 "revision can carry a different module (inventory finding 11), and signs the revision into "
                  "`<revision>.sig` (ADR-0033 A6).", 13.5, "muted") + 22
     c.text(bx + pad, sy + 18, "Degeneracy on ADR-0044 (§5)", 17, "amber", bold=True)
     sy += 34
@@ -298,6 +300,81 @@ def build():
         "the proven text is not the enforced text.",
         "Cedar's analyses compare Cedar with Cedar. A deployment that keeps a Rego floor declares **D-0030-1**.",
     ], accent="blue", size=14)
+
+    # ---- schema S, drawn
+    y = c.ymax + 60
+    c.text(X0, y + 21, "Schema S, as the lift types it (`floor/genesis.cedarschema`, namespace `Topak`; `lift.rs`)", 21,
+           "blue", bold=True)
+    c.status(X0 + 1040, y + 3, "draft", "digest 0ec2fa215eefe136")
+    y += 42
+    g = 36
+    ew_, cw_ = 1130, 920
+    aw_ = X1 - X0 - ew_ - cw_ - 2 * g
+    mono = {"mono": True}
+    h_e = c.table(X0, y, [("Entity", ew_ * 0.2, mono), ("Parents", ew_ * 0.17, mono),
+                          ("Attributes (none optional)", ew_ * 0.63)], [
+        ["Roster", "", "—"],
+        ["Seat", "Roster", "`domain: String` (build | run), `kind: String` (thinker | observer | grant)"],
+        ["CorpusRoot", "", "—"],
+        ["CorpusObject", "CorpusRoot", "—"],
+        ["Workspace", "", "—"],
+        ["WorkspaceTarget", "Workspace", "—"],
+        ["ToolSet", "", "—"],
+        ["Tool", "ToolSet", "`digest: String`"],
+        ["Topic", "", "`owner: Seat`, `epoch: Long`, `round: Long`, `sealed: Bool`"],
+        ["Artifact", "", "`author: Seat`"],
+        {"cells": ["ArchiveRecord", "", "`class: String` (F1..F6 | payload); **never produced** by the lift"],
+         "accent": "red"},
+    ], size=13.5, accent="blue")
+    h_c = c.table(X0 + ew_ + g, y, [("Context record", cw_ * 0.18, mono), ("Fields", cw_ * 0.82)], [
+        ["Lease", "`alphabet: Set<String>`, `rulesEpoch: Long`"],
+        ["BuildCtx", "`lease`, `epoch`, `round`, `roundRole` (author | voter), `corpusRoot`, `workspace`, "
+                     "`toolAllowlist`, `inputsInWorkspace: Bool`"],
+        ["VoteCtx", "`lease`, `epoch`, `rulesEpoch`, `verdict` (grant | deny), `voteRulesEpoch`, `grantRoster`, "
+                    "`vetoRoster`"],
+        ["RunCtx", "`lease`, `epoch`, `round`, `runRoot`, `toolAllowlist`, `breakGlass: {quorum: Bool, tools: "
+                   "ToolSet}`, `observerLive: Bool`"],
+        {"cells": ["EraseCtx", "`erasureQuorum: Bool` (FALSE at genesis); **never produced** by the lift"],
+         "accent": "red"},
+    ], size=13.5, accent="blue")
+    h_a = c.table(X0 + ew_ + g + cw_ + g, y, [("Action (principal: `Seat`)", aw_ * 0.3, mono),
+                                            ("Resource", aw_ * 0.34, mono), ("Context", aw_ * 0.36, mono)], [
+        ["Read", "CorpusObject", "BuildCtx"], ["Draft", "WorkspaceTarget", "BuildCtx"],
+        ["Invoke", "Tool", "BuildCtx"], ["Emit", "Topic", "BuildCtx"], ["Submit", "Artifact", "BuildCtx"],
+        ["Vote", "Artifact", "VoteCtx"], ["Consult", "CorpusObject", "RunCtx"], ["Actuate", "Tool", "RunCtx"],
+        ["Report", "Topic", "RunCtx"],
+        {"cells": ["Erase", "ArchiveRecord", "EraseCtx"], "accent": "red"},
+    ], size=13.5, accent="blue")
+    y += max(h_e, h_c, h_a) + 24
+    w3s = (X1 - X0 - 2 * g) / 3
+    sc = [
+        ("What the lift always builds (`lift.rs`)", "teal", {}, [
+            "Entities present in every request: `Roster::grant`, `Roster::veto`, the requesting `Seat` with its roster "
+            "parents, `CorpusRoot::pinned` and `run-pinned`, the `Workspace` `ws-<seat>-e<epoch>-r<round>`, "
+            "`ToolSet::build-allow`, `run-allow` and `bg-tools`; then the action's resource and the context in the "
+            "shapes above (44 entities in the test slice, `floor/gen-tests.py`).",
+            "`Erase`, `EraseCtx` and `ArchiveRecord` are typed, gated and **never produced**: no lift path exists and "
+            "`Rules.erasure_roster` is never read (G11).",
+        ]),
+        ("Read by no policy", "red", {"tint": False, "dash": "6 4"}, [
+            "`Lease.rulesEpoch`, `Tool.digest` and `VoteCtx.epoch` are typed and lifted and **no policy reads them**: "
+            "`B6` reads `context.rulesEpoch`, and a tool's digest is in its entity id `name@digest` (inventory "
+            "finding 23).",
+            "S is enforced on every request, so an attribute's absence is a deny even where no policy would read it.",
+        ]),
+        ("The bundle's input document (`bundle_input`, lift.rs; `policies/bundle.rego`)", "amber", {}, [
+            "`{action, principal: {seat, domain}, resource: {object} | {target} | {tool, digest} | {topic} | "
+            "{artifact[, evidence]}, inputs, request: <the typed Action>, context: {epoch, round, roundRole, "
+            "rulesEpoch, lease: <fence>}}`.",
+            "The modules read only `input.action`, `input.resource.tool`, `input.resource.digest` and `input.inputs`; "
+            "`data.json` is `{topak: {tools: {\"name@digest\": {required, optional?, channel?}}}}` with flat types "
+            "only. `violations` strings exist for a decision log nobody writes.",
+        ]),
+    ]
+    hs = max(c.card(0, 0, w3s, t, b, accent=a, draw=False, size=14, **kw) for t, a, kw, b in sc)
+    for i, (t, a, kw, b) in enumerate(sc):
+        c.card(X0 + i * (w3s + g), y, w3s, t, b, accent=a, h=hs, size=14, **kw)
+    y += hs
 
     ly = c.ymax + 44
     c.legend(c.x0, ly, [

@@ -110,7 +110,8 @@ def build():
          "teal", None, "", None, None),
         ("The prover (T-0045-31)", ["`tlapm` 1.6.0-pre at `7824dab` (binary `e150fb793fb28592…`) with Z3 4.8.9, "
                                     "Zenon 0.8.4, Isabelle2025; installed by `tools/install-tlaps.sh`, **not "
-                                    "tracked**, run through `tools/tlapm`."], "blue", "accepted", "C2, C4 · B25",
+                                    "tracked**, pinned by `tools/TLAPS-PIN` (2026.10.03) and run through "
+                                    "`tools/tlapm`, which refuses another digest."], "blue", "accepted", "C2, C4 · B25",
          None, None),
         ("`*-proof-results-2026.10.02.txt`", ["`proof-results.sh` regenerates each, printing the digest of every "
                                               "module in the EXTENDS chain and of the prover. **3,036 obligations, "

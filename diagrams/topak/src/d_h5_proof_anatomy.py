@@ -201,8 +201,10 @@ def build():
             "`Lease_A1_proof.tla`: `EXTENDS Lease_A1, TLAPS`, with the hypotheses the base module must not carry.",
         ]),
         ("The prover, T-0045-31", "grey", [
-            "`tools/tlapm --cleanfp --strict`; binary `e150fb793fb28592`, not tracked (G9 item 73). Its SMT proofs "
-            "are not rechecked by Isabelle (item 74).",
+            "`tools/tlapm --cleanfp --strict`; binary `e150fb793fb28592`, not tracked; since 2026.10.03 named in the "
+            "corpus by `tools/TLAPS-PIN` (version, commit, the digest's first sixteen hex, backends), which the wrapper "
+            "enforces unless `TLAPM_UNPINNED=1` (G9 item 73; the full digest is owed). Its SMT proofs are not rechecked "
+            "by Isabelle (item 74).",
         ]),
         ("Results file, dated, never edited", "teal", [
             "`Modules:` names the digest of every module in the `EXTENDS` chain as proved, then the prover's "

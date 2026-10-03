@@ -124,9 +124,10 @@ def build():
         ], None, ""),
         ("A bundle is trusted by its signature, not its file name (ADR-0044)", "blue", [
             "The **bundle key** is in the issued rules (ADR-0025 §1 (f)); issuing or replacing it is an issuance.",
-            "The signature covers the **content revision**, shipped as `<revision>.sig`; `load_dir` loads only what "
-            "verifies; a sidecar's revision counts only if its signature was verified; a grant naming an unverified "
-            "revision is refused.",
+            "The signature covers the **content revision**, shipped as `<revision>.sig`; `load_dir` refuses any file "
+            "that does not verify, and **one refused file stops the node from starting** rather than being skipped "
+            "(inventory finding 20); a sidecar's revision counts only if its signature was verified; a grant naming an "
+            "unverified revision is refused.",
             "**Built** at the reference (ADR-0033 A6) under a dev key, custody (1, 0). **Not built**: signing at "
             "promotion as a pipeline step, and the key's custody row (G9 item 67).",
         ], "accepted", "C1"),

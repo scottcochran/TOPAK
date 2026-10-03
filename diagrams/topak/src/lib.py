@@ -21,7 +21,7 @@ MONO = "'DejaVu Sans Mono', Menlo, Consolas, monospace"
 MONO_EM = 0.602          # DejaVu Sans Mono / Menlo advance
 MONO_SCALE = 0.92        # code runs are set slightly smaller than the surrounding text
 
-DATE = "2026.10.02"
+DATE = "2026.10.03"
 STATE = "State of record: Genesis Checkpoint G9 (2026.10.02) · narrative: Theory of Operation rev 13"
 
 # ---------------------------------------------------------------------------------------------

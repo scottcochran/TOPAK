@@ -4,54 +4,56 @@ Diagrams of the corpus and the generators that draw them. A diagram is a derived
 records and never decides anything. **Where a diagram and a record disagree, the record wins**, and the state of
 record is the latest checkpoint.
 
-## The TOPAK diagram family (2026.10.02)
+## The TOPAK diagram family (2026.10.03)
 
 Thirty-one diagrams covering the pattern's logical hierarchies and domain boundaries, drawn against Genesis
 Checkpoint G9 (2026.10.02) and Theory of Operation revision 13. Each diagram is an SVG that adapts to light and
 dark themes (`prefers-color-scheme`; renderers without CSS fall back to light). The diagrams are sized for
 reading zoomed in and print at poster scale. Where a record has a table, the diagram draws all of it.
 
+**Revised 2026.10.03** against `derived/topak-format-and-schema-inventory-2026.10.03.md`, which inventories every format and setting in the corpus. Schema S, the agent socket, the operator and replica wire formats, the guest channel and the Wasm tool ABI are now drawn (D2, H4, C5); D3 lists all eleven log entries; D1 and C3 carry the reference's denial variants, applied results and end reasons; H4 adds the configuration shapes, timers and on-disk files; F1 says what the reference has in place of a Persona record; and the inventory's findings 8, 11 to 15, 19, 20, 22, 23 and 29 are stated where the 2026.10.02 family presented the point as clean. The prover pin (`tools/TLAPS-PIN`) and the binding matrix (`spec/theorem-premise-binding.json`) of 2026.10.03 are named in H5, G1, H3 and G3. The state of record is unchanged: G9 and Theory of Operation revision 13.
+
 | Id | Diagram | What it shows |
 |---|---|---|
 | **A · Orientation** | | |
-| A1 | [Roles map](topak/A1-roles-map-2026.10.02.svg) | T, O, P, A, K as roles with obligations; the reference's instruments and what it does not claim |
-| A2 | [Two domains, one membrane](topak/A2-two-domains-one-membrane-2026.10.02.svg) | `Build(Contain) → Run(Contain)`: the gate, both alphabets, promotion as the only crossing |
-| A3 | [Boundary register map](topak/A3-boundary-register-map-2026.10.02.svg) | B1–B14 placed on one system picture; the full register, and what has changed since it was written |
-| A4 | [Orientation and monotonicity](topak/A4-orientation-monotonicity-2026.10.02.svg) | The orientation rule across the fourteen layers of ToO §7.8 |
+| A1 | [Roles map](topak/A1-roles-map-2026.10.03.svg) | T, O, P, A, K as roles with obligations; the reference's instruments and what it does not claim |
+| A2 | [Two domains, one membrane](topak/A2-two-domains-one-membrane-2026.10.03.svg) | `Build(Contain) → Run(Contain)`: the gate, both alphabets, promotion as the only crossing |
+| A3 | [Boundary register map](topak/A3-boundary-register-map-2026.10.03.svg) | B1–B14 placed on one system picture; the full register, and what has changed since it was written |
+| A4 | [Orientation and monotonicity](topak/A4-orientation-monotonicity-2026.10.03.svg) | The orientation rule across the fourteen layers of ToO §7.8 |
 | **B · Authority** | | |
-| B1 | [Authority chain](topak/B1-authority-chain-2026.10.02.svg) | From the intent axiom to an effect, and the audit chain back up |
-| B2 | [Verified object and edge](topak/B2-verified-object-and-edge-2026.10.02.svg) | What is proved once, against what may only subtract (B4); the seventeen floor policies |
-| B3 | [Floor change routing](topak/B3-floor-change-routing-2026.10.02.svg) | The computed route for a floor change and the proof-carrying gate |
-| B4 | [Rules floor](topak/B4-rules-floor-2026.10.02.svg) | R1–R9, parametricity, the two non-vacuity runs, and the proof of the six properties |
-| B5 | [Promotion quorum](topak/B5-promotion-quorum-2026.10.02.svg) | Promotion as a round: gates, seats, recusal, tally, stalls |
-| B6 | [Anchor custody](topak/B6-anchor-custody-2026.10.02.svg) | The havoc issuer; the custody axis; who is at the gate |
-| B7 | [Genesis to bootstrap](topak/B7-genesis-to-bootstrap-2026.10.02.svg) | Ratification at G9, the 22 confirmation-required records, the trigger and the ceremony |
+| B1 | [Authority chain](topak/B1-authority-chain-2026.10.03.svg) | From the intent axiom to an effect, and the audit chain back up |
+| B2 | [Verified object and edge](topak/B2-verified-object-and-edge-2026.10.03.svg) | What is proved once, against what may only subtract (B4); the seventeen floor policies |
+| B3 | [Floor change routing](topak/B3-floor-change-routing-2026.10.03.svg) | The computed route for a floor change and the proof-carrying gate |
+| B4 | [Rules floor](topak/B4-rules-floor-2026.10.03.svg) | R1–R9, parametricity, the two non-vacuity runs, and the proof of the six properties |
+| B5 | [Promotion quorum](topak/B5-promotion-quorum-2026.10.03.svg) | Promotion as a round: gates, seats, recusal, tally, stalls |
+| B6 | [Anchor custody](topak/B6-anchor-custody-2026.10.03.svg) | The havoc issuer; the custody axis; who is at the gate |
+| B7 | [Genesis to bootstrap](topak/B7-genesis-to-bootstrap-2026.10.03.svg) | Ratification at G9, the 22 confirmation-required records, the trigger and the ceremony |
 | **C · Principals and the membrane** | | |
-| C1 | [Principal, seat, cell](topak/C1-principal-seat-cell-2026.10.02.svg) | Deployment → domain → cell → seat and stage → principal → lease |
-| C2 | [Alphabets by seat](topak/C2-alphabets-by-seat-2026.10.02.svg) | Nine variants in two domains against three seat kinds |
-| C3 | [Lease anatomy](topak/C3-lease-anatomy-2026.10.02.svg) | The twelve fields and the lease's life cycle |
-| C4 | [Confinement rungs](topak/C4-confinement-rungs-2026.10.02.svg) | Rungs 0–3, P1–P7, verdicts, and the four conjuncts of `Contained` |
-| C5 | [Rung-1 launcher channel](topak/C5-rung1-launcher-channel-2026.10.02.svg) | Launch, appraise, grant, bridge (ADR-0036, Proposed; built at the reference, ADR-0033 A7 pending) |
+| C1 | [Principal, seat, cell](topak/C1-principal-seat-cell-2026.10.03.svg) | Deployment → domain → cell → seat and stage → principal → lease |
+| C2 | [Alphabets by seat](topak/C2-alphabets-by-seat-2026.10.03.svg) | Nine variants in two domains against three seat kinds |
+| C3 | [Lease anatomy](topak/C3-lease-anatomy-2026.10.03.svg) | The twelve fields and the lease's life cycle |
+| C4 | [Confinement rungs](topak/C4-confinement-rungs-2026.10.03.svg) | Rungs 0–3, P1–P7, verdicts, and the four conjuncts of `Contained` |
+| C5 | [Rung-1 launcher channel](topak/C5-rung1-launcher-channel-2026.10.03.svg) | Launch, appraise, grant, bridge (ADR-0036, Proposed; built at the reference, ADR-0033 A7 pending) |
 | **D · Admit path and the record** | | |
-| D1 | [Admit pipeline](topak/D1-admit-pipeline-2026.10.02.svg) | Decide, then order, then effect, with a denial lane |
-| D2 | [Policy composition](topak/D2-policy-composition-2026.10.02.svg) | `admit ⟺ floor_permit ∧ ¬bundle_deny`, tier by tier |
-| D3 | [Record planes](topak/D3-record-planes-2026.10.02.svg) | Log, transport, archive and payload store; round topics; erasure |
-| D4 | [Privileged paths and forensic floor](topak/D4-privileged-paths-forensic-floor-2026.10.02.svg) | Break-glass and erasure as floor exceptions; NC-1, NC-2; F1–F6 |
+| D1 | [Admit pipeline](topak/D1-admit-pipeline-2026.10.03.svg) | Decide, then order, then effect, with a denial lane |
+| D2 | [Policy composition](topak/D2-policy-composition-2026.10.03.svg) | `admit ⟺ floor_permit ∧ ¬bundle_deny`, tier by tier |
+| D3 | [Record planes](topak/D3-record-planes-2026.10.03.svg) | Log, transport, archive and payload store; round topics; erasure |
+| D4 | [Privileged paths and forensic floor](topak/D4-privileged-paths-forensic-floor-2026.10.03.svg) | Break-glass and erasure as floor exceptions; NC-1, NC-2; F1–F6 |
 | **E · Detection** | | |
-| E1 | [Observer topology](topak/E1-observer-topology-2026.10.02.svg) | Cell Observers, the correlator, `W(p)` as the ACL, placement |
-| E2 | [Liveness coupling](topak/E2-liveness-coupling-2026.10.02.svg) | `live(o)`, the `K` window, the clock model and the timing budget |
+| E1 | [Observer topology](topak/E1-observer-topology-2026.10.03.svg) | Cell Observers, the correlator, `W(p)` as the ACL, placement |
+| E2 | [Liveness coupling](topak/E2-liveness-coupling-2026.10.03.svg) | `live(o)`, the `K` window, the clock model and the timing budget |
 | **F · Model** | | |
-| F1 | [Persona, lift and lineage](topak/F1-persona-lift-lineage-2026.10.02.svg) | The Persona, the split lift, and the lineage projection |
+| F1 | [Persona, lift and lineage](topak/F1-persona-lift-lineage-2026.10.03.svg) | The Persona, the split lift, and the lineage projection |
 | **G · Trust and variation** | | |
-| G1 | [Trusted base](topak/G1-trusted-base-2026.10.02.svg) | The admission rule and all thirty-one rows, with the reference's declaration |
-| G2 | [Deployment lattice](topak/G2-deployment-lattice-2026.10.02.svg) | The archetype as unique maximum; every axis and declared degeneracy |
-| G3 | [Theorem–premise DAG](topak/G3-theorem-premise-dag-2026.10.02.svg) | All 43 binding rows as chains, an incidence matrix and the full table, with the proof column and the 2026.10.02 corrections |
+| G1 | [Trusted base](topak/G1-trusted-base-2026.10.03.svg) | The admission rule and all thirty-one rows, with the reference's declaration |
+| G2 | [Deployment lattice](topak/G2-deployment-lattice-2026.10.03.svg) | The archetype as unique maximum; every axis and declared degeneracy |
+| G3 | [Theorem–premise DAG](topak/G3-theorem-premise-dag-2026.10.03.svg) | All 43 binding rows as chains, an incidence matrix and the full table, with the proof column and the 2026.10.02 corrections |
 | **H · Corpus and implementation** | | |
-| H1 | [Corpus structure](topak/H1-corpus-structure-2026.10.02.svg) | Layers, precedence, the checkpoint chain, and how a change moves |
-| H2 | [ADR map](topak/H2-adr-map-2026.10.02.svg) | Every record by area, with status, markers, dependencies and reversals |
-| H3 | [Verification map](topak/H3-verification-map-2026.10.02.svg) | Every check and proof, what must fail, and what neither claims |
-| H4 | [Reference deployment](topak/H4-reference-deployment-2026.10.02.svg) | The reference as deployed in development, and what is not built |
-| H5 | [Proof anatomy](topak/H5-proof-anatomy-2026.10.02.svg) | How a proof is built and kept in step: one proof module part by part, the four shapes the inductive invariants took, and the sync loop (ADR-0046; `spec/proof-method.md`) |
+| H1 | [Corpus structure](topak/H1-corpus-structure-2026.10.03.svg) | Layers, precedence, the checkpoint chain, and how a change moves |
+| H2 | [ADR map](topak/H2-adr-map-2026.10.03.svg) | Every record by area, with status, markers, dependencies and reversals |
+| H3 | [Verification map](topak/H3-verification-map-2026.10.03.svg) | Every check and proof, what must fail, and what neither claims |
+| H4 | [Reference deployment](topak/H4-reference-deployment-2026.10.03.svg) | The reference as deployed in development, and what is not built |
+| H5 | [Proof anatomy](topak/H5-proof-anatomy-2026.10.03.svg) | How a proof is built and kept in step: one proof module part by part, the four shapes the inductive invariants took, and the sync loop (ADR-0046; `spec/proof-method.md`) |
 
 ### Regenerating
 

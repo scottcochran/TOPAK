@@ -143,7 +143,10 @@ def build():
     b2 = ["**The authoritative vote is the admit decision in the consensus log** (ADR-0015), retained as ADR-0028 F3.",
           "A voter's round-topic emission carries the vote with a hash-and-pointer to its commentary in the "
           "ADR-0004 store; commentary is payload and erasable, the vote is not.",
-          "So the round needs no effect-stream scheme: §7 does not rest on ADR-0021."]
+          "So the round needs no effect-stream scheme: §7 does not rest on ADR-0021.",
+          "At the reference there is **no promotion entry and no `promote` op**: the admit that completes the tally is "
+          "the event, and `promoted_at` in state is derived from it. F3 retains the vote; what the archive says of the "
+          "promotion is open (inventory finding 29)."]
     b3 = ["**Promotion is a grant** (§1): operational **bundles**, **mechanism releases** (including policy-floor "
           "and rules-floor changes) and **Personas**.",
           "**Runtime subtraction is not promotion** (§9): e-stop, lease expiry, revocation and `bundle(deny=all)` "

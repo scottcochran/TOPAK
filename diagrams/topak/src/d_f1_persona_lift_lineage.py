@@ -54,7 +54,7 @@ def _build():
                "ADR-0037 §3); ADR-0019; ADR-0020; ADR-0023 §5; ADR-0031 A2; ADR-0035 §1–§9, Findings 1–5, R1–R4 "
                "(Proposed); ADR-0037 §2, §3; ADR-0045 T-0045-15, finding 2; floor/genesis-values.json; "
                "derived/topak-boundary-register-2026.09.13.md B8; ToO rev 11 §6, §8.3, §10, §16; slm/ results "
-               "2026.09.25 and 2026.09.28; G7 §1.1, §1.2, §7 items 6, 17, 20, 21, 30, 33, 62")
+               "2026.09.25 and 2026.09.28; G7 §1.1, §1.2, §7 items 6, 17, 20, 21, 30, 33, 62; mechanism/crates/topak-core/src/rules.rs (`personas`), confine.rs (`Provenance`); topak-contain (`model.json`); slm/lineage/record.py, thresholds.example.json; GAPS G13; derived/topak-format-and-schema-inventory-2026.10.03.md §1.6, §1.7, §8, finding 15")
     X0, X1 = c.x0, c.x1
     W = X1 - X0
     y = c.y
@@ -144,6 +144,17 @@ def _build():
         "**Since**: model change has an event (lease attestation catches a declared change, ADR-0019 drift an undeclared "
         "one); the interval is bounded by `T_persona` on the value, not on the clock.",
     ], "brown", size=14)
+    ry += 24
+    ry += c.card(rx, ry, rw, "At the reference: no Persona record, a `model.json` stand-in", [
+        "The reference has **none of §1's fields**. Its Persona is a `model.json` bundle, `{family, params, weights, "
+        "weights_sha256}`, whose id is the SHA-256 of the file's bytes (`topak-contain`; `slm/`). `Rules.personas` maps "
+        "that digest to an ADR-0017 provenance (`in_house_pretrain`, `in_house_finetune`, `attested_external`, "
+        "`asserted_external`) and is empty in dev.",
+        "For an operator grant `persona` is an operator-supplied digest, checked against nothing (G13); a launch "
+        "checks the guest's reported digest against the profile's, which is all a rung detects. `ttl ≤ T_persona` "
+        "is the one rule of §6 the code enforces (inventory §1.6).",
+    ], "red", size=14, status="notbuilt", status_extra="the record proper; the stand-in is built", tint=False,
+                 dash="6 4")
     bottom = max(left_bottom, ry) + 30
     c.region(X0, btop, W, bottom - btop, "B8 · Persona / occupant identity (ADR-0016, ADR-0017)", "teal", dash=None,
              sw=2.4, size=15)
@@ -339,7 +350,11 @@ def _build():
                                     ("Rejects", 330)], ex, size=13.5, accent="amber")
     eth = c.table(0, 0, [("Clause (§3)", 200), ("Independent only if", w2 - 200 - 330), ("Rejects", 330)], ex,
                   size=13.5, draw=False)
-    py += max(fth, eth) + 30
+    py += max(fth, eth) + 14
+    py += c.para(X0 + 30, py, W - 60, "The rehearsal's record, `topak.lineage/0` (`slm/lineage/record.py`), carries these "
+                 "ten fields and adds `weight_ancestry`, `ingress_bytes`, `consumed_bytes`, `generated_share`, "
+                 "`generated_bytes`, `trainer = {tool, config, seed}` and a `strength` of `projected` or `declared`, "
+                 "which drops to declared at rung 0 or under a declared parent (inventory §1.7, §8).", 13.5, "muted") + 24
 
     py += _row_cards(c, X0 + 30, py, W - 60, 24, [
         ("§2 · Every share is an upper bound (R2)", [
@@ -355,6 +370,10 @@ def _build():
             "Relaxing one is an issuance and a promotion; tightening, an ordinary promotion.",
             "Set from measurements at training scale, not before (G7 item 30). Gate tools would be trust root T-0045-15, "
             "cited by no theorem until ratification.",
+            "**Three field sets, not one**: the floor's `lineage` block has θ_exact, θ_near, θ_gen, β and `near_tool`; "
+            "the rehearsal's `slm/lineage/thresholds.example.json` has the three θ, byte thresholds and a "
+            "`granularity`, no β, and non-null numbers marked PLACEHOLDER; the gate suite hard-codes a third "
+            "(inventory finding 15).",
         ], "violet", {"status": "draft", "status_extra": "values file"}),
         ("§4, §5 · Computed at the gate; enforced where refusal stalls", [
             "The gate recomputes each record from the log, checks the authored manifest (**divergence = Contested**, "
