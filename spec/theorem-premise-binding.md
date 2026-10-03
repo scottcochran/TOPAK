@@ -83,7 +83,16 @@ the modules and, by trace validation, of the running code on every tested path: 
 composition, the rules floor, the bootstrap pair, seats, any-of, coupling with its collusion gap, Run's counters and
 seal. That is ADR-0045 Annex B's inventory sentence, computed.
 
+**As a matrix** (2026.10.03). The table is a Boolean incidence matrix, theorem row × premise, and a deployment's
+inventory is *holds = ¬(B · ¬d)* for its declaration *d* (`derived/topak-rung-DAG-as-matrix-2026.10.03.md`).
+`spec/theorem-premise-binding.json` is that matrix: this table's T-row premises per rung, sparse in the rung (four
+rows change with it), and the parameter, condition and gap premises as columns with the degeneracies that falsify
+them. `spec/inventory.py` evaluates a declaration against it, and `inventory.py --check` fails when the JSON's T-rows
+and this table's differ at any rung. This table stays canonical for its rows; the JSON's other columns are a
+transcription of the column before last, and are not checked against it mechanically.
+
 **Keeping it current.** A new property adds a row; a new T-row or degeneracy adds a premise; an ADR-0033 addendum
-that changes a row's class at the reference changes the last column. `tools/check-refs.py` does not read this file;
+that changes a row's class at the reference changes the last column. A change to a row's premises changes `spec/theorem-premise-binding.json` in
+the same commit, and `inventory.py --check` passes before it lands. `tools/check-refs.py` does not read this file;
 the archetype-evolution record (G6 item 7) owns its versioning and the rule for a premise edge added into an existing
 theorem, which weakens the theorem and needs its own record (ADR-0023 carried scope).

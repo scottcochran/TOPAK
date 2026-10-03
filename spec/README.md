@@ -106,7 +106,9 @@ most expensive, each with the kind of evidence it gives.
    edit is the one change a results file never takes.
 
 **`theorem-premise-binding.md`** is the table ADR-0045 §3 owes: for every property above, the trusted-base rows,
-degeneracy parameters and declared gaps it rests on, with the reference's inventory computed in its last column.
+degeneracy parameters and declared gaps it rests on, with the reference's inventory computed in its last column. **`theorem-premise-binding.json`** is the same table as a Boolean matrix with the parameter and gap
+premises as columns; `inventory.py` evaluates a declaration against either, and `inventory.py --check` keeps the two in
+step.
 
 Every `*-run.sh` and `simulate-run.sh` finds the jar at `../tools/tla2tools.jar` or `$TLA_JAR`; from `spec/` no
 export is needed. TLC writes its metadata under `/tmp/tlc_<name>`.
