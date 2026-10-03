@@ -10,10 +10,10 @@ marked *superseded* point at what replaced them. The glossary head moved to `nar
 | File | What it is |
 |---|---|
 | `topak-external-assessment-2026.09.12.md` | Recovered. The first outside-eye assessment of the theory of operation; marked historical |
-| `topak-playbook-delta-inventory-2026.09.12.md` | Recovered. Deltas against the NIST AI RMF Playbook; marked historical |
+| `topak-playbook-delta-inventory-2026.09.12.md` | Recovered. Deltas against the NIST AI RMF Playbook; marked historical; superseded as basis by the 10.03 inventory |
 | `tlaplus-paxos-cheat-sheet-2026.09.13.md` | Recovered. TLA+ practice for Paxos modelling; reference, not design |
 | `topak-boundary-register-2026.09.13.md` | Recovered, folded. Fourteen boundaries with cadence, instant and unavailability |
-| `topak-feature-list-2026.09.15.md` | Feature list drawn from the 09.12 checkpoint; superseded as basis |
+| `topak-feature-list-2026.09.15.md` | Feature list drawn from the 09.12 checkpoint; superseded as basis by the 10.03 list |
 | `topak-critical-review-2026.09.16.md` | CR-1 to CR-20 against revision 5 and G1; superseded by the 09.25 review |
 | `topak-glossary-2026.09.17.md` | Frozen; cited by ADR-0032 and ADR-0037; vocabulary predates ADR-0030 |
 | `topak-critical-review-2026.09.25.md` | CR-1 to CR-26 against revision 7 and G3, with the external grades; superseded as the current review by the 10.02 review |
@@ -31,3 +31,6 @@ marked *superseded* point at what replaced them. The glossary head moved to `nar
 | `topak-containment-features-2026.10.01.md` | The archetype's confinement requirements as 28 items, each traced to a record clause: what must be checked, what the mechanism must do, what it must be handed; the basis of the 10.02 design record |
 | `topak-contain-wrapper-design-2026.10.02.md` | Design for the launcher in the node (ADR-0036 §6): rung-generic pipeline, rung 1 real, rung 3 simulated; six questions for the custodian and a draft ADR-0033 addendum; answers `topak-containment-features-2026.10.01.md` |
 | `topak-critical-review-2026.10.02.md` | The current review: re-grades the 09.16 and 09.25 findings against revision 13 and G9, adds CR-27 to CR-39, re-marks all 72 Playbook subcategories (M 11 · P 24 · C 4 · G 5 · X 28), and re-reads TACIP 2026.09.13(b) and Moon & Varshney against the PDF; manifests, proof sync, one TLC regeneration and the reference's tests were run against the tree |
+| `topak-residual-risk-statement-2026.10.03.md` | The residual-risk statement NIST AI RMF MANAGE 1.4 asks for, against G9: the headline residuals in order, ADR-0045's rows with what stands when each fails, the assumptions of use against the reference, what is not measured, the `T_irrev` form per effect class, and the plain statement for an acquirer; the numbers are a deployment's to declare |
+| `topak-playbook-delta-inventory-2026.10.03.md` | All 72 Playbook subcategories re-marked at G9 (M 11 · P 24 · C 4 · G 5 · X 28), from Table 1 of the 10.02 review: what moved since 09.12 and why, the five gaps, the four convertible rows, the partial rows' unaddressed halves, the out-of-scope groups and the reverse deltas; supersedes the 09.12 inventory as basis |
+| `topak-feature-list-2026.10.03.md` | Feature list drawn from G9 and revision 13: eight principles, seventy-four features with record basis, status (Accepted, Proposed, Pending, Built, Proved, Open) and Playbook marks; movement since 09.15; supersedes the 09.15 list as basis |

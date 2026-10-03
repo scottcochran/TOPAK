@@ -36,6 +36,27 @@ verified at. **G8 (2026.10.02)** is the first cut whose trusted base names a pro
 manifest excludes the TLAPS wrapper with the TLC wrappers and measures every proof module and proof results file. **G9 (2026.10.02)** is the first cut at which the reference issues a
 lease above rung 0: a rung-1 launcher in the node, and rung 3 SIMULATED, under addenda still pending.
 
+## Errata to frozen checkpoints
+
+A checkpoint is never revised, so a mistake in one is recorded here, dated, and corrected in the next cut. This list
+is the resolution point for such errors, as the layout map above is for moved paths.
+
+| Checkpoint | Erratum | Recorded |
+|---|---|---|
+| **G9** | **Item 79 and the header.** Item 79 says the tags `ToO-rev12`, `glossary-2026.10.02`, `REF-2026.10.02` and `REF-2026.10.02b` do not exist; all four exist, as does `ToO-rev13`. The header says revision 12 "stands, not revised at G9"; revision 13, cut from G9, was committed after the checkpoint (`9e811bc`, tag `ToO-rev13`) and is the narrative that goes with it. Item 79's remaining content, revision 13 and the glossary against G9, is discharged by that commit. `README.md` pointed at G8 and revision 12 until 2026.10.03. The 10.02 critical review's CR-31 found all three | 2026.10.03 |
+
+## The ADR-0029 A2.5 line
+
+ADR-0029 A2.5 (ratified 2026.09.25) says the genesis debt ledger gains a line stating whether a bootstrap reviewer is
+engaged and the manifest digest of the last completed review pass. G3 was frozen when A2 was ratified and the line
+was to appear in G3's successor; G4 to G9 do not carry it (the 10.02 critical review's CR-28 (ii)). It is kept here
+until the next checkpoint's §4 carries it, and is to be copied there at every cut.
+
+| Field | Value at 2026.10.03 |
+|---|---|
+| **Bootstrap reviewer engaged** | **None.** Every record, amendment, proof, module and reference tree is one hand's, drafted or ratified by the genesis custodian with the assistant; no reviewer independent of the author has read any record |
+| **Last completed review pass** | **None.** No confirmation pass has been run and no review attestation exists; the field has no manifest digest to name. The dated critical reviews under `derived/` are the drafter's own and do not count under A2.1 |
+
 ## Tags
 
 `G3` to `G9` mark the commit that added each checkpoint; `glossary-<date>` each revision of the glossary in place;
