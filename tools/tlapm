@@ -2,10 +2,21 @@
 # TLAPS proof manager wrapper. The prover is installed, not tracked: tools/install-tlaps.sh fetches the pinned
 # release into tools/tlaps-<version>/ beside this script, and every proof results file prints the binary's
 # sha256, so a different build is a change the results show. TLAPM=<path> overrides the binary.
-TLAPS_VERSION="1.6.0-pre"
-bin="${TLAPM:-$(dirname "$0")/tlaps-$TLAPS_VERSION/bin/tlapm}"
+# tools/TLAPS-PIN names the build the results files cite; a binary that does not match it is refused unless
+# TLAPM_UNPINNED=1 is set, so a results file produced by another build is produced knowingly.
+here="$(cd "$(dirname "$0")" && pwd)"
+pin_field() { grep -E "^$1 " "$here/TLAPS-PIN" | head -1 | cut -d' ' -f2-; }
+TLAPS_VERSION="$(pin_field version)"
+bin="${TLAPM:-$here/tlaps-$TLAPS_VERSION/bin/tlapm}"
 if [ ! -x "$bin" ]; then
   echo "tlapm not found at $bin; run tools/install-tlaps.sh (or set TLAPM=<path>)" >&2
+  exit 1
+fi
+want="$(pin_field binary_sha256_16)"
+have="$(shasum -a 256 "$bin" | cut -c1-16)"
+if [ "$have" != "$want" ] && [ -z "${TLAPM_UNPINNED:-}" ]; then
+  echo "tlapm at $bin is sha256 $have…, not the pinned $want… (commit $(pin_field commit), tools/TLAPS-PIN)." >&2
+  echo "A results file it produced would cite a different prover (T-0045-31). Set TLAPM_UNPINNED=1 to run it anyway." >&2
   exit 1
 fi
 exec "$bin" "$@"

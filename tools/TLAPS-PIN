@@ -1,0 +1,18 @@
+# The prover the proof results files cite (ADR-0045 T-0045-31; ADR-0046 §3). One line per field, `key value`.
+# tools/tlapm refuses a binary whose digest does not begin with binary_sha256_16 unless TLAPM_UNPINNED=1 is set;
+# tools/install-tlaps.sh compares what it installed with this file; spec/proof-sync.sh compares the prover each
+# results file prints with it. This file is measured by the checkpoint manifests, where the binary (1.9 GB,
+# untracked) cannot be, so the identity of the prover behind every proved obligation is in the corpus (G9 item 73).
+version 1.6.0-pre
+commit 7824dab
+binary_sha256_16 e150fb793fb28592
+platform arm64-darwin
+backends Z3 4.8.9; Zenon 0.8.4 [a268]; Isabelle2025; LS4
+pinned 2026.10.03
+# The full digest is owed: one `shasum -a 256 tools/tlaps-1.6.0-pre/bin/tlapm` on the machine that ran the proofs.
+# The release tag floats. `1.6.0-pre` is a pre-release that GitHub rebuilds: on 2026.10.03 both assets were builds
+# of commit bfa9468, dated 2026.10.01, so a fresh install no longer yields the pinned binary. Observed, not pinned:
+#   tlapm-1.6.0-pre-x86_64-linux-gnu.tar.gz  sha256 0d6ce5b0536903995c524a5f9ae62a997b11f16663cb59d4860934965f45b4bd  bin/tlapm 0aaf7248401dbe26  (bfa9468)
+#   tlapm-1.6.0-pre-arm64-darwin.tar.gz      sha256 e70dd99a16f5adba4b5d759ef61ae797f6a0404e6b1ace23a821b3886b9e33e5  bin/tlapm 2b48724109b64f38  (bfa9468)
+# Re-running a proof under bfa9468 is a change the results files show (a different Prover: line), and T-0045-31's
+# identity moves with it; moving this pin is the review's record of that, as re-pinning a record is for the reference.

@@ -42,6 +42,11 @@ describe the formal layer as TLC-checked until the next checkpoint is cut.
 `tools/tlapm` wraps the prover, which `tools/install-tlaps.sh` installs beside it (not tracked). `proof-results.sh
 <Module>_proof` checks one proof module and prints its results file, with the digest of every module in the EXTENDS
 chain and of the prover binary; `$TLAPM` overrides the binary, and the proof cache is removed when it finishes.
+**The prover is pinned in `tools/TLAPS-PIN`** (2026.10.03, G9 item 73): the commit and binary digest every results
+file cites, measured by the checkpoint manifests where the binary cannot be. The wrapper refuses a binary that does
+not match it unless `TLAPM_UNPINNED=1` is set, and `proof-sync.sh` reports a results file that cites another prover.
+The `1.6.0-pre` release tag is rebuilt by its upstream: on 2026.10.03 both assets carried commit `bfa9468`, not the
+`7824dab` the results cite, so a fresh install does not yield the pinned prover; the pin file records both.
 
 | Proof module | Over | Record | Theorems | Assumptions | Results |
 |---|---|---|---|---|---|

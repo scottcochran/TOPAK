@@ -145,13 +145,16 @@ impl GuestHandle for SimGuest {
 
 /// The simulated independent verifier. Its knobs are the test's: `reachable` (F14), a TCB floor
 /// above the profile's (a vendor withdrawal it learned of, F17), and a gate that holds an
-/// appraisal so a test can fence the epoch while it is pending (`M_STALE`).
+/// appraisal so a test can fence the epoch while it is pending (`M_STALE`). `appraisals` counts
+/// the appraisals that have reached this verifier, gate included, so a test that holds the gate
+/// waits on the count and not on a clock (ADR-0032 §1; the 10.02 critical review's CR-39).
 pub struct SimVerifier {
     secret: [u8; 32],
     endorsement: KeyHex,
     pub reachable: AtomicBool,
     pub min_tcb: AtomicU64,
     pub gate: Mutex<Option<Arc<Semaphore>>>,
+    pub appraisals: AtomicU64,
 }
 
 impl SimVerifier {
@@ -162,6 +165,7 @@ impl SimVerifier {
             reachable: AtomicBool::new(true),
             min_tcb: AtomicU64::new(0),
             gate: Mutex::new(None),
+            appraisals: AtomicU64::new(0),
         }
     }
 
@@ -182,6 +186,7 @@ impl Appraiser for SimVerifier {
         ev: &'a Evidence,
     ) -> BoxFuture<'a, Result<Statement, VerifierError>> {
         Box::pin(async move {
+            self.appraisals.fetch_add(1, Ordering::SeqCst);
             let gate = self.gate.lock().unwrap().clone();
             if let Some(g) = gate {
                 g.acquire().await.map_err(|_| VerifierError::Unreachable)?.forget();
