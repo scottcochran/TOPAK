@@ -3,7 +3,8 @@
 # <M>-proof-results-*.txt names the digest of each module in the proof's EXTENDS chain as it was proved. This
 # script compares those digests with the tree and reports, one row per proof module, then lists the base modules
 # that have no proof and why.
-#   usage: proof-sync.sh            report; exit 1 if any proof is stale or its results file is missing
+#   usage: proof-sync.sh            report; exit 1 if any proof is stale, its results file is missing, or a
+#                                   results file cites a prover other than tools/TLAPS-PIN's
 #          proof-sync.sh --run      also re-check every stale proof with the prover (no results file is written;
 #                                   regenerate one with proof-results.sh once the proof is repaired)
 # A base module cited by digest in a record is frozen, so a stale row normally means a successor module was
@@ -35,6 +36,14 @@ for pf in "$here"/*_proof.tla; do
     fi
   fi
 done
+echo
+echo "prover (tools/TLAPS-PIN):"
+pin=$(grep -E '^binary_sha256_16 ' "$here/../tools/TLAPS-PIN" | cut -d' ' -f2)
+for res in "$here"/*-proof-results-*.txt; do
+  have=$(grep -m1 '^Prover:' "$res" | grep -oE 'binary sha256 [0-9a-f]{16}' | cut -d' ' -f3)
+  if [ "$have" != "$pin" ]; then echo "  $(basename "$res"): prover $have, pin $pin: NOT THE PINNED PROVER"; status=1; fi
+done
+[ $status -eq 0 ] && echo "  every results file cites the pinned prover ($pin, commit $(grep -E '^commit ' "$here/../tools/TLAPS-PIN" | cut -d' ' -f2))"
 echo
 echo "base modules without a proof:"
 for bf in "$here"/*.tla; do

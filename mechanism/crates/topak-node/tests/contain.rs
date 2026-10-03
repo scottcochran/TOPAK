@@ -47,7 +47,10 @@ use topak_node::ops::OperatorOp;
 use topak_transport::{Memory, Transport};
 
 const BUILD: &[ActionKind] = &[ActionKind::Read, ActionKind::Draft, ActionKind::Emit, ActionKind::Submit];
-const LONG: u64 = 60_000;
+/// A lease long enough that nothing in a test waits on it: ten minutes, under `T_persona` (one hour,
+/// ADR-0031 A2). The launcher re-attests at TTL/2, so a shorter value puts a renewal inside tests
+/// that are not about renewal; the renewal tests choose their own TTL.
+const LONG: u64 = 600_000;
 
 fn guest_bin() -> PathBuf {
     // The demo guest is topak-contain's binary; cargo builds it into the same target directory.
@@ -302,8 +305,11 @@ async fn cluster(f: &Fx, o: Opts) -> Cl {
     Cl { nodes, hub, sim, verifier }
 }
 
+/// Poll until a condition holds. The ceiling is generous because a condition that is met costs
+/// nothing to wait for, and reaching the ceiling is a failure, never a pass (ADR-0032 §1: no
+/// decision here reads a clock; the clock only bounds how long a test may run).
 async fn until(what: &str, f: impl Fn() -> bool) {
-    for _ in 0..400 {
+    for _ in 0..2400 {
         if f() {
             return;
         }
@@ -312,20 +318,16 @@ async fn until(what: &str, f: impl Fn() -> bool) {
     panic!("timed out waiting for {what}");
 }
 
-async fn settle(c: &Cl) {
-    for _ in 0..200 {
-        tokio::time::sleep(Duration::from_millis(20)).await;
+/// Every replica that is not isolated has reached a state satisfying `pred`. A test that reads
+/// another replica's state waits for the entry it means to see, named by what it changes, and not
+/// for a quiet period: a wait that can run out and return silently can also pass for want of time
+/// (the 10.02 critical review's CR-39).
+async fn every_replica(c: &Cl, what: &str, pred: impl Fn(&State) -> bool) {
+    until(what, || {
         let isolated = c.hub.isolated.lock().unwrap().clone();
-        let applied: BTreeSet<u64> = c
-            .nodes
-            .iter()
-            .filter(|m| !isolated.contains(&m.id))
-            .map(|m| m.state.read().unwrap().last_applied)
-            .collect();
-        if applied.len() == 1 {
-            return;
-        }
-    }
+        c.nodes.iter().filter(|m| !isolated.contains(&m.id)).all(|m| pred(&m.state.read().unwrap()))
+    })
+    .await;
 }
 
 fn profile_text(f: &Fx, image: &Digest, measurement: Option<String>, fail: &[&str]) -> String {
@@ -455,7 +457,10 @@ async fn rung_1_honest_round_and_its_refusals() {
     // The round runs over the bridge and ends with Submit; the guest is destroyed (P6).
     until("the occupant's Submit", || ended(n1, fence) == Some(EndReason::Submitted)).await;
     until("the guest destroyed", || launched(n1) == 0).await;
-    settle(&c).await;
+    every_replica(&c, "every replica to apply the round's Submit", |st| {
+        st.leases.get(&fence).is_some_and(|l| l.ended == Some(EndReason::Submitted))
+    })
+    .await;
     let st = n1.state.read().unwrap().clone();
     assert!(st.candidates.values().any(|c| c.author == "c1"), "the occupant's workspace was submitted");
     assert_eq!(st.leases[&fence].attestation.as_ref().unwrap().platform, PLATFORM_LAUNCHER);
@@ -470,7 +475,7 @@ async fn rung_1_honest_round_and_its_refusals() {
     let r = launch(n1, &f, "occupant-2", "c1", &wrong, LONG).await;
     assert_eq!(r["verdict"], "unattestable", "{r}");
     assert!(r["reason"].as_str().unwrap().contains("image"), "{r}");
-    settle(&c).await;
+    // Unattestable is decided before anything is proposed, so there is nothing to wait for.
     assert_eq!(n1.state.read().unwrap().leases.len(), before, "no grant was ordered");
     assert_eq!(launched(n1), 0);
 
@@ -522,7 +527,10 @@ async fn simulated_rung_3_round_is_contained_and_rung_0_beside_it_is_not() {
     assert!(att.session_key.is_some(), "F12: the session is the attested guest's key");
     // Every action reached the log with the guest's proof, checked at apply on every replica.
     until("the occupant's Submit", || ended(n1, fence) == Some(EndReason::Submitted)).await;
-    settle(&c).await;
+    every_replica(&c, "every replica to apply the round's Submit", |st| {
+        st.leases.get(&fence).is_some_and(|l| l.ended == Some(EndReason::Submitted))
+    })
+    .await;
     assert_eq!(n1.state.read().unwrap().leases[&fence].session_ctr, 4, "read, draft, emit, submit");
     for m in &c.nodes[1..] {
         assert_eq!(m.state.read().unwrap().leases[&fence], n1.state.read().unwrap().leases[&fence]);
@@ -583,12 +591,11 @@ async fn a_rogue_image_is_contested_and_the_principal_is_revoked() {
     let r = launch(n1, &f, "mallory", "c3", &p, LONG).await;
     assert_eq!(r["verdict"], "contested", "{r}");
     assert_eq!(r["applied"]["Contested"]["ended"], 0, "{r}");
-    settle(&c).await;
-    for m in &c.nodes {
-        let st = m.state.read().unwrap();
-        assert!(st.contested.contains_key("mallory"), "ContestedStopped, on every replica");
-        assert!(st.revoked.contains(&RevocationTarget::Principal("mallory".into())));
-    }
+    // ContestedStopped, on every replica: the Contested entry is ordered, so each applies it.
+    every_replica(&c, "every replica to apply the Contested entry", |st| {
+        st.contested.contains_key("mallory") && st.revoked.contains(&RevocationTarget::Principal("mallory".into()))
+    })
+    .await;
     let evidence = r["evidence"].as_str().unwrap();
     assert!(f.dir.join("n1/evidence").join(format!("{evidence}.json")).exists(), "F18: the evidence is retained");
     assert_eq!(launched(n1), 0, "the rogue guest is destroyed");
@@ -613,7 +620,7 @@ async fn an_unreachable_verifier_grants_nothing() {
     let r = launch(n1, &f, "bob", "c3", &p, LONG).await;
     assert_eq!(r["verdict"], "unattestable", "{r}");
     assert!(r["reason"].as_str().unwrap().contains("unreachable"), "{r}");
-    settle(&c).await;
+    // Unattestable proposes nothing (ADR-0034 §3.3), so the state is already final.
     assert_eq!(live(n1, "c3"), None, "no grant, at any rung");
     assert_eq!(live(n1, "d3"), Some(alive), "the live lease is untouched");
 }
@@ -644,7 +651,9 @@ async fn an_epoch_fence_voids_a_pending_appraisal() {
             .await
         })
     };
-    tokio::time::sleep(Duration::from_millis(500)).await;
+    // The nonce is fixed before the verifier is asked (launch.rs steps 3 to 5), so an appraisal
+    // waiting at the gate is one the fence must void. Wait for it to arrive, not for a clock.
+    until("the appraisal to reach the verifier", || c.verifier.appraisals.load(Ordering::SeqCst) == 1).await;
     let r = n1.operate(OperatorOp::FenceEpoch { reason: "test".into(), attribution: "test".into() }).await;
     assert_eq!(r["ok"], true, "{r}");
     gate.add_permits(1);
