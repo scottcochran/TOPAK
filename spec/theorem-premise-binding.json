@@ -1,0 +1,442 @@
+{
+  "_about": "The theorem-to-premise binding as a Boolean incidence matrix: one row per theorem row of spec/theorem-premise-binding.md, in the same order, one column per premise. The table stays canonical for its row premises; `inventory.py --check` fails if this file and the table disagree at any rung. The parameter, condition and gap columns are this file's own, transcribed from the table's \"Parameter and gap premises\" column (struck text omitted). A theorem holds for a deployment iff every premise in its row holds: holds = NOT(B · NOT d) over the Boolean semiring. See derived/topak-rung-DAG-as-matrix-2026.10.03.md.",
+  "date": "2026.10.03",
+  "binding": "spec/theorem-premise-binding.md",
+  "base": ["T-0045-1", "T-0045-11", "T-0045-28", "T-0045-29", "T-0045-30"],
+  "row_holds_when": ["trust root", "delegated"],
+  "premises": {
+    "confinement>=1": {
+      "kind": "parameter",
+      "text": "confinement rung ≥ 1",
+      "record": "ADR-0034; ADR-0023 §6a",
+      "falsified_by": ["D-0034-1", "D-0034-2", "D-0034-4"],
+      "derived": "rung >= 1"
+    },
+    "confinement>=2": {
+      "kind": "parameter",
+      "text": "confinement rung ≥ 2 (rungs 0 and 1 cannot produce Contested)",
+      "record": "ADR-0034 §3",
+      "falsified_by": ["D-0034-1", "D-0034-2", "D-0034-4"],
+      "derived": "rung >= 2"
+    },
+    "floor-verified": {
+      "kind": "parameter",
+      "text": "the floor is verified; the floor text is DRAFT, so the envelope it permits is the draft's",
+      "record": "ADR-0030 §1",
+      "falsified_by": ["D-0030-1"]
+    },
+    "bundle-signed": {
+      "kind": "parameter",
+      "text": "the bundle is signed; unsigned, the revision the lease names is a file name",
+      "record": "ADR-0044",
+      "falsified_by": ["D-0044-1"]
+    },
+    "routing-checked": {
+      "kind": "parameter",
+      "text": "routing checked: a solver `holds` counts only with a proof the checker accepted",
+      "record": "ADR-0030 §5 A1",
+      "falsified_by": ["D-0030-2"]
+    },
+    "rules-floor-R6-R7": {
+      "kind": "parameter",
+      "text": "rules floor R6 and R7 in force",
+      "record": "ADR-0013 §4; ADR-0026",
+      "falsified_by": []
+    },
+    "quorum-all": {
+      "kind": "parameter",
+      "text": "quorum = \"all\"; R9 keeps D-0024-2 out",
+      "record": "ADR-0026 R1; ADR-0024",
+      "falsified_by": ["D-0024-1"]
+    },
+    "min-grant-ge-2": {
+      "kind": "parameter",
+      "text": "minGrant ≥ 2",
+      "record": "ADR-0026 R2",
+      "falsified_by": []
+    },
+    "quorum-ge-2": {
+      "kind": "parameter",
+      "text": "quorum ≥ 2 when a threshold",
+      "record": "ADR-0026 R9",
+      "falsified_by": []
+    },
+    "observer-per-cell": {
+      "kind": "parameter",
+      "text": "an Observer per cell",
+      "record": "ADR-0038 §5",
+      "falsified_by": ["D-0037-1", "D-0038-1"]
+    },
+    "coupling-on": {
+      "kind": "parameter",
+      "text": "coupling on",
+      "record": "ADR-0039 §2",
+      "falsified_by": ["D-0039-1"]
+    },
+    "correlator-exists": {
+      "kind": "parameter",
+      "text": "a correlator exists",
+      "record": "ADR-0039 §4",
+      "falsified_by": ["D-0038-2"]
+    },
+    "effects-counted": {
+      "kind": "parameter",
+      "text": "effects counted",
+      "record": "ADR-0042 §2, §5",
+      "falsified_by": ["D-0042-1"]
+    },
+    "independence-criterion": {
+      "kind": "condition",
+      "text": "the independence criterion in force (Proposed)",
+      "record": "ADR-0035"
+    },
+    "run-p4-pass": {
+      "kind": "condition",
+      "text": "the Run profile's P4 passes",
+      "record": "ADR-0034 A2 §1"
+    },
+    "run-confinement-delivered": {
+      "kind": "condition",
+      "text": "Run's confinement delivered, ADR-0042 §6 in force (Proposed)",
+      "record": "ADR-0042 §6"
+    },
+    "run-root-pinned": {
+      "kind": "condition",
+      "text": "the Run root is pinned: a live Consult would be egress",
+      "record": "ADR-0040 §3"
+    },
+    "promotion-tally-constants": {
+      "kind": "condition",
+      "text": "A2.2 and A2.3 as tally constants",
+      "record": "ADR-0024; ADR-0029 §5"
+    },
+    "gap:honest-watermark": {
+      "kind": "gap",
+      "text": "the watermark is honest (collusion uncovered)",
+      "record": "ADR-0039 §5; A13"
+    },
+    "gap:independence-table": {
+      "kind": "gap",
+      "text": "an independence table exists",
+      "record": "G18"
+    }
+  },
+  "theorems": [
+    {
+      "names": ["LeaseAuthorityMonotone"],
+      "checked_in": "Lease.tla, Lease_A1.tla; proved in Lease_A1_proof.tla",
+      "proved_in": ["Lease_A1_proof.tla"],
+      "rows": ["T-0045-10"],
+      "premises": []
+    },
+    {
+      "names": ["NoActionUnderFencedEpoch"],
+      "checked_in": "Lease.tla; proved in Lease_A1_proof.tla",
+      "proved_in": ["Lease_A1_proof.tla"],
+      "rows": [],
+      "premises": []
+    },
+    {
+      "names": ["Rung0NeverContained"],
+      "checked_in": "Lease.tla; proved in Lease_A1_proof.tla",
+      "proved_in": ["Lease_A1_proof.tla"],
+      "rows": [],
+      "premises": []
+    },
+    {
+      "names": ["RevokedStaysStopped"],
+      "checked_in": "Lease.tla; proved in Lease_A1_proof.tla",
+      "proved_in": ["Lease_A1_proof.tla"],
+      "rows": ["T-0045-10"],
+      "premises": []
+    },
+    {
+      "names": ["AdmitImpliesFloorPermit"],
+      "checked_in": "FloorComposition.tla; proved in FloorComposition_proof.tla",
+      "proved_in": ["FloorComposition_proof.tla"],
+      "rows": ["T-0045-3"],
+      "premises": ["floor-verified"]
+    },
+    {
+      "names": ["FloorErrorIsDeny"],
+      "checked_in": "FloorComposition.tla; proved in FloorComposition_proof.tla",
+      "proved_in": ["FloorComposition_proof.tla"],
+      "rows": ["T-0045-3"],
+      "premises": ["floor-verified"]
+    },
+    {
+      "names": ["BundleRefusalHonored"],
+      "checked_in": "FloorComposition.tla; proved in FloorComposition_proof.tla",
+      "proved_in": ["FloorComposition_proof.tla"],
+      "rows": ["T-0045-6", "T-0045-27"],
+      "premises": ["bundle-signed"]
+    },
+    {
+      "names": ["BundleCannotWriteFloorInputs"],
+      "checked_in": "FloorComposition.tla; proved in FloorComposition_proof.tla",
+      "proved_in": ["FloorComposition_proof.tla"],
+      "rows": ["T-0045-3"],
+      "premises": []
+    },
+    {
+      "names": ["EnvelopeHolds", "FloorNeverVacuous"],
+      "checked_in": "FloorComposition.tla, FloorRouting.tla; proved in FloorComposition_proof.tla, FloorRouting_proof.tla",
+      "proved_in": ["FloorComposition_proof.tla", "FloorRouting_proof.tla"],
+      "rows": ["T-0045-3"],
+      "premises": ["floor-verified"]
+    },
+    {
+      "names": ["NoWideningWithoutIssuance"],
+      "checked_in": "FloorRouting.tla; proved in FloorRouting_proof.tla",
+      "proved_in": ["FloorRouting_proof.tla"],
+      "rows": ["T-0045-3", "T-0045-14"],
+      "premises": ["routing-checked"]
+    },
+    {
+      "names": ["NC1", "NC2"],
+      "checked_in": "NonComposition.tla; proved in NonComposition_proof.tla",
+      "proved_in": ["NonComposition_proof.tla"],
+      "rows": ["T-0045-2", "T-0045-12", "T-0045-3"],
+      "premises": ["rules-floor-R6-R7"]
+    },
+    {
+      "names": ["P1_Unanimity"],
+      "checked_in": "RulesFloorNV_rev5.tla; proved in RulesFloorNV_rev5_proof.tla",
+      "proved_in": ["RulesFloorNV_rev5_proof.tla"],
+      "rows": ["T-0045-10", "T-0045-2", "T-0045-9"],
+      "premises": ["quorum-all"]
+    },
+    {
+      "names": ["P2_TwoSeatsCounted"],
+      "checked_in": "RulesFloorNV_rev5.tla; proved in RulesFloorNV_rev5_proof.tla",
+      "proved_in": ["RulesFloorNV_rev5_proof.tla"],
+      "rows": ["T-0045-10"],
+      "premises": ["min-grant-ge-2"]
+    },
+    {
+      "names": ["P3_AuthorNotCounted"],
+      "checked_in": "RulesFloorNV_rev5.tla; proved in RulesFloorNV_rev5_proof.tla",
+      "proved_in": ["RulesFloorNV_rev5_proof.tla"],
+      "rows": [],
+      "premises": []
+    },
+    {
+      "names": ["P5_AnchorNotApprover"],
+      "checked_in": "RulesFloorNV_rev5.tla; proved in RulesFloorNV_rev5_proof.tla",
+      "proved_in": ["RulesFloorNV_rev5_proof.tla"],
+      "rows": ["T-0045-9", "T-0045-10"],
+      "premises": []
+    },
+    {
+      "names": ["P7_BGNoAuthority"],
+      "checked_in": "RulesFloorNV_rev5.tla; proved in RulesFloorNV_rev5_proof.tla",
+      "proved_in": ["RulesFloorNV_rev5_proof.tla"],
+      "rows": ["T-0045-12"],
+      "premises": []
+    },
+    {
+      "names": ["P9_NoSoloGrant"],
+      "checked_in": "RulesFloorNV_rev5.tla; proved in RulesFloorNV_rev5_proof.tla",
+      "proved_in": ["RulesFloorNV_rev5_proof.tla"],
+      "rows": ["T-0045-10"],
+      "premises": ["quorum-ge-2"]
+    },
+    {
+      "names": ["FloorPreserved"],
+      "checked_in": "Anchor.tla; proved in Anchor_proof.tla",
+      "proved_in": ["Anchor_proof.tla"],
+      "rows": ["T-0045-2", "T-0045-8", "T-0045-9", "T-0045-10"],
+      "premises": []
+    },
+    {
+      "names": ["BreakGlassNeverChangesAuthority"],
+      "checked_in": "BreakGlass.tla; proved in BreakGlass_proof.tla",
+      "proved_in": ["BreakGlass_proof.tla"],
+      "rows": ["T-0045-2", "T-0045-12"],
+      "premises": []
+    },
+    {
+      "names": ["ContainedMeansConfined"],
+      "checked_in": "Confinement.tla, Confinement_A1.tla (finding 6; rungs 0–3, 2026.10.02); proved in Confinement_proof.tla, Confinement_A1_proof.tla, every rung at once",
+      "proved_in": ["Confinement_proof.tla", "Confinement_A1_proof.tla"],
+      "rows": ["T-0045-25"],
+      "rows_at_rung": {
+        "1": ["T-0045-20", "T-0045-19"],
+        "2": ["T-0045-20", "T-0045-18"],
+        "3": ["T-0045-20", "T-0045-16", "T-0045-17"]
+      },
+      "premises": ["confinement>=1", "independence-criterion"]
+    },
+    {
+      "names": ["NoSilentDowngrade"],
+      "checked_in": "Confinement.tla, Confinement_A1.tla; proved in Confinement_proof.tla, Confinement_A1_proof.tla; on traces, ConfinementRefinement.tla",
+      "proved_in": ["Confinement_proof.tla", "Confinement_A1_proof.tla"],
+      "rows": [],
+      "rows_at_rung": {
+        "1": ["T-0045-19"],
+        "2": ["T-0045-18"],
+        "3": ["T-0045-17"]
+      },
+      "premises": []
+    },
+    {
+      "names": ["ContestedStopped"],
+      "checked_in": "Confinement.tla, Confinement_A1.tla; proved in Confinement_proof.tla, Confinement_A1_proof.tla; on traces, ConfinementRefinement.tla",
+      "proved_in": ["Confinement_proof.tla", "Confinement_A1_proof.tla"],
+      "rows": [],
+      "rows_at_rung": {
+        "2": ["T-0045-18"],
+        "3": ["T-0045-16"]
+      },
+      "premises": ["confinement>=2"]
+    },
+    {
+      "names": ["FreshAppraisal"],
+      "checked_in": "Confinement.tla, Confinement_A1.tla; proved in Confinement_proof.tla, Confinement_A1_proof.tla; on traces, ConfinementRefinement.tla",
+      "proved_in": ["Confinement_proof.tla", "Confinement_A1_proof.tla"],
+      "rows": [],
+      "premises": ["confinement>=1"]
+    },
+    {
+      "names": ["EffectsOnDeclaredChannels", "ContainedEffectsUseHeldTools"],
+      "checked_in": "RunConfinement.tla; proved in RunConfinement_proof.tla (116 obligations; Filtered a Boolean)",
+      "proved_in": ["RunConfinement_proof.tla"],
+      "rows": ["T-0045-25"],
+      "premises": ["run-p4-pass", "run-confinement-delivered"]
+    },
+    {
+      "names": ["OnlyThinkersAuthor"],
+      "checked_in": "Seats.tla; proved in Seats_proof.tla",
+      "proved_in": ["Seats_proof.tla"],
+      "rows": ["T-0045-10", "T-0045-3"],
+      "premises": []
+    },
+    {
+      "names": ["OneSeatPerPrincipal"],
+      "checked_in": "Seats.tla; proved in Seats_proof.tla",
+      "proved_in": ["Seats_proof.tla"],
+      "rows": ["T-0045-10"],
+      "premises": []
+    },
+    {
+      "names": ["DenyByAnyOf"],
+      "checked_in": "Observers.tla; proved in Observers_proof.tla",
+      "proved_in": ["Observers_proof.tla"],
+      "rows": [],
+      "premises": ["observer-per-cell"]
+    },
+    {
+      "names": ["ReachIsBounded"],
+      "checked_in": "Observers.tla; proved in Observers_proof.tla",
+      "proved_in": ["Observers_proof.tla"],
+      "rows": ["T-0045-5"],
+      "premises": []
+    },
+    {
+      "names": ["NoAdmitWithoutLiveObserver"],
+      "checked_in": "Coupling.tla; proved in Coupling_proof.tla",
+      "proved_in": ["Coupling_proof.tla"],
+      "rows": ["T-0045-4", "T-0045-3"],
+      "premises": ["coupling-on", "gap:honest-watermark"]
+    },
+    {
+      "names": ["UnreadBounded"],
+      "checked_in": "Coupling.tla; proved in Coupling_proof.tla for every K, R, MaxRound",
+      "proved_in": ["Coupling_proof.tla"],
+      "rows": ["T-0045-4", "T-0045-3"],
+      "premises": ["coupling-on", "gap:honest-watermark"]
+    },
+    {
+      "names": ["CorrelatorNeverGates"],
+      "checked_in": "Coupling.tla; proved in Coupling_proof.tla",
+      "proved_in": ["Coupling_proof.tla"],
+      "rows": ["T-0045-10"],
+      "premises": ["correlator-exists"]
+    },
+    {
+      "names": ["UnreadEffectsBounded"],
+      "checked_in": "RunCoupling.tla; proved in RunCoupling_proof.tla for every K, R, MaxRound",
+      "proved_in": ["RunCoupling_proof.tla"],
+      "rows": ["T-0045-4", "T-0045-3", "T-0045-25"],
+      "premises": ["effects-counted", "coupling-on", "gap:honest-watermark"]
+    },
+    {
+      "names": ["ConsultNeverCoupled"],
+      "checked_in": "RunCoupling.tla; proved in RunCoupling_proof.tla",
+      "proved_in": ["RunCoupling_proof.tla"],
+      "rows": ["T-0045-3"],
+      "premises": ["run-root-pinned"]
+    },
+    {
+      "names": ["SealCountsEffects"],
+      "checked_in": "RunCoupling.tla; proved in RunCoupling_proof.tla",
+      "proved_in": ["RunCoupling_proof.tla"],
+      "rows": ["T-0045-25"],
+      "premises": ["effects-counted"]
+    },
+    {
+      "names": ["RoundBoundCountsAll"],
+      "checked_in": "RunCoupling.tla; proved in RunCoupling_proof.tla",
+      "proved_in": ["RunCoupling_proof.tla"],
+      "rows": [],
+      "premises": []
+    },
+    {
+      "names": ["NoEffectWithoutLiveObserver"],
+      "checked_in": "RunCoupling.tla; proved in RunCoupling_proof.tla",
+      "proved_in": ["RunCoupling_proof.tla"],
+      "rows": ["T-0045-4", "T-0045-3"],
+      "premises": ["coupling-on", "gap:honest-watermark"]
+    },
+    {
+      "names": ["OnlyThinkersActuate", "ObserversConsultAndReport"],
+      "checked_in": "RunSeats.tla; proved in RunSeats_proof.tla",
+      "proved_in": ["RunSeats_proof.tla"],
+      "rows": ["T-0045-10", "T-0045-3"],
+      "premises": []
+    },
+    {
+      "names": ["NoNameCrossesDomains"],
+      "checked_in": "RunSeats.tla; proved in RunSeats_proof.tla",
+      "proved_in": ["RunSeats_proof.tla"],
+      "rows": ["T-0045-10"],
+      "premises": []
+    },
+    {
+      "names": ["Effect exclusivity"],
+      "checked_in": "restated as a claim",
+      "rows": ["T-0045-23", "T-0045-24", "T-0045-25"],
+      "rows_at_rung": {
+        "0": ["T-0045-22"],
+        "1": ["T-0045-19", "T-0045-20"],
+        "2": ["T-0045-18", "T-0045-20"],
+        "3": ["T-0045-16", "T-0045-17", "T-0045-20", "T-0045-21"]
+      },
+      "premises": ["confinement>=1", "run-confinement-delivered"]
+    },
+    {
+      "names": ["PromotionMeetsIssuedQuorum"],
+      "checked_in": "promotion.rs tests only",
+      "rows": ["T-0045-2", "T-0045-9", "T-0045-10", "T-0045-13", "T-0045-15"],
+      "premises": ["promotion-tally-constants", "gap:independence-table"]
+    },
+    {
+      "names": ["OneValuePerBallot", "chosen-unique", "agreement"],
+      "checked_in": "topak-paxos sim.rs (the Voting ghost)",
+      "rows": ["T-0045-1", "T-0045-28", "T-0045-29", "T-0045-30"],
+      "premises": []
+    },
+    {
+      "names": ["floor gates"],
+      "checked_in": "floor/run-gates.py through floor/cvc5-checked",
+      "rows": ["T-0045-3", "T-0045-14"],
+      "premises": ["routing-checked"]
+    },
+    {
+      "names": ["TraceMatches", "ConfinementRefined"],
+      "checked_in": "Mechanism.tla and ConfinementRefinement.tla over recorded traces",
+      "rows": ["T-0045-29"],
+      "premises": []
+    }
+  ]
+}
