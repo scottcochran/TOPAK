@@ -1,0 +1,2493 @@
+TOPAK — TLC results for Correlator.tla (ADR-0051, Proposed 2026.10.04: the correlator's detection function) · 22 rows · run 2026.10.04
+Module: Correlator.tla (sha256 351b4159e0e298d9) · TLC Version 2.19 of 08 August 2024 (jar sha256 936a262061c91469) · openjdk version "25.0.1" 2025-10-21
+Runner: correlator-gen-results.sh · Thinkers = {t1, t2} · Corrs = {c1, c2} · Honest = {c1} · MaxRound = 2 · Items = {i} · Stores = {a}, or {a, b} where the row says Stores=2 · MaxSends and MMiss as the row says
+
+=== none-safe · Stores=1 · MaxSends=1 · MMiss=1 · Mut=none · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.1E-6
+  based on the actual fingerprints:  val = 2.0E-7
+19220813 states generated, 2285708 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 23.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 4).
+Finished in 15s at (2026-10-04 04:19:52)
+
+=== none-safe2 · Stores=2 · MaxSends=1 · MMiss=1 · Mut=none · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = .0021
+  based on the actual fingerprints:  val = 6.9E-4
+635462913 states generated, 67422620 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 27.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 11 and the 95th percentile is 4).
+Finished in 05min 29s at (2026-10-04 04:25:22)
+
+=== rs-carried · Stores=1 · MaxSends=1 · MMiss=1 · Mut=M_ROUNDSCOPE · INVARIANT CarriedCoversSplitPath
+Error: Invariant CarriedCoversSplitPath is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 2: <Read line 136, col 3 to line 142, col 59 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t2", item |-> "i"]}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> TRUE]
+/\ tainted = [t1 |-> FALSE, t2 |-> TRUE]
+/\ named = {}
+/\ sends = {}
+State 3: <Touch line 151, col 3 to line 161, col 40 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t2", item |-> "i"]}
+/\ writes = {}
+/\ storeTaint = [a |-> TRUE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> TRUE]
+/\ tainted = [t1 |-> FALSE, t2 |-> TRUE]
+/\ named = {}
+/\ sends = {}
+State 4: <Touch line 151, col 3 to line 161, col 40 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t2", item |-> "i"]}
+/\ writes = {}
+/\ storeTaint = [a |-> TRUE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> TRUE]
+/\ tainted = [t1 |-> TRUE, t2 |-> TRUE]
+/\ named = {}
+/\ sends = {}
+State 5: <Send line 166, col 3 to line 172, col 82 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t2", item |-> "i"]}
+/\ writes = {}
+/\ storeTaint = [a |-> TRUE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> TRUE]
+/\ tainted = [t1 |-> TRUE, t2 |-> TRUE]
+/\ named = {}
+/\ sends = {[round |-> 1, tainted |-> TRUE, lost |-> FALSE, by |-> "t1", eff |-> FALSE]}
+State 6: <Next line 270, col 6 to line 270, col 61 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t2", item |-> "i"]}
+/\ writes = {}
+/\ storeTaint = [a |-> TRUE]
+/\ found = {}
+/\ marked = [ c1 |->
+      { [ round |-> 1,
+          tainted |-> TRUE,
+          lost |-> FALSE,
+          by |-> "t1",
+          eff |-> FALSE ] },
+  c2 |-> {} ]
+/\ effU = [t1 |-> FALSE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> TRUE]
+/\ tainted = [t1 |-> TRUE, t2 |-> TRUE]
+/\ named = {}
+/\ sends = {[round |-> 1, tainted |-> TRUE, lost |-> FALSE, by |-> "t1", eff |-> FALSE]}
+4206 states generated, 1231 distinct states found, 840 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 9 and the 95th percentile is 7).
+Finished in 05s at (2026-10-04 04:25:28)
+
+=== oh-carried1 · Stores=1 · MaxSends=1 · MMiss=1 · Mut=M_ONEHOP · INVARIANT CarriedCoversSplitPath
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.6E-7
+  based on the actual fingerprints:  val = 5.2E-8
+12405853 states generated, 1456432 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 22.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 11 and the 95th percentile is 4).
+Finished in 11s at (2026-10-04 04:25:39)
+
+=== oh-carried2 · Stores=2 · MaxSends=1 · MMiss=1 · Mut=M_ONEHOP · INVARIANT CarriedCoversSplitPath
+Error: Invariant CarriedCoversSplitPath is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ forgot = [a |-> FALSE, b |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE, b |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 2: <Read line 136, col 3 to line 142, col 59 of module Correlator>
+/\ forgot = [a |-> FALSE, b |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE, b |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> TRUE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 3: <Touch line 151, col 3 to line 161, col 40 of module Correlator>
+/\ forgot = [a |-> FALSE, b |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> TRUE, b |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> TRUE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 4: <Touch line 151, col 3 to line 161, col 40 of module Correlator>
+/\ forgot = [a |-> FALSE, b |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> TRUE, b |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> TRUE, t2 |-> TRUE]
+/\ named = {}
+/\ sends = {}
+State 5: <Touch line 151, col 3 to line 161, col 40 of module Correlator>
+/\ forgot = [a |-> FALSE, b |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> TRUE, b |-> TRUE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> TRUE, t2 |-> TRUE]
+/\ named = {}
+/\ sends = {}
+State 6: <EndRound line 177, col 3 to line 184, col 59 of module Correlator>
+/\ forgot = [a |-> FALSE, b |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> TRUE, b |-> TRUE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 2, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> TRUE]
+/\ named = {}
+/\ sends = {}
+State 7: <Touch line 151, col 3 to line 161, col 40 of module Correlator>
+/\ forgot = [a |-> FALSE, b |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> TRUE, b |-> TRUE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 2, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> TRUE, t2 |-> TRUE]
+/\ named = {}
+/\ sends = {}
+State 8: <Send line 166, col 3 to line 172, col 82 of module Correlator>
+/\ forgot = [a |-> FALSE, b |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> TRUE, b |-> TRUE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 2, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> TRUE, t2 |-> TRUE]
+/\ named = {}
+/\ sends = {[round |-> 2, tainted |-> TRUE, lost |-> FALSE, by |-> "t1", eff |-> FALSE]}
+State 9: <Next line 270, col 6 to line 270, col 61 of module Correlator>
+/\ forgot = [a |-> FALSE, b |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> TRUE, b |-> TRUE]
+/\ found = {}
+/\ marked = [ c1 |->
+      { [ round |-> 2,
+          tainted |-> TRUE,
+          lost |-> FALSE,
+          by |-> "t1",
+          eff |-> FALSE ] },
+  c2 |-> {} ]
+/\ effU = [t1 |-> FALSE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 2, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> TRUE, t2 |-> TRUE]
+/\ named = {}
+/\ sends = {[round |-> 2, tainted |-> TRUE, lost |-> FALSE, by |-> "t1", eff |-> FALSE]}
+270363 states generated, 66862 distinct states found, 45322 states left on queue.
+The depth of the complete state graph search is 10.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 12 and the 95th percentile is 7).
+Finished in 05s at (2026-10-04 04:25:45)
+
+=== bare-evidence · Stores=1 · MaxSends=1 · MMiss=1 · Mut=M_BARE · INVARIANT FindingHasEvidence
+Error: Invariant FindingHasEvidence is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 2: <Read line 136, col 3 to line 142, col 59 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> TRUE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 3: <Propagate line 247, col 3 to line 252, col 73 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {[by |-> "c1", item |-> "i", cond |-> FALSE, names |-> {"t1"}, had |-> {"t1"}]}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> TRUE, t2 |-> FALSE]
+/\ named = {"t1"}
+/\ sends = {}
+133 states generated, 75 distinct states found, 51 states left on queue.
+The depth of the complete state graph search is 5.
+Finished in 05s at (2026-10-04 04:25:51)
+
+=== bare-charged · Stores=1 · MaxSends=1 · MMiss=1 · Mut=M_BARE · INVARIANT HonestNeverCharged
+Error: Invariant HonestNeverCharged is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 2: <Send line 166, col 3 to line 172, col 82 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {[round |-> 1, tainted |-> FALSE, lost |-> FALSE, by |-> "t2", eff |-> FALSE]}
+State 3: <Next line 270, col 6 to line 270, col 61 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = { [ cite |->
+        [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> FALSE ],
+    by |-> "c2",
+    cond |-> FALSE ] }
+/\ delivered = {}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [ c1 |-> {},
+  c2 |->
+      { [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> FALSE ] } ]
+/\ effU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {[round |-> 1, tainted |-> FALSE, lost |-> FALSE, by |-> "t2", eff |-> FALSE]}
+State 4: <Next line 270, col 6 to line 270, col 61 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = { [ cite |->
+        [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> FALSE ],
+    by |-> "c2",
+    cond |-> FALSE ] }
+/\ delivered = {}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [ c1 |->
+      { [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> FALSE ] },
+  c2 |->
+      { [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> FALSE ] } ]
+/\ effU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ misses = { [ cite |->
+        [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> FALSE ],
+    obs |-> "c1",
+    tier |-> "correlation" ] }
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {[round |-> 1, tainted |-> FALSE, lost |-> FALSE, by |-> "t2", eff |-> FALSE]}
+3441 states generated, 1486 distinct states found, 1237 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 6 (minimum is 0, the maximum 13 and the 95th percentile is 12).
+Finished in 05s at (2026-10-04 04:25:57)
+
+=== domain-reach · Stores=1 · MaxSends=1 · MMiss=1 · Mut=M_DOMAIN · INVARIANT IngressReachIsShared
+Error: Invariant IngressReachIsShared is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 2: <Read line 136, col 3 to line 142, col 59 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t2", item |-> "i"]}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> TRUE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 3: <ObsFind line 209, col 3 to line 215, col 74 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t2", item |-> "i"]}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {"i"}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> TRUE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 4: <Propagate line 247, col 3 to line 252, col 73 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = { [ by |-> "c1",
+    item |-> "i",
+    cond |-> TRUE,
+    names |-> {"t1", "t2"},
+    had |-> {"t2"} ] }
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t2", item |-> "i"]}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {"i"}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> TRUE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {"t1", "t2"}
+/\ sends = {}
+638 states generated, 279 distinct states found, 215 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 5 (minimum is 2, the maximum 8 and the 95th percentile is 7).
+Finished in 05s at (2026-10-04 04:26:02)
+
+=== self-silence · Stores=1 · MaxSends=1 · MMiss=1 · Mut=M_SELF · INVARIANT SilenceIsCounted
+Error: Invariant SilenceIsCounted is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 2: <Read line 136, col 3 to line 142, col 59 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 3: <Touch line 151, col 3 to line 161, col 40 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 4: <Touch line 151, col 3 to line 161, col 40 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 5: <Send line 166, col 3 to line 172, col 82 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {[round |-> 1, tainted |-> FALSE, lost |-> FALSE, by |-> "t2", eff |-> TRUE]}
+State 6: <Next line 270, col 6 to line 270, col 61 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = { [ cite |->
+        [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ],
+    by |-> "c1",
+    cond |-> TRUE ] }
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [ c1 |->
+      { [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ] },
+  c2 |-> {} ]
+/\ effU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {[round |-> 1, tainted |-> FALSE, lost |-> FALSE, by |-> "t2", eff |-> TRUE]}
+State 7: <Next line 270, col 6 to line 270, col 61 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = { [ cite |->
+        [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ],
+    by |-> "c1",
+    cond |-> TRUE ] }
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [ c1 |->
+      { [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ] },
+  c2 |->
+      { [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ] } ]
+/\ effU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {[round |-> 1, tainted |-> FALSE, lost |-> FALSE, by |-> "t2", eff |-> TRUE]}
+7904 states generated, 2538 distinct states found, 1801 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 9 and the 95th percentile is 7).
+Finished in 05s at (2026-10-04 04:26:08)
+
+=== tier-miss · Stores=1 · MaxSends=1 · MMiss=1 · Mut=M_TIERLESS · INVARIANT MissIsOnACorrelation
+Error: Invariant MissIsOnACorrelation is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 2: <Read line 136, col 3 to line 142, col 59 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 3: <ObsFind line 209, col 3 to line 215, col 74 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {"i"}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ misses = { [cite |-> "i", obs |-> "c1", tier |-> "judgment"],
+  [cite |-> "i", obs |-> "c2", tier |-> "judgment"] }
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+126 states generated, 69 distinct states found, 44 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 8 (minimum is 8, the maximum 8 and the 95th percentile is 8).
+Finished in 05s at (2026-10-04 04:26:14)
+
+=== tier-charged · Stores=1 · MaxSends=1 · MMiss=1 · Mut=M_TIERLESS · INVARIANT HonestNeverCharged
+Error: Invariant HonestNeverCharged is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 2: <Read line 136, col 3 to line 142, col 59 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 3: <ObsFind line 209, col 3 to line 215, col 74 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {"i"}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ misses = { [cite |-> "i", obs |-> "c1", tier |-> "judgment"],
+  [cite |-> "i", obs |-> "c2", tier |-> "judgment"] }
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+137 states generated, 77 distinct states found, 51 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 7 (minimum is 6, the maximum 8 and the 95th percentile is 8).
+Finished in 05s at (2026-10-04 04:26:19)
+
+=== keep-store · Stores=1 · MaxSends=1 · MMiss=1 · Mut=M_KEEP · INVARIANT StoreWithinRecord
+Error: Invariant StoreWithinRecord is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 2: <Read line 136, col 3 to line 142, col 59 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 3: <EndRound line 177, col 3 to line 184, col 59 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 2, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 4: <Erase line 191, col 3 to line 201, col 59 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {[round |-> 1, who |-> "t1"]}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 2, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+438 states generated, 198 distinct states found, 149 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 5 (minimum is 2, the maximum 8 and the 95th percentile is 7).
+Finished in 05s at (2026-10-04 04:26:25)
+
+=== keep-lost · Stores=1 · MaxSends=1 · MMiss=1 · Mut=M_KEEP · INVARIANT NeverLostTaint
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 5.4E-7
+  based on the actual fingerprints:  val = 1.1E-7
+10020523 states generated, 1120053 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 23.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 11 and the 95th percentile is 4).
+Finished in 10s at (2026-10-04 04:26:35)
+
+=== couple-lag · Stores=1 · MaxSends=1 · MMiss=1 · Mut=M_COUPLE · INVARIANT LagNeverGates
+Error: Invariant LagNeverGates is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 2: <Send line 166, col 3 to line 172, col 82 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {[round |-> 1, tainted |-> FALSE, lost |-> FALSE, by |-> "t1", eff |-> FALSE]}
+160 states generated, 57 distinct states found, 34 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 4 (minimum is 3, the maximum 5 and the 95th percentile is 5).
+Finished in 05s at (2026-10-04 04:26:41)
+
+=== w-split · Stores=1 · MaxSends=1 · MMiss=1 · Mut=none · INVARIANT NeverSplitFound
+Error: Invariant NeverSplitFound is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 2: <Read line 136, col 3 to line 142, col 59 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t2", item |-> "i"]}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> TRUE]
+/\ tainted = [t1 |-> FALSE, t2 |-> TRUE]
+/\ named = {}
+/\ sends = {}
+State 3: <Touch line 151, col 3 to line 161, col 40 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t2", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t2"]}
+/\ storeTaint = [a |-> TRUE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> TRUE]
+/\ tainted = [t1 |-> FALSE, t2 |-> TRUE]
+/\ named = {}
+/\ sends = {}
+State 4: <Touch line 151, col 3 to line 161, col 40 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t2", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t2"]}
+/\ storeTaint = [a |-> TRUE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> TRUE]
+/\ tainted = [t1 |-> TRUE, t2 |-> TRUE]
+/\ named = {}
+/\ sends = {}
+State 5: <Send line 166, col 3 to line 172, col 82 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t2", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t2"]}
+/\ storeTaint = [a |-> TRUE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> TRUE]
+/\ tainted = [t1 |-> TRUE, t2 |-> TRUE]
+/\ named = {}
+/\ sends = {[round |-> 1, tainted |-> TRUE, lost |-> FALSE, by |-> "t1", eff |-> TRUE]}
+State 6: <Next line 270, col 6 to line 270, col 61 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = { [ cite |->
+        [ round |-> 1,
+          tainted |-> TRUE,
+          lost |-> FALSE,
+          by |-> "t1",
+          eff |-> TRUE ],
+    by |-> "c1",
+    cond |-> TRUE ] }
+/\ delivered = {[round |-> 1, to |-> "t2", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t2"]}
+/\ storeTaint = [a |-> TRUE]
+/\ found = {}
+/\ marked = [ c1 |->
+      { [ round |-> 1,
+          tainted |-> TRUE,
+          lost |-> FALSE,
+          by |-> "t1",
+          eff |-> TRUE ] },
+  c2 |-> {} ]
+/\ effU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> TRUE]
+/\ tainted = [t1 |-> TRUE, t2 |-> TRUE]
+/\ named = {}
+/\ sends = {[round |-> 1, tainted |-> TRUE, lost |-> FALSE, by |-> "t1", eff |-> TRUE]}
+3874 states generated, 1385 distinct states found, 1024 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 4 (minimum is 0, the maximum 9 and the 95th percentile is 7).
+Finished in 05s at (2026-10-04 04:26:47)
+
+=== w-clean · Stores=1 · MaxSends=1 · MMiss=1 · Mut=none · INVARIANT NeverFoundClean
+Error: Invariant NeverFoundClean is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 2: <Read line 136, col 3 to line 142, col 59 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 3: <Touch line 151, col 3 to line 161, col 40 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 4: <Touch line 151, col 3 to line 161, col 40 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 5: <Send line 166, col 3 to line 172, col 82 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {[round |-> 1, tainted |-> FALSE, lost |-> FALSE, by |-> "t2", eff |-> TRUE]}
+State 6: <Next line 270, col 6 to line 270, col 61 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = { [ cite |->
+        [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ],
+    by |-> "c1",
+    cond |-> TRUE ] }
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [ c1 |->
+      { [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ] },
+  c2 |-> {} ]
+/\ effU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {[round |-> 1, tainted |-> FALSE, lost |-> FALSE, by |-> "t2", eff |-> TRUE]}
+3662 states generated, 1335 distinct states found, 990 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 4 (minimum is 0, the maximum 8 and the 95th percentile is 7).
+Finished in 05s at (2026-10-04 04:26:52)
+
+=== w-shared · Stores=1 · MaxSends=1 · MMiss=1 · Mut=none · INVARIANT NeverSharedTwo
+Error: Invariant NeverSharedTwo is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 2: <Read line 136, col 3 to line 142, col 59 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 3: <Read line 136, col 3 to line 142, col 59 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = { [round |-> 1, to |-> "t1", item |-> "i"],
+  [round |-> 1, to |-> "t2", item |-> "i"] }
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 4: <ObsFind line 209, col 3 to line 215, col 74 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = { [round |-> 1, to |-> "t1", item |-> "i"],
+  [round |-> 1, to |-> "t2", item |-> "i"] }
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {"i"}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 5: <Propagate line 247, col 3 to line 252, col 73 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = { [ by |-> "c1",
+    item |-> "i",
+    cond |-> TRUE,
+    names |-> {"t1", "t2"},
+    had |-> {"t1", "t2"} ] }
+/\ carriedF = {}
+/\ delivered = { [round |-> 1, to |-> "t1", item |-> "i"],
+  [round |-> 1, to |-> "t2", item |-> "i"] }
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {"i"}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {"t1", "t2"}
+/\ sends = {}
+675 states generated, 282 distinct states found, 214 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 5 (minimum is 1, the maximum 8 and the 95th percentile is 8).
+Finished in 05s at (2026-10-04 04:26:58)
+
+=== w-miss · Stores=1 · MaxSends=1 · MMiss=1 · Mut=none · INVARIANT NeverMiss
+Error: Invariant NeverMiss is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 2: <Read line 136, col 3 to line 142, col 59 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 3: <Touch line 151, col 3 to line 161, col 40 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 4: <Touch line 151, col 3 to line 161, col 40 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 5: <Send line 166, col 3 to line 172, col 82 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {[round |-> 1, tainted |-> FALSE, lost |-> FALSE, by |-> "t2", eff |-> TRUE]}
+State 6: <Next line 270, col 6 to line 270, col 61 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [ c1 |-> {},
+  c2 |->
+      { [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ] } ]
+/\ effU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {[round |-> 1, tainted |-> FALSE, lost |-> FALSE, by |-> "t2", eff |-> TRUE]}
+State 7: <Next line 270, col 6 to line 270, col 61 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = { [ cite |->
+        [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ],
+    by |-> "c1",
+    cond |-> TRUE ] }
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [ c1 |->
+      { [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ] },
+  c2 |->
+      { [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ] } ]
+/\ effU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ misses = { [ cite |->
+        [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ],
+    obs |-> "c2",
+    tier |-> "correlation" ] }
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {[round |-> 1, tainted |-> FALSE, lost |-> FALSE, by |-> "t2", eff |-> TRUE]}
+8620 states generated, 2736 distinct states found, 1935 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 9 and the 95th percentile is 7).
+Finished in 05s at (2026-10-04 04:27:04)
+
+=== w-named · Stores=1 · MaxSends=1 · MMiss=1 · Mut=none · INVARIANT NeverNamed
+Error: Invariant NeverNamed is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 2: <Read line 136, col 3 to line 142, col 59 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> TRUE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 3: <Touch line 151, col 3 to line 161, col 40 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> TRUE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> TRUE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 4: <Touch line 151, col 3 to line 161, col 40 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> TRUE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> TRUE, t2 |-> TRUE]
+/\ named = {}
+/\ sends = {}
+State 5: <Send line 166, col 3 to line 172, col 82 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> TRUE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> TRUE, t2 |-> TRUE]
+/\ named = {}
+/\ sends = {[round |-> 1, tainted |-> TRUE, lost |-> FALSE, by |-> "t2", eff |-> TRUE]}
+State 6: <Next line 270, col 6 to line 270, col 61 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = { [ cite |->
+        [ round |-> 1,
+          tainted |-> TRUE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ],
+    by |-> "c1",
+    cond |-> TRUE ] }
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> TRUE]
+/\ found = {}
+/\ marked = [ c1 |->
+      { [ round |-> 1,
+          tainted |-> TRUE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ] },
+  c2 |-> {} ]
+/\ effU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> TRUE, t2 |-> TRUE]
+/\ named = {}
+/\ sends = {[round |-> 1, tainted |-> TRUE, lost |-> FALSE, by |-> "t2", eff |-> TRUE]}
+State 7: <Next line 270, col 6 to line 270, col 61 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = { [ cite |->
+        [ round |-> 1,
+          tainted |-> TRUE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ],
+    by |-> "c1",
+    cond |-> TRUE ] }
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> TRUE]
+/\ found = {}
+/\ marked = [ c1 |->
+      { [ round |-> 1,
+          tainted |-> TRUE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ] },
+  c2 |->
+      { [ round |-> 1,
+          tainted |-> TRUE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ] } ]
+/\ effU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ misses = { [ cite |->
+        [ round |-> 1,
+          tainted |-> TRUE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ],
+    obs |-> "c2",
+    tier |-> "correlation" ] }
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> TRUE, t2 |-> TRUE]
+/\ named = {}
+/\ sends = {[round |-> 1, tainted |-> TRUE, lost |-> FALSE, by |-> "t2", eff |-> TRUE]}
+State 8: <Name line 258, col 3 to line 262, col 81 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {[by |-> "c1", cond |-> TRUE, names |-> "c2"]}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = { [ cite |->
+        [ round |-> 1,
+          tainted |-> TRUE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ],
+    by |-> "c1",
+    cond |-> TRUE ] }
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> TRUE]
+/\ found = {}
+/\ marked = [ c1 |->
+      { [ round |-> 1,
+          tainted |-> TRUE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ] },
+  c2 |->
+      { [ round |-> 1,
+          tainted |-> TRUE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ] } ]
+/\ effU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ misses = { [ cite |->
+        [ round |-> 1,
+          tainted |-> TRUE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ],
+    obs |-> "c2",
+    tier |-> "correlation" ] }
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> TRUE, t2 |-> TRUE]
+/\ named = {}
+/\ sends = {[round |-> 1, tainted |-> TRUE, lost |-> FALSE, by |-> "t2", eff |-> TRUE]}
+29706 states generated, 8411 distinct states found, 5659 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 9 and the 95th percentile is 7).
+Finished in 05s at (2026-10-04 04:27:09)
+
+=== w-named2 · Stores=1 · MaxSends=2 · MMiss=2 · Mut=none · INVARIANT NeverNamed
+Error: Invariant NeverNamed is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 2: <Read line 136, col 3 to line 142, col 59 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 3: <Touch line 151, col 3 to line 161, col 40 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 4: <Touch line 151, col 3 to line 161, col 40 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 5: <EndRound line 177, col 3 to line 184, col 59 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 2, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 6: <Touch line 151, col 3 to line 161, col 40 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 2, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 7: <Send line 166, col 3 to line 172, col 82 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 2, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {[round |-> 2, tainted |-> FALSE, lost |-> FALSE, by |-> "t1", eff |-> TRUE]}
+State 8: <Send line 166, col 3 to line 172, col 82 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 2, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = { [round |-> 1, tainted |-> FALSE, lost |-> FALSE, by |-> "t2", eff |-> TRUE],
+  [round |-> 2, tainted |-> FALSE, lost |-> FALSE, by |-> "t1", eff |-> TRUE] }
+State 9: <Next line 270, col 6 to line 270, col 61 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = { [ cite |->
+        [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ],
+    by |-> "c1",
+    cond |-> TRUE ] }
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [ c1 |->
+      { [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ] },
+  c2 |-> {} ]
+/\ effU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 2, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = { [round |-> 1, tainted |-> FALSE, lost |-> FALSE, by |-> "t2", eff |-> TRUE],
+  [round |-> 2, tainted |-> FALSE, lost |-> FALSE, by |-> "t1", eff |-> TRUE] }
+State 10: <Next line 270, col 6 to line 270, col 61 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = { [ cite |->
+        [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ],
+    by |-> "c1",
+    cond |-> TRUE ] }
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [ c1 |->
+      { [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ] },
+  c2 |->
+      { [ round |-> 2,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t1",
+          eff |-> TRUE ] } ]
+/\ effU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 2, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = { [round |-> 1, tainted |-> FALSE, lost |-> FALSE, by |-> "t2", eff |-> TRUE],
+  [round |-> 2, tainted |-> FALSE, lost |-> FALSE, by |-> "t1", eff |-> TRUE] }
+State 11: <Next line 270, col 6 to line 270, col 61 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = { [ cite |->
+        [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ],
+    by |-> "c1",
+    cond |-> TRUE ] }
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [ c1 |->
+      { [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ] },
+  c2 |->
+      { [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ],
+        [ round |-> 2,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t1",
+          eff |-> TRUE ] } ]
+/\ effU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ misses = { [ cite |->
+        [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ],
+    obs |-> "c2",
+    tier |-> "correlation" ] }
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 2, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = { [round |-> 1, tainted |-> FALSE, lost |-> FALSE, by |-> "t2", eff |-> TRUE],
+  [round |-> 2, tainted |-> FALSE, lost |-> FALSE, by |-> "t1", eff |-> TRUE] }
+State 12: <Next line 270, col 6 to line 270, col 61 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = { [ cite |->
+        [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ],
+    by |-> "c1",
+    cond |-> TRUE ],
+  [ cite |->
+        [ round |-> 2,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t1",
+          eff |-> TRUE ],
+    by |-> "c1",
+    cond |-> TRUE ] }
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [ c1 |->
+      { [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ],
+        [ round |-> 2,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t1",
+          eff |-> TRUE ] },
+  c2 |->
+      { [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ],
+        [ round |-> 2,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t1",
+          eff |-> TRUE ] } ]
+/\ effU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ misses = { [ cite |->
+        [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ],
+    obs |-> "c2",
+    tier |-> "correlation" ],
+  [ cite |->
+        [ round |-> 2,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t1",
+          eff |-> TRUE ],
+    obs |-> "c2",
+    tier |-> "correlation" ] }
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 2, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = { [round |-> 1, tainted |-> FALSE, lost |-> FALSE, by |-> "t2", eff |-> TRUE],
+  [round |-> 2, tainted |-> FALSE, lost |-> FALSE, by |-> "t1", eff |-> TRUE] }
+State 13: <Name line 258, col 3 to line 262, col 81 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {[by |-> "c1", cond |-> TRUE, names |-> "c2"]}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = { [ cite |->
+        [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ],
+    by |-> "c1",
+    cond |-> TRUE ],
+  [ cite |->
+        [ round |-> 2,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t1",
+          eff |-> TRUE ],
+    by |-> "c1",
+    cond |-> TRUE ] }
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [ c1 |->
+      { [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ],
+        [ round |-> 2,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t1",
+          eff |-> TRUE ] },
+  c2 |->
+      { [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ],
+        [ round |-> 2,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t1",
+          eff |-> TRUE ] } ]
+/\ effU = [t1 |-> TRUE, t2 |-> TRUE]
+/\ misses = { [ cite |->
+        [ round |-> 1,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t2",
+          eff |-> TRUE ],
+    obs |-> "c2",
+    tier |-> "correlation" ],
+  [ cite |->
+        [ round |-> 2,
+          tainted |-> FALSE,
+          lost |-> FALSE,
+          by |-> "t1",
+          eff |-> TRUE ],
+    obs |-> "c2",
+    tier |-> "correlation" ] }
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 2, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = { [round |-> 1, tainted |-> FALSE, lost |-> FALSE, by |-> "t2", eff |-> TRUE],
+  [round |-> 2, tainted |-> FALSE, lost |-> FALSE, by |-> "t1", eff |-> TRUE] }
+5610738 states generated, 1160223 distinct states found, 663637 states left on queue.
+The depth of the complete state graph search is 14.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 14 and the 95th percentile is 7).
+Finished in 08s at (2026-10-04 04:27:18)
+
+=== w-lost · Stores=1 · MaxSends=1 · MMiss=1 · Mut=none · INVARIANT NeverLostTaint
+Error: Invariant NeverLostTaint is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 2: <Read line 136, col 3 to line 142, col 59 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 3: <Read line 136, col 3 to line 142, col 59 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> TRUE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 4: <Touch line 151, col 3 to line 161, col 40 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> TRUE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> TRUE, t2 |-> FALSE]
+/\ tainted = [t1 |-> TRUE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 5: <EndRound line 177, col 3 to line 184, col 59 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {[round |-> 1, to |-> "t1", item |-> "i"]}
+/\ writes = {[round |-> 1, store |-> "a", by |-> "t1"]}
+/\ storeTaint = [a |-> TRUE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 2, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 6: <Erase line 191, col 3 to line 201, col 59 of module Correlator>
+/\ forgot = [a |-> TRUE]
+/\ namedF = {}
+/\ erased = {[round |-> 1, who |-> "t1"]}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {}
+/\ writes = {}
+/\ storeTaint = [a |-> TRUE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 2, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 7: <Touch line 151, col 3 to line 161, col 40 of module Correlator>
+/\ forgot = [a |-> TRUE]
+/\ namedF = {}
+/\ erased = {[round |-> 1, who |-> "t1"]}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {}
+/\ writes = {}
+/\ storeTaint = [a |-> TRUE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> TRUE, t2 |-> FALSE]
+/\ round = [t1 |-> 2, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> TRUE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 8: <Send line 166, col 3 to line 172, col 82 of module Correlator>
+/\ forgot = [a |-> TRUE]
+/\ namedF = {}
+/\ erased = {[round |-> 1, who |-> "t1"]}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {}
+/\ writes = {}
+/\ storeTaint = [a |-> TRUE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> TRUE, t2 |-> FALSE]
+/\ round = [t1 |-> 2, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> TRUE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {[round |-> 2, tainted |-> TRUE, lost |-> TRUE, by |-> "t1", eff |-> FALSE]}
+16820 states generated, 5097 distinct states found, 3535 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 9 and the 95th percentile is 7).
+Finished in 05s at (2026-10-04 04:27:24)
+
+=== w-erased · Stores=1 · MaxSends=1 · MMiss=1 · Mut=none · INVARIANT NeverErasedARow
+Error: Invariant NeverErasedARow is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 1, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 2: <EndRound line 177, col 3 to line 184, col 59 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 2, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+State 3: <Erase line 191, col 3 to line 201, col 59 of module Correlator>
+/\ forgot = [a |-> FALSE]
+/\ namedF = {}
+/\ erased = {[round |-> 1, who |-> "t1"]}
+/\ sharedF = {}
+/\ carriedF = {}
+/\ delivered = {}
+/\ writes = {}
+/\ storeTaint = [a |-> FALSE]
+/\ found = {}
+/\ marked = [c1 |-> {}, c2 |-> {}]
+/\ effU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ misses = {}
+/\ lost = [t1 |-> FALSE, t2 |-> FALSE]
+/\ round = [t1 |-> 2, t2 |-> 1]
+/\ clearU = [t1 |-> FALSE, t2 |-> FALSE]
+/\ tainted = [t1 |-> FALSE, t2 |-> FALSE]
+/\ named = {}
+/\ sends = {}
+358 states generated, 176 distinct states found, 137 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 5 (minimum is 2, the maximum 8 and the 95th percentile is 8).
+Finished in 05s at (2026-10-04 04:27:30)
+

@@ -1,0 +1,10 @@
+TOPAK — TLAPS proof results for Operators.tla: every obligation of Operators_proof.tla, checked by the prover below
+Modules: Operators.tla (sha256 3e7382178b4445bb) · Operators_proof.tla (sha256 e668322b7c2b6e22)
+Prover: tlapm 7824dab (binary sha256 e150fb793fb28592) · backends: Z3 version 4.8.9 - 64 bit · zenon version 0.8.4 [a268] 2017-11-14 · Isabelle2025 · LS4 for PTL · driver: proof-results.sh
+Assumptions: none
+Theorems: TypeAlways · FirstLeaseHasAQuorumAlways · LeaseWithinSeatingAlways · SuccessorNeverWidensAlways · ExpiredOperatorOnlyDeniesAlways · NoAddWithoutLiveLeaseAndPeerAlways · NoSelfRegrantAlways · OperatorLeaseWasVouchedAlways · NoDenyOnAStaleKeyAlways · NoDenyByRevokedAlways · EveryStopIsAttributedAlways · RevokedStaysOutAlways · DenyAlwaysAvailableAlways · SafeAlways
+Lemmas: NoLeaseTyped · VouchedAtBool · TypeInit · TypeNext · RootedNext · WithinNext · VouchedNext · RevokedNext · AddsStep · StopsStep · WidensNext · LapsedNext · PeerNext · SelfNext · StaleNext · RevokedDenyNext · AttributedNext · DenyEnabled · MutLapsedPeerSelf · MutNoAttestAttestsAll · MutStaleKeyDenies · MutDenyLeaseNeedsLease · NoneNeverGrants
+A proved obligation is a theorem of the module under its assumptions and the hypotheses the statement names; the prover, not the constants, bounds the claim. Mutations and witnesses are behaviours and stay with TLC.
+
+File "./Operators_proof.tla", line 1, character 1 to line 479, character 77:
+[INFO]: All 340 obligations proved.

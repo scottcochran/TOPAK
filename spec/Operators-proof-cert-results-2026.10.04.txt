@@ -1,0 +1,14 @@
+TOPAK — TLAPS certified proof results for Operators.tla: every obligation of Operators_proof.tla, by the route that discharged it
+Modules: Operators.tla (sha256 3e7382178b4445bb) · Operators_proof.tla (sha256 e668322b7c2b6e22)
+Prover: tlapm 7824dab (binary sha256 e150fb793fb28592) · zenon version 0.8.4 [a268] 2017-11-14 · Isabelle2025 · LS4 for PTL · driver: proof-cert.sh
+Checked SMT route: smt-checked (sha256 bb86642633822ae5) · cvc5 1.4.0 [git b432cd7 on branch HEAD] (sha256 a4ce24a176532209) · ethos (sha256 4eb41c1f1f9fce88) · CPC signature (sha256 633f74115700ad32 over its .eo files)
+An obligation proved by SMT counts only with a proof of false, from the query's own declarations and assertions, that ethos accepted. Z3 is not run. Backend timeouts x1.
+
+Obligations: 340
+  trivial, closed by tlapm with no backend            207
+  SMT, proof accepted by ethos                        118   (117 calls forwarded on an accepted proof; 1 obligations identical to one already proved in this run; evidence digest 8fb13216b897a0b2)
+  Zenon, proof checked by Isabelle                    1   (Isabelle: no errors)
+  Isabelle                                            0
+  LS4, temporal step, NOT certified                   14
+
+All 340 obligations proved. 326 of them rest on tlapm's own normalization or on a checked proof; 14 rest on LS4, whose answer no checker confirms.

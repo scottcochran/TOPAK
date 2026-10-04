@@ -1,0 +1,237 @@
+#!/usr/bin/env python3
+"""smt-checked: the SMT backend for certified TLAPS runs. `tlapm --solver` runs this in place of Z3.
+
+It does for a proof obligation what `floor/cvc5-checked` does for a floor gate (ADR-0030 §5, A1): the
+solver's `unsat` is forwarded only after a PINNED, INDEPENDENT checker (ethos) has accepted a proof of
+`false` from the query's own declarations and assertions. Anything else is forwarded as `unknown`, which
+tlapm reads as "this backend did not prove it" and hands to its next backend.
+
+tlapm writes one SMT-LIB file per obligation: a sort, function declarations, the hypotheses and the
+negated goal as named assertions (some with instantiation patterns), `(check-sat)`. This wrapper
+
+  1. runs cvc5 on the file as tlapm wrote it, with proof production on;
+  2. discards the declarations cvc5's proof dump restates, and prefixes the proof with declarations taken
+     from the query text itself;
+  3. requires the formula of every `assume` step, with cvc5's term abbreviations expanded, to be one of the
+     query's assertions, compared structurally after the two changes of notation cvc5 makes: `:named` and
+     `:pattern` annotations are dropped (a pattern is a hint to the solver and no part of the formula),
+     and a bound variable `x` of sort `S` is written `(@var "x" S)` under a binder `(@list ...)`;
+  4. runs ethos on the result with `--require-proof-of-false`.
+
+The checker thus certifies: the query's declarations and the query's assertions entail false. What it
+does not certify is tlapm's translation of the TLA+ obligation into that query, which stays trusted, as
+`cedar symcc`'s encoding does for the floor.
+
+A `sat` or `unknown` from the solver needs no certificate: it can only make tlapm try another backend
+or fail.
+
+usage: smt-checked <file.smt>
+Environment:  TOPAK_CVC5       the solver (required)
+              TOPAK_ETHOS      the checker binary (required)
+              TOPAK_CPC        directory of the CPC signature (default: ../tools/cpc)
+              TOPAK_PROOF_DIR  where q-<digest>.smt2 / .cpc / .json land, and calls.log, one line per
+                               call (default: a temp dir)
+              TOPAK_SMT_TLIMIT solver time limit in ms (default 60000)
+"""
+import hashlib
+import json
+import os
+import subprocess
+import sys
+import tempfile
+
+HERE = os.path.dirname(os.path.abspath(__file__))
+PROOF_FLAGS = ["--produce-proofs", "--dump-proofs", "--proof-format-mode=cpc", "--proof-granularity=dsl-rewrite"]
+BINDERS = ("forall", "exists")
+
+
+def parse(s):
+    """SMT-LIB / Eunoia text to nested lists. Strings and |quoted symbols| are single atoms."""
+    stack, i, n = [[]], 0, len(s)
+    while i < n:
+        c = s[i]
+        if c.isspace():
+            i += 1
+        elif c == ";":
+            j = s.find("\n", i)
+            i = n if j < 0 else j
+        elif c == "(":
+            stack.append([])
+            i += 1
+        elif c == ")":
+            if len(stack) == 1:
+                raise ValueError("unbalanced )")
+            top = stack.pop()
+            stack[-1].append(top)
+            i += 1
+        elif c in '"|':
+            j = s.find(c, i + 1)
+            if j < 0:
+                raise ValueError("unterminated " + c)
+            stack[-1].append(s[i:j + 1])
+            i = j + 1
+        else:
+            j = i
+            while j < n and not s[j].isspace() and s[j] not in "();":
+                j += 1
+            stack[-1].append(s[i:j])
+            i = j
+    if len(stack) != 1:
+        raise ValueError("unbalanced (")
+    return stack[0]
+
+
+def show(x):
+    return "(" + " ".join(show(y) for y in x) + ")" if isinstance(x, list) else x
+
+
+def sha(data):
+    return hashlib.sha256(data.encode() if isinstance(data, str) else data).hexdigest()
+
+
+def query_term(t, bound):
+    """A query term in the notation of cvc5's proof dump: annotations dropped, bound variables as @var."""
+    if not isinstance(t, list):
+        return bound.get(t, t)
+    if t and t[0] == "!":
+        return query_term(t[1], bound)
+    if t and t[0] in BINDERS:
+        if len(t) != 3 or not all(isinstance(v, list) and len(v) == 2 and isinstance(v[0], str) for v in t[1]):
+            raise ValueError("binder the wrapper does not read: " + show(t)[:80])
+        inner = dict(bound)
+        vs = []
+        for name, sort in t[1]:
+            var = ["@var", '"' + name + '"', sort]
+            inner[name] = var
+            vs.append(var)
+        return [t[0], ["@list", *vs], query_term(t[2], inner)]
+    if t and t[0] == "let":
+        raise ValueError("let in a query: the wrapper does not expand it")
+    return [query_term(y, bound) for y in t]
+
+
+def read_query(text):
+    """The query's declarations in Eunoia form, and its assertions in the proof dump's notation."""
+    pre, asserts = [], set()
+    for f in parse(text):
+        if not isinstance(f, list) or not f:
+            raise ValueError("stray atom in the query")
+        h = f[0]
+        if h == "declare-sort":
+            pre.append(f)
+        elif h == "declare-fun":
+            pre.append(["declare-const", f[1], f[3]] if not f[2] else ["declare-const", f[1], ["->", *f[2], f[3]]])
+        elif h == "declare-const":
+            pre.append(f)
+        elif h == "assert":
+            asserts.add(show(query_term(f[1], {})))
+        elif h in ("set-logic", "set-option", "set-info", "check-sat", "exit"):
+            pass
+        else:
+            raise ValueError("form the wrapper does not carry into a proof: " + h)
+    return pre, asserts
+
+
+def expander(defs):
+    memo = {}
+
+    def expand(t):
+        if isinstance(t, list):
+            return [expand(y) for y in t]
+        if t in defs:
+            if t not in memo:
+                memo[t] = expand(defs[t])
+            return memo[t]
+        return t
+    return expand
+
+
+def bind_and_check(query, dump_lines, base, ethos, cpc):
+    """Returns (accepted, reason, proof text)."""
+    if len(dump_lines) < 2 or dump_lines[0].strip() != "(" or dump_lines[-1].strip() != ")":
+        return False, "proof dump has an unexpected shape", ""
+    pre, asserts = read_query(query)
+    kept, defs = [], {}
+    for f in parse("\n".join(dump_lines[1:-1])):
+        h = f[0] if isinstance(f, list) and f else None
+        if h == "define" and isinstance(f[1], str) and f[1].startswith("@") and f[2] == []:
+            defs[f[1]] = f[3]
+            kept.append(f)
+        elif h in ("assume", "assume-push", "step", "step-pop"):
+            kept.append(f)
+        elif h in ("declare-sort", "declare-const", "declare-type"):
+            pass                      # the solver's restatement of the query: replaced by the query's own
+        else:
+            return False, "proof contains a form the wrapper does not accept: " + show(f)[:80], ""
+    expand = expander(defs)
+    assumed = 0
+    for f in kept:
+        if f[0] == "assume":
+            assumed += 1
+            if show(expand(f[2])) not in asserts:
+                return False, f"assume {f[1]} is not one of the query's assertions", ""
+    if not assumed:
+        return False, "proof assumes nothing", ""
+    proof_text = ("; proof of false from the query's declarations and assertions (the TLAPS analogue of ADR-0030 §5 A1)\n"
+                  "; check: ethos --include=<cpc>/Cpc.eo --include=<cpc>/expert/CpcExpert.eo --require-proof-of-false <this file>\n"
+                  + "\n".join(show(p) for p in pre) + "\n" + "\n".join(show(k) for k in kept) + "\n")
+    with open(base + ".cpc", "w") as out:
+        out.write(proof_text)
+    r = subprocess.run([ethos, f"--include={os.path.join(cpc, 'Cpc.eo')}",
+                        f"--include={os.path.join(cpc, 'expert', 'CpcExpert.eo')}",
+                        "--require-proof-of-false", base + ".cpc"], capture_output=True, text=True)
+    if r.returncode == 0 and r.stdout.strip() == "correct":
+        return True, "checker accepted the proof", proof_text
+    msg = r.stderr.strip() or r.stdout.strip()
+    msg = msg[msg.find("Error:"):] if "Error:" in msg else msg
+    return False, "checker refused: " + msg.replace(base + ".cpc", os.path.basename(base) + ".cpc")[:300], proof_text
+
+
+def main():
+    cvc5, ethos = os.environ.get("TOPAK_CVC5"), os.environ.get("TOPAK_ETHOS")
+    if not cvc5 or not ethos or len(sys.argv) != 2:
+        sys.stderr.write("smt-checked: usage: smt-checked <file.smt>, with TOPAK_CVC5 and TOPAK_ETHOS set\n")
+        return 2
+    cpc = os.environ.get("TOPAK_CPC", os.path.join(HERE, "..", "tools", "cpc"))
+    outdir = os.environ.get("TOPAK_PROOF_DIR") or tempfile.mkdtemp(prefix="smt-checked-")
+    os.makedirs(outdir, exist_ok=True)
+    query = open(sys.argv[1]).read()
+    digest = sha(query)
+    base = os.path.join(outdir, "q-" + digest[:16])
+    with open(base + ".smt2", "w") as f:
+        f.write(query)
+    argv = ["--lang", "smt", "--tlimit=" + os.environ.get("TOPAK_SMT_TLIMIT", "60000")]
+    verdict = {"query": os.path.basename(base) + ".smt2", "query_sha256": digest,
+               "obligation": next((l[3:].strip() for l in query.splitlines() if l.startswith(";; Generated from")), None),
+               "solver": os.path.basename(cvc5), "solver_sha256": sha(open(cvc5, "rb").read()),
+               "solver_argv": argv + PROOF_FLAGS,
+               "checker": os.path.basename(ethos), "checker_sha256": sha(open(ethos, "rb").read()),
+               "checked": False, "answer": None, "forwarded": "unknown", "reason": None}
+    try:
+        r = subprocess.run([cvc5, *argv, *PROOF_FLAGS, base + ".smt2"], capture_output=True, text=True)
+        lines = r.stdout.splitlines()
+        answer = lines[0].strip() if lines else ""
+        verdict["answer"] = answer
+        if r.stderr.strip():
+            verdict["solver_stderr"] = r.stderr.strip()[:300]
+        if answer == "unsat":
+            ok, reason, proof_text = bind_and_check(query, lines[1:], base, ethos, cpc)
+            verdict.update(checked=ok, reason=reason, proof=os.path.basename(base) + ".cpc",
+                           proof_sha256=sha(proof_text), forwarded="unsat" if ok else "unknown")
+        elif answer == "sat":
+            verdict["forwarded"] = "sat"
+        else:
+            verdict["reason"] = "solver gave no verdict"
+    except Exception as e:           # any failure in the wrapper is an unchecked result
+        verdict["reason"] = f"wrapper: {type(e).__name__}: {e}"
+    with open(base + ".json", "w") as f:
+        json.dump(verdict, f, indent=1)
+    # One line per call: two obligations with the same query share a verdict file and are two calls.
+    with open(os.path.join(outdir, "calls.log"), "a") as f:
+        f.write(f"{digest} {verdict['forwarded']} {int(verdict['checked'])}\n")
+    print(verdict["forwarded"])
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

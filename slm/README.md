@@ -156,7 +156,7 @@ Operating it:
 ### A5. Evaluate (session step 8)
 
 ```sh
-uv run sample.py runs/L-A/ckpt --tokenizer runs/L-A/tokenizer/tokenizer.json --tokens runs/L-A/tokens \
+uv run sample.py runs/full/L-A/ckpt --tokenizer runs/full/L-A/tokenizer/tokenizer.json --tokens runs/full/L-A/tokens \
     --prompt "The history of" -n 3
 ```
 

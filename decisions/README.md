@@ -61,3 +61,4 @@ resolves a debt) were ratified by one person and await the first post-bootstrap 
 | [ADR-0048](ADR-0048.md) | A Thinker learns its tools from the mechanism: the allowlist entry carries its interface, and the Listener delivers it | Proposed (drafted 2026.10.03, after G9) | |
 | [ADR-0049](ADR-0049.md) | The allowlist entry has one schema: identity, inputs, interface, labels and channel, each marked checked or claimed | Proposed (drafted 2026.10.03, after G9) | |
 | [ADR-0050](ADR-0050.md) | An operator is a principal: seated by promotion, renewing within its domain under a lease, and able to deny without one | Proposed (drafted 2026.10.04, after G9) | |
+| [ADR-0051](ADR-0051.md) | The correlator computes named folds over facts: five correlations a second reader can recompute, a judgment tier beside them, and a store that never outlives its sources | Proposed (drafted 2026.10.04, after G9) | |

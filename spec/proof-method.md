@@ -59,6 +59,8 @@ declared, in the place T-0045-29 declares TLC.
 | `NonComposition_proof.tla` | 58 | 2 | NC2, plus "the records NC1 needs were created" and "only admitted effects went via break-glass" |
 | `FloorComposition_proof.tla` | 171 | 5 | the flags themselves; EnvelopeHolds adds the type invariant and "the floor's inputs are the truth" |
 | `RunConfinement_proof.tla` (2026.10.02, ADR-0034 A2 pending) | 116 | 2 | the properties themselves: a new effect's target follows from the check and the runtime's reach |
+| `Operators_proof.tla` (2026.10.04, ADR-0050 Proposed) | 340 | 12 | a type invariant under every mutation; for the lease properties, the property over every lease and not only live ones ("every granted lease has a quorum at its root", "no lease is wider than its seating"); the add and deny properties are inductive alone, from one lemma on what a step does to the last add and the last deny; `DenyAlwaysAvailable` is a state lemma |
+| `Correlator_proof.tla` (2026.10.04, ADR-0051 Proposed) | 455 | 8 | a type invariant under every mutation; for `CarriedCoversSplitPath`, "the fold covers the ghost truth" (a tainted target is carried or forgotten, a tainted context is effective or lost) and "an honest correlator's mark has passed only what it found or what did not fire"; `HonestNeverCharged` adds "every finding cites a send the fold fired on"; `StoreWithinRecord` adds "an erased round is below its Thinker's current one"; four are inductive alone; `LagNeverGates` is a state lemma |
 | `Coupling_proof.tla` | 320 | 3 | a shape invariant under every mutation (future rounds zero, mark at most the sequence, an idle round's seal is its sequence), plus "past marks equal seals" and "the backlog is at most K" |
 | `RunCoupling_proof.tla` | 469 | 5 | the Coupling shape with effect seals, plus "the sequence counts effects" and "past seals agree"; the `ENABLED` invariant is a state lemma |
 | `RulesFloorNV_rev5_proof.tla` | 262 | 6 | "the issued rules are in the rule space and satisfy the floor"; each property is established at Promote and frozen, since Issue and Vote need `~promoted` |
@@ -201,6 +203,52 @@ a missing clause, that only admitted effects are recorded as via break-glass, wh
 not have. `Mechanism` is not in this class:
 it is a trace replay over a concrete trace constant, and the meaningful target is a refinement from it to the
 small modules, which is the gap T-0045-28 declares.
+
+## 5a. Assessment, 2026.10.04: the proofs rerun with checked backends
+
+**What was done.** The floor's gates accept a solver's `unsat` only with a proof a pinned checker has accepted
+(ADR-0030 §5 A1; `floor/cvc5-checked`). On 2026.10.04 the same was done for the proofs. `spec/smt-checked` stands in
+for Z3 as tlapm's SMT backend (`tlapm --solver`): it runs cvc5 1.4.0 with proof production, replaces the
+declarations the proof dump restates with the query's own, requires every `assume` step to be one of the query's
+assertions, and forwards `unsat` only when ethos accepts a proof of false. `spec/proof-cert.sh <Module>_proof` runs a
+proof module that way, with `-C` so that Isabelle checks Zenon's proofs, and prints one results file that accounts
+for every obligation by route. `spec/smt-checked-selftest.sh` shows the wrapper refusing a solver that proves another
+query, proves nothing, or drops a step.
+
+**What `-C` does and does not do.** ADR-0046's open obligation says tlapm "can hand every SMT-proved obligation to
+Isabelle for checking (`-C`)". It cannot. `-C` checks the Isar proofs Zenon emits. For a module whose obligations
+are all discharged by SMT it gives Isabelle a theory with no lemmas and reports "No errors found", which is true and
+says nothing. Thirteen of the sixteen modules are in that position or close to it.
+
+**Results**, sixteen modules, 3,376 obligations (`spec/*-proof-cert-results-2026.10.04.txt`):
+
+| Route | Obligations | Checked by |
+|---|---|---|
+| Trivial: closed by tlapm's normalization, no backend | 2,248 | Nothing beyond tlapm |
+| SMT: cvc5, proof accepted | 1,038 | ethos, against the CPC signature |
+| Zenon | 8 | Isabelle, which accepted 7 and refused 1 |
+| Isabelle | 2 | Isabelle |
+| LS4: the temporal step of each theorem | 74 | Nothing |
+| Failed under the checked backends | 6 | — |
+
+- **Thirteen modules certify**: Anchor, BreakGlass, Coupling, FloorComposition, FloorRouting, Lease_A1,
+  NonComposition, Observers, Operators, RunConfinement, RunCoupling, RunSeats, Seats. Every obligation in them is
+  trivial, or has a checked proof, or is an LS4 step.
+- **`RulesFloorNV_rev5_proof` does not.** Five of its obligations (the cases of `BaseNext`, lines 115 to 126) are
+  proved by Zenon, under Z3 as well as under cvc5, and Isabelle refuses the Isar proof of one. The 10.02 results file
+  never ran the check. A refused reconstruction is not a refutation; it is an obligation with no checked proof.
+- **`Confinement_proof` and `Confinement_A1_proof` do not.** Three obligations in each (the `TypeOK` steps at lines
+  97, 102 and 190 of the first) are proved by Z3 and by nothing else here: cvc5 does not prove them at ten times the
+  timeout or under five instantiation strategies. They need smaller steps, and the modules are cited by digest.
+
+**What is still trusted.** tlapm's translation of an obligation into a query, as `cedar symcc`'s is for the floor;
+tlapm's normalization, for the trivial obligations; LS4, for the 74 temporal steps, each of the fixed shape "the
+invariant holds initially, every step keeps it, so it holds always"; cvc5 not at all, and ethos and its signature in
+its place. Z3 is not run.
+
+**What this changes.** T-0045-31's residual for a certified module moves from "the SMT backends' soundness" to
+"ethos, tlapm's encoding and LS4". G9 item 74 ("the SMT backends' proofs checked by Isabelle") is answered by a
+different checker than it names. Neither record is edited here.
 
 ## 6. Keeping proofs in step with specifications
 

@@ -1,0 +1,2421 @@
+TOPAK — Operators.tla: the operator as a principal, ADR-0050 (Proposed) ratification condition (§10), run 2026.10.04
+Module: Operators.tla (sha256 3e7382178b4445bb) · TLC Version 2.19 of 08 August 2024 (jar sha256 936a262061c91469) · openjdk version "25.0.1" 2025-10-21
+Runner: operators-gen-results.sh · MaxRound = 2 · Workers = {w} · Ops = {a, b}, or {a, b, c} where the row says Ops=3 · widths 1..2
+
+=== safe · Ops=2 · Mut=none · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.4E-6
+  based on the actual fingerprints:  val = 1.6E-8
+19949125 states generated, 1346164 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 17.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 23 and the 95th percentile is 3).
+Finished in 12s at (2026-10-04 03:09:18)
+
+=== noseat1 · Ops=2 · Mut=M_NOSEAT · INVARIANT FirstLeaseHasAQuorum
+Error: Invariant FirstLeaseHasAQuorum is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 2: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 3: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 1, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 4: <Grant line 150, col 3 to line 156, col 59 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = { [ prev |-> 0,
+    new |-> 1,
+    kind |-> "grant",
+    by |-> "a",
+    target |-> "w",
+    byLive |-> TRUE,
+    peerLive |-> TRUE ] }
+/\ seating = [a |-> 1, b |-> 1, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+604 states generated, 266 distinct states found, 246 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 18 (minimum is 14, the maximum 23 and the 95th percentile is 23).
+Finished in 05s at (2026-10-04 03:09:24)
+
+=== noseat2 · Ops=2 · Mut=M_NOSEAT · INVARIANT LeaseWithinSeating
+Error: Invariant LeaseWithinSeating is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 2: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 3: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 1, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 4: <Grant line 150, col 3 to line 156, col 59 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = { [ prev |-> 0,
+    new |-> 1,
+    kind |-> "grant",
+    by |-> "a",
+    target |-> "w",
+    byLive |-> TRUE,
+    peerLive |-> TRUE ] }
+/\ seating = [a |-> 1, b |-> 1, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+409 states generated, 197 distinct states found, 180 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 17 (minimum is 14, the maximum 23 and the 95th percentile is 23).
+Finished in 05s at (2026-10-04 03:09:29)
+
+=== widen1 · Ops=2 · Mut=M_WIDEN · INVARIANT SuccessorNeverWidens
+Error: Invariant SuccessorNeverWidens is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 2: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 3: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 1, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 4: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 1, w |-> 1]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 5: <EndRound line 168, col 3 to line 171, col 58 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = { [ inForce |-> TRUE,
+    vouched |-> TRUE,
+    kind |-> "end",
+    by |-> "a",
+    byLive |-> TRUE ] }
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 1, w |-> 1]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 6: <Regrant line 129, col 3 to line 136, col 59 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = { [ inForce |-> TRUE,
+    vouched |-> TRUE,
+    kind |-> "end",
+    by |-> "a",
+    byLive |-> TRUE ] }
+/\ fenced = FALSE
+/\ adds = { [ prev |-> 1,
+    new |-> 2,
+    kind |-> "regrant",
+    by |-> "a",
+    target |-> "w",
+    byLive |-> TRUE,
+    peerLive |-> TRUE ] }
+/\ seating = [a |-> 1, b |-> 1, w |-> 1]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> TRUE,
+        width |-> 2,
+        round |-> 2,
+        root |-> "quorum",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+6754 states generated, 2116 distinct states found, 1862 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 8 (minimum is 0, the maximum 23 and the 95th percentile is 19).
+Finished in 05s at (2026-10-04 03:09:35)
+
+=== widen2 · Ops=2 · Mut=M_WIDEN · INVARIANT LeaseWithinSeating
+Error: Invariant LeaseWithinSeating is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 2: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 3: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 1, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 4: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 1, w |-> 1]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 5: <EndRound line 168, col 3 to line 171, col 58 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = { [ inForce |-> TRUE,
+    vouched |-> TRUE,
+    kind |-> "end",
+    by |-> "a",
+    byLive |-> TRUE ] }
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 1, w |-> 1]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 6: <Regrant line 129, col 3 to line 136, col 59 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = { [ inForce |-> TRUE,
+    vouched |-> TRUE,
+    kind |-> "end",
+    by |-> "a",
+    byLive |-> TRUE ] }
+/\ fenced = FALSE
+/\ adds = { [ prev |-> 1,
+    new |-> 2,
+    kind |-> "regrant",
+    by |-> "a",
+    target |-> "w",
+    byLive |-> TRUE,
+    peerLive |-> TRUE ] }
+/\ seating = [a |-> 1, b |-> 1, w |-> 1]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> TRUE,
+        width |-> 2,
+        round |-> 2,
+        root |-> "quorum",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+5320 states generated, 1735 distinct states found, 1535 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 9 (minimum is 0, the maximum 23 and the 95th percentile is 19).
+Finished in 05s at (2026-10-04 03:09:41)
+
+=== peer1 · Ops=2 · Mut=M_PEER · INVARIANT NoAddWithoutLiveLeaseAndPeer
+Error: Invariant NoAddWithoutLiveLeaseAndPeer is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 2: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 3: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 0, w |-> 2]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> TRUE,
+        width |-> 2,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 4: <Renew line 141, col 3 to line 146, col 59 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = { [ prev |-> 2,
+    new |-> 2,
+    kind |-> "renew",
+    by |-> "a",
+    target |-> "w",
+    byLive |-> TRUE,
+    peerLive |-> FALSE ] }
+/\ seating = [a |-> 1, b |-> 0, w |-> 2]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> TRUE,
+        width |-> 2,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+637 states generated, 263 distinct states found, 241 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 19 (minimum is 14, the maximum 23 and the 95th percentile is 23).
+Finished in 05s at (2026-10-04 03:09:46)
+
+=== peer2 · Ops=2 · Mut=M_PEER · INVARIANT ExpiredOperatorOnlyDenies
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 7.7E-6
+  based on the actual fingerprints:  val = 3.1E-8
+47825721 states generated, 3188900 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 18.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 23 and the 95th percentile is 3).
+Finished in 22s at (2026-10-04 03:10:09)
+
+=== lapsed1 · Ops=2 · Mut=M_LAPSEDADD · INVARIANT ExpiredOperatorOnlyDenies
+Error: Invariant ExpiredOperatorOnlyDenies is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 2: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 1, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 3: <Renew line 141, col 3 to line 146, col 59 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = { [ prev |-> 1,
+    new |-> 1,
+    kind |-> "renew",
+    by |-> "a",
+    target |-> "b",
+    byLive |-> FALSE,
+    peerLive |-> TRUE ] }
+/\ seating = [a |-> 0, b |-> 1, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+481 states generated, 188 distinct states found, 168 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 20 (minimum is 14, the maximum 23 and the 95th percentile is 23).
+Finished in 05s at (2026-10-04 03:10:14)
+
+=== self1 · Ops=2 · Mut=M_SELF · INVARIANT NoSelfRegrant
+Error: Invariant NoSelfRegrant is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 2: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 3: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 1, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 4: <Renew line 141, col 3 to line 146, col 59 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = { [ prev |-> 1,
+    new |-> 1,
+    kind |-> "renew",
+    by |-> "a",
+    target |-> "a",
+    byLive |-> TRUE,
+    peerLive |-> TRUE ] }
+/\ seating = [a |-> 1, b |-> 1, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+411 states generated, 219 distinct states found, 190 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 16 (minimum is 13, the maximum 17 and the 95th percentile is 17).
+Finished in 05s at (2026-10-04 03:10:20)
+
+=== noatt1 · Ops=2 · Mut=M_NOATTEST · INVARIANT OperatorLeaseWasVouched
+Error: Invariant OperatorLeaseWasVouched is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 2: <Unvouch line 198, col 15 to line 199, col 75 of module Operators>
+/\ vouched = [a |-> FALSE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 3: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> FALSE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+3132 states generated, 1073 distinct states found, 960 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 10 (minimum is 2, the maximum 23 and the 95th percentile is 23).
+Finished in 05s at (2026-10-04 03:10:26)
+
+=== stale1 · Ops=2 · Mut=M_STALEKEY · INVARIANT NoDenyOnAStaleKey
+Error: Invariant NoDenyOnAStaleKey is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 2: <Unvouch line 198, col 15 to line 199, col 75 of module Operators>
+/\ vouched = [a |-> FALSE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 3: <Revoke line 174, col 3 to line 178, col 49 of module Operators>
+/\ vouched = [a |-> FALSE, b |-> TRUE]
+/\ stops = { [ inForce |-> TRUE,
+    vouched |-> FALSE,
+    kind |-> "revoke",
+    by |-> "a",
+    byLive |-> FALSE ] }
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> FALSE, b |-> TRUE, w |-> TRUE]
+3798 states generated, 984 distinct states found, 883 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 10 (minimum is 2, the maximum 23 and the 95th percentile is 23).
+Finished in 05s at (2026-10-04 03:10:31)
+
+=== stale2 · Ops=2 · Mut=M_STALEKEY · INVARIANT DenyAlwaysAvailable
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 3.9E-6
+  based on the actual fingerprints:  val = 2.1E-8
+42499377 states generated, 1757188 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 18.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 23 and the 95th percentile is 3).
+Finished in 17s at (2026-10-04 03:10:49)
+
+=== denyl1 · Ops=2 · Mut=M_DENYLEASE · INVARIANT DenyAlwaysAvailable
+Error: Invariant DenyAlwaysAvailable is violated by the initial state:
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+Finished in 05s at (2026-10-04 03:10:55)
+
+=== denyl2 · Ops=2 · Mut=M_DENYLEASE · INVARIANT NoDenyOnAStaleKey
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.8E-7
+  based on the actual fingerprints:  val = 3.3E-9
+6991913 states generated, 830500 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 17.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 23 and the 95th percentile is 3).
+Finished in 08s at (2026-10-04 03:11:04)
+
+=== anon1 · Ops=2 · Mut=M_ANON · INVARIANT EveryStopIsAttributed
+Error: Invariant EveryStopIsAttributed is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 2: <AnonFence line 189, col 3 to line 193, col 50 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = { [ inForce |-> TRUE,
+    vouched |-> TRUE,
+    kind |-> "fence",
+    by |-> "nobody",
+    byLive |-> TRUE ] }
+/\ fenced = TRUE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+508 states generated, 228 distinct states found, 204 states left on queue.
+The depth of the complete state graph search is 5.
+Finished in 05s at (2026-10-04 03:11:10)
+
+=== w1 · Ops=2 · Mut=none · INVARIANT NeverWorkerRegrant
+Error: Invariant NeverWorkerRegrant is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 2: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 3: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 1, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 4: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 1, w |-> 1]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 5: <EndRound line 168, col 3 to line 171, col 58 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = { [ inForce |-> TRUE,
+    vouched |-> TRUE,
+    kind |-> "end",
+    by |-> "a",
+    byLive |-> TRUE ] }
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 1, w |-> 1]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 6: <Regrant line 129, col 3 to line 136, col 59 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = { [ inForce |-> TRUE,
+    vouched |-> TRUE,
+    kind |-> "end",
+    by |-> "a",
+    byLive |-> TRUE ] }
+/\ fenced = FALSE
+/\ adds = { [ prev |-> 1,
+    new |-> 1,
+    kind |-> "regrant",
+    by |-> "a",
+    target |-> "w",
+    byLive |-> TRUE,
+    peerLive |-> TRUE ] }
+/\ seating = [a |-> 1, b |-> 1, w |-> 1]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 2,
+        root |-> "quorum",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+6434 states generated, 2029 distinct states found, 1790 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 9 (minimum is 0, the maximum 23 and the 95th percentile is 19).
+Finished in 05s at (2026-10-04 03:11:15)
+
+=== w2 · Ops=2 · Mut=none · INVARIANT NeverNarrowed
+Error: Invariant NeverNarrowed is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 2: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 3: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 1, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 4: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 1, w |-> 2]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> TRUE,
+        width |-> 2,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 5: <EndRound line 168, col 3 to line 171, col 58 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = { [ inForce |-> TRUE,
+    vouched |-> TRUE,
+    kind |-> "end",
+    by |-> "a",
+    byLive |-> TRUE ] }
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 1, w |-> 2]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 2,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 6: <Regrant line 129, col 3 to line 136, col 59 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = { [ inForce |-> TRUE,
+    vouched |-> TRUE,
+    kind |-> "end",
+    by |-> "a",
+    byLive |-> TRUE ] }
+/\ fenced = FALSE
+/\ adds = { [ prev |-> 2,
+    new |-> 1,
+    kind |-> "regrant",
+    by |-> "a",
+    target |-> "w",
+    byLive |-> TRUE,
+    peerLive |-> TRUE ] }
+/\ seating = [a |-> 1, b |-> 1, w |-> 2]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 2,
+        root |-> "quorum",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+5047 states generated, 1666 distinct states found, 1473 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 9 (minimum is 0, the maximum 23 and the 95th percentile is 19).
+Finished in 05s at (2026-10-04 03:11:21)
+
+=== w3 · Ops=2 · Mut=none · INVARIANT NeverLapsedDeny
+Error: Invariant NeverLapsedDeny is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 2: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 1, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 3: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 1, w |-> 1]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 4: <Revoke line 174, col 3 to line 178, col 49 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = { [ inForce |-> TRUE,
+    vouched |-> TRUE,
+    kind |-> "revoke",
+    by |-> "a",
+    byLive |-> FALSE ] }
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 1, w |-> 1]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> FALSE, b |-> TRUE, w |-> TRUE]
+305 states generated, 120 distinct states found, 100 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 21 (minimum is 19, the maximum 23 and the 95th percentile is 23).
+Finished in 05s at (2026-10-04 03:11:26)
+
+=== w4 · Ops=2 · Mut=none · INVARIANT NeverStaleKey
+Error: Invariant NeverStaleKey is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 2: <Unvouch line 198, col 15 to line 199, col 75 of module Operators>
+/\ vouched = [a |-> FALSE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+478 states generated, 202 distinct states found, 183 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 21 (minimum is 19, the maximum 23 and the 95th percentile is 23).
+Finished in 05s at (2026-10-04 03:11:32)
+
+=== w5 · Ops=2 · Mut=none · INVARIANT NeverPeerless
+Error: Invariant NeverPeerless is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 2: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+2 states generated, 2 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 05s at (2026-10-04 03:11:38)
+
+=== w6 · Ops=2 · Mut=none · INVARIANT NeverRecovered
+Error: Invariant NeverRecovered is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 2: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 0, w |-> 1]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 3: <FenceEpoch line 181, col 3 to line 185, col 50 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = { [ inForce |-> TRUE,
+    vouched |-> TRUE,
+    kind |-> "fence",
+    by |-> "a",
+    byLive |-> FALSE ] }
+/\ fenced = TRUE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 0, w |-> 1]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 4: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = { [ inForce |-> TRUE,
+    vouched |-> TRUE,
+    kind |-> "fence",
+    by |-> "a",
+    byLive |-> FALSE ] }
+/\ fenced = TRUE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 0, w |-> 1]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+2887 states generated, 1055 distinct states found, 937 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 10 (minimum is 2, the maximum 23 and the 95th percentile is 23).
+Finished in 05s at (2026-10-04 03:11:43)
+
+=== w7 · Ops=2 · Mut=none · INVARIANT NeverOperatorRenewed
+Error: Invariant NeverOperatorRenewed is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 2: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 3: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 1, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 4: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 1, w |-> 1]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+State 5: <Renew line 141, col 3 to line 146, col 59 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = { [ prev |-> 1,
+    new |-> 1,
+    kind |-> "renew",
+    by |-> "b",
+    target |-> "a",
+    byLive |-> TRUE,
+    peerLive |-> TRUE ] }
+/\ seating = [a |-> 1, b |-> 1, w |-> 1]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, w |-> TRUE]
+430 states generated, 216 distinct states found, 190 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 16 (minimum is 13, the maximum 17 and the 95th percentile is 17).
+Finished in 05s at (2026-10-04 03:11:49)
+
+=== w8 · Ops=2 · Mut=none · INVARIANT NeverOperatorRegranted
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.4E-6
+  based on the actual fingerprints:  val = 4.7E-9
+19949125 states generated, 1346164 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 17.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 23 and the 95th percentile is 3).
+Finished in 12s at (2026-10-04 03:12:02)
+
+=== w9 · Ops=3 · Mut=none · INVARIANT NeverOperatorRegranted
+Error: Invariant NeverOperatorRegranted is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ vouched = [a |-> TRUE, b |-> TRUE, c |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 0, c |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  c |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, c |-> TRUE, w |-> TRUE]
+State 2: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE, c |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 0, c |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  c |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, c |-> TRUE, w |-> TRUE]
+State 3: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE, c |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 1, c |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  c |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, c |-> TRUE, w |-> TRUE]
+State 4: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE, c |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 1, c |-> 1, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  c |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, c |-> TRUE, w |-> TRUE]
+State 5: <EndRound line 168, col 3 to line 171, col 58 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE, c |-> TRUE]
+/\ stops = { [ inForce |-> TRUE,
+    vouched |-> TRUE,
+    kind |-> "end",
+    by |-> "a",
+    byLive |-> TRUE ] }
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 1, b |-> 1, c |-> 1, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  c |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, c |-> TRUE, w |-> TRUE]
+State 6: <Regrant line 129, col 3 to line 136, col 59 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE, c |-> TRUE]
+/\ stops = { [ inForce |-> TRUE,
+    vouched |-> TRUE,
+    kind |-> "end",
+    by |-> "a",
+    byLive |-> TRUE ] }
+/\ fenced = FALSE
+/\ adds = { [ prev |-> 1,
+    new |-> 1,
+    kind |-> "regrant",
+    by |-> "b",
+    target |-> "a",
+    byLive |-> TRUE,
+    peerLive |-> TRUE ] }
+/\ seating = [a |-> 1, b |-> 1, c |-> 1, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 2,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  c |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, c |-> TRUE, w |-> TRUE]
+5765 states generated, 2215 distinct states found, 2082 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 16 (minimum is 3, the maximum 31 and the 95th percentile is 31).
+Finished in 05s at (2026-10-04 03:12:07)
+
+=== nsv · Ops=2 · Mut=M_NOSEAT · INVARIANT OperatorLeaseWasVouched
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 9.1E-6
+  based on the actual fingerprints:  val = 3.0E-6
+51593349 states generated, 3472436 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 18.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 24 and the 95th percentile is 3).
+Finished in 23s at (2026-10-04 03:12:31)
+
+=== nsv3 · Ops=3 · Mut=M_NOSEAT · INVARIANT OperatorLeaseWasVouched
+Error: Invariant OperatorLeaseWasVouched is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ vouched = [a |-> TRUE, b |-> TRUE, c |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 0, c |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  c |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, c |-> TRUE, w |-> TRUE]
+State 2: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE, c |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 1, c |-> 0, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  c |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, c |-> TRUE, w |-> TRUE]
+State 3: <Seat line 110, col 3 to line 115, col 56 of module Operators>
+/\ vouched = [a |-> TRUE, b |-> TRUE, c |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 1, c |-> 1, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  c |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, c |-> TRUE, w |-> TRUE]
+State 4: <Unvouch line 198, col 15 to line 199, col 75 of module Operators>
+/\ vouched = [a |-> FALSE, b |-> TRUE, c |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = {}
+/\ seating = [a |-> 0, b |-> 1, c |-> 1, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  c |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, c |-> TRUE, w |-> TRUE]
+State 5: <Grant line 150, col 3 to line 156, col 59 of module Operators>
+/\ vouched = [a |-> FALSE, b |-> TRUE, c |-> TRUE]
+/\ stops = {}
+/\ fenced = FALSE
+/\ adds = { [ prev |-> 0,
+    new |-> 1,
+    kind |-> "grant",
+    by |-> "b",
+    target |-> "a",
+    byLive |-> TRUE,
+    peerLive |-> TRUE ] }
+/\ seating = [a |-> 0, b |-> 1, c |-> 1, w |-> 0]
+/\ lease = [ a |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "none",
+        attested |-> FALSE ],
+  b |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  c |->
+      [ live |-> TRUE,
+        width |-> 1,
+        round |-> 1,
+        root |-> "quorum",
+        attested |-> TRUE ],
+  w |->
+      [ live |-> FALSE,
+        width |-> 0,
+        round |-> 0,
+        root |-> "none",
+        attested |-> FALSE ] ]
+/\ inForce = [a |-> TRUE, b |-> TRUE, c |-> TRUE, w |-> TRUE]
+23239 states generated, 6910 distinct states found, 6508 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 16 (minimum is 0, the maximum 31 and the 95th percentile is 31).
+Finished in 05s at (2026-10-04 03:12:37)
+

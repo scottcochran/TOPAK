@@ -1,0 +1,14 @@
+TOPAK — TLAPS certified proof results for FloorRouting.tla: every obligation of FloorRouting_proof.tla, by the route that discharged it
+Modules: FloorRouting.tla (sha256 9d4c0f5e03defc1e) · FloorRouting_proof.tla (sha256 df536eefdb805f08)
+Prover: tlapm 7824dab (binary sha256 e150fb793fb28592) · zenon version 0.8.4 [a268] 2017-11-14 · Isabelle2025 · LS4 for PTL · driver: proof-cert.sh
+Checked SMT route: smt-checked (sha256 bb86642633822ae5) · cvc5 1.4.0 [git b432cd7 on branch HEAD] (sha256 a4ce24a176532209) · ethos (sha256 4eb41c1f1f9fce88) · CPC signature (sha256 633f74115700ad32 over its .eo files)
+An obligation proved by SMT counts only with a proof of false, from the query's own declarations and assertions, that ethos accepted. Z3 is not run. Backend timeouts x1.
+
+Obligations: 36
+  trivial, closed by tlapm with no backend            21
+  SMT, proof accepted by ethos                        12   (12 calls forwarded on an accepted proof; 0 obligations identical to one already proved in this run; evidence digest bfad2dc10089fbfc)
+  Zenon, proof checked by Isabelle                    0
+  Isabelle                                            0
+  LS4, temporal step, NOT certified                   3
+
+All 36 obligations proved. 33 of them rest on tlapm's own normalization or on a checked proof; 3 rest on LS4, whose answer no checker confirms.

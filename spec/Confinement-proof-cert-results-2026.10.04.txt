@@ -1,0 +1,15 @@
+TOPAK — TLAPS certified proof results for Confinement.tla: every obligation of Confinement_proof.tla, by the route that discharged it
+Modules: Confinement.tla (sha256 d0dcf21ce9774885) · Confinement_proof.tla (sha256 2f4b4bb96d1f83f3)
+Prover: tlapm 7824dab (binary sha256 e150fb793fb28592) · zenon version 0.8.4 [a268] 2017-11-14 · Isabelle2025 · LS4 for PTL · driver: proof-cert.sh
+Checked SMT route: smt-checked (sha256 bb86642633822ae5) · cvc5 1.4.0 [git b432cd7 on branch HEAD] (sha256 a4ce24a176532209) · ethos (sha256 4eb41c1f1f9fce88) · CPC signature (sha256 633f74115700ad32 over its .eo files)
+An obligation proved by SMT counts only with a proof of false, from the query's own declarations and assertions, that ethos accepted. Z3 is not run. Backend timeouts x10.
+
+Obligations: 502
+  trivial, closed by tlapm with no backend            337
+  SMT, proof accepted by ethos                        157   (157 calls forwarded on an accepted proof; 0 obligations identical to one already proved in this run; evidence digest c2d70bad2875845c)
+  Zenon, proof checked by Isabelle                    0
+  Isabelle                                            0
+  LS4, temporal step, NOT certified                   5
+  failed / isabelle: 3
+
+NOT CERTIFIED: 3 obligation(s) failed (last backend tried: isabelle).
