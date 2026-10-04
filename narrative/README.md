@@ -14,5 +14,9 @@ two files explain how it fits together and what the words mean.
   suffix).
 - `revisions/` — a closed archive of the dated Theory of Operation files written before the cut (09.10 through
   revision 9), byte-identical moves. Six predate git and have no other home. Nothing is added after the cut.
+- `architecture-description.md` — **a draft, not cut with any checkpoint** (revision 1, 2026.10.03; untagged and
+  unmeasured). An arc42 architecture description written to conform to ISO/IEC/IEEE 42010, with diagrams at C4 levels:
+  an index over the records, the Theory of Operation and the diagrams, with new prose only for the building blocks,
+  the runtime scenarios and the guarantee-to-evidence table. It decides nothing.
 
 Where the narrative and the current checkpoint disagree, the checkpoint wins.

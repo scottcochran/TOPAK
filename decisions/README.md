@@ -57,3 +57,6 @@ resolves a debt) were ratified by one person and await the first post-bootstrap 
 | [ADR-0044](ADR-0044.md) | A bundle is trusted by its signature, not its file name: the bundle key lives in the issued rules | Accepted (genesis); confirmation required: C1 | |
 | [ADR-0045](ADR-0045.md) | The trusted base is declared row by row, and a component enters it only if its failure can only subtract, or its identity is issued | Accepted (genesis); confirmation required: C2, C4 | |
 | [ADR-0046](ADR-0046.md) | The formal layer's method is declared: TLC checks mutations and witnesses at small constants, TLAPS proves the invariants, and the prover is a trusted-base row | Accepted (genesis); confirmation required: C2, C4 | |
+| [ADR-0047](ADR-0047.md) | The Listener labels what it delivers: a label on every item, and a handle in place of what is suppressed | Proposed (drafted 2026.10.03, after G9) | |
+| [ADR-0048](ADR-0048.md) | A Thinker learns its tools from the mechanism: the allowlist entry carries its interface, and the Listener delivers it | Proposed (drafted 2026.10.03, after G9) | |
+| [ADR-0049](ADR-0049.md) | The allowlist entry has one schema: identity, inputs, interface, labels and channel, each marked checked or claimed | Proposed (drafted 2026.10.03, after G9) | |
