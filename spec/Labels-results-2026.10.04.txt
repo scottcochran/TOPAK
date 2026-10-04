@@ -1,0 +1,1745 @@
+TOPAK — Labels.tla: labels on Run's ingress, ADR-0047 (Proposed) ratification condition (§11), run 2026.10.04
+Module: Labels.tla (sha256 cc124f5c406aedac) · TLC Version 2.19 of 08 August 2024 (jar sha256 936a262061c91469) · openjdk version "25.0.1" 2025-10-21
+Runner: labels-gen-results.sh · MaxSeq = 3 · Tools = {fetch: outward, send: outward with a destination, vault: inside, restricted, echo: inside} · Names = {untrusted, restricted}
+
+=== safe · Mut=none · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.8E-9
+  based on the actual fingerprints:  val = 7.6E-10
+400434 states generated, 122694 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 16 and the 95th percentile is 8).
+Finished in 06s at (2026-10-04 19:36:16)
+
+=== grow · Mut=none · PROPERTY ClearSetOnlyGrows
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.8E-9
+  based on the actual fingerprints:  val = 3.1E-10
+400434 states generated, 122694 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 16 and the 95th percentile is 8).
+Finished in 06s at (2026-10-04 19:36:23)
+
+=== lit1 · Mut=M_LITERAL · INVARIANT LabelsCoverTruth
+Error: Invariant LabelsCoverTruth is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ items = {}
+/\ clearSet = {"untrusted"}
+/\ seq = 0
+/\ echoReleases = {}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = TRUE
+/\ guest = {}
+/\ taskLabel = {"untrusted"}
+/\ refused = {}
+/\ effects = {}
+State 2: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> TRUE,
+    secret |-> FALSE,
+    label |-> {},
+    tool |-> "echo",
+    labelled |-> TRUE,
+    mode |-> "clear",
+    rawIn |-> {} ] }
+/\ clearSet = {"untrusted"}
+/\ seq = 1
+/\ echoReleases = {}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = TRUE
+/\ guest = {1}
+/\ taskLabel = {"untrusted"}
+/\ refused = {}
+/\ effects = {}
+252 states generated, 252 distinct states found, 210 states left on queue.
+The depth of the complete state graph search is 2.
+The average outdegree of the complete state graph is 5 (minimum is 5, the maximum 5 and the 95th percentile is 5).
+Finished in 05s at (2026-10-04 19:36:28)
+
+=== lit2 · Mut=M_LITERAL · INVARIANT NoSteeredDestination
+Error: Invariant NoSteeredDestination is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ items = {}
+/\ clearSet = {"untrusted"}
+/\ seq = 0
+/\ echoReleases = {}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = TRUE
+/\ guest = {}
+/\ taskLabel = {"untrusted"}
+/\ refused = {}
+/\ effects = {}
+State 2: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> TRUE,
+    secret |-> FALSE,
+    label |-> {},
+    tool |-> "echo",
+    labelled |-> TRUE,
+    mode |-> "clear",
+    rawIn |-> {} ] }
+/\ clearSet = {"untrusted"}
+/\ seq = 1
+/\ echoReleases = {}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = TRUE
+/\ guest = {1}
+/\ taskLabel = {"untrusted"}
+/\ refused = {}
+/\ effects = {}
+State 3: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> TRUE,
+    secret |-> FALSE,
+    label |-> {},
+    tool |-> "echo",
+    labelled |-> TRUE,
+    mode |-> "clear",
+    rawIn |-> {} ],
+  [ id |-> 2,
+    tainted |-> TRUE,
+    secret |-> FALSE,
+    label |-> {"untrusted"},
+    tool |-> "send",
+    labelled |-> TRUE,
+    mode |-> "clear",
+    rawIn |-> {} ] }
+/\ clearSet = {"untrusted"}
+/\ seq = 2
+/\ echoReleases = {}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = TRUE
+/\ guest = {1, 2}
+/\ taskLabel = {"untrusted"}
+/\ refused = {}
+/\ effects = {[tool |-> "send", by |-> TRUE, steered |-> TRUE, leak |-> FALSE]}
+2035 states generated, 1472 distinct states found, 1217 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 6 (minimum is 1, the maximum 8 and the 95th percentile is 8).
+Finished in 05s at (2026-10-04 19:36:34)
+
+=== join1 · Mut=M_JOIN · INVARIANT ResultLabelCoversInputs
+Error: Invariant ResultLabelCoversInputs is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ items = {}
+/\ clearSet = {}
+/\ seq = 0
+/\ echoReleases = {}
+/\ suppress = {"restricted"}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = FALSE
+/\ guest = {}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {}
+State 2: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> FALSE,
+    secret |-> TRUE,
+    label |-> {"restricted"},
+    tool |-> "vault",
+    labelled |-> TRUE,
+    mode |-> "handle",
+    rawIn |-> {} ] }
+/\ clearSet = {}
+/\ seq = 1
+/\ echoReleases = {}
+/\ suppress = {"restricted"}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = FALSE
+/\ guest = {}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {}
+State 3: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> FALSE,
+    secret |-> TRUE,
+    label |-> {"restricted"},
+    tool |-> "vault",
+    labelled |-> TRUE,
+    mode |-> "handle",
+    rawIn |-> {} ],
+  [ id |-> 2,
+    tainted |-> TRUE,
+    secret |-> TRUE,
+    label |-> {"untrusted"},
+    tool |-> "send",
+    labelled |-> TRUE,
+    mode |-> "clear",
+    rawIn |-> {"restricted"} ] }
+/\ clearSet = {"untrusted"}
+/\ seq = 2
+/\ echoReleases = {}
+/\ suppress = {"restricted"}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = FALSE
+/\ guest = {2}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {[tool |-> "send", by |-> FALSE, steered |-> FALSE, leak |-> TRUE]}
+764 states generated, 692 distinct states found, 560 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 5 (minimum is 4, the maximum 5 and the 95th percentile is 5).
+Finished in 05s at (2026-10-04 19:36:40)
+
+=== join2 · Mut=M_JOIN · INVARIANT LabelsCoverTruth
+Error: Invariant LabelsCoverTruth is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ items = {}
+/\ clearSet = {}
+/\ seq = 0
+/\ echoReleases = {}
+/\ suppress = {"untrusted", "restricted"}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = FALSE
+/\ guest = {}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {}
+State 2: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> FALSE,
+    secret |-> TRUE,
+    label |-> {"restricted"},
+    tool |-> "vault",
+    labelled |-> TRUE,
+    mode |-> "handle",
+    rawIn |-> {} ] }
+/\ clearSet = {}
+/\ seq = 1
+/\ echoReleases = {}
+/\ suppress = {"untrusted", "restricted"}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = FALSE
+/\ guest = {}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {}
+State 3: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> FALSE,
+    secret |-> TRUE,
+    label |-> {"restricted"},
+    tool |-> "vault",
+    labelled |-> TRUE,
+    mode |-> "handle",
+    rawIn |-> {} ],
+  [ id |-> 2,
+    tainted |-> TRUE,
+    secret |-> TRUE,
+    label |-> {"untrusted"},
+    tool |-> "send",
+    labelled |-> TRUE,
+    mode |-> "handle",
+    rawIn |-> {"restricted"} ] }
+/\ clearSet = {}
+/\ seq = 2
+/\ echoReleases = {}
+/\ suppress = {"untrusted", "restricted"}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = FALSE
+/\ guest = {}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {[tool |-> "send", by |-> FALSE, steered |-> FALSE, leak |-> TRUE]}
+764 states generated, 692 distinct states found, 560 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 5 (minimum is 4, the maximum 5 and the 95th percentile is 5).
+Finished in 05s at (2026-10-04 19:36:46)
+
+=== join3 · Mut=M_JOIN · INVARIANT FloorMinimumHolds
+Error: Invariant FloorMinimumHolds is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ items = {}
+/\ clearSet = {}
+/\ seq = 0
+/\ echoReleases = {}
+/\ suppress = {"restricted"}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = TRUE
+/\ guest = {}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {}
+State 2: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> FALSE,
+    secret |-> TRUE,
+    label |-> {"restricted"},
+    tool |-> "vault",
+    labelled |-> TRUE,
+    mode |-> "handle",
+    rawIn |-> {} ] }
+/\ clearSet = {}
+/\ seq = 1
+/\ echoReleases = {}
+/\ suppress = {"restricted"}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = TRUE
+/\ guest = {}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {}
+State 3: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> FALSE,
+    secret |-> TRUE,
+    label |-> {"restricted"},
+    tool |-> "vault",
+    labelled |-> TRUE,
+    mode |-> "handle",
+    rawIn |-> {} ],
+  [ id |-> 2,
+    tainted |-> TRUE,
+    secret |-> TRUE,
+    label |-> {"untrusted"},
+    tool |-> "fetch",
+    labelled |-> TRUE,
+    mode |-> "clear",
+    rawIn |-> {"restricted"} ] }
+/\ clearSet = {"untrusted"}
+/\ seq = 2
+/\ echoReleases = {}
+/\ suppress = {"restricted"}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = TRUE
+/\ guest = {2}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {[tool |-> "fetch", by |-> FALSE, steered |-> FALSE, leak |-> TRUE]}
+State 4: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> FALSE,
+    secret |-> TRUE,
+    label |-> {"restricted"},
+    tool |-> "vault",
+    labelled |-> TRUE,
+    mode |-> "handle",
+    rawIn |-> {} ],
+  [ id |-> 2,
+    tainted |-> TRUE,
+    secret |-> TRUE,
+    label |-> {"untrusted"},
+    tool |-> "fetch",
+    labelled |-> TRUE,
+    mode |-> "clear",
+    rawIn |-> {"restricted"} ],
+  [ id |-> 3,
+    tainted |-> TRUE,
+    secret |-> TRUE,
+    label |-> {"untrusted"},
+    tool |-> "fetch",
+    labelled |-> TRUE,
+    mode |-> "clear",
+    rawIn |-> {} ] }
+/\ clearSet = {"untrusted"}
+/\ seq = 3
+/\ echoReleases = {}
+/\ suppress = {"restricted"}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = TRUE
+/\ guest = {2, 3}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = { [tool |-> "fetch", by |-> FALSE, steered |-> FALSE, leak |-> TRUE],
+  [tool |-> "fetch", by |-> TRUE, steered |-> FALSE, leak |-> TRUE] }
+6247 states generated, 3884 distinct states found, 3220 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 6 (minimum is 0, the maximum 13 and the 95th percentile is 8).
+Finished in 05s at (2026-10-04 19:36:52)
+
+=== load1 · Mut=M_LOAD · INVARIANT NoUnlabelledDelivery
+Error: Invariant NoUnlabelledDelivery is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ items = {}
+/\ clearSet = {}
+/\ seq = 0
+/\ echoReleases = {}
+/\ suppress = {"untrusted"}
+/\ fetchLabel = {}
+/\ fetchDeclared = FALSE
+/\ issued = TRUE
+/\ guest = {}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {}
+State 2: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> TRUE,
+    secret |-> FALSE,
+    label |-> {},
+    tool |-> "fetch",
+    labelled |-> FALSE,
+    mode |-> "clear",
+    rawIn |-> {} ] }
+/\ clearSet = {}
+/\ seq = 1
+/\ echoReleases = {}
+/\ suppress = {"untrusted"}
+/\ fetchLabel = {}
+/\ fetchDeclared = FALSE
+/\ issued = TRUE
+/\ guest = {1}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {[tool |-> "fetch", by |-> FALSE, steered |-> FALSE, leak |-> FALSE]}
+452 states generated, 356 distinct states found, 332 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 05s at (2026-10-04 19:36:57)
+
+=== load2 · Mut=M_LOAD · INVARIANT OutsideResultIsUntrusted
+Error: Invariant OutsideResultIsUntrusted is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ items = {}
+/\ clearSet = {}
+/\ seq = 0
+/\ echoReleases = {"restricted"}
+/\ suppress = {"restricted"}
+/\ fetchLabel = {}
+/\ fetchDeclared = FALSE
+/\ issued = TRUE
+/\ guest = {}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {}
+State 2: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> TRUE,
+    secret |-> FALSE,
+    label |-> {},
+    tool |-> "fetch",
+    labelled |-> FALSE,
+    mode |-> "clear",
+    rawIn |-> {} ] }
+/\ clearSet = {}
+/\ seq = 1
+/\ echoReleases = {"restricted"}
+/\ suppress = {"restricted"}
+/\ fetchLabel = {}
+/\ fetchDeclared = FALSE
+/\ issued = TRUE
+/\ guest = {1}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {[tool |-> "fetch", by |-> FALSE, steered |-> FALSE, leak |-> FALSE]}
+452 states generated, 356 distinct states found, 332 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 05s at (2026-10-04 19:37:03)
+
+=== load3 · Mut=M_LOAD · INVARIANT ReservedReleasedOnlyIfIssued
+Error: Invariant ReservedReleasedOnlyIfIssued is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ items = {}
+/\ clearSet = {}
+/\ seq = 0
+/\ echoReleases = {"restricted"}
+/\ suppress = {"restricted"}
+/\ fetchLabel = {}
+/\ fetchDeclared = FALSE
+/\ issued = FALSE
+/\ guest = {}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {}
+State 2: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> FALSE,
+    secret |-> TRUE,
+    label |-> {"restricted"},
+    tool |-> "vault",
+    labelled |-> TRUE,
+    mode |-> "handle",
+    rawIn |-> {} ] }
+/\ clearSet = {}
+/\ seq = 1
+/\ echoReleases = {"restricted"}
+/\ suppress = {"restricted"}
+/\ fetchLabel = {}
+/\ fetchDeclared = FALSE
+/\ issued = FALSE
+/\ guest = {}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {}
+State 3: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> FALSE,
+    secret |-> TRUE,
+    label |-> {"restricted"},
+    tool |-> "vault",
+    labelled |-> TRUE,
+    mode |-> "handle",
+    rawIn |-> {} ],
+  [ id |-> 2,
+    tainted |-> FALSE,
+    secret |-> TRUE,
+    label |-> {},
+    tool |-> "echo",
+    labelled |-> TRUE,
+    mode |-> "clear",
+    rawIn |-> {"restricted"} ] }
+/\ clearSet = {}
+/\ seq = 2
+/\ echoReleases = {"restricted"}
+/\ suppress = {"restricted"}
+/\ fetchLabel = {}
+/\ fetchDeclared = FALSE
+/\ issued = FALSE
+/\ guest = {2}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {}
+2438 states generated, 2141 distinct states found, 1774 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 5 (minimum is 4, the maximum 7 and the 95th percentile is 5).
+Finished in 05s at (2026-10-04 19:37:08)
+
+=== load4 · Mut=M_LOAD · INVARIANT FloorMinimumHolds
+Error: Invariant FloorMinimumHolds is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ items = {}
+/\ clearSet = {}
+/\ seq = 0
+/\ echoReleases = {}
+/\ suppress = {"untrusted"}
+/\ fetchLabel = {}
+/\ fetchDeclared = FALSE
+/\ issued = TRUE
+/\ guest = {}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {}
+State 2: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> TRUE,
+    secret |-> FALSE,
+    label |-> {},
+    tool |-> "fetch",
+    labelled |-> FALSE,
+    mode |-> "clear",
+    rawIn |-> {} ] }
+/\ clearSet = {}
+/\ seq = 1
+/\ echoReleases = {}
+/\ suppress = {"untrusted"}
+/\ fetchLabel = {}
+/\ fetchDeclared = FALSE
+/\ issued = TRUE
+/\ guest = {1}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {[tool |-> "fetch", by |-> FALSE, steered |-> FALSE, leak |-> FALSE]}
+State 3: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> TRUE,
+    secret |-> FALSE,
+    label |-> {},
+    tool |-> "fetch",
+    labelled |-> FALSE,
+    mode |-> "clear",
+    rawIn |-> {} ],
+  [ id |-> 2,
+    tainted |-> TRUE,
+    secret |-> FALSE,
+    label |-> {"untrusted"},
+    tool |-> "send",
+    labelled |-> TRUE,
+    mode |-> "handle",
+    rawIn |-> {} ] }
+/\ clearSet = {}
+/\ seq = 2
+/\ echoReleases = {}
+/\ suppress = {"untrusted"}
+/\ fetchLabel = {}
+/\ fetchDeclared = FALSE
+/\ issued = TRUE
+/\ guest = {1}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = { [tool |-> "fetch", by |-> FALSE, steered |-> FALSE, leak |-> FALSE],
+  [tool |-> "send", by |-> TRUE, steered |-> TRUE, leak |-> FALSE] }
+2364 states generated, 2124 distinct states found, 1753 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 5 (minimum is 4, the maximum 8 and the 95th percentile is 5).
+Finished in 05s at (2026-10-04 19:37:14)
+
+=== reset1 · Mut=M_RESET · PROPERTY ClearSetOnlyGrows
+Error: Action property ClearSetOnlyGrows is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ items = {}
+/\ clearSet = {"untrusted"}
+/\ seq = 0
+/\ echoReleases = {}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = FALSE
+/\ guest = {}
+/\ taskLabel = {"untrusted"}
+/\ refused = {}
+/\ effects = {}
+State 2: <Consult line 168, col 3 to line 173, col 48 of module Labels>
+/\ items = { [ id |-> 4,
+    tainted |-> FALSE,
+    secret |-> FALSE,
+    label |-> {},
+    tool |-> "root",
+    labelled |-> TRUE,
+    mode |-> "clear",
+    rawIn |-> {} ] }
+/\ clearSet = {}
+/\ seq = 0
+/\ echoReleases = {}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = FALSE
+/\ guest = {4}
+/\ taskLabel = {"untrusted"}
+/\ refused = {}
+/\ effects = {}
+224 states generated, 224 distinct states found, 184 states left on queue.
+The depth of the complete state graph search is 2.
+The average outdegree of the complete state graph is 5 (minimum is 5, the maximum 5 and the 95th percentile is 5).
+Finished in 05s at (2026-10-04 19:37:20)
+
+=== reset2 · Mut=M_RESET · INVARIANT ClearSetCoversGuest
+Error: Invariant ClearSetCoversGuest is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ items = {}
+/\ clearSet = {}
+/\ seq = 0
+/\ echoReleases = {}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = FALSE
+/\ guest = {}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {}
+State 2: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> FALSE,
+    secret |-> TRUE,
+    label |-> {"restricted"},
+    tool |-> "vault",
+    labelled |-> TRUE,
+    mode |-> "clear",
+    rawIn |-> {} ] }
+/\ clearSet = {"restricted"}
+/\ seq = 1
+/\ echoReleases = {}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = FALSE
+/\ guest = {1}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {}
+State 3: <Consult line 168, col 3 to line 173, col 48 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> FALSE,
+    secret |-> TRUE,
+    label |-> {"restricted"},
+    tool |-> "vault",
+    labelled |-> TRUE,
+    mode |-> "clear",
+    rawIn |-> {} ],
+  [ id |-> 4,
+    tainted |-> FALSE,
+    secret |-> FALSE,
+    label |-> {},
+    tool |-> "root",
+    labelled |-> TRUE,
+    mode |-> "clear",
+    rawIn |-> {} ] }
+/\ clearSet = {}
+/\ seq = 1
+/\ echoReleases = {}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = FALSE
+/\ guest = {1, 4}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {}
+781 states generated, 697 distinct states found, 566 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 5 (minimum is 4, the maximum 8 and the 95th percentile is 7).
+Finished in 05s at (2026-10-04 19:37:26)
+
+=== reset3 · Mut=M_RESET · INVARIANT FloorMinimumHolds
+Error: Invariant FloorMinimumHolds is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ items = {}
+/\ clearSet = {"untrusted"}
+/\ seq = 0
+/\ echoReleases = {"restricted"}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = TRUE
+/\ guest = {}
+/\ taskLabel = {"untrusted"}
+/\ refused = {}
+/\ effects = {}
+State 2: <Consult line 168, col 3 to line 173, col 48 of module Labels>
+/\ items = { [ id |-> 4,
+    tainted |-> FALSE,
+    secret |-> FALSE,
+    label |-> {},
+    tool |-> "root",
+    labelled |-> TRUE,
+    mode |-> "clear",
+    rawIn |-> {} ] }
+/\ clearSet = {}
+/\ seq = 0
+/\ echoReleases = {"restricted"}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = TRUE
+/\ guest = {4}
+/\ taskLabel = {"untrusted"}
+/\ refused = {}
+/\ effects = {}
+State 3: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> TRUE,
+    secret |-> FALSE,
+    label |-> {"untrusted"},
+    tool |-> "send",
+    labelled |-> TRUE,
+    mode |-> "clear",
+    rawIn |-> {} ],
+  [ id |-> 4,
+    tainted |-> FALSE,
+    secret |-> FALSE,
+    label |-> {},
+    tool |-> "root",
+    labelled |-> TRUE,
+    mode |-> "clear",
+    rawIn |-> {} ] }
+/\ clearSet = {"untrusted"}
+/\ seq = 1
+/\ echoReleases = {"restricted"}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = TRUE
+/\ guest = {1, 4}
+/\ taskLabel = {"untrusted"}
+/\ refused = {}
+/\ effects = {[tool |-> "send", by |-> TRUE, steered |-> TRUE, leak |-> FALSE]}
+1736 states generated, 1330 distinct states found, 1096 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 6 (minimum is 4, the maximum 8 and the 95th percentile is 8).
+Finished in 05s at (2026-10-04 19:37:31)
+
+=== del1 · Mut=M_DELIVER · INVARIANT SuppressedNeverInGuest
+Error: Invariant SuppressedNeverInGuest is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ items = {}
+/\ clearSet = {}
+/\ seq = 0
+/\ echoReleases = {}
+/\ suppress = {"restricted"}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = FALSE
+/\ guest = {}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {}
+State 2: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> FALSE,
+    secret |-> TRUE,
+    label |-> {"restricted"},
+    tool |-> "vault",
+    labelled |-> TRUE,
+    mode |-> "handle",
+    rawIn |-> {} ] }
+/\ clearSet = {}
+/\ seq = 1
+/\ echoReleases = {}
+/\ suppress = {"restricted"}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = FALSE
+/\ guest = {1}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {}
+132 states generated, 132 distinct states found, 111 states left on queue.
+The depth of the complete state graph search is 2.
+The average outdegree of the complete state graph is 5 (minimum is 5, the maximum 5 and the 95th percentile is 5).
+Finished in 05s at (2026-10-04 19:37:37)
+
+=== del2 · Mut=M_DELIVER · INVARIANT FloorMinimumHolds
+Error: Invariant FloorMinimumHolds is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ items = {}
+/\ clearSet = {}
+/\ seq = 0
+/\ echoReleases = {"restricted"}
+/\ suppress = {"untrusted"}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = TRUE
+/\ guest = {}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {}
+State 2: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> TRUE,
+    secret |-> FALSE,
+    label |-> {"untrusted"},
+    tool |-> "fetch",
+    labelled |-> TRUE,
+    mode |-> "handle",
+    rawIn |-> {} ] }
+/\ clearSet = {}
+/\ seq = 1
+/\ echoReleases = {"restricted"}
+/\ suppress = {"untrusted"}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = TRUE
+/\ guest = {1}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {[tool |-> "fetch", by |-> FALSE, steered |-> FALSE, leak |-> FALSE]}
+State 3: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> TRUE,
+    secret |-> FALSE,
+    label |-> {"untrusted"},
+    tool |-> "fetch",
+    labelled |-> TRUE,
+    mode |-> "handle",
+    rawIn |-> {} ],
+  [ id |-> 2,
+    tainted |-> TRUE,
+    secret |-> FALSE,
+    label |-> {"untrusted"},
+    tool |-> "send",
+    labelled |-> TRUE,
+    mode |-> "handle",
+    rawIn |-> {} ] }
+/\ clearSet = {}
+/\ seq = 2
+/\ echoReleases = {"restricted"}
+/\ suppress = {"untrusted"}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = TRUE
+/\ guest = {1, 2}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = { [tool |-> "fetch", by |-> FALSE, steered |-> FALSE, leak |-> FALSE],
+  [tool |-> "send", by |-> TRUE, steered |-> TRUE, leak |-> FALSE] }
+994 states generated, 823 distinct states found, 675 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 5 (minimum is 4, the maximum 7 and the 95th percentile is 7).
+Finished in 05s at (2026-10-04 19:37:43)
+
+=== f1a · Mut=M_F1 · INVARIANT NoReadThenSend
+Error: Invariant NoReadThenSend is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ items = {}
+/\ clearSet = {"untrusted", "restricted"}
+/\ seq = 0
+/\ echoReleases = {}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = FALSE
+/\ guest = {}
+/\ taskLabel = {"untrusted", "restricted"}
+/\ refused = {}
+/\ effects = {}
+State 2: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> TRUE,
+    secret |-> TRUE,
+    label |-> {"untrusted", "restricted"},
+    tool |-> "fetch",
+    labelled |-> TRUE,
+    mode |-> "clear",
+    rawIn |-> {} ] }
+/\ clearSet = {"untrusted", "restricted"}
+/\ seq = 1
+/\ echoReleases = {}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = FALSE
+/\ guest = {1}
+/\ taskLabel = {"untrusted", "restricted"}
+/\ refused = {}
+/\ effects = {[tool |-> "fetch", by |-> TRUE, steered |-> FALSE, leak |-> TRUE]}
+486 states generated, 486 distinct states found, 394 states left on queue.
+The depth of the complete state graph search is 2.
+The average outdegree of the complete state graph is 5 (minimum is 5, the maximum 5 and the 95th percentile is 5).
+Finished in 05s at (2026-10-04 19:37:48)
+
+=== f1b · Mut=M_F1 · INVARIANT NoSteeredDestination
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 3.9E-9
+  based on the actual fingerprints:  val = 8.6E-9
+545322 states generated, 225572 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 16 and the 95th percentile is 10).
+Finished in 06s at (2026-10-04 19:37:55)
+
+=== f2a · Mut=M_F2 · INVARIANT NoSteeredDestination
+Error: Invariant NoSteeredDestination is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ items = {}
+/\ clearSet = {"untrusted"}
+/\ seq = 0
+/\ echoReleases = {}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = FALSE
+/\ guest = {}
+/\ taskLabel = {"untrusted"}
+/\ refused = {}
+/\ effects = {}
+State 2: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> TRUE,
+    secret |-> FALSE,
+    label |-> {"untrusted"},
+    tool |-> "send",
+    labelled |-> TRUE,
+    mode |-> "clear",
+    rawIn |-> {} ] }
+/\ clearSet = {"untrusted"}
+/\ seq = 1
+/\ echoReleases = {}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = FALSE
+/\ guest = {1}
+/\ taskLabel = {"untrusted"}
+/\ refused = {}
+/\ effects = {[tool |-> "send", by |-> TRUE, steered |-> TRUE, leak |-> FALSE]}
+256 states generated, 256 distinct states found, 216 states left on queue.
+The depth of the complete state graph search is 2.
+The average outdegree of the complete state graph is 5 (minimum is 5, the maximum 5 and the 95th percentile is 5).
+Finished in 05s at (2026-10-04 19:38:01)
+
+=== f2b · Mut=M_F2 · INVARIANT NoReadThenSend
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.2E-9
+  based on the actual fingerprints:  val = 2.4E-10
+311841 states generated, 106046 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 16 and the 95th percentile is 9).
+Finished in 06s at (2026-10-04 19:38:07)
+
+=== f3a · Mut=M_F3 · INVARIANT NoSteeredDestination
+Error: Invariant NoSteeredDestination is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ items = {}
+/\ clearSet = {}
+/\ seq = 0
+/\ echoReleases = {"restricted"}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = TRUE
+/\ guest = {}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {}
+State 2: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> TRUE,
+    secret |-> FALSE,
+    label |-> {"untrusted"},
+    tool |-> "fetch",
+    labelled |-> TRUE,
+    mode |-> "clear",
+    rawIn |-> {} ] }
+/\ clearSet = {"untrusted"}
+/\ seq = 1
+/\ echoReleases = {"restricted"}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = TRUE
+/\ guest = {1}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {[tool |-> "fetch", by |-> FALSE, steered |-> FALSE, leak |-> FALSE]}
+State 3: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> TRUE,
+    secret |-> FALSE,
+    label |-> {"untrusted"},
+    tool |-> "fetch",
+    labelled |-> TRUE,
+    mode |-> "clear",
+    rawIn |-> {} ],
+  [ id |-> 2,
+    tainted |-> TRUE,
+    secret |-> FALSE,
+    label |-> {"untrusted"},
+    tool |-> "send",
+    labelled |-> TRUE,
+    mode |-> "clear",
+    rawIn |-> {"untrusted"} ] }
+/\ clearSet = {"untrusted"}
+/\ seq = 2
+/\ echoReleases = {"restricted"}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = TRUE
+/\ guest = {1, 2}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = { [tool |-> "fetch", by |-> FALSE, steered |-> FALSE, leak |-> FALSE],
+  [tool |-> "send", by |-> TRUE, steered |-> TRUE, leak |-> FALSE] }
+936 states generated, 792 distinct states found, 642 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 5 (minimum is 4, the maximum 7 and the 95th percentile is 7).
+Finished in 05s at (2026-10-04 19:38:13)
+
+=== f3b · Mut=M_F3 · INVARIANT NoReadThenSend
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 7.4E-10
+  based on the actual fingerprints:  val = 2.7E-10
+250652 states generated, 78994 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 19 and the 95th percentile is 8).
+Finished in 05s at (2026-10-04 19:38:19)
+
+=== lit3 · Mut=M_LITERAL · INVARIANT NoReadThenSend
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.4E-9
+  based on the actual fingerprints:  val = 1.9E-9
+356483 states generated, 106870 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 16 and the 95th percentile is 8).
+Finished in 06s at (2026-10-04 19:38:26)
+
+=== lit4 · Mut=M_LITERAL · INVARIANT ResultLabelCoversInputs
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.4E-9
+  based on the actual fingerprints:  val = 1.1E-9
+356483 states generated, 106870 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 16 and the 95th percentile is 8).
+Finished in 06s at (2026-10-04 19:38:32)
+
+=== w1 · Mut=none · INVARIANT NeverOutwardEffect
+Error: Invariant NeverOutwardEffect is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ items = {}
+/\ clearSet = {}
+/\ seq = 0
+/\ echoReleases = {"restricted"}
+/\ suppress = {"untrusted"}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = TRUE
+/\ guest = {}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {}
+State 2: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> TRUE,
+    secret |-> FALSE,
+    label |-> {"untrusted"},
+    tool |-> "fetch",
+    labelled |-> TRUE,
+    mode |-> "handle",
+    rawIn |-> {} ] }
+/\ clearSet = {}
+/\ seq = 1
+/\ echoReleases = {"restricted"}
+/\ suppress = {"untrusted"}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = TRUE
+/\ guest = {}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {[tool |-> "fetch", by |-> FALSE, steered |-> FALSE, leak |-> FALSE]}
+132 states generated, 132 distinct states found, 108 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 05s at (2026-10-04 19:38:38)
+
+=== w2 · Mut=none · INVARIANT NeverTaintedOutward
+Error: Invariant NeverTaintedOutward is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ items = {}
+/\ clearSet = {"untrusted"}
+/\ seq = 0
+/\ echoReleases = {}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = FALSE
+/\ guest = {}
+/\ taskLabel = {"untrusted"}
+/\ refused = {}
+/\ effects = {}
+State 2: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> TRUE,
+    secret |-> FALSE,
+    label |-> {"untrusted"},
+    tool |-> "fetch",
+    labelled |-> TRUE,
+    mode |-> "clear",
+    rawIn |-> {} ] }
+/\ clearSet = {"untrusted"}
+/\ seq = 1
+/\ echoReleases = {}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = FALSE
+/\ guest = {1}
+/\ taskLabel = {"untrusted"}
+/\ refused = {}
+/\ effects = {[tool |-> "fetch", by |-> TRUE, steered |-> FALSE, leak |-> FALSE]}
+249 states generated, 249 distinct states found, 203 states left on queue.
+The depth of the complete state graph search is 2.
+The average outdegree of the complete state graph is 5 (minimum is 5, the maximum 5 and the 95th percentile is 5).
+Finished in 05s at (2026-10-04 19:38:44)
+
+=== w3 · Mut=none · INVARIANT NeverF1
+Error: Invariant NeverF1 is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ items = {}
+/\ clearSet = {"untrusted", "restricted"}
+/\ seq = 0
+/\ echoReleases = {}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = FALSE
+/\ guest = {}
+/\ taskLabel = {"untrusted", "restricted"}
+/\ refused = {}
+/\ effects = {}
+State 2: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = {}
+/\ clearSet = {"untrusted", "restricted"}
+/\ seq = 0
+/\ echoReleases = {}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = FALSE
+/\ guest = {}
+/\ taskLabel = {"untrusted", "restricted"}
+/\ refused = {"F1"}
+/\ effects = {}
+480 states generated, 480 distinct states found, 392 states left on queue.
+The depth of the complete state graph search is 2.
+The average outdegree of the complete state graph is 5 (minimum is 5, the maximum 5 and the 95th percentile is 5).
+Finished in 05s at (2026-10-04 19:38:49)
+
+=== w4 · Mut=none · INVARIANT NeverF2
+Error: Invariant NeverF2 is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ items = {}
+/\ clearSet = {"untrusted"}
+/\ seq = 0
+/\ echoReleases = {}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = TRUE
+/\ guest = {}
+/\ taskLabel = {"untrusted"}
+/\ refused = {}
+/\ effects = {}
+State 2: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = {}
+/\ clearSet = {"untrusted"}
+/\ seq = 0
+/\ echoReleases = {}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = TRUE
+/\ guest = {}
+/\ taskLabel = {"untrusted"}
+/\ refused = {"F2"}
+/\ effects = {}
+276 states generated, 276 distinct states found, 228 states left on queue.
+The depth of the complete state graph search is 2.
+The average outdegree of the complete state graph is 5 (minimum is 5, the maximum 5 and the 95th percentile is 5).
+Finished in 05s at (2026-10-04 19:38:55)
+
+=== w5 · Mut=none · INVARIANT NeverF3
+Error: Invariant NeverF3 is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ items = {}
+/\ clearSet = {}
+/\ seq = 0
+/\ echoReleases = {}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = FALSE
+/\ guest = {}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {}
+State 2: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> TRUE,
+    secret |-> FALSE,
+    label |-> {"untrusted"},
+    tool |-> "fetch",
+    labelled |-> TRUE,
+    mode |-> "clear",
+    rawIn |-> {} ] }
+/\ clearSet = {"untrusted"}
+/\ seq = 1
+/\ echoReleases = {}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = FALSE
+/\ guest = {1}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {[tool |-> "fetch", by |-> FALSE, steered |-> FALSE, leak |-> FALSE]}
+State 3: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> TRUE,
+    secret |-> FALSE,
+    label |-> {"untrusted"},
+    tool |-> "fetch",
+    labelled |-> TRUE,
+    mode |-> "clear",
+    rawIn |-> {} ] }
+/\ clearSet = {"untrusted"}
+/\ seq = 1
+/\ echoReleases = {}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = FALSE
+/\ guest = {1}
+/\ taskLabel = {}
+/\ refused = {"F3"}
+/\ effects = {[tool |-> "fetch", by |-> FALSE, steered |-> FALSE, leak |-> FALSE]}
+912 states generated, 772 distinct states found, 630 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 5 (minimum is 4, the maximum 7 and the 95th percentile is 7).
+Finished in 05s at (2026-10-04 19:39:01)
+
+=== w6 · Mut=none · INVARIANT NeverSuppressed
+Error: Invariant NeverSuppressed is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ items = {}
+/\ clearSet = {}
+/\ seq = 0
+/\ echoReleases = {}
+/\ suppress = {"restricted"}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = FALSE
+/\ guest = {}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {}
+State 2: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> FALSE,
+    secret |-> TRUE,
+    label |-> {"restricted"},
+    tool |-> "vault",
+    labelled |-> TRUE,
+    mode |-> "handle",
+    rawIn |-> {} ] }
+/\ clearSet = {}
+/\ seq = 1
+/\ echoReleases = {}
+/\ suppress = {"restricted"}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = FALSE
+/\ guest = {}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {}
+132 states generated, 132 distinct states found, 111 states left on queue.
+The depth of the complete state graph search is 2.
+The average outdegree of the complete state graph is 5 (minimum is 5, the maximum 5 and the 95th percentile is 5).
+Finished in 05s at (2026-10-04 19:39:06)
+
+=== w7 · Mut=none · INVARIANT NeverHandleInput
+Error: Invariant NeverHandleInput is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ items = {}
+/\ clearSet = {}
+/\ seq = 0
+/\ echoReleases = {}
+/\ suppress = {"restricted"}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = TRUE
+/\ guest = {}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {}
+State 2: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> FALSE,
+    secret |-> TRUE,
+    label |-> {"restricted"},
+    tool |-> "vault",
+    labelled |-> TRUE,
+    mode |-> "handle",
+    rawIn |-> {} ] }
+/\ clearSet = {}
+/\ seq = 1
+/\ echoReleases = {}
+/\ suppress = {"restricted"}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = TRUE
+/\ guest = {}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {}
+State 3: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> FALSE,
+    secret |-> TRUE,
+    label |-> {"restricted"},
+    tool |-> "vault",
+    labelled |-> TRUE,
+    mode |-> "handle",
+    rawIn |-> {} ],
+  [ id |-> 2,
+    tainted |-> TRUE,
+    secret |-> TRUE,
+    label |-> {"untrusted", "restricted"},
+    tool |-> "send",
+    labelled |-> TRUE,
+    mode |-> "handle",
+    rawIn |-> {"restricted"} ] }
+/\ clearSet = {}
+/\ seq = 2
+/\ echoReleases = {}
+/\ suppress = {"restricted"}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = TRUE
+/\ guest = {}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {[tool |-> "send", by |-> FALSE, steered |-> FALSE, leak |-> TRUE]}
+758 states generated, 686 distinct states found, 554 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 5 (minimum is 4, the maximum 5 and the 95th percentile is 5).
+Finished in 05s at (2026-10-04 19:39:12)
+
+=== w8 · Mut=none · INVARIANT NeverCleanLeak
+Error: Invariant NeverCleanLeak is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ items = {}
+/\ clearSet = {"restricted"}
+/\ seq = 0
+/\ echoReleases = {}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = FALSE
+/\ guest = {}
+/\ taskLabel = {"restricted"}
+/\ refused = {}
+/\ effects = {}
+State 2: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> TRUE,
+    secret |-> TRUE,
+    label |-> {"untrusted", "restricted"},
+    tool |-> "fetch",
+    labelled |-> TRUE,
+    mode |-> "clear",
+    rawIn |-> {} ] }
+/\ clearSet = {"untrusted", "restricted"}
+/\ seq = 1
+/\ echoReleases = {}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = FALSE
+/\ guest = {1}
+/\ taskLabel = {"restricted"}
+/\ refused = {}
+/\ effects = {[tool |-> "fetch", by |-> FALSE, steered |-> FALSE, leak |-> TRUE]}
+369 states generated, 369 distinct states found, 299 states left on queue.
+The depth of the complete state graph search is 2.
+The average outdegree of the complete state graph is 5 (minimum is 5, the maximum 5 and the 95th percentile is 5).
+Finished in 05s at (2026-10-04 19:39:18)
+
+=== w9 · Mut=none · INVARIANT NeverReleased
+Error: Invariant NeverReleased is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ items = {}
+/\ clearSet = {}
+/\ seq = 0
+/\ echoReleases = {"restricted"}
+/\ suppress = {"untrusted", "restricted"}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = TRUE
+/\ guest = {}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {}
+State 2: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> FALSE,
+    secret |-> TRUE,
+    label |-> {"restricted"},
+    tool |-> "vault",
+    labelled |-> TRUE,
+    mode |-> "handle",
+    rawIn |-> {} ] }
+/\ clearSet = {}
+/\ seq = 1
+/\ echoReleases = {"restricted"}
+/\ suppress = {"untrusted", "restricted"}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = TRUE
+/\ guest = {}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {}
+State 3: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> FALSE,
+    secret |-> TRUE,
+    label |-> {"restricted"},
+    tool |-> "vault",
+    labelled |-> TRUE,
+    mode |-> "handle",
+    rawIn |-> {} ],
+  [ id |-> 2,
+    tainted |-> FALSE,
+    secret |-> FALSE,
+    label |-> {},
+    tool |-> "echo",
+    labelled |-> TRUE,
+    mode |-> "clear",
+    rawIn |-> {"restricted"} ] }
+/\ clearSet = {}
+/\ seq = 2
+/\ echoReleases = {"restricted"}
+/\ suppress = {"untrusted", "restricted"}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = TRUE
+/\ guest = {2}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {}
+906 states generated, 777 distinct states found, 642 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 5 (minimum is 4, the maximum 8 and the 95th percentile is 7).
+Finished in 05s at (2026-10-04 19:39:23)
+
+=== load5 · Mut=M_LOAD · INVARIANT LabelsCoverTruth
+Error: Invariant LabelsCoverTruth is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ items = {}
+/\ clearSet = {}
+/\ seq = 0
+/\ echoReleases = {}
+/\ suppress = {"untrusted"}
+/\ fetchLabel = {}
+/\ fetchDeclared = FALSE
+/\ issued = FALSE
+/\ guest = {}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {}
+State 2: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> TRUE,
+    secret |-> FALSE,
+    label |-> {},
+    tool |-> "fetch",
+    labelled |-> FALSE,
+    mode |-> "clear",
+    rawIn |-> {} ] }
+/\ clearSet = {}
+/\ seq = 1
+/\ echoReleases = {}
+/\ suppress = {"untrusted"}
+/\ fetchLabel = {}
+/\ fetchDeclared = FALSE
+/\ issued = FALSE
+/\ guest = {1}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {[tool |-> "fetch", by |-> FALSE, steered |-> FALSE, leak |-> FALSE]}
+452 states generated, 356 distinct states found, 332 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 05s at (2026-10-04 19:39:29)
+
+=== reset4 · Mut=M_RESET · INVARIANT LabelsCoverTruth
+Error: Invariant LabelsCoverTruth is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ items = {}
+/\ clearSet = {"untrusted"}
+/\ seq = 0
+/\ echoReleases = {}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = FALSE
+/\ guest = {}
+/\ taskLabel = {"untrusted"}
+/\ refused = {}
+/\ effects = {}
+State 2: <Consult line 168, col 3 to line 173, col 48 of module Labels>
+/\ items = { [ id |-> 4,
+    tainted |-> FALSE,
+    secret |-> FALSE,
+    label |-> {},
+    tool |-> "root",
+    labelled |-> TRUE,
+    mode |-> "clear",
+    rawIn |-> {} ] }
+/\ clearSet = {}
+/\ seq = 0
+/\ echoReleases = {}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = FALSE
+/\ guest = {4}
+/\ taskLabel = {"untrusted"}
+/\ refused = {}
+/\ effects = {}
+State 3: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> TRUE,
+    secret |-> FALSE,
+    label |-> {},
+    tool |-> "echo",
+    labelled |-> TRUE,
+    mode |-> "clear",
+    rawIn |-> {} ],
+  [ id |-> 4,
+    tainted |-> FALSE,
+    secret |-> FALSE,
+    label |-> {},
+    tool |-> "root",
+    labelled |-> TRUE,
+    mode |-> "clear",
+    rawIn |-> {} ] }
+/\ clearSet = {}
+/\ seq = 1
+/\ echoReleases = {}
+/\ suppress = {}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = FALSE
+/\ guest = {1, 4}
+/\ taskLabel = {"untrusted"}
+/\ refused = {}
+/\ effects = {}
+1777 states generated, 1360 distinct states found, 1125 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 6 (minimum is 4, the maximum 8 and the 95th percentile is 8).
+Finished in 05s at (2026-10-04 19:39:35)
+
+=== del3 · Mut=M_DELIVER · INVARIANT ClearSetCoversGuest
+Error: Invariant ClearSetCoversGuest is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ items = {}
+/\ clearSet = {}
+/\ seq = 0
+/\ echoReleases = {}
+/\ suppress = {"restricted"}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = FALSE
+/\ guest = {}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {}
+State 2: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> FALSE,
+    secret |-> TRUE,
+    label |-> {"restricted"},
+    tool |-> "vault",
+    labelled |-> TRUE,
+    mode |-> "handle",
+    rawIn |-> {} ] }
+/\ clearSet = {}
+/\ seq = 1
+/\ echoReleases = {}
+/\ suppress = {"restricted"}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = FALSE
+/\ guest = {1}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {}
+132 states generated, 132 distinct states found, 111 states left on queue.
+The depth of the complete state graph search is 2.
+The average outdegree of the complete state graph is 5 (minimum is 5, the maximum 5 and the 95th percentile is 5).
+Finished in 05s at (2026-10-04 19:39:40)
+
+=== del4 · Mut=M_DELIVER · INVARIANT LabelsCoverTruth
+Error: Invariant LabelsCoverTruth is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ items = {}
+/\ clearSet = {}
+/\ seq = 0
+/\ echoReleases = {}
+/\ suppress = {"untrusted", "restricted"}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = TRUE
+/\ guest = {}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {}
+State 2: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> FALSE,
+    secret |-> TRUE,
+    label |-> {"restricted"},
+    tool |-> "vault",
+    labelled |-> TRUE,
+    mode |-> "handle",
+    rawIn |-> {} ] }
+/\ clearSet = {}
+/\ seq = 1
+/\ echoReleases = {}
+/\ suppress = {"untrusted", "restricted"}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = TRUE
+/\ guest = {1}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {}
+State 3: <Actuate line 177, col 3 to line 210, col 47 of module Labels>
+/\ items = { [ id |-> 1,
+    tainted |-> FALSE,
+    secret |-> TRUE,
+    label |-> {"restricted"},
+    tool |-> "vault",
+    labelled |-> TRUE,
+    mode |-> "handle",
+    rawIn |-> {} ],
+  [ id |-> 2,
+    tainted |-> TRUE,
+    secret |-> TRUE,
+    label |-> {"untrusted"},
+    tool |-> "fetch",
+    labelled |-> TRUE,
+    mode |-> "handle",
+    rawIn |-> {} ] }
+/\ clearSet = {}
+/\ seq = 2
+/\ echoReleases = {}
+/\ suppress = {"untrusted", "restricted"}
+/\ fetchLabel = {"untrusted"}
+/\ fetchDeclared = TRUE
+/\ issued = TRUE
+/\ guest = {1, 2}
+/\ taskLabel = {}
+/\ refused = {}
+/\ effects = {[tool |-> "fetch", by |-> FALSE, steered |-> FALSE, leak |-> TRUE]}
+804 states generated, 702 distinct states found, 567 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 5 (minimum is 4, the maximum 7 and the 95th percentile is 7).
+Finished in 05s at (2026-10-04 19:39:46)
+

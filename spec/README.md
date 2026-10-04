@@ -26,7 +26,7 @@ hand-assembled TLC output with a dated name and never change; the two generators
 | `ToolList.tla` | ADR-0048 §8 (Proposed) | `toollist-run.sh`; `toollist-gen-results.sh` with a row list | `ToolList-results-2026.10.04.txt` | ADR-0048 |
 | `Operators.tla` | ADR-0050 §10 (Proposed) | `operators-run.sh`; `operators-gen-results.sh` with a row list | `Operators-results-2026.10.04.txt` | ADR-0050 |
 | `Correlator.tla` | ADR-0051 §10 (Proposed) | `correlator-run.sh`; `correlator-gen-results.sh` with a row list | `Correlator-results-2026.10.04.txt` | ADR-0051 |
-| `Labels.tla` | ADR-0047 §11 (Proposed) | `labels-run.sh`; `labels-gen-results.sh` with a row list | `Labels-results-2026.10.03.txt` | ADR-0047 |
+| `Labels.tla` | ADR-0047 §11 (Proposed) | `labels-run.sh`; `labels-gen-results.sh` with a row list | `Labels-results-2026.10.03.txt`, `-2026.10.04.txt` | ADR-0047 |
 | `FloorComposition.tla`, `Coupling.tla`, `RunCoupling.tla` | ADR-0046 §5 (the premise-table corrections) | `premise-corrections-results.sh` | `premise-corrections-results-2026.10.02.txt` | ADR-0046 |
 | `Mechanism.tla` | ADR-0045 T-0045-28; ADR-0033 A5 | `mechanism-trace-run.sh` on traces the reference records; `mechanism-trace-results.sh` regenerates the file; `trace2tla.py` converts | `Mechanism-trace-results-2026.09.30.txt`, `-2026.10.01.txt` | Pinned, not frozen: the operational model moves with the code |
 
@@ -72,6 +72,7 @@ The `1.6.0-pre` release tag is rebuilt by its upstream: on 2026.10.03 both asset
 | `RunSeats_proof.tla` | `RunSeats.tla` | ADR-0043 §8 | `OnlyThinkersActuate`, `ObserversConsultAndReport`, `NoNameCrossesDomains` | none | `RunSeats-proof-results-2026.10.02.txt` |
 | `Coupling_proof.tla` | `Coupling.tla` | ADR-0039 §8 | `NoAdmitWithoutLiveObserver`, `UnreadBounded`, `CorrelatorNeverGates`, for every K, R and MaxRound | `K, R, MaxRound ∈ Nat` | `Coupling-proof-results-2026.10.02.txt` |
 | `RunCoupling_proof.tla` | `RunCoupling.tla` | ADR-0042 §8; ADR-0041 §2 | all five, including the `ENABLED` invariant `ConsultNeverCoupled`, for every K, R and MaxRound | `K, R, MaxRound ∈ Nat` | `RunCoupling-proof-results-2026.10.02.txt` |
+| `Labels_proof.tla` | `Labels.tla` | ADR-0047 §11 (Proposed) | all ten, the floor's minimum (`NoReadThenSend`, `NoSteeredDestination`) among them, and the step property `ClearSetOnlyGrows`, for every `MaxSeq` | `MaxSeq ∈ Nat` | `Labels-proof-results-2026.10.04.txt` |
 | `ToolList_proof.tla` | `ToolList.tla` | ADR-0048 §8 (Proposed) | all five: `ToolListIsExact`, `ToldMatchesDecided`, `ListFixedForRound`, `OpeningRecordFirst`, `OpenedListIsTold` | none | `ToolList-proof-results-2026.10.04.txt` |
 | `Operators_proof.tla` | `Operators.tla` | ADR-0050 §10 (Proposed) | all twelve, including the `ENABLED` invariant `DenyAlwaysAvailable`, for every set of operators and every round bound | none | `Operators-proof-results-2026.10.04.txt` |
 | `Correlator_proof.tla` | `Correlator.tla` | ADR-0051 §10 (Proposed) | all eight, including the `ENABLED` invariant `LagNeverGates`, for every set of Thinkers, shared targets and correlators and every bound | none | `Correlator-proof-results-2026.10.04.txt` |
