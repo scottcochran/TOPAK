@@ -15,7 +15,7 @@ resolves a debt) were ratified by one person and await the first post-bootstrap 
 | [ADR-0002](ADR-0002.md) | Apply the membrane in `Build` as well: `Build(Contain) → Run(Contain)` | Accepted (genesis) | |
 | [ADR-0003](ADR-0003.md) | Topic per principal per round, sealed on emit, as the unit of erasure | Accepted (genesis); confirmation required: C1, for A2 only | |
 | [ADR-0004](ADR-0004.md) | Separate control-plane facts from cognitive payloads | Accepted (genesis) | |
-| [ADR-0005](ADR-0005.md) | Kafka is neither the ordering authority nor the system of record | Proposed | |
+| [ADR-0005](ADR-0005.md) | Kafka is neither the ordering authority nor the system of record | Accepted (genesis), Batch 27, 2026.10.04, after G9; confirmation required: C4 | |
 | [ADR-0006](ADR-0006.md) | Erasure is a privileged, modeled, consensus-ordered event | Accepted (genesis); confirmation required: C1, C4 via 0013 | |
 | [ADR-0007](ADR-0007.md) | Semantic judgment is never a lift | Accepted (genesis) | |
 | [ADR-0008](ADR-0008.md) | Observer replicas are not colocated with the Thinker | Superseded | ADR-0038 |

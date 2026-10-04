@@ -29,7 +29,7 @@ provisional twice over.
 | ADR-0030 floor on a verified evaluator, monotone composition | Accepted (genesis), Batch 6 · **confirmation required (C1)** | Cedar floor, `admit ⟺ floor_permit ∧ ¬bundle_deny`, error-as-deny, the linked floor, S enforced per request |
 | ADR-0031 lease schema | Accepted (genesis), Batch 5 · **confirmation required (C1)** | Twelve lease fields, one live lease, monotone renewal with the bundle fixed, targeted revocation and the epoch fence |
 | ADR-0003 A1, A2 | Accepted (genesis), Batch 5 · A2 **confirmation required (C1)** | Chain id in topic names (I17); the round's `after` companion for denials after the seal (I23) |
-| ADR-0005 Kafka is transport only | **Proposed** | Kafka carries emissions after commit; order comes from the log |
+| ADR-0005 Kafka is transport only | Accepted (Batch 27, 2026.10.04) | Kafka carries emissions after commit; order comes from the log |
 | ADR-0015 effects are boundary crossings | Accepted · **confirmation required (C2)** | Every effect has an `Admit` predecessor in the log; denials are not ordered |
 | ADR-0013, ADR-0028 exceptions and forensic floor | Accepted · **confirmation required (C1)** | X1/X2 and F1–F6 as floor entries (via the draft floor); `break_glass` flag on F5 admits |
 | ADR-0022 §6 confinement | **Proposed** (the rest is Accepted) | Nothing is enforced; every lease is rung 0 |
@@ -120,7 +120,7 @@ G8 is T-0045-13 excluded; G9 is T-0045-7.
 | **G12** | **Observer, quarantine gate, correlator** | None. Veto seats are ordinary seats voting through MCP | Deny-only findings have no producer |
 | **G13** | **Persona attestation** (ADR-0016 §6) | For an operator grant, `persona` is an operator-supplied digest. For a launch, it is the profile's, and the appraisal (the launcher's at rung 1, the measurement at rung 3) must name the same digest | Silent substitution is undetected for granted principals; for launched ones it is what the rung detects, and what the digest covers (prompt, decoder, weights) is the guest's build |
 | **G14** | **Log compaction and snapshots** | None: the log, `chosen` map, dedupe set and WAL grow without bound | Fine for a baseline, not for a service |
-| **G15** | **Vector clock / per-principal ordering** (ADR-0005) | `topak-seq` header: per-lease emission sequence number, plus the admit's log index | Covers the ADR-0015 residual as that record suggests; nothing more |
+| **G15** | **Vector clock / per-principal ordering** (ADR-0005; since its R1, 2026.10.04, no vector clock is owed: §2 names this stand-in as the design, and what stays open is a sequence number on denials) | `topak-seq` header: per-lease emission sequence number, plus the admit's log index | Covers the ADR-0015 residual as that record suggests; nothing more |
 | **G16** | **Floor fitness** (MEASURE 2.13) | None | The floor is well-formed and non-vacuous; nothing says it is the right floor |
 | **G17** | **Re-genesis migration** | Chain id in topic names only | No inherited forensic read access |
 | **G18** | **ADR-0024 A2.2, an independent veto seat leased for the round** | Nothing. The tally checks coverage (A2.3) and not independence, because no independence table exists in the reference (ADR-0035 §4 is unbuilt) | A promotion completes with a correlated veto seat; the independence half of the veto-seat-outage discharge is declared and not enforced |
