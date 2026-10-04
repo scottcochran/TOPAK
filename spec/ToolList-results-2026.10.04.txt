@@ -1,0 +1,694 @@
+TOPAK — ToolList.tla: the tool list, ADR-0048 (Proposed) ratification condition (§8), run 2026.10.04
+Module: ToolList.tla (sha256 7c0a18b897e6cb98) · TLC Version 2.19 of 08 August 2024 (jar sha256 936a262061c91469) · openjdk version "25.0.1" 2025-10-21
+Runner: toollist-gen-results.sh · Tools = {t1, t2, t3} · revision 1 allows {t1, t2}, revision 2 allows {t2, t3} · one principal
+
+=== safe · Mut=none · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.6E-14
+3603 states generated, 514 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 10.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 9 and the 95th percentile is 4).
+Finished in 05s at (2026-10-04 16:45:19)
+
+=== rc1 · Mut=M_RECOMPUTE · INVARIANT ToolListIsExact
+Error: Invariant ToolListIsExact is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ refused = {}
+/\ told = {}
+/\ opened = FALSE
+/\ toldAtGrant = {}
+/\ openList = {}
+/\ actsBeforeOpen = FALSE
+/\ latest = 1
+/\ admitted = {}
+/\ lease = [live |-> FALSE, rev |-> 1, narrow |-> {}]
+State 2: <Grant line 84, col 3 to line 92, col 21 of module ToolList>
+/\ refused = {}
+/\ told = {"t1"}
+/\ opened = TRUE
+/\ toldAtGrant = {"t1"}
+/\ openList = {"t1"}
+/\ actsBeforeOpen = FALSE
+/\ latest = 1
+/\ admitted = {}
+/\ lease = [live |-> TRUE, rev |-> 1, narrow |-> {"t1"}]
+State 3: <Promote line 102, col 3 to line 105, col 90 of module ToolList>
+/\ refused = {}
+/\ told = {}
+/\ opened = TRUE
+/\ toldAtGrant = {"t1"}
+/\ openList = {"t1"}
+/\ actsBeforeOpen = FALSE
+/\ latest = 2
+/\ admitted = {}
+/\ lease = [live |-> TRUE, rev |-> 1, narrow |-> {"t1"}]
+185 states generated, 75 distinct states found, 33 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 9 and the 95th percentile is 8).
+Finished in 05s at (2026-10-04 16:45:24)
+
+=== rc2 · Mut=M_RECOMPUTE · INVARIANT ToldMatchesDecided
+Error: Invariant ToldMatchesDecided is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ refused = {}
+/\ told = {}
+/\ opened = FALSE
+/\ toldAtGrant = {}
+/\ openList = {}
+/\ actsBeforeOpen = FALSE
+/\ latest = 1
+/\ admitted = {}
+/\ lease = [live |-> FALSE, rev |-> 1, narrow |-> {}]
+State 2: <Grant line 84, col 3 to line 92, col 21 of module ToolList>
+/\ refused = {}
+/\ told = {"t1"}
+/\ opened = TRUE
+/\ toldAtGrant = {"t1"}
+/\ openList = {"t1"}
+/\ actsBeforeOpen = FALSE
+/\ latest = 1
+/\ admitted = {}
+/\ lease = [live |-> TRUE, rev |-> 1, narrow |-> {"t1"}]
+State 3: <Promote line 102, col 3 to line 105, col 90 of module ToolList>
+/\ refused = {}
+/\ told = {}
+/\ opened = TRUE
+/\ toldAtGrant = {"t1"}
+/\ openList = {"t1"}
+/\ actsBeforeOpen = FALSE
+/\ latest = 2
+/\ admitted = {}
+/\ lease = [live |-> TRUE, rev |-> 1, narrow |-> {"t1"}]
+State 4: <Call line 112, col 3 to line 119, col 69 of module ToolList>
+/\ refused = {}
+/\ told = {}
+/\ opened = TRUE
+/\ toldAtGrant = {"t1"}
+/\ openList = {"t1"}
+/\ actsBeforeOpen = FALSE
+/\ latest = 2
+/\ admitted = {[tool |-> "t1", wasTold |-> FALSE]}
+/\ lease = [live |-> TRUE, rev |-> 1, narrow |-> {"t1"}]
+313 states generated, 142 distinct states found, 80 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 9 and the 95th percentile is 5).
+Finished in 05s at (2026-10-04 16:45:30)
+
+=== rc3 · Mut=M_RECOMPUTE · INVARIANT ListFixedForRound
+Error: Invariant ListFixedForRound is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ refused = {}
+/\ told = {}
+/\ opened = FALSE
+/\ toldAtGrant = {}
+/\ openList = {}
+/\ actsBeforeOpen = FALSE
+/\ latest = 1
+/\ admitted = {}
+/\ lease = [live |-> FALSE, rev |-> 1, narrow |-> {}]
+State 2: <Grant line 84, col 3 to line 92, col 21 of module ToolList>
+/\ refused = {}
+/\ told = {"t1"}
+/\ opened = TRUE
+/\ toldAtGrant = {"t1"}
+/\ openList = {"t1"}
+/\ actsBeforeOpen = FALSE
+/\ latest = 1
+/\ admitted = {}
+/\ lease = [live |-> TRUE, rev |-> 1, narrow |-> {"t1"}]
+State 3: <Promote line 102, col 3 to line 105, col 90 of module ToolList>
+/\ refused = {}
+/\ told = {}
+/\ opened = TRUE
+/\ toldAtGrant = {"t1"}
+/\ openList = {"t1"}
+/\ actsBeforeOpen = FALSE
+/\ latest = 2
+/\ admitted = {}
+/\ lease = [live |-> TRUE, rev |-> 1, narrow |-> {"t1"}]
+220 states generated, 76 distinct states found, 33 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 9 and the 95th percentile is 8).
+Finished in 05s at (2026-10-04 16:45:35)
+
+=== rc4 · Mut=M_RECOMPUTE · INVARIANT OpenedListIsTold
+Error: Invariant OpenedListIsTold is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ refused = {}
+/\ told = {}
+/\ opened = FALSE
+/\ toldAtGrant = {}
+/\ openList = {}
+/\ actsBeforeOpen = FALSE
+/\ latest = 1
+/\ admitted = {}
+/\ lease = [live |-> FALSE, rev |-> 1, narrow |-> {}]
+State 2: <Grant line 84, col 3 to line 92, col 21 of module ToolList>
+/\ refused = {}
+/\ told = {"t1"}
+/\ opened = TRUE
+/\ toldAtGrant = {"t1"}
+/\ openList = {"t1"}
+/\ actsBeforeOpen = FALSE
+/\ latest = 1
+/\ admitted = {}
+/\ lease = [live |-> TRUE, rev |-> 1, narrow |-> {"t1"}]
+State 3: <Promote line 102, col 3 to line 105, col 90 of module ToolList>
+/\ refused = {}
+/\ told = {}
+/\ opened = TRUE
+/\ toldAtGrant = {"t1"}
+/\ openList = {"t1"}
+/\ actsBeforeOpen = FALSE
+/\ latest = 2
+/\ admitted = {}
+/\ lease = [live |-> TRUE, rev |-> 1, narrow |-> {"t1"}]
+286 states generated, 81 distinct states found, 26 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 9 and the 95th percentile is 5).
+Finished in 05s at (2026-10-04 16:45:41)
+
+=== rc5 · Mut=M_RECOMPUTE · INVARIANT OpeningRecordFirst
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 10.0E-13
+12691 states generated, 1666 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 14.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 9 and the 95th percentile is 3).
+Finished in 05s at (2026-10-04 16:45:47)
+
+=== wd1 · Mut=M_WIDE · INVARIANT ToolListIsExact
+Error: Invariant ToolListIsExact is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ refused = {}
+/\ told = {}
+/\ opened = FALSE
+/\ toldAtGrant = {}
+/\ openList = {}
+/\ actsBeforeOpen = FALSE
+/\ latest = 1
+/\ admitted = {}
+/\ lease = [live |-> FALSE, rev |-> 1, narrow |-> {}]
+State 2: <Grant line 84, col 3 to line 92, col 21 of module ToolList>
+/\ refused = {}
+/\ told = {"t1", "t2"}
+/\ opened = TRUE
+/\ toldAtGrant = {"t1", "t2"}
+/\ openList = {"t1", "t2"}
+/\ actsBeforeOpen = FALSE
+/\ latest = 1
+/\ admitted = {}
+/\ lease = [live |-> TRUE, rev |-> 1, narrow |-> {}]
+2 states generated, 2 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 05s at (2026-10-04 16:45:52)
+
+=== wd2 · Mut=M_WIDE · INVARIANT ToldMatchesDecided
+Error: Invariant ToldMatchesDecided is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ refused = {}
+/\ told = {}
+/\ opened = FALSE
+/\ toldAtGrant = {}
+/\ openList = {}
+/\ actsBeforeOpen = FALSE
+/\ latest = 1
+/\ admitted = {}
+/\ lease = [live |-> FALSE, rev |-> 1, narrow |-> {}]
+State 2: <Grant line 84, col 3 to line 92, col 21 of module ToolList>
+/\ refused = {}
+/\ told = {"t1", "t2"}
+/\ opened = TRUE
+/\ toldAtGrant = {"t1", "t2"}
+/\ openList = {"t1", "t2"}
+/\ actsBeforeOpen = FALSE
+/\ latest = 1
+/\ admitted = {}
+/\ lease = [live |-> TRUE, rev |-> 1, narrow |-> {}]
+State 3: <Call line 112, col 3 to line 119, col 69 of module ToolList>
+/\ refused = {[tool |-> "t1", wasTold |-> TRUE]}
+/\ told = {"t1", "t2"}
+/\ opened = TRUE
+/\ toldAtGrant = {"t1", "t2"}
+/\ openList = {"t1", "t2"}
+/\ actsBeforeOpen = FALSE
+/\ latest = 1
+/\ admitted = {}
+/\ lease = [live |-> TRUE, rev |-> 1, narrow |-> {}]
+54 states generated, 43 distinct states found, 15 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 5 (minimum is 3, the maximum 9 and the 95th percentile is 9).
+Finished in 05s at (2026-10-04 16:45:58)
+
+=== wd3 · Mut=M_WIDE · INVARIANT ListFixedForRound
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.6E-14
+3603 states generated, 514 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 10.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 9 and the 95th percentile is 4).
+Finished in 05s at (2026-10-04 16:46:03)
+
+=== wd4 · Mut=M_WIDE · INVARIANT OpenedListIsTold
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.6E-14
+3603 states generated, 514 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 9 and the 95th percentile is 4).
+Finished in 05s at (2026-10-04 16:46:09)
+
+=== wd5 · Mut=M_WIDE · INVARIANT OpeningRecordFirst
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.6E-14
+3603 states generated, 514 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 10.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 9 and the 95th percentile is 4).
+Finished in 05s at (2026-10-04 16:46:15)
+
+=== dl1 · Mut=M_DECIDELATEST · INVARIANT ToldMatchesDecided
+Error: Invariant ToldMatchesDecided is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ refused = {}
+/\ told = {}
+/\ opened = FALSE
+/\ toldAtGrant = {}
+/\ openList = {}
+/\ actsBeforeOpen = FALSE
+/\ latest = 1
+/\ admitted = {}
+/\ lease = [live |-> FALSE, rev |-> 1, narrow |-> {}]
+State 2: <Grant line 84, col 3 to line 92, col 21 of module ToolList>
+/\ refused = {}
+/\ told = {"t1"}
+/\ opened = TRUE
+/\ toldAtGrant = {"t1"}
+/\ openList = {"t1"}
+/\ actsBeforeOpen = FALSE
+/\ latest = 1
+/\ admitted = {}
+/\ lease = [live |-> TRUE, rev |-> 1, narrow |-> {"t1"}]
+State 3: <Promote line 102, col 3 to line 105, col 90 of module ToolList>
+/\ refused = {}
+/\ told = {"t1"}
+/\ opened = TRUE
+/\ toldAtGrant = {"t1"}
+/\ openList = {"t1"}
+/\ actsBeforeOpen = FALSE
+/\ latest = 2
+/\ admitted = {}
+/\ lease = [live |-> TRUE, rev |-> 1, narrow |-> {"t1"}]
+State 4: <Call line 112, col 3 to line 119, col 69 of module ToolList>
+/\ refused = {[tool |-> "t1", wasTold |-> TRUE]}
+/\ told = {"t1"}
+/\ opened = TRUE
+/\ toldAtGrant = {"t1"}
+/\ openList = {"t1"}
+/\ actsBeforeOpen = FALSE
+/\ latest = 2
+/\ admitted = {}
+/\ lease = [live |-> TRUE, rev |-> 1, narrow |-> {"t1"}]
+325 states generated, 141 distinct states found, 75 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 9 and the 95th percentile is 5).
+Finished in 05s at (2026-10-04 16:46:20)
+
+=== dl2 · Mut=M_DECIDELATEST · INVARIANT ToolListIsExact
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 4.3E-13
+8083 states generated, 1154 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 13.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 9 and the 95th percentile is 3).
+Finished in 05s at (2026-10-04 16:46:26)
+
+=== dl3 · Mut=M_DECIDELATEST · INVARIANT ListFixedForRound
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 4.3E-13
+8083 states generated, 1154 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 13.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 9 and the 95th percentile is 3).
+Finished in 05s at (2026-10-04 16:46:31)
+
+=== dl4 · Mut=M_DECIDELATEST · INVARIANT OpenedListIsTold
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 4.3E-13
+8083 states generated, 1154 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 13.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 9 and the 95th percentile is 4).
+Finished in 05s at (2026-10-04 16:46:37)
+
+=== dl5 · Mut=M_DECIDELATEST · INVARIANT OpeningRecordFirst
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 4.3E-13
+8083 states generated, 1154 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 13.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 9 and the 95th percentile is 4).
+Finished in 05s at (2026-10-04 16:46:43)
+
+=== lt1 · Mut=M_LATE · INVARIANT OpeningRecordFirst
+Error: Invariant OpeningRecordFirst is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ refused = {}
+/\ told = {}
+/\ opened = FALSE
+/\ toldAtGrant = {}
+/\ openList = {}
+/\ actsBeforeOpen = FALSE
+/\ latest = 1
+/\ admitted = {}
+/\ lease = [live |-> FALSE, rev |-> 1, narrow |-> {}]
+State 2: <Grant line 84, col 3 to line 92, col 21 of module ToolList>
+/\ refused = {}
+/\ told = {"t1"}
+/\ opened = FALSE
+/\ toldAtGrant = {"t1"}
+/\ openList = {}
+/\ actsBeforeOpen = FALSE
+/\ latest = 1
+/\ admitted = {}
+/\ lease = [live |-> TRUE, rev |-> 1, narrow |-> {"t1"}]
+State 3: <Call line 112, col 3 to line 119, col 69 of module ToolList>
+/\ refused = {}
+/\ told = {"t1"}
+/\ opened = FALSE
+/\ toldAtGrant = {"t1"}
+/\ openList = {}
+/\ actsBeforeOpen = TRUE
+/\ latest = 1
+/\ admitted = {[tool |-> "t1", wasTold |-> TRUE]}
+/\ lease = [live |-> TRUE, rev |-> 1, narrow |-> {"t1"}]
+184 states generated, 87 distinct states found, 44 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 8 and the 95th percentile is 8).
+Finished in 05s at (2026-10-04 16:46:48)
+
+=== lt2 · Mut=M_LATE · INVARIANT ToolListIsExact
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 5.2E-13
+8993 states generated, 1248 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 11.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 8 and the 95th percentile is 4).
+Finished in 05s at (2026-10-04 16:46:54)
+
+=== lt3 · Mut=M_LATE · INVARIANT ToldMatchesDecided
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 5.2E-13
+8993 states generated, 1248 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 11.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 8 and the 95th percentile is 4).
+Finished in 05s at (2026-10-04 16:47:00)
+
+=== lt4 · Mut=M_LATE · INVARIANT ListFixedForRound
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 5.2E-13
+8993 states generated, 1248 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 12.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 8 and the 95th percentile is 4).
+Finished in 05s at (2026-10-04 16:47:05)
+
+=== lt5 · Mut=M_LATE · INVARIANT OpenedListIsTold
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 5.2E-13
+8993 states generated, 1248 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 11.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 8 and the 95th percentile is 4).
+Finished in 05s at (2026-10-04 16:47:11)
+
+=== w1 · Mut=none · INVARIANT NeverPromotedMidRound
+Error: Invariant NeverPromotedMidRound is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ refused = {}
+/\ told = {}
+/\ opened = FALSE
+/\ toldAtGrant = {}
+/\ openList = {}
+/\ actsBeforeOpen = FALSE
+/\ latest = 1
+/\ admitted = {}
+/\ lease = [live |-> FALSE, rev |-> 1, narrow |-> {}]
+State 2: <Grant line 84, col 3 to line 92, col 21 of module ToolList>
+/\ refused = {}
+/\ told = {}
+/\ opened = TRUE
+/\ toldAtGrant = {}
+/\ openList = {}
+/\ actsBeforeOpen = FALSE
+/\ latest = 1
+/\ admitted = {}
+/\ lease = [live |-> TRUE, rev |-> 1, narrow |-> {}]
+State 3: <Promote line 102, col 3 to line 105, col 90 of module ToolList>
+/\ refused = {}
+/\ told = {}
+/\ opened = TRUE
+/\ toldAtGrant = {}
+/\ openList = {}
+/\ actsBeforeOpen = FALSE
+/\ latest = 2
+/\ admitted = {}
+/\ lease = [live |-> TRUE, rev |-> 1, narrow |-> {}]
+31 states generated, 30 distinct states found, 4 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 9 (minimum is 8, the maximum 9 and the 95th percentile is 9).
+Finished in 05s at (2026-10-04 16:47:16)
+
+=== w2 · Mut=none · INVARIANT NeverNarrowed
+Error: Invariant NeverNarrowed is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ refused = {}
+/\ told = {}
+/\ opened = FALSE
+/\ toldAtGrant = {}
+/\ openList = {}
+/\ actsBeforeOpen = FALSE
+/\ latest = 1
+/\ admitted = {}
+/\ lease = [live |-> FALSE, rev |-> 1, narrow |-> {}]
+State 2: <Grant line 84, col 3 to line 92, col 21 of module ToolList>
+/\ refused = {}
+/\ told = {}
+/\ opened = TRUE
+/\ toldAtGrant = {}
+/\ openList = {}
+/\ actsBeforeOpen = FALSE
+/\ latest = 1
+/\ admitted = {}
+/\ lease = [live |-> TRUE, rev |-> 1, narrow |-> {}]
+2 states generated, 2 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 05s at (2026-10-04 16:47:22)
+
+=== w3 · Mut=none · INVARIANT NeverAdmitted
+Error: Invariant NeverAdmitted is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ refused = {}
+/\ told = {}
+/\ opened = FALSE
+/\ toldAtGrant = {}
+/\ openList = {}
+/\ actsBeforeOpen = FALSE
+/\ latest = 1
+/\ admitted = {}
+/\ lease = [live |-> FALSE, rev |-> 1, narrow |-> {}]
+State 2: <Grant line 84, col 3 to line 92, col 21 of module ToolList>
+/\ refused = {}
+/\ told = {"t1"}
+/\ opened = TRUE
+/\ toldAtGrant = {"t1"}
+/\ openList = {"t1"}
+/\ actsBeforeOpen = FALSE
+/\ latest = 1
+/\ admitted = {}
+/\ lease = [live |-> TRUE, rev |-> 1, narrow |-> {"t1"}]
+State 3: <Call line 112, col 3 to line 119, col 69 of module ToolList>
+/\ refused = {}
+/\ told = {"t1"}
+/\ opened = TRUE
+/\ toldAtGrant = {"t1"}
+/\ openList = {"t1"}
+/\ actsBeforeOpen = FALSE
+/\ latest = 1
+/\ admitted = {[tool |-> "t1", wasTold |-> TRUE]}
+/\ lease = [live |-> TRUE, rev |-> 1, narrow |-> {"t1"}]
+155 states generated, 79 distinct states found, 37 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 9 and the 95th percentile is 8).
+Finished in 05s at (2026-10-04 16:47:28)
+
+=== w4 · Mut=none · INVARIANT NeverRefused
+Error: Invariant NeverRefused is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ refused = {}
+/\ told = {}
+/\ opened = FALSE
+/\ toldAtGrant = {}
+/\ openList = {}
+/\ actsBeforeOpen = FALSE
+/\ latest = 1
+/\ admitted = {}
+/\ lease = [live |-> FALSE, rev |-> 1, narrow |-> {}]
+State 2: <Grant line 84, col 3 to line 92, col 21 of module ToolList>
+/\ refused = {}
+/\ told = {}
+/\ opened = TRUE
+/\ toldAtGrant = {}
+/\ openList = {}
+/\ actsBeforeOpen = FALSE
+/\ latest = 1
+/\ admitted = {}
+/\ lease = [live |-> TRUE, rev |-> 1, narrow |-> {}]
+State 3: <Call line 112, col 3 to line 119, col 69 of module ToolList>
+/\ refused = {[tool |-> "t1", wasTold |-> FALSE]}
+/\ told = {}
+/\ opened = TRUE
+/\ toldAtGrant = {}
+/\ openList = {}
+/\ actsBeforeOpen = FALSE
+/\ latest = 1
+/\ admitted = {}
+/\ lease = [live |-> TRUE, rev |-> 1, narrow |-> {}]
+41 states generated, 33 distinct states found, 8 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 9 (minimum is 9, the maximum 9 and the 95th percentile is 9).
+Finished in 05s at (2026-10-04 16:47:33)
+
+=== w5 · Mut=none · INVARIANT NeverNewList
+Error: Invariant NeverNewList is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ refused = {}
+/\ told = {}
+/\ opened = FALSE
+/\ toldAtGrant = {}
+/\ openList = {}
+/\ actsBeforeOpen = FALSE
+/\ latest = 1
+/\ admitted = {}
+/\ lease = [live |-> FALSE, rev |-> 1, narrow |-> {}]
+State 2: <Grant line 84, col 3 to line 92, col 21 of module ToolList>
+/\ refused = {}
+/\ told = {}
+/\ opened = TRUE
+/\ toldAtGrant = {}
+/\ openList = {}
+/\ actsBeforeOpen = FALSE
+/\ latest = 1
+/\ admitted = {}
+/\ lease = [live |-> TRUE, rev |-> 1, narrow |-> {}]
+State 3: <Promote line 102, col 3 to line 105, col 90 of module ToolList>
+/\ refused = {}
+/\ told = {}
+/\ opened = TRUE
+/\ toldAtGrant = {}
+/\ openList = {}
+/\ actsBeforeOpen = FALSE
+/\ latest = 2
+/\ admitted = {}
+/\ lease = [live |-> TRUE, rev |-> 1, narrow |-> {}]
+State 4: <Call line 112, col 3 to line 119, col 69 of module ToolList>
+/\ refused = {[tool |-> "t1", wasTold |-> FALSE]}
+/\ told = {}
+/\ opened = TRUE
+/\ toldAtGrant = {}
+/\ openList = {}
+/\ actsBeforeOpen = FALSE
+/\ latest = 2
+/\ admitted = {}
+/\ lease = [live |-> TRUE, rev |-> 1, narrow |-> {}]
+State 5: <EndRound line 122, col 3 to line 124, col 97 of module ToolList>
+/\ refused = {[tool |-> "t1", wasTold |-> FALSE]}
+/\ told = {}
+/\ opened = TRUE
+/\ toldAtGrant = {}
+/\ openList = {}
+/\ actsBeforeOpen = FALSE
+/\ latest = 2
+/\ admitted = {}
+/\ lease = [live |-> FALSE, rev |-> 1, narrow |-> {}]
+State 6: <Grant line 84, col 3 to line 92, col 21 of module ToolList>
+/\ refused = {}
+/\ told = {"t3"}
+/\ opened = TRUE
+/\ toldAtGrant = {"t3"}
+/\ openList = {"t3"}
+/\ actsBeforeOpen = FALSE
+/\ latest = 2
+/\ admitted = {}
+/\ lease = [live |-> TRUE, rev |-> 2, narrow |-> {"t3"}]
+480 states generated, 174 distinct states found, 88 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 9 and the 95th percentile is 5).
+Finished in 05s at (2026-10-04 16:47:39)
+
+=== w6 · Mut=none · INVARIANT NeverRefusedNewTool
+Error: Invariant NeverRefusedNewTool is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ refused = {}
+/\ told = {}
+/\ opened = FALSE
+/\ toldAtGrant = {}
+/\ openList = {}
+/\ actsBeforeOpen = FALSE
+/\ latest = 1
+/\ admitted = {}
+/\ lease = [live |-> FALSE, rev |-> 1, narrow |-> {}]
+State 2: <Grant line 84, col 3 to line 92, col 21 of module ToolList>
+/\ refused = {}
+/\ told = {}
+/\ opened = TRUE
+/\ toldAtGrant = {}
+/\ openList = {}
+/\ actsBeforeOpen = FALSE
+/\ latest = 1
+/\ admitted = {}
+/\ lease = [live |-> TRUE, rev |-> 1, narrow |-> {}]
+State 3: <Call line 112, col 3 to line 119, col 69 of module ToolList>
+/\ refused = {[tool |-> "t1", wasTold |-> FALSE]}
+/\ told = {}
+/\ opened = TRUE
+/\ toldAtGrant = {}
+/\ openList = {}
+/\ actsBeforeOpen = FALSE
+/\ latest = 1
+/\ admitted = {}
+/\ lease = [live |-> TRUE, rev |-> 1, narrow |-> {}]
+50 states generated, 39 distinct states found, 13 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 7 (minimum is 5, the maximum 9 and the 95th percentile is 9).
+Finished in 05s at (2026-10-04 16:47:44)
+
