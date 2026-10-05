@@ -26,7 +26,7 @@ affirmative bundle `true`, from the bundle revision the lease names, is a deny.
 |---|---|---|
 | `topak-core` | Types, lease (ADR-0031), rules floor (ADR-0026), tally (ADR-0024), lift, composition, replicated state | none |
 | `topak-paxos` | Sans-IO crash-fault Multi-Paxos plus a `Voting` ghost | none |
-| `topak-floor` | Cedar engine with the proposed floor's `labels` stage compiled in (`floor/proposed/labels-floor.cedar`, `labels.cedarschema`; since 2026.10.05, in place of the genesis floor), pinned by digest | none |
+| `topak-floor` | Cedar engine with the proposed floor's `control` stage compiled in (`floor/proposed/control-floor.cedar`, `control.cedarschema`; since 2026.10.05 a proposed stage is linked in place of the genesis floor), pinned by digest | none |
 | `topak-bundle` | OPA sidecar client; local OPA WASM fallback bound to the lease's bundle | HTTP |
 | `topak-transport` | Round topics over `rskafka` (or in memory) | Kafka |
 | `topak-mcp` | The alphabet as MCP tools (`rmcp` server); downstream tool host (`rmcp` client) | stdio |
@@ -36,7 +36,7 @@ affirmative bundle `true`, from the bundle revision the lease names, is a deny.
 ## Run it
 
 ```sh
-cargo test --workspace --release           # 119 tests (2026.10.05); needs a built bundle (next line); builds topak-demo-guest
+cargo test --workspace --release           # 126 tests (2026.10.05); needs a built bundle (next line); builds topak-demo-guest
 TOPAK_DOCKER_IMAGE=<image with python3> cargo test --release -p topak-contain --test launch   # + a real container round (skipped without it)
 scripts/build-bundle.sh                    # policies/ → bundles/<revision>.tar.gz (docker, OPA); TOPAK_BUNDLE_SECRET=<hex> also writes <revision>.sig
 
@@ -90,7 +90,7 @@ anchor issuance puts the simulator's key in `verifier_keys`. What they reach is 
 
 ## Where the corpus is in the code
 
-- The floor text is **not copied**. `topak-floor` includes `../floor/proposed/labels-*` and `../floor/genesis-values.json` by path and refuses to load
+- The floor text is **not copied**. `topak-floor` includes `../floor/proposed/control-*` and `../floor/genesis-values.json` by path and refuses to load
   unless the bytes match the digests the gate run recorded. Changing the floor means re-running
   the gates and changing the pin, which is a mechanism release.
 - **A bundle loads only under a signature** over its revision that verifies under a key in the rules' `bundle_keys`
@@ -105,7 +105,24 @@ anchor issuance puts the simulator's key in `verifier_keys`. What they reach is 
   divergence in GAPS-AND-ASSUMPTIONS.md, then replace the pin line (`shasum -a 256 <path>` from
   the repository root).
 
-## Run tools held to their channel (ADR-0034 A2, pending)
+## Operators (ADR-0050, Proposed)
+
+Where the rules declare a seat of kind `operator`, an operator's request is signed and decided by the
+floor's control entries (`C1` to `C9`), and the unsigned requests on the operator socket are a
+**bootstrap path** that seats and does nothing else:
+
+```json
+{ "op": "control",
+  "request": { "operator": "op1", "epoch": 0, "ctr": 7, "action": "end_round", "target": "a1" },
+  "sig": { "key": "<the seat's key>", "sig": "<over topak/control/v1 and {chain, request}>" } }
+```
+
+The six actions are `regrant`, `renew`, `attest_gates`, `end_round`, `revoke` and `fence_epoch`
+(`crates/topak-core/src/control.rs`). An operator's own lease needs a sign-on assertion under a key in
+the rules' `provider_keys`, and so does a deny it makes with no live lease. Rules that declare no
+operator seat leave the socket as it was (D-0050-1); `scripts/dev-init.sh` writes such rules.
+
+## Run tools held to their channel (ADR-0034 A2)
 
 A Run tool listed under `wasm_tools` in the node's config runs as a Wasm module whose only network
 capability is its declared target. The config says where the module is and what its bytes are:

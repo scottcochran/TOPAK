@@ -45,6 +45,9 @@ pub enum RecordKind {
     Emit,
     /// An admitted `Actuate` (ADR-0042 §3): the mechanism's record of the call and its outcome.
     Actuate,
+    /// An operator's control action (ADR-0050 §6), on the operator's round topic, where its
+    /// peers read it. The mechanism writes it. It carries the log index that ordered it.
+    Control,
     /// A denied action (ADR-0020). Never ordered (ADR-0015); carries no admit and no sequence.
     Deny,
     /// The `after` topic reached its bound (ADR-0003 A2); later denials are not written.
@@ -91,6 +94,7 @@ impl Transport {
 fn headers(rec: &EmitRecord) -> BTreeMap<String, Vec<u8>> {
     let kind = match rec.kind {
         RecordKind::Open => "open",
+        RecordKind::Control => "control",
         RecordKind::Emit => "emit",
         RecordKind::Actuate => "actuate",
         RecordKind::Deny => "deny",

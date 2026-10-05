@@ -292,6 +292,11 @@ pub fn project_entry(e: &Entry, oracle: Value) -> Value {
             json!({ "kind": "Revoke", "id": id, "target": serde_json::to_value(target).unwrap() })
         }
         Entry::EpochIncrement { id, .. } => json!({ "kind": "EpochIncrement", "id": id }),
+        // `spec/Mechanism.tla` has no operator principal: a control entry is recorded by its
+        // name and is not one the module's `Next` can match (ADR-0050; trace validation is owed).
+        Entry::Control { id, control, .. } => json!({
+            "kind": "Control", "id": id, "operator": control.request.operator, "action": control.request.action.name(),
+        }),
         Entry::Issue { id, issuance } => json!({ "kind": "Issue", "id": id, "rules": project_rules(&issuance.rules) }),
         Entry::GatesPassed { id, artifact, evidence } => json!({
             "kind": "GatesPassed", "id": id, "artifact": artifact.0, "evidence": evidence.0,

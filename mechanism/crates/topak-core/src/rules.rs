@@ -111,6 +111,10 @@ pub struct Rules {
     /// signature that verifies under one of these; empty means the bundle tier loads nothing.
     #[serde(default)]
     pub bundle_keys: BTreeSet<KeyHex>,
+    /// ADR-0025 A3 (pending), for ADR-0050 §3: the identity providers' keys. A sign-on assertion
+    /// counts only under one of these. Empty means no operator is attested, so none holds a lease.
+    #[serde(default, skip_serializing_if = "BTreeSet::is_empty")]
+    pub provider_keys: BTreeSet<KeyHex>,
     /// ADR-0025 A2 (pending), for ADR-0047 §7: the channel targets inside the deployment. An
     /// allowlist entry whose target is not listed is outward. Empty: every entry with a channel is.
     #[serde(default, skip_serializing_if = "BTreeSet::is_empty")]
@@ -135,6 +139,13 @@ impl Rules {
 
     pub fn seat_kind(&self, seat: &str) -> Option<SeatKind> {
         self.seats.get(seat).map(|s| s.kind)
+    }
+
+    /// Whether these rules declare an `operator` seat (ADR-0050 §1). Where they do, an operator's
+    /// request is signed and decided by the control entries, and the unsigned path seats and does
+    /// nothing else. Where they do not, the deployment is D-0050-1, the socket.
+    pub fn operators_declared(&self) -> bool {
+        self.seats.values().any(|s| s.kind == SeatKind::Operator)
     }
 
     /// The observer seats in a Thinker's cell (ADR-0038 §1): those declaring `cell = thinker`.
@@ -270,7 +281,7 @@ pub fn check_well_formed(r: &Rules) -> Vec<Violation> {
         }
     }
     // ADR-0025 §1 (f): a vouching key is a 32-byte Ed25519 public key, like every other key issued.
-    for (what, keys) in [("verifier", &r.verifier_keys), ("bundle", &r.bundle_keys)] {
+    for (what, keys) in [("verifier", &r.verifier_keys), ("bundle", &r.bundle_keys), ("provider", &r.provider_keys)] {
         for k in keys {
             if hex::decode(k).map(|b| b.len() != 32).unwrap_or(true) {
                 out.push(v("WF", format!("{what} key {k} is not a 32-byte hex key")));

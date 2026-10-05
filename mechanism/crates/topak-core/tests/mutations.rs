@@ -45,6 +45,7 @@ fn rules() -> Rules {
         erasure_roster: None,
         verifier_keys: BTreeSet::new(),
         bundle_keys: BTreeSet::new(),
+        provider_keys: BTreeSet::new(),
         inside_targets: BTreeSet::new(),
         releasers: BTreeSet::new(),
         personas: BTreeMap::new(),
@@ -79,6 +80,8 @@ fn grant_req(seat: &str, alphabet: &[ActionKind]) -> GrantRequest {
         round: 1,
         role: RoundRole::Author,
         task_label: None,
+        task_labels_allowed: None,
+        sign_on: None,
     }
 }
 

@@ -1,10 +1,19 @@
 //! The operator protocol. These are environment steps, not principal actions: lease grant and
 //! renewal, revocation, anchor issuance, gate evidence, break-glass approvals.
 //!
-//! PROVISIONAL (operator authentication): the operator socket is protected by filesystem
-//! permissions only. Issuances and break-glass approvals carry their own signatures and are
-//! validated in the replicated state machine; grants, revocations and gate evidence are not
-//! signed, and whoever can reach the socket can issue them.
+//! Two paths share this socket (ADR-0050, Proposed).
+//!
+//! `Control` is an operator's request: one of the six control actions, signed with the key of an
+//! `operator` seat, decided by the floor's control entries `C1` to `C9` and checked again by
+//! every replica when it is applied. Issuances and break-glass approvals carry their own
+//! signatures, as before.
+//!
+//! Everything else here is unsigned, from whoever can reach the socket, which filesystem
+//! permissions alone protect. Where the issued rules declare an `operator` seat, that is a
+//! **BOOTSTRAP path**: `Grant` and `Launch` make a first seating, standing in for the quorum
+//! ADR-0050 §2 asks for, and the unsigned `Renew`, `EndRound`, `Revoke`, `FenceEpoch` and
+//! `GatesPassed` are refused when applied. Where the rules declare none, the deployment is
+//! D-0050-1 and the unsigned requests do what they always did.
 
 use std::collections::BTreeSet;
 
@@ -34,6 +43,12 @@ pub enum OperatorOp {
         /// round's `clearSet` starts. This reference carries no task, so it is optional.
         #[serde(default)]
         task_label: Option<BTreeSet<String>>,
+        /// ADR-0050 §5: the labels a later task for this seating may carry.
+        #[serde(default)]
+        task_labels_allowed: Option<BTreeSet<String>>,
+        /// ADR-0050 §3: an operator seat's sign-on assertion for this boundary.
+        #[serde(default)]
+        sign_on: Option<Signed>,
     },
     Renew {
         token: String,
@@ -61,6 +76,17 @@ pub enum OperatorOp {
     },
     Issue {
         issuance: Issuance,
+    },
+    /// An operator's signed request (ADR-0050 §4). `assertion` is the operator's own sign-on
+    /// assertion, for a deny made with no live lease. `task` is the bytes of a `Regrant`'s task,
+    /// whose digest the signed request carries (§5).
+    Control {
+        request: topak_core::control::ControlRequest,
+        sig: Signed,
+        #[serde(default)]
+        assertion: Option<Signed>,
+        #[serde(default)]
+        task: Option<String>,
     },
     GatesPassed {
         artifact: Digest,

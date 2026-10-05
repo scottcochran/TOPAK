@@ -9,6 +9,7 @@
 //! the replica that decided an admit did so against a snapshot that may have moved by the time
 //! the entry commits.
 
+use crate::control::{Control, ControlAction, ControlFacts, ControlRequest, Seating, CONTROL_PURPOSE, sign_on_verifies};
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt;
@@ -169,6 +170,13 @@ pub struct GrantRequest {
     /// grant, beside the lease and not in it, and is where the round's `clearSet` starts.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub task_label: Option<crate::labels::Label>,
+    /// ADR-0050 §5: where this grant is a seating, the labels a task for the principal may
+    /// carry afterwards. Absent: none, so a later task carries the empty label or is refused.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub task_labels_allowed: Option<crate::labels::Label>,
+    /// ADR-0050 §3: where the seat is an operator's, the sign-on assertion for this boundary.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub sign_on: Option<Signed>,
 }
 
 /// A renewal names the live lease and the narrowed values.
@@ -386,6 +394,20 @@ pub enum Entry {
         artifact: Digest,
         evidence: Digest,
     },
+    /// An operator's signed request (ADR-0050 §4), decided by the floor's control entries. A
+    /// `Regrant` carries the grant it asks for and a `Renew` the renewal, each built by the
+    /// deciding replica from the seating and the request and checked against both at apply.
+    /// Stop attribution for the three denies is the signature (forensic class F2).
+    Control {
+        id: String,
+        control: Control,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        grant: Option<GrantRequest>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        renew: Option<RenewRequest>,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        appraisal: Option<Appraisal>,
+    },
     /// One break-glass approval by a roster key, scoped to (seat, epoch). F5 is the invocation
     /// admitted under it.
     BreakGlassApprove {
@@ -409,6 +431,7 @@ impl Entry {
             | Entry::ProfileRegister { id, .. }
             | Entry::Issue { id, .. }
             | Entry::GatesPassed { id, .. }
+            | Entry::Control { id, .. }
             | Entry::BreakGlassApprove { id, .. } => id,
         }
     }
@@ -538,6 +561,16 @@ pub struct State {
     /// set `ContestedStopped` quantifies over.
     #[serde(default)]
     pub contested: BTreeMap<String, Digest>,
+    /// ADR-0050 §2: the seating of each seat, the binding a successor grant keeps.
+    #[serde(default)]
+    pub seatings: BTreeMap<SeatId, Seating>,
+    /// The fence of each seat's latest lease, live or ended: what a successor is compared with,
+    /// and what an operator's sign-on assertion names (ADR-0050 §3).
+    #[serde(default)]
+    pub last_lease: BTreeMap<SeatId, LogIndex>,
+    /// The last request counter admitted from each operator seat.
+    #[serde(default)]
+    pub control_ctr: BTreeMap<SeatId, u64>,
     /// A trace name, set by a test or an operator: with `TOPAK_TRACE_DIR`, every `apply` is
     /// recorded for checking against `spec/Mechanism.tla` (`trace.rs`). Never replicated state.
     #[serde(skip)]
@@ -602,6 +635,9 @@ impl State {
             seals: BTreeMap::new(),
             profiles: BTreeMap::new(),
             contested: BTreeMap::new(),
+            seatings: BTreeMap::new(),
+            last_lease: BTreeMap::new(),
+            control_ctr: BTreeMap::new(),
             trace: None,
         })
     }
@@ -794,8 +830,51 @@ impl State {
         if !self.applied_ids.insert(entry.id().to_string()) {
             return Applied::Duplicate;
         }
+        // ADR-0050: where the rules declare an operator, the unsigned path seats and does nothing
+        // else. What the mechanism orders for itself is not an operator's request and stays:
+        // an expiry, an abstention, a terminal vote, a re-attestation at renewal, a Contested verdict.
+        if self.rules.operators_declared() {
+            let refused = match entry {
+                Entry::Renew { appraisal: None, .. } => Some("a renewal"),
+                Entry::EndRound { reason: EndReason::Operator, .. } => Some("an operator's end of round"),
+                Entry::Revoke { .. } => Some("a revocation"),
+                Entry::EpochIncrement { .. } => Some("the fleet fence"),
+                Entry::GatesPassed { .. } => Some("a gate attestation"),
+                _ => None,
+            };
+            if let Some(what) = refused {
+                return Applied::Rejected(format!(
+                    "{what} is an operator's signed request where the rules declare an operator (ADR-0050 §4)"
+                ));
+            }
+        }
         match entry {
-            Entry::Grant { req, appraisal, .. } => self.apply_grant(index, req, appraisal.as_ref()),
+            Entry::Grant { req, appraisal, .. } => {
+                // The BOOTSTRAP path: a first seating, standing in for a quorum (ADR-0050 §2).
+                if let Some(why) = self.not_a_first_seating(req) {
+                    return Applied::Rejected(why);
+                }
+                let applied = self.apply_grant(index, req, appraisal.as_ref());
+                if matches!(applied, Applied::LeaseGranted { .. }) {
+                    self.seatings.insert(
+                        req.seat.clone(),
+                        Seating {
+                            principal: req.principal.clone(),
+                            persona: req.persona.clone(),
+                            bundle: req.bundle.clone(),
+                            confinement: req.confinement.clone(),
+                            alphabet: req.alphabet.clone(),
+                            role: req.role,
+                            task_labels: req.task_labels_allowed.clone().unwrap_or_default(),
+                            seated_at: index,
+                        },
+                    );
+                }
+                applied
+            }
+            Entry::Control { control, grant, renew, appraisal, .. } => {
+                self.apply_control(index, control, grant.as_ref(), renew.as_ref(), appraisal.as_ref())
+            }
             Entry::Renew { req, appraisal, .. } => self.apply_renew(index, req, appraisal.as_ref()),
             Entry::Contested { appraisal, .. } => self.apply_contested(appraisal),
             Entry::ProfileRegister { profile, .. } => self.apply_profile_register(index, profile),
@@ -900,6 +979,19 @@ impl State {
                 req.confinement.rung, req.seat
             ));
         }
+        // ADR-0050 §3: an operator's sign-on is read at the lease boundary. The assertion names
+        // the seat's key and its current fence, under a provider key the rules issue.
+        if kind == SeatKind::Operator {
+            let key = &self.rules.seats[&req.seat].key;
+            let last = self.last_lease.get(&req.seat).copied().unwrap_or(0);
+            let providers = &self.rules.provider_keys;
+            if !sign_on_verifies(providers, &self.chain, key, self.epoch, last, req.sign_on.as_ref()) {
+                return Applied::Rejected(
+                    "an operator's lease needs a sign-on assertion naming its key and its current fence (ADR-0050 §3)"
+                        .into(),
+                );
+            }
+        }
         let attestation = match (req.confinement.rung, appraisal) {
             (0, None) => None,
             (0, Some(_)) => return Applied::Rejected("a rung-0 grant rests on no appraisal".into()),
@@ -967,7 +1059,216 @@ impl State {
         );
         self.live_by_seat.insert(req.seat.clone(), index);
         self.last_round.insert(req.seat.clone(), req.round);
+        self.last_lease.insert(req.seat.clone(), index);
         Applied::LeaseGranted { fence: index }
+    }
+
+    /// Why an unsigned grant is not a first seating (ADR-0050 §2), or `None` if it is one. A
+    /// grant that keeps the seat's seated binding is a successor, and a successor is an
+    /// operator's `Regrant` wherever one could be made: where two operators of the seat's domain
+    /// hold live leases. Where they do not, the domain has stalled and only a quorum seats again,
+    /// which at the reference is this path.
+    fn not_a_first_seating(&self, req: &GrantRequest) -> Option<String> {
+        if !self.rules.operators_declared() {
+            return None;
+        }
+        let s = self.seatings.get(&req.seat)?;
+        let same = s.principal == req.principal
+            && s.persona == req.persona
+            && s.bundle == req.bundle
+            && s.confinement == req.confinement;
+        let domain = self.rules.seat_domain(&req.seat)?;
+        (same && self.live_operators(domain).len() >= 2).then(|| {
+            format!(
+                "seat {} is seated with this binding: its next round is an operator's Regrant (ADR-0050 §2)",
+                req.seat
+            )
+        })
+    }
+
+    /// The operator seats of `domain` that hold a live lease.
+    pub fn live_operators(&self, domain: Domain) -> Vec<&SeatId> {
+        let is_op = |s: &&SeatId| {
+            self.rules.seats.get(*s).is_some_and(|d| d.kind == SeatKind::Operator && d.domain == domain)
+        };
+        self.live_by_seat.keys().filter(is_op).collect()
+    }
+
+    /// Whether `seat` is seated and nothing it was seated with has been revoked.
+    fn seated(&self, seat: &str) -> bool {
+        self.seatings.get(seat).is_some_and(|s| {
+            !self.revoked.iter().any(|t| t.matches(&s.principal, &s.persona, &s.confinement.digest))
+        })
+    }
+
+    /// The facts the control entries read (ADR-0050 §4), about this request at this state. The
+    /// deciding replica lifts them into schema S; `apply` recomputes them and compares.
+    pub fn control_facts(&self, req: &ControlRequest, assertion: Option<&Signed>) -> Result<ControlFacts, String> {
+        let op = req.operator.as_str();
+        let decl = self.rules.seats.get(op).filter(|d| d.kind == SeatKind::Operator);
+        let decl = decl.ok_or_else(|| format!("seat {op} is not an operator seat (ADR-0050 §1)"))?;
+        if req.epoch != self.epoch {
+            return Err(format!("the request is for epoch {}, fenced", req.epoch));
+        }
+        let live = |s: &str| self.live_by_seat.contains_key(s);
+        let last = |s: &str| self.last_lease.get(s).and_then(|f| self.leases.get(f));
+        let names = |a: &BTreeSet<ActionKind>| a.iter().map(|k| k.as_str().to_string()).collect::<BTreeSet<String>>();
+        let last_fence = self.last_lease.get(op).copied().unwrap_or(0);
+        let mut f = ControlFacts {
+            persona_in_force: self.seated(op),
+            has_lease: live(op),
+            peer_live: self.live_operators(decl.domain).iter().any(|s| s.as_str() != op),
+            fresh_assertion: sign_on_verifies(
+                &self.rules.provider_keys,
+                &self.chain,
+                &decl.key,
+                self.epoch,
+                last_fence,
+                assertion,
+            ),
+            domain: Some(decl.domain),
+            ..Default::default()
+        };
+        let target = |f: &mut ControlFacts, seat: &SeatId| -> Result<(), String> {
+            let d = self.rules.seat_domain(seat).ok_or_else(|| format!("seat {seat} is not declared in the rules"))?;
+            f.target_seat = Some(seat.clone());
+            f.target_domain = Some(d);
+            f.target_seated = self.seated(seat);
+            f.target_live = live(seat);
+            Ok(())
+        };
+        match &req.action {
+            ControlAction::Regrant { target: seat, round, alphabet, task_label, .. } => {
+                target(&mut f, seat)?;
+                if let (Some(s), Some(l)) = (self.seatings.get(seat), last(seat)) {
+                    let l = &l.lease;
+                    f.same_binding = s.principal == l.principal
+                        && s.persona == l.persona
+                        && s.bundle == l.bundle
+                        && s.confinement == l.confinement;
+                    f.next_round = l.round.checked_add(1) == Some(*round);
+                    f.last_alphabet = names(&l.alphabet);
+                    f.task_labels_allowed = s.task_labels.clone();
+                }
+                f.new_alphabet = names(alphabet);
+                f.task_labelled = task_label.is_some();
+                f.task_label = task_label.clone().unwrap_or_default();
+            }
+            ControlAction::Renew { target: seat, alphabet, .. } => {
+                target(&mut f, seat)?;
+                f.last_alphabet = last(seat).map(|l| names(&l.lease.alphabet)).unwrap_or_default();
+                f.new_alphabet = names(alphabet);
+            }
+            ControlAction::EndRound { target: seat } => target(&mut f, seat)?,
+            // A revocation names a principal, a Persona or a profile, and the floor's resource
+            // is a seat. It is lifted on a seat the target is seated at: one in another domain if
+            // there is one, so that `C9` sees a revocation that reaches outside the operator's.
+            ControlAction::Revoke { target: t, .. } => {
+                let hit = |d: &dyn Fn(Domain) -> bool| {
+                    self.seatings.iter().find(|(seat, s)| {
+                        t.matches(&s.principal, &s.persona, &s.confinement.digest)
+                            && self.rules.seat_domain(seat).is_some_and(d)
+                    })
+                };
+                let own = decl.domain;
+                let seat = hit(&|d| d != own).or_else(|| hit(&|d| d == own)).map(|(seat, _)| seat.clone());
+                let seat = seat.ok_or_else(|| "the revocation names nothing that is seated".to_string())?;
+                target(&mut f, &seat)?;
+            }
+            ControlAction::AttestGates { .. } | ControlAction::FenceEpoch { .. } => {}
+        }
+        Ok(f)
+    }
+
+    /// An operator's signed request, at its place in the log (ADR-0050 §4). The signature is the
+    /// seat's; the counter is new; the facts are this state's and are the ones the floor decided
+    /// on; and the envelope is restated. Then the request does what it says.
+    fn apply_control(
+        &mut self,
+        index: LogIndex,
+        c: &Control,
+        grant: Option<&GrantRequest>,
+        renew: Option<&RenewRequest>,
+        appraisal: Option<&Appraisal>,
+    ) -> Applied {
+        let no = |why: String| Applied::Rejected(why);
+        let op = c.request.operator.clone();
+        let Some(decl) = self.rules.seats.get(&op).filter(|d| d.kind == SeatKind::Operator) else {
+            return no(format!("seat {op} is not an operator seat (ADR-0050 §1)"));
+        };
+        if c.sig.key != decl.key || !authentic::verify(CONTROL_PURPOSE, &c.request.body(&self.chain), &c.sig) {
+            return no("the request is not signed by the operator seat's key (ADR-0050 §3)".into());
+        }
+        if c.request.ctr <= self.control_ctr.get(&op).copied().unwrap_or(0) {
+            return no("the request's counter is replayed".into());
+        }
+        let facts = match self.control_facts(&c.request, c.assertion.as_ref()) {
+            Ok(f) => f,
+            Err(e) => return no(e),
+        };
+        if facts != c.facts {
+            return no("decided on facts that no longer hold at commit (ADR-0050 §4)".into());
+        }
+        if let Err(entry) = facts.permitted(&c.request.action, &op) {
+            return no(format!("refused by {entry}"));
+        }
+        self.control_ctr.insert(op.clone(), c.request.ctr);
+        let operator_key = |s: &State, seat: &str| {
+            s.rules.seats.get(seat).filter(|d| d.kind == SeatKind::Operator).map(|d| d.key.clone())
+        };
+        match &c.request.action {
+            ControlAction::Regrant { target, round, alphabet, ttl_ms, task_label, sign_on, .. } => {
+                let (Some(g), Some(s)) = (grant, self.seatings.get(target)) else {
+                    return no("a Regrant carries the grant it asks for, for a seated seat".into());
+                };
+                let asked = &g.seat == target
+                    && g.round == *round
+                    && &g.alphabet == alphabet
+                    && g.ttl_ms == *ttl_ms
+                    && &g.task_label == task_label
+                    && &g.sign_on == sign_on;
+                let seated = g.principal == s.principal
+                    && g.persona == s.persona
+                    && g.bundle == s.bundle
+                    && g.confinement == s.confinement
+                    && g.role == s.role;
+                if !asked || !seated {
+                    return no("the grant is not the one the request and the seating describe (ADR-0050 §2)".into());
+                }
+                self.apply_grant(index, g, appraisal)
+            }
+            ControlAction::Renew { target, alphabet, ttl_ms, sign_on } => {
+                let Some(r) = renew else { return no("a Renew carries the renewal it asks for".into()) };
+                if &r.seat != target || &r.alphabet != alphabet || r.ttl_ms != *ttl_ms {
+                    return no("the renewal is not the one the request describes".into());
+                }
+                if let Some(key) = operator_key(self, target) {
+                    let last = self.last_lease.get(target).copied().unwrap_or(0);
+                    let providers = &self.rules.provider_keys;
+                    if !sign_on_verifies(providers, &self.chain, &key, self.epoch, last, sign_on.as_ref()) {
+                        return no("an operator's renewal needs a fresh sign-on assertion (ADR-0050 §3)".into());
+                    }
+                }
+                self.apply_renew(index, r, appraisal)
+            }
+            ControlAction::AttestGates { artifact, evidence } => {
+                self.gates.insert(artifact.clone(), evidence.clone());
+                Applied::GatesRecorded
+            }
+            ControlAction::EndRound { target } => match self.live_by_seat.get(target).copied() {
+                Some(fence) => {
+                    self.end_lease(fence, EndReason::Operator);
+                    Applied::RoundEnded
+                }
+                None => no("no such live lease".into()),
+            },
+            ControlAction::Revoke { target, .. } => self.apply_revoke(target),
+            ControlAction::FenceEpoch { .. } => {
+                self.epoch += 1;
+                self.end_all_live(EndReason::Fenced);
+                Applied::EpochIncremented { epoch: self.epoch }
+            }
+        }
     }
 
     /// A targeted revocation (ADR-0031 §5 R3). Ends every live lease the target matches and
@@ -1052,6 +1353,7 @@ impl State {
         }
         self.leases.insert(index, rec);
         self.live_by_seat.insert(req.seat.clone(), index);
+        self.last_lease.insert(req.seat.clone(), index);
         Applied::Renewed { fence: index }
     }
 

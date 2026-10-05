@@ -213,6 +213,8 @@ impl Mechanism {
             round: op.round,
             role: op.role,
             task_label: op.task_label,
+            task_labels_allowed: None,
+            sign_on: None,
         };
         let fence =
             match self.propose(Entry::Grant { id: self.fresh_id(), req: grant, appraisal: Some(appraisal) }).await {
@@ -225,7 +227,7 @@ impl Mechanism {
             };
 
         // ADR-0048 §2: the round's opening record, before the guest is told it holds a lease.
-        if let Err(e) = self.open_round(fence, &op.seat).await {
+        if let Err(e) = self.open_round(fence, &op.seat, None).await {
             handle.destroy().await;
             return json!({
                 "ok": false, "verdict": "attested", "fence": fence,

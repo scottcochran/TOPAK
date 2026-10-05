@@ -15,6 +15,7 @@ use topak_bundle::{BundleTier, LocalBundles};
 use topak_core::action::{Action, tool_id};
 use topak_core::admit::BundleOutcome;
 use topak_core::authentic::{Signed, signing_bytes};
+use topak_core::control::{CONTROL_PURPOSE, ControlAction, ControlRequest};
 use topak_core::rules::*;
 use topak_core::state::*;
 use topak_core::*;
@@ -34,7 +35,20 @@ struct Keys {
     bg: Vec<SigningKey>,
     /// The bundle key (ADR-0044 §1): the fixture signs its copy of the bundle with it.
     bundle: SigningKey,
+    /// The operator seats' keys, by seat (ADR-0050 §3): three in Build and three in Run.
+    ops: BTreeMap<String, SigningKey>,
+    /// The identity provider that vouches for them. Its key is issued in the rules.
+    idp: SigningKey,
 }
+
+const OPERATORS: [(&str, Domain); 6] = [
+    ("op1", Domain::Build),
+    ("op2", Domain::Build),
+    ("op3", Domain::Build),
+    ("opr1", Domain::Run),
+    ("opr2", Domain::Run),
+    ("opr3", Domain::Run),
+];
 
 fn key() -> SigningKey {
     SigningKey::generate(&mut rand::rngs::OsRng)
@@ -104,7 +118,13 @@ async fn fixture(name: &str) -> Fixture {
         run_round_bound: None,
     };
 
-    let keys = Keys { anchors: (0..3).map(|_| key()).collect(), bg: (0..2).map(|_| key()).collect(), bundle: key() };
+    let keys = Keys {
+        anchors: (0..3).map(|_| key()).collect(),
+        bg: (0..2).map(|_| key()).collect(),
+        bundle: key(),
+        ops: OPERATORS.iter().map(|(s, _)| (s.to_string(), key())).collect(),
+        idp: key(),
+    };
     let seat =
         |d: Domain, k: topak_core::SeatKind| SeatDecl { domain: d, kind: k, cell: None, key: pubhex(&key()), rung: 0 };
     let rules = Rules {
@@ -134,11 +154,19 @@ async fn fixture(name: &str) -> Fixture {
         erasure_roster: None,
         verifier_keys: BTreeSet::new(),
         bundle_keys: BTreeSet::from([pubhex(&keys.bundle)]),
+        provider_keys: BTreeSet::from([pubhex(&keys.idp)]),
         inside_targets: BTreeSet::new(),
         releasers: BTreeSet::new(),
         personas: BTreeMap::new(),
         criterion: None,
     };
+
+    // ADR-0050 §1: the operators. Each seat's key is its holder's.
+    let mut rules = rules;
+    for (name, domain) in OPERATORS {
+        let decl = SeatDecl { domain, kind: topak_core::SeatKind::Operator, cell: None, key: pubhex(&keys.ops[name]), rung: 0 };
+        rules.seats.insert(name.to_string(), decl);
+    }
 
     // ADR-0044: the fixture's bundle key signs a copy of the built bundle into its own bundles
     // directory; the rules above carry the key.
@@ -265,7 +293,86 @@ async fn cluster(f: &Fixture, real_bundle: bool) -> Cluster {
     if let Some(name) = topak_core::trace::name_from_env(&format!("e2e-{fixture}")) {
         nodes[0].state.write().unwrap().trace = Some(name);
     }
-    Cluster { nodes, hub }
+    let c = Cluster { nodes, hub };
+    seat_operators(&c.nodes[0], f).await;
+    c
+}
+
+/// A sign-on assertion for an operator seat (ADR-0050 §3): the provider's signature over the
+/// seat's key and its current fence, as this replica's state has it.
+fn sign_on(m: &Mechanism, f: &Fixture, seat: &str) -> Signed {
+    let st = m.state.read().unwrap();
+    let last = st.last_lease.get(seat).copied().unwrap_or(0);
+    let body = topak_core::control::sign_on_body(&st.chain, &pubhex(&f.keys.ops[seat]), st.epoch, last);
+    sign(&f.keys.idp, topak_core::control::SIGN_ON_PURPOSE, &body)
+}
+
+/// The BOOTSTRAP path's one use (ADR-0050 §2): a first seating. Every operator seat that holds no
+/// live lease is seated, each on a sign-on assertion, standing in for the quorum that would.
+async fn seat_operators(m: &Mechanism, f: &Fixture) {
+    for (name, _) in OPERATORS {
+        let (live, round, bundle) = {
+            let st = m.state.read().unwrap();
+            (st.live_by_seat.contains_key(name), st.last_round.get(name).copied().unwrap_or(0) + 1, f.bundle_rev.clone())
+        };
+        if live {
+            continue;
+        }
+        let r = m
+            .operate(OperatorOp::Grant {
+                principal: format!("person-{name}"),
+                seat: name.into(),
+                persona: Digest::of(format!("persona of {name}").as_bytes()),
+                bundle,
+                confinement: topak_core::lease::Confinement { digest: Digest::of(b"none"), rung: 0 },
+                alphabet: BTreeSet::new(),
+                ttl_ms: 3_600_000,
+                round,
+                role: RoundRole::Author,
+                task_label: None,
+                task_labels_allowed: None,
+                sign_on: Some(sign_on(m, f, name)),
+            })
+            .await;
+        assert_eq!(r["ok"], true, "seating {name}: {r}");
+    }
+}
+
+/// One signed request from an operator seat (ADR-0050 §4), as its holder would send it.
+async fn control(m: &Mechanism, f: &Fixture, op: &str, action: ControlAction) -> Value {
+    control_with(m, f, op, action, None, None).await
+}
+
+async fn control_with(
+    m: &Mechanism,
+    f: &Fixture,
+    op: &str,
+    action: ControlAction,
+    assertion: Option<Signed>,
+    task: Option<String>,
+) -> Value {
+    static CTR: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(0);
+    let ctr = CTR.fetch_add(1, std::sync::atomic::Ordering::SeqCst) + 1;
+    let (chain, epoch) = {
+        let st = m.state.read().unwrap();
+        (st.chain.clone(), st.epoch)
+    };
+    let request = ControlRequest { operator: op.into(), epoch, ctr, action };
+    let sig = sign(&f.keys.ops[op], CONTROL_PURPOSE, &request.body(&chain));
+    m.operate(OperatorOp::Control { request, sig, assertion, task }).await
+}
+
+/// The first operator of a seat's domain: who a test asks to act on that seat.
+fn operator_of(m: &Mechanism, seat: &str) -> &'static str {
+    match m.state.read().unwrap().rules.seat_domain(seat) {
+        Some(Domain::Run) => "opr1",
+        _ => "op1",
+    }
+}
+
+/// An operator ends a seat's round: a deny, local and attributed.
+async fn end_round(m: &Mechanism, f: &Fixture, seat: &str) -> Value {
+    control(m, f, operator_of(m, seat), ControlAction::EndRound { target: seat.into() }).await
 }
 
 async fn grant(
@@ -277,6 +384,12 @@ async fn grant(
     alphabet: &[ActionKind],
     ttl_ms: u64,
 ) -> String {
+    // ADR-0050 §2: a seat's first lease is a seating, and its next round is an operator's.
+    if is_successor(m, f, seat) {
+        let r = control(m, f, operator_of(m, seat), regrant(seat, round, alphabet, ttl_ms)).await;
+        assert_eq!(r["ok"], true, "regrant {seat}: {r}");
+        return r["token"].as_str().unwrap().to_string();
+    }
     let r = m
         .operate(OperatorOp::Grant {
             principal: format!("principal-{seat}"),
@@ -289,11 +402,36 @@ async fn grant(
             round,
             role,
             task_label: None,
+            task_labels_allowed: None,
+            sign_on: None,
         })
         .await;
     assert_eq!(r["ok"], true, "grant {seat}: {r}");
     assert_eq!(r["contained"], false, "rung 0 is Mediated, always");
     r["token"].as_str().unwrap().to_string()
+}
+
+/// Whether a lease for `seat` under the fixture's one binding is a successor grant: the seat is
+/// seated with that binding, and two operators of its domain are live to make it.
+fn is_successor(m: &Mechanism, f: &Fixture, seat: &str) -> bool {
+    let st = m.state.read().unwrap();
+    let Some(domain) = st.rules.seat_domain(seat) else { return false };
+    st.seatings.get(seat).is_some_and(|s| {
+        s.principal == format!("principal-{seat}") && s.persona == Digest::of(b"persona") && s.bundle == f.bundle_rev
+    }) && st.live_operators(domain).len() >= 2
+}
+
+/// A successor grant with no task: its label is declared, and is the empty one.
+fn regrant(seat: &str, round: Round, alphabet: &[ActionKind], ttl_ms: u64) -> ControlAction {
+    ControlAction::Regrant {
+        target: seat.into(),
+        round,
+        alphabet: alphabet.iter().copied().collect(),
+        ttl_ms,
+        task: None,
+        task_label: Some(BTreeSet::new()),
+        sign_on: None,
+    }
 }
 
 async fn act(m: &Mechanism, token: &str, action: Action) -> AgentResponse {
@@ -454,19 +592,24 @@ async fn build_round_promotion_and_fencing() {
     // Gates enable voting (ADR-0024 §4): no evidence recorded yet.
     let r = act(n1, &g1, vote(Verdict::Grant, &evidence)).await;
     assert!(deny_reason(&r).contains("GatesNotPassed"), "{}", r.detail);
-    let r = n1.operate(OperatorOp::GatesPassed { artifact: artifact.clone(), evidence: evidence.clone() }).await;
+    let attest = ControlAction::AttestGates { artifact: artifact.clone(), evidence: evidence.clone() };
+    let r = control(n1, &f, "op1", attest).await;
     assert_eq!(r["ok"], true, "{r}");
     let r = act(n1, &g1, vote(Verdict::Grant, &Digest::of(b"other evidence"))).await;
     assert!(deny_reason(&r).contains("EvidenceMismatch"), "{}", r.detail);
 
     // The author is recused. Since ADR-0037 §4 this holds at the grant: a1 is a thinker seat and
     // cannot be issued `Vote` at all, so the B7 envelope (still in the floor) is never reached
-    // through the mechanism. The refusal is the grant's, not the admit's.
+    // through the mechanism. The refusal is the grant's, not the admit's. It is asked for as a
+    // new seating, under another Persona: as a1's next round it would be an operator's Regrant,
+    // which no control entry permits, because it widens (`C1`).
+    let r = control(n1, &f, "op1", regrant("a1", 2, VOTER, 60_000)).await;
+    assert_eq!((&r["ok"], &r["denied"]), (&json!(false), &json!("floor")), "no control entry permits a wider successor: {r}");
     let r = n1
         .operate(OperatorOp::Grant {
             principal: "principal-a1".into(),
             seat: "a1".into(),
-            persona: Digest::of(b"persona"),
+            persona: Digest::of(b"another persona"),
             bundle: f.bundle_rev.clone(),
             confinement: topak_core::lease::Confinement { digest: Digest::of(b"none"), rung: 0 },
             alphabet: VOTER.iter().copied().collect(),
@@ -474,6 +617,8 @@ async fn build_round_promotion_and_fencing() {
             round: 2,
             role: RoundRole::Voter,
             task_label: None,
+            task_labels_allowed: None,
+            sign_on: None,
         })
         .await;
     assert_eq!(r["ok"], false, "a thinker seat is never issued Vote: {r}");
@@ -527,13 +672,9 @@ async fn build_round_promotion_and_fencing() {
     let r = act(n1, &r1, Action::Report { record: json!({ "valve": "open" }) }).await;
     assert!(r.admitted, "{}", r.detail);
     // Every fixture principal shares one Persona digest, so the target here is the principal.
-    let r = n1
-        .operate(OperatorOp::Revoke {
-            target: RevocationTarget::Principal("principal-r1".into()),
-            reason: "principal revoked".into(),
-            attribution: "operator test".into(),
-        })
-        .await;
+    let revoke =
+        ControlAction::Revoke { target: RevocationTarget::Principal("principal-r1".into()), reason: "principal revoked".into() };
+    let r = control(n1, &f, "opr1", revoke).await;
     assert_eq!(r["ok"], true, "{r}");
     let r = act(n1, &r1, Action::Report { record: json!({ "valve": "close" }) }).await;
     assert!(
@@ -557,7 +698,7 @@ async fn build_round_promotion_and_fencing() {
     assert_eq!(c.nodes[0].state.read().unwrap().epoch, 0, "a targeted revocation leaves the epoch");
 
     // ---- the fleet fence ends every live round ----
-    let r = n1.operate(OperatorOp::FenceEpoch { reason: "e-stop".into(), attribution: "operator test".into() }).await;
+    let r = control(n1, &f, "op1", ControlAction::FenceEpoch { reason: "e-stop".into() }).await;
     assert_eq!(r["ok"], true, "{r}");
     let r = act(n1, &o1, Action::Emit { record: json!({ "after": "fence" }) }).await;
     assert!(deny_reason(&r).contains("FencedEpoch"), "rejected by the mechanism, not policy: {}", r.detail);
@@ -689,9 +830,7 @@ async fn tools_break_glass_issuance_and_partition() {
     assert!(r.admitted, "{}", r.detail);
     // The isolated replica cannot commit anything.
     let isolated = c.nodes.iter().find(|m| m.id == leader).unwrap();
-    let r = isolated
-        .operate(OperatorOp::FenceEpoch { reason: "from the minority".into(), attribution: "test".into() })
-        .await;
+    let r = control(isolated, &f, "op1", ControlAction::FenceEpoch { reason: "from the minority".into() }).await;
     assert_eq!(r["ok"], false, "a minority must not commit: {r}");
     // Heal: the isolated replica catches up to the same state.
     c.hub.isolated.lock().unwrap().clear();
@@ -804,24 +943,11 @@ async fn observer_liveness_couples_run_admits() {
     assert!(r.admitted, "fresh again: {}", r.detail);
 
     // Coverage carries across rounds (ADR-0039 §2): round 2 waits until round 1 is read to its seal.
-    let r = n1.operate(OperatorOp::EndRound { token: r1.clone(), reason: EndReason::Operator }).await;
+    let r = end_round(n1, &f, "r1").await;
     assert_eq!(r["ok"], true, "{r}");
     let seal = n1.state.read().unwrap().seals["r1"].clone();
     assert_eq!(seal.topic, t1);
-    let refused = n1
-        .operate(OperatorOp::Grant {
-            principal: "principal-r1".into(),
-            seat: "r1".into(),
-            persona: Digest::of(b"persona"),
-            bundle: f.bundle_rev.clone(),
-            confinement: topak_core::lease::Confinement { digest: Digest::of(b"none"), rung: 0 },
-            alphabet: RUN.iter().copied().collect(),
-            ttl_ms: 60_000,
-            round: 2,
-            role: RoundRole::Author,
-            task_label: None,
-        })
-        .await;
+    let refused = control(n1, &f, "opr1", regrant("r1", 2, RUN, 60_000)).await;
     assert_eq!(refused["ok"], false, "round 1 is unread past its seal: {refused}");
     assert!(refused.to_string().contains("unread"), "{refused}");
     let r = act(n1, &ro1, Action::Report { record: heartbeat(&t1, seal.seq) }).await;
@@ -931,7 +1057,7 @@ async fn actuate_is_counted_recorded_and_sealed() {
     let r = n1.act(AgentRequest { token: r1.clone(), op: AgentOp::Abstain }).await;
     assert!(deny_reason(&r).contains("cannot abstain"), "{}", r.detail);
     assert!(seq_of(n1, "r1").is_some(), "the refused abstain ended nothing");
-    let r = n1.operate(OperatorOp::EndRound { token: r1.clone(), reason: EndReason::Operator }).await;
+    let r = end_round(n1, &f, "r1").await;
     assert_eq!(r["ok"], true, "{r}");
 
     // The call returns to a sealed round: its record says `unknown`, and its result is withheld.
@@ -950,20 +1076,7 @@ async fn actuate_is_counted_recorded_and_sealed() {
     // The seal counts the invocations, so round 2 waits until they are read (ADR-0039 §2).
     let seal = n1.state.read().unwrap().seals["r1"].clone();
     assert_eq!((seal.topic.as_str(), seal.seq), (t1.as_str(), k + 1));
-    let refused = n1
-        .operate(OperatorOp::Grant {
-            principal: "principal-r1".into(),
-            seat: "r1".into(),
-            persona: Digest::of(b"persona"),
-            bundle: f.bundle_rev.clone(),
-            confinement: topak_core::lease::Confinement { digest: Digest::of(b"none"), rung: 0 },
-            alphabet: RUN.iter().copied().collect(),
-            ttl_ms: 60_000,
-            round: 2,
-            role: RoundRole::Author,
-            task_label: None,
-        })
-        .await;
+    let refused = control(n1, &f, "opr1", regrant("r1", 2, RUN, 60_000)).await;
     assert_eq!(refused["ok"], false, "one invocation is unread past the mark: {refused}");
     assert!(refused.to_string().contains("unread"), "{refused}");
     let r = act(n1, &ro1, Action::Report { record: heartbeat(&t1, seal.seq) }).await;
@@ -1025,6 +1138,8 @@ async fn grant_on(m: &Mechanism, seat: &str, round: Round, bundle: &Digest, alph
             round,
             role: RoundRole::Author,
             task_label: None,
+            task_labels_allowed: None,
+            sign_on: None,
         })
         .await;
     assert_eq!(r["ok"], true, "grant {seat}: {r}");
@@ -1132,7 +1247,7 @@ async fn the_tool_list_is_delivered_and_opens_the_round() {
     assert!(!g["tool_list"].to_string().contains("timer.internal"), "the target is not delivered");
 
     // 6. The next grant names revision B, and delivers the promoted entry: new digest, new text.
-    let r = n1.operate(OperatorOp::EndRound { token: a1.clone(), reason: EndReason::Operator }).await;
+    let r = end_round(n1, &f, "a1").await;
     assert_eq!(r["ok"], true, "{r}");
     let g = grant_on(n1, "a1", 2, &rev_b, AUTHOR).await;
     let a1 = g["token"].as_str().unwrap().to_string();
@@ -1268,8 +1383,8 @@ async fn labels_bound_what_a_round_may_send_after_what_it_has_read() {
         let r = act(n1, &ro1, Action::Report { record: heartbeat(topic, mark) }).await;
         assert!(r.admitted, "{}", r.detail);
     };
-    let close = async |token: &str| {
-        let r = n1.operate(OperatorOp::EndRound { token: token.into(), reason: EndReason::Operator }).await;
+    let close = async |_token: &str| {
+        let r = end_round(n1, &f, "r1").await;
         assert_eq!(r["ok"], true, "{r}");
     };
     let record = async |topic: &str, seq: u64| {
@@ -1378,4 +1493,181 @@ async fn labels_bound_what_a_round_may_send_after_what_it_has_read() {
     let r = act(n1, &r1, call("post", json!({ "body": "typed out" }))).await;
     assert!(deny_reason(&r).contains("R5-no-read-then-send"), "a literal carries what was read: {}", r.detail);
     close(&r1).await;
+}
+
+// ---- the operator as a principal (ADR-0050) ---------------------------------------------------
+
+/// ADR-0050 §10's reference behaviours, on the linked floor's control entries. Three operators
+/// are seated in each domain, each on a sign-on assertion, by the BOOTSTRAP path: a first lease
+/// from a completed tally is not built, and that path stands in for the quorum.
+///
+/// | Behaviour | Where |
+/// |---|---|
+/// | A successor grant carries the round's task and its label; the seating bounds the label | 1 |
+/// | A `Regrant` refused for widening | 2 |
+/// | Every control action is on the operator's topic | 3 |
+/// | An operator stops in its own domain only | 4 |
+/// | A lapsed operator: a revocation by key alone refused, with a fresh assertion admitted; its `Regrant` and its fence refused | 5 |
+/// | An add refused with no peer | 6 |
+/// | The unsigned path stops nothing, and a forged request is not ordered | 7 |
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn an_operator_is_a_principal_and_its_requests_are_decided() {
+    let f = fixture("operators").await;
+    let c = cluster(&f, false).await;
+    let n1 = &c.nodes[0];
+    let chain = n1.state.read().unwrap().chain.clone();
+    let floor = |r: &Value| r["floor"].to_string();
+    let labels = |l: &[&str]| l.iter().map(|s| s.to_string()).collect::<BTreeSet<String>>();
+    assert_eq!(n1.state.read().unwrap().live_operators(Domain::Run).len(), 3);
+
+    // A seating, by the BOOTSTRAP path: r1's first lease, and the labels its tasks may carry.
+    let r = n1
+        .operate(OperatorOp::Grant {
+            principal: "principal-r1".into(),
+            seat: "r1".into(),
+            persona: Digest::of(b"persona"),
+            bundle: f.bundle_rev.clone(),
+            confinement: topak_core::lease::Confinement { digest: Digest::of(b"none"), rung: 0 },
+            alphabet: RUN.iter().copied().collect(),
+            ttl_ms: 60_000,
+            round: 1,
+            role: RoundRole::Author,
+            task_label: Some(labels(&["untrusted"])),
+            task_labels_allowed: Some(labels(&["untrusted"])),
+            sign_on: None,
+        })
+        .await;
+    assert_eq!(r["ok"], true, "{r}");
+
+    // ---- 1. the successor grant, its task and its label ----
+    let task = "Close valve v7 and report.";
+    let successor = |round: Round, alphabet: &[ActionKind], label: Option<&[&str]>| ControlAction::Regrant {
+        target: "r1".into(),
+        round,
+        alphabet: alphabet.iter().copied().collect(),
+        ttl_ms: 60_000,
+        task: Some(Digest::of(task.as_bytes())),
+        task_label: label.map(labels),
+        sign_on: None,
+    };
+    let with_task = async |op: &str, a: ControlAction| control_with(n1, &f, op, a, None, Some(task.to_string())).await;
+    // A live round is not regranted over.
+    let r = with_task("opr1", successor(2, RUN, Some(&["untrusted"]))).await;
+    assert_eq!((&r["ok"], &r["denied"]), (&json!(false), &json!("floor")), "{r}");
+    assert_eq!(end_round(n1, &f, "r1").await["ok"], true);
+    // No label on the task (ADR-0047 §1), and a label the seating does not allow (§5).
+    let r = with_task("opr1", successor(2, RUN, None)).await;
+    assert!(floor(&r).contains("C8-task-label-in-bounds"), "{r}");
+    let r = with_task("opr1", successor(2, RUN, Some(&["restricted"]))).await;
+    assert!(floor(&r).contains("C8-task-label-in-bounds"), "{r}");
+    // The bytes are the ones the signed digest names.
+    let r = control_with(n1, &f, "opr1", successor(2, RUN, Some(&["untrusted"])), None, Some("another task".into())).await;
+    assert!(r["error"].to_string().contains("not the ones the request's digest names"), "{r}");
+    // Granted: the seating's binding, the next round, the task in the round's payload.
+    let r = with_task("opr1", successor(2, &[ActionKind::Consult, ActionKind::Report], Some(&["untrusted"]))).await;
+    assert_eq!(r["ok"], true, "{r}");
+    assert_eq!(r["floor"], json!(["C1-regrant-successor"]));
+    assert_eq!((&r["lease"]["round"], &r["lease"]["principal"]), (&json!(2), &json!("principal-r1")));
+    let t2 = lift::topic_name(&chain, Domain::Run, "r1", 0, 2);
+    let opening = memory(n1).topics.lock().await[&t2][0].clone();
+    assert_eq!(opening.kind, RecordKind::Open);
+    assert_eq!(opening.payload["task"], json!({ "digest": Digest::of(task.as_bytes()), "label": ["untrusted"], "text": task }));
+    let clear = n1.state.read().unwrap().live_lease("r1").unwrap().labels.clear_set.clone();
+    assert_eq!(clear, labels(&["untrusted"]), "the task is delivered clear, and clearSet starts from its label");
+
+    // ---- 2. a successor never widens: round 2 gave up `Actuate`, and round 3 may not take it back ----
+    assert_eq!(end_round(n1, &f, "r1").await["ok"], true);
+    let r = with_task("opr1", successor(3, RUN, Some(&["untrusted"]))).await;
+    assert_eq!((&r["ok"], &r["denied"]), (&json!(false), &json!("floor")), "widening: {r}");
+    // An operator neither regrants nor renews itself.
+    let own = ControlAction::Renew { target: "opr1".into(), alphabet: BTreeSet::new(), ttl_ms: 1000, sign_on: None };
+    assert!(floor(&control(n1, &f, "opr1", own).await).contains("C6-no-self"));
+    // A peer renews it, on a sign-on assertion for this boundary.
+    let renew = |sign_on| ControlAction::Renew { target: "opr1".into(), alphabet: BTreeSet::new(), ttl_ms: 3_600_000, sign_on };
+    let r = control(n1, &f, "opr2", renew(None)).await;
+    assert!(r.to_string().contains("fresh sign-on assertion"), "{r}");
+    let r = control(n1, &f, "opr2", renew(Some(sign_on(n1, &f, "opr1")))).await;
+    assert_eq!(r["ok"], true, "{r}");
+
+    // ---- 3. every control action is on the operator's topic, where its peers read it ----
+    {
+        let topics = memory(n1).topics.lock().await;
+        let t = lift::topic_name(&chain, Domain::Run, "opr1", 0, 1);
+        let actions: Vec<String> = topics[&t]
+            .iter()
+            .filter(|r| r.kind == RecordKind::Control)
+            .map(|r| r.payload["control"]["action"].as_str().unwrap().to_string())
+            .collect();
+        assert_eq!(actions, ["end_round", "regrant", "end_round"], "what was ordered, and nothing that was refused");
+    }
+
+    // ---- 4. an operator stops in its own domain ----
+    let r = control(n1, &f, "op1", ControlAction::EndRound { target: "opr3".into() }).await;
+    assert!(floor(&r).contains("C9-stop-in-own-domain"), "{r}");
+
+    // ---- 5. a lapsed operator ----
+    assert_eq!(control(n1, &f, "opr1", ControlAction::EndRound { target: "opr3".into() }).await["ok"], true);
+    let _a1 = grant(n1, &f, "a1", 1, RoundRole::Author, AUTHOR, 60_000).await;
+    let r1 = with_task("opr1", successor(3, &[ActionKind::Consult], Some(&["untrusted"]))).await;
+    assert_eq!(r1["ok"], true, "{r1}");
+    let revoke = || ControlAction::Revoke { target: RevocationTarget::Principal("principal-r1".into()), reason: "seen".into() };
+    // By its key alone: a key nobody revoked is not a standing lever.
+    let r = control(n1, &f, "opr3", revoke()).await;
+    assert_eq!((&r["ok"], &r["denied"]), (&json!(false), &json!("floor")), "{r}");
+    assert!(n1.state.read().unwrap().live_lease("r1").is_some());
+    // An add needs a lease, and the fleet fence does too, whatever the provider says.
+    let fresh = || Some(sign_on(n1, &f, "opr3"));
+    let r = control_with(n1, &f, "opr3", successor(4, &[ActionKind::Consult], Some(&["untrusted"])), fresh(), Some(task.into())).await;
+    assert!(floor(&r).contains("C5-add-needs-lease-and-peer"), "{r}");
+    let r = control_with(n1, &f, "opr3", ControlAction::FenceEpoch { reason: "stop".into() }, fresh(), None).await;
+    assert!(floor(&r).contains("C7-fence-needs-lease"), "{r}");
+    // With a fresh assertion, in its own domain: admitted, and attributed by its signature.
+    let r = control_with(n1, &f, "opr3", revoke(), fresh(), None).await;
+    assert_eq!(r["ok"], true, "{r}");
+    assert_eq!(r["floor"], json!(["C4-deny"]));
+    assert!(n1.state.read().unwrap().live_lease("r1").is_none(), "revoked");
+    {
+        // It has no open round: its deny is on the `after` companion of its last one.
+        let topics = memory(n1).topics.lock().await;
+        let after = lift::after_topic_name(&chain, Domain::Run, "opr3", 0, 1);
+        assert!(topics[&after].iter().any(|r| r.kind == RecordKind::Control && r.payload["control"]["action"] == "revoke"));
+    }
+
+    // ---- 6. an add needs a live peer ----
+    assert_eq!(control(n1, &f, "opr1", ControlAction::EndRound { target: "opr2".into() }).await["ok"], true);
+    let r = control(n1, &f, "opr1", renew(Some(sign_on(n1, &f, "opr2")))).await;
+    assert!(floor(&r).contains("C5-add-needs-lease-and-peer"), "{r}");
+    // It can still stop, alone.
+    assert_eq!(n1.state.read().unwrap().live_operators(Domain::Run).len(), 1);
+
+    // ---- 7. the unsigned path, and a forgery ----
+    let r = n1.operate(OperatorOp::FenceEpoch { reason: "from the socket".into(), attribution: "nobody".into() }).await;
+    assert_eq!(r["ok"], false, "{r}");
+    assert!(r.to_string().contains("an operator's signed request"), "{r}");
+    let r = n1
+        .operate(OperatorOp::Revoke {
+            target: RevocationTarget::Principal("principal-a1".into()),
+            reason: "from the socket".into(),
+            attribution: "nobody".into(),
+        })
+        .await;
+    assert_eq!(r["ok"], false, "{r}");
+    assert_eq!(n1.state.read().unwrap().epoch, 0);
+    assert!(n1.state.read().unwrap().live_lease("a1").is_some());
+    // A request for op1's seat, signed with op2's key.
+    let request = ControlRequest {
+        operator: "op1".into(),
+        epoch: 0,
+        ctr: 1_000_000,
+        action: ControlAction::FenceEpoch { reason: "forged".into() },
+    };
+    let sig = sign(&f.keys.ops["op2"], CONTROL_PURPOSE, &request.body(&chain));
+    let r = n1.operate(OperatorOp::Control { request, sig, assertion: None, task: None }).await;
+    assert!(r["error"].to_string().contains("not signed by the operator seat's key"), "{r}");
+    // The real one: a live operator fences the fleet by its key alone.
+    let r = control(n1, &f, "op1", ControlAction::FenceEpoch { reason: "e-stop".into() }).await;
+    assert_eq!(r["ok"], true, "{r}");
+    assert_eq!(r["floor"], json!(["C4-deny"]));
+    let st = n1.state.read().unwrap();
+    assert!(st.epoch == 1 && st.live_by_seat.is_empty(), "every lease is fenced, the operators' with them");
 }

@@ -181,6 +181,9 @@ pub enum SeatKind {
     Thinker,
     Observer,
     Grant,
+    /// ADR-0050 §1 (Proposed): a person who operates. Its alphabet is the control alphabet and
+    /// nothing else, so it is issued none of the action variants.
+    Operator,
 }
 
 impl SeatKind {
@@ -189,6 +192,7 @@ impl SeatKind {
             SeatKind::Thinker => "thinker",
             SeatKind::Observer => "observer",
             SeatKind::Grant => "grant",
+            SeatKind::Operator => "operator",
         }
     }
 
@@ -203,6 +207,7 @@ impl SeatKind {
             }
             SeatKind::Observer => matches!(k, Read | Emit | Vote | Consult | Report),
             SeatKind::Grant => matches!(k, Read | Emit | Vote),
+            SeatKind::Operator => false,
         }
     }
 }

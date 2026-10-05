@@ -37,6 +37,8 @@ use std::time::{Duration, Instant};
 
 use serde_json::{Value, json};
 use tokio::sync::{mpsc, oneshot};
+use topak_core::control::{CONTROL_PURPOSE, Control, ControlAction, ControlRequest};
+use topak_core::lift::lift_control;
 use topak_core::labels::{Delivery, Handle, Label, LabelFacts, RoundLabels};
 use topak_bundle::BundleTier;
 use topak_core::action::{Action, ActionRequest, tool_id};
@@ -500,7 +502,10 @@ impl Mechanism {
     /// the list and its digest. Called once, at grant, before the session exists, so nothing the
     /// principal does can precede it on the topic. A renewal writes none: the bundle is fixed
     /// across renewal (ADR-0031 R2), and so is the list.
-    pub(crate) async fn open_round(&self, fence: LogIndex, seat: &str) -> anyhow::Result<Value> {
+    ///
+    /// `task` is the round's task where the grant carried one (ADR-0050 §5): its digest and label
+    /// are on the log with the grant, and its bytes are in the round's payload, here.
+    pub(crate) async fn open_round(&self, fence: LogIndex, seat: &str, task: Option<Value>) -> anyhow::Result<Value> {
         let (topic, list) = self.tool_list(fence).ok_or_else(|| anyhow::anyhow!("the lease is not in state"))?;
         let digest = Digest::of_json(&list);
         let rec = EmitRecord {
@@ -511,7 +516,10 @@ impl Mechanism {
             admit: None,
             seq: None,
             digest: digest.clone(),
-            payload: json!({ "tool_list": list }),
+            payload: match task {
+                Some(task) => json!({ "tool_list": list, "task": task }),
+                None => json!({ "tool_list": list }),
+            },
         };
         self.transport.emit(&rec).await?;
         Ok(json!({ "digest": digest, "list": rec.payload["tool_list"] }))
@@ -957,6 +965,8 @@ impl Mechanism {
                 round,
                 role,
                 task_label,
+                task_labels_allowed,
+                sign_on,
             } => {
                 // ADR-0044 §3: a grant naming a revision with no verified signature is refused,
                 // here at decide, as a grant under superseded rules is at apply (I6). The
@@ -978,6 +988,8 @@ impl Mechanism {
                     round,
                     role,
                     task_label,
+                    task_labels_allowed,
+                    sign_on,
                 };
                 return match self.propose(Entry::Grant { id, req, appraisal: None }).await {
                     Ok((_, Applied::LeaseGranted { fence })) => {
@@ -988,7 +1000,7 @@ impl Mechanism {
                         };
                         // ADR-0048 §2: the opening record is on the topic before the session
                         // exists. If it cannot be written the lease stands unused: no token.
-                        let tool_list = match self.open_round(fence, &seat).await {
+                        let tool_list = match self.open_round(fence, &seat, None).await {
                             Ok(l) => l,
                             Err(e) => {
                                 return json!({
@@ -1008,6 +1020,9 @@ impl Mechanism {
                     Ok((_, a)) => json!({ "ok": false, "applied": a }),
                     Err(e) => json!({ "ok": false, "error": e }),
                 };
+            }
+            OperatorOp::Control { request, sig, assertion, task } => {
+                return Box::pin(self.control(request, sig, assertion, task)).await;
             }
             OperatorOp::Renew { token, alphabet, rung, ttl_ms } => {
                 let Some(sess) = self.session(&token) else { return json!({ "ok": false, "error": "unknown token" }) };
@@ -1040,6 +1055,180 @@ impl Mechanism {
                 json!({ "ok": !matches!(applied, Applied::Rejected(_)), "slot": slot, "applied": applied })
             }
             Err(e) => json!({ "ok": false, "error": e }),
+        }
+    }
+
+    /// An operator's signed request (ADR-0050 §4): the facts, the lift, the floor's control
+    /// entries, and then the log. Every replica verifies and re-checks it at apply; this replica
+    /// writes it to the operator's topic, where its peers read it (§6).
+    async fn control(
+        &self,
+        request: ControlRequest,
+        sig: topak_core::authentic::Signed,
+        assertion: Option<topak_core::authentic::Signed>,
+        task: Option<String>,
+    ) -> Value {
+        let refuse = |why: String| json!({ "ok": false, "error": why });
+        let op = request.operator.clone();
+        // The facts and the lift, against one snapshot.
+        let prepared = {
+            let st = self.state.read().unwrap();
+            st.control_facts(&request, assertion.as_ref()).and_then(|facts| {
+                let frozen = lift_control(&request, &facts, &st).map_err(|d| d.to_string())?;
+                let grant = match &request.action {
+                    ControlAction::Regrant { target, round, alphabet, ttl_ms, task_label, sign_on, .. } => {
+                        let s = st.seatings.get(target).ok_or_else(|| format!("seat {target} is not seated"))?;
+                        Some(GrantRequest {
+                            principal: s.principal.clone(),
+                            seat: target.clone(),
+                            persona: s.persona.clone(),
+                            bundle: s.bundle.clone(),
+                            confinement: s.confinement.clone(),
+                            alphabet: alphabet.clone(),
+                            ttl_ms: *ttl_ms,
+                            round: *round,
+                            role: s.role,
+                            task_label: task_label.clone(),
+                            task_labels_allowed: None,
+                            sign_on: sign_on.clone(),
+                        })
+                    }
+                    _ => None,
+                };
+                let renew = match &request.action {
+                    ControlAction::Renew { target, alphabet, ttl_ms, .. } => st.live_lease(target).map(|l| RenewRequest {
+                        seat: target.clone(),
+                        fence: l.lease.fence,
+                        alphabet: alphabet.clone(),
+                        rung: l.lease.confinement.rung,
+                        ttl_ms: *ttl_ms,
+                    }),
+                    _ => None,
+                };
+                Ok((facts, frozen, grant, renew))
+            })
+        };
+        let (facts, frozen, grant, renew) = match prepared {
+            Ok(p) => p,
+            Err(e) => return refuse(e),
+        };
+        // §3: between boundaries a request is signed with the seat's key, and the mechanism checks
+        // a signature it can check itself. Checked here so that a forgery is not ordered, and
+        // again by every replica at apply.
+        {
+            let st = self.state.read().unwrap();
+            let key = st.rules.seats.get(&op).map(|d| d.key.clone());
+            let body = request.body(&st.chain);
+            if key.as_ref() != Some(&sig.key) || !topak_core::authentic::verify(CONTROL_PURPOSE, &body, &sig) {
+                return refuse("the request is not signed by the operator seat's key (ADR-0050 §3)".into());
+            }
+        }
+        // §5: the task's bytes are the ones the signed digest names.
+        if let ControlAction::Regrant { task: digest, .. } = &request.action {
+            match (digest, &task) {
+                (Some(d), Some(t)) if Digest::of(t.as_bytes()) == *d => {}
+                (None, None) => {}
+                _ => return refuse("the task's bytes are not the ones the request's digest names (ADR-0050 §5)".into()),
+            }
+        }
+        if let Some(g) = &grant {
+            if g.confinement.rung > 0 {
+                return refuse("a Regrant of a seat at rung 1 or above launches a guest, which this reference has not built".into());
+            }
+            if !self.bundle.verified(&g.bundle) {
+                return refuse(format!("bundle {} has no verified signature (ADR-0044 §3)", g.bundle.short()));
+            }
+        }
+        // The floor. There is no bundle tier: the control entries are the whole envelope.
+        let reasons = match self.floor.decide(&frozen) {
+            topak_core::admit::FloorOutcome::Permit { reasons } => reasons,
+            topak_core::admit::FloorOutcome::Deny { reasons } => {
+                return json!({ "ok": false, "denied": "floor", "floor": reasons });
+            }
+            topak_core::admit::FloorOutcome::Error { diagnostics } => {
+                return json!({ "ok": false, "denied": "floor", "error": diagnostics });
+            }
+        };
+        let action = request.action.clone();
+        let control = Control { request, sig, assertion, facts };
+        let entry = Entry::Control { id: self.fresh_id(), control: control.clone(), grant: grant.clone(), renew, appraisal: None };
+        let (slot, applied) = match self.propose(entry).await {
+            Ok(r) => r,
+            Err(e) => return refuse(e),
+        };
+        if matches!(applied, Applied::Rejected(_)) {
+            return json!({ "ok": false, "slot": slot, "applied": applied, "floor": reasons });
+        }
+        self.record_control(&op, slot, &control).await;
+        let mut out = json!({ "ok": true, "slot": slot, "applied": applied, "floor": reasons });
+        match (&action, &applied) {
+            // A successor grant opens the target's next round: its opening record, with the
+            // task, and a session for whoever the operator hands the token to.
+            (ControlAction::Regrant { target, task_label, task: digest, .. }, Applied::LeaseGranted { fence }) => {
+                let delivered = task.as_ref().map(|t| json!({ "digest": digest, "label": task_label, "text": t }));
+                match self.open_round(*fence, target, delivered.clone()).await {
+                    Ok(tool_list) => {
+                        let (epoch, lease) = {
+                            let st = self.state.read().unwrap();
+                            let l = st.leases[fence].lease.clone();
+                            (l.epoch, l)
+                        };
+                        let token = hex::encode(rand::random::<[u8; 32]>());
+                        let sess = Session { seat: target.clone(), fence: *fence, epoch };
+                        self.sessions.lock().unwrap().insert(token.clone(), sess);
+                        out["fence"] = json!(fence);
+                        out["token"] = json!(token);
+                        out["lease"] = json!(lease);
+                        out["tool_list"] = tool_list;
+                        out["task"] = json!(delivered);
+                    }
+                    Err(e) => {
+                        out["ok"] = json!(false);
+                        out["error"] = json!(format!("the round's opening record was not written, so no session was opened: {e}"));
+                    }
+                }
+            }
+            // A renewal moves the lease to a new fence, and the seat's sessions here with it.
+            (ControlAction::Renew { target, .. }, Applied::Renewed { fence }) => {
+                for s in self.sessions.lock().unwrap().values_mut().filter(|s| &s.seat == target) {
+                    s.fence = *fence;
+                }
+                out["fence"] = json!(fence);
+            }
+            _ => {}
+        }
+        out
+    }
+
+    /// ADR-0050 §6: every control action is written to the operator's round topic, where the
+    /// other operators of its domain read it. An operator with no live lease has no open round:
+    /// its deny goes to the `after` companion of its last one.
+    async fn record_control(&self, op: &str, slot: LogIndex, control: &Control) {
+        let target = {
+            let st = self.state.read().unwrap();
+            let Some(d) = st.rules.seat_domain(op) else { return };
+            let Some(rec) = st.last_lease.get(op).and_then(|f| st.leases.get(f)) else { return };
+            let (epoch, round) = (rec.lease.epoch, rec.lease.round);
+            let topic = if rec.live() {
+                topic_name(&st.chain, d, op, epoch, round)
+            } else {
+                after_topic_name(&st.chain, d, op, epoch, round)
+            };
+            (topic, rec.lease.fence)
+        };
+        let payload = json!({ "control": control.request, "sig": control.sig, "facts": control.facts });
+        let rec = EmitRecord {
+            topic: target.0,
+            seat: op.to_string(),
+            fence: target.1,
+            kind: RecordKind::Control,
+            admit: Some(slot),
+            seq: None,
+            digest: Digest::of_json(&payload),
+            payload,
+        };
+        if let Err(e) = self.transport.emit(&rec).await {
+            tracing::warn!(topic = rec.topic, error = %e, "control record not written");
         }
     }
 

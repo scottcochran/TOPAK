@@ -7,9 +7,9 @@ use serde_json::{Value, json};
 use topak_core::admit::FloorOutcome;
 use topak_floor::*;
 
-/// The linked stage's cases: the genesis suite's 62, lifted to the stage's schema, and 12 for
-/// `R5` to `R7` (`floor/proposed/build.py`).
-const TESTS: &str = include_str!("../../../../floor/proposed/labels-tests.json");
+/// The linked stage's cases: the genesis suite's 62, lifted to the stage's schema, 12 for `R5` to
+/// `R7` and 32 for `C1` to `C9` (`floor/proposed/build.py`).
+const TESTS: &str = include_str!("../../../../floor/proposed/control-tests.json");
 
 /// Every behavioral case the `cedar run-tests` gate ran must decide identically through the
 /// engine the mechanism links, with the same reasons. This is the differential check between
@@ -22,7 +22,7 @@ const TESTS: &str = include_str!("../../../../floor/proposed/labels-tests.json")
 fn replays_the_gate_suite() {
     let floor = Floor::load().expect("pinned floor loads");
     let cases: Vec<Value> = serde_json::from_str(TESTS).unwrap();
-    assert_eq!(cases.len(), 74);
+    assert_eq!(cases.len(), 106);
     for c in &cases {
         let name = c["name"].as_str().unwrap();
         let r = &c["request"];

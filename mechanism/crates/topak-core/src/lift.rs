@@ -12,6 +12,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 
 use crate::action::{Action, ActionRequest, tool_id};
+use crate::control::{ControlAction, ControlFacts, ControlRequest};
 use crate::labels::{Handle, LabelFacts};
 use crate::state::{LeaseRecord, MechanismDeny, Params, State};
 use crate::types::*;
@@ -309,5 +310,75 @@ pub fn lift(
         context,
         entities: Value::Array(entities),
         bundle_input,
+    })
+}
+
+/// Lift an operator's request (ADR-0050 §4) into schema S: the operator's seat as the principal,
+/// the seat, artifact or fleet it acts on as the resource, and `ControlCtx` from the facts the
+/// mechanism computed (`State::control_facts`). The operator supplies none of them. There is no
+/// bundle tier here: the floor states the whole envelope of the control alphabet.
+pub fn lift_control(req: &ControlRequest, facts: &ControlFacts, state: &State) -> Result<FrozenInput, MechanismDeny> {
+    let rules = &state.rules;
+    let no = |why: String| MechanismDeny::Other(why);
+    let seat_entity = |s: &str| -> Value {
+        let mut parents = Vec::new();
+        if rules.grant_roster.contains(s) {
+            parents.push(uid("Roster", "grant"));
+        }
+        if rules.veto_roster.contains(s) {
+            parents.push(uid("Roster", "veto"));
+        }
+        let d = rules.seat_domain(s).map(Domain::as_str).unwrap_or("unknown");
+        let k = rules.seat_kind(s).map(SeatKind::as_str).unwrap_or("unknown");
+        ent("Seat", s, json!({ "domain": d, "kind": k }), parents)
+    };
+    let op = req.operator.as_str();
+    let mut entities =
+        vec![ent("Roster", "grant", json!({}), vec![]), ent("Roster", "veto", json!({}), vec![]), seat_entity(op)];
+    let on_seat = |entities: &mut Vec<Value>| -> Result<Value, MechanismDeny> {
+        let seat = facts.target_seat.as_deref().ok_or_else(|| no("the request names no seat".into()))?;
+        if seat != op {
+            entities.push(seat_entity(seat));
+        }
+        Ok(uid("Seat", seat))
+    };
+    let resource = match &req.action {
+        ControlAction::AttestGates { artifact, .. } => {
+            // The gates are attested for an artifact that was offered: its author is on the log.
+            let c = state.candidates.get(artifact).ok_or(MechanismDeny::ArtifactNotSubmitted)?;
+            if c.author != op {
+                entities.push(seat_entity(&c.author));
+            }
+            entities.push(ent("Artifact", &artifact.0, json!({ "author": eref("Seat", &c.author) }), vec![]));
+            uid("Artifact", &artifact.0)
+        }
+        ControlAction::FenceEpoch { .. } => {
+            entities.push(ent("Fleet", "fleet", json!({}), vec![]));
+            uid("Fleet", "fleet")
+        }
+        _ => on_seat(&mut entities)?,
+    };
+    let context = json!({
+        "personaInForce": facts.persona_in_force,
+        "hasLease": facts.has_lease,
+        "peerLive": facts.peer_live,
+        "freshAssertion": facts.fresh_assertion,
+        "targetSeated": facts.target_seated,
+        "targetLive": facts.target_live,
+        "sameBinding": facts.same_binding,
+        "nextRound": facts.next_round,
+        "lastAlphabet": facts.last_alphabet,
+        "newAlphabet": facts.new_alphabet,
+        "taskLabelled": facts.task_labelled,
+        "taskLabel": facts.task_label,
+        "taskLabelsAllowed": facts.task_labels_allowed,
+    });
+    Ok(FrozenInput {
+        principal: uid("Seat", op),
+        action: json!({ "type": format!("{NS}::Action"), "id": req.action.name() }),
+        resource,
+        context,
+        entities: Value::Array(entities),
+        bundle_input: json!({ "action": req.action.name(), "principal": { "seat": op }, "request": req }),
     })
 }

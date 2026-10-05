@@ -142,6 +142,7 @@ fn fixture(name: &str, criterion: bool) -> Fx {
         // ADR-0025 §1 (f): the simulated verifier counts only because the rules issue its key.
         verifier_keys: BTreeSet::from([vkey]),
         bundle_keys: BTreeSet::new(),
+        provider_keys: BTreeSet::new(),
         inside_targets: BTreeSet::new(),
         releasers: BTreeSet::new(),
         personas: BTreeMap::from([(persona.clone(), topak_core::confine::Provenance::InHousePretrain)]),
@@ -403,6 +404,8 @@ async fn promote(m: &Mechanism, f: &Fx, text: &str) -> Digest {
         round: f.next_round(),
         role,
         task_label: None,
+        task_labels_allowed: None,
+        sign_on: None,
     };
     let r = m.operate(grant("w1", RoundRole::Author, &[ActionKind::Draft, ActionKind::Submit])).await;
     let token = r["token"].as_str().unwrap_or_else(|| panic!("{r}")).to_string();
@@ -582,6 +585,8 @@ async fn simulated_rung_3_round_is_contained_and_rung_0_beside_it_is_not() {
             round: f.next_round(),
             role: RoundRole::Author,
             task_label: None,
+            task_labels_allowed: None,
+            sign_on: None,
         })
         .await;
     assert_eq!(r["ok"], true, "{r}");
@@ -901,6 +906,8 @@ async fn run_round(name: &str, channels: impl FnOnce(&str) -> Channels) -> (Cl, 
             round: f.next_round(),
             role: RoundRole::Author,
             task_label: None,
+            task_labels_allowed: None,
+            sign_on: None,
         })
         .await;
     let watcher = r["token"].as_str().unwrap().to_string();

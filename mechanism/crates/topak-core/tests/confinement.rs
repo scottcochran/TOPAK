@@ -70,6 +70,7 @@ fn rules() -> Rules {
         erasure_roster: None,
         verifier_keys: BTreeSet::from([pubkey(&VERIFIER)]),
         bundle_keys: BTreeSet::new(),
+        provider_keys: BTreeSet::new(),
         inside_targets: BTreeSet::new(),
         releasers: BTreeSet::new(),
         personas: BTreeMap::from([(persona(), Provenance::InHousePretrain)]),
@@ -196,6 +197,8 @@ impl Log {
             round: self.round,
             role,
             task_label: None,
+            task_labels_allowed: None,
+            sign_on: None,
         };
         let id = self.id("g");
         match self.apply(Entry::Grant { id, req, appraisal: None }) {
@@ -304,6 +307,8 @@ impl Ask {
             round: self.round,
             role: RoundRole::Author,
             task_label: None,
+            task_labels_allowed: None,
+            sign_on: None,
         }
     }
 

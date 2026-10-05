@@ -14,7 +14,7 @@ use crate::types::canonical_json;
 /// Hex-encoded Ed25519 public key.
 pub type KeyHex = String;
 
-#[derive(Clone, Debug, PartialEq, Serialize, Deserialize)]
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Signed {
     pub key: KeyHex,
     pub sig: String,
