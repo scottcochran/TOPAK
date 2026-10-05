@@ -1,4 +1,4 @@
-//! Labels on Run's ingress (ADR-0047, Proposed), as the replicated state and the lift carry them.
+//! Labels on Run's ingress (ADR-0047), as the replicated state and the lift carry them.
 //!
 //! A label is a set of names from a bundle's vocabulary. This crate reads no bundle: the replica
 //! that decides an admit computes the call's `LabelFacts` from the allowlist entry of the lease's

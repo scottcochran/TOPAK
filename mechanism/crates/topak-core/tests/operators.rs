@@ -1,4 +1,4 @@
-//! The operator as a principal (ADR-0050, Proposed), at the state: what every replica holds an
+//! The operator as a principal (ADR-0050, provisional), at the state: what every replica holds an
 //! operator's signed request to when it applies it. The floor's control entries decide a request
 //! on the deciding replica; `apply` verifies the signature, recomputes the facts and restates the
 //! envelope, and these tests are of that half. The properties are `spec/Operators.tla`'s.

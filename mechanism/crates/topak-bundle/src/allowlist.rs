@@ -1,4 +1,4 @@
-//! The allowlist entry, and what makes a bundle's allowlist well-formed (ADR-0049, Proposed).
+//! The allowlist entry, and what makes a bundle's allowlist well-formed (ADR-0049).
 //!
 //! ADR-0049 is the one statement of the entry: five parts (identity, inputs, interface, labels,
 //! channel), keyed `name@digest` in bundle data at `topak.tools`. `check` reads that data once,

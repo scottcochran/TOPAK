@@ -271,6 +271,18 @@ pub fn check_well_formed(r: &Rules) -> Vec<Violation> {
     if r.anchor_keys.is_empty() {
         out.push(v("WF", "anchor key set is empty"));
     }
+    // ADR-0025 §1 (h): the two lists a bundle's load checks read are issued, and are what they
+    // say they are: an entry is named by name and digest, and a target is not empty. The rules
+    // floor bounds neither list, so rules that carry them are admitted; adding to either is an
+    // issuance, signed by every anchor key like any other rules change.
+    for e in &r.releasers {
+        if !e.split_once('@').is_some_and(|(n, d)| !n.is_empty() && !d.is_empty()) {
+            out.push(v("WF", format!("releasing entry {e:?} is not named by name@digest")));
+        }
+    }
+    if r.inside_targets.iter().any(String::is_empty) {
+        out.push(v("WF", "an inside target is empty".to_string()));
+    }
     // ADR-0052 §1: an emergency seat is a Run seat. Build's way to add authority is a promotion.
     for (id, d) in &r.seats {
         if d.kind == SeatKind::Emergency && d.domain != Domain::Run {

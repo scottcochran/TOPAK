@@ -995,6 +995,12 @@ async fn actuate_is_counted_recorded_and_sealed() {
     let r = act(n1, &ro1, Action::Report { record: heartbeat(&t1, 0) }).await;
     assert!(r.admitted, "{}", r.detail);
     for i in 1..=k {
+        // The Observer says again that it is there, at the same mark. This test is of the backlog,
+        // which the mark bounds, and not of freshness, which `observer_liveness_couples_run_admits`
+        // tests: on a loaded machine K tool calls can outlast one heartbeat's freshness, and did,
+        // about one run in nine, once this file held nine clusters.
+        let r = act(n1, &ro1, Action::Report { record: heartbeat(&t1, 0) }).await;
+        assert!(r.admitted, "{}", r.detail);
         let r = act(n1, &r1, sleep(0)).await;
         assert!(r.admitted, "actuate {i} of {k}: {}", r.detail);
         assert_eq!(r.detail["result"]["seq"], i, "the sequence counts invocations: {}", r.detail);

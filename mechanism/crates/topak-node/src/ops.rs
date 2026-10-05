@@ -1,7 +1,7 @@
 //! The operator protocol. These are environment steps, not principal actions: lease grant and
 //! renewal, revocation, anchor issuance, gate evidence, break-glass approvals.
 //!
-//! Two paths share this socket (ADR-0050, Proposed).
+//! Two paths share this socket (ADR-0050, provisional).
 //!
 //! `Control` is an operator's request: one of the six control actions, signed with the key of an
 //! `operator` seat, decided by the floor's control entries `C1` to `C9` and checked again by

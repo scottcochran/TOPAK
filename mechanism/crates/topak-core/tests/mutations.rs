@@ -884,7 +884,32 @@ fn vouching_keys_are_issued_and_must_be_keys() {
     assert!(check_well_formed(&r).is_empty());
 }
 
-// ---- Labels.tla (ADR-0047, Proposed): the round's labels at apply -----------------------------
+/// ADR-0025 §1 (h); ADR-0047 §7: the two lists a bundle's load checks read are issued. Rules
+/// that carry them are well-formed and the rules floor admits them: it bounds neither. A list
+/// changes only by an issuance, and its entries are what they claim to be.
+#[test]
+fn the_two_issued_lists_are_admitted_by_the_rules_floor() {
+    let mut r = rules();
+    r.inside_targets.insert("vault.internal:443".into());
+    r.releasers.insert("redact@d5".into());
+    assert!(check_well_formed(&r).is_empty());
+    assert!(check_rules_floor(&r, 2).is_empty(), "the floor bounds neither list");
+    // With the same lists and nothing else changed, an unsigned issuance fails for its signatures
+    // and for nothing about the lists.
+    let mut next = r.clone();
+    next.rules_epoch = 1;
+    let refused = validate_issuance(&rules(), &Issuance { rules: next, signatures: vec![] }, 2).unwrap_err();
+    assert!(refused.iter().all(|v| v.entry == "Authentic"), "{refused:?}");
+    // An entry that is not named by name and digest, and an empty target.
+    let mut r = rules();
+    r.releasers.insert("redact".into());
+    assert!(check_well_formed(&r).iter().any(|v| v.entry == "WF" && v.detail.contains("name@digest")));
+    let mut r = rules();
+    r.inside_targets.insert(String::new());
+    assert!(check_well_formed(&r).iter().any(|v| v.entry == "WF" && v.detail.contains("inside target")));
+}
+
+// ---- Labels.tla (ADR-0047): the round's labels at apply -----------------------------
 
 /// What `apply` holds every replica to about labels (ADR-0047 §1, §4): no Run delivery is
 /// unlabelled; `clearSet` is a fold over what was delivered clear and only grows; a handle adds

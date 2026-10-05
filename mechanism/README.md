@@ -36,7 +36,7 @@ affirmative bundle `true`, from the bundle revision the lease names, is a deny.
 ## Run it
 
 ```sh
-cargo test --workspace --release           # 132 tests (2026.10.05); needs a built bundle (next line); builds topak-demo-guest
+cargo test --workspace --release           # 133 tests (2026.10.05); needs a built bundle (next line); builds topak-demo-guest
 TOPAK_DOCKER_IMAGE=<image with python3> cargo test --release -p topak-contain --test launch   # + a real container round (skipped without it)
 scripts/build-bundle.sh                    # policies/ → bundles/<revision>.tar.gz (docker, OPA); TOPAK_BUNDLE_SECRET=<hex> also writes <revision>.sig
 
@@ -107,7 +107,7 @@ anchor issuance puts the simulator's key in `verifier_keys`. What they reach is 
   divergence in GAPS-AND-ASSUMPTIONS.md, then replace the pin line (`shasum -a 256 <path>` from
   the repository root).
 
-## Operators (ADR-0050, Proposed)
+## Operators (ADR-0050, provisional)
 
 Where the rules declare a seat of kind `operator`, an operator's request is signed and decided by the
 floor's control entries (`C1` to `C9`), and the unsigned requests on the operator socket are a
@@ -124,7 +124,7 @@ The six actions are `regrant`, `renew`, `attest_gates`, `end_round`, `revoke` an
 the rules' `provider_keys`, and so does a deny it makes with no live lease. Rules that declare no
 operator seat leave the socket as it was (D-0050-1); `scripts/dev-init.sh` writes such rules.
 
-## Break-glass (ADR-0052, Proposed)
+## Break-glass (ADR-0052, provisional)
 
 Break-glass is an emergency seating, and the floor has no X1. A seat of kind `emergency` is leased
 only by an `activate` request carrying a quorum of the break-glass roster's signatures over one

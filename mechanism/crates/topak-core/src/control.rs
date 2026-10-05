@@ -1,4 +1,4 @@
-//! The operator as a principal (ADR-0050, Proposed): the control alphabet, a seating, and what
+//! The operator as a principal (ADR-0050, provisional): the control alphabet, a seating, and what
 //! the mechanism holds about an operator's request.
 //!
 //! An operator holds a seat of kind `operator` and signs each request with the seat's key. The
@@ -231,7 +231,7 @@ pub fn sign_on_verifies(
     })
 }
 
-// ---- the emergency seating (ADR-0052, Proposed) ------------------------------------------------
+// ---- the emergency seating (ADR-0052, provisional) ------------------------------------------------
 
 pub const ACTIVATION_PURPOSE: &str = "emergency-activation";
 

@@ -1,4 +1,4 @@
-//! The emergency seating (ADR-0052, Proposed), at the state: break-glass as a seating, in place
+//! The emergency seating (ADR-0052, provisional), at the state: break-glass as a seating, in place
 //! of the floor's X1. The properties are `spec/Emergency.tla`'s.
 //!
 //! | Test | What it shows |

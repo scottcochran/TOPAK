@@ -181,10 +181,10 @@ pub enum SeatKind {
     Thinker,
     Observer,
     Grant,
-    /// ADR-0050 §1 (Proposed): a person who operates. Its alphabet is the control alphabet and
+    /// ADR-0050 §1 (provisional): a person who operates. Its alphabet is the control alphabet and
     /// nothing else, so it is issued none of the action variants.
     Operator,
-    /// ADR-0052 §1 (Proposed): a person seated by the break-glass roster's quorum, for one round.
+    /// ADR-0052 §1 (provisional): a person seated by the break-glass roster's quorum, for one round.
     Emergency,
 }
 
