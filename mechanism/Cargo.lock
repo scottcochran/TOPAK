@@ -3299,6 +3299,7 @@ dependencies = [
  "flate2",
  "opa-wasm",
  "reqwest",
+ "serde",
  "serde_json",
  "tar",
  "tokio",

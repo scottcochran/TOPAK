@@ -4,6 +4,11 @@
 //! name another: the import takes no address. Fidelity holds by construction, a check and not a
 //! trust, so ADR-0045 T-0045-24 is delegated to this runtime (T-0045-25) rather than excluded.
 //!
+//! The declaration is the entry's and nobody else's (ADR-0049 §5; ADR-0034 A2 R4). The host is
+//! configured with where a module is and what its bytes are, and with nothing about its channel:
+//! the caller reads the target from the allowlist entry of the bundle revision the lease names,
+//! and hands it in with each call. A call handed no channel has no network at all.
+//!
 //! PROVISIONAL (tool-abi). A2 says a Wasm *component* with a scoped socket capability. The build
 //! host has no `wasm32-wasip2` target, so the reference uses a core module and this host
 //! interface, which grants strictly less: no filesystem, no clock, no entropy, one connection.
@@ -35,7 +40,7 @@ use serde_json::{Map, Value};
 use topak_core::Digest;
 use wasmtime::{Caller, Config, Engine, Linker, Module, Store};
 
-/// A tool's declared effect channel (ADR-0040 §3; `mechanism/` I33's shape).
+/// A tool's declared effect channel (ADR-0040 §3), in ADR-0049's form.
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Channel {
     pub kind: String,
@@ -48,9 +53,6 @@ pub struct WasmToolSpec {
     pub module: PathBuf,
     /// The module's bytes, pinned: the tool's allowlist digest.
     pub module_sha256: Digest,
-    /// `None`: a hermetic tool (Build's P4), with no network at all.
-    #[serde(default)]
-    pub channel: Option<Channel>,
 }
 
 /// The capabilities the host grants, and nothing else.
@@ -59,7 +61,6 @@ const FUEL: u64 = 50_000_000;
 const NET_TIMEOUT: Duration = Duration::from_secs(2);
 
 struct Tool {
-    spec: WasmToolSpec,
     module: Module,
 }
 
@@ -133,7 +134,7 @@ impl WasmToolHost {
             anyhow::ensure!(Digest::of(&bytes) == spec.module_sha256, "tool {id}: the module is not the pinned one");
             let module = wt(Module::new(&engine, &bytes)).with_context(|| format!("tool {id}"))?;
             check_imports(&module).with_context(|| format!("tool {id}"))?;
-            tools.insert(id, Tool { spec, module });
+            tools.insert(id, Tool { module });
         }
         Ok(WasmToolHost { engine, tools })
     }
@@ -142,27 +143,29 @@ impl WasmToolHost {
         self.tools.contains_key(id)
     }
 
-    pub fn channel(&self, id: &str) -> Option<&Channel> {
-        self.tools.get(id).and_then(|t| t.spec.channel.as_ref())
-    }
-
     pub fn ids(&self) -> impl Iterator<Item = &String> {
         self.tools.keys()
     }
 
-    /// One call: a fresh instance, the inputs as JSON, the result as JSON. Runs on a blocking
-    /// thread; the network calls inside it block.
-    pub async fn call(self: &Arc<Self>, id: &str, inputs: &Map<String, Value>) -> anyhow::Result<(Value, ChannelUse)> {
+    /// One call: a fresh instance, the inputs as JSON, the result as JSON. `channel` is the
+    /// entry's declaration for this call, and the instance's one network capability; `None` is a
+    /// hermetic tool (Build's P4), with no network at all. Runs on a blocking thread; the network
+    /// calls inside it block.
+    pub async fn call(
+        self: &Arc<Self>,
+        id: &str,
+        inputs: &Map<String, Value>,
+        channel: Option<Channel>,
+    ) -> anyhow::Result<(Value, ChannelUse)> {
         let me = self.clone();
         let id = id.to_string();
         let input = serde_json::to_vec(inputs)?;
-        tokio::task::spawn_blocking(move || me.call_blocking(&id, input)).await?
+        tokio::task::spawn_blocking(move || me.call_blocking(&id, input, channel)).await?
     }
 
-    fn call_blocking(&self, id: &str, input: Vec<u8>) -> anyhow::Result<(Value, ChannelUse)> {
+    fn call_blocking(&self, id: &str, input: Vec<u8>, channel: Option<Channel>) -> anyhow::Result<(Value, ChannelUse)> {
         let tool = self.tools.get(id).with_context(|| format!("tool {id} is not hosted"))?;
-        let ctx =
-            Ctx { input, output: None, channel: tool.spec.channel.clone(), conns: vec![], used: ChannelUse::default() };
+        let ctx = Ctx { input, output: None, channel, conns: vec![], used: ChannelUse::default() };
         let mut store = Store::new(&self.engine, ctx);
         wt(store.set_fuel(FUEL))?;
         let mut linker: Linker<Ctx> = Linker::new(&self.engine);

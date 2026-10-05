@@ -76,10 +76,10 @@ fn server() -> (String, std::thread::JoinHandle<Vec<u8>>) {
     (addr, h)
 }
 
-fn host(tools: Vec<(&str, PathBuf, Digest, Option<Channel>)>) -> anyhow::Result<Arc<WasmToolHost>> {
+fn host(tools: Vec<(&str, PathBuf, Digest)>) -> anyhow::Result<Arc<WasmToolHost>> {
     let specs: BTreeMap<String, WasmToolSpec> = tools
         .into_iter()
-        .map(|(id, module, module_sha256, channel)| (id.to_string(), WasmToolSpec { module, module_sha256, channel }))
+        .map(|(id, module, module_sha256)| (id.to_string(), WasmToolSpec { module, module_sha256 }))
         .collect();
     Ok(Arc::new(WasmToolHost::new(specs)?))
 }
@@ -92,19 +92,19 @@ async fn a_run_tool_reaches_its_declared_target_and_nothing_else() {
     other.set_nonblocking(true).unwrap();
     let (path, d) = module("echo", ECHO);
     let ch = Channel { kind: "tcp".into(), target: declared.clone() };
-    let h = host(vec![("valve@x", path.clone(), d.clone(), Some(ch.clone())), ("hermetic@x", path, d, None)]).unwrap();
-    assert_eq!(h.channel("valve@x"), Some(&ch));
+    let h = host(vec![("valve@x", path, d)]).unwrap();
 
     let inputs = json!({ "open": "v7" }).as_object().unwrap().clone();
-    let (result, used) = h.call("valve@x", &inputs).await.unwrap();
+    let (result, used) = h.call("valve@x", &inputs, Some(ch)).await.unwrap();
     let sent = serde_json::to_vec(&inputs).unwrap();
     assert_eq!(got.join().unwrap(), sent, "the declared target received the inputs");
     assert_eq!(result, json!({ "echo": sent.len() }));
     assert_eq!((used.connects, used.sent), (1, sent.len() as u64));
     assert!(other.accept().is_err(), "an undeclared listener saw nothing");
 
-    // Build's P4: a tool with no declared channel gets no network at all.
-    let (result, used) = h.call("hermetic@x", &inputs).await.unwrap();
+    // Build's P4: a call handed no channel gets no network at all. The host holds no target of
+    // its own to fall back on (ADR-0049 §5): the same module, the same host, and nothing to reach.
+    let (result, used) = h.call("valve@x", &inputs, None).await.unwrap();
     assert_eq!(result, json!({ "connected": false }));
     assert_eq!(used.connects, 0);
 }
@@ -112,23 +112,21 @@ async fn a_run_tool_reaches_its_declared_target_and_nothing_else() {
 #[test]
 fn a_tool_that_asks_for_any_other_capability_does_not_run() {
     let (path, d) = module("rogue", ROGUE);
-    let e = host(vec![("rogue@x", path, d, Some(Channel { kind: "tcp".into(), target: "127.0.0.1:1".into() }))])
-        .err()
-        .expect("refused");
+    let e = host(vec![("rogue@x", path, d)]).err().expect("refused");
     assert!(format!("{e:#}").contains("not a capability this tool host grants"), "{e:#}");
 }
 
 #[test]
 fn a_module_that_is_not_the_pinned_one_does_not_load() {
     let (path, _) = module("pinned", ECHO);
-    let e = host(vec![("x@y", path, Digest::of(b"another module"), None)]).err().expect("refused");
+    let e = host(vec![("x@y", path, Digest::of(b"another module"))]).err().expect("refused");
     assert!(format!("{e:#}").contains("not the pinned one"), "{e:#}");
 }
 
 #[tokio::test]
 async fn a_runaway_tool_is_stopped() {
     let (path, d) = module("spin", SPIN);
-    let h = host(vec![("spin@x", path, d, None)]).unwrap();
-    let e = h.call("spin@x", &serde_json::Map::new()).await.unwrap_err();
+    let h = host(vec![("spin@x", path, d)]).unwrap();
+    let e = h.call("spin@x", &serde_json::Map::new(), None).await.unwrap_err();
     assert!(format!("{e:#}").to_lowercase().contains("fuel"), "{e:#}");
 }

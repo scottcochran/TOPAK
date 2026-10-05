@@ -12,14 +12,14 @@
 # channel its allowlist entry declares and no other (ADR-0040 §3). An entry that declares nothing
 # gives the Run profile and the Observer nothing to hold the tool to, so it is refused here.
 #
-# PROVISIONAL (channel schema). ADR-0040 lists the allowlist entry's schema as an open obligation.
-# Until a record writes it, a channel is an object with two non-empty strings:
+# The channel's form is ADR-0049's (Proposed): an object with two non-empty strings.
 #
 #     "channel": {"kind": "https", "target": "search.internal:443"}
 #
-# `kind` and `target` are DECLARED, NOT INTERPRETED. This policy checks that they are present and
-# well-formed. It does not check that the tool opens that channel, or only that channel: that is
-# channel fidelity (ADR-0042 §6), which has no owner, as hermeticity for native tools has none.
+# The mechanism refuses a bundle whose Run entry lacks one when it loads the bundle (ADR-0049 W4).
+# The check is repeated here because a sidecar evaluates this policy over data the mechanism did
+# not load. `kind` is DECLARED, NOT INTERPRETED. `target` is where the tool host binds a Wasm
+# tool's one connection (ADR-0034 A2); for a native tool it is an assertion (G19).
 #
 # Input: the frozen, syntactically lifted request (ADR-0030 §4).
 #   {

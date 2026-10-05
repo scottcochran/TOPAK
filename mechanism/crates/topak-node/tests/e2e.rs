@@ -61,6 +61,9 @@ struct Fixture {
     rules: Rules,
     keys: Keys,
     bundle_rev: Digest,
+    /// Further revisions the real tier holds: the built bundle's policy with this data, under
+    /// this revision name. They stand for revisions promoted and signed beside the built one.
+    extra_bundles: Vec<(String, Value)>,
 }
 
 async fn fixture(name: &str) -> Fixture {
@@ -153,7 +156,7 @@ async fn fixture(name: &str) -> Fixture {
     let l = LocalBundles::load_dir(&dir.join("bundles"), &rules.bundle_keys).await.unwrap();
     let bundle_rev = l.revisions().next().expect("the signed copy loads").clone();
 
-    Fixture { dir, corpus_obj, run_obj, tool, run_tool, tools, params, rules, keys, bundle_rev }
+    Fixture { dir, corpus_obj, run_obj, tool, run_tool, tools, params, rules, keys, bundle_rev, extra_bundles: vec![] }
 }
 
 /// A bundle that allows everything, to exercise effects the real placeholder bundle refuses.
@@ -166,6 +169,14 @@ impl BundleDecider for AllowAll {
     /// A test stub: every revision counts as verified, so grants are not refused for it.
     fn verified(&self, _rev: &Digest) -> bool {
         true
+    }
+    /// No entries here: a test of what a list holds uses the real tier.
+    fn tool_list(&self, rev: &Digest, domain: Domain, callable: &BTreeSet<String>) -> Value {
+        topak_bundle::Allowlist::default().tool_list(rev, domain, callable)
+    }
+    /// No test here hosts a Wasm tool.
+    fn channel(&self, _rev: &Digest, _tool: &str) -> Option<topak_contain::wasmtool::Channel> {
+        None
     }
 }
 
@@ -184,7 +195,14 @@ async fn cluster(f: &Fixture, real_bundle: bool) -> Cluster {
         hub.register(id, in_tx);
         let bundle: Box<dyn BundleDecider> = if real_bundle {
             let bundles = f.dir.join("bundles");
-            Box::new(BundleTier::new(None, LocalBundles::load_dir(&bundles, &f.rules.bundle_keys).await.unwrap()))
+            let mut local = LocalBundles::load_dir(&bundles, &f.rules.bundle_keys).await.unwrap();
+            let built = std::fs::read(bundles.join(format!("{}.tar.gz", f.bundle_rev.0))).unwrap();
+            for (revision, data) in &f.extra_bundles {
+                let wasm = topak_bundle::read_bundle_tarball(&built).unwrap().wasm;
+                let files = topak_bundle::BundleFiles { revision: revision.clone(), wasm, data: data.clone() };
+                local.insert(files).await.expect("the revision's allowlist is well-formed");
+            }
+            Box::new(BundleTier::new(None, local))
         } else {
             Box::new(AllowAll)
         };
@@ -934,4 +952,164 @@ async fn actuate_is_counted_recorded_and_sealed() {
     for m in &c.nodes[1..] {
         assert_eq!(state_json(m), s1, "the sequence and the seal are replicated: replica {} diverged", m.id);
     }
+}
+
+// ---- the tool list (ADR-0048) -----------------------------------------------------------------
+
+/// An allowlist in ADR-0049's form holding the fixture's two real tools, and the built bundle's
+/// two entries, which no parameter allowlists. `build` is the Build tool's key and purpose.
+fn allowlist(f: &Fixture, build: (&str, &str)) -> Value {
+    let (name, digest) = build.0.split_once('@').unwrap();
+    let (rname, rdigest) = f.run_tool.split_once('@').unwrap();
+    json!({ "topak": { "labels": { "vocabulary": ["untrusted", "restricted"] }, "tools": {
+        build.0: {
+            "name": name, "digest": digest, "domain": "build", "purpose": build.1,
+            "inputs": { "path": { "type": "string", "required": true, "note": "Workspace-relative path of the file." } },
+        },
+        f.run_tool.clone(): {
+            "name": rname, "digest": rdigest, "domain": "run", "purpose": "Wait, then return.",
+            "inputs": { "ms": { "type": "number", "required": true, "note": "Milliseconds to wait.",
+                                "destination": false, "accepts": [] } },
+            "destinations": "none",
+            "result": { "label": ["untrusted"], "releases": [] },
+            "channel": { "kind": "none", "target": "timer.internal:0" },
+        },
+        "tlc@d1": {
+            "name": "tlc", "digest": "d1", "domain": "build", "purpose": "Model-check a specification.",
+            "inputs": { "spec": { "type": "string", "required": true, "note": "The module." } },
+        },
+    } } })
+}
+
+async fn grant_on(m: &Mechanism, seat: &str, round: Round, bundle: &Digest, alphabet: &[ActionKind]) -> Value {
+    let r = m
+        .operate(OperatorOp::Grant {
+            principal: format!("principal-{seat}"),
+            seat: seat.into(),
+            persona: Digest::of(b"persona"),
+            bundle: bundle.clone(),
+            confinement: topak_core::lease::Confinement { digest: Digest::of(b"none"), rung: 0 },
+            alphabet: alphabet.iter().copied().collect(),
+            ttl_ms: 60_000,
+            round,
+            role: RoundRole::Author,
+        })
+        .await;
+    assert_eq!(r["ok"], true, "grant {seat}: {r}");
+    r
+}
+
+async fn told(m: &Mechanism, token: &str) -> Value {
+    let r = m.act(AgentRequest { token: token.into(), op: AgentOp::ToolList }).await;
+    assert!(r.admitted, "{}", r.detail);
+    r.detail["tool_list"].clone()
+}
+
+/// ADR-0048 §8's behaviours, on the real bundle tier. Two revisions are held: `rev_a`, and
+/// `rev_b`, in which the Build tool is promoted under a new digest with new text.
+///
+/// | Behaviour | Where |
+/// |---|---|
+/// | The list is the granted revision's allowlist narrowed by the lease, exactly | 1, 5 |
+/// | The round's topic opens with the list, which is how an Observer is given it | 2 |
+/// | A Thinker calls a tool by the name and digest the list supplied, and is admitted | 3 |
+/// | The list does not change inside a round | 4 |
+/// | A tool promoted under a new digest reaches the Thinker at its next grant, not before | 4, 6 |
+///
+/// The fifth, that a bundle with an entry that has no purpose text does not load, is
+/// `topak-bundle`'s `w3_interface`.
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn the_tool_list_is_delivered_and_opens_the_round() {
+    let mut f = fixture("toollist").await;
+    let old = f.tool.clone();
+    let new = format!("wordcount@{}", Digest::of(b"the next build of wordcount").0);
+    let (rev_a, rev_b) = (Digest("a".repeat(64)), Digest("b".repeat(64)));
+    f.extra_bundles = vec![
+        (rev_a.0.clone(), allowlist(&f, (&old, "Count the lines, words and bytes of a workspace file."))),
+        (rev_b.0.clone(), allowlist(&f, (&new, "Count lines, words, bytes and characters of a workspace file."))),
+    ];
+    // The floor's allowlist names both builds; which one a lease may call is its revision's.
+    f.params.build_tools.insert(new.clone());
+    let c = cluster(&f, true).await;
+    let n1 = &c.nodes[0];
+
+    // 1. Exact: every entry the lease may call and no other. The revision holds three entries;
+    //    `tlc@d1` is on no parameter allowlist and the Run entry is not Build's.
+    let g = grant_on(n1, "a1", 1, &rev_a, AUTHOR).await;
+    let a1 = g["token"].as_str().unwrap().to_string();
+    let given = g["tool_list"].clone();
+    let tools = given["list"]["tools"].as_array().unwrap();
+    assert_eq!(tools.len(), 1, "{given}");
+    assert_eq!(given["list"]["bundle"], json!(rev_a));
+    let (name, digest) = (tools[0]["name"].as_str().unwrap(), tools[0]["digest"].as_str().unwrap());
+    assert_eq!(tool_id(name, &Digest(digest.into())), old);
+    assert_eq!(tools[0]["purpose"], "Count the lines, words and bytes of a workspace file.");
+    assert_eq!(tools[0]["inputs"]["path"], json!({ "type": "string", "required": true, "note": "Workspace-relative path of the file." }));
+    assert_eq!(given["digest"], json!(Digest::of_json(&given["list"])), "the digest is of the rendered list");
+
+    // 2. The opening record: first on the topic, before anything the principal did, carrying the
+    //    list the Thinker was given. An Observer reads it there under W(p), as the correlator does.
+    let chain = n1.state.read().unwrap().chain.clone();
+    let topic = lift::topic_name(&chain, Domain::Build, "a1", 0, 1);
+    let opening = memory(n1).topics.lock().await[&topic][0].clone();
+    assert_eq!(opening.kind, RecordKind::Open);
+    assert_eq!((opening.seq, opening.admit), (None, None), "not an effect: no sequence number, no admit");
+    assert_eq!(json!(opening.digest), given["digest"]);
+    assert_eq!(opening.payload["tool_list"], given["list"], "the Observer reads the list the Thinker was given");
+
+    // 3. The Thinker calls the tool by the name and digest the list supplied, with the input the
+    //    list describes, and the real bundle admits it. Nothing else told it either.
+    let r = act(n1, &a1, Action::Draft { target: "notes.txt".into(), content: "one two\nthree\n".into() }).await;
+    assert!(r.admitted, "{}", r.detail);
+    let call = |name: &str, digest: &str| Action::Invoke {
+        tool: name.into(),
+        digest: Digest(digest.into()),
+        inputs: json!({ "path": "notes.txt" }).as_object().unwrap().clone(),
+    };
+    let r = act(n1, &a1, call(name, digest)).await;
+    assert!(r.admitted, "a tool on the list, called as the list names it: {}", r.detail);
+    assert!(r.detail["result"].to_string().contains("words"), "{}", r.detail);
+
+    // 4. The list is fixed for the round. Revision B is held and verified, and promotes the tool
+    //    under a new digest; this lease is told what it was told, and its admits are decided
+    //    against that: the new build is not callable under it.
+    assert_eq!(told(n1, &a1).await, given);
+    let (new_name, new_digest) = new.split_once('@').unwrap();
+    let r = act(n1, &a1, call(new_name, new_digest)).await;
+    assert!(deny_reason(&r).contains("Bundle"), "not told of it, and refused it: {}", r.detail);
+    let r = act(n1, &a1, Action::Emit { record: json!({ "note": "counted" }) }).await;
+    assert!(r.admitted, "{}", r.detail);
+    {
+        let topics = memory(n1).topics.lock().await;
+        let recs = &topics[&topic];
+        assert_eq!(recs.iter().filter(|r| r.kind == RecordKind::Open).count(), 1, "delivered once");
+        assert_eq!(recs[0].kind, RecordKind::Open, "and still first");
+    }
+
+    // 5. The lease narrows the list. A Run lease whose alphabet holds no `Actuate` may call
+    //    nothing and is given a list of none; one that holds it is given Run's one entry, with
+    //    the channel by kind and by whether it is outward, and without its target.
+    let g = grant_on(n1, "ro1", 1, &rev_a, &[ActionKind::Consult, ActionKind::Report]).await;
+    assert_eq!(g["tool_list"]["list"]["tools"], json!([]), "{g}");
+    let g = grant_on(n1, "r1", 1, &rev_a, &[ActionKind::Consult, ActionKind::Actuate, ActionKind::Report]).await;
+    let run = g["tool_list"]["list"]["tools"].as_array().unwrap();
+    assert_eq!(run.len(), 1, "{g}");
+    assert_eq!(tool_id(run[0]["name"].as_str().unwrap(), &Digest(run[0]["digest"].as_str().unwrap().into())), f.run_tool);
+    assert_eq!(run[0]["channel"], json!({ "kind": "none", "outward": true }));
+    assert_eq!(run[0]["result"]["label"], json!(["untrusted"]));
+    assert!(!g["tool_list"].to_string().contains("timer.internal"), "the target is not delivered");
+
+    // 6. The next grant names revision B, and delivers the promoted entry: new digest, new text.
+    let r = n1.operate(OperatorOp::EndRound { token: a1.clone(), reason: EndReason::Operator }).await;
+    assert_eq!(r["ok"], true, "{r}");
+    let g = grant_on(n1, "a1", 2, &rev_b, AUTHOR).await;
+    let a1 = g["token"].as_str().unwrap().to_string();
+    let tools = g["tool_list"]["list"]["tools"].as_array().unwrap();
+    assert_eq!(tools.len(), 1, "{g}");
+    assert_eq!((tools[0]["name"].as_str(), tools[0]["digest"].as_str()), (Some(new_name), Some(new_digest)));
+    assert_eq!(tools[0]["purpose"], "Count lines, words, bytes and characters of a workspace file.");
+    assert_ne!(g["tool_list"]["digest"], given["digest"]);
+    // And the old build, which this revision does not list, is refused under it.
+    let r = act(n1, &a1, call(name, digest)).await;
+    assert!(deny_reason(&r).contains("Bundle"), "{}", r.detail);
 }

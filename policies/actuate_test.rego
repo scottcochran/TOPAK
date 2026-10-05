@@ -11,7 +11,12 @@ search(inputs) := {
 
 good := {"query": "lease schema", "limit": 5}
 
-tools(channel) := {"search@d3": {"required": {"query": "string"}, "optional": {"limit": "number"}, "channel": channel}}
+entry := {
+	"name": "search", "digest": "d3", "domain": "run",
+	"inputs": {"query": {"type": "string", "required": true}, "limit": {"type": "number", "required": false}},
+}
+
+tools(channel) := {"search@d3": object.union(entry, {"channel": channel})}
 
 test_conforming_actuate_allowed if {
 	actuate.allow with input as search(good)
@@ -40,7 +45,7 @@ test_no_schema_denied if {
 
 # ADR-0040 §3: a Run tool's entry declares the channel it opens. One that declares nothing is refused.
 test_no_channel_denied if {
-	t := {"search@d3": {"required": {"query": "string"}}}
+	t := {"search@d3": entry}
 	not actuate.allow with input as search({"query": "q"}) with data.topak.tools as t
 	"tool search@d3 declares no effect channel" in actuate.violations with input as search({"query": "q"}) with data.topak.tools as t
 }
@@ -65,6 +70,13 @@ test_channel_unknown_field_denied if {
 	c := {"kind": "https", "target": "search.internal:443", "also": "anything"}
 	not actuate.allow with input as search(good) with data.topak.tools as tools(c)
 	"channel has an unknown field \"also\"" in actuate.violations with input as search(good) with data.topak.tools as tools(c)
+}
+
+# ADR-0049 §1: an entry is for one domain. An `Actuate` naming a Build entry is refused.
+test_build_entry_denied if {
+	inp := {"action": "Actuate", "resource": {"tool": "tlc", "digest": "d1"}, "inputs": {"spec": "L.tla", "config": "L.cfg"}}
+	not actuate.allow with input as inp
+	"entry tlc@d1 is for build, and Actuate is not that domain's action" in actuate.violations with input as inp
 }
 
 # Run's check is Run's: a conforming Build request is not its to allow.

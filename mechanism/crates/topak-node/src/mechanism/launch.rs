@@ -222,6 +222,15 @@ impl Mechanism {
                 Err(e) => return unattestable(format!("the grant was not ordered: {e}")).await,
             };
 
+        // ADR-0048 §2: the round's opening record, before the guest is told it holds a lease.
+        if let Err(e) = self.open_round(fence, &op.seat).await {
+            handle.destroy().await;
+            return json!({
+                "ok": false, "verdict": "attested", "fence": fence,
+                "error": format!("the round's opening record was not written, so the guest was not bridged: {e}"),
+            });
+        }
+
         // 6. Bridge, and renew on events.
         let (ctl, rx) = mpsc::channel(8);
         let epoch = nonce.epoch;

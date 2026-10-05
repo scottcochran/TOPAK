@@ -18,6 +18,9 @@
 //! | `every_host_power_subtracts`                 | F23, ADR-0034 §5; `M_HOST` at rung 1                  |
 //! | `withdrawing_a_profile_fences_its_leases`    | F17                                                   |
 
+// The launch future is deep: the appraisal, the grant, the opening record and the bridge.
+#![recursion_limit = "256"]
+
 use std::collections::{BTreeMap, BTreeSet};
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicU64, Ordering};
@@ -172,13 +175,23 @@ fn fixture(name: &str, criterion: bool) -> Fx {
     }
 }
 
-struct AllowAll;
+/// Allows everything, and holds the channel declarations of the revisions a test names: what the
+/// allowlist entries of those revisions would say (ADR-0049 §5).
+struct AllowAll(Channels);
+type Channels = BTreeMap<(Digest, String), topak_contain::wasmtool::Channel>;
 impl BundleDecider for AllowAll {
     fn decide<'a>(&'a self, b: &'a Digest, _i: &'a Value) -> topak_node::mechanism::BoxFuture<'a, BundleOutcome> {
         Box::pin(async move { BundleOutcome::Allow { engine: BundleEngine::Sidecar, bundle: b.clone() } })
     }
     fn verified(&self, _rev: &Digest) -> bool {
         true
+    }
+    /// No entries here: a test of what a list holds uses the real tier.
+    fn tool_list(&self, rev: &Digest, domain: Domain, callable: &BTreeSet<String>) -> Value {
+        topak_bundle::Allowlist::default().tool_list(rev, domain, callable)
+    }
+    fn channel(&self, rev: &Digest, tool: &str) -> Option<topak_contain::wasmtool::Channel> {
+        self.0.get(&(rev.clone(), tool.to_string())).cloned()
     }
 }
 
@@ -223,6 +236,8 @@ struct Opts {
     /// Run tools hosted as Wasm modules, and the one the guest's `actuate` step names.
     wasm: Option<Arc<topak_contain::wasmtool::WasmToolHost>>,
     tool: String,
+    /// What each bundle revision's entry declares as a tool's channel.
+    channels: Channels,
 }
 
 struct Cl {
@@ -272,7 +287,7 @@ async fn cluster(f: &Fx, o: Opts) -> Cl {
             params: f.params.clone(),
             genesis: State::genesis(f.rules.clone(), floor_exc).unwrap(),
             floor: Floor::load().unwrap(),
-            bundle: Box::new(AllowAll),
+            bundle: Box::new(AllowAll(o.channels.clone())),
             transport: Transport::Memory(Memory::default()),
             tools: ToolHost::new(BTreeMap::new()),
             corpus_dir: f.dir.join("corpus"),
@@ -791,15 +806,9 @@ const ECHO_TOOL: &str = r#"
     (i32.const 0)))
 "#;
 
-/// F28 for Run, SIMULATED: a Run principal launched at rung 3 on a Run profile `Consult`s, then
-/// `Actuate`s a tool held to its declared channel, with its cell Observer live. The effect reaches
-/// the declared target, the record names the channel, and the lease is `Contained`.
-#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
-async fn a_run_round_actuates_only_its_declared_channel() {
+/// A target that answers once, and says what it was sent.
+fn target_once() -> (String, std::thread::JoinHandle<String>) {
     use std::io::{Read, Write};
-    use topak_contain::wasmtool::{Channel, WasmToolHost, WasmToolSpec, module_digest};
-    let mut f = fixture("run3", true);
-    // The declared target: answers once, and says what it was sent.
     let target = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
     let addr = target.local_addr().unwrap().to_string();
     let seen = std::thread::spawn(move || {
@@ -810,17 +819,23 @@ async fn a_run_round_actuates_only_its_declared_channel() {
         s.write_all(format!("{{\"echo\":{n}}}").as_bytes()).unwrap();
         String::from_utf8_lossy(&buf[..n]).to_string()
     });
+    (addr, seen)
+}
+
+/// A Run round at rung 3 on a Run profile, SIMULATED, with its cell Observer live: the guest
+/// `Consult`s, then `Actuate`s the one Wasm tool this replica hosts. The lease names the bundle
+/// revision `Digest::of(b"bundle")`; `channels` is what each revision's entry declares.
+/// Returns the cluster, the tool's id, the lease's fence and the round's topic.
+async fn run_round(name: &str, channels: impl FnOnce(&str) -> Channels) -> (Cl, String, u64, String) {
+    use topak_contain::wasmtool::{WasmToolHost, WasmToolSpec, module_digest};
+    let mut f = fixture(name, true);
     let module = f.dir.join("valve.wasm");
     std::fs::write(&module, wat::parse_str(ECHO_TOOL).unwrap()).unwrap();
     let digest = module_digest(&module).unwrap();
     let tool = format!("valve@{}", digest.0);
-    let channel = Channel { kind: "tcp".into(), target: addr };
+    // The host is told where the module is and what its bytes are, and nothing of its channel.
     let host = Arc::new(
-        WasmToolHost::new(BTreeMap::from([(
-            tool.clone(),
-            WasmToolSpec { module, module_sha256: digest, channel: Some(channel.clone()) },
-        )]))
-        .unwrap(),
+        WasmToolHost::new(BTreeMap::from([(tool.clone(), WasmToolSpec { module, module_sha256: digest })])).unwrap(),
     );
     f.params.run_root.insert(f.run_obj.clone());
     f.params.run_tools.insert(tool.clone());
@@ -835,7 +850,13 @@ async fn a_run_round_actuates_only_its_declared_channel() {
     f.rules.seats.insert("ro0".into(), cell);
     let c = cluster(
         &f,
-        Opts { script: "consult,wait:1500,actuate", wasm: Some(host), tool: tool.clone(), ..Default::default() },
+        Opts {
+            script: "consult,wait:1500,actuate",
+            wasm: Some(host),
+            tool: tool.clone(),
+            channels: channels(&tool),
+            ..Default::default()
+        },
     )
     .await;
     let n1 = &c.nodes[0];
@@ -885,9 +906,36 @@ async fn a_run_round_actuates_only_its_declared_channel() {
         AgentOp::Act { action: Action::Report { record: json!({ "heartbeat": { "topic": topic, "watermark": 0 } }) } };
     let r = n1.act(AgentRequest { token: watcher, op: hb }).await;
     assert!(r.admitted, "the Observer is live: {}", r.detail);
+    (c, tool, fence, topic)
+}
+
+/// F28 for Run, SIMULATED: a Run principal launched at rung 3 on a Run profile `Consult`s, then
+/// `Actuate`s a tool held to its declared channel, with its cell Observer live. The effect reaches
+/// the declared target, the record names the channel, and the lease is `Contained`.
+///
+/// The declaration is the allowlist entry's, in the bundle revision the lease names (ADR-0049 §5;
+/// ADR-0034 A2 R4). Another revision declares another target for the same tool, and it is not
+/// reached: the host has no configured target, and the lease does not name that revision.
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn a_run_round_actuates_only_its_declared_channel() {
+    use topak_contain::wasmtool::Channel;
+    let (addr, seen) = target_once();
+    let other = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+    other.set_nonblocking(true).unwrap();
+    let channel = Channel { kind: "tcp".into(), target: addr };
+    let elsewhere = Channel { kind: "tcp".into(), target: other.local_addr().unwrap().to_string() };
+    let (c, tool, fence, topic) = run_round("run3", |tool| {
+        BTreeMap::from([
+            ((Digest::of(b"bundle"), tool.to_string()), channel.clone()),
+            ((Digest::of(b"another revision"), tool.to_string()), elsewhere),
+        ])
+    })
+    .await;
+    let n1 = &c.nodes[0];
 
     let sent = seen.join().unwrap();
     assert!(sent.contains("\"open\":\"v7\""), "the declared target received the call: {sent}");
+    assert!(other.accept().is_err(), "the target another revision declares saw nothing");
     until("the Actuate admitted", || n1.state.read().unwrap().leases.get(&fence).is_some_and(|l| l.seq == 1)).await;
     let Transport::Memory(mem) = &n1.transport else { unreachable!() };
     // The record is written when the call returns, after the admit is applied.
@@ -911,4 +959,27 @@ async fn a_run_round_actuates_only_its_declared_channel() {
     assert_eq!(env["outcome"], "returned");
     assert_eq!(env["channel"], json!(channel), "the record names the channel the tool was held to");
     assert!(n1.state.read().unwrap().contained(fence).contained);
+}
+
+/// The other half of ADR-0049 §5: with no declaration in the lease's revision there is no target.
+/// The entry of another revision does not stand in for it, and the hosted tool is not run.
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn a_hosted_tool_with_no_channel_in_the_leases_revision_is_not_run() {
+    use topak_contain::wasmtool::Channel;
+    let other = std::net::TcpListener::bind("127.0.0.1:0").unwrap();
+    other.set_nonblocking(true).unwrap();
+    let elsewhere = Channel { kind: "tcp".into(), target: other.local_addr().unwrap().to_string() };
+    let (c, _tool, fence, topic) =
+        run_round("run3-undeclared", |tool| BTreeMap::from([((Digest::of(b"another revision"), tool.to_string()), elsewhere)]))
+            .await;
+    let n1 = &c.nodes[0];
+    until("the Actuate admitted", || n1.state.read().unwrap().leases.get(&fence).is_some_and(|l| l.seq == 1)).await;
+    tokio::time::sleep(Duration::from_millis(500)).await;
+    assert!(other.accept().is_err(), "nothing was reached");
+    let Transport::Memory(mem) = &n1.transport else { unreachable!() };
+    let recs = mem.topics.lock().await.get(&topic).cloned().unwrap_or_default();
+    assert!(
+        !recs.iter().any(|r| r.kind == topak_transport::RecordKind::Actuate && r.payload["actuate"]["outcome"] == "returned"),
+        "no call returned"
+    );
 }

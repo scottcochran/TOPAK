@@ -36,7 +36,7 @@ affirmative bundle `true`, from the bundle revision the lease names, is a deny.
 ## Run it
 
 ```sh
-cargo test --workspace --release           # 103 tests (2026.10.02); needs a built bundle (next line); builds topak-demo-guest
+cargo test --workspace --release           # 116 tests (2026.10.05); needs a built bundle (next line); builds topak-demo-guest
 TOPAK_DOCKER_IMAGE=<image with python3> cargo test --release -p topak-contain --test launch   # + a real container round (skipped without it)
 scripts/build-bundle.sh                    # policies/ → bundles/<revision>.tar.gz (docker, OPA); TOPAK_BUNDLE_SECRET=<hex> also writes <revision>.sig
 
@@ -108,11 +108,18 @@ anchor issuance puts the simulator's key in `verifier_keys`. What they reach is 
 ## Run tools held to their channel (ADR-0034 A2, pending)
 
 A Run tool listed under `wasm_tools` in the node's config runs as a Wasm module whose only network
-capability is its declared target:
+capability is its declared target. The config says where the module is and what its bytes are:
 
 ```json
-"wasm_tools": { "valve@<module sha256>": { "module": "tools/valve.wasm", "module_sha256": "<sha256>",
-                                           "channel": { "kind": "tcp", "target": "plc.internal:502" } } }
+"wasm_tools": { "valve@<module sha256>": { "module": "tools/valve.wasm", "module_sha256": "<sha256>" } }
+```
+
+It says nothing of the channel. The target is the one the tool's allowlist entry declares, in the
+bundle revision the lease names (ADR-0049 §5; ADR-0034 A2):
+
+```json
+"valve@<module sha256>": { "name": "valve", "digest": "<module sha256>", "domain": "run", "...": "...",
+                           "channel": { "kind": "tcp", "target": "plc.internal:502" } }
 ```
 
 Name the same ids in the parameters' `wasm_tools`; a replica that does not host one refuses to start.

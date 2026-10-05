@@ -37,6 +37,10 @@ use topak_core::{Digest, LogIndex};
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "snake_case")]
 pub enum RecordKind {
+    /// The round's opening record (ADR-0048 §2): the tool list the principal was given, written
+    /// by the mechanism at grant. Not an effect: it carries no admit and no sequence number, so
+    /// it is outside what a watermark covers.
+    Open,
     /// An admitted `Emit` or `Report`: the effect itself.
     Emit,
     /// An admitted `Actuate` (ADR-0042 §3): the mechanism's record of the call and its outcome.
@@ -86,6 +90,7 @@ impl Transport {
 
 fn headers(rec: &EmitRecord) -> BTreeMap<String, Vec<u8>> {
     let kind = match rec.kind {
+        RecordKind::Open => "open",
         RecordKind::Emit => "emit",
         RecordKind::Actuate => "actuate",
         RecordKind::Deny => "deny",

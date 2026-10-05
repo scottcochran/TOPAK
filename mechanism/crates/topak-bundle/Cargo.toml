@@ -11,6 +11,7 @@ topak-core.workspace = true
 opa-wasm.workspace = true
 tokio.workspace = true
 reqwest.workspace = true
+serde.workspace = true
 serde_json.workspace = true
 anyhow.workspace = true
 tracing.workspace = true

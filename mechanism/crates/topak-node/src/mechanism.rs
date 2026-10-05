@@ -62,6 +62,12 @@ pub trait BundleDecider: Send + Sync {
     /// ADR-0044 §3: whether this revision's signature verified at load. A grant naming one that
     /// did not is refused before it is proposed.
     fn verified(&self, rev: &Digest) -> bool;
+    /// The channel the allowlist entry `tool` (`name@digest`) of revision `rev` declares: the one
+    /// statement of where a Run tool may connect (ADR-0049 §5), read by the tool host.
+    fn channel(&self, rev: &Digest, tool: &str) -> Option<topak_contain::wasmtool::Channel>;
+    /// The tool list of a lease on `rev` (ADR-0048 §2): that revision's entries for `domain`
+    /// whose key is in `callable`, rendered in the mechanism's fixed form.
+    fn tool_list(&self, rev: &Digest, domain: Domain, callable: &std::collections::BTreeSet<String>) -> Value;
 }
 
 impl BundleDecider for BundleTier {
@@ -70,6 +76,13 @@ impl BundleDecider for BundleTier {
     }
     fn verified(&self, rev: &Digest) -> bool {
         BundleTier::verified(self, rev)
+    }
+    fn channel(&self, rev: &Digest, tool: &str) -> Option<topak_contain::wasmtool::Channel> {
+        let c = self.entry(rev, tool)?.channel.as_ref()?;
+        Some(topak_contain::wasmtool::Channel { kind: c.kind.clone(), target: c.target.clone() })
+    }
+    fn tool_list(&self, rev: &Digest, domain: Domain, callable: &std::collections::BTreeSet<String>) -> Value {
+        BundleTier::tool_list(self, rev, domain, callable)
     }
 }
 
@@ -392,9 +405,63 @@ impl Mechanism {
         Box::pin(self.act_session(&sess, op, proof)).await
     }
 
+    /// The tool list of the lease at `fence` (ADR-0048 §2), and the topic it opens. It is a
+    /// function of the grant: the allowlist of the revision the lease names, narrowed to what
+    /// the lease may call. A reader with the log and the bundle can recompute it.
+    ///
+    /// The narrowing is the reference's: the lease schema carries no tool set (ADR-0031 §1 is
+    /// closed), so a lease may call the tools the parameters allowlist for its domain when its
+    /// alphabet holds the action that names a tool, and none when it does not.
+    fn tool_list(&self, fence: LogIndex) -> Option<(String, Value)> {
+        let st = self.state.read().unwrap();
+        let lease = &st.leases.get(&fence)?.lease;
+        let domain = st.rules.seat_domain(&lease.seat)?;
+        let (action, tools) = match domain {
+            Domain::Build => (ActionKind::Invoke, &self.params.build_tools),
+            Domain::Run => (ActionKind::Actuate, &self.params.run_tools),
+        };
+        let none = std::collections::BTreeSet::new();
+        let callable = if lease.alphabet.contains(&action) { tools } else { &none };
+        let topic = topic_name(&st.chain, domain, &lease.seat, lease.epoch, lease.round);
+        Some((topic, self.bundle.tool_list(&lease.bundle, domain, callable)))
+    }
+
+    /// Write the round's opening record (ADR-0048 §2) and return what the principal is given:
+    /// the list and its digest. Called once, at grant, before the session exists, so nothing the
+    /// principal does can precede it on the topic. A renewal writes none: the bundle is fixed
+    /// across renewal (ADR-0031 R2), and so is the list.
+    pub(crate) async fn open_round(&self, fence: LogIndex, seat: &str) -> anyhow::Result<Value> {
+        let (topic, list) = self.tool_list(fence).ok_or_else(|| anyhow::anyhow!("the lease is not in state"))?;
+        let digest = Digest::of_json(&list);
+        let rec = EmitRecord {
+            topic,
+            seat: seat.to_string(),
+            fence,
+            kind: RecordKind::Open,
+            admit: None,
+            seq: None,
+            digest: digest.clone(),
+            payload: json!({ "tool_list": list }),
+        };
+        self.transport.emit(&rec).await?;
+        Ok(json!({ "digest": digest, "list": rec.payload["tool_list"] }))
+    }
+
     async fn act_session(&self, sess: &Session, op: AgentOp, proof: Option<SessionProof>) -> AgentResponse {
         let sess = sess.clone();
         let action = match op {
+            // Delivery, not an action: no admit, no count, the same answer all round.
+            AgentOp::ToolList => {
+                // A renewal moves the session's fence and not the list: the bundle and the
+                // parameters are fixed, and the alphabet can only narrow, which this follows.
+                return match self.tool_list(sess.fence) {
+                    Some((_, list)) => AgentResponse {
+                        admitted: true,
+                        detail: json!({ "tool_list": { "digest": Digest::of_json(&list), "list": list } }),
+                    },
+                    None => deny(DenyReason::Mechanism(MechanismDeny::Other("no lease for this session".into()))),
+                };
+            }
             AgentOp::Act { action } => action,
             AgentOp::SubmitWorkspace => match self.workspace_digest(&sess) {
                 Ok(artifact) => Action::Submit { artifact },
@@ -665,7 +732,8 @@ impl Mechanism {
                 std::fs::create_dir_all(&ws)?;
                 let tid = tool_id(tool, digest);
                 match &self.wasm_tools {
-                    Some(w) if w.hosts(&tid) => w.call(&tid, inputs).await.map(|(v, _)| v),
+                    // Build's P4: a hermetic tool is handed no channel, whatever an entry says.
+                    Some(w) if w.hosts(&tid) => w.call(&tid, inputs, None).await.map(|(v, _)| v),
                     _ => self.tools.call(&tid, inputs, &ws).await,
                 }
             }
@@ -680,6 +748,21 @@ impl Mechanism {
                 let topic = topic_name(&chain, cx.domain, seat, cx.lease_epoch, cx.round);
                 let seq = cx.seq.unwrap_or(0);
                 let tid = tool_id(tool, digest);
+                // ADR-0049 §5; ADR-0034 A2 R4: a hosted tool's target is the one its entry declares
+                // in the bundle revision this lease names. Node configuration says nothing of it.
+                let hosted = self.wasm_tools.as_ref().filter(|w| w.hosts(&tid));
+                let channel = match hosted {
+                    Some(_) => {
+                        let rev = self.state.read().unwrap().leases.get(&cx.sess.fence).map(|r| r.lease.bundle.clone());
+                        let declared = rev.as_ref().and_then(|rev| self.bundle.channel(rev, &tid));
+                        anyhow::ensure!(
+                            declared.is_some(),
+                            "the lease's bundle revision declares no channel for {tid}, so the tool is not run"
+                        );
+                        declared
+                    }
+                    None => None,
+                };
                 let call = InFlight {
                     seat: seat.clone(),
                     fence: cx.sess.fence,
@@ -687,14 +770,14 @@ impl Mechanism {
                     tool: tid.clone(),
                     break_glass: cx.break_glass,
                     inputs: Value::Object(inputs.clone()),
-                    channel: self.wasm_tools.as_ref().and_then(|w| w.channel(&tid).cloned()),
+                    channel: channel.clone(),
                 };
                 self.in_flight.lock().await.entry(topic.clone()).or_default().insert(seq, call);
                 let dir = self.run_work.join(format!("{seat}-e{}-r{}", cx.lease_epoch, cx.round));
                 std::fs::create_dir_all(&dir)?;
-                let out = match &self.wasm_tools {
-                    Some(w) if w.hosts(&tid) => w.call(&tid, inputs).await.map(|(v, _)| v),
-                    _ => self.tools.call(&tid, inputs, &dir).await,
+                let out = match hosted {
+                    Some(w) => w.call(&tid, inputs, channel).await.map(|(v, _)| v),
+                    None => self.tools.call(&tid, inputs, &dir).await,
                 };
 
                 // Take the call back under the lock the seal holds. If the seal took it first,
@@ -779,11 +862,23 @@ impl Mechanism {
                             let l = st.leases[&fence].lease.clone();
                             (l.epoch, l, st.contained(fence))
                         };
+                        // ADR-0048 §2: the opening record is on the topic before the session
+                        // exists. If it cannot be written the lease stands unused: no token.
+                        let tool_list = match self.open_round(fence, &seat).await {
+                            Ok(l) => l,
+                            Err(e) => {
+                                return json!({
+                                    "ok": false, "fence": fence,
+                                    "error": format!("the round's opening record was not written, so no session was opened: {e}"),
+                                });
+                            }
+                        };
                         let token = hex::encode(rand::random::<[u8; 32]>());
                         self.sessions.lock().unwrap().insert(token.clone(), Session { seat, fence, epoch });
                         json!({
                             "ok": true, "fence": fence, "token": token, "lease": lease,
                             "contained": containment.contained, "because": containment.because,
+                            "tool_list": tool_list,
                         })
                     }
                     Ok((_, a)) => json!({ "ok": false, "applied": a }),
@@ -901,7 +996,8 @@ struct InFlight {
     break_glass: bool,
     inputs: Value,
     /// The declared channel a Wasm tool was held to (ADR-0034 A2): recorded, so the record says
-    /// which channel the effect could have used. Absent for a native tool, which nothing holds.
+    /// which channel the effect could have used. It is the entry's declaration in the lease's
+    /// bundle revision (ADR-0049 §5). Absent for a native tool, which nothing holds.
     channel: Option<topak_contain::wasmtool::Channel>,
 }
 

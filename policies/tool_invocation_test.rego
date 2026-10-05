@@ -28,6 +28,13 @@ test_actuate_is_not_invoke if {
 	}
 }
 
+# ADR-0049 §1: an entry is for one domain. An `Invoke` naming a Run entry is refused.
+test_run_entry_denied if {
+	inp := {"action": "Invoke", "resource": {"tool": "search", "digest": "d3"}, "inputs": {"query": "q"}}
+	not tool_invocation.allow with input as inp
+	"entry search@d3 is for run, and Invoke is not that domain's action" in tool_invocation.violations with input as inp
+}
+
 test_missing_required_denied if {
 	not tool_invocation.allow with input as tlc({"spec": "Lease.tla"})
 	"missing required field \"config\"" in tool_invocation.violations with input as tlc({"spec": "Lease.tla"})

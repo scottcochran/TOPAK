@@ -26,6 +26,8 @@
 //! revisions it holds are the mechanism's **verified set**. A sidecar's decision counts only from
 //! a verified revision (§3), and the node refuses a grant naming an unverified one.
 
+pub mod allowlist;
+
 use std::collections::BTreeMap;
 use std::io::Read;
 use std::path::Path;
@@ -39,6 +41,8 @@ use serde_json::{Value, json};
 use std::collections::BTreeSet;
 use tokio::sync::Mutex;
 use topak_core::Digest;
+
+pub use allowlist::{Allowlist, Entry, Issued};
 use topak_core::authentic::{self, KeyHex, Signed};
 use topak_core::admit::BundleOutcome;
 use topak_core::state::BundleEngine;
@@ -108,9 +112,10 @@ struct Compiled {
     policy: Policy<DefaultContext>,
 }
 
-/// Compiled bundles on local disk, keyed by revision.
+/// Compiled bundles on local disk, keyed by revision, each with its allowlist as read at load.
 pub struct LocalBundles {
     bundles: BTreeMap<Digest, Arc<Mutex<Compiled>>>,
+    allowlists: BTreeMap<Digest, Allowlist>,
 }
 
 /// The pieces of an OPA bundle tarball the fallback needs.
@@ -146,14 +151,21 @@ pub fn read_bundle_tarball(bytes: &[u8]) -> anyhow::Result<BundleFiles> {
 
 impl LocalBundles {
     pub fn empty() -> Self {
-        Self { bundles: BTreeMap::new() }
+        Self { bundles: BTreeMap::new(), allowlists: BTreeMap::new() }
     }
 
     /// Load every `<revision>.tar.gz` in `dir` whose `<revision>.sig` verifies under one of
     /// `keys` (ADR-0044 §3). A file whose manifest revision differs from its name, or whose
     /// signature is missing, is for another revision, or is under a key the rules do not carry,
     /// is refused rather than trusted under any name. With no keys nothing loads (ADR-0044 §1).
+    /// The allowlist is checked under the empty `Issued`: see `load_dir_issued`.
     pub async fn load_dir(dir: &Path, keys: &BTreeSet<KeyHex>) -> anyhow::Result<Self> {
+        Self::load_dir_issued(dir, keys, &Issued::default()).await
+    }
+
+    /// `load_dir`, with what the issued rules say that the allowlist's load checks read
+    /// (ADR-0049 §6, W7 to W9). A bundle whose allowlist is not well-formed does not load.
+    pub async fn load_dir_issued(dir: &Path, keys: &BTreeSet<KeyHex>, issued: &Issued) -> anyhow::Result<Self> {
         let mut me = Self::empty();
         if !dir.exists() {
             return Ok(me);
@@ -177,7 +189,7 @@ impl LocalBundles {
             if !authentic::verify(BUNDLE_PURPOSE, &bundle_body(&files.revision), &sig) {
                 bail!("{name}: signature does not verify over revision {} (ADR-0044 §2)", &files.revision[..16]);
             }
-            me.insert(files).await?;
+            me.insert_issued(files, issued).await.with_context(|| name.to_string())?;
         }
         Ok(me)
     }
@@ -188,6 +200,14 @@ impl LocalBundles {
     }
 
     pub async fn insert(&mut self, files: BundleFiles) -> anyhow::Result<()> {
+        self.insert_issued(files, &Issued::default()).await
+    }
+
+    /// Compile a bundle and keep it, after its allowlist passes ADR-0049's W1 to W10.
+    pub async fn insert_issued(&mut self, files: BundleFiles, issued: &Issued) -> anyhow::Result<()> {
+        let allowlist = allowlist::check(&files.data, issued).map_err(|why| {
+            anyhow::anyhow!("the allowlist is not well-formed (ADR-0049 §6): {}", why.join("; "))
+        })?;
         let engine = Engine::new(&Config::new())?;
         let module = Module::new(&engine, &files.wasm)?;
         let mut store = Store::new(&engine, ());
@@ -196,8 +216,19 @@ impl LocalBundles {
             bail!("bundle {} lacks entrypoint {ENTRYPOINT}", files.revision);
         }
         let policy = runtime.with_data(&mut store, &files.data).await?;
-        self.bundles.insert(Digest(files.revision), Arc::new(Mutex::new(Compiled { store, policy })));
+        let rev = Digest(files.revision);
+        self.allowlists.insert(rev.clone(), allowlist);
+        self.bundles.insert(rev, Arc::new(Mutex::new(Compiled { store, policy })));
         Ok(())
+    }
+
+    /// The entry `key` (`name@digest`) of revision `rev`, as checked at load.
+    pub fn entry(&self, rev: &Digest, key: &str) -> Option<&Entry> {
+        self.allowlists.get(rev)?.entries.get(key)
+    }
+
+    pub fn allowlist(&self, rev: &Digest) -> Option<&Allowlist> {
+        self.allowlists.get(rev)
     }
 
     pub fn revisions(&self) -> impl Iterator<Item = &Digest> {
@@ -235,6 +266,21 @@ impl BundleTier {
     /// grant naming one that does not.
     pub fn verified(&self, rev: &Digest) -> bool {
         self.local.verified(rev)
+    }
+
+    /// The allowlist entry of a verified revision: the one statement of a tool's channel
+    /// (ADR-0049 §5), which the tool host reads for the revision a lease names.
+    pub fn entry(&self, rev: &Digest, key: &str) -> Option<&Entry> {
+        self.local.entry(rev, key)
+    }
+
+    /// The tool list of a lease on `rev` (ADR-0048 §2). A revision that is not held has no
+    /// entries, and no grant names one (ADR-0044 §3).
+    pub fn tool_list(&self, rev: &Digest, domain: topak_core::Domain, callable: &BTreeSet<String>) -> Value {
+        match self.local.allowlist(rev) {
+            Some(a) => a.tool_list(rev, domain, callable),
+            None => Allowlist::default().tool_list(rev, domain, callable),
+        }
     }
 
     /// Ask the bundle whether to refuse. Called only after a floor permit.

@@ -26,6 +26,9 @@ pub enum AgentOp {
     SubmitWorkspace,
     /// `Submit(⊥)`: end the authoring round without offering anything. A subtraction.
     Abstain,
+    /// Not an action: the tool list this session's lease was given (ADR-0048 §2). It is a
+    /// function of the grant, so it needs no admit, and it is the same answer for the whole round.
+    ToolList,
 }
 
 #[derive(Clone, Debug, Serialize, Deserialize)]

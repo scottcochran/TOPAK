@@ -104,7 +104,7 @@ async fn main() -> anyhow::Result<()> {
                 "run" => Domain::Run,
                 d => anyhow::bail!("unknown domain {d}"),
             };
-            let server = TopakServer::new(SocketClient::new(socket), token, domain);
+            let server = TopakServer::new(SocketClient::new(socket), token, domain).with_tool_list().await?;
             server.serve(rmcp::transport::stdio()).await?.waiting().await?;
         }
         Cmd::Op { socket, request } => {

@@ -1,14 +1,72 @@
 {
   "topak": {
+    "labels": {
+      "vocabulary": [
+        "untrusted",
+        "restricted"
+      ]
+    },
     "tools": {
       "tlc@d1": {
-        "required": { "spec": "string", "config": "string" },
-        "optional": { "workers": "number", "deadlock": "boolean" }
+        "name": "tlc",
+        "digest": "d1",
+        "domain": "build",
+        "purpose": "Model-check a TLA+ specification against a configuration. Returns the checker's verdict and trace.",
+        "inputs": {
+          "spec": {
+            "type": "string",
+            "required": true,
+            "note": "Workspace-relative path of the module."
+          },
+          "config": {
+            "type": "string",
+            "required": true,
+            "note": "Workspace-relative path of the configuration."
+          },
+          "workers": {
+            "type": "number",
+            "required": false,
+            "note": "Worker threads."
+          },
+          "deadlock": {
+            "type": "boolean",
+            "required": false,
+            "note": "Whether to check for deadlock."
+          }
+        }
       },
       "search@d3": {
-        "required": { "query": "string" },
-        "optional": { "limit": "number" },
-        "channel": { "kind": "https", "target": "search.internal:443" }
+        "name": "search",
+        "digest": "d3",
+        "domain": "run",
+        "purpose": "Search the internal index. Returns up to `limit` results, each a title and a snippet.",
+        "inputs": {
+          "query": {
+            "type": "string",
+            "required": true,
+            "note": "The search terms.",
+            "destination": false,
+            "accepts": []
+          },
+          "limit": {
+            "type": "number",
+            "required": false,
+            "note": "Maximum results; default 10.",
+            "destination": false,
+            "accepts": []
+          }
+        },
+        "destinations": "none",
+        "result": {
+          "label": [
+            "untrusted"
+          ],
+          "releases": []
+        },
+        "channel": {
+          "kind": "https",
+          "target": "search.internal:443"
+        }
       }
     }
   }

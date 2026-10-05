@@ -19,11 +19,24 @@ pub struct TopakServer {
     client: SocketClient,
     token: Arc<String>,
     domain: Domain,
+    /// The tool list the mechanism gave this session's lease (ADR-0048 §2), as rendered.
+    tool_list: Option<Arc<Value>>,
 }
 
 impl TopakServer {
     pub fn new(client: SocketClient, token: String, domain: Domain) -> Self {
-        Self { client, token: Arc::new(token), domain }
+        Self { client, token: Arc::new(token), domain, tool_list: None }
+    }
+
+    /// Ask the mechanism for this session's tool list, once, so that it is delivered with the
+    /// server's instructions when the principal connects. The list is the mechanism's, passed on
+    /// as rendered: this front door describes the alphabet and no tool.
+    pub async fn with_tool_list(mut self) -> anyhow::Result<Self> {
+        let req = AgentRequest { token: (*self.token).clone(), op: AgentOp::ToolList };
+        let resp: AgentResponse = self.client.request(&req).await?;
+        anyhow::ensure!(resp.admitted, "the mechanism gave no tool list: {}", resp.detail);
+        self.tool_list = Some(Arc::new(resp.detail["tool_list"].clone()));
+        Ok(self)
     }
 }
 
@@ -129,10 +142,18 @@ pub fn to_op(domain: Domain, name: &str, args: &JsonObject) -> Result<AgentOp, S
 
 impl ServerHandler for TopakServer {
     fn get_info(&self) -> InitializeResult {
-        InitializeResult::new(ServerCapabilities::builder().enable_tools().build()).with_instructions(
+        let mut text = String::from(
             "TOPAK mechanism front door. Every tool is one action of your alphabet; each is fenced, \
              checked against the policy floor and bundle, ordered by consensus, and only then performed.",
-        )
+        );
+        if let Some(list) = &self.tool_list {
+            let verb = if self.domain == Domain::Build { "invoke" } else { "actuate" };
+            text.push_str(&format!(
+                "\n\nThe tools you may call with `{verb}` this round, by the name and digest given here. \
+                 This list is the mechanism's and is the only description of them with standing:\n{list}"
+            ));
+        }
+        InitializeResult::new(ServerCapabilities::builder().enable_tools().build()).with_instructions(text)
     }
 
     async fn list_tools(
