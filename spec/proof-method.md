@@ -59,9 +59,10 @@ declared, in the place T-0045-29 declares TLC.
 | `NonComposition_proof.tla` | 58 | 2 | NC2, plus "the records NC1 needs were created" and "only admitted effects went via break-glass" |
 | `FloorComposition_proof.tla` | 171 | 5 | the flags themselves; EnvelopeHolds adds the type invariant and "the floor's inputs are the truth" |
 | `RunConfinement_proof.tla` (2026.10.02, ADR-0034 A2 pending) | 116 | 2 | the properties themselves: a new effect's target follows from the check and the runtime's reach |
+| `Emergency_proof.tla` (2026.10.04, ADR-0052 Proposed) | 373 | 6 | a type invariant; five properties inductive as stated; the holder's over every lease the seat has had, since a regrant revives a lease the stated property is silent about |
 | `Labels_proof.tla` (2026.10.04, ADR-0047 Proposed) | 651 | 10 | one lemma on the three shapes a step has, with `Actuate`'s LET named part by part; ids are fresh and only an existing item is in the guest; then "labels cover the truth", from which the floor's minimum follows by the forbid that would have fired |
 | `ToolList_proof.tla` (2026.10.04, ADR-0048 Proposed) | 215 | 5 | a type invariant; three properties inductive as stated; `ToldMatchesDecided` on `ToolListIsExact`, and `OpeningRecordFirst` on "a live round's topic is opened" |
-| `Operators_proof.tla` (2026.10.04, ADR-0050 Proposed) | 340 | 12 | a type invariant under every mutation; for the lease properties, the property over every lease and not only live ones ("every granted lease has a quorum at its root", "no lease is wider than its seating"); the add and deny properties are inductive alone, from one lemma on what a step does to the last add and the last deny; `DenyAlwaysAvailable` is a state lemma |
+| `Operators_proof.tla` (2026.10.04, ADR-0050 Proposed; regenerated at its R5) | 354 | 13 | a type invariant under every mutation; for the lease properties, the property over every lease and not only live ones ("every granted lease has a quorum at its root", "no lease is wider than its seating"); the add and deny properties are inductive alone, from one lemma on what a step does to the last add and the last deny; `DenyAlwaysAvailable` is a state lemma |
 | `Correlator_proof.tla` (2026.10.04, ADR-0051 Proposed) | 455 | 8 | a type invariant under every mutation; for `CarriedCoversSplitPath`, "the fold covers the ghost truth" (a tainted target is carried or forgotten, a tainted context is effective or lost) and "an honest correlator's mark has passed only what it found or what did not fire"; `HonestNeverCharged` adds "every finding cites a send the fold fired on"; `StoreWithinRecord` adds "an erased round is below its Thinker's current one"; four are inductive alone; `LagNeverGates` is a state lemma |
 | `Coupling_proof.tla` | 320 | 3 | a shape invariant under every mutation (future rounds zero, mark at most the sequence, an idle round's seal is its sequence), plus "past marks equal seals" and "the backlog is at most K" |
 | `RunCoupling_proof.tla` | 469 | 5 | the Coupling shape with effect seals, plus "the sequence counts effects" and "past seals agree"; the `ENABLED` invariant is a state lemma |
@@ -207,6 +208,9 @@ it is a trace replay over a concrete trace constant, and the meaningful target i
 small modules, which is the gap T-0045-28 declares.
 
 ## 5a. Assessment, 2026.10.04: the proofs rerun with checked backends
+
+*The method itself is documented in `spec/proof-certification.md`. This section is the assessment as first written,
+for sixteen modules; that document carries the current count.*
 
 **What was done.** The floor's gates accept a solver's `unsat` only with a proof a pinned checker has accepted
 (ADR-0030 §5 A1; `floor/cvc5-checked`). On 2026.10.04 the same was done for the proofs. `spec/smt-checked` stands in

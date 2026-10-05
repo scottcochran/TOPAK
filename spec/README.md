@@ -23,6 +23,7 @@ hand-assembled TLC output with a dated name and never change; the two generators
 | `Coupling.tla` | ADR-0039 §8 | `coupling-run.sh` | `Coupling-results-2026.09.29.txt` | ADR-0039 |
 | `RunCoupling.tla` | ADR-0042 §8 | `runcoupling-run.sh` | `RunCoupling-results-2026.09.29.txt` | ADR-0042 |
 | `RunSeats.tla` | ADR-0043 §8 | `runseats-run.sh` | `RunSeats-results-2026.09.29.txt` | ADR-0043 |
+| `Emergency.tla` | ADR-0052 §9 (Proposed) | `emergency-run.sh`; `emergency-gen-results.sh` with a row list | `Emergency-results-2026.10.04.txt` | ADR-0052 |
 | `ToolList.tla` | ADR-0048 §8 (Proposed) | `toollist-run.sh`; `toollist-gen-results.sh` with a row list | `ToolList-results-2026.10.04.txt` | ADR-0048 |
 | `Operators.tla` | ADR-0050 §10 (Proposed) | `operators-run.sh`; `operators-gen-results.sh` with a row list | `Operators-results-2026.10.04.txt` | ADR-0050 |
 | `Correlator.tla` | ADR-0051 §10 (Proposed) | `correlator-run.sh`; `correlator-gen-results.sh` with a row list | `Correlator-results-2026.10.04.txt` | ADR-0051 |
@@ -46,9 +47,11 @@ describe the formal layer as TLC-checked until the next checkpoint is cut.
 **Certified runs (2026.10.04).** `proof-cert.sh <Module>_proof > <Module>-proof-cert-results-<date>.txt` reruns a
 proof module with Z3 replaced by `smt-checked` (cvc5 with proof production, each proof accepted by the ethos checker
 the floor gates use before `unsat` is forwarded) and with Zenon's proofs checked by Isabelle, and accounts for every
-obligation by the route that discharged it. Thirteen of the sixteen proof modules certify; `RulesFloorNV_rev5`,
+obligation by the route that discharged it. Seventeen of the twenty proof modules certify; `RulesFloorNV_rev5`,
 `Confinement` and `Confinement_A1` do not, and their results files say why. `smt-checked-selftest.sh` checks the
-wrapper against a dishonest solver. `proof-method.md` §5a has the assessment.
+wrapper against a dishonest solver. **`proof-certification.md` is the method**: what is checked and by what, how the
+wrapper binds a proof to its query, how to read and reproduce a results file, what stays trusted, and how to write
+proofs that certify. `proof-method.md` §5a has the first assessment.
 
 `tools/tlapm` wraps the prover, which `tools/install-tlaps.sh` installs beside it (not tracked). `proof-results.sh
 <Module>_proof` checks one proof module and prints its results file, with the digest of every module in the EXTENDS
@@ -72,9 +75,10 @@ The `1.6.0-pre` release tag is rebuilt by its upstream: on 2026.10.03 both asset
 | `RunSeats_proof.tla` | `RunSeats.tla` | ADR-0043 §8 | `OnlyThinkersActuate`, `ObserversConsultAndReport`, `NoNameCrossesDomains` | none | `RunSeats-proof-results-2026.10.02.txt` |
 | `Coupling_proof.tla` | `Coupling.tla` | ADR-0039 §8 | `NoAdmitWithoutLiveObserver`, `UnreadBounded`, `CorrelatorNeverGates`, for every K, R and MaxRound | `K, R, MaxRound ∈ Nat` | `Coupling-proof-results-2026.10.02.txt` |
 | `RunCoupling_proof.tla` | `RunCoupling.tla` | ADR-0042 §8; ADR-0041 §2 | all five, including the `ENABLED` invariant `ConsultNeverCoupled`, for every K, R and MaxRound | `K, R, MaxRound ∈ Nat` | `RunCoupling-proof-results-2026.10.02.txt` |
+| `Emergency_proof.tla` | `Emergency.tla` | ADR-0052 §9 (Proposed) | all six: a roster quorum behind every emergency lease, one round, a person as holder, no admit by an exception, the Thinker still coupled, every activation recorded | none | `Emergency-proof-results-2026.10.04.txt` |
 | `Labels_proof.tla` | `Labels.tla` | ADR-0047 §11 (Proposed) | all ten, the floor's minimum (`NoReadThenSend`, `NoSteeredDestination`) among them, and the step property `ClearSetOnlyGrows`, for every `MaxSeq` | `MaxSeq ∈ Nat` | `Labels-proof-results-2026.10.04.txt` |
 | `ToolList_proof.tla` | `ToolList.tla` | ADR-0048 §8 (Proposed) | all five: `ToolListIsExact`, `ToldMatchesDecided`, `ListFixedForRound`, `OpeningRecordFirst`, `OpenedListIsTold` | none | `ToolList-proof-results-2026.10.04.txt` |
-| `Operators_proof.tla` | `Operators.tla` | ADR-0050 §10 (Proposed) | all twelve, including the `ENABLED` invariant `DenyAlwaysAvailable`, for every set of operators and every round bound | none | `Operators-proof-results-2026.10.04.txt` |
+| `Operators_proof.tla` | `Operators.tla` | ADR-0050 §10 (Proposed) | all thirteen, including the `ENABLED` invariant `DenyAlwaysAvailable`, for every set of operators and every round bound | none | `Operators-proof-results-2026.10.04.txt` |
 | `Correlator_proof.tla` | `Correlator.tla` | ADR-0051 §10 (Proposed) | all eight, including the `ENABLED` invariant `LagNeverGates`, for every set of Thinkers, shared targets and correlators and every bound | none | `Correlator-proof-results-2026.10.04.txt` |
 | `Lease_A1_proof.tla` | `Lease_A1.tla` | ADR-0031 §4, A1 | all four: `LeaseAuthorityMonotone`, `NoActionUnderFencedEpoch`, `Rung0NeverContained`, `RevokedStaysStopped` | none | `Lease_A1-proof-results-2026.10.02.txt` |
 | `Confinement_proof.tla` | `Confinement.tla` | ADR-0034 §7, A1 | all four: `ContainedMeansConfined`, `NoSilentDowngrade`, `ContestedStopped`, `FreshAppraisal`, for every rung at once | `Declared ∈ 0..3` | `Confinement-proof-results-2026.10.02.txt` |

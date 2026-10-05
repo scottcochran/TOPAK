@@ -1,5 +1,5 @@
 ------------------------- MODULE Operators_proof -------------------------
-(* TLAPS proofs of the twelve invariants Operators.tla states (ADR-0050,         *)
+(* TLAPS proofs of the thirteen invariants Operators.tla states (ADR-0050,         *)
 (* Proposed: the operator as a principal), for every set of operators and every  *)
 (* round bound:                                                                  *)
 (*                                                                               *)
@@ -14,6 +14,7 @@
 (*   NoDenyByRevokedAlways               (every Mut)                             *)
 (*   EveryStopIsAttributedAlways         (Mut # "M_ANON")                        *)
 (*   RevokedStaysOutAlways               (every Mut)                             *)
+(*   FleetFenceNeedsLeaseAlways          (Mut # "M_LAPSEDFENCE")                 *)
 (*   DenyAlwaysAvailableAlways           (Mut # "M_DENYLEASE")                   *)
 (*   SafeAlways == Spec => []Safe        (Mut = "none")                          *)
 (*                                                                               *)
@@ -249,6 +250,7 @@ LEMMA StopsStep ==
     PROVE  \/ stops' = stops
            \/ \E o \in Ops, k \in {"end", "revoke", "fence"} :
                 /\ MayDeny(o)
+                /\ (k = "fence" => (Live(o) \/ Mut = "M_LAPSEDFENCE"))
                 /\ stops' = {StopRecord(k, o)}
            \/ /\ Mut = "M_ANON"
               /\ stops' = {[kind |-> "fence", by |-> "nobody", byLive |-> TRUE, vouched |-> TRUE, inForce |-> TRUE]}
@@ -289,11 +291,16 @@ LEMMA AttributedNext ==
     PROVE  EveryStopIsAttributed'
 BY StopsStep DEF EveryStopIsAttributed, StopRecord
 
+LEMMA FenceNext ==
+    ASSUME Mut # "M_LAPSEDFENCE", FleetFenceNeedsLease, [Next]_vars
+    PROVE  FleetFenceNeedsLease'
+BY StopsStep DEF FleetFenceNeedsLease, StopRecord
+
 (* A deny is enabled wherever its guard holds: every state, no induction.        *)
 LEMMA DenyEnabled ==
     ASSUME Mut # "M_DENYLEASE"
     PROVE  DenyAlwaysAvailable
-BY ExpandENABLED DEF DenyAlwaysAvailable, FenceEpoch, MayDeny
+BY ExpandENABLED DEF DenyAlwaysAvailable, Revoke, MayDeny
 
 -----------------------------------------------------------------------------
 THEOREM FirstLeaseHasAQuorumAlways ==
@@ -404,6 +411,16 @@ THEOREM EveryStopIsAttributedAlways ==
 <1> QED
     BY <1>1, <1>2, PTL DEF Spec
 
+THEOREM FleetFenceNeedsLeaseAlways ==
+    ASSUME Mut # "M_LAPSEDFENCE"
+    PROVE  Spec => []FleetFenceNeedsLease
+<1>1. Init => FleetFenceNeedsLease
+    BY DEF Init, FleetFenceNeedsLease
+<1>2. FleetFenceNeedsLease /\ [Next]_vars => FleetFenceNeedsLease'
+    BY FenceNext
+<1> QED
+    BY <1>1, <1>2, PTL DEF Spec
+
 THEOREM RevokedStaysOutAlways == Spec => []RevokedStaysOut
 <1>1. Init => RevokedStaysOut
     BY DEF Init, RevokedStaysOut, Live, NoLease
@@ -447,8 +464,10 @@ THEOREM SafeAlways ==
     BY RevokedStaysOutAlways
 <1>11. Spec => []DenyAlwaysAvailable
     BY DenyAlwaysAvailableAlways
+<1>12. Spec => []FleetFenceNeedsLease
+    BY FleetFenceNeedsLeaseAlways
 <1> QED
-    BY <1>1, <1>2, <1>3, <1>4, <1>5, <1>6, <1>7, <1>8, <1>9, <1>10, <1>11, PTL DEF Safe
+    BY <1>1, <1>2, <1>3, <1>4, <1>5, <1>6, <1>7, <1>8, <1>9, <1>10, <1>11, <1>12, PTL DEF Safe
 
 -----------------------------------------------------------------------------
 (* What each mutation admits: the guard it removes. Their counterexamples are    *)
@@ -473,6 +492,11 @@ LEMMA MutDenyLeaseNeedsLease ==
     ASSUME Mut = "M_DENYLEASE", NEW o \in Ops, MayDeny(o)
     PROVE  Live(o)
 BY DEF MayDeny
+
+LEMMA MutLapsedFenceFences ==
+    ASSUME Mut = "M_LAPSEDFENCE", NEW o \in Ops, MayDeny(o)
+    PROVE  ENABLED FenceEpoch(o)
+BY ExpandENABLED DEF FenceEpoch
 
 LEMMA NoneNeverGrants == Mut # "M_NOSEAT" => \A o \in Ops, p \in Principals, w \in 1..MaxW : ~Grant(o, p, w)
 BY DEF Grant

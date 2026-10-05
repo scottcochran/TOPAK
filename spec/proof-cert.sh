@@ -83,12 +83,13 @@ triv = routes[("trivial", "tlapm")]
 known = {("proved", "smt"), ("proved", "zenon"), ("proved", "isabelle"), ("proved", "ls4"), ("trivial", "tlapm")}
 other = {k: n for k, n in routes.items() if k not in known}
 isa_ok = "Proof checking done. No errors found." in tb and not rejected
+isa_err = "Unexpected error while checking proofs" in tb
 evd = hashlib.sha256("\n".join(sorted(v["query_sha256"] + " " + v.get("proof_sha256", "-") for v in checked)).encode()).hexdigest()[:16]
 total = len(ids)
 print(f"Obligations: {total}")
 print(f"  trivial, closed by tlapm with no backend            {triv}")
 print(f"  SMT, proof accepted by ethos                        {smt}   ({accepted_calls} calls forwarded on an accepted proof; {smt_reused} obligations identical to one already proved in this run; evidence digest {evd})")
-print(f"  Zenon, proof checked by Isabelle                    {zen}" + ("" if zen == 0 else ("   (Isabelle: no errors)" if isa_ok else f"   (ISABELLE REJECTED {len(rejected)}: obligations {', '.join(rejected) or '?'})")))
+print(f"  Zenon, proof checked by Isabelle                    {zen}" + ("" if zen == 0 else ("   (Isabelle: no errors)" if isa_ok else ("   (ISABELLE COULD NOT CHECK THEM: unexpected error)" if isa_err and not rejected else f"   (ISABELLE REJECTED {len(rejected)}: obligations {', '.join(rejected) or '?'})"))))
 print(f"  Isabelle                                            {isa}")
 print(f"  LS4, temporal step, NOT certified                   {ls4}")
 for (st, pr), n in sorted(other.items()):
@@ -105,7 +106,7 @@ if ok:
 else:
     why = []
     if other: why.append("; ".join(f"{n} obligation(s) {st} (last backend tried: {pr})" for (st, pr), n in sorted(other.items())))
-    if zen and not isa_ok: why.append(f"Isabelle rejected {len(rejected)} of Zenon's proofs")
+    if zen and not isa_ok: why.append("Isabelle could not check Zenon's proofs" if isa_err and not rejected else f"Isabelle rejected {len(rejected)} of Zenon's proofs")
     if smt - smt_reused > accepted_calls: why.append(f"{smt - smt_reused} SMT-proved obligations against {accepted_calls} accepted proofs")
     if status and not why: why.append(f"tlapm exit {status}")
     print("NOT CERTIFIED: " + "; ".join(why) + ".")

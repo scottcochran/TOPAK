@@ -26,8 +26,11 @@
 (*   NoDenyByRevoked           no deny was admitted from a revoked Persona     *)
 (*   EveryStopIsAttributed     every stop names an operator                    *)
 (*   RevokedStaysOut           a revoked principal holds no live lease         *)
+(*   FleetFenceNeedsLease      no fleet fence was admitted from an operator    *)
+(*                             with no live lease (R5)                         *)
 (*   DenyAlwaysAvailable       an operator whose Persona is in force and whose *)
-(*                             provider vouches can fence in every state       *)
+(*                             provider vouches can revoke any principal in    *)
+(*                             force, in every state                           *)
 (*                                                                             *)
 (* A lease's `width` stands for its authority: a larger width is a wider       *)
 (* alphabet. Persona, bundle and confinement are not modelled apart from it; a *)
@@ -42,7 +45,7 @@
 (* invariant over the last is an invariant over all. Time is not modelled: a lease lapses whenever `Expire`      *)
 (* says, and a provider withdraws whenever `Unvouch` says.                     *)
 (*                                                                             *)
-(* Mut = "none":        ADR-0050 as revised at R1.                             *)
+(* Mut = "none":        ADR-0050 as revised at R5.                             *)
 (* Mut = "M_NOSEAT":    an operator may grant a first lease, as the reference  *)
 (*                      does today. Must break FirstLeaseHasAQuorum and        *)
 (*                      LeaseWithinSeating; and, with three operators,         *)
@@ -66,6 +69,9 @@
 (*                      DenyAlwaysAvailable.                                   *)
 (* Mut = "M_ANON":      a stop with no author, as the socket allows today.     *)
 (*                      Must break EveryStopIsAttributed.                      *)
+(* Mut = "M_LAPSEDFENCE": an operator with no live lease may fence the fleet,  *)
+(*                      on a fresh assertion: ADR-0050 before R5. Must break   *)
+(*                      FleetFenceNeedsLease and nothing else.                 *)
 EXTENDS Integers, FiniteSets
 
 CONSTANTS Mut, Ops, MaxRound
@@ -177,8 +183,11 @@ Revoke(o, p) ==
   /\ stops' = {StopRecord("revoke", o)}
   /\ UNCHANGED <<seating, vouched, adds, fenced>>
 
+\* The fleet fence is the one deny that needs a live lease (R5): a lapsed operator stops its
+\* own domain and not the fleet.
 FenceEpoch(o) ==
   /\ MayDeny(o)
+  /\ (Live(o) \/ Mut = "M_LAPSEDFENCE")
   /\ lease' = [p \in Principals |-> [lease[p] EXCEPT !.live = FALSE]]
   /\ stops' = {StopRecord("fence", o)}
   /\ fenced' = TRUE
@@ -234,12 +243,15 @@ EveryStopIsAttributed == \A s \in stops : s.by \in Ops
 
 RevokedStaysOut == \A p \in Principals : ~inForce[p] => ~Live(p)
 
-DenyAlwaysAvailable == \A o \in Ops : (inForce[o] /\ vouched[o]) => ENABLED FenceEpoch(o)
+FleetFenceNeedsLease == \A s \in stops : s.kind = "fence" => s.byLive
+
+DenyAlwaysAvailable ==
+  \A o \in Ops : (inForce[o] /\ vouched[o]) => \A p \in Principals : inForce[p] => ENABLED Revoke(o, p)
 
 Safe == /\ FirstLeaseHasAQuorum /\ LeaseWithinSeating /\ SuccessorNeverWidens
         /\ NoAddWithoutLiveLeaseAndPeer /\ NoSelfRegrant /\ OperatorLeaseWasVouched
         /\ NoDenyOnAStaleKey /\ NoDenyByRevoked /\ EveryStopIsAttributed /\ RevokedStaysOut
-        /\ DenyAlwaysAvailable
+        /\ FleetFenceNeedsLease /\ DenyAlwaysAvailable
 
 \* --- reachability witnesses: each must be VIOLATED unless the row says otherwise
 
@@ -258,6 +270,9 @@ NeverRecovered == ~(fenced /\ \E p \in Principals : Live(p))
 \* An operator's own next round is granted by a peer. With two operators this HOLDS: the
 \* only peer of the grantor is the target, whose lease is not live. It takes three.
 NeverOperatorRegranted == \A a \in adds : ~(a.kind = "regrant" /\ a.target \in Ops)
+\* A fleet fence happens, and a lapsed operator revokes: the stop is not vacuous either way.
+NeverFenced == ~fenced
+NeverLapsedRevoke == \A s \in stops : ~(s.kind = "revoke" /\ ~s.byLive)
 \* A peer renews an operator's lease. Reached with two.
 NeverOperatorRenewed == \A a \in adds : ~(a.kind = "renew" /\ a.target \in Ops)
 =============================================================================
