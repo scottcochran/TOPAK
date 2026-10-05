@@ -247,6 +247,7 @@ Findings 12 to 14 are from 2026.09.29, carrying ADR-0040 to ADR-0043 (then Propo
    (`mechanism.rs` `apply_committed`); fourteen release runs under tracing then passed. It is a
    subtraction that should not have happened, and no property in `spec/` speaks to it: the clock is
    outside every module, and expiry arrives in them as an ordered entry.
+   The fix is ADR-0033 A13, ratified 2026.10.05 (Batch 33).
 
 ---
 
