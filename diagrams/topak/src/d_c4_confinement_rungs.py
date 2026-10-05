@@ -12,31 +12,40 @@ def build():
                "ADR-0034 gives the lease's `confinement: [digest, rung]` field its meaning: a promoted profile of seven "
                "clauses, four rungs that say how the belief in the profile was established, an appraisal folded into "
                "the grant, and the four conjuncts of `Contained(p)`. One test decides the archetype: **delegate by "
-               "failure direction**. The reference grants rung 0 by operator and launches rung 1 under its own assertion "
-               "and rung 3 only SIMULATED (ADR-0033 A7, pending); `Contained` **has no members in any real run** (G9 "
-               "§2.3). The module's four invariants are proved for every rung at once (ADR-0034 B25), and finding 6's "
-               "successor, `Confinement_A1`, is checked and proved; neither adds confinement to the reference.",
-               3200, "ADR-0034 §1–§8, Findings, R1, R2, A1, B10, B17, B20, B22, B25; ADR-0046 §2, §4, §5; "
-                     "ADR-0031 §3, §4 (A1), §5; ADR-0036 §1 "
-                     "(R1), §2 (Proposed); ADR-0035 (Proposed); ADR-0022 §6 (Proposed), B10, R3; ADR-0042 §6 (Proposed); "
-                     "ADR-0045 T-0045-16 to T-0045-22; spec/Confinement.tla (d0dcf21ce9774885), "
+               "failure direction**. **Since G9 two amendments are in force**: A2, the **Run profile**, in which P4 is "
+               "**channel fidelity** (Batch 30, with ADR-0042 §6), and A3, four of the reference's choices (Batch 29); "
+               "the declared rung is **per seat** (ADR-0023 A1). The reference grants rung 0, launches rung 1 under its "
+               "own assertion and rung 3 only SIMULATED (ADR-0033 A7, ratified Batch 29 ahead of ADR-0036, which is "
+               "Proposed). **No guest passes P3, so no real principal is** `Contained` (G10 §2.3, item 1); an operator and "
+               "an emergency seat are `Mediated` by design. The module's four invariants are **proved** for every rung at "
+               "once (B25), and finding 6's successor `Confinement_A1` is checked and proved; **neither proof certifies** "
+               "(G10 §2.9), and neither adds confinement to the reference.",
+               3200, "ADR-0034 §1–§8, Findings, R1–R4, A1, A2, A3, B10, B17, B20, B22, B25, B29, B30, B31; ADR-0046 §2, "
+                     "§4, §5, E2, A1; ADR-0031 §3, §4 (A1), §5; ADR-0023 §6c (A1, B29); ADR-0036 §1 (R1), §2, R4–R6 "
+                     "(Proposed); ADR-0035 (Proposed, R4–R7); ADR-0022 §6 (Proposed), B10, R3; ADR-0042 §6 (accepted, "
+                     "B30); ADR-0040 §3; ADR-0049 §5; ADR-0050 §1 and ADR-0052 §1 (provisional); ADR-0025 §1 (f), (g); "
+                     "ADR-0045 T-0045-16 to T-0045-25, Annex B; spec/Confinement.tla (d0dcf21ce9774885), "
                      "Confinement-results-2026.09.28.txt and -2026.09.30.txt; boundary register (2026.09.13) B6, B12; "
                      "spec/Confinement_proof.tla (2f4b4bb96d1f83f3), Confinement-proof-results-2026.10.02.txt; "
                      "spec/theorem-premise-binding.md; spec/Confinement_A1.tla (715b1c291771c527), "
-                     "Confinement_A1-results-2026.10.02.txt, Confinement_A1-proof-results-2026.10.02.txt; ADR-0034 A2 "
-                     "(pending); ADR-0033 A7, A8 (pending); ToO rev 13 §2.3, §2.6, §2.7; G9 §2.3, §2.5, §3, §8")
+                     "Confinement_A1-results-2026.10.02.txt, Confinement_A1-proof-results-2026.10.02.txt; "
+                     "Confinement-proof-cert-results-2026.10.04.txt, Confinement_A1-proof-cert-results-2026.10.04.txt; "
+                     "spec/proof-certification.md; spec/RunConfinement.tla (d0c4aa37934b78b5), "
+                     "RunConfinement-results-2026.10.02.txt, RunConfinement_proof.tla (e8612bf4111c7599), "
+                     "RunConfinement-proof-cert-results-2026.10.04.txt; ADR-0033 A7, A8, A9, A14; mechanism/ "
+                     "GAPS-AND-ASSUMPTIONS.md G1, G19, I37, I39, I43, I44, I47; ToO rev 14 §2.3, §2.6, §2.7, §2.9, "
+                     "§7.10; G10 §1, §2.3, §2.5, §2.9, §7 items 1, 74, 88, 89, §8")
     X0, X1 = c.x0, c.x1
     y = c.y
     sx = X0
     c.text(sx, y + 16, "ADR-0034", 16, "ink", bold=True)
     sx += 92
-    sx += c.status(sx, y, "accepted", "C2, C4 · ratified 2026.09.28, Batch 10") + 14
-    c.text(sx, y + 16, "Discharges ADR-0022 §6 for Build as a specification, not as a mechanism. "
-           "ADR-0035 (the fourth conjunct) and ADR-0036 (the rung-1 launcher; the rung-0 declared profile, R1) are",
-           14, "muted")
+    sx += c.status(sx, y, "accepted", "C2, C4 · ratified 2026.09.28, Batch 10 · A2 (B30), A3 (B29) applied") + 14
+    c.text(sx, y + 16, "Discharges ADR-0022 §6 for Build, and with A2 the Run profile. ADR-0035 (the fourth conjunct) "
+           "and ADR-0036 (the rung-1 launcher; the rung-0 declared profile, R1) are", 14, "muted")
     from lib import text_width
-    sx2 = sx + text_width("Discharges ADR-0022 §6 for Build as a specification, not as a mechanism. ADR-0035 (the "
-                          "fourth conjunct) and ADR-0036 (the rung-1 launcher; the rung-0 declared profile, R1) are", 14) + 10
+    sx2 = sx + text_width("Discharges ADR-0022 §6 for Build, and with A2 the Run profile. ADR-0035 (the fourth "
+                          "conjunct) and ADR-0036 (the rung-1 launcher; the rung-0 declared profile, R1) are", 14) + 10
     c.status(sx2, y, "proposed")
     y += 52
 
@@ -63,11 +72,11 @@ def build():
     ladder = [
         (0, "grey", "declared", "by the operator, verified by nobody", "D-0034-4",
          ["Evidence: none. `Mediated`, always (ADR-0031 §3).", "A rung-0 grant **may name a profile**: its verdict "
-          "is then derived from declared clauses (ADR-0036 R1).", "The reference: every operator grant."]),
+          "is then derived from declared clauses (ADR-0036 R1).", "The reference: a seat declared at rung 0 (ADR-0023 §6c)."]),
         (1, "amber", "asserted", "by the launcher", "D-0034-2",
          ["Evidence: the launcher's assertion; appraised by nobody.", "Adds the host operator and orchestrator.",
           "Contested unreachable. The launcher binds the session (ADR-0036).",
-          "The reference: the node's launcher (A7, pending)."]),
+          "The reference: the node's launcher (A7, ratified B29)."]),
         (2, "violet", "measured", "launch measurement", "D-0034-1",
          ["Evidence: a measured-boot TPM quote.", "Adds host firmware and the hypervisor.",
           "Detects a rogue launch; not an altered running guest."]),
@@ -151,12 +160,70 @@ def build():
                "minimum platform TCB version it accepts. Changing either is a new profile, and so a promotion",
          "Reference values that move without review"],
     ], size=14, accent="blue") + 14
-    c.para(X0, y, TW, "**A digest nobody promoted is not a reference value**, so it cannot be attested. **Build and Run "
-           "share the schema, not the profile**: Build's is fully determined by ADR-0022's alphabet. Run's is drafted "
-           "as **ADR-0034 A2, pending** (C2, C4): P2 mounts nothing, and P4 becomes **channel fidelity**, held by the "
-           "tool host's Wasm runtime, as ADR-0042 §6 (Proposed) asks. Until both are ratified Run principals are "
-           "`Mediated` at every rung.", 14, "muted")
-    y += 70
+    y += c.para(X0, y, TW, "**A digest nobody promoted is not a reference value**, so it cannot be attested. **Build "
+                "and Run share the schema, not the profile**: Build's is fully determined by ADR-0022's alphabet; Run's "
+                "is **ADR-0034 A2**, below.", 14, "muted") + 40
+
+    # ------------------------------------------------------------------ the Run profile (A2, in force since B30)
+    c.heading(X0, y, "§1, A2: the Run profile, in force since Batch 30 with ADR-0042 §6: the same schema with "
+                     "`domain: run`, and P4 replaced by channel fidelity")
+    c.status(X1, y + 3, "accepted", "C2, C4 · A2 at R4, Batch 30", anchor="end")
+    y += 44
+    cols = [("#", TW * 0.05, {"bold": True}), ("Run clause (ADR-0034 A2 §1)", TW * 0.64),
+            ("What it removes", TW * 0.31)]
+    y += c.table(X0, y, cols, [
+        ["P1", "One channel, to the front door; no network device. Unchanged",
+         "Egress from the guest. A Run principal's only route to an effect is an `Actuate` admitted at the front door"],
+        ["P2", "A measured read-only root and nothing else mounted. Run has no workspace (it has no `Draft`) and the Run "
+               "root is not mounted: an admitted `Consult` delivers its object over the channel, node-side, as ADR-0036 "
+               "§3 does `Read` (drafter's choice)", "Reads outside the Run root, and a second, unrecorded ingress path"],
+        ["P3", "No launcher for the principal. The only code the principal can cause to run is its own inference and "
+               "`Actuate` of an allowlisted tool", "Effects that no action names"],
+        {"cells": ["P4", "**Channel fidelity.** Every Run tool is a Wasm component, instantiated per call by the tool host, "
+                   "handed a working-directory capability for the round and **one network capability: a connection to "
+                   "the target its allowlist entry declares**, and no other socket. **The tool host reads that target "
+                   "from the entry of the bundle revision the lease names, and from nowhere else** (R4; ADR-0049 §5). "
+                   "It may read a clock and draw entropy: a Run tool is not hermetic. The capability binds the target; "
+                   "the declared `kind` (the protocol) is recorded with the call and is not enforced",
+                   "An effect on a channel nobody declared. Fidelity holds by construction, a check and not a trust, as "
+                   "P4 makes hermeticity one in Build"], "accent": "green"},
+        ["P5", "Inference is inside. Unchanged", "Prompt egress and device-memory paths"],
+        ["P6", "One principal per guest, one guest per round, and the guest is destroyed when the round ends, which in "
+               "Run is when the lease ends (ADR-0042 §5). Nothing survives except through `Actuate` and `Report`",
+         "Cross-round and cross-principal state"],
+        ["P7", "Unchanged. The tool host is not in the guest's measurement: its identity is fixed by the release "
+               "(ADR-0045 T-0045-25)", "Reference values that move without review"],
+    ], size=14, accent="green") + 16
+    rw = (TW - 2 * 30) / 3
+    rcards = [
+        ("Who checks it: the tool host's Wasm runtime", "green", "accepted", "B30", [
+            "**Channel fidelity is about which channel, not what is said on it**: an `Actuate` that drives the declared "
+            "valve the wrong way is an admitted effect with a record, for the floor, the bundle and the Observer.",
+            "ADR-0045 **T-0045-24** moves from excluded to **delegated to T-0045-25** for a Wasm tool at the archetype; "
+            "excluded for a native one (D-0034-5, D-0034-6). A Run seat without `Actuate` meets P4 vacuously.",
+        ]),
+        ("Met at ratification (B30), and at the reference since", "teal", "built", "A8 (B31), A9 (B32)", [
+            "`spec/RunConfinement.tla`: `Safe` holds with and without the filter; `M_CHANNEL`, `M_NATIVE` and "
+            "`M_FILTER` break what they must (13 rows, below); both invariants **proved and certified** (116 "
+            "obligations).",
+            "The reference: a Run tool hosted as a Wasm module reaches its declared target and nothing else; a lease "
+            "whose Run profile claims P4 is held to such tools at decide and at apply (A8). **Since A9 the target is "
+            "read from the entry** of the lease's revision; node configuration states no channel (G10 item 84).",
+        ]),
+        ("What the reference still does not do (A8, A9; G10 item 89)", "red", None, "", [
+            "A Run tool is a Wasm **core module**, not a component (PROVISIONAL tool-abi, `mechanism/` I44).",
+            "The protocol on the target is not enforced; a **native** tool's target stays an assertion (G19).",
+            "Build's P4 is not held to Wasm tools for `Invoke`. Annex B keeps T-0045-24 excluded at the reference, "
+            "for a reason A9 ended (item 89).",
+            "**No Run principal is** `Contained`: the criterion is set nowhere; Run's `contained = true` is reached "
+            "only in a SIMULATED rung-3 run.",
+        ]),
+    ]
+    rh = max(c.card(0, 0, rw, t, b, size=14, status=st, status_extra=se, draw=False) for t, _, st, se, b in rcards)
+    for i, (t, a, st, se, b) in enumerate(rcards):
+        c.card(X0 + i * (rw + 30), y, rw, t, b, accent=a, size=14, status=st, status_extra=se, h=rh,
+               tint=(a != "red"))
+    y += rh + 70
 
     # ------------------------------------------------------------------ row C: appraisal flow + Contained(p)
     half = (TW - 50) / 2
@@ -173,19 +240,22 @@ def build():
     g2 = c.card(X0, fy + g1 + 40, gw, "2 · One replica appraises", [
         "It obtains the evidence and the verifier's signed result and proposes a grant entry carrying profile digest, "
         "rung, verdict, nonce, evidence digest and session key. Replicas do not appraise again; at apply each checks "
-        "the signature and that the nonce's epoch is current.",
+        "the signature and that the nonce's epoch is current. **The appraisal is kept beside the lease, not in it** "
+        "(A3, §3.2): ADR-0031 §1's twelve fields stay closed.",
     ], accent="teal", size=13.5, bullets=False)
     c.arrow([(X0 + gw / 2, fy + g1), (X0 + gw / 2, fy + g1 + 40)], "teal", sw=2.4)
     vx = X0 + gw + 110
     vw = half - gw - 110
     verdicts = [
         ("Attested", "green", "Signature valid, measurements match the profile",
-         "**Grant at the deployment's declared rung**"),
+         "**Grant at the seat's declared rung**, which is per seat and changed only by an issuance (ADR-0023 §6c, "
+         "A1)"),
         ("Unattestable", "amber", "No evidence, stale nonce, expired endorsement, or verifier unreachable",
          "**Refuse.** No grant, and not a grant at a lower rung"),
         ("Contested", "red", "Signature valid, measurements diverge (Sokolov, arXiv:2608.00801)",
          "Refuse, and order a **targeted revocation of the principal** (ADR-0031 §5), attributed under F2 with the "
-         "evidence; not the profile, so one hostile host cannot deny every principal sharing it"),
+         "evidence; not the profile, so one hostile host cannot deny every principal sharing it. **Only a verdict "
+         "signed under an issued verifier key, at rung ≥ 2** (A3, §3.7); plain `Revoke` stays an operator's"),
     ]
     vh = [c.card(0, 0, vw, t, [m, "→ " + r], size=13.5, bullets=False, draw=False) for t, _, m, r in verdicts]
     vy = fy
@@ -213,15 +283,17 @@ def build():
     cw = (half - 3 * 16) / 4
     conj = [
         ("1 · Attested lease", "teal", "A live lease at **rung ≥ 1**, granted on an **Attested** verdict at the "
-                                       "deployment's declared rung", "The reference launches rung 1 under its own "
-                                                                       "assertion and rung 3 only SIMULATED (A7, pending)"),
-        ("2 · Profile meets P3–P5", "teal", "No launcher, Wasm tools only, inference inside",
-         "Every real profile at the reference declares P3 `fail` (ADR-0036 §4)"),
+                                       "deployment's declared rung, per seat (ADR-0023 §6c)",
+         "The reference launches rung 1 under its own assertion and rung 3 only SIMULATED (A7, ratified B29)"),
+        ("2 · Profile meets P3–P5", "teal", "No launcher, Wasm tools only, inference inside; **for a Run principal P4 "
+                                            "is channel fidelity** (A2)",
+         "Every real profile at the reference declares P3 `fail` (ADR-0036 §4): **no guest passes P3** (G10 item 1)"),
         ("3 · In-house Persona", "teal", "On ADR-0017's axis, at the archetype or its rung 1: weights possessed, no "
                                          "prompt leaves the guest", "A property of the Persona"),
         ("4 · Independence criterion in force", "red", "ADR-0017's lineage-independence criterion: **ADR-0035 "
                                                        "ratified and its θ values set** as floor values (R2)",
-         "**ADR-0035 is Proposed**: this conjunct is false, so `Contained` is empty at every rung"),
+         "**ADR-0035 is Proposed** (R4–R7 since G9): this conjunct is false, so `Contained` is empty at every rung. "
+         "\"In force\" is the issued rules carrying it, ADR-0025 §1 (g) (A3)"),
     ]
     chh = max(c.card(0, 0, cw, t, [b, "Today: " + s], size=13.5, bullets=False, draw=False,
                      status=("proposed" if a == "red" else None)) for t, a, b, s in conj)
@@ -241,7 +313,9 @@ def build():
         "Before ADR-0034 the reason was that no rung had semantics; now **the criterion is the only missing premise** "
         "(finding 1). The custodian kept ADR-0031's stricter reading: the draft had left independence out (R2).",
         "The reference computes the four as a lookup and names each that fails; it answers yes only for a "
-        "**SIMULATED** rung-3 lease under a criterion a test issued: a witness, not a claim (G9 §2.3).",
+        "**SIMULATED** rung-3 lease under a criterion a test issued, Build or Run: a witness, not a claim (G10 §2.3).",
+        "**An operator and an emergency seat are** `Mediated` **by design**: a person is not confined (ADR-0050 §1; "
+        "ADR-0052 §1, both provisional).",
     ], accent="red", size=14, bullets=False)
     cy2 = jy + 40 + kh + 24
     bh = c.card(rx0, cy2, half, "Boundary register: B6 and B12 (2026.09.13)", [
@@ -249,7 +323,7 @@ def build():
         "Rung 0 is `Mediated`, always.",
         "**B12, deployment stack** (sandbox and below): the register's empty cell, \"no mechanism exists\". ADR-0031 §3 "
         "gave it its instant, the grant; ADR-0034 gives the rungs; the mechanism half is narrowed, not closed: a rung-1 "
-        "launcher and a simulated rung 3 (`mechanism/` G1; A7, pending). ToO A1 is not met.",
+        "launcher and a simulated rung 3 (`mechanism/` G1; A7, ratified B29). ToO A1 is not met.",
     ], accent="grey", size=14)
     right_bot = cy2 + bh
     y = max(left_bot, right_bot) + 60
@@ -303,27 +377,27 @@ def build():
         ["D-0034-3", "Profile admits a native tool", "P4", "Every `Contained` theorem, for principals whose alphabet "
                                                            "reaches that tool", "Those principals become `Mediated`"],
         {"cells": ["D-0034-4", "Confinement rung → 0", "A1", "Every `Contained` theorem",
-                   "Every principal becomes `Mediated`. **The reference's position** for an operator grant"],
+                   "Every principal becomes `Mediated`. **The reference's position** for a seat declared at rung 0"],
          "accent": "red"},
-        {"cells": ["D-0034-5", "A Run tool is native, behind an egress filter admitting only its declared target "
-                   "[[amber|(A2, pending)]]", "P4 (Run)", "None",
-                   "The tool host enters the trusted base for channel fidelity: a trust where Wasm is a check"],
-         "accent": "amber"},
-        {"cells": ["D-0034-6", "A Run tool is native and unfiltered [[amber|(A2, pending)]]", "P4 (Run)",
+        {"cells": ["D-0034-5 (A2)", "A Run tool is native, under an egress filter in the tool host that admits only "
+                   "its declared target", "P4 (Run), as stated; channel fidelity moves from a check to a trust", "None",
+                   "The tool host enters the trusted base for channel fidelity: T-0045-25 widens, and T-0045-24 is "
+                   "delegated to it on trust rather than by construction"], "accent": "green"},
+        {"cells": ["D-0034-6 (A2)", "A Run tool is native and unfiltered: **the reference today for a native tool**, "
+                   "T-0045-24 excluded for it", "P4 (Run)",
                    "Every `Contained` theorem, for Run principals whose alphabet reaches that tool",
-                   "Those principals become `Mediated`. The Run counterpart of D-0034-3; the reference before A8"],
-         "accent": "amber"},
-    ], size=14, accent="amber") + 14
+                   "Those principals become `Mediated`. The Run counterpart of D-0034-3"], "accent": "green"},
+    ], size=14, accent="blue") + 14
     c.para(X0, y, TW, "Rungs 1 and 2 void no theorem; they move what the theorems rest on (ADR-0023 §4a). ADR-0036 adds "
            "D-0036-1 (an interpreter reachable from the principal: P3 falsified), the same kind of entry as D-0034-3; "
-           "it is Proposed.", 14, "muted")
+           "ADR-0036 is Proposed. D-0034-5 and D-0034-6 are A2's, in force since Batch 30.", 14, "muted")
     y += 64
 
     # ------------------------------------------------------------------ row E: Confinement.tla
     c.heading(X0, y, "§7: `spec/Confinement.tla` (digest d0dcf21ce9774885), runs of 2026.09.28 (R1) and the rung-0 "
                      "addendum of 2026.09.30 (A1)")
     y += 40
-    cols = [("Check", TW * 0.36), ("Rung", TW * 0.07), ("Mutation", TW * 0.11, {"mono": True}),
+    cols = [("Check", TW * 0.36), ("Rung / filter", TW * 0.07), ("Mutation", TW * 0.11, {"mono": True}),
             ("Invariant", TW * 0.2, {"mono": True}), ("Result", TW * 0.26)]
     rows = [
         {"group": "Rungs 1–3 (2026.09.28, `Confinement-results-2026.09.28.txt`)", "accent": "teal"},
@@ -373,6 +447,25 @@ def build():
         ["The host is untrusted where the rung trusts it", "1, 2 · 3", "M_HOST", "ContainedMeansConfined · Safe",
          CE + " at 1, 2; " + H + " at 3"],
         ["Each §7 mutation at rung 3", "3", "M_HW … M_RENEWLOW", "its target", CE + " at each"],
+        {"group": "`RunConfinement.tla` (`d0c4aa37934b78b5`), ADR-0034 A2's condition (ii): channel fidelity for Run "
+                  "(2026.10.02, `RunConfinement-results-2026.10.02.txt`, 13 rows; a Wasm, a filtered and a native tool)",
+         "accent": "green"},
+        ["Full mechanism", "no filter", "none", "Safe", H],
+        ["Full mechanism, D-0034-5 declared", "filter", "none", "Safe", H],
+        ["The Wasm runtime does not bind the target", "no filter", "M_CHANNEL", "EffectsOnDeclaredChannels", CE],
+        ["″", "no filter", "M_CHANNEL", "ContainedEffectsUseHeldTools", H + ": the tool is still a held one"],
+        ["The mechanism's check dropped: a native tool under a P4-pass lease", "no filter", "M_NATIVE",
+         "EffectsOnDeclaredChannels", CE],
+        ["″", "no filter", "M_NATIVE", "ContainedEffectsUseHeldTools", CE],
+        ["The egress filter does not bind", "filter", "M_FILTER", "EffectsOnDeclaredChannels",
+         CE + ": the filter is load-bearing where D-0034-5 is declared"],
+        ["″", "no filter", "M_FILTER", "Safe", H + ": and changes nothing where it is not"],
+        ["Witness: a `Contained` Run principal acts", "no filter", "none", "NeverContainedEffect", CE],
+        ["Witness: a `Mediated` Run principal acts too", "no filter", "none", "NeverMediatedEffect", CE],
+        ["Witness: the check fires (a native tool under a P4-pass lease refused)", "no filter · filter", "none",
+         "NeverRefused", CE + " at each"],
+        ["Witness: a `Mediated` principal's native tool reaches an undeclared target", "no filter", "none",
+         "NeverUndeclaredTarget", CE + ": the model lets a tool misbehave"],
     ]
     y += c.table(X0, y, cols, rows, size=13.5, accent="teal") + 14
     y += c.para(X0, y, TW, "**The** `M_HOST` **rows are the rung ladder, checked**: the same mutation breaks containment at rungs "
@@ -392,14 +485,20 @@ def build():
         "`M_RENEWLOW`; `ContestedStopped` not under `M_CONTESTED`; `FreshAppraisal` not under `M_STALE`. The rows "
         "above stay with TLC: that a mutation reaches a bad state is existential (ADR-0046 §2).",
         "**Correction 4** (ADR-0046 §5): a lease is bound to its guest by `Act`'s generation check, which `M_UNBOUND` "
-        "removes, **not by `SameGuest` at grant**, which the proof never uses. The proof needed an invariant of six "
+        "removes, **not by** `SameGuest` **at grant**, which the proof never uses. The proof needed an invariant of six "
         "clauses binding a lease to the guest generation it was granted against (G8 §3, result 1).",
         "**The successor's proof**, `Confinement_A1_proof.tla`: 503 obligations, the same proof with one case split "
-        "moved, so that rung 0 joins rung 1 under the low-rung invariant (G9 §2.9).",
+        "moved, so that rung 0 joins rung 1 under the low-rung invariant.",
+        "[[red|Neither proof certifies]] (ADR-0046 A1; G10 §2.9, item 74): of each, 3 obligations, large type-invariant "
+        "steps, are proved by Z3 and by nothing else, since cvc5 does not prove them; 337 or 338 are closed by "
+        "normalization, 157 by SMT with a proof the checker accepted, 5 temporal steps by LS4. Restructuring is "
+        "deferred by the custodian. `RunConfinement_proof.tla` **is certified**: 116 obligations, 71 trivial, 42 "
+        "checked SMT, 3 LS4.",
         "**A proof of the module adds nothing at the reference**: for a real deployment `ContainedMeansConfined` and "
         "`ContestedStopped` stay void; `NoSilentDowngrade` and `FreshAppraisal` hold at the reference's apply-time "
-        "checks, on every traced state (binding table, pending A7). `Contained` has no members in any real run (G9 §2.3).",
+        "checks, on every traced state (binding table; trace validation at 82 traces, ADR-0033 A14). `Contained` has "
+        "no members in any real run (G10 §2.3, §8).",
     ]
-    c.card(X0, y, TW, "Since 2026.10.02: the four invariants are proved, every rung at once (ADR-0034 B25)", pr,
-           accent="teal", size=14, status="accepted", status_extra="ADR-0046 · C2, C4 · B25")
+    c.card(X0, y, TW, "Since 2026.10.02: the four invariants are proved, every rung at once (ADR-0034 B25); proved, "
+           "and not certified", pr, accent="teal", size=14, status="accepted", status_extra="ADR-0046 · C2, C4 · B25")
     return c

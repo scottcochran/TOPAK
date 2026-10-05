@@ -8,14 +8,19 @@ W = 3300
 CRATES = [
     ("topak-node", "Replica: Paxos driver, WAL, admit pipeline, effects, the two sockets, the `topak` CLI", "all"),
     ("topak-core", "Types, lease (ADR-0031), rules floor (ADR-0026), tally (ADR-0024), lift, composition, replicated "
-                   "state, trace recorder", "none"),
+                   "state, trace recorder; since 10.05 labels and their fold (`labels.rs`), the control alphabet, "
+                   "seatings and activations (`control.rs`)", "none"),
     ("topak-paxos", "Sans-IO crash-fault Multi-Paxos plus a `Voting` ghost", "none"),
-    ("topak-floor", "Cedar engine with `floor/genesis-floor.cedar`, `genesis.cedarschema` and the values file compiled "
-                    "in, pinned by digest", "none"),
+    ("topak-floor", "Cedar engine with `floor/proposed/emergency-floor.cedar`, `emergency.cedarschema` and "
+                    "`genesis-values.json` compiled in by path, pinned by digest (since 10.05; the genesis floor before)",
+     "none"),
     ("topak-bundle", "OPA sidecar client; local OPA WASM fallback bound to the lease's bundle; signature check "
-                     "(ADR-0044)", "HTTP"),
-    ("topak-transport", "Round topics over `rskafka`, or in memory", "Kafka"),
-    ("topak-mcp", "The alphabet as MCP tools (`rmcp` server); downstream tool host (`rmcp` client)", "stdio"),
+                     "(ADR-0044); the allowlist's load checks W1 to W9, label facts and the tool list (`allowlist.rs`)",
+     "HTTP"),
+    ("topak-transport", "Round topics over `rskafka`, or in memory; record kinds `open`, `emit`, `actuate`, `control`, "
+                        "`deny`", "Kafka"),
+    ("topak-mcp", "The alphabet as MCP tools (`rmcp` server), with the tool list in its instructions; downstream "
+                  "tool host (`rmcp` client)", "stdio"),
     ("topak-contain", "The launcher's backends (host process, Docker, SIMULATED rung 3), appraisal, bridge; the Run "
                       "tool host for Wasm modules; `topak-demo-guest`", "stdio"),
 ]
@@ -23,37 +28,90 @@ CRATES = [
 
 def build():
     c = Canvas(ID, "The reference implementation, as deployed in development",
-               "`mechanism/` runs the admit path end to end for Build's six actions and Run's three: three replicas of "
-               "one Rust binary, an MCP front door on stdio, an operator socket, a linked Cedar floor, an OPA sidecar "
-               "with a WASM fallback, and Kafka or an in-memory transport. It carries a launcher and a Run tool host that the dev "
+               "`mechanism/` runs the admit path end to end for Build's six actions and Run's three, an operator's six "
+               "signed control actions and an emergency seating's activation: three replicas of one Rust binary, an MCP "
+               "front door on stdio, an operator socket, a linked Cedar floor (since 2026.10.05 the proposed floor's "
+               "`emergency` stage), an OPA sidecar with a WASM fallback, and Kafka or an in-memory transport. It was "
+               "rebuilt on 2026.10.05 in five stages, to labels and handles, the tool list, the operator as a principal "
+               "and the emergency seating. It carries a launcher, a Run tool host and the operator path that the dev "
                "configuration does not turn on. It is evidence, not the verified object.",
-               W, "mechanism/README.md; mechanism/docker-compose.yml; mechanism/scripts/dev-init.sh, build-bundle.sh, "
-               "smoke.py; mechanism/crates/*/src (topak-node main.rs, lib.rs, api.rs, ops.rs, net.rs, wal.rs, config.rs, "
-               "mechanism.rs, mechanism/launch.rs; topak-mcp lib.rs, server.rs, toolhost.rs; topak-bundle lib.rs; "
-               "topak-transport lib.rs; topak-floor lib.rs; topak-core lib.rs, confine.rs, trace.rs; topak-contain "
-               "lib.rs, wasmtool.rs); mechanism/corpus-pins.sha256; GAPS-AND-ASSUMPTIONS G1–G19, I8, I40–I44; "
-               "ADR-0033 §1–§6, A5, A6, A7 and A8 (pending); ADR-0044; ToO rev 13 §15; G9 §2.3, §2.5, §7 items 34–36, "
-               "52, 67, 80, 83, 84; spec/Mechanism-trace-results-2026.10.02b.txt; topak-contain/src/guest.rs; topak-core/src/authentic.rs, types.rs, state.rs (`Applied`); topak-paxos/src/replica.rs; derived/topak-format-and-schema-inventory-2026.10.03.md §0, §4, §5, findings 8, 11, 12, 13, 19, 20, 22")
+               W, "mechanism/README.md (2026.10.05); mechanism/docker-compose.yml; mechanism/scripts/dev-init.sh, "
+               "build-bundle.sh, smoke.py; mechanism/crates/*/src (topak-node main.rs, lib.rs, api.rs, ops.rs, net.rs, "
+               "wal.rs, config.rs, mechanism.rs, mechanism/launch.rs; topak-mcp proto.rs, server.rs, toolhost.rs; "
+               "topak-bundle lib.rs, allowlist.rs; topak-transport lib.rs; topak-floor lib.rs; topak-core lib.rs, "
+               "control.rs, labels.rs, rules.rs, types.rs, confine.rs, trace.rs, authentic.rs, state.rs (`Applied`); "
+               "topak-contain lib.rs, wasmtool.rs, guest.rs; topak-paxos/src/replica.rs); mechanism/crates/*/tests "
+               "(thirteen binaries); mechanism/corpus-pins.sha256 (57); GAPS-AND-ASSUMPTIONS G1–G19, I8, I13, I33, "
+               "I40–I48, findings 19, 20; ADR-0033 §1–§6, A5–A15 (A9 to A15 ratified in Batches 32 to 35); ADR-0044; "
+               "ADR-0047, ADR-0048, ADR-0049, ADR-0050 and ADR-0052 (both provisional); ADR-0030 A3; floor/proposed/README.md "
+               "and the three stage gate results; ToO rev 14 §15; G10 §2.2, §2.3, §2.5, §3, §7 items 34–36, 41, 46, 52, "
+               "67, 84, 88, 91–98, §8; spec/Mechanism-trace-results-2026.10.05.txt; "
+               "derived/topak-format-and-schema-inventory-2026.10.03.md §0, §4, §5, findings 8, 11, 12, 13, 19, 22")
     X0, X1 = c.x0, c.x1
     y = c.y
 
     # ---- evidence banner
     bh = c.card(X0, y, X1 - X0, "Evidence, not the verified object (ADR-0033 §1)", [
         "**Rung 0 as deployed**: the dev configuration has no `contain` section, so every lease it issues is rung 0. "
-        "In its tests the launcher (ADR-0033 A7, pending) issues rung 1 on profiles that declare P3 `fail`, and rung 3 "
+        "**And no operator**: the dev rules declare no `operator` or `emergency` seat, so the socket is D-0050-1, "
+        "unsigned as before (I47 (b)); the operator path and the emergency seating run in the tests. "
+        "In its tests the launcher (ADR-0033 A7, Batch 29) issues rung 1 on profiles that declare P3 `fail`, and rung 3 "
         "only SIMULATED under test keys: every principal it serves in earnest is `Mediated`; it fails assumption of use "
         "A1, and no containment theorem describes it. **Never promoted**: no promotion pipeline exists, "
         "and nothing in it is in any TCB. **Dev rules are not genesis rules**: `dev-init.sh` generates keys and writes "
         "their secrets to `dev/secrets/` in the clear (G6).",
-        "Cited like a TLA+ check, by manifest and commit: `SHA256SUMS-REF-2026.10.02b`, digest `8fa797e317120e54`, at "
-        "`c534a42` (ADR-0033 A8, pending; the last inserted addendum is A6, `48f92ab89086adce` at `dacbb0c`). **A running program invites being mistaken for the mechanism** (ToO §15).",
+        "Cited like a TLA+ check, by manifest and commit: `SHA256SUMS-REF-2026.10.05f`, digest `41342e08e14b519c`, 90 "
+        "entries, at `075b2e7` (ADR-0033 A15, Batch 35; the five stages below). It fails two entries at today's tree, "
+        "and should: the pin file and the register moved after it (G10 §9). **A running program invites being "
+        "mistaken for the mechanism** (ToO §15).",
     ], accent="red", size=14.5, status="built", status_extra="evidence · rung 0 as deployed", tint=False, dash="6 4")
-    y += bh + 50
+    y += bh + 40
+
+    # ---- the rebuild of 2026.10.05
+    c.text(X0, y + 21, "Rebuilt on 2026.10.05 in five stages, each its own commit and addendum (ADR-0033 A9 to A15; "
+                       "G10 §3)", 21, "teal", bold=True)
+    y += 42
+    sw_ = X1 - X0
+    y += c.table(X0, y, [("Tree", sw_ * 0.07, {"mono": True}), ("Manifest · digest · entries", sw_ * 0.17),
+                         ("Addendum · batch", sw_ * 0.1), ("Floor linked", sw_ * 0.13),
+                         ("What it follows", sw_ * 0.43), ("Tests", sw_ * 0.1)], [
+        ["7764e52", "`SHA256SUMS-REF-2026.10.05` · `c395a8b85e5113a9` · 86", "A9 · B32",
+         "genesis floor (17 policies)", "(1) The tool host reads a Run tool's target from its allowlist entry, in the "
+         "revision the lease names; node config says nothing of a channel (ADR-0034 A2 R4). The one row that was "
+         "evidence for text in force; the commit also holds ADR-0049's entry and ADR-0048's list, claimed by A10",
+         "116 · 33 Rego"],
+        ["c15026d", "`-05b` · `920d06c557d56cb4` · 87", "A10 · B34",
+         "**`labels` stage** (20), switched outright", "(1) ADR-0049's five-part entry; a bundle whose allowlist fails W1 "
+         "to W9 does not load. (2) ADR-0048's tool list, the round's opening record. (3) ADR-0047's labels: facts "
+         "computed by the deciding replica, lifted, carried by the admit, folded by every replica; clear and handle "
+         "delivery; `R5`–`R7`", "119 · 38 Rego"],
+        ["c7de2ba", "`-05c` · `03796b23d38fc7ca` · 89", "A11 · B34",
+         "`control` stage (29)", "(4) ADR-0050 ([[blue|provisional]]): the `operator` seat kind, six signed control "
+         "actions decided by `C1`–`C9` and re-checked at apply, sign-on assertions, the task and its label on a "
+         "`Regrant`; the unsigned socket kept as a **BOOTSTRAP** path that seats and does nothing else", "126"],
+        ["9c57221", "`-05d` · `7d2fbbd12df1c5f8` · 90", "A12 · B34",
+         "**`emergency` stage (28)**", "(5) ADR-0052 ([[blue|provisional]]): the `emergency` seat kind, activation by "
+         "the break-glass roster's quorum for one person and one round, the person's signed actions, no successor, "
+         "the drill; **X1 retired**, `BreakGlassApprove` refused at apply", "131"],
+        ["7d8c7db", "`-05e` · `ad452379c32c3316` · 90", "A13 · B33; A14 · B34", "`emergency`",
+         "**A race fixed**: a lease just granted could be ended as expired, its observation recorded after the state "
+         "lock was released (finding 19). `Mechanism.tla` revised; trace validation current again: 82 traces, 1,007 "
+         "steps", "132"],
+        ["075b2e7", "`-05f` · `41342e08e14b519c` · 90", "A15 · B35", "`emergency`",
+         "The rules' well-formedness reads the two issued lists; a test freed of the clock (finding 20); comments no "
+         "longer call five ratified records Proposed", "**133** across thirteen binaries · 38 Rego"],
+    ], size=13.5, accent="teal") + 12
+    y += c.para(X0, y, sw_, "**For two days the reference followed records that were not in force and did not follow one "
+                "that was**, ADR-0013's X1; Batch 34 ended that by ratifying the records, two of them provisional (ToO "
+                "§15; G10 §4). Each stage's floor was gated on 2026.10.04 (`floor/proposed/<stage>-gates-results-"
+                "2026.10.04.txt`, every gate passing); the stage is **genesis-provisional** (ADR-0030 A3), and its files "
+                "open with a comment, \"not what the reference follows\", that is wrong and kept as gated (item 91).",
+                14, "muted") + 40
 
     # ---- columns
-    lx, lw = X0, 600
+    lx, lw = X0, 760
     gx = lx + lw + 110
-    rw_ = 880
+    rw_ = 820
     rx = X1 - rw_
     cx_, cw = gx, rx - 210 - gx
     top = y
@@ -84,8 +142,11 @@ def build():
     oy = agent_bot + 60
     oh = c.card(lx + 20, oy + 34, lw - 40, "Operator · `topak op`", [
         "`topak op --socket dev/run/n1/operator.sock '{\"op\": …}'`, one JSON line in, one out.",
-        "**PROVISIONAL (operator authentication)**: the socket is protected by file mode 0600 only. Issuances and "
-        "break-glass approvals carry their own signatures; grants, revocations and gate evidence do not (G5).",
+        "**Two paths share the socket** (ADR-0050, provisional). `control` is an operator's request, signed with an "
+        "`operator` seat's key and decided by `C1` to `C9`. Everything else is unsigned, from whoever reaches the "
+        "socket (file mode 0600). **Where the rules declare an operator, that is a BOOTSTRAP path**: `grant` and "
+        "`launch` make a first seating, standing in for the quorum, and the other unsigned requests are refused at "
+        "apply. Where they declare none, as the dev rules do, it is D-0050-1 (I47).",
         "Helpers: `topak keygen`, `topak sign`, `topak tool-digest`, `topak check-rules`, `topak profile-digest`.",
     ], accent="brown", size=14)
     o_mid = oy + 34 + 60
@@ -93,21 +154,29 @@ def build():
     otw = lw - 40
     oty += c.table(lx + 20, oty, [("`op`", otw * 0.3, {"mono": True}), ("Log entry", otw * 0.27, {"mono": True}),
                                   ("Carries", otw * 0.43)], [
-        ["grant", "Grant", "Unsigned; returns the session token"],
-        ["renew", "Renew", "Unsigned; narrower lease, new fence"],
-        ["end_round", "EndRound", "Unsigned; an e-stop (F2)"],
-        ["revoke", "Revoke", "Unsigned; names a principal, Persona or confinement digest (F2)"],
-        ["fence_epoch", "EpochIncrement", "Unsigned; the fleet fence (F2)"],
+        ["control", "Control", "**Signed** with the operator seat's key, with the fleet epoch and a counter: "
+                               "`regrant`, `renew`, `attest_gates`, `end_round`, `revoke`, `fence_epoch`. Thirteen "
+                               "facts recomputed by every replica; the `C1`–`C9` envelope restated at apply"],
+        ["grant", "Grant", "Unsigned; returns the token and the **tool list**. **BOOTSTRAP**: a first seating where "
+                           "operators are declared. Gains `task_label`, `task_labels_allowed`, `sign_on`"],
+        ["renew", "Renew", "Unsigned; narrower lease, new fence. Refused at apply where operators are declared"],
+        ["end_round", "EndRound", "Unsigned; an e-stop (F2). Refused likewise"],
+        ["revoke", "Revoke", "Unsigned; names a principal, Persona or confinement digest (F2). Refused likewise"],
+        ["fence_epoch", "EpochIncrement", "Unsigned; the fleet fence (F2). Refused likewise"],
         ["issue", "Issue", "**Signed** by anchor keys; validated against the rules floor (F4)"],
-        ["gates_passed", "GatesPassed", "Unsigned; gate evidence asserted (G8)"],
-        ["break_glass_approve", "BreakGlassApprove", "**Signed** by a break-glass roster key"],
+        ["gates_passed", "GatesPassed", "Unsigned; gate evidence asserted (G8). Refused likewise"],
+        ["prepare_emergency", "EmergencySeating", "Unsigned, **BOOTSTRAP**: prepares an emergency seating, standing "
+                                                  "in for a promotion (ADR-0052 §2)"],
+        ["activate", "Activate", "**Signed** by the break-glass roster's quorum over one person's key, one round and "
+                                 "the task; grants one lease, returns the tool list"],
+        ["break_glass_approve", "BreakGlassApprove", "[[red|Retired]]: refused at apply; X1 is gone (ADR-0052)"],
         ["register_profile", "ProfileRegister", "Unsigned; refused unless the profile is a promoted artifact"],
         ["launch", "Grant · Contested", "Unsigned; the node launches, appraises, and orders the grant with the "
-                                        "appraisal in it (A7, pending; needs `contain`)"],
+                                        "appraisal in it (A7; needs `contain`). Seats, where operators are declared"],
         ["status", "—", "Read-only; nothing ordered"],
     ], size=13, accent="brown") + 18
     op_bot = oty + 10
-    c.region(lx, oy, lw, op_bot - oy, "Environment steps, not principal actions", "brown", size=15)
+    c.region(lx, oy, lw, op_bot - oy, "Environment steps, and an operator's signed requests", "brown", size=15)
 
     # centre: three replicas
     ry = top
@@ -116,20 +185,34 @@ def build():
                          "mints none"),
         ("operator socket", "`run/n1/operator.sock`, mode 0600"),
         ("admit pipeline", "the eight steps of D1, in `topak-node` over `topak-core`"),
-        ("floor", "`topak-floor`: Cedar **linked**; refuses to start unless the floor, schema and values bytes match "
-                  "the gated digests"),
+        ("floor", "`topak-floor`: Cedar **linked**, the `emergency` stage (`15c941b9a56a09f7`, schema "
+                  "`d3c8145c6af2d9a3`); refuses to start unless the floor, schema and values bytes match the gated "
+                  "digests. Its 107 cases replay through it. Genesis-provisional"),
         ("bundle tier", "`topak-bundle`: loads `bundles_dir` **only under signatures** verifying against "
-                        "`bundle_keys`; **one file that fails stops the node** (`load_dir` returns an error, it does "
-                        "not skip); sidecar client, WASM fallback"),
+                        "`bundle_keys`, and **only with a well-formed allowlist** (W1 to W9, reading the two issued "
+                        "lists once, from the genesis rules); **one file that fails stops the node**; sidecar client, "
+                        "WASM fallback"),
+        ("labels", "The deciding replica computes a call's label facts from the entry and the round; the admit carries "
+                   "them; `apply` folds them on every replica and re-checks only that `clearSet` has not grown. A "
+                   "handle's result is held in memory by the replica that ran the call, dropped at the seal (I46)"),
+        ("tool list", "Rendered at grant from the lease's revision and written as the round topic's first record, "
+                      "kind `open`, before the session exists; no record, no session (I45)"),
+        ("control path", "An operator's request: signature, counter and thirteen facts checked by every replica; a "
+                         "`Regrant` keeps the seating's binding and never widens; control records on the operator's "
+                         "round topic, kind `control` (I47)"),
+        ("activation", "Distinct roster keys counted against the issued quorum on every replica; the envelope computed "
+                       "by the ordering replica; the person signs each action, no bearer token (I48)"),
         ("Paxos", "`topak-paxos` driven by `driver.rs`: persists fsynced before any send"),
         ("WAL", "`run/n1/wal.jsonl`: promises and accepted votes, durable before replies"),
-        ("expiry sweeper", "every 250 ms, proposes `EndRound(Expired)` for leases this replica saw expire"),
+        ("expiry sweeper", "every 250 ms, proposes `EndRound(Expired)` for leases this replica saw expire; since "
+                           "`7d8c7db` a grant's observation is recorded before the state lock is released (A13)"),
         ("local files", "`workspaces/` (not replicated, G9); `archive.jsonl`, a projection of the log, not the archive; "
                         "`evidence/<digest>.json` (I40); `run/<seat>-e<epoch>-r<round>/` as a native Run tool's cwd"),
         ("launcher", "`mechanism/launch.rs` over `topak-contain`: launch, appraise, grant, bridge; renews against the "
-                     "same guest; destroys it when the round ends (A7, pending). **Off in dev**: no `contain` section"),
-        ("Run tool host", "`topak-contain` `wasmtool`: a Wasm module per call whose one network capability is its "
-                          "declared target (A8, pending). **None in dev**: `wasm_tools` is empty"),
+                     "same guest; destroys it when the round ends (A7). **Off in dev**: no `contain` section"),
+        ("Run tool host", "`topak-contain` `wasmtool`: a Wasm module per call whose one network capability is the "
+                          "target its allowlist entry declares in the lease's revision (A8, A9). **None in dev**: "
+                          "`wasm_tools` is empty"),
     ]
     tw = cw - 40
     th_title = 34
@@ -202,19 +285,22 @@ def build():
             "`docker compose up kafka`: `:9092`; `dev-init.sh --kafka` sets brokers `127.0.0.1:9092`, replication 1.",
             "Without it: **in-memory transport**. Round topics `topak.<chain>.<domain>.<seat>.e<epoch>.r<round>` and "
             "their `.after` companions.",
-            "Transport only; ADR-0005 is **Proposed**, and the K row is carried as a debt (ADR-0033 §2).",
+            "Transport only: ADR-0005, **accepted** in Batch 27, discharging the K row's debt (ADR-0033 §2). Record "
+            "kinds `open` (the tool list) and `control` join `emit`, `actuate` and `deny`.",
         ]),
         ("Downstream MCP tool · `topak-demo-tool`", "brown", None, [
             "Spawned per call by the tool host over stdio, as `wordcount@<digest>`; digest = SHA-256(binary digest ‖ "
             "canonical JSON of its MCP input schema), both halves checked on every call.",
             "Cleared environment, the workspace as working directory, **and nothing more**: hermeticity is unchecked "
             "(G4), and a native Run tool's channel is checked by nobody (G19). A Run tool hosted as Wasm reaches only "
-            "its declared target (I44); dev hosts none.",
+            "the target its entry declares (I44); dev hosts none. ADR-0049 §2's digest over the entry's inputs is not "
+            "followed (I13; item 94).",
         ]),
         ("Signed bundles · `dev/bundles/`", "amber", None, [
             "`build-bundle.sh`: `policies/` → OPA WASM `bundles/<revision>.tar.gz`; revision = SHA-256 over sorted "
-            "non-test `.rego` and `data.json` (today `be46c574…`): the source. `policy.wasm` is whatever the unpinned "
-            "OPA produced.",
+            "non-test `.rego` and `data.json` (since A10 `3e98ed176ba6c339`): the source. `policy.wasm` is whatever "
+            "the unpinned OPA produced. `data.json` holds the allowlist in ADR-0049's five-part form; two comments "
+            "there still call ADR-0049 Proposed, and changing them is a new bundle (item 98).",
             "`dev-init.sh` signs a copy into `dev/bundles/` with `<revision>.sig` under a **dev bundle key** whose "
             "public half the rules carry in `bundle_keys`; the tracked tarball stays unsigned. Signing at promotion is "
             "a script step (G7 item 67).",
@@ -253,11 +339,15 @@ def build():
         ["ro1", "run", "observer", "r1", "`r1`'s cell Observer"],
         {"group": "Keys and exceptions", "accent": "brown"},
         ["—", "—", "—", "—", "`anchor_keys`: three generated keys"],
-        ["—", "—", "—", "—", "`break_glass`: two roster keys, `quorum` 2, the demo tool, `actions` [\"Actuate\"]"],
+        ["—", "—", "—", "—", "`break_glass`: two roster keys, `quorum` 2, the demo tool, `actions` [\"Actuate\"]; "
+                              "the roster and quorum are what an activation uses, and `tools` and `actions` are read by "
+                              "nothing now (I48 (e))"],
         ["—", "—", "—", "—", "`erasure_roster`: **null** (as genesis rules issue none)"],
         ["—", "—", "—", "—", "`verifier_keys`: [] (read at rung 3, so none is granted) · `bundle_keys`: the dev "
                               "bundle key"],
         ["—", "—", "—", "—", "No seat declares a `rung` (0 by default); `personas` empty; `criterion` unset (G2)"],
+        ["—", "—", "—", "—", "**No `operator` or `emergency` seat**, and no `provider_keys`, `inside_targets` or "
+                              "`releasers`: the dev rules are D-0050-1, the socket unsigned as before (I47 (b))"],
     ], size=13.5, accent="brown")
     h2 = c.table(X0 + hw + 50, y, [("File", hw * 0.2, {"mono": True}), ("What it holds", hw * 0.8)], [
         {"group": "`params.json`", "accent": "brown"},
@@ -271,7 +361,8 @@ def build():
         ["n1.json … n3.json", "`id`, `peers` `127.0.0.1:7101–7103`, `data_dir`, both sockets, `rules`, `params`, "
                               "`corpus_dir`, `bundles_dir`, `opa_sidecar` (null, or `:18181` with `--opa`), "
                               "`opa_timeout_ms`, `kafka` (null, or the broker and `replication` 1), `tools` (the demo "
-                              "tool with its binary SHA-256), `wasm_tools` (empty), `heartbeat_ms`, "
+                              "tool with its binary SHA-256), `wasm_tools` (empty; `{module, module_sha256}` and no "
+                              "channel since 10.05), `heartbeat_ms`, "
                               "`election_timeout_ms`; **no `contain` block**"],
         ["contain (absent in dev)", "`backends: {rung: kind}`: `process` or `docker` at rung 1, `sim-cvm` at rung 3 "
                                     "(feature `sim`), `measured-boot`, `snp`, `tdx` seams that always fail; `verifier`: "
@@ -321,6 +412,10 @@ def build():
         ["Response", "`{\"admitted\": bool, \"detail\": …}`; `detail` is `{\"decision\": \"deny\", \"reason\": "
                      "<DenyReason>}`, `{\"decision\": \"admit\", \"slot\", \"floor\": [@ids], \"engine\", \"result\"}`, "
                      "`{\"abstained\": true}` or `{\"error\"}`"],
+        ["Tool list", "`{\"token\", \"op\": \"tool_list\"}`: no admit, the same answer all round, `{\"tool_list\": "
+                      "{digest, list}}`. The list is the canonical JSON of `{bundle, domain, tools}`, each tool's name, "
+                      "digest, purpose, inputs and notes, and in Run its labels and `{kind, outward}` without the target "
+                      "(I45)"],
         ["`result` by action", "`Read`, `Consult`: `{object, content}` · `Draft`: `{written, digest}` · `Invoke`: the "
                                "tool's `CallToolResult`, or the Wasm tool's JSON · `Actuate`: `{topic, offset, seq, "
                                "outcome, result_digest, result}`, or after a seal `{seq, outcome: \"unknown\", "
@@ -332,15 +427,23 @@ def build():
                            "`draft{target, content}`, `invoke{tool, digest, inputs}`, `emit{record}`, "
                            "`submit{artifact?}`, `abstain{}`, `vote{verdict, artifact, evidence, rules_epoch}`; Run "
                            "`consult`, `actuate`, `report`. Every input schema is a closed object; the result is one "
-                           "text block holding `detail`; protocol version `2025-06-18`"],
+                           "text block holding `detail`; protocol version `2025-06-18`. At start it asks for the tool "
+                           "list and puts it in the server's instructions, \"the only description of them with "
+                           "standing\""],
     ], size=13, accent="teal")
     tb = c.table(X0 + w3 + 36, y, [("Operator socket, replicas", w3 * 0.22, {"bold": True}),
                                    ("`operator.sock`, mode 0600, PROVISIONAL (operator authentication); plain TCP "
                                     "among replicas, PROVISIONAL (replica authentication); G5", w3 * 0.78)], [
         ["Operator request", "`{\"op\": <name>, …}` with the fields the table at left names: `grant` takes `principal, "
-                             "seat, persona, bundle, confinement{digest, rung}, alphabet[], ttl_ms, round, role`; "
-                             "`launch` takes `profile` in place of `persona` and `confinement`; `revoke` takes "
-                             "`target{kind, id}, reason, attribution`; `issue` an `issuance{rules, signatures[]}`"],
+                             "seat, persona, bundle, confinement{digest, rung}, alphabet[], ttl_ms, round, role`, and "
+                             "optionally `task_label`, `task_labels_allowed`, `sign_on`; `launch` takes `profile` in "
+                             "place of `persona` and `confinement`; `revoke` takes `target{kind, id}, reason, "
+                             "attribution`; `issue` an `issuance{rules, signatures[]}`"],
+        ["Control, activation", "`{\"op\": \"control\", \"request\": {operator, epoch, ctr, action, …}, \"sig\": "
+                                "{key, sig}, \"assertion\"?, \"task\"?}`, signed over `{chain, request}`; "
+                                "`{\"op\": \"activate\", \"activation\", \"approvals\": [Signed], \"task\"?}`; "
+                                "`{\"op\": \"prepare_emergency\", \"seat\", \"seating\"}`. A successful grant, "
+                                "regrant or activation returns the `tool_list` and the task as delivered"],
         ["Operator reply", "`{ok, slot, applied: <Applied>}`, or `{ok: false, error}` after the 5 s deadline. `grant` "
                            "adds `fence, token, lease, contained, because`; `launch` adds `verdict, rung, instance, "
                            "evidence, simulated`, or `{ok: false, verdict: refused | unattestable | contested, …}`; "
@@ -349,30 +452,33 @@ def build():
                            "**not the values file's** (inventory finding 12)"],
         ["`Applied`", "`LeaseGranted{fence}`, `Renewed{fence}`, `Admitted{seq, promoted}`, `RoundEnded`, "
                       "`Revoked{ended}`, `EpochIncremented{epoch}`, `Contested{ended}`, `ProfileRegistered{digest}`, "
-                      "`Issued{rules_epoch}`, `GatesRecorded`, `BreakGlassApproved{approvals}`, `Rejected(String)`, "
-                      "`Duplicate`"],
+                      "`Issued{rules_epoch}`, `GatesRecorded`, `EmergencyPrepared`, `BreakGlassApproved{approvals}` "
+                      "(which no entry can now produce), `Rejected(String)`, `Duplicate`"],
         ["Replica to replica", "A big-endian `u32` length, then the JSON of `[from_node_id, <Msg<Entry>>]`: `Prepare`, "
                                "`Promise`, `Nack`, `Accept`, `Accepted`, `Commit`, `Heartbeat`, `CatchUp`, `Forward` "
                                "(`topak-paxos`). Unauthenticated, best-effort"],
         ["Signatures", "`Signed = {key, sig}` (Ed25519, hex) over `\"topak/<purpose>/v1\\n\"` ‖ canonical JSON; purposes "
-                       "`issuance`, `break-glass`, `bundle`, `appraisal`, `agent-op`, `sim-report`, `key`. Canonical "
+                       "`issuance`, `bundle`, `appraisal`, `agent-op`, `sim-report`, `key`, and since 10.05 `control`, "
+                       "`sign-on` and `emergency-activation`; `break-glass` is refused. Canonical "
                        "JSON: keys sorted recursively, no whitespace, sorted by hand because `cedar-policy-core` turns "
                        "on `preserve_order` (register finding 15)"],
     ], size=13, accent="teal")
     tc = c.table(X0 + 2 * (w3 + 36), y, [("Wasm Run tool ABI", w3 * 0.22, {"bold": True}),
-                                         ("`topak-contain/src/wasmtool.rs`; PROVISIONAL (tool-abi), I44; ADR-0033 A8 "
-                                          "pending", w3 * 0.78)], [
+                                         ("`topak-contain/src/wasmtool.rs`; PROVISIONAL (tool-abi), I44; ADR-0033 A8, "
+                                          "A9", w3 * 0.78)], [
         ["Imports, module `topak`", "`input_len() -> i32`, `input_read(ptr)`, `output(ptr, len)`, `connect() -> handle "
                                     "| -1`, `send(h, ptr, len)`, `recv(h, ptr, cap)`. **Any other import is refused at "
                                     "load and the node does not start**"],
         ["Exports", "`memory` and `run() -> i32` (0 is ok). Input is the inputs map as JSON; output must be JSON, "
                     "empty meaning `null`"],
-        ["Channel", "`connect` reaches only the declared `{kind, target}`; no address crosses the boundary. "
-                    "`channel: None` is hermetic. `ChannelUse{connects, sent, received}` is returned to the caller and "
-                    "recorded nowhere"],
-        ["Spec and limits", "`WasmToolSpec = {module, module_sha256, channel?}` under the node's `wasm_tools`, keyed "
-                            "`name@<module sha256>`; `FUEL` 50,000,000, `NET_TIMEOUT` 2 s, one fresh instance per call. "
-                            "Declared a second time in bundle `data.json`, unchecked against this (G9 item 84)"],
+        ["Channel", "`connect` reaches only the `{kind, target}` the tool's allowlist entry declares in the bundle "
+                    "revision the lease names, handed to the host with each call; no address crosses the boundary. "
+                    "An entry with no channel in that revision is not run. `ChannelUse{connects, sent, received}` is "
+                    "returned to the caller and recorded nowhere"],
+        ["Spec and limits", "`WasmToolSpec = {module, module_sha256}` under the node's `wasm_tools`, keyed "
+                            "`name@<module sha256>`: where the module is and what its bytes are, and **no channel** "
+                            "since `7764e52`; `FUEL` 50,000,000, `NET_TIMEOUT` 2 s, one fresh instance per call. The "
+                            "entry is the only declaration (A9; item 84 closed)"],
         ["Native tool host", "`ToolSpec = {command, args[], binary_sha256, mcp_tool}` under `tools`, keyed `name@digest` "
                              "with digest = SHA-256(`binary_sha256` ‖ 0x00 ‖ canonical MCP input schema) (I13); every "
                              "call re-hashes the binary, lists tools, recomputes the digest, then makes one call"],
@@ -384,21 +490,24 @@ def build():
     y += 42
     w4 = (X1 - X0 - 3 * 36) / 4
     hs = [
-        ("Tests: 103 across ten binaries", "violet", [
-            "`mutations.rs`, `confinement.rs` (core), `sim.rs` (Paxos deterministic simulation with `Voting` "
-            "invariants), `floor.rs`, `fallback.rs` (bundle tier, signatures), `e2e.rs`, `contain.rs` (the launcher in "
-            "the node), `launch.rs`, `wasmtool.rs` (`topak-contain`), `drift.rs` (ADR-0033 A6).",
-            "TLA+ properties restated as Rust tests with the same mutations.",
+        ("Tests: 133 across thirteen binaries; 38 Rego", "violet", [
+            "`mutations.rs` (36), `confinement.rs` (19), `operators.rs` (6), `emergency.rs` (5), `drift.rs` (2) "
+            "(core); `sim.rs` (4, Paxos with `Voting` invariants); `floor.rs` (5, the stage's 107 cases); "
+            "`allowlist.rs` (13, W1 to W10), `fallback.rs` (10) (bundle tier); `e2e.rs` (9), `contain.rs` (14) (node); "
+            "`launch.rs` (6), `wasmtool.rs` (4) (`topak-contain`).",
+            "TLA+ properties restated as Rust tests with the same mutations; run twelve times and once on a copy of "
+            "the tree at `075b2e7` (A15).",
         ]),
         ("Trace recorder → `spec/Mechanism.tla`", "violet", [
             "`TOPAK_TRACE_DIR` makes every `apply` write a step: index, entry, result and a projected state "
             "(`trace.rs`). `trace2tla.py` converts; `mechanism-trace-run.sh` replays in TLC.",
-            "2026.10.02: **62 traces, 709 steps, every step matching**, each state also read against "
-            "`Confinement_A1`'s invariants (`ConfinementRefinement`). A mechanized link, **not a refinement**; "
-            "T-0045-28 stays a trust root.",
+            "2026.10.05 (A14): **82 traces, 1,007 steps, every step matching**, each state also read against "
+            "`Confinement_A1`'s invariants; the model broken on purpose five ways, each caught, and a sixth as an "
+            "evaluation error. It found the race in lease expiry. A mechanized link, **not a refinement**; T-0045-28 "
+            "stays a trust root.",
         ]),
         ("Corpus pins and the drift test", "blue", [
-            "`corpus-pins.sha256`: **49 pins**, one per record and TLA+ module the reference follows.",
+            "`corpus-pins.sha256`: **57 pins**, 40 records and 17 TLA+ modules the reference follows.",
             "`cargo test -p topak-core --test drift` fails when a pinned file changes, or when the code cites a record "
             "that is not pinned. `PROVISIONAL (<tag>)` is meant to mark every gap in the code, and the register says it "
             "does; two items carry no tag (I40 evidence retention, I41 session proof) and two sites a bare "
@@ -417,8 +526,10 @@ def build():
     y += hh + 60
 
     # ---- not built panel
-    c.text(X0, y + 21, "What it does not show (ToO §15; ADR-0033 §6; the register, as at G9)", 21, "red", bold=True)
-    c.status(X0 + 780, y + 3, "notbuilt")
+    c.text(X0, y + 21, "What it does not show (ToO rev 14 §15; ADR-0033 §6, A11, A12; the register at G10)", 21, "red",
+           bold=True)
+    c.status(X0 + text_width("What it does not show (ToO rev 14 §15; ADR-0033 §6, A11, A12; the register at G10)",
+                             21, True) + 20, y + 3, "notbuilt")
     y += 42
     nb = [
         ["Confinement", "The launcher makes the alphabet the whole channel for a guest it starts; no guest it starts "
@@ -431,7 +542,27 @@ def build():
          "Wasm tools", "G19; items 83, 84"],
         ["The Observer as a detector", "One is seated, its heartbeats are heard and its absence stalls; the Observer that "
          "would produce a finding is an e2e fixture with nothing behind it", "G12"],
-        ["`W(p)` as an ACL", "Cells are declared, not enforced", "I8; item 46"],
+        ["**A first lease from a quorum**", "The centre of ADR-0050, which is why it is [[blue|provisional]]. The "
+         "BOOTSTRAP path stands in: whoever reaches the socket can seat. The first operators from an anchor issuance "
+         "are not built either (G10 §8)", "I47; item 88"],
+        ["A seating prepared by promotion", "`prepare_emergency` is the BOOTSTRAP path, unsigned, standing in for it; "
+         "ADR-0052 stays provisional on it and on two questions the reference raised: whether operators' seatings feed "
+         "the emergency envelope, and whether a delivery table needs an `emergency` row", "I48; item 92"],
+        ["A socket path for a person's signed action", "The agent socket's protocol carries no proof, so an emergency "
+         "seat acts in-process, as the tests do. The drill is on the log and nothing counts it", "I48; item 92"],
+        ["An operator's Persona, and a `Regrant` at rung ≥ 1", "An operator's Persona is its seat's key: no Persona "
+         "record, no lineage. A `Regrant` that would launch a guest is not built; `Launch` and `RegisterProfile` are "
+         "still unsigned", "I47; item 88"],
+        ["That a label is true", "The label facts and an activation's envelope are the deciding replica's; a failed "
+         "call's error text reaches the principal unlabelled; a handle resolves only to a scalar, from results one "
+         "replica holds in memory", "I46; item 93"],
+        ["What the records in force ask that it does not do", "ADR-0049 §2's digest over the entry's inputs; a task "
+         "at a first seating, and so its label; the two issued lists re-read when an issuance changes them",
+         "I13, I46; item 94"],
+        ["The correlator's folds", "ADR-0051 is [[amber|Proposed]], `Correlator.tla` proved and certified; nothing "
+         "at the reference", "item 97"],
+        ["`W(p)` as an ACL", "Cells are declared, not enforced. Operators and emergency seats add readers that "
+         "nothing gates: the mechanism has no read path for topics", "I8; item 46"],
         ["The archive and the plaintext store", "`archive.jsonl` per replica is a projection of the log; no governed "
                                                 "store, no horizon, no audit-authority read path", "G9"],
         ["Erasure", "Not implemented; no erasure roster exists, so `X2-erasure` admits nothing", "G11"],
@@ -440,13 +571,21 @@ def build():
          "must name the profile's, which is all the rung detects", "G13"],
         ["Bootstrap and genesis rules", "Dev rules, not genesis rules; no anchor ceremony", "G6"],
         ["Snapshots and compaction", "None; scale and long-running behaviour are not shown", "G14"],
-        ["Replica and operator authentication", "Plain TCP between replicas; socket file modes and bearer tokens", "G5"],
+        ["Replica authentication; operators where none is declared", "Plain TCP between replicas; socket file "
+         "modes and bearer tokens. An operator's request is signed only where the rules declare an operator seat",
+         "G5; I47"],
         ["Signing at promotion", "A script step under a dev key with custody (1, 0); no pipeline, no custody row",
          "G7 item 67"],
-        ["That the floor is the right floor", "Floor fitness (MEASURE 2.13) is unowned", "G16"],
+        ["That the floor is the right floor", "Floor fitness is **owned and timed, with no test**: the bootstrap "
+         "reviewer establishes it and the floor is ratified with that (ADR-0030 A3); what makes a floor fit is not "
+         "written", "G16; items 2, 87"],
         {"cells": ["(built since G8)", "The rung-1 launcher, a SIMULATED rung 3, the session proof, `Contained` as a "
-                   "lookup, and the Run tool host for Wasm modules: **built**, under addenda that are pending (A7, A8) "
-                   "on records that are not ratified (ADR-0036; ADR-0034 A2)", "G9 §2.3, §2.5; items 35, 80"],
+                   "lookup, and the Run tool host for Wasm modules, under A7 and A8 (ratified in Batches 29 and 31); "
+                   "the launcher's ADR-0036 is still [[amber|Proposed]]", "G10 §2.3, §2.5; items 34, 35"],
+         "accent": "teal"},
+        {"cells": ["(built since G9)", "Labels and handles, the tool list, the allowlist entry, the operator principal "
+                   "and the emergency seating, under A9 to A15 (Batches 32 to 35), two on [[blue|provisional]] records, "
+                   "on a genesis-provisional floor", "G10 §3"],
          "accent": "teal"},
     ]
     c.table(X0, y, [("Not built", (X1 - X0) * 0.2, {"bold": True}), ("What stands in, and what that leaves",

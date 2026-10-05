@@ -39,11 +39,15 @@ def _build():
                "the shared Observer group becomes the correlator with a narrower job, each cell gets its own Observer, "
                "placement keeps ADR-0008's colocation rule on fault-domain grounds, and Observers combine by any-of with "
                "no quorum. Every finding is still deny-only (ADR-0007): nothing here touches the admit path.",
-               3000, "ADR-0038 §1–§8, Options, Consequences, Findings 1–4, History R1–R3, B13, B18; ADR-0008 (Superseded); "
-               "ADR-0007; ADR-0016 §5; ADR-0024 §2, §5 and A2; ADR-0035 §5; ADR-0037 §1–§3; ADR-0039 §4; "
-               "spec/Observers.tla and Observers-results-2026.09.29.txt; spec/Observers_proof.tla and "
-               "Observers-proof-results-2026.10.02.txt; ADR-0038 B25; mechanism/GAPS-AND-ASSUMPTIONS.md I8; "
-               "ToO rev 11 §5.1; G7 §1.1, §7 items 43, 44, 46")
+               3000, "ADR-0038 §1–§8, Options, Consequences, Findings 1–4, History R1–R3, B13, B18, B25; ADR-0008 "
+               "(Superseded); ADR-0007; ADR-0016 §5; ADR-0024 §2, §5 and A2; ADR-0035 §5 (Proposed); ADR-0037 §1–§3; "
+               "ADR-0039 §2, §4, §5, A2 (B34); ADR-0043 §4 and A1 (B34); ADR-0046 A1; ADR-0047 §5; ADR-0048 §2; "
+               "ADR-0050 §6; ADR-0051 (Proposed); ADR-0052 §4; spec/Observers.tla and Observers-results-2026.09.29.txt; "
+               "spec/Observers_proof.tla, Observers-proof-results-2026.10.02.txt and "
+               "Observers-proof-cert-results-2026.10.04.txt; spec/proof-certification.md §9; "
+               "mechanism/GAPS-AND-ASSUMPTIONS.md I8, I45; mechanism/crates/topak-node/tests/e2e.rs "
+               "(`labels_bound_what_a_round_may_send_after_what_it_has_read`); ToO rev 14 §2.10, §3.3, §5.1, §7.10; "
+               "G10 §2.5, §7 items 43, 45, 46, 49, 97, §8")
     X0, X1 = c.x0, c.x1
     y = c.y
     sx = X0
@@ -72,7 +76,8 @@ def _build():
 
     def obs_body(i):
         return [f"Cell Observer `o{i}`: an `observer` seat with `cell = t{i}` (`SeatDecl.cell`).",
-                f"Reads `t{i}`'s round topic in full, payloads included, under the ACL.",
+                f"Reads `t{i}`'s round topic in full, payloads included, under the ACL; the `Actuate` envelope's four "
+                f"label fields; and **is given `t{i}`'s tool list** from the round's opening record (ADR-0043 §4 A1).",
                 "Compromise costs **one cell's detection**.",
                 "Lineage from a different model family than `t" + str(i) + "` (monoculture rule)."]
 
@@ -127,6 +132,8 @@ def _build():
         "**A finding may name any principal in its domain**: the one thing a cell Observer cannot do. Still deny-only.",
         "Compromise costs **cross-cell detection only**; every cell Observer still works. It reads every cell's "
         "payloads, so it is the one place an injection in any cell can arrive.",
+        "**What it computes is drafted, not built**: ADR-0051 (Proposed) names five correlations as folds over facts "
+        "and a judgment tier beside them. The reference's correlator computes nothing (D-0051-1). See E3.",
     ]
     ch = c.card(0, 0, corr_w - 40, "Correlator corr", corr_body, "pink", draw=False, size=14)
     c.region(corr_x, cy0, corr_w, ch + 54, "device C (not shared with any member of W(p))", "grey", dash="5 4",
@@ -151,7 +158,8 @@ def _build():
         "ADR-0039 coupling is written against the relation, not against how it is populated, so either record can be "
         "superseded alone.",
         "[[red|Not realized at the reference]]: no per-topic read authorization exists, so cells are declared and not "
-        "enforced (`mechanism/` I8; G7 item 46).",
+        "enforced (`mechanism/` I8). Operators and emergency seats add readers that nothing gates: the mechanism has "
+        "no read path for topics (G10 item 46).",
     ], "teal", size=14)
     rx = corr_x + corr_w + 60
     rh2 = c.card(rx, cy0, ix1 - rx, "§4 · Placement: ADR-0008's rule, carried forward for seats", [
@@ -180,8 +188,9 @@ def _build():
         "`ReachIsBounded` holds; `M_REACH` (domain-wide reach for cell Observers) breaks it. Reach is declared "
         "and not enforced at the reference (I8).",
         "**Both proved** since 2026.10.02 (ADR-0038 B25): `Observers_proof.tla`, 65 obligations, `DenyByAnyOf` "
-        "not under `M_QUORUM` and `ReachIsBounded` not under `M_REACH`. A proof of the module: reach stays declared, "
-        "not enforced, at the reference.",
+        "not under `M_QUORUM` and `ReachIsBounded` not under `M_REACH`. **Certified** since 2026.10.04 (ADR-0046 A1): "
+        "62 obligations rest on normalization or a checked proof, 3 on LS4, which no checker confirms. A proof of the "
+        "module: reach stays declared, not enforced, at the reference.",
         "**More Observers never lower safety and may lower availability**: the monotone direction. Each added seat "
         "can raise detection if its lineage is independent, and adds a way to raise a false denial.",
     ], "red", size=14, tint=False, dash="6 4")
@@ -204,6 +213,52 @@ def _build():
             label="Vote(deny) from veto seats (Build)", lpos=0.5)
     y = fy + max(mh, vh) + 60
 
+    # ======================================================================== G10: what is given, who else reads
+    y += c.heading(X0, y, "Since G9: what a cell Observer is given, who else reads a round topic, and who is not "
+                          "coupled", "pink")
+    W_ = X1 - X0
+    w4n = (W_ - 3 * 24) / 4
+    new = [
+        ("What a cell Observer is given (ADR-0043 §4 A1, Batch 34)", [
+            "**The labels**: the `Actuate` record's envelope carries `inputLabels`, `resultLabel`, `delivery` and "
+            "`clearSet` (ADR-0042 A1).",
+            "**The payload in full**, whatever was delivered to the Thinker: suppressed to the Thinker is not "
+            "suppressed to the Observer (ADR-0047 §5).",
+            "**Its Thinker's tool list**, from the round's opening record, read under `W(p)` (ADR-0048 §2). It has no "
+            "sequence number, so the mark does not assert it was read.",
+            "An item delivered to an `observer` seat as a handle makes it a facts-only reader for that item, and the "
+            "deployment declares it (ADR-0038 §3).",
+        ], "pink", "accepted", "C4"),
+        ("An emergency seat is not coupled to an Observer (ADR-0039 A2; ADR-0052 §4)", [
+            "`R3-observer-live` is a forbid on a `thinker` seat; an `emergency` seat is not one, so **no exemption is "
+            "written**. What goes uncoupled is a person, seated by a quorum, for one round.",
+            "**Its topic is read** by the domain's operators, who are in its `W(p)`, by a cell Observer if one is "
+            "seated and live, and by the correlator, as every topic in its domain. A finding is a deny any of them "
+            "can make.",
+            "G10 item 49, \"break-glass under a dead Observer\", is decided on this provisional basis.",
+        ], "blue", "provisional", "ADR-0052"),
+        ("Operators watch operators (ADR-0050 §6)", [
+            "Every control action is written to the operator's round topic, and **every other operator in the domain "
+            "is in its `W(p)`**. A finding is a deny: a revocation or an end of round, under the finder's signature.",
+            "An add needs a **live peer**: the shape of R3 applied to people. It couples to a peer's presence, **not "
+            "to anything the peer has read**; there is no watermark (G10 §8).",
+            "At the reference nothing gates who reads these topics (item 46).",
+        ], "blue", "provisional", "ADR-0050"),
+        ("The scripted Run cell (G10 item 45)", [
+            "**Built**, for labels (ADR-0047 §11), in a test: `e2e.rs` "
+            "`labels_bound_what_a_round_may_send_after_what_it_has_read`, with a **scripted Observer heartbeat** so "
+            "the Thinker's effects are coupled.",
+            "It is a test fixture. The Observer that would produce a finding is still an e2e fixture with nothing "
+            "behind it: the reference seats one, hears its heartbeats and stalls on its absence (ToO §15).",
+            "A scripted correlator is not built (ADR-0051 §10; item 97).",
+        ], "teal", "built", "in a test"),
+    ]
+    hs = [c.card(0, 0, w4n, t, b, accent=a, status=st, status_extra=sx, draw=False, size=14) for t, b, a, st, sx in new]
+    hh = max(hs)
+    for i, (t, b, a, st, sx) in enumerate(new):
+        c.card(X0 + i * (w4n + 24), y, w4n, t, b, accent=a, status=st, status_extra=sx, h=hh, size=14)
+    y += hh + 60
+
     # ======================================================================== §1 table and degeneracies
     y += c.heading(X0, y, "§1 · The archetype has an Observer per cell and a correlator across cells", "pink")
     W = X1 - X0
@@ -218,7 +273,8 @@ def _build():
     w2 = (W - 30) / 2
     reads = [
         "**Facts** from every cell: admits and denials with principal, lease, epoch and per-principal sequence number "
-        "(`topak-seq`, extended to denials: finding 2, G7 item 44); cell Observers' findings as control-plane facts; "
+        "(`topak-seq`, extended to denials: finding 2, item 44, still open; ADR-0051 §5, Proposed, would place a "
+        "denial by its `at` instead); cell Observers' findings as control-plane facts; "
         "the Reader stage's facts for every Persona declaring `topk_logprobs` (R1); lease grants, renewals, revocations "
         "and seals. A cross-cell drift in distance is a substitution signal no single cell can see.",
         "**Typed action envelopes**: variant, reference, target or tool, principal. Which `Draft` and `Invoke` fields "
@@ -262,7 +318,7 @@ def _build():
                 "beyond the union, every detection claim lost, and in Build nothing promotes (ADR-0035 §5). In Run, "
                 "D-0038-1 is usable only together with ADR-0039 D-0039-1, since §4 there forbids coupling to the "
                 "correlator. **On the schema (R2):** \"none\" under theorems voided with the loss in prose, because "
-                "ADR-0023 §6 has no properties-lost field (ADR-0037 finding 6; G7 item 40).", 14, "ink") + 40
+                "ADR-0023 §6 has no properties-lost field (ADR-0037 finding 6; item 40).", 14, "ink") + 40
 
     # ======================================================================== bottom cards
     w4 = (W - 3 * 24) / 4
@@ -279,14 +335,18 @@ def _build():
             "**Correlator**: deny, quarantine or evict inside its domain, attributed; cross-cell detection lost.",
             "**Any Observer**: a false denial costs availability, never safety. Any-of raises the false-denial rate with "
             "every Observer added.",
-            "Collusion (an Observer that finds nothing) is not covered by any of this: ADR-0039 §5.",
+            "Collusion (an Observer that finds nothing) is not covered by any of this: ADR-0039 §5. **Detection "
+            "still fails open against a colluding Observer** (G10 §8).",
         ], "red", None, False),
         ("Finding 1 · The correlator has inputs but no function", [
             "This record says what it reads and what it may do, **not what it looks for**: the probe-then-exploit "
-            "signature, fragmented intent, a chain-depth term (CR-3).",
-            "Detection engineering, deny-only, so it can be specified later without changing anything here.",
-            "Open: G7 item 43. Its derived store crosses erasure units (finding 3, routed to ADR-0006).",
-        ], "red", "open", True),
+            "signature, fragmented intent, a chain-depth term (CR-3). Its derived store crosses erasure units "
+            "(finding 3).",
+            "**Drafted since G9**: ADR-0051, **Proposed**, five correlations as folds a second reader can recompute "
+            "and an unspecified judgment tier; `Correlator.tla` proved and certified. **Not built at the reference** "
+            "(G10 items 43, 97). Drawn in E3.",
+            "Chain depth is not among them: no record models a chain.",
+        ], "amber", "proposed", True),
         ("Options not taken (ADR-0038 Options)", [
             "**An Observer quorum, each seat a BFT group**: rejected. A quorum is for grants; for denials it can only "
             "suppress an honest finding, and costs the most instances.",

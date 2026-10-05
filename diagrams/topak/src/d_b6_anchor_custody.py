@@ -9,11 +9,14 @@ def build():
                "Promotion moves the gate up one level: the authority that defines who votes cannot itself be voted "
                "in without regress. ADR-0025 makes that authority a havoc issuer, splits \"infallible\" three ways, and "
                "declares custody per rung as a pair (capture threshold, loss tolerance) that never enters a proof.",
-               3000, "ADR-0025 Decomposition, Context, §1 (a)–(f) with A1, §2, Options, Consequences, Open "
-               "obligations, Annex (A-0025, D-0025-1, D-0025-2, axis position), History R1, B2, B17, B23; ADR-0002 A2; "
-               "ADR-0024 §2, 'Why this rule is modeled'; ADR-0026 §4; ADR-0027 §3, §4; ADR-0028 §3; ADR-0029 §1, §5; "
-               "ADR-0045 Annex A T-0045-8, T-0045-9, T-0045-11, Annex B T-0045-27; ToO rev 11 §7.2, §7.5, §7.6, §7.7, "
-               "§9; G7 header, §7 items 10, 11, 67; ADR-0046 header (Discharges), §4; ADR-0029 B25; boundary register B14")
+               3000, "ADR-0025 Decomposition, Context, §1 (a)–(h) with A1, A2, A3 and B29, §2, Options, Consequences, "
+               "Open obligations, Annex (A-0025, D-0025-1, D-0025-2, axis position), History R1, B2, B17, B23, B29, "
+               "B34; ADR-0002 A2; ADR-0024 §1 with A3, §2, 'Why this rule is modeled'; ADR-0026 §4, A2; ADR-0027 §3, "
+               "§4; ADR-0028 §3; ADR-0029 §1, §4 with A4, §5 with A3; ADR-0033 A6, A7, A11; ADR-0034 A3; ADR-0044 §1; "
+               "ADR-0047 §7; ADR-0049 §6; ADR-0050 §1, §2, §3, §10; ADR-0045 Annex A T-0045-8, T-0045-9, T-0045-11, "
+               "T-0045-35, T-0045-36, Annex B T-0045-27; ToO rev 14 §7.1, §7.2, §7.5, §7.6, §7.7, §7.10, §9; G10 "
+               "header, §1.1, §1.2, §2.1, §2.9, §8, §7 items 10, 11, 67 (as at G9), 88; ADR-0046 header (Discharges), "
+               "§4, A1; ADR-0029 B25; spec/Anchor-proof-cert-results-2026.10.04.txt; boundary register B14")
     X0, X1 = c.x0, c.x1
     W = X1 - X0
     y = c.y + 6
@@ -51,7 +54,8 @@ def build():
                    "floor (ADR-0026). Safety is proven for every issuance sequence satisfying those constraints.",
                    "Inside the specification and the verified object. **Discharged as written** since 2026.10.02: "
                    "`Anchor_proof.tla` proves `FloorPreserved` for every floor subset and epoch bound (ADR-0046; "
-                   "ADR-0029 B25), of the module"], "accent": "teal"},
+                   "ADR-0029 B25), of the module; certified, 2 of 40 obligations resting on LS4, which no checker "
+                   "confirms (ADR-0046 A1)"], "accent": "teal"},
         {"cells": ["Custody", "**DECLARED** per rung (ADR-0023)",
                    "The pair (capture threshold, loss tolerance), plus the composition and eviction rules that make "
                    "it true. Not in the model.",
@@ -106,6 +110,61 @@ def build():
         "artifact; ADR-0025 with ADR-0026 **one axiom, bounded by two verified floors**.",
     ], accent="brown", size=14.5, h=max(in_h, out_h))
     y = top + max(in_h, out_h, ax) + 70
+
+    # ------------------------------------------------------------------ row 2b: what an issuance carries, at G10
+    c.heading(X0, y, "What the anchor issues at G10: the rules, item by item (ADR-0025 §1; ToO rev 14 §7.2)", "ink",
+              20)
+    y += 50
+    iw_ = 1720
+    icols = [("Item", 70, {"bold": True}), ("Rules (ADR-0025 §1)", 1010), ("Since (batch)", 240), ("Status", iw_ - 1320)]
+    PV = "[[blue|Accepted · provisional]]"
+    irows = [
+        ["(a)", "The promotion roster and its parameters, `quorum` and `minGrant` (ADR-0024). **Read to include the "
+         "seats of kind** `operator` **and, at genesis, the first operators' seatings**: something must be seated before "
+         "anything can be promoted, and only an issuance can do it (A3)", "Batch 2; **A3, B34**",
+         "Accepted; A3 " + PV + " (ADR-0050)"],
+        ["(b)", "The break-glass and erasure quorum rosters. For break-glass the rules carry the roster and its "
+         "quorum; its envelope is an emergency seating's (ADR-0026 A2; ADR-0052 §2)", "Batch 2; B34",
+         "Accepted; the break-glass reading " + PV],
+        ["(c)", "The anchor's own key set", "Batch 2", "Accepted"],
+        ["(d)", "Any change that relaxes the policy floor or adds a floor exception", "Batch 2", "Accepted"],
+        ["(e)", "Any change to the rules floor, in either direction (ADR-0026 §4)", "R1; Batch 2", "Accepted"],
+        {"cells": ["(f)", "Keys accepted in place of the mechanism's own check: the rung-3 verifier's appraisal key "
+                   "(ADR-0034 §2) and the bundle-signing key (ADR-0044 §1); **and an identity provider's key**, under "
+                   "which an operator's sign-on assertion is accepted at a lease boundary. Each provider is a trust "
+                   "root for the operators it vouches for and no others (T-0045-35)",
+                   "A1, B17; **A3, B34**", "Accepted; the provider's key " + PV], "accent": "blue"},
+        ["(g)", "The independence criterion in force (ADR-0034 §4; ADR-0035): set or not, by digest; it decides "
+         "which principals may be `Contained`. The mechanism reads that it is set and evaluates nothing",
+         "B29 (ADR-0034 A3)", "Accepted"],
+        {"cells": ["(h)", "**The two lists a bundle's load checks read**: the allowlist entries, by name and digest, "
+                   "that may release a reserved label name; and the channel targets inside the deployment. Each widens "
+                   "what a bundle may declare, so adding to either is an issuance. With neither issued, no entry "
+                   "releases a reserved name and every entry with a channel is outward (ADR-0047 §7; ADR-0049 §6, W7, "
+                   "W8)", "**A2, B34**", "Accepted"], "accent": "blue"},
+    ]
+    ith = c.table(X0, y, icols, irows, size=14, accent="brown")
+    gx = X0 + iw_ + 40
+    gw_ = X1 - gx
+    gh1 = c.card(gx, y, gw_, "The issuer now seats (ADR-0025 A3; ADR-0024 A3)", [
+        "**At genesis an issuance seats the first operators**, at least three in each domain at the archetype, each "
+        "with a Persona and a key, the providers' keys in the issued rules (ADR-0029 §5 with A3; ADR-0050 §2).",
+        "**After that a promotion seats**: a seating names a principal, its seat, Persona, bundle revision, "
+        "confinement and alphabet, and the labels its task may carry; the completed tally grants the first lease "
+        "at a fresh fence, with no request from anyone (ADR-0024 A3).",
+        "All three amendments are in the **bootstrap set**: not confirmation-required, and covered by the genesis "
+        "attestation, which must **name them as provisional** (ADR-0029 A4; G10 §1.2).",
+    ], accent="blue", size=14, status="provisional", status_extra="ADR-0024 A3, ADR-0025 A3")
+    gh2 = c.card(gx, y + gh1 + 20, gw_, "Not built: neither seating path", [
+        "No first operator is seated by an issuance and no seating is promoted at the reference. Its unsigned socket "
+        "is kept as a **BOOTSTRAP** path that seats and does nothing else, so **whoever reaches it can seat** "
+        "(ADR-0050 §10; ADR-0033 A11; G10 §8, item 88).",
+    ], accent="red", size=14, status="notbuilt", status_extra="BOOTSTRAP stands in")
+    c.para(X0, y + ith + 12, iw_, "Replacing any (f) key, or adding to either (h) list, adds authority and is an "
+           "issuance. **The rules floor bounds none of the three new issued things** (G10 §2.1). At the reference "
+           "`verifier_keys` and `bundle_keys` exist (ADR-0033 A6) and the verifier key is read at every rung-3 grant, "
+           "renewal and Contested entry under test keys, in **SIMULATED** runs (ADR-0033 A7, B29).", 14, "muted")
+    y += max(ith + 70, gh1 + 20 + gh2) + 70
 
     # ------------------------------------------------------------------ row 3: the axis and the full custody table
     c.heading(X0, y, "Custody is a declaration axis: anchor recoverability (ADR-0025 Annex; ToO §7.2)", "ink", 20)
@@ -181,25 +240,29 @@ def build():
          "**Degenerate custody**: the eviction or threshold rule can remove a key-holder, so key-holders become "
          "**principals** and the gate moves to that rule. **That is a type change, and it moves the TCB** (§8.2); "
          "it voids no theorem, so it is declared and checked (ADR-0023).",
+         "**Operators are principals** (ADR-0050, provisional): an operator was whoever reached a socket, neither a "
+         "principal nor at the gate. It now holds a seat, is seated by a quorum and can be revoked by a peer, so the "
+         "evictability test puts it inside; `Mediated`.",
          "**Promotion voters are principals on every rung**, because the anchor can evict them."]
     f = ["At A-0025, a permanent loss (or a resignation) **freezes the rules**.",
          "Frozen: the system runs and subtracts, but cannot change; anchor unavailability blocks change, never "
          "operation (ADR-0027 §3).",
          "**The only exit is re-genesis**: a successor system and a new rules-epoch chain (ADR-0027 §4).",
          "That fragility pushes operators toward degenerate custody, which is correct as long as it is declared.",
-         "**Re-genesis migration is open** (G7 item 10): what a successor inherits, including read access to the "
+         "**Re-genesis migration is open** (item 10, as at G9): what a successor inherits, including read access to the "
          "forensic classes, whose horizon is the epoch chain (ADR-0028 §3)."]
     r = ["**A coalition at the capture threshold can issue any rules-floor-conformant roster.**",
          "No safety theorem covers anchor intent. The rules floor bounds what it can issue; nothing bounds why.",
          "The residual becomes numeric: the capture threshold feeds NIST MANAGE 1.4.",
          "Trusted-base rows (ADR-0045, in force, C2/C4): T-0045-8 the anchor key store, T-0045-9 the key-holders "
          "\"honest at the declared capture threshold\", both trust roots."]
-    gc = ["**Genesis custody: Scott, sole custodian, (1, 0)** (ADR-0029 §1; G7 header). Genesis, not a degeneracy: "
-          "there is no archetype custody before the anchor exists.",
-          "The corpus's own row is T-0045-11, now in force; **the dev bundle key is a second (1, 0) custody** "
-          "(G7 item 11, item 67; T-0045-27).",
+    gc = ["**Genesis custody: Scott, sole custodian, (1, 0)** (ADR-0029 §1; G10 header). Genesis, not a "
+          "degeneracy: there is no archetype custody before the anchor exists.",
+          "The corpus's own row is T-0045-11, in force; **the dev bundle key is a second (1, 0) custody** "
+          "(items 11 and 67, as at G9; T-0045-27). Bundles are signed under a throwaway key (G10 §8).",
           "**A solo bootstrap is not a bootstrap.** The ceremony seats key-holders under a declared custody "
-          "record (ADR-0029 §5); the archetype needs three (A-0025) of the five humans.",
+          "record and, since ADR-0029 A3 (provisional), the first operators by issuance (§5); the archetype needs "
+          "three key-holders (A-0025) of the five humans.",
           "Owed: the genesis key-ceremony procedure, and a named owner and role for every custody declaration "
           "(GOVERN 2.3)."]
     hh = max(c.card(0, 0, w4, "Who is at the gate, per custody (ToO §7.5)", g, draw=False),
@@ -211,8 +274,10 @@ def build():
     c.card(X0 + 2 * (w4 + 30), y, w4, "The headline residual", r, accent="red", h=hh, tint=False, dash="6 4")
     c.card(X0 + 3 * (w4 + 30), y, w4, "Custody today", gc, accent="brown", h=hh)
     y += hh + 30
-    c.para(X0, y, W, "Status: ADR-0025 is **Accepted (genesis), 2026.09.23** (Batch 2), A1 ratified 2026.09.30 "
-           "(Batch 17), with no confirmation marker: a bootstrap record (ADR-0029 §4). A1 added item (f), the keys "
-           "that vouch for artifacts; its schema fields exist in the reference since ADR-0033 A6 (B23).", 14.5,
-           "muted")
+    c.para(X0, y, W, "Status: ADR-0025 is **Accepted (genesis), 2026.09.23** (Batch 2), with no confirmation marker: "
+           "a bootstrap record (ADR-0029 §4). A1 ratified 2026.09.30 (Batch 17) added item (f), the keys that vouch "
+           "for artifacts; B29 (2026.10.04) added (g); **A2 and A3 ratified 2026.10.05 (Batch 34)**, A2 adding (h) "
+           "and A3 the provider's key and the genesis seating. **A3 is provisional** with ADR-0050, and the genesis "
+           "attestation must name it so (ADR-0029 A4). Not reviewed by a reader other than the drafter (ADR-0025 "
+           "B34; G10 §4: no bootstrap reviewer is engaged).", 14.5, "muted")
     return c

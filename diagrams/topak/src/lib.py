@@ -21,8 +21,8 @@ MONO = "'DejaVu Sans Mono', Menlo, Consolas, monospace"
 MONO_EM = 0.602          # DejaVu Sans Mono / Menlo advance
 MONO_SCALE = 0.92        # code runs are set slightly smaller than the surrounding text
 
-DATE = "2026.10.03"
-STATE = "State of record: Genesis Checkpoint G9 (2026.10.02) · narrative: Theory of Operation rev 13"
+DATE = "2026.10.05"
+STATE = "State of record: Genesis Checkpoint G10 (2026.10.05) · narrative: Theory of Operation rev 14"
 
 # ---------------------------------------------------------------------------------------------
 # Theme tokens: name -> (light, dark)
@@ -58,6 +58,10 @@ STATUS = {
     "superseded": ("Superseded", "grey", "2 3"),
     "withdrawn":  ("Withdrawn", "grey", "2 3"),
     "open":       ("Open", "red", "6 4"),
+    # ratified and in force, subject to redesign (ADR-0029 A4); dashed so it never reads as settled
+    "provisional": ("Accepted · provisional", "blue", "4 3"),
+    # gated, pinned and enforced, ratified only when the bootstrap reviewer finds it fit (ADR-0030 A3)
+    "genprov":    ("Genesis-provisional", "violet", "4 3"),
 }
 
 
@@ -130,7 +134,12 @@ def parse(s):
         if not part:
             continue
         if part.startswith("**") and part.endswith("**") and len(part) > 4:
-            runs.append((part[2:-2], "b", None))
+            # code inside bold: the code run is set in mono (which has no bold), the rest stays bold
+            for sub in re.split(r"(`[^`]+`)", part[2:-2]):
+                if sub.startswith("`") and sub.endswith("`") and len(sub) > 2:
+                    runs.append((sub[1:-1], "m", None))
+                elif sub:
+                    runs.append((sub, "b", None))
         elif part.startswith("`") and part.endswith("`") and len(part) > 2:
             runs.append((part[1:-1], "m", None))
         elif part.startswith("[[") and part.endswith("]]"):

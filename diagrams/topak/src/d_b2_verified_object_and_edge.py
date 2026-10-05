@@ -1,5 +1,6 @@
-"""B2 — The verified object and the parameterized edge (boundary B4), with the genesis floor in full."""
+"""B2 — The verified object and the parameterized edge (boundary B4), with the policy floor in force in full."""
 from lib import Canvas
+from d_b8_floor_stages import POLICIES
 
 ID, SLUG = "B2", "verified-object-and-edge"
 
@@ -9,18 +10,22 @@ def build():
                "Boundary B4. Inside: the enforcement mechanism, its version pinning, its epoch fencing, a minimal "
                "policy floor and a minimal rules floor, with the floor exceptions and the forensic classes written as "
                "floor entries. Outside: operational bundles, Personas and rungs, versioned parameters that may "
-               "subtract authority and never add it. The genesis policy floor's seventeen policies are drawn in full; "
-               "the text is a DRAFT, not ratified.",
-               3200, "ToO rev 13 §2.5, §2.6, §2.9, §3.1–§3.3, §4.4, §6, §7.3, §7.4; G9 §2.1, §2.2, §2.3, §2.5, §2.7, §8, "
-               "§7 items 25, 67, 83; "
-               "ADR-0010 (A1, A2), ADR-0012, ADR-0013, ADR-0016, ADR-0018, ADR-0023, ADR-0026, ADR-0027, ADR-0028, "
-               "ADR-0030 §1–§5, ADR-0031 §3, A2, ADR-0033 §5, A6, A7 and A8 (pending), ADR-0034, A2 (pending), ADR-0044; floor/genesis-floor.cedar, "
-               "floor/README.md, floor/genesis-values.json, floor/genesis-gates-results-2026.10.01.txt; "
-               "boundary register §6")
+               "subtract authority and never add it. The policy floor in force, the `emergency` stage's twenty-eight "
+               "policies, is drawn in full: it is genesis-provisional (ADR-0030 A3), gated, pinned and enforced, and "
+               "not ratified.",
+               3200, "ToO rev 14 §2.5, §2.6, §2.9, §2.10, §3.1–§3.3, §4.4, §6, §7.3, §7.4, §7.10; G10 §1.2, §2.1, §2.2, "
+               "§2.3, §2.5, §2.7, §8, §7 items 1, 2, 25, 87, 90, 91, 92 (items 67 and 83 as at G9); "
+               "ADR-0009 A1, ADR-0010 (A1, A2), ADR-0012, ADR-0013 §2, A1, ADR-0016 A1, A2, ADR-0018, ADR-0023, "
+               "ADR-0025 A2, A3, ADR-0026 W1, A2, ADR-0027, ADR-0028, ADR-0029 A4, ADR-0030 §1–§5, A2, A3, ADR-0031 §3, "
+               "A2, ADR-0033 §5, A6–A12, ADR-0034 A2, ADR-0039 A2, ADR-0041 A1–A3, ADR-0042 §6, ADR-0044, ADR-0047 §7, "
+               "§8, ADR-0049 §6, ADR-0050 §4, ADR-0052 §1, §2; floor/proposed/emergency-floor.cedar, "
+               "emergency.cedarschema, README.md; floor/genesis-floor.cedar, floor/genesis-values.json; "
+               "mechanism/crates/topak-floor/src/lib.rs; boundary register §6")
     X0, X1 = c.x0, c.x1
     y = c.y
     y += c.legend(X0, y, [
-        ("box", "teal", "verified object"), ("box", "grey", "parameterized edge"), ("box", "violet", "draft"),
+        ("box", "teal", "verified object"), ("box", "grey", "parameterized edge"),
+        ("box", "violet", "draft or genesis-provisional: not ratified"),
         ("box", "blue", "issued, ratified"), ("box", "red", "carve-out, exception, gap"),
         ("arrow", "green", "subtraction only", "7 5"),     ], title="Read as") + 34
 
@@ -38,10 +43,12 @@ def build():
     trio = [
         ("Enforcement mechanism", "The admit path: epoch fence → lease → syntactic lift → floor → bundle → "
          "consensus-ordered admit → effect (ToO §15). The model-agnostic **validator** of the typed lift lives here "
-         "(ADR-0018); schema S is enforced on every request (ADR-0030 §4)."),
+         "(ADR-0018); schema S is enforced on every request (ADR-0030 §4). It computes the label facts the floor "
+         "reads (ADR-0030 A2) and checks a bundle's allowlist at load (ADR-0049 §6)."),
         ("Version pinning", "The mechanism release carries the floor text, schema S, the values file, the Cedar "
          "engine and its version, and the resident genesis rules, each pinned by digest; at startup the reference "
-         "refuses a floor whose bytes do not match the gated digests."),
+         "refuses a floor whose bytes do not match the gated digests, since `9c57221` the `emergency` stage's "
+         "(ADR-0033 A12)."),
         ("Epoch fencing", "Every action carries epoch and lease; actions under a fenced epoch are rejected **by the "
          "mechanism, ahead of the floor**, not by policy (ADR-0022 §2). The floor never decides whether an epoch is "
          "current."),
@@ -53,17 +60,27 @@ def build():
     # rules floor | exceptions | forensic
     rf = ("The rules floor (ADR-0026)", [
         "Bounds every **anchor issuance**, not admits; stays mechanism-checked, not Cedar (ADR-0030 §7).",
-        "In force: **R1, R2, R5, R6, R7, R9**. R3 and R4 withdrawn. **R8** (break-glass TTL) drafted, pending.",
+        "In force: **R1, R2, R5, R6, R7, R9**. R3 and R4 withdrawn. **R8 withdrawn** (ADR-0026 W1): a break-glass "
+        "grant ends with its round.",
+        "**R6** bounds the floor exceptions, and the count is **one**; **R7** reads \"no activation of an emergency "
+        "seating grants a lease whose alphabet holds an authority act\" (ADR-0026 A2, [[blue|provisional]]).",
+        "The rules gain three issued things the rules floor bounds none of: an identity provider's key (ADR-0025 A3, "
+        "[[blue|provisional]]) and the two lists a bundle's load checks read (A2). `RulesFloorBase.tla` still "
+        "carries `bgScope` and a bound of two (G10 item 90).",
         "Changing it in either direction needs an anchor issuance and a promotion.",
     ])
-    ex = ("Floor exceptions (ADR-0013 §2)", [
-        "**X1 break-glass** (ADR-0009): adds authority; `Actuate` only; a quorum on the break-glass roster.",
+    ex = ("Floor exceptions (ADR-0013 §2, A1): one", [
         "**X2 erasure** (ADR-0006): destroys evidence; a quorum on the erasure roster, **none issued at genesis**.",
-        "Count bounded by R6, currently two. **A bundle can narrow either, including break-glass**, never widen.",
+        "**X1 break-glass is retired** (ADR-0013 A1; ADR-0041 A2; ADR-0009 A1): break-glass is an emergency seating "
+        "(ADR-0052, [[blue|provisional]]). The roster's quorum seats a named person on a seat of kind `emergency` for "
+        "one round, and `R1` admits its calls over the envelope computed at activation. X1's retirement is in force on "
+        "a record subject to redesign (G10 §1.2).",
+        "Count bounded by R6, now one. A bundle can narrow it, never widen; a bad bundle can disable an emergency "
+        "seat's tools, a liveness cost (ToO rev 14 §3.1).",
     ])
     fo = ("Forensic floor (ADR-0028): one forbid on `Erase`", [
         "**F1** admit decisions · **F2** stop attribution · **F3** promotion votes · **F4** anchor issuances, genesis "
-        "included · **F5** break-glass invocations · **F6** erasure events.",
+        "included · **F5** break-glass invocations, now an emergency activation (ADR-0052) · **F6** erasure events.",
         "No cognitive payload is in the floor. Removing a class is a floor relaxation.",
     ])
     TRIP = [(rf, "blue", "accepted", "bootstrap set"), (ex, "red", "accepted", "C1, C4"),
@@ -73,25 +90,36 @@ def build():
     pf_head = ("The policy floor: Cedar, linked into the mechanism (ADR-0030 §2–§3)",
                ["**No process, no socket, no fetch.** The floor's only inputs are the typed lift and the issued rules, "
                 "so no bundle can write a value the floor reads. Composition is a mechanism constant (§1, below).",
-                "**The genesis floor is three files**, unchanged since G7 (G9 §2.2), gated six times, last on 2026.10.01, the first run "
-                "with checked proofs. ADR-0030 ratified the language and the machinery, **not a floor**; ADR-0041 "
-                "ratified what a Run floor must contain, not this one."])
+                "**The floor in force is the** `emergency` **stage** of `floor/proposed/`, built in three gated stages from "
+                "the genesis draft (`labels`, `control`, `emergency`; diagram B8) and linked by the reference since "
+                "`9c57221`. The entries in force changed for the first time since G7 (G10 §2.2): **three forbids over "
+                "labels, nine control entries, and X1 removed** (ADR-0041 A1 to A3).",
+                "**Genesis-provisional** (ADR-0030 A3): gated, pinned and enforced, and ratified by no batch. It is "
+                "ratified when the bootstrap reviewer establishes that it is fit (ADR-0029 A4), and nothing says how "
+                "fitness is tested (G10 item 87). ADR-0030 ratified the language and the machinery; ADR-0041 what the "
+                "floor must contain, entry by entry, not a text. The stage files' opening comment says they are not "
+                "what the reference follows, which is wrong (item 91)."])
     files = [
-        ("`genesis-floor.cedar`", "17 policies, drawn in full below.", "sha256 `28ec0e4552c6a915`"),
-        ("`genesis.cedarschema`: schema S", "The typed lift's type; the analyses quantify over every request and "
-         "entity store S admits.", "sha256 `0ec2fa215eefe136`"),
-        ("`genesis-values.json`", "`K` = 8, `T_obs` = 5000 ms, `T_persona` = 3 600 000 ms (1 h); θ_exact, θ_near, "
-         "θ_gen, β, near_tool **unset**. **Every number is a placeholder.**", "sha256 `85ab6fefb66f0316`"),
+        ("`emergency-floor.cedar`", "28 policies, drawn in full below. Gated 2026.10.04, 107 cases.",
+         "sha256 `15c941b9a56a09f7`"),
+        ("`emergency.cedarschema`: schema S", "The typed lift's type, now with the label facts, `ControlCtx` and the "
+         "kinds `operator` and `emergency`; no break-glass fields.", "sha256 `d3c8145c6af2d9a3`"),
+        ("`genesis-values.json`", "`K` = 8, `T_obs` = 5000 ms, `T_persona` = 1 h; θ_exact, θ_near, θ_gen, β, "
+         "near_tool **unset**. Unchanged by the stages. **Every number is a placeholder.**",
+         "sha256 `85ab6fefb66f0316`"),
+        ("`genesis-floor.cedar` and its schema", "The DRAFT the stages are built from, unchanged: 17 policies, 62 "
+         "cases, `X1` among them. Linked until `7764e52`.", "sha256 `28ec0e4552c6a915`, `0ec2fa215eefe136`"),
     ]
-    hh = c.card(0, 0, iw - 40, pf_head[0], pf_head[1], size=14.5, status="draft", draw=False)
-    fw = (iw - 40 - 32 - 2 * 18) / 3
+    hh = c.card(0, 0, iw - 40, pf_head[0], pf_head[1], size=14.5, status="genprov", draw=False)
+    fw = (iw - 40 - 32 - 3 * 18) / 4
     fh = max(c.card(0, 0, fw, t, [b, d], bullets=False, size=14, draw=False) for t, b, d in files)
     pf_h = hh + fh + 12
     nb = ["**Epoch fencing**: the mechanism, ahead of the floor (ADR-0022 §2) · **the round bound**: a count, "
           "mechanism-checked, with `K < R` checked at startup (ADR-0022 §3) · **the rules floor**: bounds issuances, "
           "not admits (ADR-0030 §7) · **hermeticity of** `Invoke`: an obligation on each allowlist entry, not a request "
-          "property."]
-    nt = "Not in the policy floor, and why (header of `genesis-floor.cedar`)"
+          "property · **F4 to F6**: load checks on bundle data, W7 to W9 (ADR-0049 §6), made by the mechanism · "
+          "**a first lease**: granted by the mechanism when a quorum completes (ADR-0050 §2), not an action."]
+    nt = "Not in the policy floor, and why (the floor text's header; ADR-0049 §6; ADR-0050 §2)"
     nh = c.card(0, 0, iw, nt, nb, size=14, bullets=False, draw=False)
     eh = max(c.card(0, 0, w3, t[0], t[1], size=14, status=s, status_extra=e, draw=False) for t, a, s, e in TRIP)
     v_bot = pf_y + pf_h + 24 + eh + 24 + nh + 28
@@ -99,8 +127,8 @@ def build():
              "teal", dash=None, sw=2.6, tint=True, size=16)
     for i, (t, b) in enumerate(trio):
         c.card(ix + i * (w3 + 20), trio_y, w3, t, [b], accent="teal", bullets=False, size=14.5, h=th)
-    c.card(ix + 20, pf_y, iw - 40, pf_head[0], pf_head[1], accent="violet", size=14.5, status="draft",
-           status_extra="floor text, S and values not ratified", h=pf_h)
+    c.card(ix + 20, pf_y, iw - 40, pf_head[0], pf_head[1], accent="violet", size=14.5, status="genprov",
+           status_extra="ADR-0030 A3 · ratified at bootstrap", h=pf_h)
     for i, (t, b, d) in enumerate(files):
         c.card(ix + 36 + i * (fw + 18), pf_y + hh - 4, fw, t, [b, d], accent="violet", bullets=False, size=14,
                h=fh, tint=False)
@@ -120,7 +148,11 @@ def build():
             "lifted input; asked only **whether to refuse**, never whether to grant.",
             "A decision counts only from the revision the lease names; a sidecar with an in-process WASM fallback "
             "bound to that revision (ADR-0030 §1, ADR-0033 §5).",
-            "Arguments and fine-grained rules live here, where they can only subtract (ADR-0041).",
+            "Arguments and fine-grained rules live here, where they can only subtract (ADR-0041 §5). So do **the "
+            "label declarations and the delivery table** (ADR-0041 A1 §5; ADR-0047 §8): a promotion may move every "
+            "label to clear, and cannot loosen `R5` to `R7`, which then refuse more.",
+            "**A bundle loads only if its allowlist is well-formed**: W1 to W10 on ADR-0049's one entry schema, after "
+            "the signature and before any decision counts; a mechanism constant no bundle can waive (ADR-0030 A2).",
         ], None, ""),
         ("A bundle is trusted by its signature, not its file name (ADR-0044)", "blue", [
             "The **bundle key** is in the issued rules (ADR-0025 §1 (f)); issuing or replacing it is an issuance.",
@@ -128,21 +160,26 @@ def build():
             "that does not verify, and **one refused file stops the node from starting** rather than being skipped "
             "(inventory finding 20); a sidecar's revision counts only if its signature was verified; a grant naming an "
             "unverified revision is refused.",
-            "**Built** at the reference (ADR-0033 A6) under a dev key, custody (1, 0). **Not built**: signing at "
-            "promotion as a pipeline step, and the key's custody row (G9 item 67).",
+            "**Built** at the reference (ADR-0033 A6) under a throwaway dev key, custody (1, 0). **Not built**: signing "
+            "at promotion as a pipeline step, and the key's custody row (item 67, open).",
         ], "accepted", "C1"),
         ("Personas (ADR-0016 to ADR-0020)", "grey", [
             "Model, provenance, prompt, decoding parameters, **decoder** and seat binding, pinned; promoted, and a lease "
             "field, so re-attested at grant and renewal, at least every `T_persona` (ADR-0031 A2).",
             "The decoder ships in the Persona; the validator stays in the mechanism (ADR-0018).",
+            "**A person's Persona** (ADR-0016 A1, A2): a key, a role, a domain and a lineage rooted in an identity "
+            "provider. `Seat binding` gains `operator` and `emergency` ([[blue|provisional]], with ADR-0050 and "
+            "ADR-0052); no model's Persona binds to `emergency`.",
         ], None, ""),
         ("Rungs: deployment degeneracies (ADR-0023, ADR-0034)", "grey", [
             "Per-axis declarations: degenerate forms lose theorems, never gain capability. The confinement rung is a "
-            "lease field, `[profile digest, rung]`. The reference grants rung 0 by operator, launches rung 1 on profiles "
-            "that declare P3 `fail`, and rung 3 only **SIMULATED** (ADR-0033 A7, pending): **every real principal is** "
-            "`Mediated` (G9 §2.3).",
-            "Run's profile, with P4 replaced by **channel fidelity**, is ADR-0034 A2 (pending); the reference holds a "
-            "Run profile's P4 at decide and at apply (A8, pending) and does not yet hold a Build profile's (G9 item 83).",
+            "lease field, `[profile digest, rung]`. The reference grants rung 0, launches rung 1 on profiles that "
+            "declare P3 `fail`, and rung 3 only **SIMULATED** (ADR-0033 A7, Batch 29): **no real principal is** "
+            "`Contained` (G10 §2.3, item 1). An operator and an emergency seat are `Mediated` by design: a person is "
+            "not confined.",
+            "**The Run profile is in force**: ADR-0034 A2 with ADR-0042 §6 (Batch 30), P4 replaced by **channel "
+            "fidelity**. The tool host binds a Wasm tool's one connection to the target its allowlist entry declares "
+            "(ADR-0033 A8, A9); a Build profile's P4 is not yet held (item 83).",
         ], None, ""),
     ]
     for t, a, b, s, e in edge:
@@ -168,7 +205,12 @@ def build():
         "matched.",
         "So `bundle ⊑ floor` holds of the composed decision **for every bundle at every age**; stale bundles are "
         "monotone-safe, and nobody has to decide refinement at promotion. Given up: a bundle can never establish that "
-        "something is allowed, and a bad bundle can disable break-glass, a liveness cost, never a widening.",
+        "something is allowed, and a bad bundle can disable an emergency seat's tools, a liveness cost, never a "
+        "widening.",
+        "`bundle ⊑ floor` is decided over action variants and says nothing about delivery, so **the label minimum is in "
+        "the floor**, where a bundle cannot loosen it: delivering more in the clear buys a narrower round (ADR-0047 "
+        "§7, §8; G10 §2.5). An operator's control request is decided by the floor's `C1` to `C9` alone: at the "
+        "reference there is no bundle tier for it (ADR-0033 A11).",
     ], accent="teal", size=14.5, status="accepted", status_extra="C1")
     c.card(X0 + w2 + 30, y, w2, "Residency: fail-closed with nothing to fetch", [
         "**The floor is resident** (ADR-0012): the default-deny bundle is pre-blessed, staged and instantiated, not "
@@ -181,69 +223,35 @@ def build():
     ], accent="teal", size=14.5, h=ch, status="accepted")
     y += ch + 60
 
-    # ---------------------------------------------------------------- the seventeen policies
-    c.text(X0, y + 22, "The genesis policy floor, all seventeen policies (`floor/genesis-floor.cedar`)", 22, "ink",
-           bold=True)
-    c.status(X0 + 1080, y + 4, "draft", "DRAFT · 2026.09.24, revised 2026.09.29")
+    # ---------------------------------------------------------------- the twenty-eight policies
+    c.text(X0, y + 22, "The policy floor in force, all twenty-eight policies (`floor/proposed/emergency-floor.cedar`)",
+           22, "ink", bold=True)
+    c.status(X1, y + 4, "genprov", "ADR-0030 A3 · gated 2026.10.04 · 15c941b9a56a09f7", anchor="end")
     y += 40
     y += c.para(X0, y, X1 - X0,
                 "Evaluation: any satisfied `forbid` denies; else any satisfied `permit` allows; else deny, and any "
                 "evaluation error is a deny. Every permit is an envelope from a ratified record; every forbid is a "
-                "carve-out the permits alone would not make. `ctx` is the request context; `alphabet` is the lease's; build and run abbreviate `principal.domain == \"build\"` and `== \"run\"`.",
+                "carve-out the permits alone would not make. `alphabet` is `context.lease.alphabet`; build and run "
+                "abbreviate `principal.domain == \"build\"` and `== \"run\"`; operator abbreviates `principal.kind == "
+                "\"operator\"`. The retired `X1` is shown where it stood and is not counted. The control entries rest on "
+                "ADR-0050 and the emergency change on ADR-0052, both [[blue|provisional]].",
                 14.5, "muted") + 14
     cols = [("Policy `@id`", 330), ("Effect", 100, {"bold": True}),
-            ("Action(s)", 300, {"mono": True}), ("When (condition, as written)", 1530), ("From the record", 0)]
+            ("Action(s)", 330), ("When (condition, as written)", 1530), ("From the record", 0)]
     cols[-1] = ("From the record", X1 - X0 - sum(cc[1] for cc in cols[:-1]))
-    P, F = "[[teal|permit]]", "[[red|forbid]]"
-    rows = [
-        {"cells": ["", "", "", "[[blue|" + "Build envelopes: ADR-0022 §1 (six)" + "]]", ""], "accent": "blue"},
-        ["`B1-read-corpus`", P, "Read", "`principal.domain == \"build\"` ∧ `alphabet.contains(\"Read\")` ∧ "
-         "`resource in context.corpusRoot`", "ADR-0022 §1"],
-        ["`B2-draft-workspace`", P, "Draft", "build ∧ `alphabet.contains(\"Draft\")` ∧ `resource in context.workspace`",
-         "ADR-0022 §1"],
-        ["`B3-invoke-allowlisted`", P, "Invoke", "build ∧ `alphabet.contains(\"Invoke\")` ∧ `resource in "
-         "context.toolAllowlist` ∧ `context.inputsInWorkspace`", "ADR-0022 §1, §3"],
-        ["`B4-emit-own-topic`", P, "Emit", "build ∧ `alphabet.contains(\"Emit\")` ∧ `resource.owner == principal` ∧ "
-         "`resource.epoch == context.epoch` ∧ `resource.round == context.round` ∧ `!resource.sealed`", "ADR-0022 §1"],
-        ["`B5-submit-own-artifact`", P, "Submit", "build ∧ `alphabet.contains(\"Submit\")` ∧ `resource.author == "
-         "principal`", "ADR-0022 §1"],
-        ["`B6-vote-seated`", P, "Vote", "build ∧ `alphabet.contains(\"Vote\")` ∧ `context.voteRulesEpoch == "
-         "context.rulesEpoch` ∧ ((`principal in context.grantRoster` ∧ `kind == \"grant\"`) ∨ (`principal in "
-         "context.vetoRoster` ∧ `kind == \"observer\"`))", "ADR-0022 §1; tightened by ADR-0037 §4"],
-        {"cells": ["", "", "", "[[red|" + "Carve-outs on the Build envelopes (four)" + "]]", ""], "accent": "red"},
-        ["`B7-author-recused`", F, "Vote", "`resource.author == principal`. Recusal as floor text: relaxing it is a "
-         "policy-floor relaxation (ADR-0022 A1)", "ADR-0022 §7, ADR-0024 §6"],
-        ["`B8-grant-only-from-grant-seat`", F, "Vote", "`context.verdict == \"grant\"` ∧ `!(principal in "
-         "context.grantRoster)`: a veto seat's alphabet lacks grant", "ADR-0024 §5"],
-        ["`B9-voters-do-not-author`", F, "Draft, Invoke, Submit", "`context.roundRole == \"voter\"`: within a promotion "
-         "round, voters review; they do not author", "ADR-0022 §7"],
-        ["`B10-only-thinkers-author`", F, "Draft, Invoke, Submit, Actuate", "`principal.kind != \"thinker\"`: an Observer "
-         "or a grant seat never authors, in either domain", "ADR-0037 §4"],
-        {"cells": ["", "", "", "[[green|" + "Run envelopes: ADR-0040 §1, stated as ADR-0041 §1 (three)" + "]]", ""], "accent": "green"},
-        ["`R1-actuate-allowlisted`", P, "Actuate", "`principal.domain == \"run\"` ∧ `alphabet.contains(\"Actuate\")` ∧ "
-         "`resource in context.toolAllowlist`", "ADR-0040 §1, ADR-0041 §1"],
-        ["`R2-report-own-topic`", P, "Report", "run ∧ `alphabet.contains(\"Report\")` ∧ `resource.owner == principal` ∧ "
-         "current `epoch` and `round` ∧ `!resource.sealed`", "ADR-0040 §1, ADR-0041 §1"],
-        ["`R4-consult-pinned`", P, "Consult", "run ∧ `alphabet.contains(\"Consult\")` ∧ `resource in context.runRoot`: "
-         "ingress, not an effect; a live read is an `Actuate`", "ADR-0040 §1, ADR-0041 §1"],
-        {"cells": ["", "", "", "[[pink|" + "Run carve-out (one)" + "]]", ""], "accent": "pink"},
-        ["`R3-observer-live`", F, "Actuate, Report", "`principal.kind == \"thinker\"` ∧ `!context.observerLive`: every "
-         "effect-bearing Run admit under a Thinker needs a live cell Observer (`T_obs`, `K`); `Consult` exempt; "
-         "applies to break-glass too", "ADR-0039 §2, ADR-0041 §2"],
-        {"cells": ["", "", "", "[[red|" + "Floor exceptions: ADR-0013 §2 (two; bounded by ADR-0026 R6)" + "]]", ""], "accent": "red"},
-        ["`X1-break-glass`", P, "Actuate", "run ∧ `context.breakGlass.quorum` ∧ `resource in context.breakGlass.tools`: "
-         "outside the allowlist, inside the issued envelope; never `Consult`, `Report`, `Vote`, `Submit` or `Erase`",
-         "ADR-0009; ADR-0026 R7; ADR-0041 §3"],
-        ["`X2-erasure`", P, "Erase", "`context.erasureQuorum`: FALSE from epoch 0, since genesis issues no erasure roster; "
-         "admits nothing until bootstrap", "ADR-0006; ADR-0029 §5"],
-        {"cells": ["", "", "", "[[teal|" + "The forensic floor: ADR-0028 (one)" + "]]", ""], "accent": "teal"},
-        ["`F-forensic-classes`", F, "Erase", "`[\"F1\", \"F2\", \"F3\", \"F4\", \"F5\", \"F6\"].contains(resource.class)`: "
-         "removing a class is a floor relaxation", "ADR-0028"],
-    ]
+    rows = []
+    for r in POLICIES:
+        if isinstance(r, dict) and "group" in r:
+            rows.append(r)
+        elif isinstance(r, dict):
+            rows.append({**r, "cells": r["cells"][:5]})
+        else:
+            rows.append(r[:5])
     y += c.table(X0, y, cols, rows, size=14, accent="ink") + 24
     c.para(X0, y, X1 - X0,
-           "Counts as `floor/README.md` gives them: six Build envelopes, four carve-outs, three Run envelopes, one Run "
-           "carve-out, two exceptions, the forensic floor. One policy set serves both domains, scoped by "
-           "`principal.domain`, because the per-class floor question is open (ToO §3.4; ADR-0014 reserved). Gate results "
-           "for every policy are in B3.", 14.5, "muted")
+           "Counts: six Build envelopes, four Build carve-outs, three Run envelopes, four Run carve-outs (`R3`, and "
+           "`R5` to `R7` over labels), one exception, the forensic floor, four control permits and five control "
+           "forbids: **28**, where the genesis draft has 17. One policy set serves both domains, scoped by "
+           "`principal.domain` and `principal.kind`, because the per-class floor question is open (ToO rev 14 §3.4; "
+           "ADR-0014 reserved). How each stage was built and what its gates show is B8.", 14.5, "muted")
     return c

@@ -9,12 +9,17 @@ def build():
                "Deployment ⊃ domain ⊃ cell ⊃ seat ⊃ principal ⊃ lease. An LTRO is not a principal but a **cell** of "
                "them: two positions are seats that hold a Persona, a lease and a topic, two are stages that hold none, "
                "and **a principal holds exactly one seat** (ADR-0037 §1). Who is a principal is decided by one test: "
-               "evictability by an authority other than itself (ADR-0002 A2).",
-               3000, "ToO rev 13 §1, §2.5, §2.8, §2.9, §5.1, §7.5; ADR-0002 A2; ADR-0037 §1–§8 (R1–R5, A1, B12, B20, B22); "
-               "ADR-0038 §1–§7; ADR-0043 §1, §2, §5; ADR-0031 §1, §2, §5; ADR-0035 §5; ADR-0018; ADR-0019; ADR-0045 "
-               "T-0045-26; spec/Seats.tla and spec/Seats-results-2026.09.29.txt; spec/Seats_proof.tla and "
-               "Seats-proof-results-2026.10.02.txt; ADR-0037 B25; ADR-0033 A7 (pending); mechanism topak-core rules.rs "
-               "(`SeatDecl`); G9 §1.2, §7 items 40, 41, 43, 64, 85")
+               "evictability by an authority other than itself (ADR-0002 A2). Since Batch 34 there are **five seat kinds**: "
+               "`operator` and `emergency` are held only by people, and both rest on records ratified **provisional** "
+               "(ADR-0037 A3, A4; ADR-0050; ADR-0052).",
+               3000, "ToO rev 14 §1, §2.4, §2.5, §2.8, §2.9, §2.10, §3.3, §5.1, §7.5, §7.10; ADR-0002 A2; ADR-0037 §1–§8 "
+               "(R1–R5, A1, A2, A3, A4, B12, B20, B22, B34); ADR-0038 §1–§7; ADR-0043 §1, §2, §5, A1; ADR-0031 §1, §2, §5, "
+               "A3; ADR-0035 §5; ADR-0016 A1, A2; ADR-0018; ADR-0019; ADR-0023 A1 (§6c); ADR-0029 A3; ADR-0039 A2; "
+               "ADR-0045 T-0045-26, T-0045-32, A1; ADR-0048 §2; ADR-0050 §1–§3, §6, §9; ADR-0051 (Proposed); ADR-0052 §1–§4; "
+               "spec/Seats.tla and spec/Seats-results-2026.09.29.txt; spec/Seats_proof.tla, "
+               "Seats-proof-results-2026.10.02.txt and Seats-proof-cert-results-2026.10.04.txt; ADR-0037 B25; ADR-0046 A1; "
+               "ADR-0033 A7 (B29), A11, A12; mechanism topak-core rules.rs (`SeatDecl`), types.rs (`SeatKind`), "
+               "control.rs (`Seating`); G10 §1.1, §1.2, §2.3, §3, §7 items 40, 41, 43, 64, 85, 97")
     X0, X1 = c.x0, c.x1
     y = c.y
 
@@ -30,6 +35,8 @@ def build():
         "nothing else, so the Observer is a principal on its own (ADR-0037 Context; ADR-0031 §5).",
         "The correlator, and every human `grant` or `thinker` seat holder.",
         "**Promotion voters, on every rung**: the anchor can evict them (ToO §7.5).",
+        "**Operators and emergency seat holders** (provisional): people, `Mediated`, treated as havoc like every "
+        "principal (ADR-0050 §1; ADR-0052 §1).",
     ], accent="blue", size=14, draw=False)
     hgate = c.card(0, 0, tw, "At the gate: outside every proof", [
         "**Anchor key-holders at archetype custody**: removable only with their own consent (B14). Attributable "
@@ -53,6 +60,8 @@ def build():
         "nothing else, so the Observer is a principal on its own (ADR-0037 Context; ADR-0031 §5).",
         "The correlator, and every human `grant` or `thinker` seat holder.",
         "**Promotion voters, on every rung**: the anchor can evict them (ToO §7.5).",
+        "**Operators and emergency seat holders** (provisional): people, `Mediated`, treated as havoc like every "
+        "principal (ADR-0050 §1; ADR-0052 §1).",
     ], accent="blue", size=14, h=th)
     c.card(X0 + 2 * (tw + 24), y, tw, "At the gate: outside every proof", [
         "**Anchor key-holders at archetype custody**: removable only with their own consent (B14). Attributable "
@@ -74,7 +83,8 @@ def build():
     ly = y + 40
     rungs = [
         ("Deployment", "grey", None,
-         ["Declares its confinement rung and its degeneracies (ADR-0023); the archetype is the maximum.",
+         ["Declares its degeneracies, and for **every seat** the rung its leases are granted at (ADR-0023 §6c, "
+          "A1, B29); the archetype is the maximum.",
           "Not a principal."]),
         ("Domain · `Build` or `Run`", "blue", None,
          ["A seat belongs to one domain (`Seat.domain`); no variant name is shared across domains (ADR-0040 §2).",
@@ -83,16 +93,21 @@ def build():
          ["The principals seated around one Thinker for a round (ADR-0037 §1).",
           "No lease, no alphabet, not evictable as a unit."]),
         ("Seat", "pink", None,
-         ["A slot declared in the issued rules, with a **kind**: `thinker`, `observer` or `grant` (ADR-0037 §1, §2).",
+         ["A slot declared in the issued rules, with a **kind**: `thinker`, `observer`, `grant`, `operator` or "
+          "`emergency` (ADR-0037 §1, §2, A4, A3; the last two provisional).",
           "Held by exactly one principal.",
-          "At the reference it also declares a **rung** (`SeatDecl.rung`, default 0): a grant is at that rung or "
-          "refused, never lower (PROVISIONAL; G9 items 64, 85)."]),
+          "**Declared at a rung**: a grant or renewal at any other rung is refused (ADR-0023 §6c, in force since B29; "
+          "the reference's `SeatDecl.rung`, default 0)."]),
         ("Principal", "brown", None,
          ["Holds **exactly one seat**, fixed when the seat is declared; every principal is atomic (ADR-0037 §1, §7).",
-          "Evictable by an authority other than itself."]),
+          "Evictable by an authority other than itself.",
+          "**Put on its seat by a seating**, a thing of record a quorum makes: Persona, bundle, confinement and rung, "
+          "alphabet, and the labels its tasks may carry (ADR-0050 §2, provisional; G10 item 41). At the reference "
+          "the BOOTSTRAP path makes it."]),
         ("Lease", "teal", None,
          ["At most **one live lease per principal**, round-coterminous (ADR-0031 §2); `principal` and `seat` determine "
           "each other, so per-principal and per-seat are one rule.",
+          "The first from a quorum; the next round a successor grant by an operator, never wider (ADR-0031 A3).",
           "Ended by expiry, round end, targeted revocation or an epoch fence."]),
     ]
     lh = [c.card(0, 0, LW, t, b, accent=a, size=14, draw=False) for t, a, _, b in rungs]
@@ -133,14 +148,15 @@ def build():
     x_o = x_tp + wtp + g
 
     body_l = ["The environment step that delivers the task and the admitted content: **Build**: admitted `Read`s; "
-              "**Run**: the task, each admitted `Consult`'s content and each admitted `Actuate`'s result, and nothing "
-              "else (ADR-0043 §1).",
-              "At the reference: the node side of `Read`, `Consult` and `Actuate`'s return.",
-              "No Persona, no choice, no alphabet; adds nothing to the trusted base."]
+              "**Run**: four items, the task, each `Consult`'s content, each `Actuate`'s result and the round's tool "
+              "list, and nothing else (ADR-0043 §1, A1).",
+              "In Run it **labels** every item and delivers it clear or as a handle, mechanically (ADR-0037 A2).",
+              "No Persona, no choice, no alphabet. Delivery adds nothing to the trusted base; labelling is "
+              "T-0045-32 (ADR-0045 A1)."]
     body_t = ["**Principal**: holds this seat only; leased per round; evictable alone.",
               "**Persona**: the weights **and the decoder** (ADR-0016 §1, ADR-0018).",
               "**Lease**: one live; names seat, Persona, alphabet, round, role.",
-              "**Topic**: its own round topic (ADR-0021 §2).",
+              "**Topic**: its own round topic (ADR-0021 §2), opening with the tool list it was given (ADR-0048 §2).",
               "The only kind that writes, runs or offers: `Draft`, `Invoke`, `Submit`, `Actuate`; never votes."]
     body_r = ["A **check**, not a seat: no Persona, no lease, no alphabet (ADR-0037 §2, §3).",
               "Exists only where the Persona declares `topk_logprobs` (ADR-0019).",
@@ -211,7 +227,7 @@ def build():
 
     # ------------------------------------------------------------------ second row in the domain
     r2 = cell_bot + 50
-    w3 = (cx1 - cx0 - 2 * 30) / 3
+    w3 = (cx1 - cx0 - 4 * 30) / 5
     bB = ["Two `thinker` seats on one Persona are **two principals in two cells**, and this is permitted: a Persona "
           "is a property of a lease, not an identity (ADR-0037 §5).",
           "Its own `observer` seat; distinctness is (`thinker`, `observer`) per cell, enforced at the promotion "
@@ -220,33 +236,55 @@ def build():
           "Reads facts, envelopes and payloads of every cell at the archetype; a facts-only correlator is a permitted "
           "narrowing (D-0038-2's mitigation).",
           "A finding may name any principal in its domain, and is still deny-only. **No admit waits on it** "
-          "(ADR-0043 §6). Its detection function is unspecified (G9 item 43)."]
+          "(ADR-0043 §6). Its detection function is drafted as ADR-0051, **Proposed** and not built (G10 items 43, "
+          "97)."]
     bG = ["**A human holds one seat too**: a `grant` seat (ADR-0024 §5) or a `thinker` seat as an author, **never "
-          "both** (ADR-0037 §7).",
-          "A person who authors and approves is two principals; recusal is per seat and does not see through them "
-          "(finding 2; no seat-registration record, G9 item 41).",
+          "both**; or an `operator` seat and no other; or, for one round, an `emergency` seat and no other in that "
+          "round (ADR-0037 §7, A4, A3).",
+          "A person who authors and approves, or operates and votes, is two principals; recusal is per seat and does "
+          "not see through them (finding 2). A seat-registration record is still open (G10 item 41).",
           "Build only: `grant` seats read, emit and vote; in Run they hold no variant (ADR-0043 §2)."]
+    bOp = ["Either domain, **held only by a person**; no action variant, only the six control actions (ADR-0050 §1, "
+           "§4; ADR-0037 A4).",
+           "A person's Persona: a key, a role, a domain and a lineage rooted at its identity provider (ADR-0016 A1).",
+           "**At least three per domain at the archetype**, behind independent providers; the first seated by issuance "
+           "at bootstrap (ADR-0029 A3, provisional). Two is D-0050-3.",
+           "Each reads the others' topics; an add needs a live peer (ADR-0050 §6).",
+           "At the reference: seated by the **BOOTSTRAP** path (G10 §8)."]
+    bEm = ["**Run only**: `Consult`, `Actuate`, `Report` (ADR-0052 §1; ADR-0037 A3).",
+           "One named person for **one round**, activated by the break-glass roster's quorum on a seating prepared by "
+           "promotion; no successor and no renewal (§2, §3).",
+           "Seat binding `emergency`: the roster's quorum attests the Persona, with no sign-on (ADR-0016 A2).",
+           "**Not coupled** to an Observer (ADR-0039 A2); read by the domain's operators and the correlator (§4)."]
     h2 = max(c.card(0, 0, w3, "Cell B", bB, size=14, draw=False),
              c.card(0, 0, w3, "Correlator", bC, size=14, draw=False),
-             c.card(0, 0, w3, "Human seats", bG, size=14, draw=False))
+             c.card(0, 0, w3, "Human seats", bG, size=14, draw=False),
+             c.card(0, 0, w3, "Operator seats", bOp, size=14, status="provisional", draw=False),
+             c.card(0, 0, w3, "Emergency seat", bEm, size=14, status="provisional", draw=False))
     c.card(cx0, r2 + 20, w3, "Cell B: another Thinker on the same Persona", bB, accent="teal", size=14, h=h2, tint=False,
            dash="10 6")
     c.card(cx0 + w3 + 30, r2 + 20, w3, "The correlator: ADR-0008's shared group, renamed and narrowed", bC,
            accent="pink", size=14, h=h2)
-    c.card(cx0 + 2 * (w3 + 30), r2 + 20, w3, "Human seats: `grant` or `thinker`, one each", bG, accent="brown",
+    c.card(cx0 + 2 * (w3 + 30), r2 + 20, w3, "Human seats: one each", bG, accent="brown",
            size=14, h=h2)
+    xo = cx0 + 3 * (w3 + 30)
+    c.card(xo, r2 + 20, w3, "Operator seats: kind `operator`", bOp, accent="brown", size=14, h=h2,
+           status="provisional")
+    c.card(xo + w3 + 30, r2 + 20, w3, "Emergency seat: kind `emergency`", bEm, accent="brown", size=14, h=h2,
+           status="provisional", tint=False)
     # correlator reads every cell
     corx = cx0 + w3 + 30 + w3 / 2
     c.arrow([(corx, r2 + 20), (corx, cell_bot)], "pink", sw=2, label="reads every cell's topic (in `W(p)`)",
             lpos=0.5, lsize=12.5)
     dom_bot = r2 + 20 + h2 + 34
     c.region(dom_x0, dom_top, dom_x1 - dom_x0, dom_bot - dom_top,
-             "Domain: `Build(Contain)` drawn; `Run(Contain)` has the same cells and the correlator, and no grant seats",
+             "Domain: `Build(Contain)` drawn; `Run(Contain)` has the same cells, the correlator and operators, no grant "
+             "seats, and is the only domain with an `emergency` seat",
              "blue", dash=None, sw=2.4, size=15)
     dep_bot = max(dom_bot + 30, ladder_bottom)
     c.region(RX0, dep_top, RX1 - RX0, dep_bot - dep_top,
-             "Deployment: its declared rung and degeneracies (ADR-0023); at the reference each seat declares its rung, "
-             "default 0 (PROVISIONAL; launcher, ADR-0033 A7, pending)",
+             "Deployment: its degeneracies, and the rung each seat is declared at (ADR-0023 §6c, B29; `SeatDecl.rung` at "
+             "the reference)",
              "grey", dash=None, sw=2.6, size=16)
     y = max(dep_bot, ladder_bottom) + 60
 
@@ -273,14 +311,18 @@ def build():
             "Enforced where refusal stalls: the promotion tally and the deployment declaration (ADR-0035 §5).",
             "Correlation across cells from shared Personas is the correlator's concern (ADR-0023 §5).",
         ]),
-        ("Checked (ADR-0037 R5, 2026.09.29) and proved (B25)", "blue", [
+        ("Checked (ADR-0037 R5, 2026.09.29), proved (B25), certified", "blue", [
             "`spec/Seats.tla`: `OnlyThinkersAuthor` and `OneSeatPerPrincipal` hold (6,656 states); `M_KIND` breaks "
             "only the first, `M_SEAT` only the second; three witnesses reachable.",
             "`M_SEAT` was the reference's behaviour (finding 1); the grant path now refuses a principal with a live "
             "lease on another seat.",
-            "Floor: B10 total and discriminating on all four authoring actions.",
+            "Floor: B10 total and discriminating on all four authoring actions; since ADR-0041 A2 it lets an "
+            "`emergency` seat `Actuate`.",
             "**Proved** 2026.10.02: `Seats_proof.tla`, 110 obligations, each invariant for every behaviour of the "
-            "module, not under its mutation (ADR-0037 B25; ADR-0046).",
+            "module, not under its mutation (ADR-0037 B25). **Certified** 2026.10.04: 107 by normalization or a "
+            "checked proof, 3 LS4 steps no checker confirms (ADR-0046 A1).",
+            "The two new kinds have modules of their own, proved and certified: `Operators.tla`, `Emergency.tla` "
+            "(G10 §3).",
         ]),
     ]
     hh = max(c.card(0, 0, w4, t, b, size=14, draw=False) for t, _, b in cards)
@@ -290,8 +332,10 @@ def build():
     y += hh + 50
 
     # ------------------------------------------------------------------ tables
-    c.heading(X0, y, "ADR-0037 §2: two positions are seats and hold Personas; two are stages and hold none")
-    c.status(X1, y + 2, "accepted", "C3, C4", anchor="end")
+    c.heading(X0, y, "ADR-0037 §2: two positions are seats and hold Personas; two are stages and hold none; three "
+                     "kinds are not positions")
+    pw_ = c.status(X1, y + 2, "provisional", "A3, A4", anchor="end")
+    c.status(X1 - pw_ - 10, y + 2, "accepted", "C3, C4", anchor="end")
     y += 40
     TW = X1 - X0
     cols = [("Position", TW * 0.09, {"bold": True}), ("What it is", TW * 0.13), ("Persona", TW * 0.2),
@@ -312,6 +356,16 @@ def build():
         {"cells": ["(`grant`)", "The third kind, for ADR-0024 §5's human grant seats", "—", "Yes",
                    "Build `Read`, `Emit`, `Vote`; Run none", "Not an LTRO position; listed because every seat has a kind"],
          "accent": "brown"},
+        {"cells": ["(`operator`)", "The fourth kind, for a person who operates (A4; ADR-0050 §1), either domain",
+                   "A person's: a key, a role, a domain, a lineage rooted at its identity provider; no weights or "
+                   "decoder (ADR-0016 A1)", "Yes",
+                   "No action variant; the control alphabet: `Regrant`, `Renew`, `AttestGates` (Build), `EndRound`, "
+                   "`Revoke`, `FenceEpoch` (ADR-0050 §4)",
+                   "Not an LTRO position; `Mediated`; reads its peers' topics (ADR-0050 §6)"], "accent": "brown"},
+        {"cells": ["(`emergency`)", "The fifth kind, for a person seated for one round (A3; ADR-0052 §1), Run only",
+                   "A person's, seat binding `emergency`: attested by the roster's quorum (ADR-0016 A2)", "Yes",
+                   "Build none; Run `Consult`, `Actuate`, `Report`",
+                   "Not an LTRO position; `Mediated`; not coupled to an Observer (ADR-0039 A2)"], "accent": "brown"},
     ]
     y += c.table(X0, y, cols, rows, size=14, accent="blue") + 44
 
@@ -345,6 +399,6 @@ def build():
     y += max(t1, t2) + 30
     c.para(X0, y, X1 - X0,
            "Every row writes \"none\" under \"theorems voided\" and states the real loss in prose: ADR-0023 §6's schema "
-           "has no \"properties lost\" field (ADR-0037 finding 6; G9 item 40). The Reader's admitting use is owed to "
+           "has no \"properties lost\" field (ADR-0037 finding 6; G10 item 40, as at G9). The Reader's admitting use is owed to "
            "ADR-0045 T-0045-26, a trust root at rung 3 only, which no theorem cites yet.", 14, "muted")
     return c

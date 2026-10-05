@@ -8,25 +8,33 @@ P, F, V = "[[green|pass]]", "[[red|fail]]", "[[grey|vacuous]]"
 
 def build():
     c = Canvas(ID, "At rung 1 the launcher is the channel: launch, appraise, grant, bridge",
-               "ADR-0036 (**Proposed**, not ratified) designs the reference's first step toward confinement; its second "
-               "step, the launcher in the node, is **built** (ADR-0033 A7, pending), and rung-1 leases are issued in the "
-               "reference's tests. The guest has one channel, stdio; a launcher on the host "
-               "starts it, appraises it, asks the node for a grant at `[profile digest, 1]`, and bridges every action "
-               "line to the node's agent socket. **The token never enters the guest.** Every principal it launches is "
-               "`Mediated`, by a declared profile clause rather than by the absence of a profile.",
-               3000, "ADR-0036 §1–§8, Findings, Options, R1–R3 (Proposed); ADR-0034 §1–§4, §6, §8; ADR-0031 §1, §7, A1; "
-                     "ADR-0033 §2, I14; ADR-0035 R4; ADR-0045 T-0045-19, T-0045-20, T-0045-22; "
-                     "slm/serve/profile-host-rung0.json (DRAFT 2026.09.29, not a corpus record); slm/serve/README.md; "
-                     "slm/serve/serve.py; mechanism/README.md; mechanism/GAPS-AND-ASSUMPTIONS.md G1, G5, I14; "
-                     "ADR-0033 A7 (pending); mechanism/crates/topak-contain, topak-node launch.rs; "
-                     "ToO rev 13 §2.7; G9 §2.3, §7 items 34–36, 81; topak-contain/src/guest.rs (`GuestMsg`, `HostMsg`); topak-core/src/confine.rs (`Profile`, `check_for_rung`); GAPS I38, I40, I41; derived/topak-format-and-schema-inventory-2026.10.03.md §1.7, §4.4")
+               "ADR-0036 (**Proposed**, not ratified; revised R1–R6) designs the reference's first step toward "
+               "confinement. Its second step, the launcher in the node, is **built**, and its addendum, ADR-0033 A7, was "
+               "**ratified in Batch 29 ahead of ADR-0036**; rung-1 leases are issued in the reference's tests. The guest "
+               "has one channel, stdio; a launcher on the host starts it, appraises it, asks the node for a grant at "
+               "`[profile digest, 1]`, and bridges every action line to the node's agent socket. **The token never "
+               "enters the guest.** Every principal it launches is `Mediated`, by a declared profile clause rather than "
+               "by the absence of a profile: **no guest passes P3** (G10 item 1). Under ADR-0050 (**provisional**) a "
+               "launch is the mechanism's part of a first lease or of a `Regrant` at rung 1 or above, and **the second "
+               "is not built** (G10 item 88).",
+               3000, "ADR-0036 §1–§8, Findings, Options, R1–R6 (Proposed); ADR-0034 §1–§4, §6, §8, A2, A3; ADR-0031 §1, "
+                     "§7, A1; ADR-0023 §6c (A1); ADR-0033 §2, I14, A7 (B29), A8 (B31), A9 (B32); ADR-0035 R4 (Proposed); "
+                     "ADR-0048 §2, R6; ADR-0037 A2; ADR-0050 §4, §10 (provisional); ADR-0045 T-0045-19, T-0045-20, "
+                     "T-0045-22; slm/serve/profile-host-rung0.json (DRAFT 2026.09.29, not a corpus record); "
+                     "slm/serve/README.md; slm/serve/serve.py; mechanism/README.md; mechanism/GAPS-AND-ASSUMPTIONS.md G1, "
+                     "G5, I14, I38, I40, I41, I43, I44, I45, I47; mechanism/crates/topak-contain, topak-node "
+                     "mechanism/launch.rs; topak-contain/src/guest.rs (`GuestMsg`, `HostMsg`); "
+                     "topak-core/src/confine.rs (`Profile`, `check_for_rung`); topak-mcp/src/server.rs; ToO rev 14 §2.7, "
+                     "§7.10; G10 §1, §2.3, §7 items 1, 34, 35, 81, 85, 88; "
+                     "derived/topak-format-and-schema-inventory-2026.10.03.md §1.7, §4.4")
     X0, X1 = c.x0, c.x1
     y = c.y
     sx = X0
     c.text(sx, y + 16, "ADR-0036", 16, "ink", bold=True)
     sx += 92
-    sx += c.status(sx, y, "proposed", "C2, C4 on ratification · revised R1–R3") + 12
-    sx += c.status(sx, y, "built", "in the node, ADR-0033 A7 pending (G9 item 35); items 34, 36 open") + 14
+    sx += c.status(sx, y, "proposed", "C2, C4 on ratification · revised R1–R6") + 12
+    sx += c.status(sx, y, "built", "in the node, ADR-0033 A7 ratified B29 ahead of ADR-0036 (G10 items 35, 81); "
+                              "item 34 open") + 14
     c.text(sx, y + 16, "Deployment position: rung 1 (D-0034-2); the first profile fails P3 (D-0036-1).", 14, "muted")
     y += 54
 
@@ -151,8 +159,9 @@ def build():
             "what it drafts. Its alphabet is `Read`, `Draft`, `Emit`, `Submit`; it never `Invoke`s, so D-0034-3 does "
             "not arise and P4 is vacuous.",
             "It mounts no corpus root: a `Read` is admitted node-side and its content comes back on stdin, so ingress "
-            "is exactly the admitted `Read`s, ADR-0035's `consumed` set. Per ADR-0035 R4 the bound covers the guest's "
-            "reads, not a tool's (the trainer runs in the node's toolhost).",
+            "is exactly the admitted `Read`s, ADR-0035's `consumed` set, beside the task and the round's tool list "
+            "(ADR-0037 A2), which for an alphabet without `Invoke` lists nothing (ADR-0048 R6). Per ADR-0035 R4 the "
+            "bound covers the guest's reads, not a tool's (the trainer runs in the node's toolhost).",
             "Byzantine by premise; at 1–50M parameters it cannot follow an instruction, which is enough for the cage "
             "and says nothing about capability.",
         ]),
@@ -160,34 +169,50 @@ def build():
             "It reaches the launcher's log and nothing else, carries no protocol and is read by nothing; listed in the "
             "profile so P1's \"one channel\" means one channel **for actions**.",
         ]),
-        ("The second step: the launcher moves into the node (§6)", "blue", "built", [
-            "A `launch` operator request: the node starts the guest, appraises, grants to itself and bridges. **The "
+        ("The second step: the launcher moves into the node (§6)", "blue", ("built", "A7, ratified B29"), [
+            "A `launch` request: the node starts the guest, appraises, grants to itself and bridges. **The "
             "attester becomes the mechanism** (its assertion recorded in the grant entry); **the profile becomes a "
-            "promoted artifact**, and the node refuses an unpromoted digest.",
-            "**Built**, under ADR-0033 A7 (pending; `c536e21`): backends a host process (it declares P1–P3 `fail`), "
-            "this container, and a SIMULATED rung 3; a launched lease mints **no token**, the bridge is the session; "
-            "§7's three refusals are seen in tests (G9 §2.3). Rung 2 is not on this path: a container has no launch "
-            "measurement (Firecracker or Kata, the rung-2 record's problem).",
+            "promoted artifact**, a one-file workspace (R4), and the node refuses an unpromoted digest.",
+            "**Built**, under ADR-0033 A7 (ratified 2026.10.04, Batch 29, ahead of this record; `c536e21`): backends "
+            "a host process (it declares P1–P3 `fail`), this container, and a SIMULATED rung 3; a launched lease "
+            "mints **no token**, the bridge is the session; §7's three refusals are seen in tests with a scripted "
+            "guest on a host process (R5). Rung 2 is not on this path: a container has no launch measurement "
+            "(Firecracker or Kata, the rung-2 record's problem). The seat's rung is declared per seat (ADR-0023 "
+            "§6c, A1) and a grant at any other rung is refused.",
+        ]),
+        ("Under ADR-0050, a launch is the mechanism's, not an operator's (R6)", "blue", ("provisional", "ADR-0050"), [
+            "`Launch` and profile registration stop being an operator's requests: the node launches as its part of a "
+            "**first lease** or of an operator's `Regrant` **at rung 1 or above**, and registers a profile when its "
+            "promotion's tally completes (ADR-0050 §4).",
+            "[[red|Not built]]: a `Regrant` at rung 1 or above, **which has to launch a guest**, is part of ADR-0050's "
+            "exit from provisional (G10 item 88; `mechanism/` I47). Where the rules declare an operator, `Grant` "
+            "and `Launch` arrive on the unsigned socket, a **BOOTSTRAP** path that seats and stands in for the quorum; "
+            "the launcher's tests declare no operator (D-0050-1).",
         ]),
     ]
     for t, a, s, b in side:
-        h = c.card(bx, sy2, bw, t, b, accent=a, status=s, size=14, tint=(a in ("teal", "green")))
+        st, se = s if s else (None, "")
+        h = c.card(bx, sy2, bw, t, b, accent=a, status=st, status_extra=se, size=14,
+                   tint=(a in ("teal", "green")))
         sy2 += h + 20
     y = max(seq_end, sy2) + 50
 
     # ------------------------------------------------------------------ contrast: the reference path today
     c.heading(X0, y, "For contrast: the reference's front door today (ADR-0033 §2; `mechanism/README.md`)", size=21)
-    c.status(X1, y + 3, "built", "operator grants: rung 0", anchor="end")
+    c.status(X1, y + 3, "built", "socket grants: rung 0; BOOTSTRAP where the rules declare an operator",
+             anchor="end")
     y += 50
     bxw = 420
     gap = 170
     chain = [
         ("Agent process", "grey", ["Holds the token: `topak mcp --socket … --token <token>`.",
                                    "**With a shell it never has to ask** (G1)."]),
-        ("`topak mcp`", "teal", ["A stdio MCP server the agent runs; the alphabet as MCP tools and nothing else."]),
+        ("`topak mcp`", "teal", ["A stdio MCP server the agent runs; the alphabet as MCP tools and nothing else, "
+                                 "and the round's **tool list** in its instructions (ADR-0048 §2; I45)."]),
         ("Unix agent socket", "teal", ["JSON lines carrying a **bearer token** minted at grant by the granting "
                                        "replica, not replicated (I14)."]),
-        ("Replica admit path", "teal", ["session → lease, epoch, alphabet → lift → floor (Cedar) → bundle (OPA) → "
+        ("Replica admit path", "teal", ["session → lease, epoch, alphabet → lift (with Run's label facts) → floor "
+                                        "(Cedar, the `emergency` stage, genesis-provisional) → bundle (OPA) → "
                                         "Paxos → apply → effect."]),
     ]
     chh = max(c.card(0, 0, bxw, t, b, size=14, draw=False) for t, _, b in chain)
@@ -203,14 +228,15 @@ def build():
         "is stdio.",
         "The rung-0 host-run occupant keeps the token **inside** the occupant (its profile says so), since there is no "
         "launcher to hold it.",
-        "In the node, a launched lease has **no token at all**: the bridge is the session (ADR-0033 A7, pending).",
+        "In the node, a launched lease has **no token at all**: the bridge is the session (ADR-0033 A7, ratified "
+        "B29).",
     ], accent="amber", size=14, h=chh, tint=False)
     y += chh + 60
 
     # ------------------------------------------------------------------ the guest channel as the node speaks it
     c.heading(X0, y, "What crosses the pipe in the node's launcher (`topak-contain/src/guest.rs`): one JSON object per "
                      "line, tagged `msg`; no token, ever", size=21)
-    c.status(X1, y + 3, "built", "ADR-0033 A7 pending; Reference: no record defines the wire form", anchor="end")
+    c.status(X1, y + 3, "built", "ADR-0033 A7, ratified B29; no record defines the wire form", anchor="end")
     y += 50
     gw = X1 - X0
     gcols = [("Direction", gw * 0.1, {"bold": True}), ("`msg`", gw * 0.08, {"mono": True}), ("Fields", gw * 0.34),
@@ -225,11 +251,13 @@ def build():
                                                        "evidence is a protocol error"],
         ["host → guest", "granted", "`fence`, `epoch`", "At grant and after every renewal: the lease the guest acts "
                                                          "under. At rungs 2 and 3 the guest signs `(fence, epoch, ctr, "
-                                                         "op)` over it (I41)"],
+                                                         "op)` over it (I41). **Before the first one** the node writes "
+                                                         "the round's opening record, the tool list (ADR-0048 §2); if "
+                                                         "it cannot, the guest is destroyed and not bridged (I45)"],
         ["guest → host", "op", "`op`: an `AgentOp`; `proof?`: `{ctr, op, sig}`",
          "Every action line of step 4. The bridge hands it to the admit path as the launched lease's session: **a "
          "launched lease mints no token** (I14); at rungs 2 and 3 the proof is checked against the action at decide "
-         "and its counter at apply"],
+         "and its counter at apply. `ToolList` asks for the list again: no admit, the same answer all round"],
         ["host → guest", "response", "`response`: `{admitted, detail}`", "One per `op`: the admit path's answer, on "
                                                                            "the guest's stdin"],
         ["host → guest", "shutdown", "—", "At round end, before the guest is destroyed (P6)"],
@@ -259,13 +287,16 @@ def build():
         {"cells": ["reference", "**At the reference, not in ADR-0036 §1**: P7's reference values as a part of their own, "
                    "`launch_measurement?` and `min_tcb?` (`ReferenceValues`, confine.rs). `check_for_rung`: rung ≥ 1 "
                    "needs `image` and `persona`; rung ≥ 2 the launch measurement; rung 3 `min_tcb`"], "accent": "amber"},
-        {"cells": ["domain", "**At the reference, not in ADR-0036 §1**: `build` or `run`, default `build`; the Run "
-                   "profile is ADR-0034 A2, pending"], "accent": "amber"},
+        {"cells": ["domain", "**At the reference, not in ADR-0036 §1**: `build` or `run`, default `build`. The Run "
+                   "profile is ADR-0034 A2, in force since Batch 30: Run profiles register, and a Run seat's tools are "
+                   "**held to their channel** by the Wasm tool host, the target read from the entry (ADR-0033 A8, A9)"],
+         "accent": "amber"},
     ], size=14, accent="blue")
     cols = [("Trusted for guest integrity at rung 1", half * 0.42, {"bold": True}), ("Why", half * 0.58)]
     t2 = c.table(X0 + half + 40, y, cols, [
         ["The person who runs the launcher", "Holds the operator socket, which is the grant authority in the reference "
-                                             "(`mechanism/` G5)"],
+                                             "(`mechanism/` G5); since ADR-0050, a BOOTSTRAP path where the rules "
+                                             "declare an operator (I47)"],
         ["The launcher script", "Applies the profile's constraints, appraises, and holds the token"],
         ["The container runtime and its daemon", "Enforce the constraints the launcher asked for"],
         ["On Docker Desktop, the Linux VM", "The boundary between the container and the host"],
@@ -362,7 +393,7 @@ def build():
 
     half = (X1 - X0 - 40) / 2
     c.heading(X0, y, "§8: degeneracy on this record")
-    c.heading(X0 + half + 40, y, "§7: the ratification condition (G7 item 34, open)")
+    c.heading(X0 + half + 40, y, "§7: the ratification condition (G10 item 34, open)")
     y += 40
     cols = [("Id", half * 0.13, {"bold": True}), ("Parameter → deployed value", half * 0.27),
             ("Premises falsified", half * 0.14), ("Theorems voided", half * 0.24), ("Type changes", half * 0.22)]
@@ -381,5 +412,8 @@ def build():
         "exits, no grant); a second process on the agent socket without the token (refused).",
         "A rung-0 principal beside it, so `Mediated` at rung 1 is seen to come from P3, not from the rung. Results in a "
         "dated file under `slm/`.",
+        "[[red|Not met at G10]] (R5): no profile file for `slm/serve`'s image, no round whose drafted content is the "
+        "Persona's output, no results file under `slm/`. The reference's tests show the honest round and the three "
+        "refusals with a scripted guest on a host process; A7 was ratified on those.",
     ], accent="amber", size=14, status="proposed")
     return c

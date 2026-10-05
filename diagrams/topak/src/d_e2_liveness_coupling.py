@@ -35,25 +35,28 @@ def build():
 
 def _build():
     c = Canvas(ID, "Observer liveness is progress, not presence: `live(o)`, the `K` window, and what clocks may decide",
-               "ADR-0039 (Accepted (genesis) 2026.09.29, Batch 14, C4; A1 ratified Batch 20) couples Run's effect-bearing "
-               "admits and Build's promotion gate to a live, keeping-up cell Observer, never to the correlator. ADR-0042 "
-               "§2 makes the sequence count effects. ADR-0032 says why a local clock may be used for this and for "
+               "ADR-0039 (Accepted (genesis) 2026.09.29, Batch 14, C4; A1 ratified Batch 20; A2 Batch 34, provisional) "
+               "couples Run's effect-bearing admits under a Thinker and Build's promotion gate to a live, keeping-up cell "
+               "Observer, never to the correlator, and not an emergency seat. ADR-0042 §2 makes the sequence count effects. ADR-0032 says why a local clock may be used for this and for "
                "nothing that preserves authority. Every clause subtracts; no Observer judgment enters the admit path.",
-               3000, "ADR-0039 §1–§8, Options, Findings 1–4, History R1–R5, A1, B14, B20; ADR-0042 §1–§5, §7, §8 (B20; §6 "
-               "Proposed); ADR-0041 §2; ADR-0032 §1–§6 (B5); ADR-0007; ADR-0024 §2; ADR-0038 §2; floor/genesis-floor.cedar "
-               "R3-observer-live (DRAFT floor); floor/genesis-values.json (DRAFT, placeholders); spec/Coupling.tla, "
-               "spec/RunCoupling.tla and their 2026.09.29 results; spec/Coupling_proof.tla, spec/RunCoupling_proof.tla and "
-               "their 2026.10.02 proof results; spec/premise-corrections-results-2026.10.02.txt; ADR-0039 B25; ADR-0041 "
-               "B25; ADR-0042 B25; ADR-0046 §4, §5; ToO rev 11 §5.4, §10; G7 §2.2, §7 items 47–49, 60; G8 §2.6, item 46")
+               3000, "ADR-0039 §1–§8, Options, Findings 1–4, History R1–R5, A1, A2, B14, B20, B25, B34; ADR-0042 §1–§8, "
+               "A1, A2 (B20; §6 B30); ADR-0041 §2; ADR-0032 §1–§6 (B5); ADR-0007; ADR-0024 §2; ADR-0026 W1; ADR-0030 A3; "
+               "ADR-0033 A13, A15; ADR-0038 §2; ADR-0043 §4 A1; ADR-0046 §4, §5, A1; ADR-0050 §6; ADR-0051 §2, §7 "
+               "(Proposed); ADR-0052 §3, §4; floor/proposed/emergency-floor.cedar R3-observer-live (genesis-provisional); "
+               "floor/genesis-values.json (placeholders); spec/Coupling.tla, spec/RunCoupling.tla and their 2026.09.29 "
+               "results; spec/Coupling_proof.tla, spec/RunCoupling_proof.tla, their 2026.10.02 proof results and "
+               "2026.10.04 certified results; spec/premise-corrections-results-2026.10.02.txt; mechanism/"
+               "GAPS-AND-ASSUMPTIONS.md findings 19, 20; ToO rev 14 §3.3, §5.4, §10, §15; G10 §2.2, §2.5, §3 results 2 "
+               "and 8, §7 items 8, 45–49, 60, §8")
     X0, X1 = c.x0, c.x1
     W = X1 - X0
     y = c.y
     sx = X0
     sx += c.status(sx, y, "accepted", "ADR-0039 · C4 · B14, A1 at B20") + 10
-    sx += c.status(sx, y, "accepted", "ADR-0042 §1–§5, §7, §8 · C4 · B20") + 10
-    sx += c.status(sx, y, "proposed", "ADR-0042 §6 (confinement)") + 10
+    sx += c.status(sx, y, "provisional", "ADR-0039 A2 · B34, with ADR-0052") + 10
+    sx += c.status(sx, y, "accepted", "ADR-0042 whole · C4, C2 for §6 · §6 at B30") + 10
     sx += c.status(sx, y, "accepted", "ADR-0032 · B5 · not confirmation-required") + 10
-    sx += c.status(sx, y, "draft", "the floor and its values file") + 14
+    sx += c.status(sx, y, "genprov", "the floor's emergency stage and its values file") + 14
     y += 50
 
     # ======================================================================== the definition
@@ -81,8 +84,8 @@ def _build():
          "**`K < R` is required** and refused at startup for each domain: with `K ≥ R` condition 3 never refuses what "
          "the round bound has not (the ground on which ADR-0026 R3 was withdrawn). It is **not a premise of the "
          "bound**: the unread bounds are proved for every K and R; `K < R` is what lets condition 3 refuse at all "
-         "(ADR-0046 §5). The gate-side `K < R` check is not realized (G8 item 46).",
-         "`K = 0` admits nothing until the quarantine hold exists (finding 1; G7 item 48)."]
+         "(ADR-0046 §5). The gate-side `K < R` check is not realized (G10 item 46).",
+         "`K = 0` admits nothing until the quarantine hold exists (finding 1; item 48, open)."]
     hs = [c.card(0, 0, w3, t, bb, acc, draw=False, size=14) for t, bb, acc in
           (("§1 · The heartbeat and two values in mechanism state", a, "pink"),
            ("§1 · `live(o)` holds when all three hold", b, "teal"),
@@ -287,7 +290,11 @@ def _build():
     cards = [
         ("Run: every effect-bearing admit under a Thinker (§2, A1)", [
             "Floor entry **`R3-observer-live`**: forbid `Actuate` and `Report` when `principal.kind == \"thinker\"` "
-            "and `!context.observerLive`. In the genesis floor, which is **DRAFT** (G7 §2.2).",
+            "and `!context.observerLive`. In the linked floor, the proposed `emergency` stage, which is "
+            "**genesis-provisional** (ADR-0030 A3; G10 §2.2).",
+            "**Not an `emergency` seat** (A2, provisional): it is not a `thinker`, so no exemption is written. A person "
+            "seated by a quorum for one round does not wait on an Observer; its topic is read by the domain's "
+            "operators (ADR-0052 §4).",
             "Needs `live(o)` for **at least one** cell Observer in the cell (any-of).",
             "**Not `Consult`** (ADR-0041 §2): a read of pinned content adds nothing to the backlog and can be "
             "reconstructed from its digest; a lagging Observer leaves its Thinker able to read and unable to act.",
@@ -315,6 +322,8 @@ def _build():
             "No admit and no promotion waits on a correlator: coupling to it would make one seat's liveness a "
             "precondition for every admit in its domain, the fleet-wide stall ADR-0038 exists to avoid.",
             "It heartbeats too, so **its absence is visible**; that visibility is all this record gives it.",
+            "ADR-0051 (**Proposed**) keeps it so: its folds are off the admit path, and its mark gates nothing "
+            "(`LagNeverGates`).",
             "Its absence costs cross-cell detection: D-0038-2.",
             "`Coupling.tla` `CorrelatorNeverGates` holds; `M_CORR` breaks it.",
         ], "grey"),
@@ -332,8 +341,10 @@ def _build():
         "assigned at apply so every replica assigns the same number. `Consult` does not advance it.",
         "**The round bound `R` counts every admit**, `Consult` included: a termination bound (ADR-0022 §3).",
         "**Every `Actuate` leaves a record** on the round topic, written by the mechanism when the call returns "
-        "(`seat`, `fence`, `admit`, `seq`, `tool`, `breakGlass`, `inputs`, `outcome`, `result`), so the Observer has "
-        "something to mark (§3). The seal counts every effect (§5).",
+        "(`seat`, `fence`, `admit`, `seq`, `tool`, `inputs`, `outcome`, `result`; `seatKind` where it said "
+        "`breakGlass`, A2; and since A1 `inputLabels`, `resultLabel`, `delivery`, `clearSet`), so the Observer has "
+        "something to mark (§3). The seal counts every effect (§5). The round's opening record has no `seq`, and is "
+        "outside every watermark (A1).",
         "**Why** (Context): the reference had counted emissions only. A Thinker that never reported could invoke up to "
         "`R` (64) unread, not `K` (8), and its round sealed at zero, so coverage across rounds was vacuous. "
         "`RunCoupling.tla`'s **`M_EMITSEQ`** is that reference: it breaks `UnreadEffectsBounded` and "
@@ -366,8 +377,10 @@ def _build():
                    "(`M_MARK`: testing the time and not the watermark lets a starved Observer pass)"], "accent": "green"},
         {"cells": ["Colluding", "Heartbeats, reports a watermark and finds nothing",
                    "**Open.** Cover, as far as there is one: lineage independence (ADR-0016 §5, ADR-0035, Proposed) and "
-                   "the subtract-only correlated-miss test. **The residual-risk statement must say: detection fails open "
-                   "against a colluding Observer** (unwritten; G7 §8)"], "accent": "red"},
+                   "the subtract-only correlated-miss test. **Detection fails open against a colluding Observer** "
+                   "(G10 §8). ADR-0051's `marked-past` (**Proposed, not built**) would count an Observer's silence "
+                   "against another watcher's finding, so that it fails open only when every watcher fails together "
+                   "(§7; E3)"], "accent": "red"},
     ], size=14, accent="pink") + 40
 
     # ======================================================================== degeneracies
@@ -400,8 +413,9 @@ def _build():
         "**Availability**: a cell's availability is the product of its Thinker's and its Observer's. Extra Observers "
         "raise it: any one live Observer is enough.",
         "**Throughput**: heartbeats are admits on the consensus log, one per `T_obs` per Observer.",
-        "**R3 couples break-glass too**: an emergency path waits on a dead Observer. Ratified as written (B14), \"the "
-        "first thing a reviewer should reopen\" (ToO §5.4; G7 item 49).",
+        "**R3 coupled break-glass too**, ratified as written at B14. **Reopened and decided** (A2, Batch 34, "
+        "provisional): an emergency seat is not a `thinker` and does not wait on a dead Observer (ToO §5.4; G10 "
+        "item 49).",
         "A Byzantine Observer can stop its own cell by withholding heartbeats: availability, within one cell.",
         "None of these is a term in `W + L + D < T_irrev`.",
     ], "red", size=14)
@@ -411,7 +425,7 @@ def _build():
     yy = y
     c.text(tx, yy + 20, "§1 (R3) · The placeholders: chosen 2026.09.29 for order of magnitude, none measured", 17,
            "amber", bold=True)
-    c.status(tx + 820, yy + 2, "draft", "values file: DRAFT · PLACEHOLDERS · not ratified")
+    c.status(tx + 820, yy + 2, "genprov", "values file: PLACEHOLDERS · ratified only with the floor")
     yy += 38
     yy += c.table(tx, yy, [("Value", 120, {"bold": True}), ("Placeholder", 130), ("Lives in", 300),
                            ("Why this number", tw - 120 - 130 - 300 - 360), ("What a deployment sets it from", 360)], [
@@ -431,7 +445,7 @@ def _build():
     yy += c.para(tx, yy, tw, "**`R` is not in the values file**: a mechanism parameter, digested into every admit. "
                  "Relaxing `T_obs` or `K` is an anchor issuance and a promotion; tightening is an ordinary promotion. "
                  "Each is a deployment or rung choice declared under ADR-0023 §6, not the pattern's value. Measured "
-                 "values are open (G7 item 47).", 14)
+                 "values are open (item 47).", 14)
     y = max(y + ch, yy) + 56
 
     # ======================================================================== the clock model
@@ -458,8 +472,9 @@ def _build():
          "accent": "green"},
         {"cells": ["**Adds or preserves** authority", "**Trusted time**: a signed, attested time source outside the "
                    "principal", "Break-glass TTL, Persona expiry, re-attestation intervals",
-                   "No time source is a row: trusted time is **refused** by ADR-0045 §6. R8 (break-glass TTL) stays "
-                   "pending (G7 item 8); `T_persona` runs on the local clock (item 62)"], "accent": "red"},
+                   "No time source is a row: trusted time is **refused** by ADR-0045 §6. **R8, the break-glass TTL, is "
+                   "withdrawn** (ADR-0026 W1): a grant ends with its round (ADR-0052 §3; G10 item 8). `T_persona` runs "
+                   "on the local clock (item 62)"], "accent": "red"},
     ], size=14, accent="teal") + 24
     yy += c.table(tx, yy, [("Term of `W + L + D < T_irrev` (§4)", 360, {"bold": True}), ("Meaning", 620),
                            ("Kind", 520), ("State", tw - 1500)], [
@@ -500,11 +515,48 @@ def _build():
                 "under `M_MARK`, `M_ROUNDS`, `M_NOCOUPLE`; `UnreadEffectsBounded` not under `M_EMITSEQ`, `M_MARK`, "
                 "`M_ROUNDS`, `M_NOCOUPLE`; `SealCountsEffects` not under `M_EMITSEQ` alone (the binding table had "
                 "named `M_ROUNDS`, which never touches a seal: ADR-0046 §5). The form proved after an admit is "
-                "`seq − mark ≤ K`, from the strict check at the guard. The rows above stay with TLC; neither proof is "
-                "a claim about the reference.", 14, "teal") + 12
-    c.para(X0, y, W, "At the reference (R4): every refusal seen to fire: no Observer lease, no heartbeat, a dishonest "
-           "heartbeat, a backlog of `K`, presence without progress, staleness after `T_obs`, a round-2 grant while round "
-           "1 is unread; one Build promotion stalled for coverage and completed by a heartbeat to the seal. Not realized: "
-           "`W(p)` as an ACL and the gate-side `K < R` check (G8 item 46); a scripted cell Observer (item 45); how "
-           "Observer rounds are laid out against Thinker rounds (finding 3; item 60).", 14, "muted")
+                "`seq − mark ≤ K`, from the strict check at the guard. **Both certified** since 2026.10.04 (ADR-0046 "
+                "A1): 316 of 320 and 463 of 469 obligations rest on normalization or a checked proof, and 4 and 6 on "
+                "LS4, which no checker confirms. The rows above stay with TLC; neither proof is a claim about the "
+                "reference.", 14, "teal") + 12
+    y += c.para(X0, y, W, "At the reference (R4): every refusal seen to fire: no Observer lease, no heartbeat, a "
+                "dishonest heartbeat, a backlog of `K`, presence without progress, staleness after `T_obs`, a round-2 "
+                "grant while round 1 is unread; one Build promotion stalled for coverage and completed by a heartbeat "
+                "to the seal. Not realized: `W(p)` as an ACL and the gate-side `K < R` check (G10 item 46); how "
+                "Observer rounds are laid out against Thinker rounds (finding 3; item 60).", 14, "muted") + 30
+
+    # ======================================================================== G10: the clock at the reference
+    y += c.heading(X0, y, "Since G9: the clock at the reference, twice, and a scripted cell (G10 §3; ADR-0033 A13, "
+                          "A15)", "ink", 18)
+    w3 = (W - 2 * 28) / 3
+    g = [
+        ("A lease just granted could be ended as expired (A13, Batch 33)", [
+            "A replica applied a grant under the state lock and recorded **when it saw it** only after releasing the "
+            "lock. A lease with no local observation reads as expired, the fail-closed choice, so the sweeper or an "
+            "admit could end a lease just granted (G10 §3 result 2).",
+            "Latent since the sweeper was built; shown when six operators were seated in a burst; **found by the trace "
+            "run and by no proof**: the clock is outside every module. Fixed: the observation is recorded before the "
+            "lock is released.",
+            "Whether anything else a replica keeps beside the replicated state is recorded after the lock is released "
+            "was not audited (item 96).",
+        ], "red", "accepted", "A13 · fixed"),
+        ("The backlog-bound test, freed of the clock (A15, Batch 35)", [
+            "`e2e.rs` `actuate_is_counted_recorded_and_sealed` sent one heartbeat and then made `K` tool calls. Once its "
+            "file held nine clusters, the calls could outlast one heartbeat's freshness, and the last was refused by "
+            "`R3` **for staleness, not backlog** (G10 §3 result 8).",
+            "**The refusal was correct**: condition 2 did its job. The fault was the test's. It now repeats the "
+            "heartbeat at the same mark before each call, which keeps the backlog it is about and removes `T_obs` "
+            "from it.",
+        ], "teal", "accepted", "A15"),
+        ("The scripted Run cell has an Observer heartbeat (item 45)", [
+            "**Built** for labels (ADR-0047 §11), in a test, with a scripted Observer heartbeat so the Thinker's "
+            "effects are coupled as R3 requires.",
+            "It is a fixture: nothing behind it reads the topic or produces a finding (ToO §15). The coupling is "
+            "exercised; detection is not.",
+        ], "teal", "built", "in a test"),
+    ]
+    hs = [c.card(0, 0, w3, t, b, a2, status=st, status_extra=sx, draw=False, size=14) for t, b, a2, st, sx in g]
+    hh = max(hs)
+    for i, (t, b, a2, st, sx) in enumerate(g):
+        c.card(X0 + i * (w3 + 28), y, w3, t, b, a2, status=st, status_extra=sx, size=14, h=hh)
     return c

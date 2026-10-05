@@ -9,13 +9,18 @@ def build():
                "ADR-0031 fixes a **closed schema**: every field is an authority claim, and a capability that is not a "
                "field is not carried; adding one is a mechanism release. The lease is granted for one round and ends "
                "with it, its fence is the Paxos log index at grant, renewal only narrows, and every way a lease ends "
-               "subtracts authority.",
-               3400, "ADR-0031 §1–§8 with R1–R3, C1, E1, A1, A2 and History B5, B8, B10, B17, B23; ADR-0034 §3; "
-                     "ADR-0037 §1; ADR-0040 §4; ADR-0033 §4 and A6; ADR-0032; ADR-0016 §6; spec/Lease_A1.tla "
-                     "(0b5eac7a7309be2f) and spec/Lease_A1-results-2026.09.28.txt; spec/Lease_A1_proof.tla (6f39c7711252c8de) "
-                     "and Lease_A1-proof-results-2026.10.02.txt; ADR-0046 §4; ADR-0033 A7 (pending); mechanism topak-core "
-                     "lease.rs, state.rs (`LeaseRecord`); ToO rev 13 §2.5; G7 §1.1; G9 §1.2, §2.3, §2.7, "
-                     "§7 items 21, 22, 62, 85; ADR-0022 §1; ADR-0042 §5; ADR-0024 §3; state.rs (`EndReason`, `LeaseRecord`, `apply_issue`); GAPS I39, I41; derived/topak-format-and-schema-inventory-2026.10.03.md §1.1")
+               "subtracts authority. Since Batch 34 the record also says **who grants and who denies** (A3, provisional): a "
+               "first lease from a quorum, the next round and every stop from an operator.",
+               3400, "ADR-0031 §1–§8 with R1–R3, C1, E1, A1, A2, A3 and History B5, B8, B10, B17, B23, B29, B34; ADR-0034 §3, "
+                     "§3.2 (A3, B29); ADR-0037 §1; ADR-0040 §4; ADR-0033 §4, A6, A7 (B29), A11, A12, A13 (B33); ADR-0032; "
+                     "ADR-0016 §6; ADR-0026 W1; ADR-0047 §1, §4; ADR-0048 R6, §8; ADR-0050 §2–§6, §10; ADR-0052 §1–§3; "
+                     "ADR-0041 A3 (`C1`–`C9`); spec/Lease_A1.tla (0b5eac7a7309be2f) and spec/Lease_A1-results-2026.09.28.txt; "
+                     "spec/Lease_A1_proof.tla (6f39c7711252c8de), Lease_A1-proof-results-2026.10.02.txt and "
+                     "Lease_A1-proof-cert-results-2026.10.04.txt; ADR-0046 §4, A1; mechanism topak-core lease.rs (`Lease`), "
+                     "state.rs (`EndReason`, `LeaseRecord`, `apply_issue`; git diff 7075169..HEAD), control.rs; topak-node "
+                     "mechanism.rs (`apply_committed`); GAPS I39, I41, I47; ToO rev 14 §2.5, §3.3, §7.10; G10 §1, §2.1, "
+                     "§2.3, §3 (result 2, result 4), §7 items 21, 22, 62, 95, 96; ADR-0022 §1; ADR-0042 §5; ADR-0024 §3; "
+                     "derived/topak-format-and-schema-inventory-2026.10.03.md §1.1")
     X0, X1 = c.x0, c.x1
     y = c.y
 
@@ -24,8 +29,9 @@ def build():
     c.text(sx, y + 16, "ADR-0031", 16, "ink", bold=True)
     sx += 90
     sx += c.status(sx, y, "accepted", "C1 (§5 break-glass lapse) · C2 for A1 only") + 12
-    c.text(sx, y + 16, "A1 renewal keeps the rung (B10) · A2 `ttl ≤ T_persona` (B17, not confirmation-required) · "
-           "A2 built at the reference by ADR-0033 A6 (B23) · E1 expiry ordered (B8)", 14, "muted")
+    sx += c.status(sx, y, "provisional", "A3 · C1, C3") + 12
+    c.text(sx, y + 16, "A1 renewal keeps the rung (B10) · A2 `ttl ≤ T_persona` (B17, built by ADR-0033 A6, B23) · "
+           "E1 expiry ordered (B8) · A3 who grants and who denies (B34, with ADR-0050)", 14, "muted")
     y += 46
 
     # ------------------------------------------------------------------ left: the schema table
@@ -41,7 +47,7 @@ def build():
         ["confinement", "`[digest, rung]`: the confinement-profile digest and its attestation rung", "§3; ADR-0034",
          "Checked (appraisal at rung ≥ 1) · **assumed**", K + ", digest and rung (A1); re-attested"],
         ["bundle", "The bundle version this principal is admitted against", "ADR-0010",
-         "Checked (signed revision, G9 §2.7) · **assumed**", K + " (R2): nothing orders two bundles"],
+         "Checked (signed revision, G10 §2.7) · **assumed**", K + " (R2): nothing orders two bundles"],
         ["alphabet", "The action variants this seat may express", "ADR-0007, ADR-0022 §1",
          "Checked (kind's row, ADR-0037 §4) · **assumed**", "[[green|may narrow]]"],
         ["round", "The round this lease is granted for. Never reused per seat", "ADR-0003, §2",
@@ -60,6 +66,15 @@ def build():
         {"group": "Identity: not in §6's table; since ADR-0037 §1 the two determine each other", "accent": "grey"},
         ["principal", "The principal's identity", "ADR-0002 A2", "(not classified in §6)", "Same principal"],
         ["seat", "The LTRO seat held for this round", "ADR-0016 §5, ADR-0018", "(not classified in §6)", "—"],
+        {"group": "Beside the lease, not in it: §1's set stays closed (A3; ADR-0034 §3.2)", "accent": "violet"},
+        ["task", "The round's task by digest, and its label: on the log with a seating or a `Regrant`, its bytes in the "
+                 "round's opening record", "A3; ADR-0050 §5; ADR-0047 §1",
+         "The operator's signed declaration; refused outside the seating's labels (`C8`)", "—"],
+        ["(appraisal)", "The confinement appraisal the lease was granted on", "ADR-0034 §3.2 (A3, B29)",
+         "Re-checked at apply on every replica (ADR-0033 A7)", "Re-attested"],
+        ["(no tool set)", "**A lease cannot be narrowed to a tool**: no field carries one, so a round's tool list is "
+                          "narrowed only by the `alphabet` and the issued allowlist", "ADR-0048 R6",
+         "G10 §3 result 4", "Open: G10 item 95"],
     ]
     c.heading(X0, y, "ADR-0031 §1: the closed schema, with §6's trusted-base split")
     th = c.table(X0, y + 40, cols, rows, size=14, accent="blue") + 40
@@ -78,22 +93,24 @@ def build():
     n2 = [
         "**The field list is the per-round TCB** (§6): the one slice of the trusted base that is derived rather than "
         "declared; the rest is ADR-0045's table.",
-        "**Rung 0 is** `Mediated`**, always** (§3). The reference grants rung 0 by operator and, through its "
-        "launcher, rung 1 and a **SIMULATED** rung 3 (ADR-0033 A7, pending; G9 §2.3): no real principal is "
-        "`Contained`.",
-        "**The appraisal is not a field**: the reference keeps it beside the lease on its `LeaseRecord`, with "
-        "`ended`, the action count, the sequence number and the session counter (I39, I41), so the closed set stays "
-        "closed (PROVISIONAL; G9 §1.2, item 85).",
+        "**Rung 0 is** `Mediated`**, always** (§3). The reference grants rung 0 and, through its launcher, rung 1 and "
+        "a **SIMULATED** rung 3 (ADR-0033 A7, B29; G10 §2.3): no real principal is `Contained`, and an operator or "
+        "an emergency seat is `Mediated` by design.",
+        "**The appraisal is not a field** (ADR-0034 §3.2, A3, B29): the reference keeps it beside the lease on its "
+        "`LeaseRecord`, with `ended`, the action count, the sequence number and the session counter (I39, I41), and "
+        "since 2026.10.05 the round's labels and, on an emergency lease, the person's key and the envelope.",
         "**Confinement is necessary, not sufficient** for `Contained`: the provenance axis must also clear (§3; "
         "ADR-0034 §4; ADR-0035 Proposed).",
     ]
     n3 = [
         "Nine reasons, serialized snake_case: `submitted`, `abstained`, `voted`, `expired`, `fenced`, `revoked`, "
         "`rules_changed`, `operator`, `renewed`.",
-        "**`renewed` is an end**: a renewal closes the old record and opens a narrower one at the new fence, so "
+        "`renewed` **is an end**: a renewal closes the old record and opens a narrower one at the new fence, so "
         "\"same lease, new fence\" is two records in state and one lease in the record's sense (§4).",
         "ADR-0042 §5's seal table has every one a Run lease can have except `renewed`; `submitted`, `abstained` and "
         "`voted` are Build's. `rules_changed` and `voted` are ends ADR-0031 does not name (right).",
+        "Unchanged by the rebuild. An operator's signed `EndRound` ends as `operator`, its `Revoke` as `revoked`, its "
+        "`FenceEpoch` as `fenced` (ADR-0033 A11).",
     ]
     hn = max(c.card(0, 0, nw, "Rules the schema rests on", n1, size=14, draw=False),
              c.card(0, 0, nw, "What the schema is", n2, size=14, draw=False),
@@ -128,15 +145,31 @@ def build():
         "**None live** for the principal (§2); the target is **not in the revocation set** (§5).",
         "`ttl ≤ T_persona`, refused by the mechanism, not policy (A2; built, ADR-0033 A6).",
         "The `alphabet` is inside the seat kind's row and domain (ADR-0037 §4).",
-        "The bundle revision verifies under the rules' `bundle_keys` (ADR-0033 A6; G9 §2.7).",
+        "The bundle revision verifies under the rules' `bundle_keys` (ADR-0033 A6; G10 §2.7).",
         "At rung ≥ 1: an **Attested** appraisal at the declared rung, nonce = hash(epoch, log index, principal, "
         "round); Unattestable or Contested refuses, never a lower rung (ADR-0034 §3). At the reference it is "
-        "re-checked at apply on every replica (A7, pending).",
+        "re-checked at apply on every replica (ADR-0033 A7, B29).",
         "`fence` := the Paxos log index of the grant entry; consensus-ordered, like every authority increase.",
     ]
     gh = c.card(gx, gy, gw, "grant (§2): an admit decision at a fresh fence", grant_body, accent="blue", size=13.5)
+    # who grants (A3), to the right of the free slot and the grant
+    rnx = s0x + 620 + 90
+    rnw = ix1 - rnx
+    who_body = [
+        "**A first lease**: granted by the mechanism when a quorum completes, an anchor issuance (rostered seats, the "
+        "first operators) or a promotion's tally on a seating. No request. [[red|Not built]]: at the reference the "
+        "unsigned socket seats, a **BOOTSTRAP** path, and whoever reaches it can seat (ADR-0050 §10; G10 §8).",
+        "**A successor grant** (`Regrant`, `C1`): the next round, every field the last lease's or narrower, only "
+        "`round` advancing; by an operator with a live lease and a live peer (`C5`), never itself (`C6`), with a task "
+        "label the seating allows (`C8`).",
+        "**Anything wider** (Persona, bundle, confinement, seat, a wider alphabet) is a first lease and needs a quorum.",
+        "**An emergency lease** is activated by the break-glass roster's quorum for one person and one round "
+        "(ADR-0052 §2).",
+    ]
+    wh = c.card(rnx, s0y, rnw, "Who grants (A3, from ADR-0050 §2)", who_body, accent="blue", size=13.5,
+                status="provisional")
     # live state
-    s1y = gy + gh + 50
+    s1y = max(gy + gh + 50, s0y + wh + 190)
     s1w = 620
     s1x = s0x
     s1h = c.card(s1x, s1y, s1w, "Live lease", [
@@ -147,8 +180,6 @@ def build():
     c.arrow([(s0x + s0w / 2, s0y + s0h), (s0x + s0w / 2, gy)], "blue", sw=2.6)
     c.arrow([(s0x + s0w / 2, gy + gh), (s0x + s0w / 2, s1y)], "blue", sw=2.6)
     # renewal loop on the right
-    rnx = s1x + s1w + 90
-    rnw = ix1 - rnx
     ren_body = [
         "**May** narrow the `alphabet` or shorten the `ttl` (again ≤ `T_persona`). **Never adds authority**: "
         "lease(n+1) ⊑ lease(n).",
@@ -156,6 +187,8 @@ def build():
         "**Re-attests** the Persona and confinement with a fresh nonce (ADR-0034 §3.6). Attested: same rung. "
         "Unattestable: refused, the lease lapses. Contested: never at renewal (finding 5).",
         "It measures the launch again, not the running guest.",
+        "**By an operator** (`Renew`, `C2`), on the successor's terms (`C5`, `C6`). **An emergency lease is never "
+        "renewed** (ADR-0052 §3).",
     ]
     rnh = c.card(rnx, s1y - 150, rnw, "renew (§4): only narrows", ren_body, accent="green", size=13.5)
     ly1 = s1y + 40
@@ -168,7 +201,8 @@ def build():
     ey = s1y + s1h + 110
     ex_cards = [
         ("Round end", "grey", [
-            "**Build**: `Submit` is terminal for the authoring round, or the operator's `end_round`.",
+            "**Build**: `Submit` is terminal for the authoring round, or an operator's signed `EndRound` in its own "
+            "domain (`C4`, `C9`).",
             "**Build**: `Vote` is terminal for the voter's promotion round, and `Submit(⊥)` abstains (ADR-0022 §1; "
             "`voted`, `abstained` at the reference).",
             "**Run**: no terminal variant; **the round ends when the lease ends** (ADR-0040 §4).",
@@ -180,17 +214,22 @@ def build():
             "The first replica to see expiry **proposes the round's end as a log entry**, so all agree when the slot "
             "frees (ADR-0033 §4).",
             "Clocks buy liveness, never safety (ADR-0032).",
+            "**A race, fixed** (ADR-0033 A13, B33): a lease just granted could be ended as expired, since a replica "
+            "recorded seeing the grant after releasing the state lock. Found by a trace run, by no proof.",
         ]),
         ("Targeted revocation (§5, R3)", "red", [
             "Target: a **principal**, a **Persona digest** or a **confinement digest**; ends every live lease it "
             "matches and nothing else.",
-            "Bars later grants (the **revocation set**) and **lapses the seat's break-glass approvals** (C1).",
+            "Bars later grants (the **revocation set**). The text still lapses the seat's break-glass approvals "
+            "(C1); X1 is retired and they no longer exist (ToO §2.5).",
+            "**An operator's** `Revoke`, in its own domain: a live lease or a fresh sign-on assertion (A3; `C4`, `C9`).",
             "Permanent within the rules-epoch chain. A Contested verdict revokes the principal (ADR-0034 §3.7).",
         ]),
         ("Epoch fence (§5)", "red", [
             "Increments the epoch: **every lease at the old epoch is fenced**, every live round ends.",
             "Kept for e-stop, suspected compromise of mechanism or anchor, and a bundle that must reach everyone now.",
             "Rejected by the mechanism, ahead of the floor (ADR-0022 §2).",
+            "**An operator's** `FenceEpoch`, which needs a **live lease** (A3; `C4`, `C7`).",
         ]),
         ("New rules epoch (ADR-0042 §5)", "red", [
             "An admitted issuance moves the rules epoch; the reference ends **every** live lease (`rules_changed`, "
@@ -258,7 +297,10 @@ def build():
     p5 = c.para(X0, y5 + 40 + t1 + 14, TW,
                 "Both are enforced by the mechanism ahead of the floor; both subtract, so neither needs a quorum; both "
                 "change replicated state, so both are consensus-ordered (ADR-0033 §4). **Lifting a revocation** would "
-                "add authority and no record says who may (G9 item 22, open).", 14, "muted")
+                "add authority and no record says who may (G10 item 22, as at G9). **Who denies** (A3, provisional): both "
+                "tools are an operator's, signed with its Persona's key, with no quorum and no peer; the epoch fence "
+                "needs a live lease, the others a live lease or a fresh sign-on assertion. The signature is the "
+                "attribution F2 asks for (ADR-0028).", 14, "muted")
     left_bot = y5 + 40 + t1 + 14 + p5
     y = max(left_bot, sm_bot) + 60
     tp = [
@@ -267,7 +309,7 @@ def build():
         "**Built at the reference** (ADR-0033 A6, Batch 23): refused at grant and renewal in `apply`, with a mutation "
         "test at the bound's edge; `Mechanism.tla` carries both checks.",
         "**The value is a placeholder** (one hour) and **expiry runs on the local clock**: the bound is enforced, the "
-        "interval still drifts (G9 item 62; ADR-0045 finding 2).",
+        "interval still drifts (G10 item 62, as at G9; ADR-0045 finding 2).",
         "Between two re-attestations a substituted Persona is undetected for at most `T_persona` (Consequences).",
     ]
     clk = [
@@ -278,14 +320,30 @@ def build():
         "holder still believes in is rejected by the epoch fence.",
         "E1 (Batch 8): expiry is read locally and then ordered, so every replica agrees when the one-live-lease slot "
         "frees.",
+        "**ADR-0033 A13** (B33): the reference could order `EndRound(Expired)` for a lease just granted; the "
+        "observation is now recorded before the lock is released. The clock is outside every module, so no proof "
+        "could find it; whether any other fact kept beside the state is recorded late is not audited (G10 item 96).",
     ]
+    em = [
+        "**An emergency lease ends with its round**: at the round bound `R`, at its `ttl`, which is at most "
+        "`T_persona` like any lease's, or when the person ends it; sooner at a fence or a revocation, which any "
+        "operator of the domain may make (ADR-0052 §3).",
+        "**No successor and no renewal**: an operator's `Regrant` or `Renew` naming the seat is refused, and another "
+        "round is another quorum.",
+        "**No issued TTL.** R8, the break-glass TTL, was withdrawn (ADR-0026 W1, 2026.10.04): it would have needed "
+        "trusted time. The time box is the round, on the clock the corpus already accepts for a lease.",
+    ]
+    th3 = (X1 - X0 - 2 * 40) / 3
     c.heading(X0, y, "A2: the TTL is bounded by `T_persona`")
-    c.status(X0 + half, y + 2, "accepted", "B17 · built B23", anchor="end")
-    c.heading(X0 + half + 40, y, "§7: the clock assumption, stated")
-    c.status(X1, y + 2, "accepted", "E1 · B8", anchor="end")
-    hh = max(c.card(0, 0, half, None, tp, size=14, draw=False), c.card(0, 0, half, None, clk, size=14, draw=False))
-    c.card(X0, y + 40, half, None, tp, accent="amber", size=14, h=hh)
-    c.card(X0 + half + 40, y + 40, half, None, clk, accent="teal", size=14, h=hh)
+    c.status(X0 + th3, y + 2, "accepted", "B17 · built B23", anchor="end")
+    c.heading(X0 + th3 + 40, y, "§7: the clock assumption, stated")
+    c.status(X0 + 2 * th3 + 40, y + 2, "accepted", "E1 · B8", anchor="end")
+    c.heading(X0 + 2 * (th3 + 40), y, "An emergency lease: one round")
+    c.status(X1, y + 2, "provisional", "ADR-0052", anchor="end")
+    hh = max(c.card(0, 0, th3, None, b, size=14, draw=False) for b in (tp, clk, em))
+    c.card(X0, y + 40, th3, None, tp, accent="amber", size=14, h=hh)
+    c.card(X0 + th3 + 40, y + 40, th3, None, clk, accent="teal", size=14, h=hh)
+    c.card(X0 + 2 * (th3 + 40), y + 40, th3, None, em, accent="brown", size=14, h=hh, dash="4 3")
     y += 40 + hh + 50
 
     # ------------------------------------------------------------------ §8 the property check
@@ -321,12 +379,15 @@ def build():
            "rungs 0–3, roles author and voter; the round number and the bundle are not modelled (the reference checks "
            "the bundle: `renewal_cannot_swap_the_bundle`). Earlier runs: R1 1,605,720 states, R3 1,746,048.", 14,
            "muted") + 16
-    c.card(X0, y, X1 - X0, "Since 2026.10.02: the four invariants are proved (ADR-0031 B25; ADR-0046 §4)", [
+    c.card(X0, y, X1 - X0, "Since 2026.10.02: the four invariants are proved (ADR-0031 B25; ADR-0046 §4); since "
+           "2026.10.04 the proof is certified (ADR-0046 A1)", [
         "`spec/Lease_A1_proof.tla` (`6f39c7711252c8de`) proves, for every behaviour and every epoch and fence bound: "
         "`LeaseAuthorityMonotone` not under `M_RENEW`, `M_ROLE`, `M_LOWER`; `NoActionUnderFencedEpoch` not under "
         "`M_FENCE`; `Rung0NeverContained` not under `M_RUNG`; `RevokedStaysStopped` not under `M_REVOKE`. 200 "
-        "obligations, by the prover T-0045-31.",
+        "obligations, by the prover T-0045-31. **Certified**: 121 closed by the prover's normalization, 73 by SMT with "
+        "a proof the `ethos` checker accepted, 1 by Isabelle, and 5 temporal steps by LS4, which no checker confirms.",
         "The frozen `Lease.tla` is not separately proved: its invariants are `Lease_A1`'s at rungs 0..2. The rows "
-        "above stay with TLC; the proof is of the module, not of the reference's grant path (T-0045-28).",
+        "above stay with TLC; the proof is of the module, not of the reference's grant path (T-0045-28). Who grants "
+        "(A3) is not in this module: `Operators.tla` checks it (ADR-0050 §10).",
     ], accent="teal", size=14, status="accepted", status_extra="ADR-0046 · C2, C4 · B25")
     return c

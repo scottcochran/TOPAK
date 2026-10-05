@@ -1,4 +1,5 @@
-"""F1 — Persona, lift and lineage: the model enters as a verified artifact; its lineage is a projection (Proposed)."""
+"""F1 — Persona, lift and lineage: the model enters as a verified artifact, a person acting under a key has a Persona
+too (ADR-0016 A1, A2, provisional with ADR-0050 and ADR-0052), and lineage is a projection (ADR-0035, Proposed)."""
 import re
 
 import lib
@@ -47,14 +48,18 @@ def _row_cards(c, x, y, w, gap, specs, size=14):
 def _build():
     c = Canvas(ID, "The model enters as a Persona: a pinned identity, a split lift, and a lineage computed from the log",
                "ADR-0016 to ADR-0020 (Accepted (genesis) 2026.09.12) pin the one component that was a name: the Persona "
-               "binds a model to its whole runtime configuration, is a verified Build artifact and a lease field. ADR-0035 "
-               "(Proposed, not in force) would make lineage a projection of the Build log and independence an exclusion "
-               "rule over two projections. Boundary B8: Persona / occupant identity.",
+               "binds a model to its whole runtime configuration, is a verified Build artifact and a lease field. Since Batch 34 "
+               "a person who acts under a key has a Persona too, with a declared lineage rooted in an identity provider "
+               "(ADR-0016 A1, A2: in force, provisional with ADR-0050 and ADR-0052). ADR-0035 (Proposed, not in force, "
+               "revised to R7) would make lineage a projection of the Build log and independence an exclusion rule over "
+               "two projections. Boundary B8: Persona / occupant identity.",
                3200, "ADR-0016 §1–§9 (B12); ADR-0017 and its ratification note; ADR-0018 (B12, reversed in part by "
-               "ADR-0037 §3); ADR-0019; ADR-0020; ADR-0023 §5; ADR-0031 A2; ADR-0035 §1–§9, Findings 1–5, R1–R4 "
-               "(Proposed); ADR-0037 §2, §3; ADR-0045 T-0045-15, finding 2; floor/genesis-values.json; "
-               "derived/topak-boundary-register-2026.09.13.md B8; ToO rev 11 §6, §8.3, §10, §16; slm/ results "
-               "2026.09.25 and 2026.09.28; G7 §1.1, §1.2, §7 items 6, 17, 20, 21, 30, 33, 62; mechanism/crates/topak-core/src/rules.rs (`personas`), confine.rs (`Provenance`); topak-contain (`model.json`); slm/lineage/record.py, thresholds.example.json; GAPS G13; derived/topak-format-and-schema-inventory-2026.10.03.md §1.6, §1.7, §8, finding 15")
+               "ADR-0037 §3); ADR-0019; ADR-0020; ADR-0023 §5; ADR-0031 A2; ADR-0035 §1–§9, Findings 1–5, R1–R7, open "
+               "obligations (Proposed); ADR-0016 A1, A2, B34; ADR-0050 §1, §3, §6, §10 (provisional); ADR-0052 §1 "
+               "(provisional); ADR-0029 A4; ADR-0047 §3; ADR-0048 §2; ADR-0037 §2, §3; ADR-0045 T-0045-15, T-0045-35, "
+               "T-0045-36, Annex B (A2), finding 2; floor/genesis-values.json; "
+               "derived/topak-boundary-register-2026.09.13.md B8; ToO rev 14 §6, §7.10, §8.3, §10, §16; slm/ results "
+               "2026.09.25 and 2026.09.28; G10 §1.1, §1.2, §2.4, §7 items 6, 17, 20, 21, 30, 33, 62, 88; mechanism/crates/topak-core/src/rules.rs (`personas`), confine.rs (`Provenance`); topak-contain (`model.json`); slm/lineage/record.py, thresholds.example.json; GAPS G13, I47; derived/topak-format-and-schema-inventory-2026.10.03.md §1.6, §1.7, §8, finding 15")
     X0, X1 = c.x0, c.x1
     W = X1 - X0
     y = c.y
@@ -62,7 +67,8 @@ def _build():
     sx += c.status(sx, y, "accepted", "ADR-0016, 0017, 0019, 0020 · 2026.09.12") + 10
     sx += c.status(sx, y, "accepted", "ADR-0018 in part: Reader scope reversed by ADR-0037 §3") + 10
     sx += c.status(sx, y, "accepted", "ADR-0017: ordering-primacy reversed in effect by ADR-0023, supersession unwritten") + 10
-    sx += c.status(sx, y, "proposed", "ADR-0035 lineage, R4, C4 on ratification") + 10
+    sx += c.status(sx, y, "provisional", "ADR-0016 A1, A2 · B34: a person's Persona, with ADR-0050 and 0052") + 10
+    sx += c.status(sx, y, "proposed", "ADR-0035 lineage, R7, C4 on ratification") + 10
     y += 52
 
     # ======================================================================== B8 region: Persona and its lifecycle
@@ -92,7 +98,7 @@ def _build():
         ["Decode observability", "`none` | `topk_logprobs`. Optional, rung-gated; non-default only within ADR-0019's "
          "narrow scope (§9)"],
         ["Seat binding", "Since ADR-0037 §2 (B12): `thinker` and `observer`. The Listener and the Reader are stages "
-         "and bind no Persona"],
+         "and bind no Persona. **Since B34**: `operator` (A1) and `emergency` (A2), for a person's Persona"],
     ]
     ly += c.table(ix, ly, [("Field", 330, {"bold": True}), ("Notes", lw - 330)], rows, size=13.5, accent="teal") + 18
     ly += _row_cards(c, ix, ly, lw, 20, [
@@ -103,6 +109,27 @@ def _build():
             "Evaluations, benchmarks, red-team findings: statistical, no safety property.",
             "A passing evaluation can never admit a Persona; a failing one can deny or quarantine it (ADR-0007)."],
          "red", {}),
+    ]) + 22
+    ly += _row_cards(c, ix, ly, lw, 20, [
+        ("A1 · A person's Persona (ADR-0050 §3)", [
+            "A principal who is a person and acts under a key has a Persona record: **a signing key, a role, a domain, "
+            "a lineage, a Persona ID and a sequence number**. No prompt, decoding parameters, decoder or weights; the "
+            "table's rows for those do not apply.",
+            "**Its lineage is declared, and its root is the identity provider** that vouches for the person "
+            "(ADR-0035 §1 R7, Proposed). `Seat binding` gains `operator`.",
+            "**§6 holds of it**: attested at grant and renewal by a sign-on assertion naming the key and the fence. "
+            "**§7 holds of it**: revoking it is an ordinary deny, and a revoked operator can no longer deny.",
+            "**A2**: `Seat binding` gains `emergency` (ADR-0052 §1), for a person's Persona attested at the lease "
+            "boundary by the break-glass roster's quorum.",
+        ], "blue", {"status": "provisional", "status_extra": "B34; in force with ADR-0050, ADR-0052"}),
+        ("At the reference: an operator's Persona is its seat's key", [
+            "**No Persona record for a person and no lineage** (ADR-0045 Annex B, A2; `mechanism/` I47): T-0045-36's "
+            "instance is the seat's key, with no record behind it, and nothing compares two operators' providers "
+            "(T-0045-35; D-0050-2 is not told from the archetype).",
+            "A sign-on assertion is read at an operator's lease boundary under a provider key the rules issue (I47).",
+            "**An operator's Persona record and lineage** are part of ADR-0050's exit from provisional (G10 §7 item 88), "
+            "with a first lease from a quorum; a first seating is the BOOTSTRAP socket (D-0050-1 for that step).",
+        ], "red", {"status": "notbuilt", "status_extra": "the record and the lineage", "tint": False}),
     ])
     left_bottom = ly
 
@@ -124,7 +151,7 @@ def _build():
         ("The lease carries the Persona ID (§6)", [
             "Attested at grant and at renewal; unattestable means deny, and the principal is evicted by the passive path.",
             "**`ttl ≤ T_persona`** (ADR-0031 A2), refused at grant and renewal at the reference since ADR-0033 A6 (I35). "
-            "Expiry runs on the local clock, so the interval is `T_persona` plus drift (ADR-0045 finding 2; G7 item 62)."],
+            "Expiry runs on the local clock, so the interval is `T_persona` plus drift (ADR-0045 finding 2; G10 §7 item 62)."],
          "teal"),
         ("Revocation is an ordinary deny (§7)", [
             "Local, no consensus, no floor exception; not an ADR-0013 carve-out. A revoked Persona's leases end, it is "
@@ -206,7 +233,7 @@ def _build():
         "ADR-0020's concession from a second direction.",
         "**Reader scope correction reversed in effect** by ADR-0037 §3 (C3): the Reader is a stage, not a seat, with no "
         "Persona; two bullets struck (B12). The split itself stands.",
-        "Open: decoder–alphabet compatibility across floor changes (G7 item 17).",
+        "Open: decoder–alphabet compatibility across floor changes (G10 §7 item 17).",
     ], "teal", size=14)
     y += max(t1h, rh) + 40
 
@@ -237,7 +264,7 @@ def _build():
             "false by construction (derived, not asserted).",
             "**Ratified with its criterion outstanding**: until a decidable or auditable independence criterion exists, "
             "the archetype may be described but **no deployment may be declared at archetype rung**. ADR-0035 writes "
-            "it, and is Proposed (G7 item 20).",
+            "it, and is Proposed (G10 §7 item 20).",
         ], "blue", {}),
     ]) + 24
     pw = 1500
@@ -250,7 +277,7 @@ def _build():
     ], size=14, accent="blue")
     c.card(X0 + pw + 30, y, W - pw - 30, "This table's ordering is no longer the deployment axis", [
         "**Ordering-primacy reversed in effect** by ADR-0023 §5 (C3): rungs are per-axis, and provenance is one axis "
-        "among many. The admission clause stands; **the superseding record is unwritten** (G7 items 6, 50).",
+        "among many. The admission clause stands; **the superseding record is unwritten** (G10 §7 items 6, 50; ToO §8.3).",
         "Numbers here ascend with **weakness** and the archetype is unnumbered; confinement rungs ascend with strength. "
         "Always qualify \"rung\" (ToO §8.2).",
         "ADR-0035 adds a second route to rung 1: **distillation**, in-house weights on generated content (finding 2).",
@@ -260,8 +287,8 @@ def _build():
     # ======================================================================== ADR-0035 (Proposed)
     ptop = y
     py = ptop + 40
-    c.status(X0 + 30, py, "proposed", "2026.09.25, revised R1–R4; not in force; R2's bound marked for "
-             "independent review (G7 item 33)")
+    c.status(X0 + 30, py, "proposed", "2026.09.25, revised R1–R7; not in force; R2's bound marked for "
+             "independent review (G10 §7 item 33); R5 to R7 written for ADR-0047, 0048 and 0050")
     py += 44
     py += c.heading(X0 + 30, py, "Lineage is projected from the Build log, never authored (§1, §2)", "amber", 19)
     # the DAG
@@ -318,9 +345,10 @@ def _build():
         ["`root`", "Digest of the from-scratch initialisation", "`Invoke` inputs of the pre-training round", "Projected"],
         ["`parents`", "Records of the artifacts the round consumed", "Artifacts `Read` into the workspace", "Projected"],
         ["`ingress`", "Objects the round **could** read", "Corpus root in force for the round's admits, plus parents' "
-         "`ingress`", "Projected, **over-approximated**"],
+         "`ingress`; an item delivered as a handle (R5); the round's tool list (R6)", "Projected, **over-approximated**"],
         ["`consumed`", "Objects the round **did** read (R2)", "`ingress` objects `Read`, plus authored drafts, plus "
-         "parents' `consumed`", "Projected, **never over-approximated**"],
+         "parents' `consumed`; the tool list (R6); **not** an item delivered as a handle (R5)",
+         "Projected, **never over-approximated**"],
         ["`generatedBy`", "Models whose outputs are in `ingress`, with shares", "Parents; for external objects, the "
          "admission declaration", "Projected, or declared at admission"],
         ["`curatedBy`", "Models that selected or filtered `ingress`", "The same", "Projected, or declared at admission"],
@@ -368,7 +396,7 @@ def _build():
             "θ_exact, θ_near, θ_gen, β and the near-duplicate tool's digest live in `floor/genesis-values.json` "
             "(R3) and are **`null`**: the independence table is not computed while any is null.",
             "Relaxing one is an issuance and a promotion; tightening, an ordinary promotion.",
-            "Set from measurements at training scale, not before (G7 item 30). Gate tools would be trust root T-0045-15, "
+            "Set from measurements at training scale, not before (G10 §7 item 30). Gate tools would be trust root T-0045-15, "
             "cited by no theorem until ratification.",
             "**Three field sets, not one**: the floor's `lineage` block has θ_exact, θ_near, θ_gen, β and `near_tool`; "
             "the rehearsal's `slm/lineage/thresholds.example.json` has the three θ, byte thresholds and a "
@@ -394,7 +422,38 @@ def _build():
             "trained on (padding).",
             "Structural independence does not imply uncorrelated failures; detection carries no safety theorem.",
         ], "red", {}),
-    ]) + 30
+    ]) + 24
+
+    py += _row_cards(c, X0 + 30, py, W - 60, 24, [
+        ("§1 R5 · An item delivered as a handle is `ingress` and not `consumed`", [
+            "ADR-0047 lets the Listener deliver an admitted item as a handle: admitted and recorded, its bytes not in "
+            "the guest. The round could have been given it and its model did not read it.",
+            "**Sound by §2's rule**: leaving it out of `consumed` leaves every numerator alone and can only shrink the "
+            "denominator. **Conservative**: a tool may resolve the handle and read the bytes; the model still did not.",
+            "**Applies to no lineage node today**: every node is a Build round, and ADR-0047 labels Run's ingress and "
+            "leaves Build's `Read` undecided.",
+        ], "amber", {}),
+        ("§1 R6 · A round's tool list is `ingress` and `consumed`", [
+            "ADR-0048 has the Listener deliver every tool the lease may call at the start of a round, written as the "
+            "round's opening record. It is text the model read; it enters both sets as the object that record's digest "
+            "names (the custodian's decision).",
+            "**Shared**: every round granted the same lease shape under one bundle is given the same list, so it raises "
+            "E3's exact overlap and moves a pair only toward refusal.",
+            "Open: whether E3 sets such mechanism-rendered objects aside, or θ_exact is chosen with them in.",
+        ], "amber", {}),
+        ("§1 R7 · An operator's lineage is declared; its root is its identity provider", [
+            "Enrolling a credential is not a Build round, so the record is declared and not projected (D-0035-1). It "
+            "has no `ingress`, `consumed`, `tokenizer` or `trainer`.",
+            "**E1 applies as written**: two operators behind one provider are one lineage, a quorum or a pair of peers "
+            "included. **E2 to E5 and distillation pass vacuously.**",
+            "**The independence table has rows for operators**, read where ADR-0050 §6 asks that a peer be independent: "
+            "at the archetype a different identity provider (D-0050-2 is one provider).",
+        ], "amber", {}),
+    ]) + 14
+    py += c.para(X0 + 30, py, W - 60, "R5 to R7 were written while ADR-0047, 0048 and 0050 were Proposed, and are "
+                 "applied in place in a record that is still Proposed. Those three records are in force since Batch 34, "
+                 "ADR-0050 provisional (G10 §1.1, §2.4); ADR-0035's rules for them take force only when ADR-0035 does.",
+                 13.5, "muted") + 24
 
     dw = W - 60
     py += c.table(X0 + 30, py, [("Id (§9)", 150, {"bold": True}), ("Parameter → deployed value", 760),

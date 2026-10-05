@@ -1,19 +1,25 @@
-"""B5 — Promotion is a quorum grant, run as a round (ADR-0024 with A2)."""
-from lib import Canvas
+"""B5 — Promotion is a quorum grant, run as a round, and a promotion seats (ADR-0024 with A2 and A3)."""
+from lib import Canvas, text_width
 
 ID, SLUG = "B5", "promotion-quorum"
 
 
 def build():
-    c = Canvas(ID, "Promotion is a quorum grant, run as a round",
+    c = Canvas(ID, "Promotion is a quorum grant, run as a round, and a promotion seats",
                "ADR-0024 replaces the single promotion signing key, the last privileged human grant. Everything that "
                "crosses from `Build` to `Run` (boundary B1) is promoted by a round keyed by artifact digest: gates "
                "enable voting, grant seats vote, veto seats can only deny, the author is recused, and the tally reads "
-               "its quorum from the issued rules.",
+               "its quorum from the issued rules. Since Batch 34 **a promotion seats** (ADR-0024 A3, provisional with "
+               "ADR-0050): when the tally on a seating completes, the mechanism grants the principal's first lease. "
+               "That is not built at the reference, where an unsigned BOOTSTRAP socket seats instead.",
                3200, "ADR-0024 §1–§9, enabling condition, Degeneracies, Consequences, Open obligations, A1, A2 "
-               "(A2.1–A2.4), History B2; ADR-0026 §2 R1, R2, R5, R9, §7; ADR-0022 §1 `Vote` row, §7; ADR-0035 §4, §5 "
-               "(Proposed); ADR-0038 §6; ADR-0039 §3; ADR-0032 §2; ADR-0029 §4, §5; ToO rev 11 §7.1, §7.7, §9; "
-               "G7 §1.2, §7 items 39, 46; mechanism/GAPS-AND-ASSUMPTIONS.md G18")
+               "(A2.1–A2.4), A3, History B2, B34; ADR-0026 §2 R1, R2, R5, R9, §7; ADR-0022 §1 `Vote` row, §7; "
+               "ADR-0025 §1 (a), (f), A3; ADR-0029 §4, §5 (bootstrap modules, ceremony), A3, A4; ADR-0030 A3; "
+               "ADR-0031 §4; ADR-0035 §4, §5 (Proposed); ADR-0037 §7, A4; ADR-0038 §6; ADR-0039 §3; ADR-0032 §2; "
+               "ADR-0041 A3 (`C1`, `C2`, `C3`, `C5`); ADR-0050 §1, §2, §4, §5, §6, §10, History R6, R9, R10; ADR-0052 §2; "
+               "ToO rev 14 §7.1, §7.7, §7.10, §9; G10 §1, §1.2, §4, §6, §7 items 2, 41, 57, 87, 88, §8; "
+               "mechanism/GAPS-AND-ASSUMPTIONS.md I47, G8, G18; mechanism/crates/topak-core/src/control.rs, "
+               "state.rs (`not_a_first_seating`)")
     X0, X1 = c.x0, c.x1
     W = X1 - X0
     y = c.y + 18
@@ -62,6 +68,7 @@ def build():
         "Alphabet `Vote(grant)`, `Vote(deny)`.",
         "Under `\"all\"`, **any grant-seat deny or abstention is a denial**; under unanimity every seat is a veto.",
         "Voters are principals on every custody rung, because the anchor can evict them.",
+        "A person who operates and also votes holds two seats and is two principals (ADR-0037 §7, A4).",
     ])
     V_T, V_B = ("Veto seats · every cell Observer and every correlator in Build", [
         "Alphabet `Vote(deny)` only: a seat whose alphabet lacks `grant`. Never an agent in the author's fault "
@@ -99,6 +106,8 @@ def build():
         "`bundle ⊑ floor` (ADR-0010; listed in §4). By ADR-0030 composition it holds for every bundle, so ToO §7.1 "
         "says it no longer needs checking here.",
         "`Vote` is **enabled only after** the gates pass.",
+        "**Recorded by an operator's signed** `AttestGates` (A3; ADR-0050 §4; floor `C3`): who asserted it is known, "
+        "whether it is true is not (G10 item 57).",
     ], accent="teal", h=260, size=14)
     # seats region
     c.region(xs, top - 20, ws, seat_h + 40, "The round's seats (ADR-0024 §5, A2.1)", "blue", dash="10 6")
@@ -144,13 +153,15 @@ def build():
           "A voter's round-topic emission carries the vote with a hash-and-pointer to its commentary in the "
           "ADR-0004 store; commentary is payload and erasable, the vote is not.",
           "So the round needs no effect-stream scheme: §7 does not rest on ADR-0021.",
-          "At the reference there is **no promotion entry and no `promote` op**: the admit that completes the tally is "
+          "At the reference there is **no promotion entry and no** `promote` **op**: the admit that completes the tally is "
           "the event, and `promoted_at` in state is derived from it. F3 retains the vote; what the archive says of the "
           "promotion is open (inventory finding 29)."]
     b3 = ["**Promotion is a grant** (§1): operational **bundles**, **mechanism releases** (including policy-floor "
-          "and rules-floor changes) and **Personas**.",
+          "and rules-floor changes) and **Personas**; since A3, **seatings** (below), and a confinement profile, "
+          "which the mechanism registers when the tally completes (ADR-0050 §4).",
           "**Runtime subtraction is not promotion** (§9): e-stop, lease expiry, revocation and `bundle(deny=all)` "
-          "need no quorum, are attributed, and are ordered when they change replicated state.",
+          "need no quorum, are attributed, and are ordered when they change replicated state. An operator's stop is "
+          "a signed `EndRound`, `Revoke` or `FenceEpoch` (ADR-0050 §4).",
           "Fast path for strictly subtractive bundles: **deferred**."]
     bh = max(c.card(0, 0, w3, "Votes bind to a triple", b1, draw=False),
              c.card(0, 0, w3, "Votes are non-erasable (§8)", b2, draw=False),
@@ -158,7 +169,113 @@ def build():
     c.card(X0, y, w3, "Votes bind to a triple", b1, accent="blue", h=bh)
     c.card(X0 + w3 + 28, y, w3, "Votes are non-erasable (§8)", b2, accent="teal", h=bh)
     c.card(X0 + 2 * (w3 + 28), y, w3, "What promotes, and what does not", b3, accent="green", h=bh)
-    y += bh + 50
+    y += bh + 60
+
+    # ------------------------------------------------------------------ a promotion seats (A3)
+    t = "A promotion seats: the seating, the first lease, and who continues it (ADR-0024 A3; ADR-0050 §2)"
+    c.text(X0, y + 22, t, 22, "blue", bold=True)
+    c.status(X0 + text_width(t, 22, True) + 20, y + 4, "provisional", "with ADR-0050 · bootstrap set")
+    y += 50
+    y += c.para(X0, y, W, "**\"Promotion is a grant\" taken literally** (ToO §7.1). A principal's first lease is "
+                "granted by the mechanism when a quorum completes, **never by an operator**; round by round, one "
+                "operator continues what the quorum granted. So the quorum acts once per seating (ADR-0050 §2).",
+                15) + 22
+    gap4 = 80
+    w4f = (W - 3 * gap4) / 4
+    FLOW = [
+        ("1 · A seating is promoted", "blue", [
+            "An artifact naming **the principal, its seat, its Persona, its bundle revision, its confinement profile "
+            "and rung, its alphabet, and the labels a task for it may carry** (A3; ADR-0050 §2).",
+            "Promoted like any other artifact, by the round above. An operator's Persona is promoted so, and an "
+            "operator is seated so.",
+            "Its schema, and whether it is one artifact or rides the Persona's and the bundle's promotions, is open "
+            "(ADR-0050 Open obligations).",
+        ]),
+        ("2 · The tally completes", "teal", [
+            "`PromotionEnabled` as above: **§2's quorum rule and §5's seat classes are unchanged** by A3.",
+            "The gates were recorded by an operator's signed `AttestGates`.",
+            "A2.2 and A2.3 still apply: a veto seat independent of the author leased for the round, and coverage to "
+            "the seal, or the round stalls.",
+            "A confinement profile promoted the same way is registered by the mechanism when the tally completes; it "
+            "is no longer an operator's request (ADR-0050 §4).",
+        ]),
+        ("3 · The mechanism grants the first lease", "teal", [
+            "**At a fresh fence, with no request from anyone** (ADR-0050 §2).",
+            "First leases are not actions and have **no floor entry**: the mechanism grants one when a quorum "
+            "completes (ADR-0041 A3).",
+            "The seating carries the round's task, by digest with its label on the log; the label must be one the "
+            "seating allows (ADR-0050 §5).",
+        ]),
+        ("4 · An operator continues it", "brown", [
+            "**Successor grant** (`Regrant`): the next round, every field the last lease's or narrower, only `round` "
+            "advancing. **Renewal** (`Renew`) keeps the round (ADR-0031 §4).",
+            "Needs a live lease **and a live peer** in the domain (`C1`, `C2`, `C5`); never itself (`C6`); the "
+            "task's label in the seating's bounds (`C8`).",
+            "**Monotone**: it can keep a quorum's grant going and narrow it, and cannot widen it.",
+        ]),
+    ]
+    fh = max(c.card(0, 0, w4f, tt, bb, draw=False, size=14) for tt, _, bb in FLOW)
+    fy = y
+    for i, (tt, acc, bb) in enumerate(FLOW):
+        fx = X0 + i * (w4f + gap4)
+        c.card(fx, fy, w4f, tt, bb, accent=acc, h=fh, size=14)
+        if i:
+            c.arrow([(fx - gap4, fy + 60), (fx, fy + 60)], "blue" if i < 3 else "brown", sw=2.4)
+    # anything wider loops back to a new seating
+    ly_ = fy + fh + 44
+    x4 = X0 + 3 * (w4f + gap4) + w4f / 2
+    x1_ = X0 + w4f / 2
+    c.arrow([(x4, fy + fh), (x4, ly_), (x1_, ly_), (x1_, fy + fh)], "red", dash="7 5", sw=2,
+            label="Anything wider is a first lease: a different Persona, bundle, profile or seat, or a new variant "
+                  "in the alphabet needs a new seating and a quorum (ADR-0050 §2)", lpos=0.5)
+    y = ly_ + 50
+
+    # the ADR-0050 §2 table, and the bootstrap, the emergency case and the reference
+    tw2 = 1180
+    c.text(X0, y + 18, "Who grants a first lease (ADR-0050 §2, the record's table)", 18, "blue", bold=True)
+    th2 = c.table(X0, y + 34, [("First lease of", 430, {"bold": True}), ("Comes from", 330), ("Why", tw2 - 760)], [
+        ["A seat on a roster the rules name (grant, veto, anchor) at genesis, and the first operators",
+         "An anchor issuance (ADR-0025; ADR-0029 §5)", "Something must be seated before anything can be promoted"],
+        ["Every other principal, operators included", "A promotion (ADR-0024)", "\"Promotion is a grant\""],
+    ], size=14, accent="blue")
+    c.para(X0, y + 34 + th2 + 12, tw2, "An **emergency seating** is one of these too: prepared by promotion, and "
+           "activated for one round by the break-glass roster's quorum and **not by a tally**; an operator's "
+           "`Regrant` or `Renew` naming an emergency seat is refused (ADR-0050 §2 R6; ADR-0052 §2). Drawn in D5.",
+           14, "ink")
+    rx = X0 + tw2 + 40
+    w3b = (X1 - rx - 2 * 28) / 3
+    C3 = [
+        ("The first operators, at bootstrap", "blue", "provisional", "ADR-0029 A3", [
+            "The ceremony's first step **seats the first operators by issuance, at least three in each domain** at "
+            "the archetype, each with a Persona and a key, with the identity providers' keys in the issued rules "
+            "(ADR-0029 A3; ADR-0025 A3 (a), (f)).",
+            "**Until an operator is seated nothing can be regranted, and a promotion needs Build leases.**",
+            "Whether a bootstrap module is owed for the genesis seating is not decided (ADR-0029 A3).",
+        ]),
+        ("At the reference: a BOOTSTRAP socket seats", "red", "notbuilt", "first lease from a quorum", [
+            "**A promoted seating that grants a first lease, and the first operators seated by an anchor issuance, "
+            "are not built** (ADR-0050 §10, R10; G10 §1.2, §8).",
+            "The unsigned operator socket is kept as a marked **BOOTSTRAP** path that seats and does nothing else: "
+            "**whoever reaches it can seat** (D-0050-1 for that one step; I47 (a)).",
+            "It refuses a grant that keeps a seat's seated binding while two operators of its domain are live: that "
+            "is a successor, and theirs to make (`not_a_first_seating`).",
+            "Every successor grant, renewal, gate attestation and stop is a signed request decided by `C1` to `C9` "
+            "(ADR-0050 R9).",
+        ]),
+        ("The exit from provisional", "amber", "open", "G10 item 88", [
+            "**ADR-0050 stops being provisional** when its debts are met and the custodian records it: a first lease "
+            "from a completed tally, with a promoted seating; the first operators seated by an anchor issuance; a "
+            "`Regrant` at rung 1 or above, which has to launch a guest; an operator's Persona record and lineage; "
+            "and **a review by a reader who is not the drafter** (ADR-0050 §10; G10 item 88).",
+            "Until then, A3 is subject to redesign with it, and anything citing it says \"author-ratified, "
+            "provisional\" (ADR-0029 A4).",
+        ]),
+    ]
+    ch3 = max(c.card(0, 0, w3b, tt, bb, draw=False, size=14, status=st) for tt, _, st, _, bb in C3)
+    for i, (tt, acc, st, ex_, bb) in enumerate(C3):
+        c.card(rx + i * (w3b + 28), y, w3b, tt, bb, accent=acc, h=ch3, size=14, status=st, status_extra=ex_,
+               tint=st != "notbuilt")
+    y = max(y + ch3, c.ymax) + 60
 
     # ------------------------------------------------------------------ tables: seat classes, quorum values
     c.heading(X0, y, "Quorum: archetype \"all\" versus a threshold k, and the two declared degeneracies", "ink", 21)
@@ -210,24 +327,29 @@ def build():
           "about a deployment."]
     k2 = ["**Correlated review failure is untouched**: unanimous humans reading the same vacuous gate output fail "
           "together (Knight & Leveson).",
-          "Floor fitness, a fourth gate (NIST MEASURE 2.13), is still unowned.",
+          "Floor fitness, a fourth gate (NIST MEASURE 2.13), **now has an owner and a time**, the bootstrap reviewer "
+          "at bootstrap (ADR-0029 A4; ADR-0030 A3), **and no test** (G10 items 2, 87).",
           "**One compromised seat is a veto** until the anchor reissues the roster.",
           "Voters are `Mediated`: promotion gains attribution and authorization, not safety properties."]
     k3 = ["ADR-0024 is **Accepted (genesis), 2026.09.23**, at revision 5, in Batch 2.",
           "**No confirmation marker**: a bootstrap record (ADR-0029 §4); confirmation runs under it. "
           "ADR-0029 A2's full-corpus review reaches it before bootstrap: a reader, not a confirmation promotion.",
-          "A2 ratified 2026.09.29 (Batch 15), in genesis for the same reason."]
+          "A2 ratified 2026.09.29 (Batch 15), in genesis for the same reason.",
+          "**A3 ratified 2026.10.05 (Batch 34), provisional** with ADR-0050: in force and subject to redesign. In the "
+          "bootstrap set, so not confirmation-required; **the genesis attestation must name it as provisional** "
+          "(ADR-0029 A4). Not reviewed by a reader other than the drafter."]
     k4 = ["**In the reference**: A2.1 (veto roster kinds) and A2.3 (`Tally::Stalled` until coverage) are in force; "
           "**A2.2 is not** (G18): no independence table exists, since ADR-0035 is Proposed and §4 is unbuilt.",
-          "**Owed**: the ADR-0026 non-vacuity rerun with A2.2 and A2.3 as conjuncts (G7 item 39); the `Promotion` "
-          "bootstrap module (`StaleVotesNeverCount`), not drafted; independent evidence and seat diversity, "
-          "candidate floor entries."]
+          "**A3 is not built**: no promoted seating grants a first lease; the BOOTSTRAP socket seats (below; I47).",
+          "**Owed**: the ADR-0026 §6 non-vacuity rerun with A2.2 and A2.3 as conjuncts (G10 §2.1); the `Promotion` "
+          "bootstrap module (`StaleVotesNeverCount`), not drafted, which also owes a model of deciding before "
+          "committing (ToO §9); independent evidence and seat diversity, candidate floor entries."]
     kh = max(c.card(0, 0, w4, "Liveness", k1, draw=False), c.card(0, 0, w4, "Safety it does not buy", k2, draw=False),
              c.card(0, 0, w4, "Status", k3, draw=False, status="accepted"),
              c.card(0, 0, w4, "Built, and owed", k4, draw=False))
     c.card(X0, y, w4, "Liveness", k1, accent="amber", h=kh)
     c.card(X0 + (w4 + 28), y, w4, "Safety it does not buy", k2, accent="red", h=kh, tint=False, dash="6 4")
     c.card(X0 + 2 * (w4 + 28), y, w4, "Status", k3, accent="blue", h=kh, status="accepted",
-           status_extra="bootstrap set · A2 in force")
+           status_extra="bootstrap set · A2 in force · A3 provisional")
     c.card(X0 + 3 * (w4 + 28), y, w4, "Built, and owed", k4, accent="red", h=kh)
     return c

@@ -42,9 +42,6 @@ def N(id_, title, status, extra, body, parent="prev", accent="red", dash=None, s
                 sub=sub)
 
 
-PENDING_A2 = "Pending: ADR-0034 A2, drafted 2026.10.02, not in force (C2, C4)"
-
-
 TIER1 = [
     ("Approver fault tolerance", "ADR-0024 · Accepted (genesis), bootstrap set",
      ("`quorum` = every counted grant seat", ["At the archetype a promotion needs a grant vote from **every** grant seat "
@@ -75,12 +72,15 @@ TIER1 = [
          "**Sacrificed**: a k-coalition can issue rules over n−k objections. **Gained**: liveness under n−k losses."]),
       N("(1, 0)", "Single custodian: no record", None, "",
         ["The annex lists the row with a dash. Genesis custody, which ADR-0029 names **not a degeneracy**; the corpus's "
-         "own custody row is T-0045-11. The reference's dev keys and bundle key are also (1, 0) (G9 items 11, 67)."],
+         "own custody row is T-0045-11. The reference's dev keys and bundle key are also (1, 0) (G10 §7 items 11, 67)."],
         accent="grey", dash="2 3"),
       ]),
     ("Floor verification", "ADR-0030 §8 · Accepted (genesis), C1",
      ("A-0030: the floor on a verified evaluator", ["Cedar, linked, with a mechanized semantics (§2); monotone "
-                                                    "composition `admit ⟺ floor_permit ∧ ¬bundle_deny` (§1)."]),
+                                                    "composition `admit ⟺ floor_permit ∧ ¬bundle_deny` (§1). The "
+                                                    "floor's text is **genesis-provisional** (A3): the proposed "
+                                                    "floor's `emergency` stage, 28 policies, gated and not ratified "
+                                                    "(G10 §2.2)."]),
      [N("D-0030-2", "Routing verdicts unchecked (A1)", "accepted", "declaration",
         ["**Deployed**: a `holds` from the solver is taken on trust.",
          "**Premise falsified**: a routing verdict is checked.",
@@ -98,7 +98,7 @@ TIER1 = [
      ("Rung 3: a confidential VM", ["Hardware report covering firmware, kernel, initrd, root hash, profile and Persona "
                                     "digests, appraised by an **independent verifier** (§2). The only rung where every "
                                     "residual host power is excluded (`M_HOST` holds). The reference reaches it only "
-                                    "**SIMULATED**, under test keys (ADR-0033 A7, pending)."]),
+                                    "**SIMULATED**, under test keys (ADR-0033 A7, B29)."]),
      [N("D-0034-1", "Rung 2: measured boot", "accepted", "declaration",
         ["Premises falsified: none. Theorems voided: none.",
          "**Type change / TCB**: the hypervisor and host firmware enter the trusted base (T-0045-18). `M_HOST` at rung "
@@ -107,40 +107,43 @@ TIER1 = [
       N("D-0034-2", "Rung 1: a launcher asserts", "accepted", "declaration",
         ["Premises falsified: none. Theorems voided: none.",
          "**TCB**: the host operator and orchestrator enter (T-0045-19); Contested becomes unreachable.",
-         "The reference's launcher issues it in tests, on profiles that declare P3 `fail` (A7, pending)."]),
+         "The reference's launcher issues it for real, on profiles that declare P3 `fail` (ADR-0033 A7, B29; "
+         "G10 §2.3)."]),
       N("D-0034-4", "Rung 0: no attestation", "accepted", "declaration",
         ["**Premise falsified**: A1. **Voided**: every `Contained` theorem; every principal is `Mediated`.",
-         "**The reference's position as deployed** in dev: rung 0; rung 1 and a SIMULATED rung 3 only in its tests "
-         "(A7, pending; G9 §2.3). `NeverContainedEffect` holds at rung 0, the declared vacuity."]),
+         "**At the reference** the rung is declared per seat (ADR-0023 §6c, B29): rung 1 real, rung 3 SIMULATED, "
+         "rung 2 a seam; **no real principal is `Contained`** (G10 §2.3). An operator and an emergency seat are "
+         "`Mediated` by design (ADR-0050 §1; ADR-0052 §1). `NeverContainedEffect` holds at rung 0, the declared "
+         "vacuity."]),
       ]),
-    ("Confinement profile clauses", "ADR-0034 §8, A2 (pending) · ADR-0036 §8 (Proposed)",
+    ("Confinement profile clauses", "ADR-0034 §8, A2 (B30) · Accepted (genesis), C2, C4 · ADR-0036 §8 (Proposed)",
      ("Profile P1–P7 all hold", ["At the archetype the promoted profile fixes P1–P7, among them P3 (no interpreter "
                                  "reachable) and P4 (tools are Wasm, hermetic by construction). For Run, P4 is "
-                                 "**channel fidelity** (A2, pending): each tool a Wasm component whose one network "
-                                 "capability is its declared target."]),
+                                 "**channel fidelity** (A2, B30): each tool a Wasm component whose one network "
+                                 "capability is its declared target, read from its allowlist entry."]),
      [N("D-0034-3", "Profile admits a native tool", "accepted", "declaration",
         ["**Premise falsified**: P4. **Voided**: every `Contained` theorem, for principals whose alphabet reaches that "
          "tool; they become `Mediated` (T-0045-23 excluded).",
          "The reference: every tool it runs in dev is native (`topak-demo-tool`, the MLX trainer); a Build profile "
-         "that says P4 passes is not yet held to Wasm tools (G9 item 83)."], parent="arch"),
+         "that says P4 passes is not yet held to Wasm tools (G10 §7 item 83)."], parent="arch"),
       N("D-0036-1", "Profile has a reachable interpreter", "proposed", "as D-0034-3",
         ["**Premise falsified**: P3. **Voided**: every `Contained` theorem, for principals under that profile; they are "
          "`Mediated` (ADR-0034 §4). No participant changes type.",
          "D-0034-2 (rung 1) is inherited, not restated."], parent="arch", accent="amber"),
-      N("D-0034-5", "A native Run tool behind an egress filter", None, "",
+      N("D-0034-5", "A native Run tool behind an egress filter", "accepted", "declaration · A2, B30",
         ["**Deployed**: a native Run tool, under an egress filter in the tool host that admits only its declared "
          "target.",
          "**Premise falsified**: P4 (Run), as stated: channel fidelity moves from a check to a **trust**. **Voided**: "
          "none.",
          "**TCB**: the tool host enters for channel fidelity (T-0045-25 widens; T-0045-24 delegated on trust). "
-         "`RunConfinement`'s invariants hold under it."], parent="arch", accent="amber", dash="6 4", sub=PENDING_A2),
-      N("D-0034-6", "A native Run tool, unfiltered", None, "",
+         "`RunConfinement`'s invariants hold under it."], parent="arch"),
+      N("D-0034-6", "A native Run tool, unfiltered", "accepted", "declaration · A2, B30",
         ["**Premise falsified**: P4 (Run). **Voided**: every `Contained` theorem, for Run principals whose alphabet "
          "reaches that tool; they become `Mediated`.",
-         "The Run counterpart of D-0034-3. **The reference before A8**; a native Run tool there is still checked by "
-         "nobody (G19)."], accent="amber", dash="6 4", sub=PENDING_A2),
+         "The Run counterpart of D-0034-3. **The reference today for a native tool** (the record's words), "
+         "T-0045-24 excluded for it; a Wasm Run tool is held to the target its entry declares (ADR-0033 A8, A9)."]),
       ]),
-    ("Lineage strength", "ADR-0035 §9 · Proposed",
+    ("Lineage strength", "ADR-0035 §9 · Proposed, R7",
      ("Projected", ["The lineage record is computed by the gate from the log, every round ingress-bounded (rung ≥ 1, "
                     "Attested, P1 and P2)."]),
      [N("D-0035-1", "Declared", "proposed", "kind not stated",
@@ -148,7 +151,84 @@ TIER1 = [
          "**Premise falsified**: §2's bound.",
          "**Voided**: no theorem (detection carries none); voids declaring archetype provenance. The tally condition is "
          "met by declared entries resting on the author's claim.",
-         "Every lineage is declared today (the trainer runs outside the guest)."], accent="amber"),
+         "Every lineage is declared today (the trainer runs outside the guest). **An operator's lineage is always "
+         "declared**, rooted in its identity provider (R7)."], accent="amber"),
+      ]),
+]
+
+TIER3 = [
+    ("Labels and delivery", "ADR-0047 §10 · Accepted (genesis), C4; C2 for §3 · a parameter not on ToO §8.2's axis list",
+     ("Every item labelled; delivered clear, or as a handle", [
+         "Each admitted item of Run's ingress carries its source's label; the bundle's delivery table puts it in the "
+         "clear, its label then in `clearSet`, or delivers a handle with no bytes. The floor's `R5` to `R7` forbid "
+         "over labels (ADR-0047 §1–§3; ADR-0041 A1; ToO §2.10)."]),
+     [N("D-0047-1", "No labels", "accepted", "mechanism",
+        ["**Deployed**: labels and delivery modes → none: every admitted item delivered clear and unlabelled.",
+         "**Premises falsified**: every item of ingress carries a label; a suppressed item's bytes do not enter the "
+         "guest.",
+         "**Voided**: none today: no theorem in force reads a label. Every property of `Labels.tla` is lost; F1 to F6 "
+         "have nothing to read.",
+         "**The reference before 10.05** (ToO §8.2; ADR-0033 A10). A table that delivers every label clear is not "
+         "degenerate."]),
+      ]),
+    ("Tool list", "ADR-0048 §7 · Accepted (genesis), C4, C3 · a parameter not on ToO §8.2's axis list",
+     ("The tool list, delivered by the mechanism", [
+         "At the start of a round the Listener delivers the interface of every tool the lease may call, and the "
+         "mechanism writes it to the round topic as the round's opening record (ADR-0048 §2; ToO §2.10)."]),
+     [N("D-0048-1", "No tool list", "accepted", "mechanism",
+        ["**Deployed**: the tool list not delivered: entries carry no interface, and a Thinker learns its tools from "
+         "its Persona, its task or a consulted object.",
+         "**Premise falsified**: a Thinker's description of a tool is bound to the entry's name and digest.",
+         "**Voided**: none: no theorem reads a description."]),
+      ]),
+    ("Operators", "ADR-0050 §9 · Accepted (genesis) · provisional, C1, C3, C4 · parameters not on ToO §8.2's axis list",
+     ("Signed, floored requests; first leases from a quorum; three or more operators per domain", [
+         "Six control actions signed with the Persona's key and decided by `C1` to `C9` (§4); a first lease from a "
+         "promotion, or for the first operators an anchor issuance (§2); **at least three operators in a domain** "
+         "(§6 R5; ADR-0029 A3), each peer behind a **different identity provider** (§3, §6)."]),
+     [N("D-0050-1", "The socket", "provisional", "mechanism",
+        ["**Deployed**: operator requests unsigned, from whoever reaches the socket; grants at any time; no task "
+         "carried.",
+         "**Premises falsified**: every lease on the log was put there by a quorum or by an operator inside a "
+         "quorum's grant; every stop is attributed.",
+         "**Voided**: none in force: no theorem takes the operator as a premise. §10's properties are lost.",
+         "**The reference before 10.05, and still its BOOTSTRAP path for a first seating** (ToO §8.2; ADR-0033 "
+         "A11): whoever reaches the socket can seat (G10 §8)."], parent="arch"),
+      N("D-0050-3", "Two operators in a domain", "provisional", "Deployment (the record's word)",
+        ["**Deployed**: operators in a domain → two.",
+         "**Premise falsified**: a lapsed operator's lease can be regranted by a peer.",
+         "**Voided**: none. A lapse by either stalls the domain until a quorum seats it again (`Operators.tla` rows "
+         "w8, w9)."], parent="arch"),
+      N("D-0050-2", "One identity provider", "provisional", "Deployment (the record's word)",
+        ["**Deployed**: operators' identity providers → one.",
+         "**Premise falsified**: a peer is independent of the operator it watches.",
+         "**Voided**: none; the peer rule holds in letter, and one provider can produce both.",
+         "At the reference nothing compares two operators' providers, so it is not told from the archetype "
+         "(ADR-0045 Annex B, A2)."], parent="arch"),
+      ]),
+    ("Emergency path", "ADR-0052 §8 · Accepted (genesis) · provisional, C1, C3, C4 · a parameter not on ToO §8.2's "
+     "axis list",
+     ("Break-glass is an emergency seating", [
+         "A seat of kind `emergency`, held by a person, activated by the break-glass roster's quorum for one person "
+         "and one round; no successor and no renewal; the activation is a forensic record (ADR-0052 §1; ADR-0033 "
+         "A12). **X1 is retired**, on this provisional record (G10 §1.2, §8). A seating prepared by promotion is not "
+         "built (G10 §1.2)."]),
+     [N("D-0052-1", "X1-break-glass", "provisional", "mechanism",
+        ["**Deployed**: the emergency path → `X1-break-glass`: an approval scoped to a seat and an epoch lets that "
+         "seat, an agent's included, `Actuate` inside an issued envelope until the epoch ends.",
+         "**Premises falsified**: a break-glass grant ends with its round; the actor under it is a person.",
+         "**Voided**: none in force. §9's properties are lost.",
+         "**The reference before 10.05** (ToO §8.2; ADR-0033 A12)."]),
+      ]),
+    ("Correlations computed", "ADR-0051 §9 · Proposed, not built (G10 §7 item 97)",
+     ("A correlator computes the correlations of its table", [
+         "ADR-0051 (Proposed) states the correlator's detection function; the deployed value below is \"the five → "
+         "none\". A table that turns a correlation `off` is declared in the bundle and is not a degeneracy."]),
+     [N("D-0051-1", "Heartbeats only", "proposed", "declaration",
+        ["**Deployed**: correlations computed, the five → none. The seat exists and reports nothing but heartbeats.",
+         "**Premise falsified**: a correlator computes the correlations of its table.",
+         "**Voided**: none; §10's properties are lost. D-0038-2 with a seat filled.",
+         "**The reference today** (the record's words)."], accent="amber"),
       ]),
 ]
 
@@ -165,6 +245,10 @@ TIER2 = [
          "here.",
          "**Voided**: no safety theorem. **Lost**: cross-principal detection (fragmentation, multi-agent coordination)."],
         parent="arch"),
+      N("D-0051-2", "Correlators in a domain: two or more → one", "proposed", "Deployment (the record's word)",
+        ["**ADR-0051 §9, Proposed**: it would put two or more correlators in a domain.",
+         "**Premise falsified**: a correlator's silence on a correlation is a miss some other correlator counts.",
+         "**Voided**: none. `marked-past` still covers cell Observers."], parent="arch", accent="amber"),
       ]),
     ("Observers per cell", "ADR-0037 §8 · Accepted (genesis), C3, C4 · a parameter not on ToO §8.2's list",
      ("1 or more `observer` seats per cell", ["Every cell has a leased `observer` seat (ADR-0037 §2)."]),
@@ -182,7 +266,8 @@ TIER2 = [
          "Composes with nothing in ADR-0037."]),
       ]),
     ("Observer coupling", "ADR-0039 §7 · Accepted (genesis), C4",
-     ("Run coupled", ["`R3-observer-live` and the cross-round grant condition in force."]),
+     ("Run coupled", ["`R3-observer-live` and the cross-round grant condition in force. **`R3` is a Thinker's**: "
+                      "an emergency seat is not coupled, by design (A2, B34; provisional with ADR-0052)."]),
      [N("D-0039-1", "Run uncoupled", "accepted", "mechanism",
         ["**Voided**: none. **Lost**: `UnreadBounded`, `UnreadEffectsBounded` (A1): the in-round bound loosens from `K` "
          "to `R`; across rounds, unbounded.",
@@ -252,16 +337,21 @@ def _column(c, x, y, w, axis, src, arch, nodes):
 def _build():
     c = Canvas(ID, "The deployment lattice: degeneracy per axis, the archetype at the top of each, every declared record "
                    "placed",
-               "ADR-0023 (Accepted (genesis) 2026.09.23, confirmation required C3) replaces the ladder: a deployment is "
-               "the archetype with named parameters driven to limiting values, the effect is premise loss, and rungs are "
-               "per axis. Below, every axis ToO rev 13 §8.2 names, and every record-level degeneracy entry placed on its "
-               "axis with its deployed value and what it voids. Arrows point down the lattice, toward degeneracy.",
-               3600, "ADR-0023 §1–§7 and carried scope (B3, R3, R4, B13); ADR-0024 Degeneracies; ADR-0025 Annex; "
-               "ADR-0030 §8; ADR-0034 §2, §8, A2 (pending); ADR-0033 A7, A8 (pending); ADR-0035 §9 (Proposed); ADR-0036 §8 (Proposed); ADR-0037 §8; ADR-0038 §7; "
-               "ADR-0039 §7; ADR-0042 §7; ADR-0044 §5; ADR-0045 §8, Annex B; ADR-0017; ADR-0028 §3; ADR-0005 (Proposed); "
-               "ADR-0029; ToO rev 13 §8.1–§8.3; derived/topak-rungs-axes-degeneracies-accounting-2026.09.26.md; "
-               "mechanism/GAPS-AND-ASSUMPTIONS.md G19; G9 §1.1, §2.3, §2.5, §8, §7 items 5, 6, 7, 11, 38, 40, 64, "
-               "67, 80, 83, 85")
+               "ADR-0023 (Accepted (genesis) 2026.09.23, confirmation required C3; A1, Batch 29: the declared rung is "
+               "per seat, §6c) replaces the ladder: a deployment is the archetype with named parameters driven to "
+               "limiting values, the effect is premise loss, and rungs are per axis. Below, every axis ToO rev 14 §8.2 "
+               "names, and every record-level degeneracy entry placed on its axis with its deployed value and what it "
+               "voids, among them the six of Batch 34's records (two of those records provisional) and two of ADR-0051 "
+               "(Proposed). Arrows point down the lattice, toward degeneracy.",
+               3600, "ADR-0023 §1–§7, A1 §6c and carried scope (B3, R3, R4, B13, B29); ADR-0024 Degeneracies; ADR-0025 "
+               "Annex; ADR-0029 A3, A4; ADR-0030 §8, A3; ADR-0034 §2, §8, A2 (B30); ADR-0033 A7 (B29), A8 (B31), A9 "
+               "(B32), A10 to A12 (B34); ADR-0035 §1 R7, §9 (Proposed); ADR-0036 §8 (Proposed); ADR-0037 §8; ADR-0038 "
+               "§7; ADR-0039 §7, A2; ADR-0041 A1; ADR-0042 §7; ADR-0044 §5; ADR-0045 §8, Annex B (A2); ADR-0047 §1–§3, "
+               "§10; ADR-0048 §2, §7; ADR-0050 §1–§4, §6, §9 (provisional); ADR-0051 §9 (Proposed); ADR-0052 §1, §8 "
+               "(provisional); ADR-0017; ADR-0028 §3; ADR-0005 (B27); ToO rev 14 §2.10, §8.1–§8.3; "
+               "derived/topak-rungs-axes-degeneracies-accounting-2026.09.26.md; "
+               "mechanism/GAPS-AND-ASSUMPTIONS.md G19; G10 §1.1, §1.2, §2.2, §2.3, §2.5, §8, §7 items 5, 6, 7, 11, 38, "
+               "40, 64, 67, 80, 83, 85, 97")
     X0, X1 = c.x0, c.x1
     W = X1 - X0
     y = c.y
@@ -269,7 +359,7 @@ def _build():
     sx += c.status(sx, y, "accepted", "C3 · Batch 3, 2026.09.23") + 14
     c.text(sx, y + 16, "C3 because §5 reversed ADR-0008's Observer scoping (now superseded by ADR-0038) and ADR-0017's "
                        "ordering-primacy clause (supersession unwritten) in effect. **Nobody ships the archetype.** No "
-                       "deployment declaration has been written (G9 §8).", 14.5, "muted")
+                       "deployment declaration has been written (G10 §8).", 14.5, "muted")
     y += 52
 
     # ======================================================================== the relation
@@ -302,7 +392,7 @@ def _build():
             "**Archetype versioning**: conformance binds to (archetype version, rung tuple); published versions freeze.",
             "**Dominance rule**: on a paired axis the archetype moves only to Pareto-dominating values.",
             "**Non-increasing TCB** across versions (now checkable row set against row set, ADR-0045 §4).",
-            "**Until it exists, nothing bounds how the archetype grows** under §4 (ToO §8.2; G9 item 7). Also open: the "
+            "**Until it exists, nothing bounds how the archetype grows** under §4 (ToO §8.2; G10 §7 item 7). Also open: the "
             "axis set is not enumerated; finiteness of each chain is unproven.",
         ], "red"),
     ]
@@ -324,10 +414,14 @@ def _build():
         ["Deployed value", "Its limiting value in this deployment"],
         ["Premises falsified", "The theorem premises the limit falsifies"],
         ["Theorems voided", "The inventory loss. No field exists for a checkable property that is not a safety theorem: "
-         "a properties-lost field is proposed (ADR-0037 finding 6; G9 item 40)"],
+         "a properties-lost field is proposed (ADR-0037 finding 6; G10 §7 item 40)"],
         ["Type changes (§6b)", "For each participant whose type changes: archetype type, deployed type, where the gate "
          "sits, what enters or leaves the trusted base. Empty is a claim: \"no participant changes type\". To be stated "
-         "as ADR-0045 row ids (amendment owed, G9 item 64; the reference declares a rung per seat meanwhile, item 85)"],
+         "as ADR-0045 row ids: the §6b amendment and the declaration template are still owed (G10 §7 item 64)"],
+        ["Declared rung per seat (§6c, A1, B29)", "For every seat the issued rules declare, the confinement rung its "
+         "leases are granted at and the ADR-0045 Annex A rows that rung rests on. Rung 0 is `Mediated`; rung ≥ 1 is "
+         "granted only on an Attested appraisal at that rung, and any other rung is refused. **Changing a seat's rung "
+         "is an issuance.** The reference carries it as `SeatDecl.rung` (I37)"],
         ["Mitigation", "Optional"],
         ["Composition note", "Mandatory above one parameter (§7a)"],
     ], size=13.5, accent="blue")
@@ -353,10 +447,11 @@ def _build():
     y += c.legend(X0, y, [("box", "blue", "archetype value (the top of the axis)"),
                           ("arrow", "red", "degeneracy: a parameter driven toward its limit", "7 5"),
                           ("box", "red", "record-level entry (Accepted)"),
-                          ("box", "amber", "entry in a Proposed record or a pending amendment, not in force",
-                           "6 4"),
+                          ("box", "red", "entry in a provisional record (ADR-0050, ADR-0052): in force, subject to "
+                           "redesign", "4 3"),
+                          ("box", "amber", "entry in a Proposed record, not in force", "6 4"),
                           ("box", "grey", "a position with no record", "2 3")], title="Reading") + 20
-    for tier in (TIER1, TIER2):
+    for tier in (TIER1, TIER2, TIER3):
         n = len(tier)
         gap = 28
         cw = (W - gap * (n - 1)) / n
@@ -372,7 +467,7 @@ def _build():
         ("Persona provenance (ADR-0017)", [
             "**Archetype**: in-house pre-train, two independent lineages. Rungs 1 to 3 (fine-tune, attested external, "
             "asserted external) are positions in ADR-0017's table, not D-records.",
-            "Its claim to be the axis is reversed in effect by ADR-0023 §5; supersession unwritten (G9 item 6). "
+            "Its claim to be the axis is reversed in effect by ADR-0023 §5; supersession unwritten (G10 §7 item 6). "
             "ADR-0035 (Proposed) adds distillation at rung 1.",
         ]),
         ("Event-log legibility (ADR-0028 §3)", [
@@ -381,10 +476,12 @@ def _build():
             "**Shortening either** is a legibility degeneracy; none is declared. The forensic horizon and audit "
             "authority are folded into this axis (09.26 accounting).",
         ]),
-        ("Effect-stream role (ADR-0005, Proposed)", [
-            "At the archetype Kafka is a transport with a durability window, and the archive is the system of record; "
-            "lower profiles may subtract toward native-log ordering (09.12 review note).",
-            "The record is **Proposed** (G9 item 5); no entry declared.",
+        ("Effect-stream role (ADR-0005, Accepted (genesis), C4, B27)", [
+            "At the archetype Kafka is a transport with a durability window, and the archive is the system of record "
+            "(the Paxos log orders); lower profiles may subtract toward native-log ordering (09.12 review note).",
+            "**Deployment position** (ADR-0005): a deployment that reads order from the transport, or keeps the "
+            "transport as its record, is a degeneracy of its own declaration; **none is declared**. Ratified, "
+            "discharging G9 item 5 (G10 §1, §7).",
         ]),
         ("HITL / HOTL / HOOTL posture (\"arguably\")", [
             "Named as a candidate parameter by ADR-0023's obligations and ToO §8.2 (\"arguably\"). Build's gate is a "
@@ -400,6 +497,9 @@ def _build():
     c.para(X0, y, W, "**The five Observer and retention entries** (D-0037-1, D-0037-2, D-0038-1, D-0038-2, D-0039-1) "
            "**void no safety theorem**, because the Observer is deny-only, and state their losses in prose; so do D-0042-1 "
            "and D-0030-2. Confinement rungs 1 and 2 void no theorem and move what the theorems rest on, as D-0034-5 "
-           "(pending) would."
-           "", 14.5)
+           "does. **None of the eight entries of ADR-0047 to ADR-0052 voids a theorem in force.** D-0047-1, D-0050-1, "
+           "D-0051-1 and D-0052-1 lose the properties their record's ratification condition states, and the binding "
+           "table has no rows for those modules yet (G10 §2.6, item 90); under D-0050-3 every safety property holds. Three of them, D-0050-1, "
+           "D-0052-1 and D-0047-1, were the reference's position until 2026.10.05; D-0050-1 still is for a first "
+           "seating. **No deployment declaration has been written, and no deployment conforms** (G10 §8).", 14.5)
     return c

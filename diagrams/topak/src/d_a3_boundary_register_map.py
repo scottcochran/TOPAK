@@ -14,14 +14,16 @@ def build():
                "Every boundary the 2026.09.13 register names, placed on the system it divides and tagged with its id. "
                "The register is dated: it was written against the 09.12 checkpoint, nothing in it is a ratified "
                "decision, and rows marked † are analysis with no record behind them. Where a later record has since "
-               "changed a boundary, the change is stated as G9 and ToO rev 13 have it, in the last column of the "
+               "changed a boundary, the change is stated as G10 and ToO rev 14 have it, in the last column of the "
                "register below.",
-               3200, "derived/topak-boundary-register-2026.09.13.md §0–§2, §6; ToO rev 13 §1, §2.3–§2.9, §3.1, §4.1, "
-               "§4.3–§4.4, §5.4, §6, §7.5, §8.1, §10, §15; G9 §1.1, §2.3, §2.5, §8, §7 items 1, 17, 21, 36, 62, 64, 85; "
-               "mechanism/GAPS-AND-ASSUMPTIONS.md G1, G19, I43, I44; ADR-0002 A2, ADR-0003 A1–A3, "
-               "ADR-0004, ADR-0015, ADR-0023, ADR-0024, ADR-0025, ADR-0028, ADR-0030 §1, §3, ADR-0031 §3, A2, ADR-0032, "
-               "ADR-0034, A2 (pending), ADR-0035, ADR-0036, ADR-0037, ADR-0039, ADR-0042 §6 (Proposed), ADR-0044; "
-               "ADR-0033 A6, A7 and A8 (pending)")
+               3200, "derived/topak-boundary-register-2026.09.13.md §0–§2, §6; ToO rev 14 §1, §2.3–§2.10, §3.1, §3.3, "
+               "§4.1, §4.3–§4.4, §5.4, §6, §7.1, §7.5, §7.10, §8.1, §10, §15; G10 §1, §1.1, §2.1–§2.5, §8, §7 items 1, 2, "
+               "25, 46, 64, 88, 92, 93; G9 §7 items 17, 62; mechanism/GAPS-AND-ASSUMPTIONS.md G1, G19, I43, I44; "
+               "ADR-0002 A2, ADR-0003 A1–A3, ADR-0004, ADR-0013 A1, ADR-0015, ADR-0016 A1, ADR-0023 A1, ADR-0024 A3 "
+               "(provisional), ADR-0025 A3 (provisional), ADR-0026 W1, A2 (provisional), ADR-0028, ADR-0030 §1, §3, A2, "
+               "A3, ADR-0031 §3, A2, ADR-0032, ADR-0034, A2, ADR-0035 (Proposed), ADR-0036 (Proposed), ADR-0037 A2–A4, "
+               "ADR-0039 A2, ADR-0041 A1–A3, ADR-0042 §6, A1, ADR-0044, ADR-0047, ADR-0049, ADR-0050 and ADR-0052 "
+               "(provisional); ADR-0033 A6–A13")
     X0, X1 = c.x0, c.x1
     y = c.y
 
@@ -55,6 +57,8 @@ def build():
         "shows up, Run **proceeds**: HOTL is disabling only.",
         "**HOOTL: absent.** The interval `D` was named and unbudgeted (†); ADR-0032 gives it a form, "
         "`W + L + D < T_irrev`, with `L` unmeasured.",
+        "**Operators are principals** (ADR-0050, provisional): when no operator in a domain holds a live lease, nothing "
+        "in it is regranted and the domain stalls (ToO §7.10).",
     ], accent="brown", size=15, h=hk + 58)
     btag(c, X1 - 72, inner_y - 48, "B10", "brown")
     y = g_top + hk + 58 + 60
@@ -71,7 +75,7 @@ def build():
     pad = 26
     iw = dom_w - 2 * pad - 40
 
-    def domain_inner(x, acc, name, alphabet, cell_lines):
+    def domain_inner(x, acc, name, alphabet, cell_lines, people):
         cy = top + 42
         c.text(x + pad, cy + 6, name, 24, acc, bold=True)
         cy += 30
@@ -84,21 +88,37 @@ def build():
         cy += ch + 20
         ah = c.card(ix, cy, iw, "Typed alphabet: the only way out", [alphabet], accent="teal", size=14,
                     bullets=False)
-        cy += ah + 28
+        cy += ah + 20
+        ph_ = max(c.card(0, 0, iw, "People in seats: principals, `Mediated`", pp, size=14, status="provisional",
+                         draw=False) for pp in people_both)
+        c.card(ix, cy, iw, "People in seats: principals, `Mediated`", people, accent="brown", size=14,
+               status="provisional", status_extra="ADR-0050, ADR-0052" if acc == "green" else "ADR-0050", h=ph_)
+        btag(c, ix + iw - 64, cy - 14, "B5", "violet")
+        cy += ph_ + 28
         return mem_top, cy, ix
+
+    people_both = [
+        ["`operator` seats, either domain, a person and no other seat: control requests, signed and decided by "
+         "`C1`–`C9` (ADR-0050; ADR-0037 A4). `grant` seats vote (ADR-0024).",
+         "They read round topics, and [[red|nothing gates a read]]: the mechanism has no read path for topics "
+         "(G10 item 46)."],
+        ["`operator` seats as in Build; an `emergency` seat, one person for one round, activated by the break-glass "
+         "roster's quorum (ADR-0052; ADR-0037 A3).",
+         "Operators read each other's topics and the emergency seat's, and [[red|nothing gates a read]] (G10 item 46)."],
+    ]
 
     b_mem, b_end, b_ix = domain_inner(bx, "blue", "Build", "`Read` `Draft` `Invoke` `Emit` `Submit` `Vote`: egress only "
                                       "(ADR-0022). `Invoke` is the whole attack surface.", [
         "One principal holds exactly one seat; the agent is a cell of them (ADR-0037).",
         "The Thinker holds a **Persona**: model, prompt, decoding, decoder, seat, pinned (ADR-0016).",
         "Principal type: `Contained` or `Mediated`; **rung 0 is** `Mediated`**, always**.",
-    ])
+    ], people_both[0])
     r_mem, r_end, r_ix = domain_inner(rx, "green", "Run", "`Consult` (ingress, no effect), `Actuate`, `Report` "
                                       "(ADR-0040). No name is shared with Build.", [
         "One principal holds exactly one seat; the agent is a cell of them (ADR-0037).",
         "The Thinker holds a **Persona**: model, prompt, decoding, decoder, seat, pinned (ADR-0016).",
         "Principal type: `Contained` or `Mediated`; **rung 0 is** `Mediated`**, always**.",
-    ])
+    ], people_both[1])
     mem_bot = max(b_end, r_end)
     for x, lab in ((bx, "B2 · Membrane `Contain`"), (rx, "B2 · Membrane, the same component")):
         c.region(x + pad, b_mem, dom_w - 2 * pad, mem_bot - b_mem, lab, "teal", sw=2.2)
@@ -156,13 +176,15 @@ def build():
          "consensus-ordered admit (ToO §15)."),
         ("Version pinning", "The mechanism release, its floor text, schema S and engine, pinned by digest."),
         ("Epoch fencing", "Actions under a fenced epoch are rejected by mechanism, not policy: the cheapest check."),
-        ("Policy floor", "Cedar, linked into the mechanism, resident (ADR-0012, ADR-0030). The genesis text is "
-         "**DRAFT**."),
-        ("Rules floor", "R1, R2, R5, R6, R7, R9 bound every anchor issuance (ADR-0026)."),
-        ("Floor exceptions", "Break-glass and erasure, plus the six forensic classes, as floor entries."),
+        ("Policy floor", "Cedar, linked into the mechanism, resident (ADR-0012, ADR-0030). The text the reference "
+         "links is the proposed floor's `emergency` stage, 28 policies; the genesis text stays a draft (G10 §2.2)."),
+        ("Rules floor", "R1, R2, R5, R6, R7, R9 bound every anchor issuance (ADR-0026); R8 withdrawn (W1); R6 and R7 "
+         "change subject (A2, provisional)."),
+        ("Floor exceptions", "Erasure, the one exception since X1 was retired (ADR-0041 A2; ADR-0013 A1), plus the six "
+         "forensic classes, as floor entries."),
     ]
     hmax = max(c.card(0, 0, cw3, t, [b], accent="teal", bullets=False, size=14, draw=False,
-                      status="draft" if t == "Policy floor" else None) for t, b in items)
+                      status="genprov" if t == "Policy floor" else None) for t, b in items)
     v_bot = cy + 2 * hmax + 16 + 24
     c.region(X0, v_top, vw, v_bot - v_top, "Verified object: what is proved once, with the mechanism", "teal",
              dash=None, sw=2.4, tint=True)
@@ -170,7 +192,7 @@ def build():
         xx = X0 + 24 + (i % 3) * (cw3 + 18)
         yy = cy + (i // 3) * (hmax + 16)
         c.card(xx, yy, cw3, t, [b], accent="teal", bullets=False, size=14, h=hmax,
-               status="draft" if t == "Policy floor" else None)
+               status="genprov" if t == "Policy floor" else None, status_extra="ADR-0030 A3" if t == "Policy floor" else "")
     # B13 tag on the epoch fencing card
     btag(c, X0 + 24 + 2 * (cw3 + 18) + cw3 - 70, cy - 14, "B13", "violet")
 
@@ -249,8 +271,9 @@ def build():
     ly += 14
     sh = c.card(x3 + 20, ly + 10, colw - 40, "Below the membrane", [
         "**Effect exclusivity is assumed, not enforced** (register §10.1). ADR-0034 now designs the discharge: "
-        "rungs 0–3 and profile clauses P1–P7, attested at lease grant. **Narrowed, not closed**: the node's launcher issues rung 1 on profiles that declare "
-        "P3 `fail`, rung 3 only SIMULATED (ADR-0033 A7, pending); **no real principal is** `Contained`.",
+        "rungs 0–3 and profile clauses P1–P7, attested at lease grant. **Narrowed, not closed**: the node's launcher "
+        "issues rung 1 on profiles that declare P3 `fail`, rung 3 only SIMULATED (ADR-0033 A7); **no real principal "
+        "is** `Contained`, and an operator or emergency seat is `Mediated` by design.",
     ], accent="red", size=14, tint=False, dash="6 4")
     r_h = max(r_h, ly + 10 + sh + 24 - r_top)
     c.region(X0, r_top, colw, r_h, "B5 · Plane: control plane / cognitive", "violet")
@@ -267,93 +290,116 @@ def build():
     y += c.para(X0, y, X1 - X0,
                 "The first five columns are the register's §1 verbatim. **†** marks a row the register says is "
                 "analysis with no ADR behind it; [[red|red]] marks the empty or undefined cells. The last column is "
-                "this diagram's, drawn from G9 and ToO rev 13: what a later record changed at that boundary.",
+                "this diagram's, drawn from G10 and ToO rev 14: what a later record changed at that boundary.",
                 14.5, "muted") + 14
     T = "red"
     cols = [("Boundary", 250, {"bold": True}), ("Cadence (outer / inner)", 270), ("Instant", 310),
             ("Interval of untruth", 300), ("If the check is unavailable", 400),
-            ("Since the register (state per G9, narrative per ToO rev 13)", X1 - X0 - 1530)]
+            ("Since the register (state per G10, narrative per ToO rev 14)", X1 - X0 - 1530)]
     rows = [
         ["B1 Domain `Build | Run`", "Release / incident", "**Promotion**: signature over provenance",
          "None claimed; `Submit` is sole egress", "Fail-closed. Pipeline stalls; PC/EC makes this affordable (ADR-0002)",
          "The single signing key is gone: promotion is a **unanimous quorum grant** of grant seats, votes bound to "
          "(artifact, gate-evidence, rules epoch) (ADR-0024). A promotion also stalls without the author's cell "
-         "Observer's coverage to the seal (ADR-0024 A2, ADR-0039 §3, C4)."],
+         "Observer's coverage to the seal (ADR-0024 A2, ADR-0039 §3, C4). **A promotion seats**: what is promoted may "
+         "be a seating, whose tally grants a first lease (ADR-0024 A3, provisional; not built, G10 item 88)."],
         ["B2 Membrane `Contain`", "Release / per-action", "**Admit decision**", "None; rejection is synchronous",
          "Fail-closed. Resident default-deny floor, no fetch dependency (ADR-0012)",
          "The floor is a Cedar library **linked** into the mechanism: no process, socket or fetch; "
-         "`admit ⟺ floor_permit ∧ ¬bundle_deny`, any floor error a deny (ADR-0030 §1, §3, C1)."],
+         "`admit ⟺ floor_permit ∧ ¬bundle_deny`, any floor error a deny (ADR-0030 §1, §3, C1). The text linked since "
+         "2026.10.05 is the proposed floor's `emergency` stage, **genesis-provisional**: ratified only when the "
+         "bootstrap reviewer finds it fit, and no test of fitness is written (ADR-0030 A3; G10 items 2, 87). "
+         "**The operator crossed the criterion**: once whoever reached a socket, now a principal on a seat "
+         "(ADR-0050, provisional); at the reference an unsigned [[red|BOOTSTRAP]] socket still seats."],
         ["B3 Typed effect", "Release (validator) / Persona (decoder)", "**Validate**: total over floor alphabet",
          "None for admissibility; [[red|unbounded for fidelity †]]", "Fail-closed. Parse failure is a local deny, "
          "monotone (ADR-0018)",
          "Raw emission is retained at the archetype so the decoder can be re-run and compared: recovers "
          "faithfulness, not intent (ADR-0037 §3; D-0037-2 if not retained). Decoder–alphabet compatibility is "
-         "still open (G9 item 17)."],
+         "still open (G9 item 17, as at G10). What comes back in from the world now carries a **label** of its source, and an "
+         "outward `Actuate` is refused by `R5`–`R7` over `clearSet` (ADR-0047; ADR-0041 A1): a label is a "
+         "declaration, not a finding (G10 §8)."],
         ["B4 Verified / parameterized", "Release / deploy / incident", "**Promotion**: `bundle ⊑ floor`",
          "Bundle staleness, **unbounded but floor-bounded below**", "Fail-closed and safe while stalled. The "
          "model case (ADR-0010)",
          "The instant moved: `bundle ⊑ floor` now holds **by composition at every admit**, for every bundle at "
          "every age, and nobody decides it at promotion (ADR-0030 §1). A bundle loads only under an issued key's "
-         "signature (ADR-0044, C1; built, ADR-0033 A6)."],
+         "signature (ADR-0044, C1; built, ADR-0033 A6), and only if its allowlist is well-formed (ADR-0049; ADR-0030 "
+         "A2; built, A10)."],
         ["B5 Plane control-plane / cognitive", "Release / per-emission", "**Fact construction** at Observer finding",
          "None claimed", "Fail-closed; no payload crosses by default (ADR-0004)",
          "Unchanged in principle. Raw emission joins the payload side, beside the typed action (ADR-0004 B12, "
-         "ADR-0037); the Reader stage's results cross as facts for the cell Observer (ToO §2.8)."],
+         "ADR-0037); the Reader stage's results cross as facts for the cell Observer (ToO §2.8). The `Actuate` "
+         "envelope gains four label fields and a round opens with its tool list (ADR-0042 A1). **New readers that "
+         "nothing gates**: operators read each other's topics and an emergency seat's, and the mechanism has no read "
+         "path for topics (G10 item 46)."],
         ["B6 Principal type `Contained` / `Mediated`", "Per-principal, static", "**Lease grant**",
          "Whole lease, for `Mediated`", "N/A: predicate, not a runtime check (09.12 §5)",
          "The lease carries `[profile digest, rung]` (ADR-0031 §3). `Contained` has four conjuncts (ADR-0034 §4); "
          "the fourth, lineage independence, is ADR-0035, **Proposed**, so **no real principal is** `Contained`. The "
          "reference's lookup answers yes only for a **SIMULATED** rung-3 lease under a test-issued criterion: a "
-         "witness, not a claim (G9 §2.3; ADR-0033 A7, pending)."],
+         "witness, not a claim (G10 §2.3; ADR-0033 A7). An operator and an emergency seat are `Mediated` "
+         "by design: a person is not confined (ADR-0050 §1; ADR-0052 §1, provisional)."],
         ["B7 Seat LTRO separation of duties", "Release / Persona", "**Seat binding** in Persona", "None claimed",
          "Fail-closed if binding is verified; [[red|unstated †]] (ADR-0016)",
          "Seats are principals: **a principal holds exactly one seat**, the LTRO is a cell; Thinker and Observer are "
          "seats, Listener and Reader are stages (ADR-0037, C3, C4). Alphabets bounded by seat kind in floor text, "
-         "forbid B10 and a tightened B6, checked at the grant path first."],
+         "forbid B10 and a tightened B6, checked at the grant path first. **Five kinds** since Batch 34: `operator` "
+         "and `emergency` join, each held only by a person (ADR-0037 A3, A4, provisional); B10 lets an `emergency` "
+         "seat `Actuate`. The Listener labels and delivers the tool list, and stays a stage (A2)."],
         {"cells": ["B8 Persona / occupant identity", "Provider ([[red|uncontrolled]]) / Persona promotion",
                    "**Persona promotion only**", "[[red|Unbounded: no expiry, no re-attestation †]]",
                    "[[red|Undefined.]] Largest empty cell in the grid (§8)",
                    "Persona expiry now has a **bound, not a clock**: `ttl ≤ T_persona` at grant and every renewal "
-                   "(ADR-0031 A2; built, ADR-0033 A6), still read on the local clock (G9 item 62). A revoked Persona "
-                   "is a targeted revocation (ToO §6). ToO §10 still calls B8 the most critical boundary."],
+                   "(ADR-0031 A2; built, ADR-0033 A6), still read on the local clock (G9 item 62, open at G10). A revoked Persona "
+                   "is a targeted revocation (ToO §6). A person's Persona binds a key, its lineage rooted in an identity "
+                   "provider whose key is issued (ADR-0016 A1; ADR-0025 A3, provisional). ToO §10 still calls B8 the "
+                   "most critical boundary."],
          "accent": "red"},
         ["B9 Retention / erasure", "Deploy / per-round", "**Seal** on emit completion", "Between emit and seal",
          "Fail-closed on replay; [[red|fail-open on forensics †]] (ADR-0003, 0006, 0020)",
          "Forensic floor: six classes non-erasable for the declared horizon (ADR-0028, C1). Crypto-shredding "
          "rejected. Topic identity carries the rules-epoch chain (A1) and a denials-only `after` companion (A2, "
-         "C1). Genesis issues no erasure roster, so erasure is disabled from epoch 0."],
+         "C1). Genesis issues no erasure roster, so erasure is disabled from epoch 0. F5 is now an emergency "
+         "seating's activations and the calls under them (ToO §4.4); an activation's record kept only while its "
+         "round is live breaks NC-1 and NC-2 (`NonComposition_A1`)."],
         {"cells": ["B10 Human authority HITL / HOTL / HOOTL", "Constitutive / supervisory / absent",
                    "**Gate** (HITL) or **non-refresh** (passive e-stop)", "`D`: [[red|unbudgeted †]]",
                    "Build: stalls. Run: **proceeds**: HOTL is disabling only (09.12 §4)",
                    "The timing property is a budget, `W + L + D < T_irrev` per effect class (ADR-0032 §4); `L` is "
                    "unmeasured and no effect class declares `T_irrev`. Run effect admits stall on a dead cell "
-                   "Observer, floor entry R3 (ADR-0039, C4)."],
+                   "Observer, floor entry R3 (ADR-0039, C4); an emergency seat is not a `thinker` and is not "
+                   "coupled (ADR-0039 A2, provisional with ADR-0052)."],
          "accent": "amber"},
         ["B11 Deployment rung archetype / profile", "Release / per-deployment", "**Rung manifest**", "None claimed",
          "Fail-closed by subtraction; monotone (open: axis question)",
          "The axis question is answered: degeneracy, not a ladder; rungs are per axis and every degeneracy carries a "
-         "declaration record (ADR-0023, C3). No deployment declaration has been written (G9 §8); the reference "
-         "declares a rung per seat meanwhile, accepted in conversation and owed to a record (G9 items 64, 85)."],
+         "declaration record (ADR-0023, C3). No deployment declaration has been written (G10 §8). The declared "
+         "rung is per seat, §6c in force (ADR-0023 A1, Batch 29); the declaration template is open (G10 item 64)."],
         {"cells": ["B12 Deployment stack sandbox and below", "—", "[[red|None: no mechanism exists]]",
                    "[[red|Permanent]]", "[[red|Undefined.]] Effect exclusivity is assumed, not enforced (§10.1)",
                    "The instant now exists: **lease grant**, the confinement field (ADR-0031 §3). The design exists: "
                    "attestation rungs 0–3 and profile clauses P1–P7 (ADR-0034, C2, C4); the rung-1 launcher is "
-                   "ADR-0036, **Proposed**. The mechanism is **narrowed, not closed** (G9 item 1, the sandbox gap): "
+                   "ADR-0036, **Proposed**. The mechanism is **narrowed, not closed** (G10 item 1, the sandbox gap): "
                    "the node's launcher issues rung 1 on profiles that declare P3 `fail`, rung 3 only SIMULATED, "
-                   "rung 2 a seam (ADR-0033 A7, pending); no image passes P3 (item 36). For Run, P4 becomes "
-                   "**channel fidelity** (ADR-0034 A2, pending; ADR-0042 §6, Proposed), built for Wasm-hosted "
-                   "tools (ADR-0033 A8, pending) and checked for no native one (`mechanism/` G19)."],
+                   "rung 2 a seam (ADR-0033 A7, ratified ahead of ADR-0036); no guest passes P3. For Run, P4 is "
+                   "**channel fidelity**, in force (ADR-0034 A2 with ADR-0042 §6, Batch 30), built for Wasm-hosted "
+                   "tools with the target read from the allowlist entry (ADR-0033 A8, A9) and checked for no native "
+                   "one (`mechanism/` G19)."],
          "accent": "red"},
         ["B13 Epoch / lease temporal fence", "Deploy / per-round", "**Fence** / **expiry**", "≤ TTL for passive stop",
          "Fail-closed. Expiry is a local clock read: [[red|but see §9.1 †]]",
          "§9.1 is discharged: **clocks buy liveness, never safety** (ADR-0032). Expiry is read locally and then "
          "ordered (ADR-0031 E1); the fence is the Paxos log index at grant; revocation is targeted or an epoch "
-         "fence (ADR-0031, C1)."],
+         "fence (ADR-0031, C1). **R8 is withdrawn** (ADR-0026 W1): a break-glass grant is one lease and ends with its "
+         "round, on the clock every lease uses (ADR-0052, provisional). A lease just granted could be ended as "
+         "expired; fixed (ADR-0033 A13)."],
         {"cells": ["B14 Gate approver", "—", "[[red|None: outside every theorem]]", "[[red|Permanent]]",
                    "[[red|Undefined.]] Approver is not evictable, therefore unmodeled (§10.2)",
                    "The promotion approver is now a principal (ADR-0024), so what sits at the gate is the anchor's "
                    "key-holders at archetype custody (ADR-0002 A2, ToO §7.5). Still outside every theorem: anchor "
-                   "intent is the sole axiom, and anchor capture heads the residual risks (ADR-0025)."],
+                   "intent is the sole axiom, and anchor capture heads the residual risks (ADR-0025). The operator, "
+                   "who issues every lease, is now a principal too (ADR-0050, provisional)."],
          "accent": "red"},
     ]
     y += c.table(X0, y, cols, rows, size=14, accent="ink") + 50
@@ -376,9 +422,10 @@ def build():
     h1b = c.card(X0, y + h1 + 20, lw, "What the register said to act on, and where it stands", [
         "**B12 and B14 are structural and known**; **B8 is the one to act on**: the only row whose outer side "
         "changes at a cadence TOPAK does not control, does not observe by default, and cannot fence (§2).",
-        "Since: B12 has an instant, a design and, at the reference, a rung-1 launcher and a SIMULATED rung 3, "
-        "pending, with no real principal `Contained`; B8 has a bound, `T_persona`, on a local clock, "
-        "and a lineage criterion that is Proposed; B14 is narrowed to the anchor and stays axiomatic.",
+        "Since: B12 has an instant, a design and, at the reference, a rung-1 launcher and a SIMULATED rung 3 "
+        "(ADR-0033 A7), with no real principal `Contained`; B8 has a bound, `T_persona`, on a local clock, "
+        "and a lineage criterion that is Proposed; B14 is narrowed to the anchor and stays axiomatic, and the "
+        "operator has left the gate for a seat, provisionally (ADR-0050).",
     ], accent="grey", size=14)
     cx = X0 + lw + 50
     h2 = c.table(cx, y, [("Boundary", 120, {"bold": True}), ("Inside / above", 330), ("Outside / below", 300),

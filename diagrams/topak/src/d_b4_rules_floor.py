@@ -8,15 +8,18 @@ def build():
     c = Canvas(ID, "The rules floor bounds every anchor issuance",
                "ADR-0010's move applied one layer up: the anchor is a havoc issuer (ADR-0025), and the rules floor "
                "(ADR-0026) joins the verified object so the mechanism rejects any issuance that violates it. Genesis "
-               "rules floor at G8: **R1, R2, R5, R6, R7, R9**; R3 and R4 withdrawn; R8 drafted and pending. Since "
-               "2026.10.02 its properties are proved, each under the entry it rests on.",
-               2800, "ADR-0026 §1–§7, History A1, B2, B4, B25, R1–R3 and the A1 note; ADR-0025 §1 (a)–(f) with A1; "
-               "ADR-0046 §4, §5; ADR-0029 B25; "
-               "ADR-0024 §2, §6, A2 and Degeneracies; ADR-0029 §5; ADR-0032 §2; ToO rev 11 §7.2, §7.3, §7.7, §9; "
-               "G8 §1.1, §2.1, §3, §7 items 8 and 39; spec/RulesFloorNV.tla, RulesFloorNV-results-2026.09.15.txt, "
-               "RulesFloorNV_rev5.tla, RulesFloorNV-rev5-results-2026.09.23.txt, bootstrap-results-2026.09.23.txt, "
-               "RulesFloorNV_rev5_proof.tla, RulesFloorNV_rev5-proof-results-2026.10.02.txt, "
-               "Anchor-proof-results-2026.10.02.txt, BreakGlass-proof-results-2026.10.02.txt")
+               "rules floor at G10: **R1, R2, R5, R6, R7, R9** in force; R3, R4 and **R8 withdrawn**; R6 and R7 "
+               "**change subject** with break-glass re-homed (ADR-0026 A2, provisional). Since 2026.10.02 its "
+               "properties are proved, each under the entry it rests on; `RulesFloorBase.tla` has not caught up.",
+               2800, "ADR-0026 §1–§7, History A1, W1, A2, B2, B4, B25, B34, R1–R3 and the A1 note; ADR-0025 §1 (a)–(h) "
+               "with A1, A2, A3 and B29; ADR-0046 §4, §5, A1; ADR-0029 §4 with A4, §5, B25; ADR-0052 §1, §3, §9 (R5); "
+               "ADR-0013 §3 with A1; ADR-0024 §2, §6, A2 and Degeneracies; ADR-0032 §2; ToO rev 14 §3.3, §7.2, §7.3, "
+               "§7.7, §9; G10 §1, §1.2, §2.1, §2.9, §3, §7 items 8, 39 (as at G9), 90; spec/RulesFloorNV.tla, "
+               "RulesFloorNV-results-2026.09.15.txt, RulesFloorNV_rev5.tla, RulesFloorNV-rev5-results-2026.09.23.txt, "
+               "bootstrap-results-2026.09.23.txt, RulesFloorNV_rev5_proof.tla, "
+               "RulesFloorNV_rev5-proof-results-2026.10.02.txt, RulesFloorNV_rev5-proof-cert-results-2026.10.04.txt, "
+               "RulesFloorBase.tla, Anchor-proof-results-2026.10.02.txt, BreakGlass-proof-results-2026.10.02.txt, "
+               "BreakGlass_A1-results-2026.10.05.txt, NonComposition_A1-rows.txt")
     X0, X1 = c.x0, c.x1
     W = X1 - X0
     gap = 28
@@ -41,13 +44,17 @@ def build():
         "Kept minimal, for ADR-0010's reviewability argument.",
     ]
     rules_body = [
-        "**(a)** the promotion roster and its parameters (`quorum`, `minGrant`; ADR-0024)",
-        "**(b)** the break-glass and erasure quorum rosters",
+        "**(a)** the promotion roster and its parameters (`quorum`, `minGrant`; ADR-0024); read since A3 to include "
+        "the `operator` seats and, at genesis, the first operators' seatings",
+        "**(b)** the break-glass and erasure quorum rosters; for break-glass the rules now carry the roster and its "
+        "quorum only (ADR-0026 A2)",
         "**(c)** the anchor's own key set",
         "**(d)** any change that relaxes the policy floor or adds a floor exception",
         "**(e)** any change to the rules floor, **in either direction**",
         "**(f)** keys accepted in place of the mechanism's own check: the rung-3 verifier's appraisal key and "
-        "the bundle-signing key (`verifier_keys`, `bundle_keys`; A1, Batch 17)",
+        "the bundle-signing key (A1, Batch 17), and **an identity provider's key** (A3, Batch 34, provisional)",
+        "**(g)** the independence criterion in force (B29) · **(h)** the **two lists** a bundle's load checks read: "
+        "entries that may release a reserved label, and the channel targets inside the deployment (A2, Batch 34)",
         "Tightening the **policy** floor is not a rules change: it is an ordinary promotion.",
     ]
     h1 = max(c.card(0, 0, w_anchor, "Trust anchor · havoc issuer", anchor_body, draw=False, sub="ADR-0025"),
@@ -77,7 +84,7 @@ def build():
     cols = [("Entry", 70, {"bold": True}),
             ("Bound (ADR-0026 §2)", 430),
             ("Bounds", 200),
-            ("State at G7", 330),
+            ("State at G10", 330),
             ("Why, and what it protects", tw - 70 - 430 - 200 - 330)]
     rows = [
         {"cells": ["R1", "`rules.quorum = \"all\"`: unanimity over counted grant seats", "ADR-0024 §2 quorum",
@@ -102,22 +109,26 @@ def build():
                    "ADR-0025 / ADR-0024", "[[blue|In force]] · ratified 09.23 (B2)",
                    "Keeps anchor key-holders and grant seats disjoint (with R2, the headcount of five). An (f) key is "
                    "not a seat and casts no vote, so A1 leaves R5 unchanged."], "accent": "blue"},
-        {"cells": ["R6", "Bound on the floor-exception count, currently **2** (erasure, break-glass)", "ADR-0013",
-                   "[[blue|In force]] · **effective 2026.09.23** (B4), on ADR-0013's ratification",
-                   "Ratified with ADR-0026 in Batch 2, conditioned on ADR-0013. A third exception is a policy-floor "
-                   "relaxation: an anchor issuance plus a promotion (§4)."], "accent": "blue"},
-        {"cells": ["R7", "No break-glass grant may authorize `Issue`, `Vote`, or promotion",
-                   "ADR-0009 / ADR-0013", "[[blue|In force]] · ratified 09.23 (B2)",
-                   "Discharges break-glass × issuance and break-glass × promotion. Checked, and since 2026.10.02 "
-                   "proved, in the bootstrap module `BreakGlass` (`BreakGlassNeverChangesAuthority`)."],
+        {"cells": ["R6", "Bound on the floor-exception count. **The count it bounds is 1, erasure** (A2); it was 2, "
+                   "erasure and break-glass", "ADR-0013",
+                   "[[blue|In force]] · effective 2026.09.23 (B4) · [[blue|count 1 since B34, provisional]] (A2)",
+                   "X1 is retired: break-glass is an emergency seating and needs no exception (ADR-0052 §2; ADR-0013 "
+                   "A1). A second exception is a policy-floor relaxation: an anchor issuance plus a promotion (§4)."],
+         "accent": "blue"},
+        {"cells": ["R7", "**No activation of an emergency seating grants a lease whose alphabet holds an authority "
+                   "act** (A2). It read: no break-glass grant may authorize `Issue`, `Vote`, or promotion",
+                   "ADR-0052 / ADR-0013", "[[blue|In force]] · ratified 09.23 (B2) · "
+                   "[[blue|subject changed B34, provisional]] (A2)",
+                   "The `emergency` kind's alphabet is `Consult`, `Actuate`, `Report`, so R7 **has nothing left to "
+                   "refuse**; it is kept for the day the kind changes. `BreakGlass_A1`: dropping R7 changes nothing; "
+                   "a kind given an authority act is refused at activation while R7 is in the floor."],
          "accent": "blue"},
         {"cells": ["R8", "`0 < rules.breakGlass.ttl ≤ T_BG`: a finite break-glass grant TTL",
                    "ADR-0009 / ADR-0013",
-                   "[[violet|Drafted, pending]]: ADR-0026 A1, 2026.09.24 · none of its four conditions met "
-                   "(G8 §1.1, item 8)",
-                   "Vacuous until a mechanism clause makes a grant end (companion clause would carry C1); `T_BG` has "
-                   "no archetype value; a TTL needs trusted time (ADR-0032 §2); a new non-vacuity artifact with "
-                   "`P8_BreakGlassEnds` is owed."], "accent": "violet", "dash": True},
+                   "[[grey|Withdrawn 2026.10.04]] (W1) before it was ever in force · ID reserved",
+                   "A TTL needs trusted time, which the corpus refuses (ADR-0032 §2; ADR-0045 §6). A break-glass "
+                   "grant is an emergency seating's one lease and **ends with its round** (ADR-0052 §3), on the "
+                   "lease's own clock. Not coming back as a TTL (G10 §1)."], "accent": "grey"},
         {"cells": ["R9", "`rules.quorum = \"all\" ∨ rules.quorum ≥ 2`", "ADR-0024",
                    "[[blue|In force]] · **conditional entry**: binds only once R1 is relaxed",
                    "Keeps D-0024-1 (k-of-n) from being D-0024-2 (single signer) wearing a threshold. The corpus's "
@@ -132,13 +143,23 @@ def build():
     sw = X1 - sx
     sy = y
     hh = c.card(sx, sy, sw, "The genesis rules floor today", [
-        "**R1, R2, R5, R6, R7, R9** (G8 §2.1, unchanged since G6).",
-        "R3, R4 withdrawn; their IDs stay reserved. R8 is the one pending amendment in the corpus (G8 §1.1).",
+        "**R1, R2, R5, R6, R7, R9** in force (G10 §2.1); the entry set unchanged since G6.",
+        "R3, R4 and R8 withdrawn; their IDs stay reserved. **No amendment is pending** anywhere in the corpus "
+        "(G10 §1.1).",
         "`RulesFloorNV_rev5`'s six properties are **proved**, each under the entry it rests on; P9's premise is "
-        "exact: R2, and R1 or R9 (G8 §2.1; ADR-0026 B25).",
-        "`verifier_keys` and `bundle_keys` are now in the reference's issued rules (ADR-0033 A6, I36); the floor "
-        "is unchanged by them.",
+        "exact: R2, and R1 or R9 (ADR-0026 B25).",
+        "The rules gain three issued things: the provider's key (ADR-0025 A3) and the two lists (A2). **The rules "
+        "floor bounds none of them**; whether an entry should bound the lists is not decided (G10 §2.1).",
     ], accent="blue", status="accepted", status_extra="bootstrap set · no confirmation marker")
+    sy += hh + 22
+    hh = c.card(sx, sy, sw, "R6 and R7 change subject (ADR-0026 A2)", [
+        "Ratified in Batch 34 with ADR-0052 and **provisional with it**: in force, and subject to redesign "
+        "(ADR-0029 A4).",
+        "In the bootstrap set, so **not confirmation-required**; covered by the genesis attestation, which must "
+        "**name it as provisional** (ADR-0029 §4 with A4).",
+        "`RulesFloorBase.tla` [[red|has not caught up]]: it still carries `bgScope` and R6's bound of two "
+        "(G10 item 90). The non-vacuity artifacts, which model a break-glass grant, owe a rerun (A2).",
+    ], accent="blue", status="provisional", status_extra="bootstrap set")
     sy += hh + 22
     hh = c.card(sx, sy, sw, "Parametricity is load-bearing", [
         "A floor entry bounds something **only if the mechanism reads that value from issued rules**.",
@@ -156,7 +177,11 @@ def build():
         "The quorum's archetype values live inside the rules floor, so **a promotion degeneracy is a mechanism "
         "release** and reopens the promotion theorem; anchor custody is a declaration and reopens nothing.",
     ], accent="violet", h=max(0, y + th - sy))
-    y += th + 60
+    hh = c.card(sx, sy, sw, "Modeled, not declared (ToO §7.7)", [
+        "The quorum's archetype values live inside the rules floor, so **a promotion degeneracy is a mechanism "
+        "release** and reopens the promotion theorem; anchor custody is a declaration and reopens nothing.",
+    ], accent="violet", h=max(0, y + th - sy), draw=False)
+    y = max(y + th, sy + hh) + 60
 
     # ------------------------------------------------------------------ row 3: two keys, both directions
     c.heading(X0, y, "Two keys, both directions (ADR-0026 §4, §5; ADR-0025 §1 (d), (e))", "ink", 21)
@@ -175,7 +200,7 @@ def build():
          "Relaxing any entry is a degeneracy (D-0024-1: relax R1; D-0024-2: relax R1, R9 and R2) and ships as a "
          "mechanism release."),
         ("**Policy floor: relax, or add an exception**", "brown", True, "plus the issuance (§5)",
-         "A rules change (ADR-0025 §1 (d)); R6 bounds the exception count."),
+         "A rules change (ADR-0025 §1 (d)); R6 bounds the exception count, which is one."),
         ("**Policy floor: tighten**", "green", False, "an ordinary promotion (§5)",
          "Not a rules change: **an ordinary promotion**, no anchor issuance."),
     ]
@@ -224,7 +249,7 @@ def build():
         "`Vote` envelope **is modeled for the first time**. Five humans; author h1; anchor key-holder h4; one havoc "
         "issuance; recusal enforced at both sites. Floor R1, R2, R5, R7, R9.",
         "**Scope:** no veto seats. The rerun with A2.2 and A2.3 as conjuncts of `PromotionEnabled` is owed "
-        "(G8 item 39).",
+        "(item 39, as at G9). Both runs model break-glass by `bgScope`, R7's reading before A2.",
     ]
     mh = max(c.card(0, 0, hw, "Run 1 · 2026.09.15 · RulesFloorNV", m1, draw=False),
              c.card(0, 0, hw, "Run 2 · 2026.09.23 · RulesFloorNV_rev5", m2, draw=False))
@@ -304,14 +329,41 @@ def build():
         "(ADR-0046 §5). The TLC row above, drop R1 and R9, is one of the two ways.",
         "ADR-0026 §6 and §7's \"non-vacuity and discrimination, not proof\" stands of the TLC runs and no longer of "
         "the properties. **The dropped-entry rows stay with TLC**: that a mutation reaches a bad state is an "
-        "existential claim (ADR-0046 §2). The rerun with A2.2 and A2.3 is still owed (G8 item 39).",
+        "existential claim (ADR-0046 §2). The rerun with A2.2 and A2.3 is still owed (item 39, as at G9).",
+        "[[red|This proof does not certify]] (ADR-0046 A1; G10 §2.9): of 262 obligations, 165 trivial, 84 by SMT "
+        "with a proof `ethos` accepted, 7 LS4 steps no checker confirms, and **Isabelle rejected one of Zenon's "
+        "proofs** (obligation 55). It is one of the three of twenty-two modules that do not certify; restructuring "
+        "them is deferred by the custodian (item 74). Proved is not certified, and certified is not verified.",
     ]
     ph = c.card(X0, y, W, "Since 2026.10.02: the six properties are proved (ADR-0026 B25; ADR-0046 §4)", pr,
                 accent="teal", size=14, status="accepted", status_extra="ADR-0046 · C2, C4 · B25")
     y += ph + 30
+    sw2 = (W - 30) / 2
+    s1 = [
+        "`spec/BreakGlass_A1.tla` (`b586a6afa4fd5136`) succeeds `BreakGlass.tla` where it models X1, for ADR-0029 "
+        "§5's fifth invariant under A2's reading of R7: `EmergencyNeverChangesAuthority` holds (8 rows).",
+        "**With the kind's alphabet as decided, dropping R7 changes nothing**; a later change that gives the kind an "
+        "authority act is refused at activation while R7 is in the floor, and breaks the invariant with R7 dropped.",
+        "Proved, 45 obligations, nothing assumed, and **unlike its predecessor's proof it does not assume R7**. "
+        "Certified (ADR-0052 §9, R5; G10 §3).",
+    ]
+    s2 = [
+        "`spec/NonComposition_A1.tla` (`d1e9113480d016bb`) restates ADR-0013 §4's NC-1 and NC-2 with an activation's "
+        "record as the F5 record and a round that ends (14 rows).",
+        "Both hold; the predecessor's two mutations each break both; **a third breaks both: an activation's record "
+        "kept only while its round is live**. Under X1 there was no \"after the round\" in which to lose it.",
+        "Proved, 96 obligations, nothing assumed. Certified. `BreakGlass.tla` and `NonComposition.tla` stay frozen "
+        "and are cited by digest (G10 §3).",
+    ]
+    sh2 = max(c.card(0, 0, sw2, "Successor: `BreakGlass_A1` (2026.10.05)", s1, size=14, draw=False),
+              c.card(0, 0, sw2, "Successor: `NonComposition_A1` (2026.10.05)", s2, size=14, draw=False))
+    c.card(X0, y, sw2, "Successor: `BreakGlass_A1` (2026.10.05)", s1, accent="teal", size=14, h=sh2)
+    c.card(X0 + sw2 + 30, y, sw2, "Successor: `NonComposition_A1` (2026.10.05)", s2, accent="teal", size=14, h=sh2)
+    y += sh2 + 30
     c.para(X0, y, W, "Both runs are precursors to the `RulesFloor` and `Promotion` bootstrap modules (ADR-0029 §5, "
            "invariant `PromotionMeetsIssuedQuorum` since A1), not substitutes; neither module is drafted yet. "
            "The `Anchor` module (`FloorPreserved`) was drafted and checked 2026.09.23 against the floor as ratified "
            "(R1, R2, R5, R6, R7, R9), and proved 2026.10.02 for every floor subset and epoch bound "
-           "(`Anchor_proof.tla`, 40 obligations; ADR-0029 B25).", 14.5, "muted")
+           "(`Anchor_proof.tla`, 40 obligations; ADR-0029 B25). Both still extend `RulesFloorBase.tla`, which is "
+           "behind ADR-0026 A2 (G10 item 90).", 14.5, "muted")
     return c
