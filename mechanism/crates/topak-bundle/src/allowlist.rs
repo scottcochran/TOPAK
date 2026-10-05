@@ -20,6 +20,8 @@ use std::collections::{BTreeMap, BTreeSet};
 
 use serde::Serialize;
 use serde_json::{Map, Value, json};
+use topak_core::action::{Action, tool_id};
+use topak_core::labels::{Delivery, Handle, Label, LabelFacts, RoundLabels};
 use topak_core::{Digest, Domain};
 
 /// ADR-0047 §1: the two names every vocabulary holds.
@@ -73,12 +75,22 @@ pub struct Entry {
     pub outward: bool,
 }
 
-/// A well-formed allowlist: the entries of one bundle revision, and the vocabulary they name.
+/// A well-formed allowlist: the entries of one bundle revision, the vocabulary they name, and
+/// the sibling data ADR-0049 §7 places beside them.
 #[derive(Clone, Debug, Default)]
 pub struct Allowlist {
     pub entries: BTreeMap<String, Entry>,
     pub vocabulary: BTreeSet<String>,
+    /// `labels.delivery` (ADR-0047 §2): for each seat kind, the mode of each name.
+    pub delivery: BTreeMap<String, BTreeMap<String, Delivery>>,
+    /// `labels.root.label` (ADR-0047 §1): the Run root's label.
+    pub root: Label,
+    /// `labels.root.objects`: the label of a named subset of the root, by object.
+    pub root_objects: BTreeMap<String, Label>,
 }
+
+/// The seat kinds a delivery table must cover: the kinds that hold a Run lease at the reference.
+pub const DELIVERED_KINDS: [&str; 2] = ["thinker", "observer"];
 
 impl Entry {
     /// The entry as a Thinker is told it (ADR-0048 §1, §2): every field of the interface, the
@@ -110,6 +122,78 @@ impl Entry {
 }
 
 impl Allowlist {
+    /// How an item with this label is delivered to a seat of this kind (ADR-0047 §2): any name
+    /// whose mode is `handle` suppresses the item. A kind the table does not cover is given
+    /// nothing in the clear.
+    pub fn delivery(&self, kind: &str, label: &Label) -> Delivery {
+        match self.delivery.get(kind) {
+            Some(t) if label.iter().all(|l| t.get(l) == Some(&Delivery::Clear)) => Delivery::Clear,
+            _ => Delivery::Handle,
+        }
+    }
+
+    /// What the mechanism computes about a `Consult` or an `Actuate` before the floor sees it
+    /// (ADR-0047 §1, §4), from this revision's declarations and the round's labels. `None` for an
+    /// action that delivers nothing labelled. Mechanical and total: no model computes a label.
+    ///
+    /// An `Actuate` naming no entry of this revision is given the facts that refuse most: it is
+    /// outward and its result is suppressed. The bundle tier refuses it for having no entry.
+    pub fn facts(&self, kind: &str, action: &Action, round: &RoundLabels) -> Result<Option<LabelFacts>, String> {
+        let clear_set = round.clear_set.clone();
+        match action {
+            Action::Consult { object } => {
+                let result_label = self.root_objects.get(&object.0).unwrap_or(&self.root).clone();
+                let delivery = self.delivery(kind, &result_label);
+                Ok(Some(LabelFacts { clear_set, result_label, delivery, ..Default::default() }))
+            }
+            Action::Actuate { tool, digest, inputs } => {
+                let Some(entry) = self.entries.get(&tool_id(tool, digest)) else {
+                    return Ok(Some(LabelFacts { clear_set, outward: true, delivery: Delivery::Handle, ..Default::default() }));
+                };
+                let (mut input_labels, mut dest_labels) = (Label::new(), Label::new());
+                let (mut literal, mut dest_literal) = (false, false);
+                for (f, v) in inputs {
+                    let destination = entry.inputs.get(f).is_some_and(|i| i.destination);
+                    match Handle::parse(v) {
+                        Some(h) => {
+                            let item = round
+                                .item(&h)
+                                .ok_or_else(|| format!("input {f:?} is a handle that names nothing in this round"))?;
+                            input_labels.extend(item.label.iter().cloned());
+                            if destination {
+                                dest_labels.extend(item.label.iter().cloned());
+                            }
+                        }
+                        None => {
+                            literal = true;
+                            dest_literal |= destination;
+                        }
+                    }
+                }
+                // §1: the entry's label, joined with every handle's, and with `clearSet` where an
+                // input is a literal (R10: a literal may carry anything read in the clear), less
+                // what the entry releases.
+                let mut result_label = entry.label.clone();
+                result_label.extend(input_labels.iter().cloned());
+                if literal {
+                    result_label.extend(clear_set.iter().cloned());
+                }
+                result_label.retain(|l| !entry.releases.contains(l));
+                let delivery = self.delivery(kind, &result_label);
+                Ok(Some(LabelFacts {
+                    clear_set,
+                    input_labels,
+                    dest_literal,
+                    dest_labels,
+                    outward: entry.outward,
+                    result_label,
+                    delivery,
+                }))
+            }
+            _ => Ok(None),
+        }
+    }
+
     /// The tool list of a lease (ADR-0048 §2): the entries of this revision for `domain` whose key
     /// is in `callable`, every one and no other, in the mechanism's one fixed form. The rendering
     /// is total over an entry's fields and makes no choice, so it is a syntactic lift (ADR-0007).
@@ -147,6 +231,7 @@ pub fn check(data: &Value, issued: &Issued) -> Result<Allowlist, Vec<String>> {
         Some(v) => list.vocabulary.extend(v),
         None => out.push("W6: labels.vocabulary is not a list of names".to_string()),
     }
+    check_labels(data, &mut list, &mut out);
     let tools = match data.pointer("/topak/tools") {
         None => return if out.is_empty() { Ok(list) } else { Err(out) },
         Some(Value::Object(t)) => t,
@@ -160,6 +245,55 @@ pub fn check(data: &Value, issued: &Issued) -> Result<Allowlist, Vec<String>> {
         }
     }
     if out.is_empty() { Ok(list) } else { Err(out) }
+}
+
+/// ADR-0049 §7's sibling data: the Run root's label (ADR-0047 §1, F6) and the delivery table
+/// (§2), which is total over the vocabulary for each seat kind it must cover.
+fn check_labels(data: &Value, list: &mut Allowlist, out: &mut Vec<String>) {
+    let outside = |l: &Label| l.iter().find(|n| !list.vocabulary.contains(*n)).cloned();
+    let root = data.pointer("/topak/labels/root").and_then(Value::as_object);
+    match root.and_then(|r| r.get("label")).map(|l| names(Some(l))) {
+        Some(Some(l)) => {
+            if let Some(n) = outside(&l) {
+                out.push(format!("W6: the Run root's label names {n:?}, which is outside the vocabulary"));
+            }
+            list.root = l;
+        }
+        _ => out.push("F6: the Run root declares no label (labels.root.label)".to_string()),
+    }
+    for (object, l) in root.and_then(|r| r.get("objects")).and_then(Value::as_object).into_iter().flatten() {
+        match names(Some(l)) {
+            Some(l) => {
+                if let Some(n) = outside(&l) {
+                    out.push(format!("W6: root object {object}: label names {n:?}, which is outside the vocabulary"));
+                }
+                list.root_objects.insert(object.clone(), l);
+            }
+            None => out.push(format!("F6: root object {object}: its label is not a list of names")),
+        }
+    }
+    let table = data.pointer("/topak/labels/delivery").and_then(Value::as_object);
+    for kind in DELIVERED_KINDS {
+        let Some(modes) = table.and_then(|t| t.get(kind)).and_then(Value::as_object) else {
+            out.push(format!("ADR-0047 §2: the delivery table has no row for the seat kind {kind}"));
+            continue;
+        };
+        let mut row = BTreeMap::new();
+        for name in &list.vocabulary {
+            match modes.get(name).and_then(Value::as_str) {
+                Some("clear") => row.insert(name.clone(), Delivery::Clear),
+                Some("handle") => row.insert(name.clone(), Delivery::Handle),
+                _ => {
+                    out.push(format!("ADR-0047 §2: the delivery table for {kind} gives {name:?} no mode: it is not total"));
+                    None
+                }
+            };
+        }
+        for name in modes.keys().filter(|n| !list.vocabulary.contains(*n)) {
+            out.push(format!("W6: the delivery table for {kind} names {name:?}, which is outside the vocabulary"));
+        }
+        list.delivery.insert(kind.to_string(), row);
+    }
 }
 
 fn check_entry(

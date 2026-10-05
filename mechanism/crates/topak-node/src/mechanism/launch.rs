@@ -57,6 +57,7 @@ pub(super) struct LaunchOp {
     pub ttl_ms: u64,
     pub round: Round,
     pub role: RoundRole,
+    pub task_label: Option<BTreeSet<String>>,
 }
 
 /// The bridge's view of the mechanism.
@@ -211,6 +212,7 @@ impl Mechanism {
             ttl_ms: op.ttl_ms,
             round: op.round,
             role: op.role,
+            task_label: op.task_label,
         };
         let fence =
             match self.propose(Entry::Grant { id: self.fresh_id(), req: grant, appraisal: Some(appraisal) }).await {

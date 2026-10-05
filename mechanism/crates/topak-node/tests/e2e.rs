@@ -64,6 +64,8 @@ struct Fixture {
     /// Further revisions the real tier holds: the built bundle's policy with this data, under
     /// this revision name. They stand for revisions promoted and signed beside the built one.
     extra_bundles: Vec<(String, Value)>,
+    /// Run tools hosted as Wasm modules, for the tests that pass a result by handle.
+    wasm: Option<Arc<topak_contain::wasmtool::WasmToolHost>>,
 }
 
 async fn fixture(name: &str) -> Fixture {
@@ -132,6 +134,8 @@ async fn fixture(name: &str) -> Fixture {
         erasure_roster: None,
         verifier_keys: BTreeSet::new(),
         bundle_keys: BTreeSet::from([pubhex(&keys.bundle)]),
+        inside_targets: BTreeSet::new(),
+        releasers: BTreeSet::new(),
         personas: BTreeMap::new(),
         criterion: None,
     };
@@ -156,7 +160,7 @@ async fn fixture(name: &str) -> Fixture {
     let l = LocalBundles::load_dir(&dir.join("bundles"), &rules.bundle_keys).await.unwrap();
     let bundle_rev = l.revisions().next().expect("the signed copy loads").clone();
 
-    Fixture { dir, corpus_obj, run_obj, tool, run_tool, tools, params, rules, keys, bundle_rev, extra_bundles: vec![] }
+    Fixture { dir, corpus_obj, run_obj, tool, run_tool, tools, params, rules, keys, bundle_rev, extra_bundles: vec![], wasm: None }
 }
 
 /// A bundle that allows everything, to exercise effects the real placeholder bundle refuses.
@@ -173,6 +177,20 @@ impl BundleDecider for AllowAll {
     /// No entries here: a test of what a list holds uses the real tier.
     fn tool_list(&self, rev: &Digest, domain: Domain, callable: &BTreeSet<String>) -> Value {
         topak_bundle::Allowlist::default().tool_list(rev, domain, callable)
+    }
+    /// A stub with no entries declares no label: nothing joined, everything clear, nothing outward.
+    fn label_facts(
+        &self,
+        _rev: &Digest,
+        _kind: &str,
+        action: &Action,
+        round: &topak_core::labels::RoundLabels,
+    ) -> Result<Option<topak_core::labels::LabelFacts>, String> {
+        Ok(matches!(action, Action::Consult { .. } | Action::Actuate { .. })
+            .then(|| topak_core::labels::LabelFacts::unlabelled(&round.clear_set)))
+    }
+    fn input_types(&self, _rev: &Digest, _tool: &str) -> BTreeMap<String, String> {
+        BTreeMap::new()
     }
     /// No test here hosts a Wasm tool.
     fn channel(&self, _rev: &Digest, _tool: &str) -> Option<topak_contain::wasmtool::Channel> {
@@ -200,7 +218,11 @@ async fn cluster(f: &Fixture, real_bundle: bool) -> Cluster {
             for (revision, data) in &f.extra_bundles {
                 let wasm = topak_bundle::read_bundle_tarball(&built).unwrap().wasm;
                 let files = topak_bundle::BundleFiles { revision: revision.clone(), wasm, data: data.clone() };
-                local.insert(files).await.expect("the revision's allowlist is well-formed");
+                let issued = topak_bundle::Issued {
+                    inside_targets: f.rules.inside_targets.clone(),
+                    releasers: f.rules.releasers.clone(),
+                };
+                local.insert_issued(files, &issued).await.expect("the revision's allowlist is well-formed");
             }
             Box::new(BundleTier::new(None, local))
         } else {
@@ -217,7 +239,7 @@ async fn cluster(f: &Fixture, real_bundle: bool) -> Cluster {
             corpus_dir: f.dir.join("corpus"),
             data_dir: f.dir.join(format!("n{id}")),
             proposals: prop_tx,
-            wasm_tools: None,
+            wasm_tools: f.wasm.clone(),
             contain: None,
         })
         .unwrap();
@@ -266,6 +288,7 @@ async fn grant(
             ttl_ms,
             round,
             role,
+            task_label: None,
         })
         .await;
     assert_eq!(r["ok"], true, "grant {seat}: {r}");
@@ -450,6 +473,7 @@ async fn build_round_promotion_and_fencing() {
             ttl_ms: 60_000,
             round: 2,
             role: RoundRole::Voter,
+            task_label: None,
         })
         .await;
     assert_eq!(r["ok"], false, "a thinker seat is never issued Vote: {r}");
@@ -795,6 +819,7 @@ async fn observer_liveness_couples_run_admits() {
             ttl_ms: 60_000,
             round: 2,
             role: RoundRole::Author,
+            task_label: None,
         })
         .await;
     assert_eq!(refused["ok"], false, "round 1 is unread past its seal: {refused}");
@@ -936,6 +961,7 @@ async fn actuate_is_counted_recorded_and_sealed() {
             ttl_ms: 60_000,
             round: 2,
             role: RoundRole::Author,
+            task_label: None,
         })
         .await;
     assert_eq!(refused["ok"], false, "one invocation is unread past the mark: {refused}");
@@ -961,7 +987,12 @@ async fn actuate_is_counted_recorded_and_sealed() {
 fn allowlist(f: &Fixture, build: (&str, &str)) -> Value {
     let (name, digest) = build.0.split_once('@').unwrap();
     let (rname, rdigest) = f.run_tool.split_once('@').unwrap();
-    json!({ "topak": { "labels": { "vocabulary": ["untrusted", "restricted"] }, "tools": {
+    json!({ "topak": { "labels": {
+        "vocabulary": ["untrusted", "restricted"],
+        "delivery": { "thinker": { "untrusted": "clear", "restricted": "handle" },
+                      "observer": { "untrusted": "clear", "restricted": "clear" } },
+        "root": { "label": [] },
+    }, "tools": {
         build.0: {
             "name": name, "digest": digest, "domain": "build", "purpose": build.1,
             "inputs": { "path": { "type": "string", "required": true, "note": "Workspace-relative path of the file." } },
@@ -993,6 +1024,7 @@ async fn grant_on(m: &Mechanism, seat: &str, round: Round, bundle: &Digest, alph
             ttl_ms: 60_000,
             round,
             role: RoundRole::Author,
+            task_label: None,
         })
         .await;
     assert_eq!(r["ok"], true, "grant {seat}: {r}");
@@ -1112,4 +1144,238 @@ async fn the_tool_list_is_delivered_and_opens_the_round() {
     // And the old build, which this revision does not list, is refused under it.
     let r = act(n1, &a1, call(name, digest)).await;
     assert!(deny_reason(&r).contains("Bundle"), "{}", r.detail);
+}
+
+// ---- labels and handles (ADR-0047) ------------------------------------------------------------
+
+/// A tool that returns one fixed JSON string, whatever it is given.
+const SECRET_TOOL: &str = r#"
+(module
+  (import "topak" "output" (func $output (param i32 i32)))
+  (memory (export "memory") 1)
+  (data (i32.const 0) "\"the vault's secret\"")
+  (func (export "run") (result i32)
+    (call $output (i32.const 0) (i32.const 20))
+    (i32.const 0)))
+"#;
+
+/// A tool that returns its inputs as it received them: what the tool host handed it.
+const INPUTS_TOOL: &str = r#"
+(module
+  (import "topak" "input_len" (func $input_len (result i32)))
+  (import "topak" "input_read" (func $input_read (param i32)))
+  (import "topak" "output" (func $output (param i32 i32)))
+  (memory (export "memory") 1)
+  (func (export "run") (result i32)
+    (call $input_read (i32.const 0))
+    (call $output (i32.const 0) (call $input_len))
+    (i32.const 0)))
+"#;
+
+/// ADR-0047 §11's scripted Run cell, on the linked floor (`R5` to `R7`) and the real bundle tier.
+/// Six Run tools, hosted as Wasm modules: `web` and `vault` are sources, outside and inside;
+/// `summarize` and `archive` are inside tools that take a handle; `post` and `send` are outward.
+/// Three bundle revisions differ only in the Thinker's delivery table.
+///
+/// | Round | Table | What it shows |
+/// |---|---|---|
+/// | 1 | `untrusted` clear, `restricted` handle | One result clear and another a handle; a handle admitted where its label is accepted and refused where it is not; `R5` and `R6` |
+/// | 2 | Both as handles | The outward call `R5` refused is admitted when nothing was read in the clear; `R7` all the same |
+/// | 3 | Both clear | A bundle that moves every label to `clear` loads, and the same call is still refused |
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn labels_bound_what_a_round_may_send_after_what_it_has_read() {
+    use topak_contain::wasmtool::{WasmToolHost, WasmToolSpec, module_digest};
+    let mut f = fixture("labels").await;
+    let module = |name: &str, wat_src: &str| {
+        let path = f.dir.join(format!("{name}.wasm"));
+        std::fs::write(&path, wat::parse_str(wat_src).unwrap()).unwrap();
+        let digest = module_digest(&path).unwrap();
+        (path, digest)
+    };
+    let (secret, inputs) = (module("secret", SECRET_TOOL), module("inputs", INPUTS_TOOL));
+    let mut specs = BTreeMap::new();
+    let mut entries = serde_json::Map::new();
+    // name, module, target, label, inputs as (name, destination, accepts)
+    type In = (&'static str, bool, &'static [&'static str]);
+    let tools: [(&str, &(PathBuf, Digest), &str, &[&str], &[In]); 6] = [
+        ("web", &inputs, "web.example:443", &["untrusted"], &[("q", false, &[])]),
+        ("vault", &secret, "vault.internal:1", &["restricted"], &[("q", false, &[])]),
+        ("summarize", &inputs, "tools.internal:1", &[], &[("text", false, &["restricted", "untrusted"])]),
+        ("archive", &inputs, "tools.internal:1", &[], &[("text", false, &["untrusted"])]),
+        ("post", &inputs, "paste.example:443", &["untrusted"], &[("body", false, &["restricted", "untrusted"])]),
+        ("send", &inputs, "mail.example:25", &["untrusted"], &[("to", true, &["untrusted"]), ("body", false, &[])]),
+    ];
+    let mut id = BTreeMap::new();
+    for (name, (path, digest), target, label, ins) in tools {
+        let key = tool_id(name, digest);
+        specs.insert(key.clone(), WasmToolSpec { module: path.clone(), module_sha256: digest.clone() });
+        f.params.run_tools.insert(key.clone());
+        let declared: serde_json::Map<String, Value> = ins
+            .iter()
+            .map(|(i, destination, accepts)| {
+                let d = json!({ "type": "string", "required": true, "note": "An input.",
+                                "destination": destination, "accepts": accepts });
+                (i.to_string(), d)
+            })
+            .collect();
+        let mut e = json!({
+            "name": name, "digest": digest, "domain": "run", "purpose": "A tool of the scripted cell.",
+            "inputs": declared, "result": { "label": label, "releases": [] },
+            "channel": { "kind": "tcp", "target": target },
+        });
+        if !ins.iter().any(|(_, destination, _)| *destination) {
+            e["destinations"] = json!("none");
+        }
+        entries.insert(key.clone(), e);
+        id.insert(name, (name.to_string(), digest.clone()));
+    }
+    f.wasm = Some(Arc::new(WasmToolHost::new(specs).unwrap()));
+    // The issued rules list what is inside the deployment. Everything else is outward.
+    f.rules.inside_targets = ["vault.internal:1", "tools.internal:1"].into_iter().map(String::from).collect();
+    let revision = |untrusted: &str, restricted: &str| {
+        json!({ "topak": { "labels": {
+            "vocabulary": ["untrusted", "restricted"],
+            "delivery": { "thinker": { "untrusted": untrusted, "restricted": restricted },
+                          "observer": { "untrusted": "clear", "restricted": "clear" } },
+            "root": { "label": [] },
+        }, "tools": entries.clone() } })
+    };
+    let (mixed, handles, clear) = (Digest("1".repeat(64)), Digest("2".repeat(64)), Digest("3".repeat(64)));
+    f.extra_bundles = vec![
+        (mixed.0.clone(), revision("clear", "handle")),
+        (handles.0.clone(), revision("handle", "handle")),
+        // A bundle that moves every label to `clear` is well-formed, and loads.
+        (clear.0.clone(), revision("clear", "clear")),
+    ];
+    let c = cluster(&f, true).await;
+    let n1 = &c.nodes[0];
+    let chain = n1.state.read().unwrap().chain.clone();
+    let call = |tool: &str, inputs: Value| {
+        let (name, digest) = id[tool].clone();
+        Action::Actuate { tool: name, digest, inputs: inputs.as_object().unwrap().clone() }
+    };
+    let handle = |seq: u64| json!({ "handle": { "actuate": seq } });
+    let ro1 = grant_on(n1, "ro1", 1, &mixed, RUN_OBS).await["token"].as_str().unwrap().to_string();
+    // A round of r1 on `rev`, with its cell Observer live on the round's topic.
+    let open = async |round: Round, rev: &Digest| {
+        let token = grant_on(n1, "r1", round, rev, RUN).await["token"].as_str().unwrap().to_string();
+        let topic = lift::topic_name(&chain, Domain::Run, "r1", 0, round);
+        let r = act(n1, &ro1, Action::Report { record: heartbeat(&topic, 0) }).await;
+        assert!(r.admitted, "{}", r.detail);
+        (token, topic)
+    };
+    let read_to = async |topic: &str, mark: u64| {
+        let r = act(n1, &ro1, Action::Report { record: heartbeat(topic, mark) }).await;
+        assert!(r.admitted, "{}", r.detail);
+    };
+    let close = async |token: &str| {
+        let r = n1.operate(OperatorOp::EndRound { token: token.into(), reason: EndReason::Operator }).await;
+        assert_eq!(r["ok"], true, "{r}");
+    };
+    let record = async |topic: &str, seq: u64| {
+        let topics = memory(n1).topics.lock().await;
+        topics[topic].iter().find(|r| r.kind == RecordKind::Actuate && r.seq == Some(seq)).cloned().expect("recorded")
+    };
+    let clear_set = |seat: &str| n1.state.read().unwrap().live_lease(seat).unwrap().labels.clear_set.clone();
+    let names = |l: &[&str]| l.iter().map(|s| s.to_string()).collect::<BTreeSet<String>>();
+
+    // ---- round 1: untrusted is delivered clear, restricted as a handle ----
+    let (r1, topic) = open(1, &mixed).await;
+    // One tool's result is delivered clear, with its label in the envelope.
+    let r = act(n1, &r1, call("web", json!({ "q": "news" }))).await;
+    assert!(r.admitted, "{}", r.detail);
+    assert_eq!((&r.detail["result"]["delivery"], &r.detail["result"]["label"]), (&json!("clear"), &json!(["untrusted"])));
+    assert_eq!(r.detail["result"]["result"], json!({ "q": "news" }));
+    assert_eq!(clear_set("r1"), names(&["untrusted"]), "what was read in the clear joins clearSet");
+    // Another's is delivered as a handle. Its label covers the literal it was called with, which
+    // may carry anything read in the clear (R10). The bytes do not reach the principal, and
+    // neither does their digest.
+    let r = act(n1, &r1, call("vault", json!({ "q": "the key" }))).await;
+    assert!(r.admitted, "{}", r.detail);
+    let got = &r.detail["result"];
+    assert_eq!((&got["delivery"], &got["label"]), (&json!("handle"), &json!(["restricted", "untrusted"])));
+    assert_eq!(got["handle"], json!({ "actuate": 2 }), "named by its place in the record");
+    assert!(got.get("result").is_none() && got.get("result_digest").is_none(), "{got}");
+    assert!(!r.detail.to_string().contains("secret"), "suppressed: {}", r.detail);
+    assert_eq!(clear_set("r1"), names(&["untrusted"]), "a handle adds nothing to clearSet");
+    // Suppressed to the Thinker is not suppressed to the Observer: the record holds every fact.
+    let rec = record(&topic, 2).await;
+    let env = &rec.payload["actuate"];
+    assert_eq!(rec.payload["body"]["result"], "the vault's secret");
+    assert_eq!((&env["delivery"], &env["resultLabel"]), (&json!("handle"), &json!(["restricted", "untrusted"])));
+    assert_eq!((&env["clearSet"], &env["inputLabels"]), (&json!(["untrusted"]), &json!([])));
+    read_to(&topic, 2).await;
+
+    // The handle, passed to a tool that accepts its label: admitted. The tool host resolves it,
+    // the tool receives the bytes, and the result covers its input, so it too is a handle.
+    let r = act(n1, &r1, call("summarize", json!({ "text": handle(2) }))).await;
+    assert!(r.admitted, "{}", r.detail);
+    assert_eq!(r.detail["result"]["delivery"], "handle");
+    assert!(!r.detail.to_string().contains("secret"), "{}", r.detail);
+    let rec = record(&topic, 3).await;
+    assert_eq!(rec.payload["body"]["result"], json!({ "text": "the vault's secret" }), "the tool was given the bytes");
+    assert_eq!(rec.payload["body"]["inputs"], json!({ "text": handle(2) }), "the record holds what the Thinker sent");
+    assert_eq!(rec.payload["actuate"]["inputLabels"], json!(["restricted", "untrusted"]));
+    read_to(&topic, 3).await;
+    // Passed to a tool that does not accept its label: refused at admit, by the bundle tier.
+    let r = act(n1, &r1, call("archive", json!({ "text": handle(2) }))).await;
+    assert!(deny_reason(&r).contains("Bundle"), "{}", r.detail);
+    let r = act(n1, &r1, call("vault", json!({ "q": handle(2) }))).await;
+    assert!(deny_reason(&r).contains("Bundle"), "an input that takes no handle: {}", r.detail);
+    // A handle that names nothing in this round resolves to nothing.
+    let r = act(n1, &r1, call("summarize", json!({ "text": handle(9) }))).await;
+    assert!(deny_reason(&r).contains("names nothing in this round"), "{}", r.detail);
+
+    // F1, read then send: untrusted content was read in the clear, and the outward call carries
+    // restricted content, by handle. The floor refuses it, whatever the bundle says.
+    let r = act(n1, &r1, call("post", json!({ "body": handle(2) }))).await;
+    assert!(deny_reason(&r).contains("R5-no-read-then-send"), "{}", r.detail);
+    // F2, steered destination: after the same read, the destination of an outward call is typed.
+    let r = act(n1, &r1, call("send", json!({ "to": "someone@elsewhere.example", "body": "hello" }))).await;
+    assert!(deny_reason(&r).contains("R6-no-steered-destination"), "{}", r.detail);
+    close(&r1).await;
+
+    // ---- round 2: both names are delivered as handles ----
+    let (r1, topic) = open(2, &handles).await;
+    let r = act(n1, &r1, call("web", json!({ "q": "news" }))).await;
+    assert!(r.admitted, "{}", r.detail);
+    assert_eq!(r.detail["result"]["delivery"], "handle");
+    let r = act(n1, &r1, call("vault", json!({ "q": "the key" }))).await;
+    assert!(r.admitted, "{}", r.detail);
+    assert_eq!(r.detail["result"]["label"], json!(["restricted"]), "nothing was read, so the literal carries nothing");
+    assert!(clear_set("r1").is_empty());
+    read_to(&topic, 2).await;
+    // The call F1 refused in round 1 is admitted: the same item, the same outward tool, and a
+    // principal that has read nothing untrusted. It routes what it cannot read.
+    let r = act(n1, &r1, call("post", json!({ "body": handle(2) }))).await;
+    assert!(r.admitted, "{}", r.detail);
+    assert!(!r.detail.to_string().contains("secret"), "{}", r.detail);
+    assert_eq!(record(&topic, 3).await.payload["body"]["result"], json!({ "body": "the vault's secret" }));
+    read_to(&topic, 3).await;
+    // A typed destination is no steering when nothing untrusted was read.
+    let r = act(n1, &r1, call("send", json!({ "to": "ops@corp.example", "body": "hello" }))).await;
+    assert!(r.admitted, "{}", r.detail);
+    read_to(&topic, 4).await;
+    // F3, replayed content: the destination is a handle to untrusted content. Refused whatever
+    // `clearSet` holds, and here it holds nothing.
+    let r = act(n1, &r1, call("send", json!({ "to": handle(1), "body": "hello" }))).await;
+    assert!(deny_reason(&r).contains("R7-no-replayed-destination"), "{}", r.detail);
+    close(&r1).await;
+
+    // ---- round 3: the bundle that delivers everything clear ----
+    let (r1, topic) = open(3, &clear).await;
+    let r = act(n1, &r1, call("web", json!({ "q": "news" }))).await;
+    assert!(r.admitted, "{}", r.detail);
+    let r = act(n1, &r1, call("vault", json!({ "q": "the key" }))).await;
+    assert!(r.admitted, "{}", r.detail);
+    assert_eq!(r.detail["result"]["result"], "the vault's secret", "delivered clear under this table");
+    assert_eq!(clear_set("r1"), names(&["restricted", "untrusted"]));
+    read_to(&topic, 2).await;
+    // The same call is still refused. Delivering more in the clear bought a narrower round: the
+    // floor's forbids are monotone in `clearSet`, and no table reaches past them.
+    let r = act(n1, &r1, call("post", json!({ "body": handle(2) }))).await;
+    assert!(deny_reason(&r).contains("R5-no-read-then-send"), "{}", r.detail);
+    let r = act(n1, &r1, call("post", json!({ "body": "typed out" }))).await;
+    assert!(deny_reason(&r).contains("R5-no-read-then-send"), "a literal carries what was read: {}", r.detail);
+    close(&r1).await;
 }

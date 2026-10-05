@@ -45,6 +45,8 @@ fn rules() -> Rules {
         erasure_roster: None,
         verifier_keys: BTreeSet::new(),
         bundle_keys: BTreeSet::new(),
+        inside_targets: BTreeSet::new(),
+        releasers: BTreeSet::new(),
         personas: BTreeMap::new(),
         criterion: None,
     }
@@ -76,6 +78,7 @@ fn grant_req(seat: &str, alphabet: &[ActionKind]) -> GrantRequest {
         ttl_ms: 1000,
         round: 1,
         role: RoundRole::Author,
+        task_label: None,
     }
 }
 
@@ -656,6 +659,7 @@ fn admit(id: &str, seat: &str, lease: LogIndex, action: Admitted, p: &Params) ->
             params: p.digest(),
             decided_by: 1,
             session: None,
+            labels: Some(Default::default()),
         },
     }
 }

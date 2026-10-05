@@ -111,6 +111,14 @@ pub struct Rules {
     /// signature that verifies under one of these; empty means the bundle tier loads nothing.
     #[serde(default)]
     pub bundle_keys: BTreeSet<KeyHex>,
+    /// ADR-0025 A2 (pending), for ADR-0047 §7: the channel targets inside the deployment. An
+    /// allowlist entry whose target is not listed is outward. Empty: every entry with a channel is.
+    #[serde(default, skip_serializing_if = "BTreeSet::is_empty")]
+    pub inside_targets: BTreeSet<String>,
+    /// ADR-0025 A2 (pending), for ADR-0047 F5: the allowlist entries, by `name@digest`, allowed to
+    /// release a reserved label. A declassifier of a reserved name is the anchors' to approve.
+    #[serde(default, skip_serializing_if = "BTreeSet::is_empty")]
+    pub releasers: BTreeSet<String>,
     /// ADR-0017's provenance axis, per Persona digest. A Persona not named is not in house.
     #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
     pub personas: BTreeMap<Digest, Provenance>,

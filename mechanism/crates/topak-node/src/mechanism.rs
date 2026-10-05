@@ -37,6 +37,7 @@ use std::time::{Duration, Instant};
 
 use serde_json::{Value, json};
 use tokio::sync::{mpsc, oneshot};
+use topak_core::labels::{Delivery, Handle, Label, LabelFacts, RoundLabels};
 use topak_bundle::BundleTier;
 use topak_core::action::{Action, ActionRequest, tool_id};
 use topak_core::admit::{BundleOutcome, Decision, DenyReason, compose, floor_gate, via_break_glass};
@@ -68,6 +69,18 @@ pub trait BundleDecider: Send + Sync {
     /// The tool list of a lease on `rev` (ADR-0048 §2): that revision's entries for `domain`
     /// whose key is in `callable`, rendered in the mechanism's fixed form.
     fn tool_list(&self, rev: &Digest, domain: Domain, callable: &std::collections::BTreeSet<String>) -> Value;
+    /// What the mechanism computes about a `Consult` or an `Actuate` before the floor sees it
+    /// (ADR-0047 §4): the labels `rev` declares, joined over the round's. `kind` is the seat's.
+    fn label_facts(
+        &self,
+        rev: &Digest,
+        kind: &str,
+        action: &Action,
+        round: &RoundLabels,
+    ) -> Result<Option<LabelFacts>, String>;
+    /// The declared type of each input of the entry `tool` in `rev`, for resolving a handle
+    /// (ADR-0049 §3): the item a handle names must match the input's type.
+    fn input_types(&self, rev: &Digest, tool: &str) -> BTreeMap<String, String>;
 }
 
 impl BundleDecider for BundleTier {
@@ -83,6 +96,19 @@ impl BundleDecider for BundleTier {
     }
     fn tool_list(&self, rev: &Digest, domain: Domain, callable: &std::collections::BTreeSet<String>) -> Value {
         BundleTier::tool_list(self, rev, domain, callable)
+    }
+    fn label_facts(
+        &self,
+        rev: &Digest,
+        kind: &str,
+        action: &Action,
+        round: &RoundLabels,
+    ) -> Result<Option<LabelFacts>, String> {
+        BundleTier::label_facts(self, rev, kind, action, round)
+    }
+    fn input_types(&self, rev: &Digest, tool: &str) -> BTreeMap<String, String> {
+        let inputs = self.entry(rev, tool).map(|e| &e.inputs);
+        inputs.into_iter().flatten().map(|(f, i)| (f.clone(), i.ty.clone())).collect()
     }
 }
 
@@ -140,6 +166,9 @@ pub struct Mechanism {
     /// record is written either by the call, before the seal marker, or by the seal, as
     /// `unknown`; never both and never neither.
     in_flight: tokio::sync::Mutex<HashMap<String, BTreeMap<u64, InFlight>>>,
+    /// What each `Actuate` of an open round returned, by topic and sequence number: what a handle
+    /// names (ADR-0047 §2). Held by the replica that ran the call, and dropped when the round seals.
+    results: tokio::sync::Mutex<HashMap<String, BTreeMap<u64, Value>>>,
     archive: Mutex<Option<std::fs::File>>,
     /// Denial records written per `after` topic by this replica (ADR-0003 A2).
     after_written: Mutex<HashMap<String, u64>>,
@@ -211,6 +240,7 @@ impl Mechanism {
             workspace_root: p.data_dir.join("workspaces"),
             run_work: p.data_dir.join("run"),
             in_flight: tokio::sync::Mutex::new(HashMap::new()),
+            results: tokio::sync::Mutex::new(HashMap::new()),
             archive: Mutex::new(Some(archive)),
             contain: p.contain,
             launched: Mutex::new(HashMap::new()),
@@ -300,6 +330,7 @@ impl Mechanism {
                     tracing::warn!(topic, seq, error = %e, "unknown Actuate record not written");
                 }
             }
+            self.results.lock().await.remove(&topic);
             if let Err(e) = self.transport.seal(&topic, &reason).await {
                 tracing::warn!(topic, error = %e, "seal marker not written");
             }
@@ -403,6 +434,45 @@ impl Mechanism {
             }
         }
         Box::pin(self.act_session(&sess, op, proof)).await
+    }
+
+    /// Replace each input that is a handle with the item it names (ADR-0047 §3; ADR-0049 §3):
+    /// the result of an earlier `Actuate` of this round, or the content of a consulted object.
+    /// The floor and the bundle have already decided the call on the handle's label; this is the
+    /// tool host's half, and the bytes go to the tool and not to the principal.
+    async fn resolve_handles(
+        &self,
+        topic: &str,
+        rev: &Digest,
+        tool: &str,
+        inputs: &serde_json::Map<String, Value>,
+    ) -> anyhow::Result<serde_json::Map<String, Value>> {
+        let types = self.bundle.input_types(rev, tool);
+        let mut out = inputs.clone();
+        for (f, v) in inputs {
+            let Some(h) = Handle::parse(v) else { continue };
+            let item = match &h {
+                Handle::Actuate(seq) => {
+                    let results = self.results.lock().await;
+                    let found = results.get(topic).and_then(|r| r.get(seq)).cloned();
+                    found.ok_or_else(|| anyhow::anyhow!("input {f:?}: the result at {seq} is not held here"))?
+                }
+                Handle::Consult(object) => {
+                    let bytes = std::fs::read(self.corpus_dir.join(&object.0))?;
+                    anyhow::ensure!(Digest::of(&bytes) == *object, "object does not match its address");
+                    Value::String(String::from_utf8_lossy(&bytes).into_owned())
+                }
+            };
+            let fits = match types.get(f).map(String::as_str) {
+                Some("string") => item.is_string(),
+                Some("number") => item.is_number(),
+                Some("boolean") => item.is_boolean(),
+                _ => false,
+            };
+            anyhow::ensure!(fits, "input {f:?}: the item the handle names is not of the input's declared type");
+            out.insert(f.clone(), item);
+        }
+        Ok(out)
     }
 
     /// The tool list of the lease at `fence` (ADR-0048 §2), and the topic it opens. It is a
@@ -595,12 +665,19 @@ impl Mechanism {
                     st.channel_fidelity(rec.lease.fence, &tool_id(tool, digest), &self.params)
                         .map_err(MechanismDeny::Other)?;
                 }
-                let frozen = lift(&req, &st, &self.params, rec, live)?;
+                // ADR-0047 §4: the call's labels, from the entry of the lease's revision and the
+                // round so far. Computed here, lifted into S, and carried by the admit.
+                let kind = st.rules.seat_kind(&req.seat).map(SeatKind::as_str).unwrap_or("unknown");
+                let facts = self
+                    .bundle
+                    .label_facts(&rec.lease.bundle, kind, &req.action, &rec.labels)
+                    .map_err(MechanismDeny::Other)?;
+                let frozen = lift(&req, &st, &self.params, rec, live, facts.as_ref())?;
                 let domain = st.rules.seat_domain(&req.seat).expect("lifted");
-                Ok((frozen, rec.lease.bundle.clone(), rec.lease.epoch, rec.lease.round, domain))
+                Ok((frozen, rec.lease.bundle.clone(), rec.lease.epoch, rec.lease.round, domain, facts))
             })
         };
-        let (frozen, lease_bundle, lease_epoch, round, domain) = match prepared {
+        let (frozen, lease_bundle, lease_epoch, round, domain, labels) = match prepared {
             Ok(p) => p,
             Err(MechanismDeny::LeaseExpired) => {
                 let e = Entry::EndRound {
@@ -656,6 +733,7 @@ impl Mechanism {
             params: self.params.digest(),
             decided_by: self.id,
             session: proof,
+            labels: labels.clone(),
         };
         let (slot, applied) = match self.propose(Entry::Admit { id: self.fresh_id(), rec }).await {
             Ok(r) => r,
@@ -667,7 +745,7 @@ impl Mechanism {
         };
 
         // 8: the effect.
-        let ctx = EffectCtx { sess, slot, lease_epoch, round, domain, seq, promoted, break_glass };
+        let ctx = EffectCtx { sess, slot, lease_epoch, round, domain, seq, promoted, break_glass, labels, lease_bundle };
         let result = self.effect(&req, &ctx).await;
         let (ok, result) = match result {
             Ok(v) => (true, v),
@@ -742,7 +820,20 @@ impl Mechanism {
                 // decision (R4), from `Params::run_root`.
                 let bytes = std::fs::read(self.corpus_dir.join(&object.0))?;
                 anyhow::ensure!(Digest::of(&bytes) == *object, "object does not match its address");
-                Ok(json!({ "object": object, "content": String::from_utf8_lossy(&bytes) }))
+                // ADR-0047 §2: the Listener looks the label up and does what the table says. The
+                // label is a field of the envelope, written here and never read from the content.
+                let (label, delivery) = delivered(cx);
+                Ok(match delivery {
+                    Delivery::Clear => json!({
+                        "object": object, "label": label, "delivery": delivery,
+                        "content": String::from_utf8_lossy(&bytes),
+                    }),
+                    // The handle is the reference the principal supplied, so it discloses nothing.
+                    Delivery::Handle => json!({
+                        "object": object, "label": label, "delivery": delivery,
+                        "handle": Handle::Consult(object.clone()).to_value()["handle"],
+                    }),
+                })
             }
             Action::Actuate { tool, digest, inputs } => {
                 let topic = topic_name(&chain, cx.domain, seat, cx.lease_epoch, cx.round);
@@ -771,13 +862,20 @@ impl Mechanism {
                     break_glass: cx.break_glass,
                     inputs: Value::Object(inputs.clone()),
                     channel: channel.clone(),
+                    labels: cx.labels.clone(),
                 };
                 self.in_flight.lock().await.entry(topic.clone()).or_default().insert(seq, call);
                 let dir = self.run_work.join(format!("{seat}-e{}-r{}", cx.lease_epoch, cx.round));
                 std::fs::create_dir_all(&dir)?;
-                let out = match hosted {
-                    Some(w) => w.call(&tid, inputs, channel).await.map(|(v, _)| v),
-                    None => self.tools.call(&tid, inputs, &dir).await,
+                // ADR-0047 §3: a handle among the inputs is resolved here, on the mechanism's side,
+                // and the tool receives the bytes. A handle that does not resolve to the input's
+                // type is a failed call, recorded as one (ADR-0049 §3).
+                let out = match self.resolve_handles(&topic, &cx.lease_bundle, &tid, inputs).await {
+                    Err(e) => Err(e),
+                    Ok(resolved) => match hosted {
+                        Some(w) => w.call(&tid, &resolved, channel).await.map(|(v, _)| v),
+                        None => self.tools.call(&tid, &resolved, &dir).await,
+                    },
                 };
 
                 // Take the call back under the lock the seal holds. If the seal took it first,
@@ -797,10 +895,23 @@ impl Mechanism {
                 let offset = self.transport.emit(&rec).await?;
                 drop(in_flight);
                 let result = out?;
-                Ok(json!({
-                    "topic": topic, "offset": offset, "seq": seq, "outcome": outcome,
-                    "result_digest": result_digest, "result": result,
-                }))
+                // Kept on this side for a later handle to name. The round's results go with the round.
+                self.results.lock().await.entry(topic.clone()).or_default().insert(seq, result.clone());
+                let (label, delivery) = delivered(cx);
+                Ok(match delivery {
+                    Delivery::Clear => json!({
+                        "topic": topic, "offset": offset, "seq": seq, "outcome": outcome,
+                        "label": label, "delivery": delivery,
+                        "result_digest": result_digest, "result": result,
+                    }),
+                    // ADR-0047 §2, §3: suppressed. The bytes do not enter the guest, and neither
+                    // does their digest, which low-entropy content would let it confirm by guessing.
+                    Delivery::Handle => json!({
+                        "topic": topic, "offset": offset, "seq": seq, "outcome": outcome,
+                        "label": label, "delivery": delivery,
+                        "handle": Handle::Actuate(seq).to_value()["handle"],
+                    }),
+                })
             }
             Action::Emit { record } | Action::Report { record } => {
                 let rec = EmitRecord {
@@ -829,12 +940,24 @@ impl Mechanism {
         let id = self.fresh_id();
         let entry = match op {
             OperatorOp::Status => return self.status(),
-            OperatorOp::Launch { principal, seat, profile, bundle, alphabet, ttl_ms, round, role } => {
-                let req = launch::LaunchOp { principal, seat, profile, bundle, alphabet, ttl_ms, round, role };
+            OperatorOp::Launch { principal, seat, profile, bundle, alphabet, ttl_ms, round, role, task_label } => {
+                let req =
+                    launch::LaunchOp { principal, seat, profile, bundle, alphabet, ttl_ms, round, role, task_label };
                 return Box::pin(self.launch(req)).await;
             }
             OperatorOp::RegisterProfile { profile } => Entry::ProfileRegister { id, profile },
-            OperatorOp::Grant { principal, seat, persona, bundle, confinement, alphabet, ttl_ms, round, role } => {
+            OperatorOp::Grant {
+                principal,
+                seat,
+                persona,
+                bundle,
+                confinement,
+                alphabet,
+                ttl_ms,
+                round,
+                role,
+                task_label,
+            } => {
                 // ADR-0044 §3: a grant naming a revision with no verified signature is refused,
                 // here at decide, as a grant under superseded rules is at apply (I6). The
                 // verified set is per replica, like the parameters, and must agree across them.
@@ -854,6 +977,7 @@ impl Mechanism {
                     ttl_ms,
                     round,
                     role,
+                    task_label,
                 };
                 return match self.propose(Entry::Grant { id, req, appraisal: None }).await {
                     Ok((_, Applied::LeaseGranted { fence })) => {
@@ -972,6 +1096,9 @@ struct EffectCtx<'a> {
     seq: Option<u64>,
     promoted: Option<Digest>,
     break_glass: bool,
+    /// The labels the admit carried (ADR-0047): how the Listener delivers what this effect returns.
+    labels: Option<LabelFacts>,
+    lease_bundle: Digest,
 }
 
 /// How an `Actuate` call ended, as its record says it (ADR-0042 §3).
@@ -999,6 +1126,17 @@ struct InFlight {
     /// which channel the effect could have used. It is the entry's declaration in the lease's
     /// bundle revision (ADR-0049 §5). Absent for a native tool, which nothing holds.
     channel: Option<topak_contain::wasmtool::Channel>,
+    /// ADR-0047 §5: the call's labels, for the record's envelope.
+    labels: Option<LabelFacts>,
+}
+
+/// The label and the delivery mode of what an effect returns. An effect whose admit carried no
+/// labels delivers nothing labelled, and nothing in the clear.
+fn delivered(cx: &EffectCtx<'_>) -> (Label, Delivery) {
+    match &cx.labels {
+        Some(f) => (f.result_label.clone(), f.delivery),
+        None => (Label::new(), Delivery::Handle),
+    }
 }
 
 impl InFlight {
@@ -1015,6 +1153,14 @@ impl InFlight {
         });
         if let Some(ch) = &self.channel {
             envelope["channel"] = json!(ch);
+        }
+        // ADR-0047 §5: four fields on the control-plane side. A reader of envelopes alone sees
+        // that an untrusted result was delivered clear and that an outward call followed.
+        if let Some(f) = &self.labels {
+            envelope["inputLabels"] = json!(f.input_labels);
+            envelope["resultLabel"] = json!(f.result_label);
+            envelope["delivery"] = json!(f.delivery);
+            envelope["clearSet"] = json!(f.clear_set);
         }
         EmitRecord {
             topic: topic.to_string(),

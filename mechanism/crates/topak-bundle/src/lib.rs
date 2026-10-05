@@ -274,6 +274,21 @@ impl BundleTier {
         self.local.entry(rev, key)
     }
 
+    /// The label facts of a `Consult` or an `Actuate` under `rev` (ADR-0047 §4). A revision that
+    /// is not held has no declarations, and nothing is delivered under it.
+    pub fn label_facts(
+        &self,
+        rev: &Digest,
+        kind: &str,
+        action: &topak_core::action::Action,
+        round: &topak_core::labels::RoundLabels,
+    ) -> Result<Option<topak_core::labels::LabelFacts>, String> {
+        match self.local.allowlist(rev) {
+            Some(a) => a.facts(kind, action, round),
+            None => Err(format!("bundle {} is not held, so it labels nothing", rev.short())),
+        }
+    }
+
     /// The tool list of a lease on `rev` (ADR-0048 §2). A revision that is not held has no
     /// entries, and no grant names one (ADR-0044 §3).
     pub fn tool_list(&self, rev: &Digest, domain: topak_core::Domain, callable: &BTreeSet<String>) -> Value {

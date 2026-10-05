@@ -10,8 +10,12 @@
 #
 # The entry's form is ADR-0049's (Proposed), which is its one statement: `inputs` maps each input to
 # its `type` and `required`, and `domain` says which of the two actions may name the entry (§1).
-# Flat inputs only, and no unknown inputs (§3). An input given as a handle is refused here as a
-# type mismatch until ADR-0047's admit check on `accepts` is built.
+# Flat inputs only, and no unknown inputs (§3).
+#
+# An input may be given as a handle, `{"handle": {...}}`, in place of a literal (ADR-0047 §3). A
+# handle is told from a literal by its shape. The mechanism resolves it and supplies the label of
+# the item it names in `input.handles`; this module checks that label against the input's
+# `accepts`. An input whose `accepts` is empty takes no handle.
 package topak.bundle.tool_schema
 
 tool_key := sprintf("%s@%s", [input.resource.tool, input.resource.digest])
@@ -41,8 +45,35 @@ violations contains sprintf("unknown field %q", [f]) if {
 	not f in object.keys(fields)
 }
 
+is_handle(v) if {
+	is_object(v)
+	object.keys(v) == {"handle"}
+}
+
+handles := object.get(input, "handles", {})
+
+violations contains sprintf("input %q does not take a handle", [f]) if {
+	some f, v in input.inputs
+	is_handle(v)
+	count(object.get(fields[f], "accepts", [])) == 0
+}
+
+violations contains sprintf("input %q is a handle the mechanism supplied no label for", [f]) if {
+	some f, v in input.inputs
+	is_handle(v)
+	not f in object.keys(handles)
+}
+
+violations contains sprintf("input %q does not accept a handle labelled %q", [f, l]) if {
+	some f, v in input.inputs
+	is_handle(v)
+	some l in handles[f]
+	not l in object.get(fields[f], "accepts", [])
+}
+
 violations contains sprintf("field %q is %s, want %s", [f, type_name(v), want]) if {
 	some f, v in input.inputs
+	not is_handle(v)
 	want := fields[f].type
 	type_name(v) != want
 }

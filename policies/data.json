@@ -4,7 +4,20 @@
       "vocabulary": [
         "untrusted",
         "restricted"
-      ]
+      ],
+      "delivery": {
+        "thinker": {
+          "untrusted": "clear",
+          "restricted": "handle"
+        },
+        "observer": {
+          "untrusted": "clear",
+          "restricted": "clear"
+        }
+      },
+      "root": {
+        "label": []
+      }
     },
     "tools": {
       "tlc@d1": {

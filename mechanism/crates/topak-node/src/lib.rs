@@ -57,7 +57,14 @@ pub async fn start_node(cfg: NodeConfig) -> anyhow::Result<Arc<Mechanism>> {
     let params: Params = serde_json::from_str(&std::fs::read_to_string(&cfg.params)?)?;
 
     // ADR-0044: bundles load only under a signature that verifies under the rules' bundle keys.
-    let local = LocalBundles::load_dir(&cfg.bundles_dir, &genesis.rules.bundle_keys).await?;
+    // ADR-0049 §6: and only with a well-formed allowlist. W7 to W9 read two lists the rules issue
+    // (ADR-0025 A2, pending). They are read once, here, from the genesis rules: a later issuance
+    // that changes them does not re-check a bundle already loaded.
+    let issued = topak_bundle::Issued {
+        inside_targets: genesis.rules.inside_targets.clone(),
+        releasers: genesis.rules.releasers.clone(),
+    };
+    let local = LocalBundles::load_dir_issued(&cfg.bundles_dir, &genesis.rules.bundle_keys, &issued).await?;
     let revs: Vec<String> = local.revisions().map(|d| d.short().to_string()).collect();
     tracing::info!(?revs, keys = genesis.rules.bundle_keys.len(), sidecar = ?cfg.opa_sidecar, "bundle tier (verified revisions)");
     let sidecar = cfg

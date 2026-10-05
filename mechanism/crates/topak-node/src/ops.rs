@@ -30,6 +30,10 @@ pub enum OperatorOp {
         ttl_ms: u64,
         round: Round,
         role: RoundRole,
+        /// ADR-0047 §1: the task's label, declared by whoever issues the grant. Where the
+        /// round's `clearSet` starts. This reference carries no task, so it is optional.
+        #[serde(default)]
+        task_label: Option<BTreeSet<String>>,
     },
     Renew {
         token: String,
@@ -80,6 +84,10 @@ pub enum OperatorOp {
         ttl_ms: u64,
         round: Round,
         role: RoundRole,
+        /// ADR-0047 §1: the task's label, declared by whoever issues the grant. Where the
+        /// round's `clearSet` starts. This reference carries no task, so it is optional.
+        #[serde(default)]
+        task_label: Option<BTreeSet<String>>,
     },
     /// Register a profile whose single-file workspace was promoted (ADR-0034 §1). The file's
     /// bytes, verbatim: its digest is what a lease's `confinement` names.

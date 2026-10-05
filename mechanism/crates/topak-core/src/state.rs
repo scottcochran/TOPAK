@@ -120,6 +120,10 @@ pub struct LeaseRecord {
     /// Carried across renewal: the session is the guest's, not the fence's.
     #[serde(default)]
     pub session_ctr: u64,
+    /// ADR-0047 §4: the round's labels, folded from its admits. Carried across renewal: the
+    /// round is the same round, and a live round keeps the labels it started with (§8).
+    #[serde(default)]
+    pub labels: crate::labels::RoundLabels,
 }
 
 impl LeaseRecord {
@@ -161,6 +165,10 @@ pub struct GrantRequest {
     pub ttl_ms: u64,
     pub round: Round,
     pub role: RoundRole,
+    /// ADR-0047 §1: the task's label, declared by whoever issues the grant. It travels with the
+    /// grant, beside the lease and not in it, and is where the round's `clearSet` starts.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub task_label: Option<crate::labels::Label>,
 }
 
 /// A renewal names the live lease and the narrowed values.
@@ -300,6 +308,10 @@ pub struct AdmitRecord {
     /// `ContainedMeansConfined` rests on (`spec/theorem-premise-binding.md`).
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub session: Option<SessionProof>,
+    /// ADR-0047 §4, §5: what the deciding replica computed about a `Consult` or an `Actuate`,
+    /// from the entry of the lease's revision. On the log with the admit, and folded at apply.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub labels: Option<crate::labels::LabelFacts>,
 }
 
 /// One log entry. `id` is unique per proposal so a retried proposal applies at most once.
@@ -947,7 +959,12 @@ impl State {
             role: req.role,
             ttl_ms: req.ttl_ms,
         };
-        self.leases.insert(index, LeaseRecord { lease, ended: None, actions: 0, seq: 0, attestation, session_ctr: 0 });
+        // ADR-0047 §4: the task is delivered clear, so `clearSet` starts from its label.
+        let labels = crate::labels::RoundLabels { clear_set: req.task_label.clone().unwrap_or_default(), ..Default::default() };
+        self.leases.insert(
+            index,
+            LeaseRecord { lease, ended: None, actions: 0, seq: 0, attestation, session_ctr: 0, labels },
+        );
         self.live_by_seat.insert(req.seat.clone(), index);
         self.last_round.insert(req.seat.clone(), req.round);
         Applied::LeaseGranted { fence: index }
@@ -1066,6 +1083,19 @@ impl State {
         {
             return Applied::Rejected(e);
         }
+        // ADR-0047 §1, §4: no Run delivery is unlabelled, and the floor's answer was about the
+        // `clearSet` the admit names. If the round's has grown between decision and commit, the
+        // answer is about a set that no longer stands, and the admit is refused, not re-decided.
+        if matches!(rec.action, Admitted::Consult { .. } | Admitted::Actuate { .. }) {
+            let Some(facts) = &rec.labels else {
+                return Applied::Rejected("a Run delivery carries no label (ADR-0047 §1)".into());
+            };
+            if facts.clear_set != self.leases[&rec.lease].labels.clear_set {
+                return Applied::Rejected(
+                    "decided against a clearSet the round has since grown past (ADR-0047 §4)".into(),
+                );
+            }
+        }
         // ADR-0034 §3.5: under an attested session key, the action is the attested guest's. The
         // generation binding at `Act`: a proof under any other key, or a replayed counter, is void.
         let key = self.leases[&rec.lease].attestation.as_ref().and_then(|a| a.session_key.clone());
@@ -1099,6 +1129,25 @@ impl State {
             Admitted::Emit { .. } | Admitted::Report { .. } | Admitted::Actuate { .. } => {
                 lr.seq += 1;
                 seq = Some(lr.seq);
+                // ADR-0047 §2, §4: the result is named by this sequence number, and what is
+                // delivered clear joins `clearSet`. The fold is at admit, before the call
+                // returns: a call that fails delivers nothing, and the bound is still sound.
+                if let (Admitted::Actuate { .. }, Some(f)) = (&rec.action, &rec.labels) {
+                    let item = crate::labels::ItemLabel { label: f.result_label.clone(), delivery: f.delivery };
+                    lr.labels.results.insert(lr.seq, item);
+                    if f.delivery == crate::labels::Delivery::Clear {
+                        lr.labels.clear_set.extend(f.result_label.iter().cloned());
+                    }
+                }
+            }
+            Admitted::Consult { object } => {
+                if let Some(f) = &rec.labels {
+                    let item = crate::labels::ItemLabel { label: f.result_label.clone(), delivery: f.delivery };
+                    lr.labels.consults.insert(object.clone(), item);
+                    if f.delivery == crate::labels::Delivery::Clear {
+                        lr.labels.clear_set.extend(f.result_label.iter().cloned());
+                    }
+                }
             }
             Admitted::Heartbeat { topic, watermark, .. } => {
                 lr.seq += 1;

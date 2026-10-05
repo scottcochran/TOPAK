@@ -73,10 +73,14 @@ fn without(v: &mut Value, field: &str) {
 }
 
 async fn refused(check: &str, change: impl FnOnce(&mut Value)) {
+    refused_for(&format!("{check}: entry"), change).await
+}
+
+async fn refused_for(why: &str, change: impl FnOnce(&mut Value)) {
     let (dir, keys, _) = bundle_with(change);
-    let err = LocalBundles::load_dir(&dir, &keys).await.err().unwrap_or_else(|| panic!("{check}: the bundle loaded"));
+    let err = LocalBundles::load_dir(&dir, &keys).await.err().unwrap_or_else(|| panic!("{why}: the bundle loaded"));
     let err = format!("{err:#}");
-    assert!(err.contains("ADR-0049 §6") && err.contains(&format!("{check}: entry")), "{check}: {err}");
+    assert!(err.contains("ADR-0049 §6") && err.contains(why), "{why}: {err}");
 }
 
 #[tokio::test]
@@ -143,13 +147,101 @@ async fn w6_labels_are_present_and_in_the_vocabulary() {
     // The same name, once the bundle's vocabulary holds it, is no refusal.
     let (dir, keys, rev) = bundle_with(|d| {
         d["topak"]["labels"]["vocabulary"] = json!(["untrusted", "restricted", "pii"]);
+        d["topak"]["labels"]["delivery"]["thinker"]["pii"] = json!("handle");
+        d["topak"]["labels"]["delivery"]["observer"]["pii"] = json!("clear");
         search(d)["result"]["label"] = json!(["untrusted", "pii"]);
     });
     let l = LocalBundles::load_dir(&dir, &keys).await.expect("loads");
     assert!(l.entry(&rev, "search@d3").unwrap().label.contains("pii"));
     // The two reserved names are in every vocabulary, declared or not (ADR-0047 §1).
-    let (dir, keys, _) = bundle_with(|d| without(&mut d["topak"], "labels"));
+    let (dir, keys, _) = bundle_with(|d| without(&mut d["topak"]["labels"], "vocabulary"));
     LocalBundles::load_dir(&dir, &keys).await.expect("loads");
+}
+
+/// ADR-0047 §1, F6, and §2: the sibling data of ADR-0049 §7. A root with no label, and a delivery
+/// table that is not total over the vocabulary for a seat kind it must cover, are not well-formed.
+#[tokio::test]
+async fn the_root_is_labelled_and_the_delivery_table_is_total() {
+    refused_for("F6: the Run root declares no label", |d| without(&mut d["topak"]["labels"], "root")).await;
+    refused_for("F6: the Run root declares no label", |d| without(&mut d["topak"], "labels")).await;
+    refused_for("W6: the Run root's label names \"pii\"", |d| d["topak"]["labels"]["root"]["label"] = json!(["pii"])).await;
+    refused_for("no row for the seat kind observer", |d| without(&mut d["topak"]["labels"]["delivery"], "observer")).await;
+    refused_for("the delivery table for thinker gives \"restricted\" no mode", |d| {
+        without(&mut d["topak"]["labels"]["delivery"]["thinker"], "restricted")
+    })
+    .await;
+    refused_for("gives \"untrusted\" no mode", |d| d["topak"]["labels"]["delivery"]["thinker"]["untrusted"] = json!("maybe"))
+        .await;
+    // A name added to the vocabulary and given no mode: the table is no longer total.
+    refused_for("gives \"pii\" no mode", |d| d["topak"]["labels"]["vocabulary"] = json!(["pii"])).await;
+}
+
+/// ADR-0047 §1, §2, §4: the facts of a call, from the entry and the round. The join, the literal
+/// rule (R10), a release, and delivery by the seat kind's table.
+#[tokio::test]
+async fn the_label_of_a_result_is_the_join_and_the_table_delivers_it() {
+    use topak_core::action::Action;
+    use topak_core::labels::{Delivery, ItemLabel, RoundLabels};
+    let set = |names: &[&str]| names.iter().map(|s| s.to_string()).collect::<BTreeSet<String>>();
+    let (dir, keys, rev) = bundle_with(|d| {
+        d["topak"]["labels"]["vocabulary"] = json!(["internal"]);
+        d["topak"]["labels"]["delivery"] = json!({
+            "thinker": { "untrusted": "clear", "restricted": "handle", "internal": "clear" },
+            "observer": { "untrusted": "clear", "restricted": "clear", "internal": "clear" },
+        });
+        d["topak"]["labels"]["root"] = json!({ "label": ["internal"], "objects": { "sealed-object": ["restricted"] } });
+        search(d)["inputs"]["query"]["accepts"] = json!(["restricted", "internal"]);
+        d["topak"]["tools"]["redact@d5"] = json!({
+            "name": "redact", "digest": "d5", "domain": "run", "purpose": "Return a summary that holds no restricted content.",
+            "inputs": { "text": { "type": "string", "required": true, "note": "The text.", "accepts": ["restricted"] } },
+            "destinations": "none",
+            "result": { "label": ["untrusted"], "releases": ["restricted"] },
+            "channel": { "kind": "https", "target": "redact.internal:443" },
+        });
+    });
+    let issued = Issued { releasers: BTreeSet::from(["redact@d5".to_string()]), ..Default::default() };
+    let l = LocalBundles::load_dir_issued(&dir, &keys, &issued).await.expect("loads");
+    let a = l.allowlist(&rev).unwrap();
+    let call = |tool: &str, digest: &str, inputs: Value| Action::Actuate {
+        tool: tool.into(),
+        digest: Digest(digest.into()),
+        inputs: inputs.as_object().unwrap().clone(),
+    };
+    let mut round = RoundLabels::default();
+
+    // A consult takes the root's label, or its object's, and the table says how it is delivered.
+    let f = a.facts("thinker", &Action::Consult { object: Digest("any".into()) }, &round).unwrap().unwrap();
+    assert_eq!((f.result_label, f.delivery), (set(&["internal"]), Delivery::Clear));
+    let f = a.facts("thinker", &Action::Consult { object: Digest("sealed-object".into()) }, &round).unwrap().unwrap();
+    assert_eq!((f.result_label.clone(), f.delivery), (set(&["restricted"]), Delivery::Handle));
+    // The table is per seat kind: an Observer is given the same item clear.
+    let o = a.facts("observer", &Action::Consult { object: Digest("sealed-object".into()) }, &round).unwrap().unwrap();
+    assert_eq!(o.delivery, Delivery::Clear);
+    // A kind the table has no row for is given nothing in the clear.
+    let g = a.facts("grant", &Action::Consult { object: Digest("any".into()) }, &round).unwrap().unwrap();
+    assert_eq!(g.delivery, Delivery::Handle);
+
+    // The literal rule: with `internal` read in the clear, a result computed from a literal
+    // carries it, beside the entry's own label.
+    round.clear_set = set(&["internal"]);
+    round.results.insert(2, ItemLabel { label: set(&["restricted"]), delivery: Delivery::Handle });
+    let f = a.facts("thinker", &call("search", "d3", json!({ "query": "typed" })), &round).unwrap().unwrap();
+    assert_eq!(f.result_label, set(&["untrusted", "internal"]));
+    assert!(f.outward && f.input_labels.is_empty() && !f.dest_literal);
+    // The join: a result covers the handles among its inputs, and with no literal it does not
+    // take `clearSet`. Its label holds `restricted`, so it is suppressed to the Thinker.
+    let handle = json!({ "query": { "handle": { "actuate": 2 } } });
+    let f = a.facts("thinker", &call("search", "d3", handle), &round).unwrap().unwrap();
+    assert_eq!((f.input_labels.clone(), f.result_label, f.delivery), (set(&["restricted"]), set(&["untrusted", "restricted"]), Delivery::Handle));
+    // A release removes a name from the join: the only way suppressed content becomes readable.
+    let f = a.facts("thinker", &call("redact", "d5", json!({ "text": { "handle": { "actuate": 2 } } })), &round).unwrap().unwrap();
+    assert_eq!((f.result_label, f.delivery), (set(&["untrusted"]), Delivery::Clear));
+    // A handle names an item of this round or nothing.
+    let e = a.facts("thinker", &call("search", "d3", json!({ "query": { "handle": { "actuate": 9 } } })), &round);
+    assert!(e.unwrap_err().contains("names nothing in this round"));
+    // An `Actuate` naming no entry: outward, and suppressed.
+    let f = a.facts("thinker", &call("search", "d9", json!({ "query": "q" })), &round).unwrap().unwrap();
+    assert!(f.outward && f.delivery == Delivery::Handle);
 }
 
 #[tokio::test]

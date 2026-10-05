@@ -70,6 +70,8 @@ fn rules() -> Rules {
         erasure_roster: None,
         verifier_keys: BTreeSet::from([pubkey(&VERIFIER)]),
         bundle_keys: BTreeSet::new(),
+        inside_targets: BTreeSet::new(),
+        releasers: BTreeSet::new(),
         personas: BTreeMap::from([(persona(), Provenance::InHousePretrain)]),
         criterion: Some(Criterion {
             record: "ADR-0035 (test)".into(),
@@ -155,6 +157,7 @@ fn admit_entry(id: &str, seat: &str, lease: LogIndex, action: Admitted, session:
             params: params().digest(),
             decided_by: 1,
             session,
+            labels: Some(Default::default()),
         },
     }
 }
@@ -192,6 +195,7 @@ impl Log {
             ttl_ms: 1000,
             round: self.round,
             role,
+            task_label: None,
         };
         let id = self.id("g");
         match self.apply(Entry::Grant { id, req, appraisal: None }) {
@@ -299,6 +303,7 @@ impl Ask {
             ttl_ms: 1000,
             round: self.round,
             role: RoundRole::Author,
+            task_label: None,
         }
     }
 

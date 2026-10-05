@@ -142,6 +142,8 @@ fn fixture(name: &str, criterion: bool) -> Fx {
         // ADR-0025 §1 (f): the simulated verifier counts only because the rules issue its key.
         verifier_keys: BTreeSet::from([vkey]),
         bundle_keys: BTreeSet::new(),
+        inside_targets: BTreeSet::new(),
+        releasers: BTreeSet::new(),
         personas: BTreeMap::from([(persona.clone(), topak_core::confine::Provenance::InHousePretrain)]),
         criterion: criterion.then(|| Criterion {
             record: "ADR-0035 (test: SIMULATED)".into(),
@@ -189,6 +191,20 @@ impl BundleDecider for AllowAll {
     /// No entries here: a test of what a list holds uses the real tier.
     fn tool_list(&self, rev: &Digest, domain: Domain, callable: &BTreeSet<String>) -> Value {
         topak_bundle::Allowlist::default().tool_list(rev, domain, callable)
+    }
+    /// A stub with no entries declares no label: nothing joined, everything clear, nothing outward.
+    fn label_facts(
+        &self,
+        _rev: &Digest,
+        _kind: &str,
+        action: &Action,
+        round: &topak_core::labels::RoundLabels,
+    ) -> Result<Option<topak_core::labels::LabelFacts>, String> {
+        Ok(matches!(action, Action::Consult { .. } | Action::Actuate { .. })
+            .then(|| topak_core::labels::LabelFacts::unlabelled(&round.clear_set)))
+    }
+    fn input_types(&self, _rev: &Digest, _tool: &str) -> BTreeMap<String, String> {
+        BTreeMap::new()
     }
     fn channel(&self, rev: &Digest, tool: &str) -> Option<topak_contain::wasmtool::Channel> {
         self.0.get(&(rev.clone(), tool.to_string())).cloned()
@@ -386,6 +402,7 @@ async fn promote(m: &Mechanism, f: &Fx, text: &str) -> Digest {
         ttl_ms: LONG,
         round: f.next_round(),
         role,
+        task_label: None,
     };
     let r = m.operate(grant("w1", RoundRole::Author, &[ActionKind::Draft, ActionKind::Submit])).await;
     let token = r["token"].as_str().unwrap_or_else(|| panic!("{r}")).to_string();
@@ -425,6 +442,7 @@ async fn launch(m: &Mechanism, f: &Fx, principal: &str, seat: &str, profile: &Di
         ttl_ms,
         round: f.next_round(),
         role: RoundRole::Author,
+        task_label: None,
     })
     .await
 }
@@ -563,6 +581,7 @@ async fn simulated_rung_3_round_is_contained_and_rung_0_beside_it_is_not() {
             ttl_ms: LONG,
             round: f.next_round(),
             role: RoundRole::Author,
+            task_label: None,
         })
         .await;
     assert_eq!(r["ok"], true, "{r}");
@@ -662,6 +681,7 @@ async fn an_epoch_fence_voids_a_pending_appraisal() {
                 ttl_ms: LONG,
                 round,
                 role: RoundRole::Author,
+                task_label: None,
             })
             .await
         })
@@ -880,6 +900,7 @@ async fn run_round(name: &str, channels: impl FnOnce(&str) -> Channels) -> (Cl, 
             ttl_ms: LONG,
             round: f.next_round(),
             role: RoundRole::Author,
+            task_label: None,
         })
         .await;
     let watcher = r["token"].as_str().unwrap().to_string();
@@ -895,6 +916,7 @@ async fn run_round(name: &str, channels: impl FnOnce(&str) -> Channels) -> (Cl, 
             ttl_ms: LONG,
             round,
             role: RoundRole::Author,
+            task_label: None,
         })
         .await;
     assert_eq!(r["ok"], true, "{r}");

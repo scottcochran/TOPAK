@@ -12,6 +12,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 
 use crate::action::{Action, ActionRequest, tool_id};
+use crate::labels::{Handle, LabelFacts};
 use crate::state::{LeaseRecord, MechanismDeny, Params, State};
 use crate::types::*;
 
@@ -100,6 +101,7 @@ pub fn lift(
     params: &Params,
     rec: &LeaseRecord,
     observer_live: bool,
+    facts: Option<&LabelFacts>,
 ) -> Result<FrozenInput, MechanismDeny> {
     let rules = &state.rules;
     let seat = req.seat.as_str();
@@ -162,6 +164,12 @@ pub fn lift(
             },
             // ADR-0039 §1: live(o) for some cell Observer of this seat, computed by the mechanism.
             "observerLive": observer_live,
+            // ADR-0047 §4: the round's `clearSet`, and what the call's inputs carry. A request
+            // that is not a tool call has no inputs, so the last three are empty.
+            "clearSet": rec.labels.clear_set,
+            "inputLabels": facts.map(|f| f.input_labels.clone()).unwrap_or_default(),
+            "destLiteral": facts.is_some_and(|f| f.dest_literal),
+            "destLabels": facts.map(|f| f.dest_labels.clone()).unwrap_or_default(),
         }))
     };
     let topic = |d: Domain| -> Result<(Value, String), MechanismDeny> {
@@ -212,7 +220,17 @@ pub fn lift(
             if kind == ActionKind::Actuate && rules.break_glass.as_ref().is_some_and(|bg| bg.tools.contains(&tid)) {
                 parents.push(uid("ToolSet", "bg-tools"));
             }
-            entities.push(ent("Tool", &tid, json!({ "digest": digest }), parents));
+            // ADR-0049 §4: `outward` is derived, never declared, and a Build tool has no channel.
+            // An `Actuate` with no facts has no answer to whether it is outward, and is refused
+            // here and not lifted as inside.
+            let outward = match (kind, facts) {
+                (ActionKind::Actuate, Some(f)) => f.outward,
+                (ActionKind::Actuate, None) => {
+                    return Err(MechanismDeny::Other("an Actuate was lifted with no label facts (ADR-0047 §4)".into()));
+                }
+                _ => false,
+            };
+            entities.push(ent("Tool", &tid, json!({ "digest": digest, "outward": outward }), parents));
             let ctx = if kind == ActionKind::Invoke {
                 build_ctx(inputs_in_workspace(&Value::Object(inputs.clone())))?
             } else {
@@ -254,11 +272,26 @@ pub fn lift(
         Action::Invoke { inputs, .. } | Action::Actuate { inputs, .. } => Value::Object(inputs.clone()),
         _ => Value::Null,
     };
+    // ADR-0049 §3: an input given as a handle, with the label of the item it names. The bundle
+    // tier checks each against the input's `accepts`. A handle that names nothing in this round,
+    // for this principal, resolves to nothing, and the request is refused before either tier.
+    let mut handles = serde_json::Map::new();
+    if let Action::Actuate { inputs, .. } = &req.action {
+        for (f, v) in inputs {
+            if let Some(h) = Handle::parse(v) {
+                let item = rec.labels.item(&h).ok_or_else(|| {
+                    MechanismDeny::Other(format!("input {f:?} is a handle that names nothing in this round (ADR-0049 §3)"))
+                })?;
+                handles.insert(f.clone(), json!(item.label));
+            }
+        }
+    }
     let bundle_input = json!({
         "action": kind.as_str(),
         "principal": { "seat": seat, "domain": domain.as_str() },
         "resource": bundle_resource,
         "inputs": inputs,
+        "handles": handles,
         "request": req.action,
         "context": {
             "epoch": state.epoch,

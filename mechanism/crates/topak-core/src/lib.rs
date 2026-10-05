@@ -18,6 +18,7 @@ pub mod admit;
 pub mod authentic;
 pub mod clock;
 pub mod confine;
+pub mod labels;
 pub mod lease;
 pub mod lift;
 pub mod promotion;

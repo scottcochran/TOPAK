@@ -1,9 +1,13 @@
 # Proposed policy floor
 
-**2026.10.04** · DRAFT · not ratified · **not what the reference follows**
+**2026.10.04**, revised 2026.10.05 · DRAFT · not ratified · **the reference links the `labels` stage** (since 2026.10.05)
 
-The genesis floor in `floor/` is the one the reference links, pins and replays. This directory holds the floor as it
-would read if the records drafted on 2026.10.03 and 2026.10.04 were in force. Nothing here is loaded by anything.
+This directory holds the floor as it would read if the records drafted on 2026.10.03 and 2026.10.04 were in force.
+**Since 2026.10.05 the reference links, pins and replays the `labels` stage** (`mechanism/crates/topak-floor`), switched
+outright from the genesis floor in `floor/` at the custodian's direction. The `control` and `emergency` stages are
+loaded by nothing. The stage files open with a comment that says they are not what the reference follows; for
+`labels` that is no longer true. The bytes are left as they were gated, so that the digests the gate results and
+ADR-0047 cite are the digests the reference pins, and the comment is corrected at the stage's next gate run.
 It exists so that those records' floor text is real Cedar that has been validated, tested and put through the
 gates, and not a table in an amendment.
 
@@ -26,7 +30,7 @@ The genesis floor has 17 policies and 62 cases.
 |---|---|
 | `build.py` | Builds every stage from `../genesis.cedarschema`, `../genesis-floor.cedar` and `../genesis-tests.json`. Each edit to the genesis text replaces a string asserted to occur exactly once, so a change to the genesis floor that this file does not expect stops the build |
 | `<stage>.cedarschema`, `<stage>-floor.cedar` | The stage's schema S and floor. Generated; edit `build.py` |
-| `<stage>-tests.json` | The stage's behavioural cases. Generated and not tracked (about 5 MB in all) |
+| `<stage>-tests.json` | The stage's behavioural cases. Generated. `labels-tests.json` is tracked, because the reference's floor tests replay it; the other two are not (about 2 MB) |
 | `run-gates.py` | Drives `../run-gates.py`, the genesis gate runner, unchanged, on a stage, then adds routing controls for the new entries |
 | `<stage>-gates-results-2026.10.04.txt` | The gate run for each stage. All gates pass in all three |
 

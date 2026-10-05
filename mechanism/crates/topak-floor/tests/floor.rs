@@ -7,7 +7,9 @@ use serde_json::{Value, json};
 use topak_core::admit::FloorOutcome;
 use topak_floor::*;
 
-const TESTS: &str = include_str!("../../../../floor/genesis-tests.json");
+/// The linked stage's cases: the genesis suite's 62, lifted to the stage's schema, and 12 for
+/// `R5` to `R7` (`floor/proposed/build.py`).
+const TESTS: &str = include_str!("../../../../floor/proposed/labels-tests.json");
 
 /// Every behavioral case the `cedar run-tests` gate ran must decide identically through the
 /// engine the mechanism links, with the same reasons. This is the differential check between
@@ -20,7 +22,7 @@ const TESTS: &str = include_str!("../../../../floor/genesis-tests.json");
 fn replays_the_gate_suite() {
     let floor = Floor::load().expect("pinned floor loads");
     let cases: Vec<Value> = serde_json::from_str(TESTS).unwrap();
-    assert_eq!(cases.len(), 62);
+    assert_eq!(cases.len(), 74);
     for c in &cases {
         let name = c["name"].as_str().unwrap();
         let r = &c["request"];
@@ -116,7 +118,7 @@ fn a_retired_run_action_is_an_error_not_a_decision() {
         { "uid": root(), "attrs": {}, "parents": [] },
         { "uid": set("run-allow"), "attrs": {}, "parents": [] },
         { "uid": set("bg-tools"), "attrs": {}, "parents": [] },
-        { "uid": tool(), "attrs": { "digest": "d3" }, "parents": [set("run-allow")] },
+        { "uid": tool(), "attrs": { "digest": "d3", "outward": true }, "parents": [set("run-allow")] },
         { "uid": topic(),
           "attrs": { "owner": { "__entity": seat() }, "epoch": 1, "round": 1, "sealed": false }, "parents": [] },
     ]);
@@ -127,6 +129,7 @@ fn a_retired_run_action_is_an_error_not_a_decision() {
             "toolAllowlist": { "__entity": set("run-allow") },
             "breakGlass": { "quorum": false, "tools": { "__entity": set("bg-tools") } },
             "observerLive": true,
+            "clearSet": [], "inputLabels": [], "destLiteral": false, "destLabels": [],
         })
     };
     let ask = |action: &str, resource: &str, alphabet: Value| {

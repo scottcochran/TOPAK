@@ -26,7 +26,7 @@ affirmative bundle `true`, from the bundle revision the lease names, is a deny.
 |---|---|---|
 | `topak-core` | Types, lease (ADR-0031), rules floor (ADR-0026), tally (ADR-0024), lift, composition, replicated state | none |
 | `topak-paxos` | Sans-IO crash-fault Multi-Paxos plus a `Voting` ghost | none |
-| `topak-floor` | Cedar engine with `floor/genesis-floor.cedar` and `genesis.cedarschema` compiled in, pinned by digest | none |
+| `topak-floor` | Cedar engine with the proposed floor's `labels` stage compiled in (`floor/proposed/labels-floor.cedar`, `labels.cedarschema`; since 2026.10.05, in place of the genesis floor), pinned by digest | none |
 | `topak-bundle` | OPA sidecar client; local OPA WASM fallback bound to the lease's bundle | HTTP |
 | `topak-transport` | Round topics over `rskafka` (or in memory) | Kafka |
 | `topak-mcp` | The alphabet as MCP tools (`rmcp` server); downstream tool host (`rmcp` client) | stdio |
@@ -36,7 +36,7 @@ affirmative bundle `true`, from the bundle revision the lease names, is a deny.
 ## Run it
 
 ```sh
-cargo test --workspace --release           # 116 tests (2026.10.05); needs a built bundle (next line); builds topak-demo-guest
+cargo test --workspace --release           # 119 tests (2026.10.05); needs a built bundle (next line); builds topak-demo-guest
 TOPAK_DOCKER_IMAGE=<image with python3> cargo test --release -p topak-contain --test launch   # + a real container round (skipped without it)
 scripts/build-bundle.sh                    # policies/ → bundles/<revision>.tar.gz (docker, OPA); TOPAK_BUNDLE_SECRET=<hex> also writes <revision>.sig
 
@@ -90,7 +90,7 @@ anchor issuance puts the simulator's key in `verifier_keys`. What they reach is 
 
 ## Where the corpus is in the code
 
-- The floor text is **not copied**. `topak-floor` includes `../floor/*` by path and refuses to load
+- The floor text is **not copied**. `topak-floor` includes `../floor/proposed/labels-*` and `../floor/genesis-values.json` by path and refuses to load
   unless the bytes match the digests the gate run recorded. Changing the floor means re-running
   the gates and changing the pin, which is a mechanism release.
 - **A bundle loads only under a signature** over its revision that verifies under a key in the rules' `bundle_keys`

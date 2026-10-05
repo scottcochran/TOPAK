@@ -91,3 +91,38 @@ test_retired_name_denied if {
 test_malformed_request_denied if {
 	not actuate.allow with input as {"action": "Actuate"}
 }
+
+# ADR-0047 §3: a handle is an argument where the input accepts its label, and nowhere else.
+accepting := {"search@d3": object.union(entry, {
+	"inputs": {"query": {"type": "string", "required": true, "accepts": ["restricted"]}},
+	"channel": {"kind": "https", "target": "search.internal:443"},
+})}
+
+by_handle(labels) := object.union(search({"query": {"handle": {"actuate": 2}}}), {"handles": {"query": labels}})
+
+test_handle_accepted if {
+	actuate.allow with input as by_handle(["restricted"]) with data.topak.tools as accepting
+	actuate.allow with input as by_handle([]) with data.topak.tools as accepting
+}
+
+test_handle_label_not_accepted_denied if {
+	not actuate.allow with input as by_handle(["restricted", "untrusted"]) with data.topak.tools as accepting
+	"input \"query\" does not accept a handle labelled \"untrusted\"" in actuate.violations with input as by_handle(["restricted", "untrusted"]) with data.topak.tools as accepting
+}
+
+test_handle_where_none_is_taken_denied if {
+	not actuate.allow with input as by_handle(["restricted"])
+	"input \"query\" does not take a handle" in actuate.violations with input as by_handle(["restricted"])
+}
+
+test_handle_without_a_label_denied if {
+	inp := search({"query": {"handle": {"actuate": 2}}})
+	not actuate.allow with input as inp with data.topak.tools as accepting
+	"input \"query\" is a handle the mechanism supplied no label for" in actuate.violations with input as inp with data.topak.tools as accepting
+}
+
+# A literal object is not a handle, and is still a type error.
+test_object_literal_denied if {
+	inp := search({"query": {"handle": 1, "also": 2}})
+	not actuate.allow with input as inp with data.topak.tools as accepting
+}

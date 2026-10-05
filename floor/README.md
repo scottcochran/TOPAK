@@ -2,6 +2,8 @@
 
 **2026.09.24**, revised 2026.09.30 · DRAFT · not ratified · the reference instantiation ADR-0030 names
 
+**2026.10.05:** the reference (`mechanism/`) no longer links this floor. It links the `labels` stage in `proposed/`, which is built from these files. They are unchanged, and `proposed/build.py` still reads them.
+
 | File | What it is |
 |---|---|
 | `genesis.cedarschema` | Schema S: the typed lift's type. The analyses quantify over it (ADR-0030 §4) |

@@ -19,24 +19,30 @@ use topak_core::admit::FloorOutcome;
 use topak_core::lift::FrozenInput;
 use topak_core::{Digest, ObserverValues, PersonaValues};
 
-/// The gated floor text (`floor/genesis-floor.cedar`, DRAFT, not ratified).
-pub const FLOOR_SRC: &str = include_str!("../../../../floor/genesis-floor.cedar");
-/// Schema S (`floor/genesis.cedarschema`, DRAFT, not ratified).
-pub const SCHEMA_SRC: &str = include_str!("../../../../floor/genesis.cedarschema");
+/// The gated floor text. Since 2026.10.05 it is the proposed floor's `labels` stage
+/// (`floor/proposed/labels-floor.cedar`, DRAFT, not ratified): the genesis floor with ADR-0047's
+/// three forbids on `Actuate`, `R5` to `R7`. The reference was switched to it outright, at the
+/// custodian's direction; `floor/genesis-floor.cedar` is no longer what this binary enforces.
+pub const FLOOR_SRC: &str = include_str!("../../../../floor/proposed/labels-floor.cedar");
+/// Schema S for that stage (`floor/proposed/labels.cedarschema`): the genesis schema with
+/// `outward` on a tool and `clearSet`, `inputLabels`, `destLiteral` and `destLabels` in Run's context.
+pub const SCHEMA_SRC: &str = include_str!("../../../../floor/proposed/labels.cedarschema");
 /// The policy-floor values (`floor/genesis-values.json`, ADR-0039 §1): the third file of the
-/// floor bundle. Placeholders, not measured.
+/// floor bundle. Placeholders, not measured. The stage does not change them.
 pub const VALUES_SRC: &str = include_str!("../../../../floor/genesis-values.json");
 
-/// Digests recorded in `floor/genesis-gates-results-2026.09.29-adr0041.txt` (the run for ADR-0040
-/// and ADR-0041, both Proposed: `Consult`, `Actuate` and `Report` in S, `runRoot` in RunCtx,
-/// R4-consult-pinned, R3 over effects only; after the ADR-0037 §4 and ADR-0039 §2 runs of the same
-/// day). Changing any of the three means re-running the gates and changing these: a mechanism
-/// release. The 09.24 digests were 9b6adeee… and 77d9b566…; the ADR-0039 run's were 49a6e314…,
-/// ac2a0acc… and 0d19c9e3…. The values digest moved again on 2026.09.30 (`persona.T_persona_ms`, ADR-0031 A2,
-/// Pending; not yet read here), recorded in `genesis-gates-results-2026.09.30.txt`; the 09.29-adr0041 values
-/// digest was 468992e4….
-pub const PINNED_FLOOR_SHA256: &str = "28ec0e4552c6a9150872ad25e3b2290330fc9ed55477695fa138f6426a174c84";
-pub const PINNED_SCHEMA_SHA256: &str = "0ec2fa215eefe1367fa03a205d4a992334fb3abba28b2fe1f1af282b70daeffb";
+/// Digests recorded in `floor/proposed/labels-gates-results-2026.10.04.txt`, the gate run for the
+/// `labels` stage: 20 policies, 74 cases, every gate passing. Changing any of the three means
+/// re-running the gates and changing these: a mechanism release. The genesis floor's digests,
+/// pinned here until 2026.10.05, were 28ec0e45… (floor) and 0ec2fa21… (schema), from
+/// `floor/genesis-gates-results-2026.09.29-adr0041.txt`; the values digest is that of
+/// `genesis-gates-results-2026.09.30.txt` and is unchanged.
+///
+/// The two stage files open with a comment saying they are "not what the reference follows".
+/// That was true when they were gated and is not now. The bytes are kept as gated, so that what
+/// is enforced is what was proven; the comment is corrected at the stage's next gate run.
+pub const PINNED_FLOOR_SHA256: &str = "9aab481d02414de2ae4eef8bf7ab1c059efe7bf9df334ddc392b9115f645718d";
+pub const PINNED_SCHEMA_SHA256: &str = "9beda963b076cb06180516d3cb430cbe0008712b10182b77906b131240d1ab1b";
 pub const PINNED_VALUES_SHA256: &str = "85ab6fefb66f031636bd7527722cd9241be101a00088fa2add4fe003cb25d760";
 
 /// The Cedar engine version this mechanism links. The gates ran with cedar-policy-cli 4.13.0.
