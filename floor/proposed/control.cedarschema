@@ -1,0 +1,152 @@
+// PROPOSED · built by floor/proposed/build.py from the genesis floor · stage: control · not ratified,
+// and not what the reference follows. Edit build.py, not this file.
+// TOPAK genesis policy floor — schema S (ADR-0030 §4).
+// DRAFT · 2026.09.24, revised 2026.09.29 (ADR-0040, ADR-0041) · not ratified · the analyses in
+// ADR-0030 §5 quantify over this schema.
+//
+// S is the typed lift's type. Every value here is written by the typed lift or by the issued
+// rules (ADR-0030 §3); no bundle has a write path to any of it. Epoch fencing is NOT here: the
+// mechanism rejects a fenced epoch before the floor is consulted (ADR-0022 §2).
+
+namespace Topak {
+  // ---- principals --------------------------------------------------------------------------
+  // A roster is issued by the anchor (grant seats, veto seats). Membership is an entity parent,
+  // set by the mechanism from the rules in force at `rulesEpoch`.
+  entity Roster;
+
+  // A seat (ADR-0016 §5; ADR-0037 §1). `domain` separates Build from Run while the per-class floor
+  // question (ToO §3.4) is open: one policy set, policies scoped per domain. `kind` is the seat's
+  // kind (ADR-0037 §2), set by the mechanism from the issued rules like roster membership.
+  entity Seat in [Roster] {
+    domain: String,                       // "build" | "run"
+    kind: String,                         // "thinker" | "observer" | "grant" | "operator" (ADR-0050 §1)
+  };
+
+  // ---- resources ---------------------------------------------------------------------------
+  entity CorpusRoot;                      // a pinned, content-addressed set: Build's corpus root
+                                          // (ADR-0022 §3) or Run's root (ADR-0040 §3)
+  entity CorpusObject in [CorpusRoot];
+
+  entity Workspace;                       // one per principal per round
+  entity WorkspaceTarget in [Workspace];
+
+  entity ToolSet;                         // an allowlist: name AND digest (ADR-0022 §3)
+  entity Tool in [ToolSet] {
+    digest: String,
+    outward: Bool,                        // ADR-0047 §7; ADR-0049 §4: derived by the lift from the entry's channel and
+                                          // the issued rules' list of targets inside the deployment; never declared
+  };
+
+  entity Topic {                          // a principal's round topic (ADR-0003, ADR-0021)
+    owner: Seat,
+    epoch: Long,
+    round: Long,
+    sealed: Bool,
+  };
+
+  entity Artifact {                       // a sealed workspace offered for promotion
+    author: Seat,
+  };
+
+  entity Fleet;                           // what FenceEpoch acts on: every lease at the epoch
+
+  entity ArchiveRecord {                  // a record in the archive (ADR-0004, ADR-0028)
+    class: String,                        // "F1".."F6" | "payload"
+  };
+
+  // ---- context -----------------------------------------------------------------------------
+  // The lease fields the floor reads (ADR-0031 §1). `alphabet` is the seat's permitted variants.
+  type Lease = {
+    alphabet: Set<String>,
+    rulesEpoch: Long,
+  };
+
+  type BuildCtx = {
+    lease: Lease,
+    epoch: Long,
+    round: Long,
+    roundRole: String,                    // "author" | "voter" for this principal this round
+    corpusRoot: CorpusRoot,
+    workspace: Workspace,
+    toolAllowlist: ToolSet,
+    inputsInWorkspace: Bool,              // syntactic lift: every input resolves in the workspace
+  };
+
+  type VoteCtx = {
+    lease: Lease,
+    epoch: Long,
+    rulesEpoch: Long,                     // rules epoch in force now
+    verdict: String,                      // "grant" | "deny"
+    voteRulesEpoch: Long,                 // the rules epoch the vote binds to (ADR-0024 §3)
+    grantRoster: Roster,
+    vetoRoster: Roster,
+  };
+
+  type RunCtx = {
+    lease: Lease,
+    epoch: Long,
+    round: Long,
+    runRoot: CorpusRoot,                  // ADR-0040 §3: what `Consult` is scoped to
+    toolAllowlist: ToolSet,
+    breakGlass: {
+      quorum: Bool,                       // a break-glass quorum on the issued roster (ADR-0013 §1)
+      tools: ToolSet,                     // the break-glass envelope, issued with the roster
+    },
+    observerLive: Bool,                   // ADR-0039 §1: live(o) for some cell Observer o of this seat, a syntactic lift
+    // ADR-0047 §4; ADR-0030 A2. All four are computed by the mechanism from the record and from the
+    // entry of the granted bundle revision. No policy computes them.
+    clearSet: Set<String>,                // labels of everything delivered clear to this principal this round
+    inputLabels: Set<String>,             // join of the labels of the call's inputs that are handles
+    destLiteral: Bool,                    // an input the entry marks a destination is a literal
+    destLabels: Set<String>,              // join of the labels of destination inputs that are handles
+  };
+
+  // ADR-0050 §4. What the control entries read. Every field is a fact the mechanism holds about the
+  // operator, the target and the request; the operator supplies none of them.
+  type ControlCtx = {
+    personaInForce: Bool,                 // the operator's Persona is promoted and not revoked
+    hasLease: Bool,                       // the operator holds a live lease
+    peerLive: Bool,                       // another operator in the domain holds a live lease
+    freshAssertion: Bool,                 // a sign-on assertion naming the key and the current fence verified
+    targetSeated: Bool,                   // the target was seated by a quorum and is not revoked
+    targetLive: Bool,                     // the target holds a live lease
+    sameBinding: Bool,                    // Persona, bundle, confinement and seat are the last lease's
+    nextRound: Bool,                      // the round named is the last lease's, advanced by one
+    lastAlphabet: Set<String>,            // the last lease's alphabet
+    newAlphabet: Set<String>,             // the alphabet asked for
+    taskLabelled: Bool,                   // the task carries a label (ADR-0047 §1, R9)
+    taskLabel: Set<String>,
+    taskLabelsAllowed: Set<String>,       // the labels the target's seating allows a task (ADR-0050 §5)
+  };
+
+  type EraseCtx = {
+    erasureQuorum: Bool,                  // an erasure quorum on the issued roster; FALSE at genesis
+  };
+
+  // ---- Build's alphabet (ADR-0022 §1) ------------------------------------------------------
+  action Read     appliesTo { principal: [Seat], resource: [CorpusObject],    context: BuildCtx };
+  action Draft    appliesTo { principal: [Seat], resource: [WorkspaceTarget], context: BuildCtx };
+  action Invoke   appliesTo { principal: [Seat], resource: [Tool],            context: BuildCtx };
+  action Emit     appliesTo { principal: [Seat], resource: [Topic],           context: BuildCtx };
+  action Submit   appliesTo { principal: [Seat], resource: [Artifact],        context: BuildCtx };
+  action Vote     appliesTo { principal: [Seat], resource: [Artifact],        context: VoteCtx };
+
+  // ---- Run's alphabet (ADR-0040 §1, Proposed) ----------------------------------------------
+  // `Consult` is ingress over the pinned Run root and is not an effect. `Actuate` and `Report`
+  // are ADR-0015's two effect classes, one variant each. No name is shared with Build (§2).
+  action Consult  appliesTo { principal: [Seat], resource: [CorpusObject],    context: RunCtx };
+  action Actuate  appliesTo { principal: [Seat], resource: [Tool],            context: RunCtx };
+  action Report   appliesTo { principal: [Seat], resource: [Topic],           context: RunCtx };
+
+  // ---- the control alphabet (ADR-0050 §4, Proposed) ---------------------------------------
+  // An `operator` seat's requests. Three add and need a live lease and a live peer; three deny.
+  action Regrant     appliesTo { principal: [Seat], resource: [Seat],     context: ControlCtx };
+  action Renew       appliesTo { principal: [Seat], resource: [Seat],     context: ControlCtx };
+  action AttestGates appliesTo { principal: [Seat], resource: [Artifact], context: ControlCtx };
+  action EndRound    appliesTo { principal: [Seat], resource: [Seat],     context: ControlCtx };
+  action Revoke      appliesTo { principal: [Seat], resource: [Seat],     context: ControlCtx };
+  action FenceEpoch  appliesTo { principal: [Seat], resource: [Fleet],    context: ControlCtx };
+
+  // ---- the erasure action (ADR-0006) -------------------------------------------------------
+  action Erase    appliesTo { principal: [Seat], resource: [ArchiveRecord],   context: EraseCtx };
+}

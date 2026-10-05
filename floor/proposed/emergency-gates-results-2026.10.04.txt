@@ -1,0 +1,140 @@
+TOPAK — PROPOSED policy floor, stage `emergency`: the genesis gates (below), then routing controls for the new entries
+Built by floor/proposed/build.py from the genesis floor. Not ratified, and not what the reference follows.
+
+TOPAK — genesis policy floor: ADR-0030 §5 gates
+Floor: emergency-floor.cedar (sha256 15c941b9a56a09f7) · 28 policies · schema emergency.cedarschema (sha256 d3c8145c6af2d9a3) · values genesis-values.json (sha256 85ab6fefb66f0316)
+cedar-policy-cli 4.13.0 · cvc5 1.4.0 [git b432cd7 on branch HEAD] (binary sha256 a4ce24a176532209)
+Checker: ethos 8dc85c4 (binary sha256 4eb41c1f1f9fce88) · CPC signature tools/cpc from cvc5-1.4.0 (tree sha256 6d7e8d208d223985) · wrapper cvc5-checked (sha256 dfe159e9c21a549e)
+
+=== values: policy-floor numbers the lift reads (placeholders; ADR-0039 §1)
+  observer.K = 8, observer.T_obs_ms = 5000  pass  (K < R is checked by the mechanism at startup)
+  lineage: 5 of 5 values unset (ADR-0035; G4 item 30): theta_exact, theta_near, theta_gen, beta, near_tool
+
+=== totality: never-errors, per policy per applicable action
+  B1-read-corpus                     Read       holds°   pass
+  B2-draft-workspace                 Draft      holds°   pass
+  B3-invoke-allowlisted              Invoke     holds°   pass
+  B4-emit-own-topic                  Emit       holds°   pass
+  B5-submit-own-artifact             Submit     holds°   pass
+  B6-vote-seated                     Vote       holds°   pass
+  B7-author-recused                  Vote       holds°   pass
+  B8-grant-only-from-grant-seat      Vote       holds°   pass
+  B9-voters-do-not-author            Draft      holds°   pass
+  B9-voters-do-not-author            Invoke     holds°   pass
+  B9-voters-do-not-author            Submit     holds°   pass
+  B10-only-thinkers-author           Actuate    holds°   pass
+  B10-only-thinkers-author           Draft      holds°   pass
+  B10-only-thinkers-author           Invoke     holds°   pass
+  B10-only-thinkers-author           Submit     holds°   pass
+  B10-only-thinkers-author           Actuate    holds°   pass
+  R1-actuate-allowlisted             Actuate    holds°   pass
+  R2-report-own-topic                Report     holds°   pass
+  R4-consult-pinned                  Consult    holds°   pass
+  R3-observer-live                   Actuate    holds°   pass
+  R3-observer-live                   Report     holds°   pass
+  R5-no-read-then-send               Actuate    holds°   pass
+  R6-no-steered-destination          Actuate    holds°   pass
+  R7-no-replayed-destination         Actuate    holds°   pass
+  X2-erasure                         Erase      holds°   pass
+  F-forensic-classes                 Erase      holds°   pass
+  C1-regrant-successor               Regrant    holds°   pass
+  C2-renew                           Renew      holds°   pass
+  C3-attest-gates                    AttestGates holds°   pass
+  C4-deny                            EndRound   holds°   pass
+  C4-deny                            Revoke     holds°   pass
+  C4-deny                            FenceEpoch holds°   pass
+  C5-add-needs-lease-and-peer        Regrant    holds°   pass
+  C5-add-needs-lease-and-peer        Renew      holds°   pass
+  C5-add-needs-lease-and-peer        AttestGates holds°   pass
+  C6-no-self                         Regrant    holds°   pass
+  C6-no-self                         Renew      holds°   pass
+  C7-fence-needs-lease               FenceEpoch holds°   pass
+  C8-task-label-in-bounds            Regrant    holds°   pass
+  C9-stop-in-own-domain              EndRound   holds°   pass
+  C9-stop-in-own-domain              Revoke     holds°   pass
+
+=== non-vacuity (always-allows refuted) and discrimination (always-denies refuted)
+  Read       always-allows refuted  always-denies refuted  pass
+  Draft      always-allows refuted  always-denies refuted  pass
+  Invoke     always-allows refuted  always-denies refuted  pass
+  Emit       always-allows refuted  always-denies refuted  pass
+  Submit     always-allows refuted  always-denies refuted  pass
+  Vote       always-allows refuted  always-denies refuted  pass
+  Consult    always-allows refuted  always-denies refuted  pass
+  Actuate    always-allows refuted  always-denies refuted  pass
+  Report     always-allows refuted  always-denies refuted  pass
+  Erase      always-allows refuted  always-denies refuted  pass
+  Regrant    always-allows refuted  always-denies refuted  pass
+  Renew      always-allows refuted  always-denies refuted  pass
+  AttestGates always-allows refuted  always-denies refuted  pass
+  EndRound   always-allows refuted  always-denies refuted  pass
+  Revoke     always-allows refuted  always-denies refuted  pass
+  FenceEpoch always-allows refuted  always-denies refuted  pass
+
+=== every entry matters: floor minus one policy is not equivalent to the floor
+  B1-read-corpus                     pass  (Read:differs)
+  B2-draft-workspace                 pass  (Draft:differs)
+  B3-invoke-allowlisted              pass  (Invoke:differs)
+  B4-emit-own-topic                  pass  (Emit:differs)
+  B5-submit-own-artifact             pass  (Submit:differs)
+  B6-vote-seated                     pass  (Vote:differs)
+  B7-author-recused                  pass  (Vote:differs)
+  B8-grant-only-from-grant-seat      pass  (Vote:differs)
+  B9-voters-do-not-author            pass  (Draft:differs, Invoke:differs, Submit:differs)
+  B10-only-thinkers-author           pass  (Actuate:differs, Draft:differs, Invoke:differs, Submit:differs, Actuate:differs)
+  R1-actuate-allowlisted             pass  (Actuate:differs)
+  R2-report-own-topic                pass  (Report:differs)
+  R4-consult-pinned                  pass  (Consult:differs)
+  R3-observer-live                   pass  (Actuate:differs, Report:differs)
+  R5-no-read-then-send               pass  (Actuate:differs)
+  R6-no-steered-destination          pass  (Actuate:differs)
+  R7-no-replayed-destination         pass  (Actuate:differs)
+  X2-erasure                         pass  (Erase:differs)
+  F-forensic-classes                 pass  (Erase:differs)
+  C1-regrant-successor               pass  (Regrant:differs)
+  C2-renew                           pass  (Renew:differs)
+  C3-attest-gates                    pass  (AttestGates:differs)
+  C4-deny                            pass  (EndRound:differs, Revoke:differs, FenceEpoch:differs)
+  C5-add-needs-lease-and-peer        pass  (Regrant:differs, Renew:differs, AttestGates:differs)
+  C6-no-self                         pass  (Regrant:differs, Renew:differs)
+  C7-fence-needs-lease               pass  (FenceEpoch:differs)
+  C8-task-label-in-bounds            pass  (Regrant:differs)
+  C9-stop-in-own-domain              pass  (EndRound:differs, Revoke:differs)
+
+=== routing: candidate revisions classified by implies both ways (ToO §3.2)
+  tighten: voters may not Read                 F'=>F holds✓   F=>F' refuted  -> tightening   -> ordinary promotion           pass
+  relax: F1 removed from the forensic floor    F'=>F refuted  F=>F' holds✓   -> relaxation   -> anchor issuance + promotion  pass
+  incomparable: F1 erasable, payload not       F'=>F refuted  F=>F' refuted  -> incomparable -> anchor issuance + promotion  pass
+  relax: R4 without the Run-root condition     F'=>F refuted  F=>F' holds✓   -> relaxation   -> anchor issuance + promotion  pass
+
+=== negative controls: each gate must CATCH a defective floor
+  vacuous floor: permit-all added (Read)       always-allows  holds°   -> caught
+  vacuous floor: permit-all added (Consult)    always-allows  holds°   -> caught
+  erroring policy: Long overflow               never-errors   refuted  -> caught
+  dead entry: forbid F1 duplicated             equivalent     holds✓   -> caught
+
+=== checker controls: a solver that lies must not produce a holds (ADR-0030 §5 A1)
+  answers unsat with no proof                  F=>F' ERROR    -> caught  (proof dump has an unexpected shape)
+  answers unsat with a proof of another query  F=>F' ERROR    -> caught  (assume @p1 is not one of the query's assertions)
+  answers unsat with a proof missing a step    F=>F' ERROR    -> caught  (checker refused: Error: q-0.cpc:107.42: Could not find symbol @p55)
+  holds without a checked proof, whole run            0 -> none
+
+=== routing, new entries: a weakened entry is a relaxation, a strengthened one a tightening
+  relax: R6 removed                                  F'=>F refuted  F=>F' holds✓   -> relaxation   -> anchor issuance + promotion  pass
+  relax: R5 reads only what was read in the clear    F'=>F refuted  F=>F' holds✓   -> relaxation   -> anchor issuance + promotion  pass
+  tighten: R6 without the untrusted-read condition   F'=>F holds✓   F=>F' refuted  -> tightening   -> ordinary promotion           pass
+  relax: R7 removed                                  F'=>F refuted  F=>F' holds✓   -> relaxation   -> anchor issuance + promotion  pass
+  relax: C5 without the peer condition               F'=>F refuted  F=>F' holds✓   -> relaxation   -> anchor issuance + promotion  pass
+  relax: C7 removed, a lapsed operator may fence     F'=>F refuted  F=>F' holds✓   -> relaxation   -> anchor issuance + promotion  pass
+  tighten: C4 needs a live lease                     F'=>F holds✓   F=>F' refuted  -> tightening   -> ordinary promotion           pass
+  relax: C1 without the alphabet comparison          F'=>F refuted  F=>F' holds✓   -> relaxation   -> anchor issuance + promotion  pass
+  relax: C8 removed, an unlabelled task              F'=>F refuted  F=>F' holds✓   -> relaxation   -> anchor issuance + promotion  pass
+  tighten: B10 as at genesis, no emergency seat      F'=>F holds✓   F=>F' refuted  -> tightening   -> ordinary promotion           pass
+  relax: B10 admits every kind for Actuate           F'=>F refuted  F=>F' holds✓   -> relaxation   -> anchor issuance + promotion  pass
+  holds without a checked proof, whole run                  0 -> none
+
+=== evidence, whole run
+  151 cedar calls · 108 solver queries · 15 unsat with a checked proof · 90 sat (counterexample) · 3 unknown/unchecked (the three checker controls)
+  evidence tree sha256 974f339662a5289d · not copied; a rerun reproduces it
+
+RESULT: all gates pass
