@@ -11,8 +11,8 @@ checker accepts, every proof Zenon finds must be re-checked by Isabelle, and a r
 obligation by the route that discharged it. It is the method the floor's gates have used since Batch 24
 (ADR-0030 §5 A1; `floor/cvc5-checked`), applied to proofs.
 
-**What this is not.** A record: nothing here is ratified. ADR-0046's pending amendment A1 is where the corpus would
-adopt it. It is also not a claim that a certified module's theorems hold of anything that runs (T-0045-28), nor that
+**What this is not.** A record. ADR-0046 A1, ratified 2026.10.04 in Batch 28, is where the corpus adopts the method;
+this document describes it and is itself a draft. It is also not a claim that a certified module's theorems hold of anything that runs (T-0045-28), nor that
 every step of a certified proof is checked: §8 lists what stays trusted, and it is not nothing.
 
 ---
@@ -37,7 +37,7 @@ every "proved" was Z3's unsupported word.
 as ratified says it "can hand every SMT-proved obligation to Isabelle". It cannot. `-C` checks the scripts Zenon
 emits and nothing else. For a module whose obligations are all SMT's, `-C` gives Isabelle a theory with no lemmas in
 it, and Isabelle reports "No errors found". That was verified by reading the generated theory for
-`RunConfinement_proof`: fourteen lines, no lemma. ADR-0046 E2 (pending) corrects the sentence.
+`RunConfinement_proof`: fourteen lines, no lemma. ADR-0046 E2 corrects the sentence.
 
 ---
 
@@ -286,8 +286,8 @@ What the first twenty modules taught.
 | ADR-0030 §5 A1 (Accepted, Batch 24) | The precedent: a routing verdict counts only with a checked proof. `floor/cvc5-checked` is the wrapper this one follows |
 | ADR-0045 T-0045-14 | The checker, its signature and the wrapper as a trust root. Certified proofs rest on the same checker |
 | ADR-0045 T-0045-31; ADR-0046 §3 | The prover as a trust root. Its residual names "the SMT backends' soundness" |
-| **ADR-0046 E2** (pending) | Corrects the sentence on what `-C` checks (§1) |
-| **ADR-0046 A1** (pending) | Gives T-0045-31 a certified configuration and lists which modules are in it. Its ratification condition, the regeneration of §6 and the test of §7, was run on 2026.10.04 and met |
+| **ADR-0046 E2** (ratified 2026.10.04, Batch 28) | Corrects the sentence on what `-C` checks (§1) |
+| **ADR-0046 A1** (ratified 2026.10.04, Batch 28) | Gives T-0045-31 a certified configuration and lists which modules are in it. Its ratification condition, the regeneration of §6 and the test of §7, was run on 2026.10.04 and met |
 | G9 open item 74 | "The SMT backends' proofs checked by Isabelle": answered by a different checker than it names |
 | ADR-0047, 0048, 0050, 0052 (Proposed) | Each cites its module's certified results file by digest in its ratification condition |
 
