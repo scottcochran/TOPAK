@@ -1,7 +1,7 @@
 # Checkpoints
 
-**Current state of record: [Genesis Checkpoint G9](topak-genesis-checkpoint-G9-2026.10.02.md)** (2026.10.02, tag
-`G9`). Each checkpoint is one cut, never revised: what each record says, what was ratified and by whom, what is owed,
+**Current state of record: [Genesis Checkpoint G10](topak-genesis-checkpoint-G10-2026.10.05.md)** (2026.10.05, tag
+`G10`). Each checkpoint is one cut, never revised: what each record says, what was ratified and by whom, what is owed,
 what is open, and the manifest that measures it. The narrative cut with it is `narrative/theory-of-operation.md`,
 and where the two disagree the checkpoint wins. The v1 corpus manifest (2026.09.15) is the first cut of all.
 
@@ -34,7 +34,10 @@ which `manifests/index.tsv` records.
 rule signature, beside the TLC jar, and excludes `manifests/index.tsv`, which names the commit each manifest is
 verified at. **G8 (2026.10.02)** is the first cut whose trusted base names a prover (ADR-0046, T-0045-31); its
 manifest excludes the TLAPS wrapper with the TLC wrappers and measures every proof module and proof results file. **G9 (2026.10.02)** is the first cut at which the reference issues a
-lease above rung 0: a rung-1 launcher in the node, and rung 3 SIMULATED, under addenda still pending.
+lease above rung 0: a rung-1 launcher in the node, and rung 3 SIMULATED, under addenda still pending. **G10
+(2026.10.05)** is the first cut that records a provisional record (ADR-0029 A4) and a genesis-provisional floor
+(ADR-0030 A3), and the first at which the reference links a floor other than the genesis draft; from this cut
+`manifests/EXCLUDE` lists `REVIEWERS_GUIDE_README.md`, a convenience at the root that is kept current and not measured.
 
 ## Errata to frozen checkpoints
 
@@ -50,7 +53,8 @@ is the resolution point for such errors, as the layout map above is for moved pa
 ADR-0029 A2.5 (ratified 2026.09.25) says the genesis debt ledger gains a line stating whether a bootstrap reviewer is
 engaged and the manifest digest of the last completed review pass. G3 was frozen when A2 was ratified and the line
 was to appear in G3's successor; G4 to G9 do not carry it (the 10.02 critical review's CR-28 (ii)). It is kept here
-until the next checkpoint's §4 carries it, and is to be copied there at every cut.
+until the next checkpoint's §4 carries it, and is to be copied there at every cut. **G10's §4 carries it**, with
+the values below unchanged.
 
 | Field | Value at 2026.10.03 |
 |---|---|
@@ -59,6 +63,6 @@ until the next checkpoint's §4 carries it, and is to be copied there at every c
 
 ## Tags
 
-`G3` to `G9` mark the commit that added each checkpoint; `glossary-<date>` each revision of the glossary in place;
-`ToO-rev7` to `ToO-rev12` each Theory of Operation revision; `REF-<date>` the reference tree each ADR-0033 addendum cites; `SLM-2026.09.28` the rehearsal tree. G1, G2
+`G3` to `G10` mark the commit that added each checkpoint; `glossary-<date>` each revision of the glossary in place;
+`ToO-rev7` to `ToO-rev13` each Theory of Operation revision; `REF-<date>` the reference tree each ADR-0033 addendum cites; `SLM-2026.09.28` the rehearsal tree. G1, G2
 and revisions before 7 predate git and have no tag.

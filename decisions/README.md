@@ -1,7 +1,7 @@
 # Decisions
 
 Architecture decision records, one file each, numbered in the order they were settled. **Status is as of Genesis
-Checkpoint G8 (2026.10.02)**; the checkpoint is the state of record and this index is a convenience. A record is never
+Checkpoint G10 (2026.10.05)**; the checkpoint is the state of record and this index is a convenience. A record is never
 edited after ratification except by a typed History row: an amendment, an erratum, a revision before ratification,
 or a dependent entry written when another record's ratification touches it. Accepted records that carry a
 confirmation-required criterion (ADR-0029 §4: C1 privileged path, C2 exhaustiveness or confinement, C3 reversal, C4
