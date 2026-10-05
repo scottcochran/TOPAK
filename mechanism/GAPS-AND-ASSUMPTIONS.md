@@ -1,6 +1,6 @@
 # Admit-path reference mechanism: gaps and assumptions
 
-**2026.09.24** · initial design · register brought current 2026.10.05 · **not a corpus record** · state of record is G10 (2026.10.05) · narrative is ToO rev 13, cut from G9 and behind G10
+**2026.09.24** · initial design · register brought current 2026.10.05 · **not a corpus record** · state of record is G10 (2026.10.05) · narrative is ToO rev 14, revised against G10
 
 This file lists what the Rust baseline in `mechanism/` had to decide that the corpus does not
 decide. Each item is also marked in the code as `PROVISIONAL (<tag>)`, so

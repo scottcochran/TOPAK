@@ -1,43 +1,48 @@
 # TOPAK — Theory of Operation
 
-**2026.10.02** · revision 13 · **narrative only** · cut from Genesis Checkpoint G9 · supersedes revision 12 as narrative
+**2026.10.05** · revision 14 · **narrative only** · cut from Genesis Checkpoint G10 · supersedes revision 13 as narrative
 
-Revision 13 is revision 12 corrected against G9. Between the cuts one erratum was ratified, ADR-0046 E1, and
-everything else is drafted, built and checked, and pending. **The reference issues its first leases above rung 0**:
-the launcher in the node, which ADR-0036 §6 describes, starts a guest from a promoted profile, appraises it, grants
-to itself at the seat's declared rung and bridges its actions, with the appraisal re-checked at apply on every
-replica (ADR-0033 A7, pending). Rung 1 is real; rung 3 is SIMULATED, under test keys standing in for the CPU vendor's
-root and the verifier; rung 2 is a seam. **The Run profile is drafted** as ADR-0034 A2 (pending, C2 and C4): P4
-becomes channel fidelity, and its owner is the tool host's Wasm runtime, which the reference builds (ADR-0033 A8,
-pending). ADR-0034 finding 6 has its successor module, `Confinement_A1.tla`, and Run its own, `RunConfinement.tla`;
-both are checked and proved. **No real principal is `Contained`**: `contained = true` appears only in a simulated run
-under a criterion the test issues. Passages those changes made false are rewritten; the narrative spine is revision
-12's and no section is added. Appendix I lists every change.
+Revision 14 is revision 13 corrected against G10, and it is a larger correction than any before it. Between the cuts
+nine batches were ratified. **Five records are new and in force**: the Listener labels what it delivers (ADR-0047),
+a Thinker learns its tools from the mechanism (ADR-0048), the allowlist entry has one schema (ADR-0049), an operator
+is a principal (ADR-0050) and break-glass is an emergency seating (ADR-0052). **The last two are provisional**, a
+status new at this cut: in force, subject to redesign, and saying on their face what they lacked. **The floor's
+break-glass exception is retired**, the Run profile is in force, ADR-0005 is ratified, and R8 is withdrawn. **The
+policy floor is genesis-provisional**: it is ratified when a bootstrap reviewer establishes that it is fit. The
+reference was rebuilt to follow the five records on a floor other than the genesis draft, and the proofs can now be
+certified. **No real principal is `Contained`**, as before. Two sections are added, §2.10 and §7.10, and §3.3 is
+rewritten; elsewhere the spine is revision 13's. Appendix J lists every change.
 
 ---
 
 ## 0. How to read this
 
 **This document explains how the design fits together. It is not the state of record.** Status, readiness,
-digests, the ratification queue, the genesis debt ledger, and the open list are in **G9**.
+digests, the ratification queue, the genesis debt ledger, and the open list are in **G10**.
 
 The narrative describes what the records say. Status words appear only where status changes the meaning — a
 reversal in effect, a claim still carrying a confirmation marker, or a section of a record that was deliberately
 left unratified.
 
-**What "ratified" means here, and what it does not.** Forty records are now Accepted (genesis), two of them
-in part, and one is superseded. Twenty-two of the accepted carry a confirmation-required marker — three, ADR-0003,
-ADR-0029 and ADR-0031's C2, for a single amendment only — which means they were ratified by one person and must pass
-an independent confirmation promotion after bootstrap. **Until then, any claim resting on those twenty-two is
+**What "ratified" means here, and what it does not.** Forty-six records are now Accepted (genesis), two of them
+in part, and one is superseded. Twenty-eight of the accepted carry a confirmation-required marker — three, ADR-0003,
+ADR-0029 and ADR-0031's C2, for particular amendments only — which means they were ratified by one person and must
+pass an independent confirmation promotion after bootstrap. **Until then, any claim resting on those twenty-eight is
 author-ratified, and this document says so at each point rather than once in a footnote.** Ratification by a sole
-custodian is a declaration, not a review. Since 2026.09.30 a further qualification applies to four texts, all now
-ratified: ADR-0044 (Batch 17), ADR-0045 (Batch 22), ADR-0030 A1 (Batch 24) and ADR-0046 (Batch 25) were **drafted by the assistant** at
-the custodian's request, with every choice marked as the drafter's, and the custodian settled them by ratifying the
-text; A1's one open choice, the proof format and the checker, was settled by the first run, and ADR-0046's
-condition that the custodian regenerate its evidence was run by the drafter at the custodian's direction. That is one step further
-from review than the records they draw on, and each says so on its face. **Three more texts are drafted by the
-assistant and pending**: ADR-0034 A2, the Run profile, and ADR-0033 A7 and A8, the addenda for the code under it and
-under the launcher. Nothing in them is ratified, and this document cites them as pending wherever it uses them.
+custodian is a declaration, not a review.
+
+**Two of the twenty-eight are provisional** (ADR-0029 A4): ADR-0050 and ADR-0052. A provisional record is in force
+and **subject to redesign**. It was ratified without meeting its own ratification condition, and it says what it
+lacked: for ADR-0050, that a first lease from a quorum is not built and that no reader but the drafter has read it.
+It stops being provisional when both are met. **Where this document rests on either record it says provisional**, as
+it says author-ratified, and anything published citing one says "author-ratified, provisional".
+
+**Assisted drafting is now the rule and not the exception.** At revision 13 four ratified texts had been drafted by
+the assistant at the custodian's request. Nearly every text ratified since G9 was: the five records, some thirty
+amendments, nine addenda to ADR-0033, the modules and proofs under them, the rebuilt reference and the model it is
+checked against. Each marks its choices as the drafter's, and the custodian settled them in discussion and by
+ratifying the text. That is one step further from review than the records they draw on, each says so on its face,
+and ADR-0029 still has no criterion for it. **Nothing is pending**: no amendment is drafted and unratified.
 
 **Findings.** Revision 5 carried ⟨S6-n⟩ markers where records disagreed. All are dispositioned; §14 lists each with
 its outcome. Markers that remain in this text point to findings from the 09.16 critical review and the 09.17
@@ -122,7 +127,7 @@ rung; a profile that meets P3–P5, so no launcher, Wasm tools only, inference i
 ADR-0017's axis; and **ADR-0017's lineage-independence criterion in force**. The fourth is ADR-0035, which is
 Proposed, so **`Contained` is still unreachable at every rung today**. What changed is the reason: at revision 7 no
 rung had semantics; now the criterion is the only missing premise. The reference computes the four conjuncts as a
-lookup over the lease, the profile and the issued rules, and names each that fails (ADR-0033 A7, pending); the only
+lookup over the lease, the profile and the issued rules, and names each that fails (ADR-0033 A7); the only
 leases for which it answers yes are SIMULATED rung-3 leases under a criterion a test issued, which shows the lookup is
 reachable and claims nothing. The draft of ADR-0034 read independence as not a
 conjunct, on the ground that it serves the Observer and not effect exclusivity; the custodian kept ADR-0031's
@@ -154,12 +159,17 @@ Each domain has a typed alphabet of its own, and no name is shared between them 
   Earlier revisions said Rego predicates checked by an SMT solver; that needed a mechanized Rego semantics nobody has,
   and ADR-0030 retired it.
 - **`Invoke` is the whole attack surface.** One allowlisted tool with a socket collapses the envelope to vacuity.
-  Each allowlist entry carries a hermeticity obligation. For tools packaged as Wasm components it is discharged by
+  Each allowlist entry carries a hermeticity obligation, and since ADR-0049 an entry has one form in both domains
+  (§2.10): a Build entry has no channel and no labels, and a bundle whose Build entry declares a channel does not
+  load. For tools packaged as Wasm components it is discharged by
   construction, ADR-0034 P4: instantiated per call, handed a workspace directory capability and nothing else. For
   native tools it is still unowned, and using one is a declared degeneracy (D-0034-3).
 - **Alphabets are bounded by seat kind** (ADR-0037 §4; ADR-0043 §2 for Run). Only a `thinker` seat is ever issued
-  `Draft`, `Invoke`, `Submit` or `Actuate`; an `observer` seat reads, emits and, on the veto roster, denies; a `grant` seat reads,
-  emits and votes. The bound is floor text — forbid **B10**, and **B6** tightened so a roster seat of the wrong kind
+  `Draft`, `Invoke` or `Submit`; an `observer` seat reads, emits and, on the veto roster, denies; a `grant` seat reads,
+  emits and votes. Two kinds were added at Batch 34, both for people: an **`operator`** seat is issued no variant at
+  all, because what an operator does is the control alphabet (§7.10); an **`emergency`** seat, in Run only, is issued
+  `Consult`, `Actuate` and `Report` (§3.3). `Actuate` is therefore a `thinker`'s and, for one round on a quorum of
+  the break-glass roster, an `emergency` seat's. The bound is floor text — forbid **B10**, and **B6** tightened so a roster seat of the wrong kind
   cannot vote — checked by the grant path first and the floor second, as recusal is. A Reader with `Draft`
   authority, the failure ADR-0022 named, cannot arise, because the Reader is not a principal (§2.8).
 - **Seat separation.** Per artifact, the author and the voters are disjoint, and a voter in a promotion round
@@ -210,10 +220,15 @@ not a field is not carried.
   renewal now re-attests, and if the evidence no longer reaches the rung the lease lapses. Keeping the bundle means
   a bundle promoted mid-round reaches a principal only at its next grant — **tightening a live round ends it**.
 - **Revocation has two tools.** A *targeted revocation* ends the leases matching a principal, a Persona or a
-  confinement profile, bars later grants to it, and lapses the seat's break-glass approvals; nothing else stops. An
+  confinement profile and bars later grants to it; nothing else stops. An emergency seat's lease ends this way like
+  any other (§3.3); the approvals that X1 kept per seat, which a revocation used to lapse, no longer exist. An
   *epoch fence* ends every live round, and is kept for e-stop and for scopes nobody can name. Earlier text had only
   the fence, which made revoking one principal a fleet-wide reset. Both are ordered, neither needs a quorum, and a
   revocation is permanent within the chain.
+- **Who grants, and who denies** (ADR-0031 A3, from ADR-0050; provisional). The record had said what a grant is and
+  never who makes one. A principal's **first** lease comes from a quorum; its **next round** is a successor grant by
+  an operator, with every field the last lease's or narrower; and both revocation tools are an operator's, signed
+  and attributed (§7.10). At the reference the first of these is not built.
 - **Expiry is local and then ordered.** A replica reads its own monotonic clock, with a margin that errs toward
   early, and the first to see expiry proposes the round's end as a log entry, so every replica agrees when the slot
   frees (ADR-0031 E1).
@@ -228,8 +243,8 @@ not a field is not carried.
   the second, and its test passed only because the helper derived the principal from the seat; `Seats.tla`'s
   `M_SEAT` is that behaviour, and the grant path now refuses it.
 
-**Author-ratified.** ADR-0031 is confirmation-required under C1, for the break-glass lapse on revocation, and under
-C2 for A1 only.
+**Author-ratified.** ADR-0031 is confirmation-required under C1, as the path every privileged grant travels on, and
+under C2 for A1 only.
 
 ### 2.6 Confinement is attested at grant
 
@@ -252,8 +267,8 @@ VM with an independent verifier; rungs 2 and 1 are declared degeneracies, and ru
   manager or interpreter reachable from the principal (P3); tools as Wasm components, per call, with a workspace
   capability only (P4); the Persona's weights inside the guest and in the launch measurement (P5); one principal per
   guest and one guest per round (P6); and its own reference values (P7). Build's profile is fully determined by the
-  alphabet. Run's is drafted as ADR-0034 A2, pending: ADR-0042 §6, the one section of the Run records left
-  Proposed, says P4 cannot hold for a Run tool and channel fidelity must replace it, and A2 does that (§2.9).
+  alphabet. Run's is ADR-0034 A2, in force since Batch 30 with ADR-0042 §6: P4 cannot hold for a Run tool, and
+  channel fidelity replaces it (§2.9).
 - **Appraisal is a condition of the grant**, not a protocol of its own. The nonce is a hash of epoch, log index,
   principal and round, so freshness comes from the log and not a clock. One replica appraises and the verdict is
   ordered; at apply, each replica checks the verifier's signature and that the nonce's epoch is current.
@@ -326,14 +341,17 @@ session is the pipe, the pipe belongs to one launched instance, and no other pro
   records (§16).
 - **Every failure subtracts.** No attestation, no grant; a dead guest closes the pipe and the round ends; a dead
   launcher takes the token with it and the lease expires.
-- **The second step moves the launcher into the node**, as a `launch` operator request with a promoted profile. **It
-  is built** (ADR-0033 A7, pending): the node refuses an unpromoted profile before anything starts, takes the nonce
+- **The second step moves the launcher into the node**, as a `launch` request with a promoted profile. **It
+  is built** (ADR-0033 A7, ratified in Batch 29 ahead of this record): the node refuses an unpromoted profile before anything starts, takes the nonce
   from the log, appraises, proposes the grant with the appraisal in the entry, and bridges; a launched lease mints no
   token at all. Its backends are a host process, which confines nothing and declares so, ADR-0036 §4's container, and
   a simulated rung 3. Rung 2 is not on this path: a container has no launch measurement.
 
-Nothing in §2.7 is ratified. Rung-1 leases are issued in the reference's tests, and §7's three refusals are seen there;
-the ratification run on `slm/serve`'s image is unrun.
+ADR-0036 is still Proposed, and only the addendum for the code under it is ratified. Rung-1 leases are issued in the
+reference's tests, and §7's three refusals are seen there; the ratification run on `slm/serve`'s image is unrun.
+Under ADR-0050 a launch stops being something an operator asks for: it is the mechanism's part of a first lease, or
+of a successor grant at rung 1 or above (ADR-0036 R6). The reference has not built the second, so a launch is still
+an unsigned request on the path that stands in for a quorum (§7.10).
 
 ### 2.8 Principals, seats and cells
 
@@ -349,7 +367,9 @@ revoked on its own, which makes it a principal by the evictability test; and the
 - **Two positions are seats and two are stages.** The **Thinker** and the **Observer** are seats: each holds a
   Persona, a lease, a topic. The **Listener** is the environment step that delivers the task and the admitted
   `Read`s, with no Persona and no choice; at the reference it is the node side of `Read`, so ingress to the Thinker is
-  exactly what ADR-0035's `consumed` set records. The **Reader** is a check, not a seat: its two admissible uses
+  exactly what ADR-0035's `consumed` set records. **In Run the Listener now does two more things, and still makes no
+  choice** (ADR-0037 A2): it puts a label on every item it delivers and delivers some items as handles, and it
+  delivers the round's tool list (§2.10). Both are mechanical and total, which is what keeps it a stage. The **Reader** is a check, not a seat: its two admissible uses
   (ADR-0019) are decidable, and the interpretation ADR-0018 had given it is not kept, since a semantic reading made
   inside the watched fault domain by the watched lineage is the finding worth least. Each cell therefore has two
   cognitive seats, and ADR-0017's two lineages cover them; the "three seats, two lineages" finding closes without a
@@ -369,7 +389,8 @@ revoked on its own, which makes it a principal by the evictability test; and the
 - **Seat distinctness covers one pair per cell**, (`thinker`, `observer`), enforced where refusal stalls (ADR-0035
   §5). Two `thinker` seats on one Persona are two principals in two cells, and this is permitted; the correlation it
   creates is the correlator's concern (§5.1).
-- **A human holds one seat too**: a `grant` seat, or a `thinker` seat as an author, never both at once. A person who
+- **A human holds one seat too**: a `grant` seat, or a `thinker` seat as an author, never both at once; or an
+  `operator` seat and no other (§7.10); or, for one round, an `emergency` seat and no other in that round (§3.3). A person who
   authors and approves is two principals, and recusal is per seat and does not see through them, which is the
   seat-registration record's problem (G5 item 41). The old contrast, "human principals are atomic," stops being a
   contrast: every principal is atomic. What the LTRO gives an agent by default is an Observer in its cell; what a
@@ -408,27 +429,30 @@ ADR-0015's two effect classes in the floor and the reference since the reference
   seat cannot abstain (ADR-0042 §5).
 - **The alphabet is minimal because its constraints live elsewhere**, each with an owner. **Policy** (ADR-0041, C1 and
   C4): one envelope per variant, `R4-consult-pinned` new; the coupling restated over effects and **not** extended to
-  `Consult`; break-glass reaches `Actuate` and nothing else; argument constraints in the bundle tier, where they can
-  only subtract. **Mechanism** (ADR-0042 §1–§5, C4): the sequence an Observer's watermark is over counts
+  `Consult`; three forbids over labels, `R5` to `R7` (§2.10); an `emergency` seat reaches `Actuate` and nothing that
+  authors (§3.3); argument constraints in the bundle tier, where they can only subtract. **Mechanism** (ADR-0042 §1–§5, C4): the sequence an Observer's watermark is over counts
   effect-bearing admits, so an invocation advances it as a report does (§5.4); **every admitted `Actuate` leaves a
   record on the round topic**, written by the mechanism when the call returns, its envelope as facts and its bodies
   as payload, and a call that returns after the seal delivers nothing; a tool's result is recorded ingress, which
   makes Run's ingress a closed list. **Cell** (ADR-0043, C4): the Listener delivers the task, each admitted
-  `Consult`'s content and each admitted `Actuate`'s result, and nothing else reaches the Thinker; a `thinker` seat
+  `Consult`'s content, each admitted `Actuate`'s result and, since A1, the round's tool list, **four items and
+  nothing else**, each with a label (§2.10); a `thinker` seat
   holds all three variants, an `observer` seat `Consult` and `Report`; the Observer's mark is over the effect
   sequence, so it reads results as well as calls, which is the first second reader on Run's ingress; and an
   Observer's lease must outlast its Thinker's to reach the seal.
-- **What is left Proposed is confinement.** ADR-0042 §6 states Run's confinement obligation and does not deliver it:
+- **Confinement was left Proposed, and is now in force.** ADR-0042 §6 states Run's confinement obligation:
   the effect channels are the tools', not the principal's, so **P4 cannot hold for a Run tool**, and channel fidelity,
-  a tool opening the channel its entry declares and no other, replaces it. The custodian left §6 out of the batch, as
-  ADR-0022 §6 was left out at B2, until a Run profile and an owner existed. **Both are now drafted, and pending**:
-  ADR-0034 A2 writes the Run profile, with P2 mounting nothing (an admitted `Consult` delivers its object over the
-  channel) and P4 replaced by channel fidelity, and names the owner, the tool host's Wasm runtime, which hands a Run
-  tool one network capability, its declared target, and nothing else; a native tool is a declared degeneracy, behind
-  a filter (D-0034-5) or not (D-0034-6). `RunConfinement.tla` checks and proves that every effect under a contained
-  Run lease reached its tool's declared target, and the reference builds the runtime and refuses at apply a tool
-  outside it under a profile that claims P4 (ADR-0033 A8, pending). Until A2 and §6 are ratified, every Run
-  containment theorem is conditional, and Run principals are `Mediated` by the records.
+  a tool opening the channel its entry declares and no other, replaces it. The custodian left §6 out of Batch 20, as
+  ADR-0022 §6 was left out at B2, until a Run profile and an owner existed. **Batch 30 ratified both**: ADR-0034 A2
+  writes the Run profile, with P2 mounting nothing (an admitted `Consult` delivers its object over the channel) and
+  P4 replaced by channel fidelity, and names the owner, the tool host's Wasm runtime, which hands a Run tool one
+  network capability, its declared target, and nothing else; a native tool is a declared degeneracy, behind a filter
+  (D-0034-5) or not (D-0034-6). **The target is read from the tool's allowlist entry**, in the bundle revision the
+  lease names, and from nowhere else (ADR-0049 §5). `RunConfinement.tla` checks and proves that every effect under a
+  contained Run lease reached its tool's declared target, and the reference builds the runtime, reads the target from
+  the entry, and refuses at apply a tool outside it under a profile that claims P4 (ADR-0033 A8, A9). **Run
+  principals are still `Mediated` in fact**, for the reason Build's are: `Contained` has four conjuncts, and the
+  lineage criterion is not in force (§2.3).
 
 **Checked.** `RunCoupling.tla` separates the counters `Coupling.tla` had merged, and its mutation `M_EMITSEQ`, the
 sequence counting reports only, is the reference's behaviour before 2026.09.29: a Thinker that never reported could
@@ -440,6 +464,99 @@ its §7 named the wrong gate for one control; the record was revised before rati
 **Author-ratified, and more.** All four records carry confirmation markers; ADR-0040 and ADR-0022 A2 carry C3. They
 were drafted on 09.29, built the same day, and ratified the next, with the custodian settling eleven choices in
 discussion and the rest by ratifying the text.
+
+### 2.10 Labels, handles and the tool list
+
+Three gaps in Run's ingress were open at G9, and each was a place where an injection could arrive unseen. The
+Listener delivered content with no account of where it came from. A Thinker learned what a tool was for from its
+Persona or its task, text no allowlist entry named by digest. And the allowlist entry was asked for by three records
+in three forms, one of which the reference had invented. Three records, ratified together in Batch 34, close them.
+
+**Every item of ingress has a label, and the label is a function of its source** (ADR-0047, C4, and C2 for the
+claim that suppressed bytes do not enter the guest). A label is a set of names from a vocabulary the bundle declares.
+The floor reserves two: `untrusted`, for content a party outside the deployment could have written, and
+`restricted`, for content that must not leave it.
+
+| Item | Its source | Where the label is declared |
+|---|---|---|
+| The task | The grant | The grant |
+| A `Consult`'s content | The Run root | The root's declaration |
+| An `Actuate`'s result | The allowlist entry | The entry |
+| The tool list | The bundle | It passed promotion, and carries neither reserved name |
+
+- **A label is a syntactic lift, and not a judgment about content.** It says where an item came from and what its
+  source was declared to be. Whether an item is poisoned is still not the Listener's to decide (ADR-0043 §1), and a
+  judgment about content is still an Observer finding. A label derived from content is not decided.
+- **The Listener delivers an item one of two ways**, by a table in bundle data from label to mode, per seat kind:
+  **clear**, the bytes with their label, or as a **handle**, a name for the item and its label and no bytes. The
+  label travels in the envelope, so content that imitates a label changes nothing. **A suppressed item's bytes do
+  not enter the guest**, which is enforced by what the node sends and not by the Thinker's cooperation.
+- **A handle is still useful.** The Thinker knows what was withheld and why. It may pass the handle as an argument:
+  the tool host resolves it on the mechanism's side and the tool receives the bytes, so a Thinker routes content it
+  cannot read. And it may try another way; every attempt is an ordinary admit.
+- **A result's label covers its inputs**: the entry's label, joined with the label of every handle among the inputs,
+  and, where an input is a literal, with everything the Thinker has read in the clear this round. The last clause
+  was not in the first draft. `Labels.tla` found the hole it closes: a Thinker that had read untrusted content
+  passed a literal to an inside tool that returned what it was given, then named that result by handle as a
+  destination, and neither forbid below saw it.
+- **`clearSet` is the round's memory, and the only history policy reads.** It is the join of the labels of every item
+  delivered clear to the principal this round, the task included. It only grows. A literal argument has no label of
+  its own, because the mechanism cannot say what a typed value derives from; `clearSet` is the sound bound.
+  **History reaches policy only as attributes the mechanism computes**, a small fixed set, and no temporal operator
+  enters the policy language.
+- **The floor carries a minimum**, three forbids on an `Actuate` of an **outward** entry, one whose channel reaches a
+  target the issued rules do not list as inside the deployment:
+
+  | | Path | Refused when |
+  |---|---|---|
+  | `R5` | Read, then send | `clearSet` holds `untrusted`, and `restricted` is in `clearSet` or in a handle among the inputs |
+  | `R6` | Steered destination | `clearSet` holds `untrusted`, and an input the entry marks a destination is a literal |
+  | `R7` | Replayed content | A destination input is a handle whose label holds `untrusted` |
+
+  They are monotone in `clearSet`: **delivering more in the clear buys a narrower round.** A bundle may move every
+  label to `clear`, and what it cannot do is escape these. Suppression is what keeps `clearSet` small.
+- **The Observer reads every fact.** Suppressed to the Thinker is not suppressed to the Observer: the `Actuate`
+  record holds inputs and result in full, and its envelope gains the input labels, the result's label, the delivery
+  mode and `clearSet` as it stood. A reader of envelopes alone can see that an untrusted result was delivered clear
+  and an outward call followed.
+- **This stands beside a Thinker's own defences and replaces none.** A defence inside the Thinker lowers how often
+  an injection succeeds. Labels bound what a successful one can reach.
+
+**A Thinker learns its tools from the mechanism** (ADR-0048, C4 and C3). Every allowlist entry carries an interface:
+a purpose and a note per input. At the start of a round the Listener delivers the interface of every entry the lease
+may call, and no other, in a form the mechanism renders. **The mechanism writes it to the round's topic as its
+opening record**, so an Observer is given the list its Thinker was given, and can judge a call against what the
+Thinker was told the tool was for. The list cannot change inside a round. What a Persona, a task or a consulted
+object says about a tool is content, with no standing. A description that carries an injection now has to pass
+promotion, which is the gain: it is drafted, gated and voted on like any bundle change. The purpose text is still a
+claim, and a wrong one is detected by nothing here.
+
+**The allowlist entry has one schema** (ADR-0049, C4, and C2 for §5). Five parts: identity, inputs, interface,
+labels and channel. The record is the entry's one statement, and it says for each field whether it is **checked or
+claimed**: name, digest and input types are checked on every call; purpose and notes are prose that passed
+promotion; a label is claimed, and bounded; the channel's target is checked where the tool host binds a Wasm tool's
+one socket to it, and claimed for a native tool. **"Outward" is derived and never declared**, so a bundle cannot
+mark its own entry as inside. **A bundle whose allowlist is not well-formed does not load**: an outward entry whose
+result is not labelled `untrusted`, an entry that releases a reserved name without the issued rules naming it, and a
+forgotten declaration are each refused at load, by the mechanism, and are harder to change than the floor.
+
+**What this does not cover.** A wrong declaration: a source that is not outward, labelled trusted while carrying an
+attacker's text, is seen by nothing, and the task's label is the word of whoever issues the grant. Flow through the
+model item by item: `clearSet` bounds the round and traces no value. An injection that changes what a Thinker says in
+a `Report`, or that acts through an entry that is not outward. Build: `Read` is not labelled.
+
+**Checked.** `Labels.tla`: ten properties over what the labels are about, tainted and secret bytes as ghost state,
+and not over the mechanism's own bookkeeping; eight mutations, each of the three forbids shown to be needed alone;
+proved for every round length. `ToolList.tla`: five properties about a round in which a bundle is promoted, proved.
+The floor: the three forbids gated, each total and each mattering. The reference: a scripted Run cell in which one
+result is delivered clear and another as a handle, the handle admitted where its label is accepted and refused where
+it is not, `R5` refusing after a clear read and admitting the same call in a round where the item was a handle, and
+a bundle that delivers everything clear loading and the call still refused.
+
+**Author-ratified.** All three records were drafted on 2026.10.03, built at the reference on 2026.10.05 and ratified
+the same day, with three of their conditions restated first to what the reference could show: a load check that
+could not be failed in the entry's own form, a narrowing the lease schema does not carry, and a refusal for which
+the reference has no task at a first seating.
 
 ---
 
@@ -501,7 +618,7 @@ deployment that runs the gates without the checker declares **D-0030-2**, routin
 subtractive mitigation is to make every floor change two-key; every gate run before 2026.10.01 was one.
 
 **What is given up.** A bundle cannot establish that something is allowed. Over-denial by a bundle is a modeled,
-attributed local event, and a bad bundle can disable break-glass — a liveness cost, never a widening.
+attributed local event, and a bad bundle can disable an emergency seat's tools — a liveness cost, never a widening.
 
 **The floor runs on a verified evaluator, linked into the mechanism** (ADR-0030 §2, §3). The floor tier's obligation
 is an evaluator with a mechanized semantics, an implementation checked against it, and a decidable comparison of
@@ -517,14 +634,22 @@ out (ADR-0030 §6). A deployment that keeps a Rego floor declares **D-0030-1**: 
 classification become measured rather than proven. `bundle ⊑ floor` survives it, because composition does not
 depend on the floor's language.
 
-**The genesis floor exists, as a draft.** Seventeen Cedar policies, schema S and, since ADR-0039, a **values file**,
-gated six times, last on 2026.10.01 with proofs behind it: every policy never errors on every action it covers,
-every action of the nine is neither always-allowed nor always-denied, removing any one policy changes the floor,
-four deliberately broken floors were caught, two of them for `Consult`, and three lying solvers produced a failure
-and never a `holds`. The values file holds the numbers the typed lift reads that
-Cedar text cannot, `K`, `T_obs`, `T_persona` and the unset θ, and its digest is pinned with the floor's and the
-schema's; every number in it is a placeholder and says so. The text is **not ratified**; ADR-0030 ratified the
-language and the machinery, not a floor, and ADR-0041 ratified what a Run floor must contain, not this one.
+**The floor exists, gated, and is not ratified.** The genesis draft is seventeen Cedar policies, schema S and,
+since ADR-0039, a **values file**. Since Batch 34 the entries in force are more than that draft holds, and the text
+that states them is built from it in three gated stages under `floor/proposed/`: three forbids over labels (§2.10),
+nine control entries for an operator's requests (§7.10), and the removal of the break-glass exception (§3.3). The
+last stage is twenty-eight policies, gated on 2026.10.04 with proofs behind it: every policy never errors on every
+action it covers, every action is neither always-allowed nor always-denied, removing any one policy changes the
+floor, and each new entry is classed a relaxation when dropped or weakened. The values file holds the numbers the
+typed lift reads that Cedar text cannot, `K`, `T_obs`, `T_persona` and the unset θ, and its digest is pinned with
+the floor's and the schema's; every number in it is a placeholder and says so.
+
+**The floor is genesis-provisional** (ADR-0030 A3). ADR-0030 ratified the language and the machinery, not a floor;
+ADR-0041 ratified what the floor must contain, entry by entry, not a text. No batch ratifies the text. It is
+ratified when **the bootstrap reviewer establishes that it is fit** (ADR-0029 A4; §9). That gives floor fitness,
+the fourth gate, an owner and a time for the first time. It does not give it a test: the gates show a floor is
+consistent, total, non-vacuous and minimal, and whether it is the right floor is a judgment nobody has written a
+procedure for.
 
 **The floor is resident.** The default-deny bundle is pre-blessed, staged, and instantiated rather than fetched,
 so fail-closed works at cold start and under partition with no network dependency (ADR-0012). It was accepted
@@ -559,22 +684,17 @@ becomes false.
 
 ### 3.3 Exceptions
 
-Two privileged paths cannot be written as subtractions. **Erasure** (ADR-0006) destroys authority-bearing
-evidence. **Break-glass** (ADR-0009) adds authority. Both are **floor exceptions**: carve-outs inside the verified
-object, each with a quorum predicate checked in TLA+.
+**One privileged path cannot be written as a subtraction, and it is the floor's one exception. Until Batch 34 there
+were two.** **Erasure** (ADR-0006) destroys authority-bearing evidence, and stays a **floor exception**: a carve-out
+inside the verified object, with a quorum predicate checked in TLA+. **Break-glass** (ADR-0009) adds authority, and
+was the other, X1. It is no longer an exception at all.
 
 ADR-0013 writes the exception mechanism once:
 - **Exceptions are declared floor entries**, each with an envelope, a roster reference, and non-composition
   obligations. Adding one is a floor relaxation. Since ADR-0030 they are **Cedar policies inside the floor**, as are
-  the six forensic classes, so composition applies to them uniformly: **a bundle can narrow a floor exception,
-  including break-glass**, and cannot widen either.
-- **The exception count is bounded** by rules-floor entry R6. The current count is two.
-- **Non-composition** is stated as TLA+ invariants with mutations, and both were **checked on 2026.09.23**
-  (`spec/NonComposition.tla`). **NC-1:** break-glass chained with erasure never yields an effect that is authorized,
-  erased, and unattributable. **NC-2:** erasure never removes a forensic-floor record under any composition with
-  break-glass. Both hold under the mechanism as the records specify it; both fail under a mechanism that lets
-  erasure reach admit decisions, or that lets a break-glass grant widen the erasure envelope. A third witness shows
-  the composition is reachable at all — without it NC-1 could hold because the two privileged paths never meet.
+  the six forensic classes, so composition applies to them uniformly: a bundle can narrow a floor exception and
+  cannot widen it.
+- **The exception count is bounded** by rules-floor entry R6. The current count is one.
 - **Privileged grants share one authorization model:** a quorum on an anchor-issued roster, bounded by the rules
   floor. **Privileged** is load-bearing: ordinary Run admits are grants too, and they are decided against a bundle,
   not a roster.
@@ -583,11 +703,47 @@ ADR-0013 writes the exception mechanism once:
   the audit authority still reads — is not the same thing. A deployment needing type 5 in full is outside the
   archetype's declared demands.
 
-Every carve-out works against floor minimality. That tension is why the count is bounded.
+**Break-glass is an emergency seating** (ADR-0052, provisional; C1, C3 and C4). X1 let a quorum of the break-glass
+roster approve a seat for an epoch, after which that seat, an agent's included, could `Actuate` inside an issued
+envelope until the epoch ended, with no clock and no end. Four things were wrong with it, and the record answers
+each.
 
-**Author-ratified.** ADR-0013 and ADR-0028 were ratified in genesis on 2026.09.23, both confirmation-required under
-C1, and ADR-0030, which re-expresses both as floor entries, on 2026.09.25 under the same criterion. The checks above were run by the author, and they are evidence, not attestation. The record itself says the
-phase move gave up the independent reviewer that the post-bootstrap phase would have supplied.
+- **The actor is a person.** A seat of kind `emergency` is held by a person, with a key, and by nobody else in the
+  round. Every action under the lease is signed with that key. No model's Persona binds to the kind. The mechanism
+  cannot tell a person from a program holding the person's key, and the record says so.
+- **The grant is one round.** The roster's quorum **activates** a seating: one lease, for one named person and one
+  round, with the round's task. It ends with its round, at the round bound or its `ttl` or when an operator stops
+  it, and it has no successor and no renewal. Another round is another quorum. That is the time box, on the clock
+  the corpus already accepts for a lease, and it is why **R8, the break-glass TTL, was withdrawn**.
+- **The envelope is an ordinary allowlist, so the floor needs no exception.** A seating is prepared in advance,
+  with its envelope. By default the envelope is **the domain's**: every Run allowlist entry in force, computed at
+  activation, so it cannot go stale, together with emergency-only tools promoted ahead of time. The seat's calls are
+  admitted by the ordinary allowlist permit. The label forbids apply to it like anyone.
+- **It does not wait on an Observer.** The coupling rule is a `thinker`'s (§5.4), and an emergency seat is not one.
+  What goes uncoupled is a person, seated by a quorum, for one round, whose topic the domain's operators read and
+  any of whom can stop.
+- **The reason is unknown to the mechanism, by construction.** Why the quorum acted is a claim about the world. What
+  is recorded is who approved, whom, on which seating, for which round and with what task; a field for the reason
+  would be prose nothing checks.
+- **The path is exercised.** A drill is a real activation, by the real roster, of a seating whose envelope holds one
+  inert tool. It is an obligation with evidence and gates nothing.
+
+**Non-composition** is stated as TLA+ invariants with mutations, checked on 2026.09.23 (`spec/NonComposition.tla`)
+and restated for the seating on 2026.10.05 (`NonComposition_A1.tla`). **NC-1:** break-glass chained with erasure
+never yields an effect that is authorized, erased, and unattributable. **NC-2:** erasure never removes a
+forensic-floor record under any composition with break-glass. Both hold; both fail under a mechanism that lets
+erasure reach admit decisions, or that lets a live emergency lease widen the erasure envelope; and both fail under a
+third mutation the seating made possible, **an activation's record kept only while its round is live**. Under X1
+there was no "after the round" in which to lose it.
+
+Every carve-out works against floor minimality. That tension is why the count is bounded, and one carve-out fewer
+is the direction it should move.
+
+**Author-ratified, and provisional.** ADR-0013 and ADR-0028 were ratified in genesis on 2026.09.23, both
+confirmation-required under C1, and ADR-0030, which re-expresses both as floor entries, on 2026.09.25 under the same
+criterion. ADR-0052 was drafted on 2026.10.04 and ratified provisional the next day. **X1's retirement is in force
+on a record that is subject to redesign**: if ADR-0052 is redesigned, break-glass has no settled form until the
+redesign is ratified. The checks above were run by the author, and they are evidence, not attestation.
 
 ### 3.4 One floor or one per class?
 
@@ -634,11 +790,13 @@ prevented*. ADR-0020 named this the clause an implementer optimizing topic volum
 reference dropped it; review caught it (§15). A denial is written, unordered, to the principal's round topic by the
 replica that decided it, with content reduced to digests.
 
-**Break-glass and erasure are not a third kind.** Each is invoked as an admit decision against its declared
-floor-exception entry, so both are already effects. Break-glass grants authority *within* the rules in force and
-cannot alter them, because no break-glass grant may authorize `Issue`, `Vote`, or promotion (R7). The qualifier
-that keeps the authority-change set at two is therefore **change to the rules in force**, not "adds authority".
-That classification rests on the exception entries of ADR-0013, which is itself confirmation-required.
+**Break-glass and erasure are not a third kind.** Erasure is invoked as an admit decision against its declared
+floor-exception entry, so it is already an effect. Break-glass is a lease: its calls are admits like any other, and
+its activation is a grant made by a roster's quorum, as a promotion is a grant made by another. It grants authority
+*within* the rules in force and cannot alter them, because an emergency seat's alphabet holds no authority act, by
+its kind, and R7 refuses an activation that would grant one. The qualifier that keeps the authority-change set at
+two is therefore **change to the rules in force**, not "adds authority". That classification rests on ADR-0013 and
+ADR-0052, both confirmation-required, the second provisional.
 
 This makes **effect exclusivity a mechanism claim** — TOPAK's sharpest differentiation from Moon & Varshney's
 assumed version once the confinement obligation (ADR-0022 §6) is discharged, and identical to it in strength
@@ -654,9 +812,12 @@ An emission is written only after its admit commits, and carries the admit's log
 per-lease sequence number.
 
 ADR-0015 shrinks the remaining ordering problem to one residual: effects admitted in the same round but emitted at
-different times. The per-lease sequence number covers it at the reference. If the Observer's quarantine gate is a
-modeled event, the residual closes entirely. That question gates ADR-0005, which is still Proposed — and the
-reference's choice of Kafka is carried as a debt against it (ADR-0033 §2).
+different times. A sequence number the log assigns covers it, and closes it. Revision 13 said the residual waited
+on whether the Observer's quarantine gate is a modeled event, and that the question gated ADR-0005. **It no longer
+does**: ADR-0005 was revised to say what orders admits, effects within a round, emissions and denials, with no
+vector clock, and **ratified 2026.10.04 (Batch 27, C4)**. The quarantine-gate question stays open on its own
+account. The debt ADR-0033 carried against this record since Batch 7, for the reference's choice of Kafka, is
+discharged.
 
 ### 4.3 Topics, payloads, erasure
 
@@ -708,7 +869,8 @@ declared horizon.*
 **The forensic floor** (ADR-0028) makes authority facts survive erasure and break-glass. Six classes are
 non-erasable for the declared horizon: **F1** admit decisions · **F2** stop attribution (e-stop, lease-expiry
 eviction, `deny=all`) · **F3** promotion votes · **F4** anchor issuances, including genesis · **F5** break-glass
-invocations · **F6** erasure events themselves.
+invocations, which are now activations of an emergency seating and the calls made under them · **F6** erasure
+events themselves.
 
 - All six are control-plane facts and boundary events. **No cognitive payload is in the floor.**
 - **No new primitive.** Each class is a policy-floor denial on the erasure envelope, so bundles can only narrow
@@ -763,7 +925,9 @@ correlator costs cross-cell detection only.
   denials with their sequence numbers, cell Observers' findings and the Reader's facts as control-plane records, the
   typed envelopes, and the payloads under the ACL. A facts-only correlator is a permitted narrowing, declared as the
   mitigation on D-0038-2, that gives up cross-cell semantic detection for immunity to injected content. Its detection
-  *function* is still unspecified (G5 item 43); what it reads is not.
+  *function* has a draft: ADR-0051, Proposed, names five correlations as folds over facts that a second reader can
+  recompute, with a judgment tier beside them, and is not built. Labels give a facts-only reader more than it had:
+  that an untrusted result was delivered clear and an outward call followed is visible in envelopes alone (§2.10).
 - **Placement**, ADR-0008's rule carried forward for seats: no `observer` seat shares a device with a Thinker it
   watches, and no two members of `W(p)` share a device. The reason no longer rests on a quorum. It is correlated
   failure and an effect path through device memory, and both hold whether or not anyone votes. The Reader stage may
@@ -856,9 +1020,10 @@ a clean system, and no record said whether that was accepted (the 09.16 review's
   cover the corpus has, the correlated-miss test measures it, and the residual-risk statement must say *detection
   fails open against a colluding Observer*.
 - **The costs are stated.** The Observer is on Run's hot path for liveness, not judgment; a cell's availability is the
-  product of its Thinker's and its Observer's; heartbeats are admits on the consensus log; and **R3 couples break-glass
-  too**, so an emergency path waits on a dead Observer. That last was ratified as written and is the first thing a
-  reviewer should reopen.
+  product of its Thinker's and its Observer's; and heartbeats are admits on the consensus log. Revision 13 listed a
+  fourth cost, that R3 coupled break-glass too, so an emergency path waited on a dead Observer, and called it the
+  first thing a reviewer should reopen. **It was reopened and decided**: an emergency seat is not a `thinker` and is
+  not coupled (ADR-0039 A2; §3.3), provisional with the record that makes the seat.
 - **The numbers are placeholders.** `T_obs` 5000 ms, `K` 8, Run's `R` 64, chosen for order of magnitude so the runs had
   values; deployment or rung choices, declared per deployment, not the pattern's.
 
@@ -944,7 +1109,13 @@ Promotion now obeys consensus-for-grants like every other grant, and no strict s
 Two costs are stated in the record. **Liveness equals the availability of every grant seat.** **Correlated review
 failure is untouched:** unanimous humans reading the same vacuous gate output fail together (Knight & Leveson; the
 vacuous gate output is Moon & Varshney §4.6 and Appendix B, which say nothing about human reviewers). Floor fitness, a
-fourth gate (NIST MEASURE 2.13), is still unowned.
+fourth gate (NIST MEASURE 2.13), now has an owner and a time, the bootstrap reviewer at bootstrap, and still has no
+test (§3.1).
+
+**A promotion seats** (ADR-0024 A3, from ADR-0050; provisional, and in the bootstrap set). What is promoted may be a
+**seating**: an artifact naming a principal, its seat, its Persona, its bundle revision, its confinement and its
+alphabet, and the labels a task for it may carry. When the tally completes, the mechanism grants the first lease.
+That is "promotion is a grant" taken literally, and it is not built at the reference (§7.10).
 
 **A promotion is a round**, keyed by artifact digest. It does not depend on the Build effect-stream scheme: what
 promotion requires is the vote record in the consensus log (§4.4), which is not a property of any topic scheme. A
@@ -975,8 +1146,13 @@ the proof. The decision is **havoc, with "infallible" split three ways**:
 **Rules** are the authority-defining set: the promotion roster and its parameters, the break-glass and erasure
 rosters, the anchor's own key set, any relaxation of the policy floor or new exception, **any change to the
 rules floor in either direction**, and, since A1 (Batch 17), **the keys the mechanism accepts a signature from in
-place of its own check**: the rung-3 verifier's appraisal key and the bundle-signing key. Each decides what the
-mechanism will admit on the strength of a signature, so replacing one adds authority and is an issuance. Tightening
+place of its own check**: the rung-3 verifier's appraisal key, the bundle-signing key and, since A3, an identity
+provider's key, under which an operator's sign-on is accepted (§7.10). Each decides what the mechanism will admit on
+the strength of a signature, so replacing one adds authority and is an issuance. Since A2 the rules also carry **two
+lists a bundle's load checks read** (§2.10): the channel targets inside the deployment, and the allowlist entries
+allowed to release a reserved label. Each widens what a bundle may declare, so adding to either is an issuance too.
+The break-glass roster and its quorum are what the rules now carry for break-glass; its envelope of tools is an
+emergency seating's (§3.3). Tightening
 the *policy* floor is not a rules change — it is an ordinary promotion. The rules floor is the exception, because tightening it constrains the anchor itself, so the anchor must
 consent (§7.3).
 
@@ -1007,10 +1183,10 @@ that violates it.
 | R3 | *Withdrawn*: recusal is enforced by the `Vote` envelope, so no issued value exists to bound |
 | R4 | *Withdrawn*: a timeout never grants, now a mechanism constant |
 | R5 | No key both in the anchor key set and on the promotion roster |
-| R6 | Exception-count bound, currently two — **effective 2026.09.23** with ADR-0013 |
-| R7 | No break-glass grant may authorize `Issue`, `Vote`, or promotion |
+| R6 | Exception-count bound. The count it bounds is one, erasure, since Batch 34 |
+| R7 | No activation of an emergency seating grants a lease whose alphabet holds an authority act (A2). It read "no break-glass grant may authorize `Issue`, `Vote`, or promotion"; the kind's alphabet now makes that true, and R7 is kept for the day the kind changes |
 | R9 | `quorum = "all"` or `quorum ≥ 2` — a **conditional entry**, binding only once R1 is relaxed |
-| R8 | *Drafted*, pending (ADR-0026 A1): a break-glass grant TTL. Vacuous until a mechanism clause makes a grant end, and by ADR-0032 it needs trusted time |
+| R8 | *Withdrawn* (2026.10.04) before it was ever in force: a break-glass grant TTL. It needed trusted time, which the corpus refuses. A grant now ends with its round (§3.3) |
 
 **Why R9 exists.** Relaxing R1 alone yields a threshold *k*, and without R9 that threshold may be 1 — single-signer
 promotion entering as though it were k-of-n. R9 keeps the two declared degeneracies distinct. It is the corpus's
@@ -1065,6 +1241,9 @@ The cost is stated: a compromised genesis is a compromised system, covered only 
   They are attributable non-principals; `Mediated` applies to them as attribution only.
 - **At degenerate custody,** the genesis threshold or eviction rule can remove a key-holder, so key-holders become
   principals and the gate moves to that rule. That is a type change, and it moves the TCB (§8.2).
+- **Operators are principals** (ADR-0050; provisional). An operator was whoever could reach a socket, which is
+  neither a principal nor at the gate: it is unmodelled. It now holds a seat, is seated by a quorum, and can be
+  revoked by a peer, so the evictability test puts it inside (§7.10).
 - **Promotion voters are principals on every rung**, because the anchor can evict them. Promotion therefore gains
   what ADR-0024 says it gains: attribution and authorization, with every voter `Mediated`. It does not gain safety:
   no containment theorem covers a vote, and a vote is a grant like any other.
@@ -1114,6 +1293,8 @@ reopens nothing. The two axes, approver fault tolerance and anchor recoverabilit
 | Detection | Observers combine by any-of, and coupling only refuses: more Observers never lower safety, and an absent one stalls | ADR-0038, ADR-0039 |
 | Bundle | A bundle loads only under an issued key's signature; a file name is evidence of nothing | ADR-0044 |
 | Trusted base | A component enters only if its failure can only subtract, or its identity is issued; what can add and is fixed by nothing is refused | ADR-0045 |
+| Ingress | Suppression only subtracts, and the label forbids are monotone in what was read: delivering more in the clear can only refuse more | ADR-0047 |
+| Operation | A quorum seats; one operator keeps a quorum's grant going and may narrow it, never widen it; a deny needs no lease and no peer | ADR-0050 (provisional) |
 
 **At the pattern level it inverts.** Tightening the archetype puts every conformant deployment into declaration
 debt. Relaxing it voids published theorems. Both directions cost something.
@@ -1141,7 +1322,7 @@ rules floor would reject, and nothing else.
   described; an undeclared row is false, so a deployment that has not declared a component sits below every theorem
   on it, and type changes are rows, so §6b's field becomes a list of ids. Removing a row is a tightening and adding
   one is a relaxation that needs its own record, which is ADR-0023's non-increasing-TCB rule made checkable.
-- **The archetype's table has thirty-one rows** in five groups: the assumptions under the mechanism constants
+- **The archetype's table has thirty-six rows** in five groups, five of them added at Batch 34 (below): the assumptions under the mechanism constants
   (replicas, the signature primitive, the Cedar engine's faithfulness to its model, the clock, the transport, the
   bundle engines, the archive, the key store, the key-holders, the genesis rules, the corpus and its custodian,
   break-glass approvers); the Build toolchain; **the verified object's evidence**; the confinement axis; tools and
@@ -1170,11 +1351,86 @@ batch gave the binding table a proof column and five corrections that writing th
 hypothesis is the set of mutations that break it, derived and checked apart from the table, and where the two
 disagreed TLC sided with the proof. The binding table is a draft
 revised with the records it binds; its versioning, with the table's, is still the archetype-evolution record's
-(§8.2). **Annex B is now behind the code**: it says the reference instantiates none of T-0045-16 to 21 and issues
-rung 0 only, and the reference issues rung-1 leases, which instantiate T-0045-19 and 20, and plays T-0045-16 and 17
-with test keys in its simulated runs. Annex B moves with ADR-0033 A7's dependent entries, and T-0045-24, a Run tool's
-channel, moves from excluded to delegated with ADR-0034 A2's. The binding table's confinement rows, its trace row and
-a row for `RunConfinement` changed with them, marked pending.
+(§8.2). **Five rows were added at Batch 34**, for the new records: the label
+computation and delivery, a trust root, since a `clearSet` that is too small lets a forbid not fire; the label and
+destination declarations, **excluded**, trusted for nothing, because a signature fixes what was declared and not
+whether it is true; handle resolution and the list's rendering; an operator's identity provider; and an operator's
+custody of its key. **T-0045-31 gained a certified configuration** (ADR-0046 A1, Batch 28): cvc5 behind a wrapper
+and the checker of T-0045-14 in place of Z3, so that an SMT obligation counts only with a proof an independent
+checker accepted (§11.3). **Annex B caught up, and then moved again.** The launcher's rows moved with ADR-0033 A7
+(Batch 29), and T-0045-24, a Run tool's channel, is delegated at the archetype since Batch 30. Annex B's paragraphs
+on the five new rows were drafted when the reference had no instance of any of them and ratified two days later when
+it had, so they were rewritten at ratification, and say so. One line is still behind: Annex B keeps T-0045-24
+excluded at the reference because the target was read from node configuration, and it no longer is. **The binding
+table has no rows yet** for the four new modules and the two successors.
+
+### 7.10 The operator is a principal
+
+Every authority in the corpus had a model except one. Agents are principals; voters are principals; the anchor is a
+havoc issuer bounded by a floor. **The operator, who issues every lease, was whoever could reach a socket**, and the
+reference said so in a comment. The 10.02 critical review found it (CR-34), and ADR-0050 (drafted 2026.10.04,
+ratified provisional in Batch 34; C1, C3 and C4) applies the pattern's oldest rule to it: **adding takes a quorum,
+and denying is local.**
+
+- **An operator holds a seat of kind `operator`**, declared in the issued rules with a domain. Only a person holds
+  one, and a person who operates and also votes is two principals. An operator is `Mediated`: a person cannot be
+  confined, so what the record gives is attribution and authorization, not containment. It is treated as havoc like
+  every principal; nothing rests on an operator being honest.
+- **First leases come from a quorum, and an operator renews what a quorum granted.** A principal's first lease is
+  granted by the mechanism when a quorum completes: a promotion of a seating (§7.1), or, for the first operators and
+  the rostered seats, an anchor issuance. An operator then makes **successor grants**, the principal's next round
+  with every field the last lease's or narrower, and renewals. It can keep a quorum's grant going and can narrow it.
+  It cannot widen it; anything else is a first lease and needs a quorum. So the quorum acts once per seating, and
+  round by round one operator acts.
+- **Six requests, three that add and three that deny.**
+
+  | Request | Kind | Needs |
+  |---|---|---|
+  | `Regrant`, `Renew`, `AttestGates` | Add | A live lease, and **a live peer** in the domain |
+  | `EndRound`, `Revoke` | Deny | A Persona in force, and a live lease **or a fresh sign-on**; in its own domain |
+  | `FenceEpoch` | Deny | A Persona in force **and a live lease** |
+
+  They are actions in schema S, and nine floor entries, `C1` to `C9`, state the envelope, with the same gates as
+  any other entry.
+- **A deny needs no lease.** An operator whose lease was fenced or has expired can still stop things in its own
+  domain, and that is the only thing it can do. Without a live lease the deny carries a fresh sign-on, so **a key by
+  itself is not a standing lever**: a person removed from sign-on cannot stop anything with a key nobody revoked.
+  The widest stop, the fleet fence, is held only by people attested within their last lease.
+- **Authentication is delegated, and read only at a lease boundary.** An operator's Persona binds a key, and its
+  lineage's root is the identity provider that vouches for the person. The provider signs an assertion naming the
+  key and the fence the mechanism asked it to name; **no wall clock is read**, and the assertion is fresh because of
+  what it names. The provider's key is issued, like the verifier's (§7.2). Between boundaries a request is signed
+  with the Persona's key, which the mechanism checks itself.
+- **Operators observe each other.** Every control action is written to the operator's round topic, and every other
+  operator in the domain reads it. A finding is a deny. An add needs a live peer, which is the coupling rule's shape
+  (§5.4) applied to people: it couples to a peer's presence, and not to anything the peer has read. At the archetype
+  there are **at least three operators in a domain**, with independent providers. With two, either can keep the
+  other seated and neither can recover the other's lapse; with three, the two that remain can.
+- **The task has a record.** A seating and a `Regrant` carry the round's task: its digest and label on the log, its
+  bytes in the round's payload, at the reference its opening record. The label is the operator's signed declaration, and the seating bounds it, so
+  a quorum can decide that a seat's tasks are always `untrusted` and one operator cannot say otherwise.
+- **When no operator in a domain holds a live lease, nothing in it can be regranted.** Leases run out, rounds end,
+  and the domain stalls until a quorum seats an operator again. That is the corpus's posture: stall, not proceed.
+
+**What it does not cover.** That an operator is a person. A person outside the mechanism, with the host's root
+account. A provider that is compromised, which independence between providers bounds to one operator of a pair and a
+single provider does not bound at all. Gate evidence, beyond attributing who asserted it. What a peer must have read
+before an add proceeds.
+
+**Checked.** `Operators.tla`: thirteen invariants, two of them over ghost truth, whether the provider still vouches
+for the person behind the key; every mutation breaks what the module says, the first draft's deny by key alone among
+them; proved for every set of operators. The floor: the nine entries gated. The reference: signed requests decided
+by the floor and re-checked by every replica when applied, a successor refused for widening, an add refused with no
+peer, a lapsed operator's revocation refused by its key alone and admitted with a fresh sign-on, and its regrant and
+its fence refused.
+
+**Provisional, and this is why.** The record's centre is that a first lease comes from a quorum, and **the reference
+does not show it.** There, the old unsigned socket is kept as a marked bootstrap path that seats and does nothing
+else: it stands in for the quorum, and whoever reaches it can seat. The custodian ratified the record on that basis,
+knowingly, with the missing behaviour named as the debt its status carries, and with the second debt beside it: no
+reader other than the drafter has read it. Until both are met the record is in force and subject to redesign, and
+every amendment that depends on it is too, three of them in the bootstrap set, which the genesis attestation must
+name as provisional (§9).
 
 ---
 
@@ -1239,7 +1495,12 @@ floor, tested rather than proven) on floor verification; **D-0034-1** to **D-003
 **D-0038-1** and **D-0038-2** (the shared group only; no correlator); **D-0039-1** (Run uncoupled); **D-0042-1**
 (effects counted and recorded as reports only, the reference before 09.29); **D-0044-1** (bundle signing off, the
 reference before 10.01); **D-0045-1** (no trusted-base declaration at all: the bottom of every axis); **D-0030-2**
-(routing verdicts unchecked: every gate run before 10.01, and any run without the checker); and, in Proposed
+(routing verdicts unchecked: every gate run before 10.01, and any run without the checker); **D-0034-5** and
+**D-0034-6** (a native Run tool, behind a filter or not); **D-0047-1** (no labels: every item delivered clear and
+unlabelled, the reference before 10.05); **D-0048-1** (no tool list); **D-0050-1** (the socket: operator requests
+unsigned, from whoever reaches it, the reference before 10.05 and still its path for a first seating), **D-0050-2**
+(peers behind one identity provider) and **D-0050-3** (two operators in a domain); **D-0052-1** (X1, the reference
+before 10.05); and, in Proposed
 records, **D-0035-1** (a lineage that can only be declared) and **D-0036-1** (a profile with a reachable
 interpreter). None of these is a deployment declaration; they are record-level entries, and the 09.26 accounting
 notes that no record yet says how the two differ. **The five Observer and retention entries void no safety theorem**,
@@ -1281,36 +1542,46 @@ trusted by declaration and becomes part of the genesis TCB.
   confirming them under themselves would be circular. The marker is all the circularity forecloses: since A2 the
   set is reviewed at bootstrap with everything else (below), before the rules it defines take effect.
 - Until confirmed, a publication citing a confirmation-required guarantee says "author-ratified."
+- **A record may be ratified provisional** (ADR-0029 A4, Batch 34): in force, subject to redesign, for a record that
+  did not meet its own ratification condition. It says what it lacked, it is confirmation-required whatever its
+  content, and it stops being provisional when the debt is built and seen at the reference and a reader who is not
+  the drafter has reviewed it. The status exists because the alternative on the day was to leave the reference
+  following two records that were not in force, and not following one that was.
+- **A provisional record's amendments may land in the bootstrap set**, and three do: ADR-0024 A3, ADR-0025 A3 and
+  ADR-0026 A2. They cannot be confirmation-required, for the reason the set cannot. They are covered by the genesis
+  attestation, **which must name them as provisional**, so that what a bootstrap reviewer attests to includes the
+  fact that part of the rules it runs under is expected to change.
 
-**Where ratification stands (2026.10.02).** Forty records are Accepted (genesis); one, ADR-0008, is
-superseded; three are Proposed: ADR-0005, blocked on a decision; ADR-0035 and ADR-0036, blocked on evidence and on a
-review. The confirmation-required set is **twenty-two**: ADR-0006 and ADR-0009 (C1, C4 via ADR-0013), ADR-0013 (C1,
-C4), ADR-0015 (C2), ADR-0021 (C4), ADR-0023 (C3), ADR-0028 (C1), ADR-0030 (C1), ADR-0031 (C1, and C2 for A1 only),
-ADR-0034 (C2, C4), ADR-0037 (C3, C4), ADR-0038 (C3, C4), ADR-0039 (C4), ADR-0040 (C3, C4), ADR-0041 (C1, C4),
-ADR-0042 (C4), ADR-0043 (C4), ADR-0044 (C1), ADR-0045 (C2, C4), **ADR-0046 (C2, C4)**, and two records marked for one amendment only:
-ADR-0003 A2 (C1) and ADR-0029 A2 (C3). Batches 17 to 21, all of 2026.09.30, ratified six amendments and ADR-0044
-(17), ADR-0021 (18), ADR-0033 A4 (19), the four Run records with three amendments (20), and ADR-0033 A5 (21).
-Batches 22 to 24, all of 2026.10.01, ratified ADR-0045 (22), ADR-0033 A6 (23) and ADR-0030 A1 (24); Batch 25, of
-2026.10.02, ratified ADR-0046, with dependent entries in thirteen records; Batch 26, the same day, ratified its
-erratum E1, that `RulesFloorBase.tla` is live and not frozen. **Four amendments are pending**: ADR-0026 A1 (R8),
-ADR-0033 A7 and A8, and ADR-0034 A2, the Run profile, which would carry C2 and C4. Two records are
-ratified in part: ADR-0022 §1–§5, §7 and §8, with **§6 not**, since ADR-0034 discharges its obligation for Build and
-not for Run; and ADR-0042 §1–§5, §7 and §8, with **§6 not**, Run's confinement obligation, left out by the custodian
-as ADR-0022 §6 was. Accepted records carry **debts on their face** — ADR-0030's, ADR-0033's Kafka row and its
-refinement chain, ADR-0034's, ADR-0045's — which is ADR-0029 §2 working as written; three debts that stood at
-revision 10, ADR-0031's `ttl` check, ADR-0025's two schema fields and ADR-0044's implementation, were struck by
-ADR-0033 A6. **One marking has no criterion:** ADR-0035 R2 is confirmation-required by custodian instruction, because
-its measurement rule is a novel construction to be reviewed against practice; G4 carries it as a ledger line and asks
-whether ADR-0029 needs a criterion for markings of that kind. **One kind of debt is new**: four texts were drafted
-by the assistant at the custodian's request, ADR-0044, ADR-0045, ADR-0030 A1 and ADR-0046, each marking every choice
-as the drafter's, and the custodian settled all four by ratifying the text; three more, ADR-0034 A2 and ADR-0033 A7
-and A8, are pending. ADR-0029 has no criterion for that either, and G9 carries it beside the ADR-0035 line.
+**Where ratification stands (2026.10.05).** Forty-six records are Accepted (genesis); one, ADR-0008, is
+superseded; three are Proposed: ADR-0035 and ADR-0036, blocked on evidence and on a review, and ADR-0051, the
+correlator's folds, drafted and unbuilt. The confirmation-required set is **twenty-eight**: ADR-0005 (C4), ADR-0006
+and ADR-0009 (C1, C4 via ADR-0013), ADR-0013 (C1, C4), ADR-0015 (C2), ADR-0021 (C4), ADR-0023 (C3), ADR-0028 (C1),
+ADR-0030 (C1), ADR-0031 (C1, and C2 for A1 only), ADR-0034 (C2, C4), ADR-0037 (C3, C4), ADR-0038 (C3, C4), ADR-0039
+(C4), ADR-0040 (C3, C4), ADR-0041 (C1, C4), ADR-0042 (C4, and C2 for §6), ADR-0043 (C4), ADR-0044 (C1), ADR-0045
+(C2, C4), ADR-0046 (C2, C4), **ADR-0047 (C4, and C2 for §3), ADR-0048 (C4, C3), ADR-0049 (C4, and C2 for §5)**, the
+two provisional records, **ADR-0050 and ADR-0052 (C1, C3, C4)**, and two records marked for particular amendments
+only: ADR-0003 A2 (C1) and ADR-0029 A2 and A4 (C3). **Nine batches since G9**: ADR-0005 (27); ADR-0046's erratum and
+its certified configuration (28); four of the reference's choices, the declared rung per seat and the launcher's
+addendum (29); the Run profile with ADR-0042 §6 (30); Run's tools held to their channel (31); two addenda split out
+so that what was evidence for text in force could be accepted alone (32, 33); the five records, their twenty-six
+dependent amendments, the amendments that define provisional and the floor's status, and four addenda (34); and one
+more addendum (35). **No amendment is pending.** R8, pending since 2026.09.24, was withdrawn. One record is ratified
+in part: ADR-0022 §1–§5, §7 and §8, with **§6 not**, since ADR-0034 discharges its obligation for Build as a
+specification and not as a mechanism. ADR-0042 is accepted whole. Accepted records carry **debts on their face** —
+ADR-0030's, ADR-0033's refinement chain, ADR-0034's, ADR-0045's, and now the two provisional records' — which is
+ADR-0029 §2 working as written; ADR-0033's oldest debt, its Kafka row, was discharged by ADR-0005. **One marking has
+no criterion:** ADR-0035 R2 is confirmation-required by custodian instruction, because its measurement rule is a
+novel construction to be reviewed against practice. **One kind of debt has grown past counting by hand**: at
+revision 13 four ratified texts had been drafted by the assistant; nearly everything ratified since was (§0).
+ADR-0029 has no criterion for that either, and G10 carries it.
 
 **Bootstrap trigger.** The anchor *may* bootstrap once a drafted TLA+ bootstrap specification exists: five modules
 (`Genesis`, `Anchor`, `RulesFloor`, `Promotion`, `BreakGlass`), five invariants, and a mutation for each that must
 fail. `RulesFloorNV` is a precursor, not a substitute. **Two of the five are drafted, checked and, since
 2026.10.02, proved** — `Anchor` (`FloorPreserved`, for every floor subset and epoch bound) and `BreakGlass`
-(`BreakGlassNeverChangesAuthority`, with R7 in force); `GenesisSatisfiesFloor`'s shape is a lemma in both, proved of
+(`BreakGlassNeverChangesAuthority`, with R7 in force). `BreakGlass` models X1, and has a successor for the seating,
+`BreakGlass_A1`, whose proof does not assume R7: with the `emergency` kind's alphabet as decided R7 refuses nothing,
+and it refuses the activation if a later change gives the kind an authority act; `GenesisSatisfiesFloor`'s shape is a lemma in both, proved of
 the floor's definition and not of genesis contents, which are unwritten. `Genesis` waits on the genesis rules
 contents; `RulesFloor` and `Promotion` wait on modeling decisions about epochs, the vote triple, and veto seats.
 `Promotion` also owes a model of deciding before committing, which the reference had to implement (§4.1).
@@ -1326,7 +1597,11 @@ declares it **and** the trigger is met. A forcing function was considered and de
 remaining modules commits to nothing, and TLC checking is recommended rather than required — the ceremony accepts a
 specification digest marked drafted-only.
 
-**Ceremony.** Seat key-holders under a declared custody record. Assemble the **genesis bundle**: the corpus manifest,
+**Ceremony.** Seat key-holders under a declared custody record, and, since ADR-0029 A3 (provisional), seat the first
+operators by issuance, at least three in each domain at the archetype: until an operator is seated nothing can be
+regranted, and a promotion needs Build leases. **Establish floor fitness** (A4): the bootstrap reviewer says the
+policy floor is fit, in the review attestation, and with that the floor is ratified (§3.1). Assemble the **genesis
+bundle**: the corpus manifest,
 including the confirmation-required set; the specification digest, marked checked or drafted-only; the review
 attestation — reviewers, manifest digest, scope, findings disposition (A2); the genesis rules; and, now that ADR-0045
 is in force, the trusted-base declaration beside the custody record, since the five bootstrap modules rest on its
@@ -1368,8 +1643,10 @@ its behavior when unavailable.
 
 - **B8, Persona evolution, is the most critical:** an uncontrolled outer cadence with no instant. Apple Private Cloud
   Compute is a shipped counterexample showing it can be controlled.
-- **Break-glass grants have no TTL expiry**, which breaks the monotonicity claim. A TTL is drafted as rules-floor
-  entry R8 (ADR-0026 A1) and pending; it needs a mechanism clause to mean anything, and trusted time to be sound.
+- **A break-glass grant ends with its round.** Revision 13 said grants had no TTL expiry, which broke the
+  monotonicity claim, and that a TTL was drafted as R8. R8 is withdrawn: it needed trusted time. The grant is now one
+  lease of an emergency seating, bounded as every lease is, by the round bound and a `ttl` on the local clock, whose
+  failure subtracts (§3.3; provisional).
 - **`Contained` has no members**, and will not until ADR-0035 is in force and a guest passes P3–P5 under an
   attested profile (§2.3, §2.6, §2.7).
 - **Detection fails open against a colluding Observer**, and against nothing else that ADR-0039 can see (§5.4). The
@@ -1380,7 +1657,8 @@ safety.** Epoch fencing carries safety without reading a clock, so an expired le
 not a containment violation. From there:
 - **Intervals are trusted by failure direction.** One whose failure subtracts authority — lease expiry, passive
   e-stop, a vote timeout — may use a local monotonic clock with a margin that errs early. One whose failure adds or
-  preserves authority — a break-glass TTL, Persona expiry — needs trusted time from outside the principal.
+  preserves authority — Persona expiry, and a break-glass TTL had there been one — needs trusted time from outside
+  the principal.
   **Persona expiry now has a bound and not a clock**: ADR-0031 A2 caps the lease's `ttl` at `T_persona`, which the
   mechanism can refuse at grant; expiry itself still runs on the local clock, so a clock slow beyond the margin
   extends the re-attestation interval past the bound. ADR-0045 finding 2 names it, and the honest reading is that A2
@@ -1415,7 +1693,8 @@ mechanism claim for effect exclusivity; the rules floor, which carries the same 
 
 **Exposed:**
 1. Their failure result is in §4.6 and Appendix B, not §4.2. Citations are corrected or queued for correction.
-2. **Three gates are insufficient by their own published result.** A fourth, floor fitness, is required and unowned.
+2. **Three gates are insufficient by their own published result.** A fourth, floor fitness, is required. It has an
+   owner and a time since Batch 34 and no test (§3.1).
 3. The sandbox gap, which can be restated in the paper's deployment-stack vocabulary.
 4. Theorem versus corollary alignment in the `Contained`/`Mediated` split.
 5. Their Figure 1 covers Run only. Build's substrate rests on trusting-trust and supply-chain (SLSA) concerns, so
@@ -1433,9 +1712,13 @@ mechanism claim for effect exclusivity; the rules floor, which carries the same 
    row for the verifier, which the paper accepts and this corpus would have to say. The chain shape the corpus has
    already accepted is ADR-0030 §3's: a Rust engine differentially tested against a Lean model whose theorems a
    small kernel checks. **The corpus now has a verifier in that position too.** The TLA+ Proof System proves the
-   modules' invariants through Z3, Zenon and a temporal-logic backend and emits no certificate a kernel checks
-   unless its Isabelle backend is asked to, which it has not been (G9, item 74). ADR-0046 made it a trust-root row,
-   T-0045-31, which is what this item said the paper accepts and the corpus would have to say; the corpus has said it.
+   modules' invariants through Z3, Zenon and a temporal-logic backend. ADR-0046 made it a trust-root row,
+   T-0045-31, which is what this item said the paper accepts and the corpus would have to say; the corpus has said
+   it. **And the row now has a certified configuration** (ADR-0046 A1): asking the Isabelle backend turned out to
+   check Zenon's proofs and nothing an SMT solver discharges (E2), so cvc5 stands in for Z3 behind the wrapper the
+   floor's gate already used, and an SMT obligation counts only with a proof the `ethos` checker accepted. Nineteen
+   of twenty-two proof modules certify that way. The prover's translation of an obligation into a query, its own
+   normalization and the temporal backend stay trusted.
 
 The co-author's name is spelled **Varshney**. Check any draft outside the Project before publishing.
 
@@ -1452,7 +1735,8 @@ The narrative expectation for that pass:
 - **MANAGE 2.4** is resolved by mechanism: legibility, non-erasable stop attribution, and the forensic floor.
 - **MAP 2.3 is closed** by ADR-0046 (Batch 25): TLC checks the mutations and witnesses, the prover proves the
   invariants, and the corpus says which claim rests on which.
-- **Still gaps:** MAP 3.4 (operator proficiency), MEASURE 2.13 (floor fitness), MEASURE 3.2 (`L`, now with a mechanism-enforced count beside it), MANAGE 1.4 (residual-risk statement,
+- **Still gaps:** MAP 3.4 (operator proficiency; an operator is now a principal, which says who acted and nothing
+  about skill), MEASURE 2.13 (floor fitness: owned, untested), MEASURE 3.2 (`L`, now with a mechanism-enforced count beside it), MANAGE 1.4 (residual-risk statement,
   headed by anchor capture and now carrying collusion), MANAGE 3.1 (monoculture, now a per-cell pair).
 
 ### 11.3 TLA+ practice
@@ -1525,32 +1809,47 @@ The narrative expectation for that pass:
   paths and not a refinement, and it cannot check `ContainedMeansConfined`, which is about the image the host ran.
 - **Absence is tested on the printed form.** `Mechanism.tla`'s sentinel test refused an integer once a trace first read
   a promoted candidate's index; `ToString(x) = ToString("none")` works for every value.
+- **State the property over what it is about, not over the bookkeeping.** `Labels.tla` carries tainted and secret
+  bytes as ghost state and states its floor property over them. Stated over labels alone it held, and the hole was
+  invisible: a literal laundered through an inside tool, found only because the ghost bytes moved where the labels
+  did not (§2.10).
+- **A proof is certified or its results file says why not.** A certified run accounts for every obligation by the
+  route that discharged it: the prover's own normalization, an SMT proof a checker accepted, a Zenon proof Isabelle
+  checked, or a temporal step no checker confirms. Three modules do not certify, and say so.
+- **A proof can need an invariant no property names.** `Labels`' needed that only an item that exists is in the
+  guest; `Emergency`'s needed that every lease's holder is a person, not only the emergency seat's.
+- **A successor can drop an assumption.** `BreakGlass_proof` assumes R7 is in force; `BreakGlass_A1_proof` does not,
+  because under the seating R7 has nothing to refuse, and needs it only as a hypothesis under one mutation.
+- **After a trace matches, break the model.** Six edits to `Mechanism.tla`, each removing one thing it models, were
+  each caught. The first attempt at one of them matched every trace, which is how a missing test was found: no
+  traced test reached the refusal the edit removed.
+- **A trace run can find what no proof would.** A lease just granted could be ended as expired, by a race between
+  applying a grant and recording when it was seen. The clock is outside every module, so no property spoke to it. It
+  was found because a test failed one run in three while traces were being recorded.
 
 ---
 
 ## 12. Where the argument is thin
 
-The open list is G9. In narrative terms, the argument is weakest in sixteen places.
+The open list is G10. In narrative terms, the argument is weakest in eighteen places.
 
 1. **The sandbox gap.** Effect exclusivity, ADR-0015's exhaustiveness, and ADR-0022 §6's confinement all rest on a
    mechanism that is now specified (ADR-0034) and built only at rung 1, where the host is trusted by construction,
-   and in simulation at rung 3 (ADR-0033 A7, pending). Every real guest's profile fails P3 on its face, and no host
+   and in simulation at rung 3 (ADR-0033 A7). Every real guest's profile fails P3 on its face, and no host
    the reference runs on can attest. Until a guest runs under an attested profile that passes P3 to P5, the strongest
    claim TOPAK makes is an assertion. **This is still the single largest gap in the pattern**, and the
    record that closed its design half says so: only a mechanism can close the other.
 2. **Correlated review failure.** Unanimity multiplies reviewers without making them independent. Floor fitness is
-   the missing gate, and it is still unowned.
-3. **Author-only ratification, and now assisted drafting.** Thirty-eight records were ratified by one person, and
-   the pace has not slowed: the five batches of 2026.09.29 and the five of 2026.09.30 ratified seven records and
-   eleven amendments in two days. Four records were drafted by the assistant at the custodian's request and settled
-   by ratification, which is one step further from review than the rest; the fourth, ADR-0046, asked the custodian
-   to regenerate its evidence so the digests would not be the drafter's alone, and the drafter ran it. Three more,
-   the Run profile and the two addenda under it and under the launcher, are drafted, built, checked and proved by the
-   same hand on one day, and pending. Twenty-two
-   carry confirmation markers and will be reviewed after bootstrap; the
-   bootstrap set gets no confirmation promotion, by construction — confirmation runs under those records — and
-   since ADR-0029 A2 it is instead reviewed at the bootstrap gate with the entire corpus. Until a reviewer is
-   engaged, every review any record has received is the author's own.
+   the missing gate. It is owned now, by a bootstrap reviewer who does not exist yet, and nobody has written what
+   the reviewer does.
+3. **Author-only ratification, and assisted drafting as the rule.** Forty-six records were ratified by one person,
+   and the pace has risen: nine batches in two days, the largest of them five records, twenty-eight amendments and
+   four addenda at once. Nearly everything ratified since G9 was drafted by the assistant at the custodian's
+   request, built at the reference by the same hand, modelled, proved and trace-checked by it, and settled by
+   ratification. Twenty-eight records carry confirmation markers and will be reviewed after bootstrap; the
+   bootstrap set gets no confirmation promotion, by construction, and since ADR-0029 A2 it is instead reviewed at
+   the bootstrap gate with the entire corpus. Until a reviewer is engaged, every review any record has received is
+   the author's own, and the checkpoint now says so in a line of its own.
 4. **Anchor capture.** The residual is real, numeric, and the first line of any residual-risk statement.
 5. **The archetype is unshipped.** Every theorem is about a configuration no one deploys, which is honest only if
    the declaration records are actually written. None has been.
@@ -1564,12 +1863,14 @@ The open list is G9. In narrative terms, the argument is weakest in sixteen plac
    the invariants and leaves it standing for the mutations and witnesses. It changes nothing else here: the proofs
    were written, checked and regenerated by the hand that wrote the records, the prover is trusted as written
    (T-0045-31), and **agreement among records, checks, proofs and code written by one hand is not independence**
-   (ADR-0033). Two modules since G8, `Confinement_A1` and `RunConfinement`, are checked and proved as well: fifteen
-   proof modules, 3,036 obligations. The
+   (ADR-0033). There are now twenty-two proof modules and 5,225 obligations, and nineteen of the modules are
+   certified (§11.1). The
    trace harness makes the link between modules and code mechanized for the first time, and ADR-0045 T-0045-28 says
    what it is not: a refinement.
-8. **No floor is ratified.** The machinery that checks a floor is accepted; the genesis floor itself is a draft that
-   passes the gates. Whether it is the *right* floor is floor fitness again (item 2).
+8. **No floor is ratified.** The machinery that checks a floor is accepted; the entries are named by text in force;
+   the text itself is genesis-provisional and passes the gates. Whether it is the *right* floor is floor fitness
+   again (item 2). And the stages' files open with a comment that has been false since the reference linked them,
+   kept because correcting it changes the digests three records cite.
 9. **The replicas are trusted.** The mechanism's consensus replicas are crash-recovery, not Byzantine (ADR-0033 §3).
    Agents stay Byzantine at every position, but a compromised replica could propose an admit no floor ever
    evaluated, and the apply-time checks stop stale admits, not forged ones. ADR-0045 makes the replica set a
@@ -1592,8 +1893,9 @@ The open list is G9. In narrative terms, the argument is weakest in sixteen plac
 13. **The coupling numbers are placeholders.** `T_obs`, `K` and Run's `R` were chosen for order of magnitude so the
     runs had values. No Observer has been measured, and a deployment that ships them unexamined is declaring them.
 14. **The correlator reads everything and computes nothing yet.** It has a seat kind, a placement rule, a veto seat and
-    a stated read set, and no detection function; it is the corpus's answer to the strongest published impossibility
-    result, and it is still, in that respect, a noun (§5.1).
+    a stated read set. Its detection function now has a draft, five named folds over facts in ADR-0051, Proposed and
+    with a proved module; nothing at the reference computes one. It is the corpus's answer to the strongest
+    published impossibility result, and it is still, in what runs, a noun (§5.1).
 15. **The checker is trusted as written, and the gate evidence is unsigned.** Every floor change routed before
     2026.10.01 rested on a cvc5 answer nobody checked; since then a `holds` counts only with a proof the pinned
     checker accepted, and the trust has moved to the checker's rule signature, read as cvc5's authors wrote it, and
@@ -1607,6 +1909,15 @@ The open list is G9. In narrative terms, the argument is weakest in sixteen plac
     and does nothing else for it. The implementation, the model checker, the prover and the build toolchain are trust
     roots for every deployment,
     and the reproducible build that would fix the last one's identity is not declared (§7.9, §15).
+17. **The operator design does not stand on evidence.** Its centre is that a first lease comes from a quorum, and
+    that is the part not built: at the reference whoever reaches the socket can seat. Operators observe each other
+    by presence and by nothing a peer has read. An operator's Persona is its seat's key, with no record behind it.
+    The record is provisional for these reasons, and break-glass, which rests on it, has no settled form if either
+    is redesigned (§3.3, §7.10).
+18. **A label is a declaration, and the round's bound is coarse.** A source declared trusted that is not is seen by
+    nothing, and the task's label is the word of whoever issues the grant. `clearSet` bounds a round and traces no
+    value. The label machinery adds a trust root: a `clearSet` computed too small lets a forbid not fire, and at the
+    reference the labels of a call are one replica's computation, which the others take (§2.10, §7.9).
 
 ---
 
@@ -1621,16 +1932,19 @@ out of context. This is that list. **A deployment that does not meet these does 
 | **A2** | **Every allowlisted tool is hermetic** — no network, no filesystem outside the workspace, deterministic given its inputs | One tool with a socket collapses the alphabet to a single variant and makes the envelope vacuous |
 | **A3** | **The anchor's key-holders are honest at the declared capture threshold** | A coalition at that threshold issues any floor-conformant rules. No safety theorem covers anchor intent |
 | **A4** | **Grant seats review independently**, against evidence not derived from the author's artifacts | Unanimous reviewers reading the same vacuous gate output fail together; the quorum multiplies signatures, not judgment |
-| **A5** | **A trained, authorized human is present** for break-glass, quarantine release, and the detection interval `D` | The HITL and HOTL postures degrade to unattended operation, which the pattern does not model |
-| **A6** | **Trusted time exists** for every interval whose failure preserves authority — a break-glass TTL, Persona expiry (ADR-0032 §2). Re-attestation no longer needs it: it is triggered by renewal, not by an interval (ADR-0034 §3.6). `T_persona` (ADR-0031 A2) bounds the declared `ttl` and does not remove this assumption for the interval itself (§10) | Those intervals can be stretched by a slow clock. Intervals that subtract authority need only local monotonic clocks, and no clock failure costs containment |
+| **A5** | **A trained, authorized human is present** for an emergency seat, for operation, for quarantine release, and for the detection interval `D` | The HITL and HOTL postures degrade to unattended operation, which the pattern does not model |
+| **A6** | **Trusted time exists** for every interval whose failure preserves authority — Persona expiry (ADR-0032 §2). A break-glass grant no longer has such an interval: it ends with its round (§3.3). Re-attestation no longer needs it: it is triggered by renewal, not by an interval (ADR-0034 §3.6). `T_persona` (ADR-0031 A2) bounds the declared `ttl` and does not remove this assumption for the interval itself (§10) | Those intervals can be stretched by a slow clock. Intervals that subtract authority need only local monotonic clocks, and no clock failure costs containment |
 | **A7** | **The deployment declares its degeneracies**, with kind, type changes, and a composition note | The deployment's theorem inventory is unknown, and conformance claims are unfounded |
-| **A8** | **Confirmation-required records are cited as author-ratified** until a first quorum confirms them | A publication overstates eleven records, including both privileged-path records, the floor language, the lease, the exhaustiveness claim, and confinement |
+| **A8** | **Confirmation-required records are cited as author-ratified** until a first quorum confirms them | A publication overstates twenty-eight records, including both privileged-path records, the floor language, the lease, the exhaustiveness claim, confinement, labels and the operator |
 | **A11** | **The lineage-independence criterion is in force**, with its thresholds set from measurements at training scale, before any deployment is declared at archetype provenance (ADR-0035) | Archetype provenance is a description, not a declaration; `Contained` has no members, whatever the rung |
 | **A9** | **The mechanism's replicas are not compromised** — crash-recovery, authenticated to one another (ADR-0033 §3; ADR-0045 T-0045-1) | A Byzantine replica can propose admits no floor evaluated; the apply-time re-check does not re-run the floor |
 | **A10** | **Each effect class declares `T_irrev`**, and `W + L + D < T_irrev` holds for it (ADR-0032 §4) | The HOTL posture has no budget; an effect irreversible on emission must be removed from the alphabet |
 | **A12** | **Every Run Thinker's cell Observer keeps up**: heartbeats within `T_obs`, watermark within `K`, coverage to each seal (ADR-0039) | Nothing is lost to safety. The Thinker's admits and its next round stall, and a deployment that will not accept the stall declares D-0039-1 and detection fails open |
 | **A13** | **The cell Observer is not colluding with its Thinker**, which lineage independence is the only structural cover for (ADR-0039 §5) | Every liveness fact is the Observer's own assertion; detection fails open against the one case coupling cannot see, and the residual-risk statement must say so |
 | **A14** | **The deployment declares its trusted base** under ADR-0045's schema, instantiating the archetype's rows and adding none that are not degeneracies, and every component it relies on is a row of some class | An undeclared row is false: the deployment sits at the bottom of every axis whose theorems rest on it (D-0045-1). Four of the assumptions above, A2, A3, A6 and A9, are rows read as a checklist |
+| **A15** | **Sources are declared as what they are**: an allowlist entry's and the Run root's labels, an entry's destination inputs, the targets listed as inside the deployment, and each task's label (ADR-0047 §9) | The label forbids read a declaration, not the world. A source declared trusted that carries an attacker's text is seen by nothing here; the Observer is what remains |
+| **A16** | **Operators are people, each holding their own key, and peers are vouched for by independent providers** (ADR-0050 §1, §6; provisional) | Whatever an operator may do is done by another; with one provider behind two operators, the peer rule holds in letter and one compromise produces both (D-0050-2) |
+| **A17** | **A provisional record is cited as provisional**, and nothing is built on it that could not be rebuilt (ADR-0029 A4) | A publication, or a deployment, rests on a design its own corpus says is subject to redesign |
 
 ## 14. The step-6 findings, and where they went
 
@@ -1674,7 +1988,7 @@ one instrument, by role:
 | Letter | Instrument at the reference |
 |---|---|
 | **T** | TLA+ unchanged; its properties restated as Rust tests with the same mutations, and since 2026.09.30 every tested behaviour replayed through `Mechanism.tla` |
-| **O** | Cedar, linked, with the gated floor compiled in by path and refused at startup unless its bytes match the gated digests; OPA sidecar with an in-process WASM fallback bound to the lease's revision |
+| **O** | Cedar, linked, with the gated floor compiled in by path and refused at startup unless its bytes match the gated digests, since 2026.10.05 the proposed floor's last stage and not the genesis draft; OPA sidecar with an in-process WASM fallback bound to the lease's revision, loading only a signed bundle whose allowlist is well-formed |
 | **P** | Sans-IO Multi-Paxos, `Voting` under message-level `Paxos`, driven by a deterministic simulation |
 | **A** | The alphabet as MCP tools, and nothing else |
 | **K** | Kafka, one topic per principal per round, emissions after commit, denials unordered |
@@ -1699,14 +2013,27 @@ a refused abstain, twenty-four files, fifty-five tests, and the first addendum w
 built Batch 17's three debts (A6, Batch 23): the `ttl` bound refused at grant and at every renewal, the two key
 fields in the issued rules, and a bundle loaded only under a signature that verifies against those keys, with a
 renamed tarball under a forged manifest refused by test; eighteen files, 381 lines, sixty-one tests. **On 2026.10.02
-it took the launcher in the node** (A7, pending): profiles registered from promoted artifacts, the nonce from the log,
+it took the launcher in the node** (A7, Batch 29): profiles registered from promoted artifacts, the nonce from the log,
 the appraisal in the grant entry and re-checked at apply, Contested ending in a revoked principal, renewal that
 re-attests the same guest, the session proof at rungs 2 and 3, `Contained` as a lookup, and a host-process, container
-and simulated rung-3 backend; 96 tests. **The same day it held Run's tools to their channel** (A8, pending): a Run tool
+and simulated rung-3 backend; 96 tests. **The same day it held Run's tools to their channel** (A8, Batch 31): a Run tool
 runs as a Wasm module whose one network capability is its declared target, and a Run profile's P4 is refused at apply
-for any other tool; 103 tests. Both follow records that are pending or Proposed, as A3 once did. The register stands
-at forty-two assumptions and eighteen gaps; channel fidelity, G19, is now checked for Wasm-hosted tools and for no
-native one.
+for any other tool; 103 tests.
+
+**On 2026.10.05 it was rebuilt in five stages**, each its own commit and addendum, to follow five records that were
+then Proposed, and **it was switched outright from the genesis floor to the proposed one**, at the custodian's
+direction. (1) The allowlist entry in ADR-0049's form, a bundle refused at load unless its allowlist is well-formed,
+and a Wasm tool's target read from the entry of the lease's revision and no longer from node configuration (A9,
+Batch 32; the one row that was evidence for text already in force, accepted alone, on the genesis floor). (2) The
+tool list, rendered at grant, written as the round's opening record before the session exists, and handed to the
+principal. (3) Labels: the labels of each call computed by the deciding replica, lifted to the floor, carried by the
+admit and folded on every replica; clear and handle delivery; a handle resolved by the tool host; and the floor's
+three forbids (A10). (4) Operators: six signed requests decided by nine floor entries and re-checked at apply,
+sign-on at an operator's lease boundary, the task on a successor grant, and the unsigned socket kept as a path that
+seats and does nothing else (A11). (5) The emergency seating: activation by the roster's quorum, the person's signed
+actions, no successor, and X1's approval refused (A12). 133 tests. For two days the reference followed records that
+were not in force and did not follow one that was, ADR-0013's X1; Batch 34 ended that by ratifying the records, two
+of them provisional. The register stands at forty-six assumptions and eighteen gaps.
 
 **What it showed.** The records compose, subject to what it does not show (below): every link of §4.1's audit chain
 has running code. Making them run took the assumptions and gaps above, each tagged in the code, which turns "the
@@ -1717,7 +2044,13 @@ re-checked at apply, because it is a per-replica clock, so only the deterministi
 four more: the core's canonical JSON was not canonical in any build that links the floor, because a dependency turned
 on `serde_json`'s insertion order, and only a separately built signer showed it; a launch measurement cannot cover the
 profile digest that names it, against ADR-0034 §2; the operational model could not test an absent number; and a Build
-profile could confine a Run seat, found by a question in review and closed before the commit.
+profile could confine a Run seat, found by a question in review and closed before the commit. On 2026.10.05, six: a
+load check in ADR-0049 that could not be failed in the entry's own form; a lease that cannot be narrowed to a tool,
+against ADR-0048; an operator's seating that feeds the emergency envelope, since it names a bundle revision though
+it calls no tool; a person on an emergency seat given handles and no bytes unless the bundle's table has a row for
+the kind; **a lease just granted that could be ended as expired**, by a race between applying a grant and recording
+when it was seen, latent since the sweeper was built and shown when six operators were seated in a burst; and a test
+of the backlog bound that failed for staleness once its file ran nine clusters.
 
 | # | Finding | Where it went |
 |---|---|---|
@@ -1744,8 +2077,12 @@ shell. Tool hermeticity: a Build tool is pinned by binary and schema digest and 
 behaviour is unchecked. In Run, a tool hosted as a Wasm module reaches only its declared target, and a native one is
 checked by nobody (G19); the module interface is narrower than the component ADR-0034 A2 names. The Observer as a detector: the
 reference seats one, hears its heartbeats and stalls on its absence, and the Observer that would produce a finding
-is an e2e fixture with nothing behind it. `W(p)` as an ACL: cells are declared, not enforced. Bundle custody:
-bundles verify under a dev key with custody (1, 0), and signing at promotion is not a pipeline step (G9, item 67).
+is an e2e fixture with nothing behind it. `W(p)` as an ACL: cells are declared, not enforced, and the same holds of
+operators reading each other's topics. **A first lease from a quorum**: seatings are made by the unsigned path, so
+the operator record's centre is unshown (§7.10). **That a label is true**: the labels of a call are one replica's
+computation, a failed call's error text reaches the principal unlabelled, and only a scalar can be passed by handle.
+A person's signed action has no socket path, so an emergency seat is exercised in-process. Bundle custody:
+bundles verify under a dev key with custody (1, 0), and signing at promotion is not a pipeline step (G10, item 67).
 The archive, erasure, masking, Persona attestation and bootstrap: none
 is built. Scale and long-running behaviour: there are no snapshots, and every admit waits for a consensus round. And
 that the floor is the right floor.
@@ -1764,11 +2101,17 @@ parameter digest matched. What it is: the first mechanized link between `spec/` 
 that catches drift at the exact step. What it is not: a refinement, or independent evidence, since the model was
 written from the code by the same hand on the same day; agreement was expected. Since 2026.10.02 the model also
 takes an appraisal's signature, a session proof and a profile's parse from the trace, and every replayed state is read
-against `Confinement_A1`'s invariants: 62 traces, 709 steps, every one matching. ADR-0045 T-0045-28 stays a
+against `Confinement_A1`'s invariants: 62 traces, 709 steps, every one matching. **Since 2026.10.05 the model also
+covers the rebuilt reference**: the label fold and the refusal of an admit decided against a `clearSet` since grown,
+a seating and the gate on unsigned requests, an operator's request with its facts recomputed and the envelope
+restated, an activation, and X1's approval rejected; **82 traces, 1,007 steps, every one matching**. It takes more
+from the trace than before: whether a request's signature is its seat's, whether a sign-on verifies, which roster
+keys approved an activation. And the floor's decision on an operator's request is not in it: the trace compares two
+restatements of the envelope, in Rust and in TLA+, and neither with the Cedar text. ADR-0045 T-0045-28 stays a
 trust-root row, and ADR-0033 owns the chain's next two stages, a Lean model with differential testing and then its
 compilation.
 
-**How it stays honest.** The reference pins the digest of every record and TLA+ module it follows, forty-nine pins
+**How it stays honest.** The reference pins the digest of every record and TLA+ module it follows, fifty-seven pins
 now, and a test fails when one changes or when the code cites one that is not pinned (G3 §5). Every change to a
 record in this revision's window was followed by a failing drift check, a review against the code, and a re-pin.
 That is the discipline in miniature: the reference is not trusted to track the corpus; it is checked for it. The
@@ -1810,6 +2153,39 @@ directories are not tracked, and G4 measures the tree by manifest.
 **What it does not show.** That θ is right, that the near-duplicate tool is the right tool, that two lineages the
 rule calls independent fail independently (only §6's test can), and that the bound is how anyone else measures
 overlap. The last is why ADR-0035 R2 is marked for review before ratification (§12, item 10).
+
+---
+
+## Appendix J. Changes from revision 13
+
+- **State of record repointed** from G9 to G10 (§0, §12, §15). Nine batches recorded, 27 to 35; no amendment pending
+  (§0, §9).
+- **The header** says what changed between G9 and G10.
+- **§0:** the counts; **provisional** as a status this document says wherever it applies; assisted drafting as the
+  rule.
+- **§2.3, §2.6, §2.7:** the launcher's addendum and the Run profile ratified; what a launch is under ADR-0050.
+- **§2.4:** the entry's one form; the `operator` and `emergency` seat kinds.
+- **§2.5:** who grants and who denies; revocation without X1's approvals.
+- **§2.8:** the Listener labels and delivers the tool list; a person's seats.
+- **§2.9:** Run's ingress is four items; ADR-0042 §6 in force; the target read from the entry.
+- **§2.10, new:** labels, handles, `clearSet`, the three forbids, the tool list and the entry's schema.
+- **§3.1:** the floor in force is the proposed floor's last stage, and is genesis-provisional; floor fitness owned
+  and untested.
+- **§3.3, rewritten:** one exception; break-glass as an emergency seating; non-composition restated.
+- **§4.1, §4.2, §4.4:** break-glass as a lease and its activation as a grant; ADR-0005 ratified; F5.
+- **§5.1, §5.4:** the correlator's folds drafted (ADR-0051); the emergency seat not coupled.
+- **§7.1 to §7.3, §7.5, §7.8, §7.9:** a promotion seats; the provider's key and the two issued lists; R6, R7 and R8;
+  operators as principals; two rows of monotonicity; thirty-six rows and the certified configuration.
+- **§7.10, new:** the operator is a principal, and why the record is provisional.
+- **§8.2:** eight declared entries added.
+- **§9:** where ratification stands; the provisional status and the bootstrap set; the ceremony's two new steps;
+  `BreakGlass_A1`.
+- **§10, §13:** a break-glass grant ends with its round; A5, A6 and A8 corrected; A15 to A17 added.
+- **§11:** floor fitness; the certified configuration; six lessons added to §11.3.
+- **§12:** items 1, 2, 3, 7, 8 and 14 brought to G10; items 17 and 18 added.
+- **§15:** the floor the reference links; the five stages of 2026.10.05 and six findings; what it does not show;
+  trace validation at 82 traces; fifty-seven pins.
+- **Appendices A to I retained.**
 
 ---
 

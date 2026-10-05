@@ -1,7 +1,8 @@
 # TOPAK — Reviewer's Guide
 
-**2026.10.03** · DRAFT · written against Genesis Checkpoint G9 and Theory of Operation revision 13 · a convenience,
-not a record: where this guide and the checkpoint disagree, the checkpoint wins
+**2026.10.05** · DRAFT · written against Genesis Checkpoint G10 and Theory of Operation revision 14 · a convenience,
+not a record: where this guide and the checkpoint disagree, the checkpoint wins. It is kept current and is not
+measured by any manifest (`manifests/EXCLUDE`)
 
 **Drafted by the assistant** at the custodian's request. Like most of this corpus, it has not been read by anyone
 independent of its author. If it steers you away from something, treat that as a finding.
@@ -24,6 +25,10 @@ rules make your review a precondition for the next phase:
   reasons, or carried as named debt.
 - The review's attestation (who reviewed, which digest, what scope, how findings were disposed) is signed into the
   genesis bundle.
+- Since ADR-0029 A4 the reviewer has **two further duties**. To **establish that the policy floor is fit**: no
+  floor text has been ratified, and the floor is ratified with your finding that it is fit. Nothing in the corpus
+  says what the test for that is, so you would be writing it (G10 §7, item 87). And to **attest to rules that
+  include three provisional amendments**, named as provisional (ADR-0024 A3, ADR-0025 A3, ADR-0026 A2).
 
 A partial review is still useful. Say what you read and at which digest, and it will be recorded as that.
 
@@ -33,17 +38,18 @@ Read this before forming a view of how finished anything is.
 
 | Fact | Where it is stated |
 |---|---|
-| Forty decision records are accepted; twenty-two of them are marked as needing independent confirmation | [G9](checkpoints/topak-genesis-checkpoint-G9-2026.10.02.md) §1 |
+| Forty-six decision records are accepted; twenty-eight of them are marked as needing independent confirmation | [G10](checkpoints/topak-genesis-checkpoint-G10-2026.10.05.md) §1.1, §4 |
 | "Accepted" means ratified by the sole custodian. It is a declaration, not a review | ToO §0, §9 |
-| Seven texts were drafted by the assistant; four are ratified and three are pending | ToO §0 |
-| No reviewer is engaged and no review pass has been completed | [checkpoints/README.md](checkpoints/README.md) |
-| The policy floor is a draft that passes its gates; no floor is ratified | [floor/README.md](floor/README.md) |
+| **Two records are provisional**: in force, and subject to redesign. ADR-0050 (the operator as a principal) was ratified without its central behaviour built; ADR-0052 (break-glass as an emergency seating) rests on it. Every amendment that depends on either is provisional too | G10 §1.2; ADR-0029 A4 |
+| Nearly every text ratified since 2026.10.02 was drafted by the assistant: five records, some thirty amendments, six specification modules and their proofs, and the rebuilt reference | ToO §0; G10 §4 |
+| No reviewer is engaged and no review pass has been completed | G10 §4; [checkpoints/README.md](checkpoints/README.md) |
+| No floor is ratified. The floor in question is gated and genesis-provisional: ratified when the bootstrap reviewer finds it fit | G10 §2.2; ADR-0030 A3 |
 | Every numeric parameter is a placeholder; nothing has been measured | [Residual-risk statement](derived/topak-residual-risk-statement-2026.10.03.md) §4 |
-| The proofs are of the TLA+ modules, not of the running code. No refinement exists | G9 §8; ADR-0045 T-0045-28 |
-| At the reference, no real principal is confined. Every theorem about confinement is void there | G9 §8 |
-| The dated critical reviews under `derived/` are the drafter's own and do not count as review | checkpoints/README.md |
+| The proofs are of the TLA+ modules, not of the running code. No refinement exists. Nineteen of twenty-two proof modules have machine-checked proofs; three do not | G10 §2.9, §8; ADR-0045 T-0045-28 |
+| At the reference, no real principal is confined. Every theorem about confinement is void there | G10 §8 |
+| The dated critical reviews under `derived/` are the drafter's own and do not count as review. They are frozen and predate the last nine ratification batches | checkpoints/README.md |
 
-G9 §8, "What G9 does not claim", is the shortest honest summary of all of this.
+G10 §8, "What G10 does not claim", is the shortest honest summary of all of this.
 
 ## 3. The rule for resolving disagreements
 
@@ -51,19 +57,22 @@ The corpus has layers, and they are ranked.
 
 | Rank | Layer | Path | Changes how |
 |---|---|---|---|
-| 1 | **State of record** | [`checkpoints/`](checkpoints/) (currently G9) | Never revised; a new checkpoint is cut. Errata are in `checkpoints/README.md` |
+| 1 | **State of record** | [`checkpoints/`](checkpoints/) (currently G10) | Never revised; a new checkpoint is cut. Errata are in `checkpoints/README.md` |
 | 2 | **Decisions** | [`decisions/`](decisions/README.md) | Only by typed History rows: amendment, erratum, revision before ratification, dependent entry |
-| 3 | **Narrative** | [`narrative/`](narrative/README.md) | Revised and tagged with each checkpoint |
+| 3 | **Narrative** | [`narrative/`](narrative/README.md) | Revised against each checkpoint, after it is cut, and tagged |
 | 4 | **Evidence** | [`spec/`](spec/README.md), [`floor/`](floor/README.md), [`mechanism/`](mechanism/README.md), [`slm/`](slm/README.md) | Results files are dated and never edited; frozen modules change only as successors |
 | 5 | **Derived** | [`derived/`](derived/README.md), [`diagrams/`](diagrams/README.md) | Dated and frozen; a new one is written |
 
-A disagreement between layers is a finding, whichever layer is right. The author's own list of known
-disagreements is §11 of the
-[format and schema inventory](derived/topak-format-and-schema-inventory-2026.10.03.md).
+A disagreement between layers is a finding, whichever layer is right. The author's own lists of known
+disagreements are G10 §7, items 89 to 94 and 98, and §11 of the
+[format and schema inventory](derived/topak-format-and-schema-inventory-2026.10.03.md), which predates the
+reference's 2026.10.05 rebuild.
 
-**Mind the working tree.** G9 was cut at commit `97a61e8` (tag `G9`). The default branch has moved since: three
-Proposed records (ADR-0047 to ADR-0049), several derived documents and the redrawn diagrams are later than G9.
-Agree with the custodian which manifest digest you are reviewing, and check out that commit.
+**Mind the working tree.** G10 was cut at commit `029a31b` (tag `G10`). The narrative was revised against it
+afterwards: Theory of Operation revision 14 (tag `ToO-rev14`), the glossary (tag `glossary-2026.10.05`) and the
+architecture description are later than G10's manifest, which measures their predecessors. The diagrams and the
+derived documents are older than G10 and do not show labels, operators or the emergency seating. Agree with the
+custodian which manifest digest you are reviewing, and check out that commit.
 
 ## 4. Reading order
 
@@ -74,10 +83,10 @@ About a day for the first pass; the records and specifications are the weeks.
    the pattern, the assumptions of use, and where the author thinks the argument is thin. Then the rest.
 3. **[Residual-risk statement](derived/topak-residual-risk-statement-2026.10.03.md)**. What is not guaranteed,
    in order of severity.
-4. **[G9](checkpoints/topak-genesis-checkpoint-G9-2026.10.02.md)**. Status of every record, the debt ledger (§4),
+4. **[G10](checkpoints/topak-genesis-checkpoint-G10-2026.10.05.md)**. Status of every record, the debt ledger (§4),
    the open list (§7), the non-claims (§8).
 5. **[Glossary](narrative/glossary.md)**, as needed. The vocabulary is dense and several words (*rung*, *floor*,
-   *round*) carry more than one meaning; the glossary says which.
+   *round*, *provisional*) carry more than one meaning; the glossary says which (§13).
 6. **The records**, starting with the ones everything rests on:
 
    | Read first | Why |
@@ -86,14 +95,19 @@ About a day for the first pass; the records and specifications are the weeks.
    | ADR-0024 to ADR-0027 | The bootstrap set: promotion, the trust anchor, the rules floor, resident genesis rules. **These can never have a confirmation vote; your review is the only one they get** |
    | ADR-0029 | The process you are part of |
    | ADR-0030, ADR-0031, ADR-0034 | Policy composition, the lease, confinement |
+   | ADR-0047 to ADR-0049 | What an agent is given: labelled ingress, handles, the tool list, the allowlist entry. The newest ratified design, and the corpus's answer to prompt injection |
+   | ADR-0050, ADR-0052 | **Provisional.** Who may put a lease on the log, and break-glass. Read each record's ratification condition first: it says what was not built |
    | ADR-0045, ADR-0046 | What is trusted without proof, and what the proofs do and do not show |
    | ADR-0033 | What the reference implementation is evidence of |
 
 7. **[`spec/theorem-premise-binding.md`](spec/theorem-premise-binding.md)**. One row per checked property, with
-   everything it assumes. This is the table to attack.
+   everything it assumes. This is the table to attack. It has no rows yet for the six modules added on 2026.10.04
+   and 2026.10.05 (`Labels`, `ToolList`, `Operators`, `Emergency` and two successors); for those, read each module's
+   results file beside its record.
 
-Two aids, both derived and neither authoritative: the [diagram family](diagrams/README.md) (start with A1, A2, D1
-and H1), and a draft [architecture description](narrative/architecture-description.md) that lists the parts, the
+Two aids, neither authoritative: the [diagram family](diagrams/README.md) (start with A1, A2, D1 and H1; drawn
+before G10, so D4 shows the retired break-glass exception), and a draft
+[architecture description](narrative/architecture-description.md), revised against G10, that lists the parts, the
 runtime scenarios and a guarantee-to-evidence table.
 
 ## 5. Checking it yourself
@@ -106,12 +120,13 @@ Do not take a results file's word. Everything below can be re-run; each director
 | Every cited path resolves | `python3 tools/check-refs.py` | python3 |
 | A TLA+ module: invariants hold, every mutation fails, every witness is reached | `cd spec && ./<module>-run.sh` | Java; the jar is tracked at `tools/tla2tools.jar` |
 | A proof | `cd spec && ./proof-results.sh <Module>_proof` | TLAPS via `tools/install-tlaps.sh` (large download) |
+| A proof's certification: every obligation accounted for by the route that closed it | `cd spec && ./proof-cert.sh <Module>_proof`; method in [spec/proof-certification.md](spec/proof-certification.md) | TLAPS, cvc5 1.4.0, the pinned `ethos` checker |
 | Proofs still match the modules they prove | `cd spec && ./proof-sync.sh` | |
-| The policy floor: validate, behavioural tests, gates | see [floor/README.md](floor/README.md) "Running" | `cedar` built with `--features analyze`, cvc5 1.4.0, the pinned `ethos` checker |
+| The policy floor: validate, behavioural tests, gates. The floor in force is the `emergency` stage under `floor/proposed/` | see [floor/README.md](floor/README.md) "Running" | `cedar` built with `--features analyze`, cvc5 1.4.0, the pinned `ethos` checker |
 | The bundle policies | OPA's test runner over [`policies/`](policies/) | OPA (a container is enough) |
 | The reference's tests | `cd mechanism && scripts/build-bundle.sh && cargo test --workspace --release` | Rust, Docker |
 | The reference still follows the records it cites | `cargo test -p topak-core --test drift` | |
-| The reference's behaviour matches the operational model | see [mechanism/README.md](mechanism/README.md) "Run it" (trace lines) | |
+| The reference's behaviour matches the operational model | see [mechanism/README.md](mechanism/README.md) "Run it" (trace lines); `spec/mechanism-trace-results.sh` | Java |
 | Which theorems a declared configuration keeps | `python3 spec/inventory.py <declaration.json>`; `--check` keeps the table and its matrix in step | python3; a declaration you write (the script's header gives the shape) |
 
 Three cautions:
@@ -120,8 +135,10 @@ Three cautions:
   files cite.
 - **A fresh TLAPS install may not be the pinned prover.** The upstream release tag was rebuilt; `tools/TLAPS-PIN`
   and [spec/README.md](spec/README.md) explain, and the wrapper refuses an unpinned binary unless told otherwise.
-- **Do not run the reference against anything you care about.** Its operator and replica channels are
-  unauthenticated.
+- **Do not run the reference against anything you care about.** Its replica channel is unauthenticated, and
+  whoever reaches its operator socket can seat a principal.
+- **The floor stage files open with a comment that is wrong** ("not what the reference follows"). They are what the
+  reference links. The bytes are kept as gated so the cited digests hold (G10 item 91).
 
 ## 6. Where to push
 
@@ -145,14 +162,24 @@ The author's view of the weak points, as a starting list. You should not trust i
 - **Collusion.** Detection fails open against an Observer colluding with the agent it watches. Is the stated cover
   (lineage independence, ADR-0035, Proposed) adequate even in principle?
 - **Whether the floor is the right floor.** The gates check that the floor is well-formed. Nothing checks that it
-  is fit for purpose, and the corpus says this gate has no owner.
+  is fit for purpose. Since ADR-0029 A4 that judgment is yours, and no test for it is written.
+- **The provisional records.** ADR-0050's centre is that a first lease comes from a quorum; at the reference a
+  marked bootstrap path seats instead. X1, the old break-glass exception, was retired on a record that is itself
+  subject to redesign. Ask whether a design should be in force on those terms, and whether its exits are the right
+  ones (G10 items 88 and 92).
+- **Labels are declarations.** The three label forbids read what a source was declared to be. Ask what a wrong
+  declaration costs, whether the three paths are the right minimum, and what the deciding replica is trusted for
+  (G10 item 93).
+- **Operators watch each other by presence.** An add needs a live peer, and nothing says what the peer must have
+  read.
 - **Self-consistency of the process.** Records ratified within days of drafting; records the assistant drafted;
-  a reference built ahead of the records it follows.
+  a reference built ahead of the records it follows, and for two days following text that was not in force; nine
+  batches ratified in two days.
 
-ToO §12 lists sixteen such places, the
+ToO §12 lists eighteen such places, the
 [critical review of 2026.10.02](derived/topak-critical-review-2026.10.02.md) lists findings CR-1 to CR-39, and
 the [design-gap assessment](derived/topak-design-gap-assessment-2026.10.03.md) separates gaps in the design from
-gaps in the build. All three are the author's.
+gaps in the build. All three are the author's, and the last two predate G10.
 
 ## 7. Reporting findings
 
@@ -178,14 +205,19 @@ after the assessment window whatever the outcome.
 - **Digests** identify everything. A record cites a module or a results file by digest; the reference pins every
   record it follows in `mechanism/corpus-pins.sha256`.
 - **Status words are exact.** *Accepted (genesis)*, *Proposed*, *pending* (an amendment drafted and not
-  ratified), *confirmation-required* (C1 to C4), *author-ratified*. *Checked* means model-checked at small
-  constants; *proved* means proved of the module; neither means reviewed.
+  ratified; there are none at G10), *confirmation-required* (C1 to C4), *author-ratified*, *provisional* (in force
+  and subject to redesign, with its exit stated), *genesis-provisional* (the floor: ratified at bootstrap).
+  *Checked* means model-checked at small constants; *proved* means proved of the module; *certified* means every
+  obligation's proof was machine-checked or is accounted for; none of them means reviewed.
 - **Identifiers.** `ADR-nnnn` a record, with `§n`, `An` (amendment), `En` (erratum), `Rn` (revision); `Gn` a
   checkpoint; `T-0045-n` a trusted-base row; `D-nnnn-n` a declared degeneracy; `B1`–`B14` boundaries; `R1`–`R9`
   rules-floor entries; `F1`–`F6` forensic classes; `P1`–`P7` confinement-profile clauses; `CR-n` a critical-review
-  finding; `In` and `Gn` in `mechanism/` an assumption and a gap of the reference. `R3`, `R4` and `B6`, `B10` are
-  also floor-policy names, and `G` numbers also name diagrams; context decides.
+  finding; `In` and `Gn` in `mechanism/` an assumption and a gap of the reference; `W1`–`W10` an allowlist's load
+  checks. `R3` to `R7` and `B6`, `B10` are also floor-policy names, `C1`–`C9` are floor entries as well as
+  `C1`–`C4` confirmation criteria, and `G` numbers also name diagrams; context decides, and the glossary's §13
+  lists the collisions.
 - **Paths moved once**, on 2026.09.30. Frozen files cite old paths; `checkpoints/README.md` holds the map.
 - **`PROVISIONAL (<tag>)`** in the Rust marks every place a gap or assumption lives.
 - **`SIMULATED`** means run under test keys standing in for hardware or a verifier. It is a witness that a path is
   reachable and claims nothing.
+- **`BOOTSTRAP`** marks the reference's unsigned operator path wherever it stands in for a quorum or a promotion.
