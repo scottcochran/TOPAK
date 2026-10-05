@@ -337,13 +337,6 @@ fn bundle_refusal_is_honored_and_m_failopen_is_refused() {
     assert!(matches!(compose(&permit, &refuse()), Decision::Deny(DenyReason::Bundle(_))));
 }
 
-#[test]
-fn break_glass_is_recognized_only_when_x1_alone_permits() {
-    assert!(via_break_glass(&["X1-break-glass".into()]));
-    assert!(!via_break_glass(&["X1-break-glass".into(), "R1-actuate-allowlisted".into()]));
-    assert!(!via_break_glass(&["R1-actuate-allowlisted".into()]));
-}
-
 // ---- RulesFloorNV_rev5.tla ------------------------------------------------------------------
 
 #[test]
@@ -668,7 +661,7 @@ fn admit(id: &str, seat: &str, lease: LogIndex, action: Admitted, p: &Params) ->
 }
 
 fn actuate() -> Admitted {
-    Admitted::Actuate { tool: "valve@d4".into(), inputs: Digest::of(b"inputs"), break_glass: false }
+    Admitted::Actuate { tool: "valve@d4".into(), inputs: Digest::of(b"inputs"), emergency: false }
 }
 
 fn consult() -> Admitted {

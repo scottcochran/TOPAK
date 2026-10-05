@@ -749,7 +749,7 @@ fn channel_fidelity_is_checked_at_apply() {
     };
     // The cell Observer holds a live lease, so the coupling at apply (ADR-0039 §2) is met.
     log.grant_plain("rz", RoundRole::Author, RUN_OBSERVER);
-    let actuate = |tool: &str| Admitted::Actuate { tool: tool.into(), inputs: Digest::of(b"in"), break_glass: false };
+    let actuate = |tool: &str| Admitted::Actuate { tool: tool.into(), inputs: Digest::of(b"in"), emergency: false };
     let id = log.id("a");
     let a = log.apply(admit_entry(&id, "r3", fence, actuate(NATIVE_TOOL), Some(proof(&GUEST_A, fence, 1))));
     assert!(rejected(&a, "not held to its declared channel"), "M_NATIVE: {a:?}");

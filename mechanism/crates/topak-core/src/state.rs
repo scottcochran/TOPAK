@@ -9,7 +9,10 @@
 //! the replica that decided an admit did so against a snapshot that may have moved by the time
 //! the entry commits.
 
-use crate::control::{Control, ControlAction, ControlFacts, ControlRequest, Seating, CONTROL_PURPOSE, sign_on_verifies};
+use crate::control::{
+    ACTIVATION_PURPOSE, Activation, ActivationRecord, CONTROL_PURPOSE, Control, ControlAction, ControlFacts,
+    ControlRequest, EmergencySeating, Envelope, Seating, sign_on_verifies,
+};
 use serde::{Deserialize, Serialize};
 use std::collections::{BTreeMap, BTreeSet};
 use std::fmt;
@@ -125,6 +128,14 @@ pub struct LeaseRecord {
     /// round is the same round, and a live round keeps the labels it started with (§8).
     #[serde(default)]
     pub labels: crate::labels::RoundLabels,
+    /// ADR-0052 §1: on an emergency seat's lease, the key of the person seated. Every action
+    /// under the lease is signed with it.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub person: Option<KeyHex>,
+    /// ADR-0052 §2: on an emergency seat's lease, its envelope, fixed for the round: each entry
+    /// it may call, and the bundle revision that holds the entry.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub envelope: Option<BTreeMap<String, Digest>>,
 }
 
 impl LeaseRecord {
@@ -222,7 +233,9 @@ pub enum Admitted {
     Actuate {
         tool: String,
         inputs: Digest,
-        break_glass: bool,
+        /// The call is an emergency seat's, under an activation (ADR-0052 §5): forensic class F5.
+        #[serde(default)]
+        emergency: bool,
     },
     Report {
         record: Digest,
@@ -237,7 +250,7 @@ pub enum Admitted {
 }
 
 impl Admitted {
-    pub fn from_request(req: &ActionRequest, break_glass: bool) -> Self {
+    pub fn from_request(req: &ActionRequest, emergency: bool) -> Self {
         use crate::action::Action as A;
         match &req.action {
             A::Read { object } => Admitted::Read { object: object.clone() },
@@ -260,7 +273,7 @@ impl Admitted {
             },
             A::Consult { object } => Admitted::Consult { object: object.clone() },
             A::Actuate { tool, digest, inputs } => {
-                Admitted::Actuate { tool: tool_id(tool, digest), inputs: Digest::of_json(inputs), break_glass }
+                Admitted::Actuate { tool: tool_id(tool, digest), inputs: Digest::of_json(inputs), emergency }
             }
             A::Report { record } => match Heartbeat::parse(record) {
                 Some(h) => Admitted::Heartbeat { via: ActionKind::Report, topic: h.topic, watermark: h.watermark },
@@ -408,8 +421,25 @@ pub enum Entry {
         #[serde(default, skip_serializing_if = "Option::is_none")]
         appraisal: Option<Appraisal>,
     },
-    /// One break-glass approval by a roster key, scoped to (seat, epoch). F5 is the invocation
-    /// admitted under it.
+    /// Prepares an emergency seating (ADR-0052 §2). BOOTSTRAP: it stands in for the promotion
+    /// that prepares one, and is unsigned.
+    EmergencySeating {
+        id: String,
+        seat: SeatId,
+        seating: EmergencySeating,
+    },
+    /// Activates an emergency seating (ADR-0052 §2): one lease, for one named person and one
+    /// round, on a quorum of the break-glass roster. The roster's act alone: no operator's
+    /// request, no tally, no gate. `envelope` is what the deciding replica computed the seat may
+    /// call, entry by entry with the revision that holds each.
+    Activate {
+        id: String,
+        activation: Activation,
+        approvals: Vec<Signed>,
+        envelope: BTreeMap<String, Digest>,
+    },
+    /// RETIRED (ADR-0052 §2): a break-glass approval scoped to (seat, epoch), for the floor's X1.
+    /// X1 is gone from the floor, and this entry is refused when applied.
     BreakGlassApprove {
         id: String,
         seat: SeatId,
@@ -432,6 +462,8 @@ impl Entry {
             | Entry::Issue { id, .. }
             | Entry::GatesPassed { id, .. }
             | Entry::Control { id, .. }
+            | Entry::EmergencySeating { id, .. }
+            | Entry::Activate { id, .. }
             | Entry::BreakGlassApprove { id, .. } => id,
         }
     }
@@ -508,6 +540,7 @@ pub enum Applied {
         rules_epoch: RulesEpoch,
     },
     GatesRecorded,
+    EmergencyPrepared,
     BreakGlassApproved {
         approvals: usize,
     },
@@ -571,6 +604,13 @@ pub struct State {
     /// The last request counter admitted from each operator seat.
     #[serde(default)]
     pub control_ctr: BTreeMap<SeatId, u64>,
+    /// ADR-0052 §2: the emergency seatings prepared, by seat.
+    #[serde(default)]
+    pub emergency_seatings: BTreeMap<SeatId, EmergencySeating>,
+    /// ADR-0052 §5: every activation, in log order. The forensic record, and what a count of
+    /// drills per epoch (§6) is read from.
+    #[serde(default)]
+    pub activations: Vec<ActivationRecord>,
     /// A trace name, set by a test or an operator: with `TOPAK_TRACE_DIR`, every `apply` is
     /// recorded for checking against `spec/Mechanism.tla` (`trace.rs`). Never replicated state.
     #[serde(skip)]
@@ -638,6 +678,8 @@ impl State {
             seatings: BTreeMap::new(),
             last_lease: BTreeMap::new(),
             control_ctr: BTreeMap::new(),
+            emergency_seatings: BTreeMap::new(),
+            activations: Vec::new(),
             trace: None,
         })
     }
@@ -711,16 +753,6 @@ impl State {
         self.live_by_seat.get(seat).and_then(|f| self.leases.get(f))
     }
 
-    pub fn break_glass_quorum(&self, seat: &str) -> bool {
-        let Some(bg) = &self.rules.break_glass else { return false };
-        if !bg.actions.contains(ActionKind::Actuate.as_str()) {
-            return false;
-        }
-        self.break_glass
-            .get(seat)
-            .and_then(|by_epoch| by_epoch.get(&self.epoch))
-            .is_some_and(|keys| keys.len() >= bg.quorum as usize)
-    }
 
     /// The mechanism checks that precede policy, in the order the corpus fixes: the epoch fence
     /// first (ADR-0022 §2), then the lease. Used both before the floor is consulted and again
@@ -849,6 +881,19 @@ impl State {
             }
         }
         match entry {
+            Entry::Grant { req, .. } if self.rules.seat_kind(&req.seat) == Some(SeatKind::Emergency) => {
+                Applied::Rejected("an emergency seat is leased only by an activation (ADR-0052 §2)".into())
+            }
+            Entry::EmergencySeating { seat, seating, .. } => {
+                if self.rules.seat_kind(seat) != Some(SeatKind::Emergency) {
+                    return Applied::Rejected(format!("seat {seat} is not an emergency seat (ADR-0052 §1)"));
+                }
+                self.emergency_seatings.insert(seat.clone(), seating.clone());
+                Applied::EmergencyPrepared
+            }
+            Entry::Activate { activation, approvals, envelope, .. } => {
+                self.apply_activate(index, activation, approvals, envelope)
+            }
             Entry::Grant { req, appraisal, .. } => {
                 // The BOOTSTRAP path: a first seating, standing in for a quorum (ADR-0050 §2).
                 if let Some(why) = self.not_a_first_seating(req) {
@@ -915,21 +960,9 @@ impl State {
                 self.gates.insert(artifact.clone(), evidence.clone());
                 Applied::GatesRecorded
             }
-            Entry::BreakGlassApprove { seat, epoch, approval, .. } => {
-                let Some(bg) = &self.rules.break_glass else {
-                    return Applied::Rejected("no break-glass roster is issued".into());
-                };
-                if *epoch != self.epoch {
-                    return Applied::Rejected("approval is for a fenced epoch".into());
-                }
-                let body = serde_json::json!({ "seat": seat, "epoch": epoch });
-                if !bg.roster.contains(&approval.key) || !authentic::verify(BREAK_GLASS_PURPOSE, &body, approval) {
-                    return Applied::Rejected("approval is not from the break-glass roster".into());
-                }
-                let set = self.break_glass.entry(seat.clone()).or_default().entry(*epoch).or_default();
-                set.insert(approval.key.clone());
-                Applied::BreakGlassApproved { approvals: set.len() }
-            }
+            Entry::BreakGlassApprove { .. } => Applied::Rejected(
+                "X1 break-glass is retired: the roster activates an emergency seating (ADR-0052 §2)".into(),
+            ),
         }
     }
 
@@ -1055,7 +1088,17 @@ impl State {
         let labels = crate::labels::RoundLabels { clear_set: req.task_label.clone().unwrap_or_default(), ..Default::default() };
         self.leases.insert(
             index,
-            LeaseRecord { lease, ended: None, actions: 0, seq: 0, attestation, session_ctr: 0, labels },
+            LeaseRecord {
+                lease,
+                ended: None,
+                actions: 0,
+                seq: 0,
+                attestation,
+                session_ctr: 0,
+                labels,
+                person: None,
+                envelope: None,
+            },
         );
         self.live_by_seat.insert(req.seat.clone(), index);
         self.last_round.insert(req.seat.clone(), req.round);
@@ -1101,6 +1144,105 @@ impl State {
         })
     }
 
+    /// An activation (ADR-0052 §2, §3): the break-glass roster's quorum seats one named person on
+    /// an emergency seating for one round. Nothing else is asked: no operator, no tally, no gate.
+    fn apply_activate(
+        &mut self,
+        index: LogIndex,
+        a: &Activation,
+        approvals: &[Signed],
+        envelope: &BTreeMap<String, Digest>,
+    ) -> Applied {
+        let no = |why: String| Applied::Rejected(why);
+        if self.rules.seat_kind(&a.seat) != Some(SeatKind::Emergency) {
+            return no(format!("seat {} is not an emergency seat (ADR-0052 §1)", a.seat));
+        }
+        let Some(seating) = self.emergency_seatings.get(&a.seat).cloned() else {
+            return no(format!("no emergency seating is prepared for seat {} (ADR-0052 §2)", a.seat));
+        };
+        if a.epoch != self.epoch {
+            return no("the activation is for a fenced epoch".into());
+        }
+        if !seating.persons.contains(&a.person) {
+            return no("the person named is not one the seating says may hold the seat (ADR-0052 §2)".into());
+        }
+        // The roster's quorum: distinct roster keys, each over this activation and no other.
+        let Some(bg) = &self.rules.break_glass else {
+            return no("no break-glass roster is issued".into());
+        };
+        let body = a.body(&self.chain);
+        let approvers: BTreeSet<KeyHex> = approvals
+            .iter()
+            .filter(|s| bg.roster.contains(&s.key) && authentic::verify(ACTIVATION_PURPOSE, &body, s))
+            .map(|s| s.key.clone())
+            .collect();
+        if approvers.len() < bg.quorum as usize {
+            return no(format!(
+                "{} of the roster approved this activation, and the quorum is {} (ADR-0052 §2)",
+                approvers.len(),
+                bg.quorum
+            ));
+        }
+        // ADR-0047 §1: a task carries a label, and ADR-0050 §5: one the seating allows.
+        if a.task.is_some() && a.task_label.is_none() {
+            return no("the activation carries a task and no label for it (ADR-0047 §1)".into());
+        }
+        if a.task_label.as_ref().is_some_and(|l| !l.is_subset(&seating.task_labels)) {
+            return no("the task's label is outside what the seating allows (ADR-0050 §5)".into());
+        }
+        // A named envelope is exactly the one prepared, from the seating's own bundle.
+        if let Envelope::Named(named) = &seating.envelope {
+            let exact = envelope.len() == named.len()
+                && envelope.iter().all(|(tool, rev)| named.contains(tool) && rev == &seating.bundle);
+            if !exact {
+                return no("the envelope is not the one the seating names (ADR-0052 §2)".into());
+            }
+        }
+        let grant = GrantRequest {
+            principal: a.person.clone(),
+            seat: a.seat.clone(),
+            persona: Digest::of(a.person.as_bytes()),
+            bundle: seating.bundle.clone(),
+            confinement: Confinement { digest: Digest::of(b"none"), rung: 0 },
+            alphabet: [ActionKind::Consult, ActionKind::Actuate, ActionKind::Report].into_iter().collect(),
+            ttl_ms: a.ttl_ms,
+            round: a.round,
+            role: RoundRole::Author,
+            task_label: a.task_label.clone(),
+            task_labels_allowed: None,
+            sign_on: None,
+        };
+        let applied = self.apply_grant(index, &grant, None);
+        if matches!(applied, Applied::LeaseGranted { .. }) {
+            let lr = self.leases.get_mut(&index).expect("granted");
+            lr.person = Some(a.person.clone());
+            lr.envelope = Some(envelope.clone());
+            // Seated, so that an operator of the domain can name it in a stop (§3). Not so that
+            // anyone can regrant it: an emergency seat has no successor.
+            self.seatings.insert(
+                a.seat.clone(),
+                Seating {
+                    principal: grant.principal.clone(),
+                    persona: grant.persona.clone(),
+                    bundle: grant.bundle.clone(),
+                    confinement: grant.confinement.clone(),
+                    alphabet: grant.alphabet.clone(),
+                    role: grant.role,
+                    task_labels: seating.task_labels.clone(),
+                    seated_at: index,
+                },
+            );
+            self.activations.push(ActivationRecord {
+                at: index,
+                activation: a.clone(),
+                approvers,
+                drill: seating.drill,
+                envelope: envelope.clone(),
+            });
+        }
+        applied
+    }
+
     /// The facts the control entries read (ADR-0050 §4), about this request at this state. The
     /// deciding replica lifts them into schema S; `apply` recomputes them and compares.
     pub fn control_facts(&self, req: &ControlRequest, assertion: Option<&Signed>) -> Result<ControlFacts, String> {
@@ -1129,6 +1271,13 @@ impl State {
             domain: Some(decl.domain),
             ..Default::default()
         };
+        // ADR-0052 §3: an emergency seat has no successor and no renewal. Another round is
+        // another quorum of the roster.
+        if let ControlAction::Regrant { target, .. } | ControlAction::Renew { target, .. } = &req.action
+            && self.rules.seat_kind(target) == Some(SeatKind::Emergency)
+        {
+            return Err("an emergency seat is neither regranted nor renewed (ADR-0052 §3)".into());
+        }
         let target = |f: &mut ControlFacts, seat: &SeatId| -> Result<(), String> {
             let d = self.rules.seat_domain(seat).ok_or_else(|| format!("seat {seat} is not declared in the rules"))?;
             f.target_seat = Some(seat.clone());
@@ -1298,6 +1447,9 @@ impl State {
         if old.lease.seat != req.seat || !old.live() {
             return Applied::Rejected("renewal names a lease that is not the seat's live lease".into());
         }
+        if self.rules.seat_kind(&req.seat) == Some(SeatKind::Emergency) {
+            return Applied::Rejected("an emergency seat's lease is not renewed (ADR-0052 §3)".into());
+        }
         if old.lease.epoch != self.epoch || old.lease.rules_epoch != self.rules.rules_epoch {
             return Applied::Rejected("renewal of a fenced lease".into());
         }
@@ -1400,7 +1552,9 @@ impl State {
         }
         // ADR-0034 §3.5: under an attested session key, the action is the attested guest's. The
         // generation binding at `Act`: a proof under any other key, or a replayed counter, is void.
-        let key = self.leases[&rec.lease].attestation.as_ref().and_then(|a| a.session_key.clone());
+        // ADR-0052 §1: and under an emergency seat's lease, the action is the person's.
+        let lease = &self.leases[&rec.lease];
+        let key = lease.attestation.as_ref().and_then(|a| a.session_key.clone()).or_else(|| lease.person.clone());
         let ctr = match (&key, &rec.session) {
             (None, _) => None,
             (Some(_), None) => {

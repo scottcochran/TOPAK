@@ -22,3 +22,4 @@ SHA256SUMS-REF-2026.10.02b	reference	2026.10.02	c534a42	84	84	ADR-0033 A8 (ratif
 SHA256SUMS-G9	checkpoint	2026.10.02	97a61e8	392	392	first cut with a lease above rung 0 at the reference (rung 1; rung 3 SIMULATED); ADR-0033 A7, A8 and ADR-0034 A2 pending
 SHA256SUMS-REF-2026.10.05	reference	2026.10.05	7764e52	86	86	ADR-0033 A9 (ratified 2026.10.05, Batch 32): the tool host reads a Run tool's target from its allowlist entry; on the genesis floor; the ADR-0033 pin moves with A9
 SHA256SUMS-REF-2026.10.05b	reference	2026.10.05	c15026d	87	87	ADR-0033 A10 (pending): the allowlist entry, the tool list and labels; the reference on the proposed floor's labels stage
+SHA256SUMS-REF-2026.10.05c	reference	2026.10.05	c7de2ba	89	89	ADR-0033 A11 (pending): the operator as a principal; the reference on the proposed floor's control stage

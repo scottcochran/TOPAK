@@ -8,8 +8,8 @@ use topak_core::admit::FloorOutcome;
 use topak_floor::*;
 
 /// The linked stage's cases: the genesis suite's 62, lifted to the stage's schema, 12 for `R5` to
-/// `R7` and 32 for `C1` to `C9` (`floor/proposed/build.py`).
-const TESTS: &str = include_str!("../../../../floor/proposed/control-tests.json");
+/// `R7`, 32 for `C1` to `C9`, and the emergency stage's, which replace X1's (`floor/proposed/build.py`).
+const TESTS: &str = include_str!("../../../../floor/proposed/emergency-tests.json");
 
 /// Every behavioral case the `cedar run-tests` gate ran must decide identically through the
 /// engine the mechanism links, with the same reasons. This is the differential check between
@@ -22,7 +22,7 @@ const TESTS: &str = include_str!("../../../../floor/proposed/control-tests.json"
 fn replays_the_gate_suite() {
     let floor = Floor::load().expect("pinned floor loads");
     let cases: Vec<Value> = serde_json::from_str(TESTS).unwrap();
-    assert_eq!(cases.len(), 106);
+    assert_eq!(cases.len(), 107);
     for c in &cases {
         let name = c["name"].as_str().unwrap();
         let r = &c["request"];
@@ -46,9 +46,11 @@ fn replays_the_gate_suite() {
 }
 
 #[test]
-fn exception_count_is_two_under_r6() {
+fn exception_count_is_one_under_r6() {
+    // ADR-0052 §2: X1 is retired, and the floor's exceptions are one, erasure.
     let floor = Floor::load().unwrap();
-    assert_eq!(floor.exception_count(), 2);
+    assert_eq!(floor.exception_count(), 1);
+    assert!(!floor.policy_ids().any(|id| id == "X1-break-glass"));
     assert!(floor.exception_count() <= topak_core::rules::EXCEPTION_BOUND);
 }
 
@@ -117,7 +119,6 @@ fn a_retired_run_action_is_an_error_not_a_decision() {
         { "uid": seat(), "attrs": { "domain": "run", "kind": "thinker" }, "parents": [] },
         { "uid": root(), "attrs": {}, "parents": [] },
         { "uid": set("run-allow"), "attrs": {}, "parents": [] },
-        { "uid": set("bg-tools"), "attrs": {}, "parents": [] },
         { "uid": tool(), "attrs": { "digest": "d3", "outward": true }, "parents": [set("run-allow")] },
         { "uid": topic(),
           "attrs": { "owner": { "__entity": seat() }, "epoch": 1, "round": 1, "sealed": false }, "parents": [] },
@@ -127,7 +128,6 @@ fn a_retired_run_action_is_an_error_not_a_decision() {
             "lease": { "alphabet": alphabet, "rulesEpoch": 0 }, "epoch": 1, "round": 1,
             "runRoot": { "__entity": root() },
             "toolAllowlist": { "__entity": set("run-allow") },
-            "breakGlass": { "quorum": false, "tools": { "__entity": set("bg-tools") } },
             "observerLive": true,
             "clearSet": [], "inputLabels": [], "destLiteral": false, "destLabels": [],
         })

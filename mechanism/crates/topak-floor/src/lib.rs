@@ -21,29 +21,29 @@ use topak_core::{Digest, ObserverValues, PersonaValues};
 
 /// The gated floor text. Since 2026.10.05 it is a stage of the proposed floor (`floor/proposed/`,
 /// DRAFT, not ratified), and no longer `floor/genesis-floor.cedar`: the reference was switched
-/// outright, at the custodian's direction. The stage linked is `control`: the genesis floor with
-/// ADR-0047's three forbids on `Actuate`, `R5` to `R7`, and ADR-0050's nine control entries,
-/// `C1` to `C9`, over six actions of an `operator` seat.
-pub const FLOOR_SRC: &str = include_str!("../../../../floor/proposed/control-floor.cedar");
-/// Schema S for that stage (`floor/proposed/control.cedarschema`): the genesis schema with
-/// `outward` on a tool, four label attributes in Run's context, the `Fleet` entity, `ControlCtx`
-/// and the six control actions.
-pub const SCHEMA_SRC: &str = include_str!("../../../../floor/proposed/control.cedarschema");
+/// outright, at the custodian's direction. The stage linked is `emergency`, the last of the three:
+/// the genesis floor with ADR-0047's `R5` to `R7`, ADR-0050's `C1` to `C9`, and ADR-0052's change,
+/// which removes `X1-break-glass` and lets a seat of kind `emergency` `Actuate` under `B10`.
+pub const FLOOR_SRC: &str = include_str!("../../../../floor/proposed/emergency-floor.cedar");
+/// Schema S for that stage (`floor/proposed/emergency.cedarschema`): the `control` stage's, with
+/// the break-glass fields gone from Run's context.
+pub const SCHEMA_SRC: &str = include_str!("../../../../floor/proposed/emergency.cedarschema");
 /// The policy-floor values (`floor/genesis-values.json`, ADR-0039 §1): the third file of the
 /// floor bundle. Placeholders, not measured. No stage changes them.
 pub const VALUES_SRC: &str = include_str!("../../../../floor/genesis-values.json");
 
-/// Digests recorded in `floor/proposed/control-gates-results-2026.10.04.txt`, the gate run for the
-/// `control` stage: 29 policies, 106 cases, every gate passing. Changing any of the three means
-/// re-running the gates and changing these: a mechanism release. Pinned before: the `labels`
-/// stage's 9aab481d… and 9beda963… (2026.10.05, `c15026d`), and the genesis floor's 28ec0e45… and
-/// 0ec2fa21…. The values digest is that of `genesis-gates-results-2026.09.30.txt`, unchanged.
+/// Digests recorded in `floor/proposed/emergency-gates-results-2026.10.04.txt`, the gate run for
+/// the `emergency` stage: 28 policies, 107 cases, every gate passing. Changing any of the three
+/// means re-running the gates and changing these: a mechanism release. Pinned before: the
+/// `control` stage's 4341ede9… and 4e24033b… (`c7de2ba`), the `labels` stage's 9aab481d… and
+/// 9beda963… (`c15026d`), and the genesis floor's 28ec0e45… and 0ec2fa21…. The values digest is
+/// that of `genesis-gates-results-2026.09.30.txt`, unchanged.
 ///
 /// The stage files open with a comment saying they are "not what the reference follows". That
 /// was true when they were gated and is not now. The bytes are kept as gated, so that what is
 /// enforced is what was proven; the comment is corrected at the stage's next gate run.
-pub const PINNED_FLOOR_SHA256: &str = "4341ede9e26419cc831890a2cd3a78208c1bba6869847a7da8016d7a92ab0e4b";
-pub const PINNED_SCHEMA_SHA256: &str = "4e24033b547f1ed212f951555e2ec9c6926439ce79692b1e25912448ea04113c";
+pub const PINNED_FLOOR_SHA256: &str = "15c941b9a56a09f7afa5ce3f2993c0d0a894ce53d06a95ab27a00b1a79a6f6ad";
+pub const PINNED_SCHEMA_SHA256: &str = "d3c8145c6af2d9a36bc876174a5c9b7f16f2afd65bab139cb29aace9751703f0";
 pub const PINNED_VALUES_SHA256: &str = "85ab6fefb66f031636bd7527722cd9241be101a00088fa2add4fe003cb25d760";
 
 /// The Cedar engine version this mechanism links. The gates ran with cedar-policy-cli 4.13.0.

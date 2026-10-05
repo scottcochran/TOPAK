@@ -220,6 +220,9 @@ impl BundleDecider for AllowAll {
     fn input_types(&self, _rev: &Digest, _tool: &str) -> BTreeMap<String, String> {
         BTreeMap::new()
     }
+    fn run_entries(&self, _rev: &Digest) -> BTreeSet<String> {
+        BTreeSet::new()
+    }
     /// No test here hosts a Wasm tool.
     fn channel(&self, _rev: &Digest, _tool: &str) -> Option<topak_contain::wasmtool::Channel> {
         None
@@ -746,7 +749,10 @@ async fn tools_break_glass_issuance_and_partition() {
     .await;
     assert!(deny_reason(&r).contains("Floor"), "composition bounds the bundle: {}", r.detail);
 
-    // ---- break-glass (X1): a Run tool outside the Run allowlist, inside the envelope ----
+    // ---- X1 break-glass is retired (ADR-0052 §2) ----
+    // A Run tool outside the Run allowlist: the roster's approvals, scoped to a seat and an epoch,
+    // no longer reach it. There is no exception in the floor for them to satisfy. What replaces
+    // them is `break_glass_is_an_emergency_seating`.
     let r1 = grant(n1, &f, "r1", 1, RoundRole::Author, RUN, 60_000).await;
     let ro1 = grant(n1, &f, "ro1", 1, RoundRole::Author, RUN_OBS, 60_000).await;
     let chain = n1.state.read().unwrap().chain.clone();
@@ -754,34 +760,15 @@ async fn tools_break_glass_issuance_and_partition() {
     let r = act(n1, &ro1, Action::Report { record: heartbeat(&r1_topic, 0) }).await;
     assert!(r.admitted, "{}", r.detail);
     let run = Action::Actuate { tool: name.into(), digest: Digest(digest.into()), inputs: inputs.clone() };
-    let r = act(n1, &r1, run.clone()).await;
-    assert!(deny_reason(&r).contains("Floor"), "no quorum yet: {}", r.detail);
     let body = json!({ "seat": "r1", "epoch": 0 });
-    for (i, k) in f.keys.bg.iter().enumerate() {
-        let r = n1
-            .operate(OperatorOp::BreakGlassApprove {
-                seat: "r1".into(),
-                epoch: 0,
-                approval: sign(k, BREAK_GLASS_PURPOSE, &body),
-            })
-            .await;
-        assert_eq!(r["applied"]["BreakGlassApproved"]["approvals"], i + 1, "{r}");
+    for k in &f.keys.bg {
+        let approval = sign(k, BREAK_GLASS_PURPOSE, &body);
+        let r = n1.operate(OperatorOp::BreakGlassApprove { seat: "r1".into(), epoch: 0, approval }).await;
+        assert_eq!(r["ok"], false, "{r}");
+        assert!(r.to_string().contains("X1 break-glass is retired"), "{r}");
     }
-    let foreign = n1
-        .operate(OperatorOp::BreakGlassApprove {
-            seat: "r1".into(),
-            epoch: 0,
-            approval: sign(&key(), BREAK_GLASS_PURPOSE, &body),
-        })
-        .await;
-    assert_eq!(foreign["ok"], false, "a key off the roster: {foreign}");
     let r = act(n1, &r1, run.clone()).await;
-    // Admitted under X1; the tool runs in an empty Run directory, so the effect itself fails.
-    assert_eq!(r.detail["decision"], "admit", "{}", r.detail);
-    assert_eq!(r.detail["floor"], json!(["X1-break-glass"]));
-    settle(&c).await;
-    let archive = std::fs::read_to_string(f.dir.join("n2/archive.jsonl")).unwrap();
-    assert!(archive.contains("\"break_glass\":true"), "F5: the break-glass invocation is on every replica's record");
+    assert!(deny_reason(&r).contains("Floor"), "a quorum of the roster's old approvals admits nothing: {}", r.detail);
 
     // ---- anchor issuance, bounded by the rules floor ----
     let sign_all = |rules: &Rules| -> Issuance {
@@ -1034,7 +1021,7 @@ async fn actuate_is_counted_recorded_and_sealed() {
             assert!(rec.admit.is_some(), "the admit's log index");
             assert_eq!(rec.digest, Digest::of_json(env), "the record's digest is over its envelope");
             assert_eq!(env["tool"], json!(f.run_tool));
-            assert_eq!(env["breakGlass"], false);
+            assert_eq!(env["seatKind"], "thinker");
             assert_eq!(env["outcome"], "returned");
             assert_eq!(env["inputs"], json!(Digest::of_json(&rec.payload["body"]["inputs"])));
             assert_eq!(env["result"], json!(Digest::of_json(&rec.payload["body"]["result"])));
@@ -1670,4 +1657,223 @@ async fn an_operator_is_a_principal_and_its_requests_are_decided() {
     assert_eq!(r["floor"], json!(["C4-deny"]));
     let st = n1.state.read().unwrap();
     assert!(st.epoch == 1 && st.live_by_seat.is_empty(), "every lease is fenced, the operators' with them");
+}
+
+// ---- break-glass as an emergency seating (ADR-0052) -------------------------------------------
+
+/// ADR-0052 §9's reference behaviours, on the linked floor, which has no X1, and the real bundle
+/// tier. Two emergency seatings are prepared by the BOOTSTRAP path, which stands in for the
+/// promotion that would: `em1`, whose envelope is the domain's, and `drill`, whose envelope names
+/// one inert tool.
+///
+/// | Behaviour | Where |
+/// |---|---|
+/// | An activation by the roster's quorum, with no operator request | 1 |
+/// | The envelope is every Run entry in force in the domain, and the person is told it | 1 |
+/// | The person's signed calls are admitted by the ordinary permit, with no Observer live | 2 |
+/// | A call outside the envelope refused | 2 |
+/// | A `Regrant` of the emergency seat refused | 3 |
+/// | The lease ended by an operator's revocation | 3 |
+/// | A drill, which admits its one inert tool and nothing else | 4 |
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn break_glass_is_an_emergency_seating() {
+    use topak_contain::wasmtool::{WasmToolHost, WasmToolSpec, module_digest};
+    use topak_core::confine::{AGENT_OP_PURPOSE, SessionProof, session_body};
+    use topak_core::control::{ACTIVATION_PURPOSE, Activation, EmergencySeating, Envelope};
+    let mut f = fixture("emergency").await;
+    let path = f.dir.join("inputs.wasm");
+    std::fs::write(&path, wat::parse_str(INPUTS_TOOL).unwrap()).unwrap();
+    let digest = module_digest(&path).unwrap();
+    let key_of = |name: &str| tool_id(name, &digest);
+    let entry = |name: &str, purpose: &str| {
+        json!({
+            "name": name, "digest": digest, "domain": "run", "purpose": purpose,
+            "inputs": { "what": { "type": "string", "required": true, "note": "What to act on.",
+                                  "destination": false, "accepts": [] } },
+            "result": { "label": [], "releases": [] },
+            "channel": { "kind": "tcp", "target": "plant.internal:502" },
+        })
+    };
+    let revision = |tools: Value| {
+        json!({ "topak": { "labels": {
+            "vocabulary": [],
+            // A row for the person: without one, a seat kind is given handles and no bytes.
+            "delivery": { "thinker": { "untrusted": "clear", "restricted": "handle" },
+                          "observer": { "untrusted": "clear", "restricted": "clear" },
+                          "emergency": { "untrusted": "clear", "restricted": "clear" } },
+            "root": { "label": [] },
+        }, "tools": tools } })
+    };
+    // The ordinary revision holds the valve. The emergency seating's own bundle holds two tools
+    // no ordinary seat's allowlist has: one to isolate, and the drill's, which does nothing.
+    let (ordinary, own) = (Digest("a".repeat(64)), Digest("e".repeat(64)));
+    f.extra_bundles = vec![
+        (ordinary.0.clone(), revision(json!({ key_of("valve"): entry("valve", "Open or close a valve.") }))),
+        (own.0.clone(), revision(json!({
+            key_of("isolate"): entry("isolate", "Isolate a cell from the plant network."),
+            key_of("noop"): entry("noop", "Return what it was given. Reaches nothing."),
+        }))),
+    ];
+    f.rules.inside_targets = BTreeSet::from(["plant.internal:502".to_string()]);
+    let specs = ["valve", "isolate", "noop"]
+        .iter()
+        .map(|n| (key_of(n), WasmToolSpec { module: path.clone(), module_sha256: digest.clone() }))
+        .collect();
+    f.wasm = Some(Arc::new(WasmToolHost::new(specs).unwrap()));
+    // The Thinker's allowlist is the valve. The emergency tools are on no ordinary allowlist.
+    f.params.run_tools.insert(key_of("valve"));
+    for seat in ["em1", "drill"] {
+        let decl = SeatDecl { domain: Domain::Run, kind: topak_core::SeatKind::Emergency, cell: None, key: pubhex(&key()), rung: 0 };
+        f.rules.seats.insert(seat.into(), decl);
+    }
+    let (alice, bob) = (key(), key());
+    let c = cluster(&f, true).await;
+    let n1 = &c.nodes[0];
+    let chain = n1.state.read().unwrap().chain.clone();
+    let call = |tool: &str| Action::Actuate {
+        tool: tool.into(),
+        digest: digest.clone(),
+        inputs: json!({ "what": "the west cell" }).as_object().unwrap().clone(),
+    };
+
+    // r1 is seated on the ordinary revision: a seating in force in the domain.
+    let r1 = grant_on(n1, "r1", 1, &ordinary, RUN).await["token"].as_str().unwrap().to_string();
+    // A Thinker does not reach an emergency tool: it is on no allowlist of its own, and the floor
+    // has no exception. Its Observer is not even asked.
+    let r = act(n1, &r1, call("isolate")).await;
+    assert!(deny_reason(&r).contains("Floor"), "{}", r.detail);
+
+    // Prepared in advance. BOOTSTRAP: a promotion would prepare these.
+    let prepare = |seat: &str, envelope: Envelope, drill: bool| OperatorOp::PrepareEmergency {
+        seat: seat.into(),
+        seating: EmergencySeating {
+            persons: BTreeSet::from([pubhex(&alice), pubhex(&bob)]),
+            bundle: own.clone(),
+            envelope,
+            task_labels: BTreeSet::new(),
+            drill,
+        },
+    };
+    assert_eq!(n1.operate(prepare("em1", Envelope::Domain, false)).await["ok"], true);
+    let inert = Envelope::Named(BTreeSet::from([key_of("noop")]));
+    assert_eq!(n1.operate(prepare("drill", inert, true)).await["ok"], true);
+
+    // ---- 1. activation: the roster's quorum, and nothing else ----
+    let task = "Isolate the west cell.";
+    let activation = |seat: &str, person: &SigningKey, round: Round| Activation {
+        seat: seat.into(),
+        person: pubhex(person),
+        epoch: 0,
+        round,
+        ttl_ms: 60_000,
+        task: Some(Digest::of(task.as_bytes())),
+        task_label: Some(BTreeSet::new()),
+    };
+    let activate = async |a: &Activation, by: &[&SigningKey]| {
+        let approvals = by.iter().map(|k| sign(k, ACTIVATION_PURPOSE, &a.body(&chain))).collect();
+        n1.operate(OperatorOp::Activate { activation: a.clone(), approvals, task: Some(task.to_string()) }).await
+    };
+    let a = activation("em1", &alice, 1);
+    let r = activate(&a, &[&f.keys.bg[0]]).await;
+    assert!(r.to_string().contains("the quorum is 2"), "one member is not the roster: {r}");
+    let r = activate(&a, &[&f.keys.bg[0], &key()]).await;
+    assert!(r.to_string().contains("the quorum is 2"), "a key off the roster: {r}");
+    let r = activate(&a, &[&f.keys.bg[0], &f.keys.bg[1]]).await;
+    assert_eq!(r["ok"], true, "{r}");
+    let fence = r["fence"].as_u64().unwrap();
+    assert!(r.get("token").is_none(), "there is no bearer token to an emergency lease");
+    // The envelope is the domain's: every Run entry of every revision a seating in force names,
+    // and the seating's own. The person is told what is in it, and so is whoever reads the topic.
+    let told: Vec<&str> = r["tool_list"]["list"]["tools"].as_array().unwrap().iter().map(|t| t["name"].as_str().unwrap()).collect();
+    // `search` is the built bundle's Run entry. No Thinker is seated on that revision: the
+    // domain's operators are, and an operator's seating names a revision like any other.
+    assert_eq!(told, ["isolate", "noop", "search", "valve"], "{r}");
+    let topic = lift::topic_name(&chain, Domain::Run, "em1", 0, 1);
+    let opening = memory(n1).topics.lock().await[&topic][0].clone();
+    assert_eq!(opening.kind, RecordKind::Open);
+    assert_eq!(opening.payload["task"]["text"], task);
+    assert_eq!(json!(opening.digest), r["tool_list"]["digest"]);
+
+    // ---- 2. the person acts, signing each action ----
+    let ctr = std::sync::atomic::AtomicU64::new(0);
+    let as_person = async |who: &SigningKey, fence: u64, action: Action| {
+        let op = AgentOp::Act { action };
+        let n = ctr.fetch_add(1, std::sync::atomic::Ordering::SeqCst) + 1;
+        let d = Digest::of_json(&op);
+        let sig = sign(who, AGENT_OP_PURPOSE, &session_body(fence, 0, n, &d)).sig;
+        n1.act_bound(fence, op, Some(SessionProof { ctr: n, op: d, sig })).await
+    };
+    // Unsigned, and signed by someone else: refused before anything is decided.
+    let r = n1.act_bound(fence, AgentOp::Act { action: call("isolate") }, None).await;
+    assert!(deny_reason(&r).contains("signed nothing"), "{}", r.detail);
+    let r = as_person(&bob, fence, call("isolate")).await;
+    assert!(!r.admitted, "bob is not the person seated: {}", r.detail);
+    // The emergency tool, admitted by the ordinary allowlist permit. No Observer has said
+    // anything: `R3` is a Thinker's, and an emergency seat is a person seated by a quorum.
+    let r = as_person(&alice, fence, call("isolate")).await;
+    assert!(r.admitted, "{}", r.detail);
+    assert_eq!(r.detail["floor"], json!(["R1-actuate-allowlisted"]), "no exception admits it");
+    assert_eq!(r.detail["result"]["result"], json!({ "what": "the west cell" }));
+    // An entry of another revision in force, decided against the revision that holds it.
+    let r = as_person(&alice, fence, call("valve")).await;
+    assert!(r.admitted, "{}", r.detail);
+    // Outside the envelope: a tool on the Thinker's parameter allowlist that no revision in
+    // force holds. The envelope is the entries, and not what a parameter says.
+    let (sname, sdigest) = f.run_tool.split_once('@').unwrap();
+    let outside = Action::Actuate {
+        tool: sname.into(),
+        digest: Digest(sdigest.into()),
+        inputs: json!({ "ms": 0 }).as_object().unwrap().clone(),
+    };
+    let r = as_person(&alice, fence, outside).await;
+    assert!(deny_reason(&r).contains("Floor"), "{}", r.detail);
+    // It does not author: an emergency seat is issued Consult, Actuate and Report.
+    {
+        let topics = memory(n1).topics.lock().await;
+        let rec = topics[&topic].iter().find(|r| r.kind == RecordKind::Actuate).unwrap();
+        assert_eq!(rec.payload["actuate"]["seatKind"], "emergency", "every call's record says whose it was");
+    }
+
+    // ---- 3. one round: no successor; and any operator of the domain may stop it ----
+    let again = ControlAction::Regrant {
+        target: "em1".into(),
+        round: 2,
+        alphabet: BTreeSet::from([ActionKind::Actuate]),
+        ttl_ms: 60_000,
+        task: None,
+        task_label: Some(BTreeSet::new()),
+        sign_on: None,
+    };
+    let r = control(n1, &f, "opr1", again).await;
+    assert!(r.to_string().contains("neither regranted nor renewed"), "{r}");
+    let revoke = ControlAction::Revoke { target: RevocationTarget::Principal(pubhex(&alice)), reason: "enough".into() };
+    let r = control(n1, &f, "opr2", revoke).await;
+    assert_eq!(r["ok"], true, "{r}");
+    assert!(n1.state.read().unwrap().live_lease("em1").is_none());
+    let r = as_person(&alice, fence, call("isolate")).await;
+    assert!(!r.admitted, "the round is over: {}", r.detail);
+
+    // ---- 4. a drill: a real activation that can do nothing ----
+    let d = activation("drill", &bob, 1);
+    let r = activate(&d, &[&f.keys.bg[1], &f.keys.bg[0]]).await;
+    assert_eq!(r["ok"], true, "{r}");
+    let drill = r["fence"].as_u64().unwrap();
+    let told: Vec<&str> = r["tool_list"]["list"]["tools"].as_array().unwrap().iter().map(|t| t["name"].as_str().unwrap()).collect();
+    assert_eq!(told, ["noop"], "{r}");
+    let r = as_person(&bob, drill, call("noop")).await;
+    assert!(r.admitted, "its one inert tool: {}", r.detail);
+    let r = as_person(&bob, drill, call("isolate")).await;
+    assert!(deny_reason(&r).contains("Floor"), "and nothing else: {}", r.detail);
+
+    // ---- what is on the log (§5, §6) ----
+    settle(&c).await;
+    let st = c.nodes[1].state.read().unwrap();
+    let recs: Vec<(&str, bool, usize)> =
+        st.activations.iter().map(|r| (r.activation.seat.as_str(), r.drill, r.approvers.len())).collect();
+    assert_eq!(recs, [("em1", false, 2), ("drill", true, 2)], "who approved, whom, on which seating; on every replica");
+    assert_eq!(st.activations[0].activation.task, Some(Digest::of(task.as_bytes())));
+    assert_eq!(st.activations.iter().filter(|r| r.drill && r.activation.epoch == st.epoch).count(), 1);
+    drop(st);
+    let archive = std::fs::read_to_string(f.dir.join("n2/archive.jsonl")).unwrap();
+    assert!(archive.contains("\"emergency\":true"), "F5: a call under an activation is on every replica's record");
 }

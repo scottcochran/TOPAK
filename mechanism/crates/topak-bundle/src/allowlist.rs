@@ -273,7 +273,11 @@ fn check_labels(data: &Value, list: &mut Allowlist, out: &mut Vec<String>) {
         }
     }
     let table = data.pointer("/topak/labels/delivery").and_then(Value::as_object);
-    for kind in DELIVERED_KINDS {
+    // The rows the table must have, and any other it gives: a row for `emergency`, say, where
+    // the bundle is one an emergency seating draws on (ADR-0052). Every row is total.
+    let mut kinds: Vec<&str> = DELIVERED_KINDS.to_vec();
+    kinds.extend(table.into_iter().flat_map(|t| t.keys()).map(String::as_str).filter(|k| !DELIVERED_KINDS.contains(k)));
+    for kind in kinds {
         let Some(modes) = table.and_then(|t| t.get(kind)).and_then(Value::as_object) else {
             out.push(format!("ADR-0047 §2: the delivery table has no row for the seat kind {kind}"));
             continue;

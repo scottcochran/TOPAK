@@ -184,6 +184,8 @@ pub enum SeatKind {
     /// ADR-0050 §1 (Proposed): a person who operates. Its alphabet is the control alphabet and
     /// nothing else, so it is issued none of the action variants.
     Operator,
+    /// ADR-0052 §1 (Proposed): a person seated by the break-glass roster's quorum, for one round.
+    Emergency,
 }
 
 impl SeatKind {
@@ -193,6 +195,7 @@ impl SeatKind {
             SeatKind::Observer => "observer",
             SeatKind::Grant => "grant",
             SeatKind::Operator => "operator",
+            SeatKind::Emergency => "emergency",
         }
     }
 
@@ -208,6 +211,7 @@ impl SeatKind {
             SeatKind::Observer => matches!(k, Read | Emit | Vote | Consult | Report),
             SeatKind::Grant => matches!(k, Read | Emit | Vote),
             SeatKind::Operator => false,
+            SeatKind::Emergency => matches!(k, Consult | Actuate | Report),
         }
     }
 }

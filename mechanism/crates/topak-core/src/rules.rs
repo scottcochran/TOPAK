@@ -271,6 +271,12 @@ pub fn check_well_formed(r: &Rules) -> Vec<Violation> {
     if r.anchor_keys.is_empty() {
         out.push(v("WF", "anchor key set is empty"));
     }
+    // ADR-0052 §1: an emergency seat is a Run seat. Build's way to add authority is a promotion.
+    for (id, d) in &r.seats {
+        if d.kind == SeatKind::Emergency && d.domain != Domain::Run {
+            out.push(v("WF", format!("emergency seat {id} is not a Run seat (ADR-0052 §1)")));
+        }
+    }
     // ADR-0034 §2: a declared rung exists, and rung 3 has an issued verifier to appraise it.
     for (id, d) in &r.seats {
         if d.rung > MAX_RUNG {

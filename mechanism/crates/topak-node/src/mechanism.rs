@@ -37,12 +37,12 @@ use std::time::{Duration, Instant};
 
 use serde_json::{Value, json};
 use tokio::sync::{mpsc, oneshot};
-use topak_core::control::{CONTROL_PURPOSE, Control, ControlAction, ControlRequest};
+use topak_core::control::{Activation, CONTROL_PURPOSE, Control, ControlAction, ControlRequest, Envelope};
 use topak_core::lift::lift_control;
 use topak_core::labels::{Delivery, Handle, Label, LabelFacts, RoundLabels};
 use topak_bundle::BundleTier;
 use topak_core::action::{Action, ActionRequest, tool_id};
-use topak_core::admit::{BundleOutcome, Decision, DenyReason, compose, floor_gate, via_break_glass};
+use topak_core::admit::{BundleOutcome, Decision, DenyReason, compose, floor_gate};
 use topak_core::clock::{MonoMillis, MonotonicClock, SystemMonotonic, subtracting_interval_elapsed};
 use topak_core::confine::{AGENT_OP_PURPOSE, SessionProof, session_body};
 use topak_core::lift::{self, after_topic_name, lift, topic_name, workspace_id, workspace_relative};
@@ -83,6 +83,9 @@ pub trait BundleDecider: Send + Sync {
     /// The declared type of each input of the entry `tool` in `rev`, for resolving a handle
     /// (ADR-0049 §3): the item a handle names must match the input's type.
     fn input_types(&self, rev: &Digest, tool: &str) -> BTreeMap<String, String>;
+    /// The keys of the Run entries of `rev`: what an emergency seating whose envelope is the
+    /// domain's is given from that revision (ADR-0052 §2).
+    fn run_entries(&self, rev: &Digest) -> std::collections::BTreeSet<String>;
 }
 
 impl BundleDecider for BundleTier {
@@ -111,6 +114,9 @@ impl BundleDecider for BundleTier {
     fn input_types(&self, rev: &Digest, tool: &str) -> BTreeMap<String, String> {
         let inputs = self.entry(rev, tool).map(|e| &e.inputs);
         inputs.into_iter().flatten().map(|(f, i)| (f.clone(), i.ty.clone())).collect()
+    }
+    fn run_entries(&self, rev: &Digest) -> std::collections::BTreeSet<String> {
+        BundleTier::run_entries(self, rev)
     }
 }
 
@@ -402,6 +408,13 @@ impl Mechanism {
             tracing::warn!(target: "security", "action with an unknown session token refused");
             return deny(DenyReason::Mechanism(MechanismDeny::UnknownLease));
         };
+        // ADR-0052 §1: every action under an emergency seat's lease is signed with the person's
+        // key. A bearer token signs nothing, so there is no token path to that lease.
+        if self.state.read().unwrap().leases.get(&sess.fence).is_some_and(|r| r.person.is_some()) {
+            return deny(DenyReason::Mechanism(MechanismDeny::Other(
+                "an emergency seat's actions are signed with the person's key (ADR-0052 §1)".into(),
+            )));
+        }
         Box::pin(self.act_session(&sess, req.op, None)).await
     }
 
@@ -412,7 +425,8 @@ impl Mechanism {
         let looked = {
             let st = self.state.read().unwrap();
             st.leases.get(&fence).map(|r| {
-                let key = r.attestation.as_ref().and_then(|a| a.session_key.clone());
+                // ADR-0052 §1: under an emergency seat's lease the key is the person's.
+                let key = r.attestation.as_ref().and_then(|a| a.session_key.clone()).or_else(|| r.person.clone());
                 (Session { seat: r.lease.seat.clone(), fence, epoch: r.lease.epoch }, key)
             })
         };
@@ -495,6 +509,24 @@ impl Mechanism {
         let none = std::collections::BTreeSet::new();
         let callable = if lease.alphabet.contains(&action) { tools } else { &none };
         let topic = topic_name(&st.chain, domain, &lease.seat, lease.epoch, lease.round);
+        // ADR-0052 §2: an emergency seat's tool list is its envelope, each entry rendered from
+        // the revision that holds it. The person is told what is in it.
+        if let Some(envelope) = &st.leases[&fence].envelope {
+            let mut by_rev: BTreeMap<&Digest, std::collections::BTreeSet<String>> = BTreeMap::new();
+            for (tool, rev) in envelope {
+                by_rev.entry(rev).or_default().insert(tool.clone());
+            }
+            let mut listed: Vec<Value> = Vec::new();
+            for (rev, keys) in by_rev {
+                let part = self.bundle.tool_list(rev, domain, &keys);
+                for mut t in part["tools"].as_array().cloned().unwrap_or_default() {
+                    t["revision"] = json!(rev);
+                    listed.push(t);
+                }
+            }
+            listed.sort_by_key(|t| (t["name"].to_string(), t["digest"].to_string()));
+            return Some((topic, json!({ "bundle": lease.bundle, "domain": domain, "envelope": true, "tools": listed })));
+        }
         Some((topic, self.bundle.tool_list(&lease.bundle, domain, callable)))
     }
 
@@ -676,16 +708,25 @@ impl Mechanism {
                 // ADR-0047 §4: the call's labels, from the entry of the lease's revision and the
                 // round so far. Computed here, lifted into S, and carried by the admit.
                 let kind = st.rules.seat_kind(&req.seat).map(SeatKind::as_str).unwrap_or("unknown");
+                // ADR-0052 §2: an emergency seat's envelope holds entries of every revision in
+                // force in the domain. A call is decided against the revision that holds its
+                // entry: that revision's labels, its bundle tier, its channel.
+                let call_rev = match (&rec.envelope, &req.action) {
+                    (Some(envelope), Action::Actuate { tool, digest, .. }) => {
+                        envelope.get(&tool_id(tool, digest)).unwrap_or(&rec.lease.bundle).clone()
+                    }
+                    _ => rec.lease.bundle.clone(),
+                };
                 let facts = self
                     .bundle
-                    .label_facts(&rec.lease.bundle, kind, &req.action, &rec.labels)
+                    .label_facts(&call_rev, kind, &req.action, &rec.labels)
                     .map_err(MechanismDeny::Other)?;
                 let frozen = lift(&req, &st, &self.params, rec, live, facts.as_ref())?;
                 let domain = st.rules.seat_domain(&req.seat).expect("lifted");
-                Ok((frozen, rec.lease.bundle.clone(), rec.lease.epoch, rec.lease.round, domain, facts))
+                Ok((frozen, call_rev, rec.lease.epoch, rec.lease.round, domain, facts, kind))
             })
         };
-        let (frozen, lease_bundle, lease_epoch, round, domain, labels) = match prepared {
+        let (frozen, lease_bundle, lease_epoch, round, domain, labels, seat_kind) = match prepared {
             Ok(p) => p,
             Err(MechanismDeny::LeaseExpired) => {
                 let e = Entry::EndRound {
@@ -726,12 +767,14 @@ impl Mechanism {
         };
 
         // 7: order the admit.
-        let break_glass = via_break_glass(&floor_reasons);
+        // ADR-0052 §5: a call under an activation is forensic class F5, as a break-glass
+        // invocation was. It is admitted by the ordinary permit and not by an exception.
+        let emergency = seat_kind == SeatKind::Emergency.as_str();
         let rec = AdmitRecord {
             seat: req.seat.clone(),
             lease: req.lease,
             epoch: req.epoch,
-            action: Admitted::from_request(&req, break_glass),
+            action: Admitted::from_request(&req, emergency),
             input: frozen.digest(),
             floor: self.floor.floor_digest().clone(),
             schema: self.floor.schema_digest().clone(),
@@ -753,7 +796,7 @@ impl Mechanism {
         };
 
         // 8: the effect.
-        let ctx = EffectCtx { sess, slot, lease_epoch, round, domain, seq, promoted, break_glass, labels, lease_bundle };
+        let ctx = EffectCtx { sess, slot, lease_epoch, round, domain, seq, promoted, seat_kind, labels, lease_bundle };
         let result = self.effect(&req, &ctx).await;
         let (ok, result) = match result {
             Ok(v) => (true, v),
@@ -852,8 +895,9 @@ impl Mechanism {
                 let hosted = self.wasm_tools.as_ref().filter(|w| w.hosts(&tid));
                 let channel = match hosted {
                     Some(_) => {
-                        let rev = self.state.read().unwrap().leases.get(&cx.sess.fence).map(|r| r.lease.bundle.clone());
-                        let declared = rev.as_ref().and_then(|rev| self.bundle.channel(rev, &tid));
+                        // The revision the call was decided against: the lease's, or, for an
+                        // emergency seat, the one that holds the entry (ADR-0052 §2).
+                        let declared = self.bundle.channel(&cx.lease_bundle, &tid);
                         anyhow::ensure!(
                             declared.is_some(),
                             "the lease's bundle revision declares no channel for {tid}, so the tool is not run"
@@ -867,7 +911,7 @@ impl Mechanism {
                     fence: cx.sess.fence,
                     admit: cx.slot,
                     tool: tid.clone(),
-                    break_glass: cx.break_glass,
+                    seat_kind: cx.seat_kind,
                     inputs: Value::Object(inputs.clone()),
                     channel: channel.clone(),
                     labels: cx.labels.clone(),
@@ -1020,6 +1064,11 @@ impl Mechanism {
                     Ok((_, a)) => json!({ "ok": false, "applied": a }),
                     Err(e) => json!({ "ok": false, "error": e }),
                 };
+            }
+            // BOOTSTRAP: stands in for the promotion that prepares an emergency seating.
+            OperatorOp::PrepareEmergency { seat, seating } => Entry::EmergencySeating { id, seat, seating },
+            OperatorOp::Activate { activation, approvals, task } => {
+                return Box::pin(self.activate(activation, approvals, task)).await;
             }
             OperatorOp::Control { request, sig, assertion, task } => {
                 return Box::pin(self.control(request, sig, assertion, task)).await;
@@ -1200,6 +1249,82 @@ impl Mechanism {
         out
     }
 
+    /// An activation of an emergency seating (ADR-0052 §2): the roster's approvals are checked by
+    /// every replica at apply. This replica computes the envelope, orders the activation, and
+    /// opens the round: the envelope as the tool list, and the task. There is no token: the
+    /// person acts under the lease's fence, signing each action.
+    async fn activate(
+        &self,
+        activation: Activation,
+        approvals: Vec<topak_core::authentic::Signed>,
+        task: Option<String>,
+    ) -> Value {
+        let refuse = |why: String| json!({ "ok": false, "error": why });
+        match (&activation.task, &task) {
+            (Some(d), Some(t)) if Digest::of(t.as_bytes()) == *d => {}
+            (None, None) => {}
+            _ => return refuse("the task's bytes are not the ones the activation's digest names (ADR-0050 §5)".into()),
+        }
+        // The envelope, from the log at this point: the seating's own bundle, and, where the
+        // seating says the envelope is the domain's, every revision a seating in force in the
+        // domain names. An entry held by more than one revision is taken from the seating's own
+        // first, and then from the first that holds it.
+        let (own, revisions) = {
+            let st = self.state.read().unwrap();
+            let Some(seating) = st.emergency_seatings.get(&activation.seat) else {
+                return refuse(format!("no emergency seating is prepared for seat {} (ADR-0052 §2)", activation.seat));
+            };
+            let mut revisions = vec![seating.bundle.clone()];
+            let named = match &seating.envelope {
+                Envelope::Named(named) => Some(named.clone()),
+                Envelope::Domain => {
+                    let in_force = st.seatings.iter().filter(|(seat, s)| {
+                        st.rules.seat_domain(seat) == Some(Domain::Run)
+                            && !st.revoked.iter().any(|t| t.matches(&s.principal, &s.persona, &s.confinement.digest))
+                    });
+                    for (_, s) in in_force {
+                        if !revisions.contains(&s.bundle) {
+                            revisions.push(s.bundle.clone());
+                        }
+                    }
+                    None
+                }
+            };
+            (named, revisions)
+        };
+        let mut envelope: BTreeMap<String, Digest> = BTreeMap::new();
+        for rev in &revisions {
+            if !self.bundle.verified(rev) {
+                continue;
+            }
+            for tool in self.bundle.run_entries(rev) {
+                if own.as_ref().is_none_or(|named| named.contains(&tool)) {
+                    envelope.entry(tool).or_insert_with(|| rev.clone());
+                }
+            }
+        }
+        let entry = Entry::Activate { id: self.fresh_id(), activation: activation.clone(), approvals, envelope };
+        let (slot, applied) = match self.propose(entry).await {
+            Ok(r) => r,
+            Err(e) => return refuse(e),
+        };
+        let Applied::LeaseGranted { fence } = applied else {
+            return json!({ "ok": false, "slot": slot, "applied": applied });
+        };
+        let delivered =
+            task.as_ref().map(|t| json!({ "digest": activation.task, "label": activation.task_label, "text": t }));
+        match self.open_round(fence, &activation.seat, delivered.clone()).await {
+            Ok(tool_list) => {
+                let lease = self.state.read().unwrap().leases[&fence].lease.clone();
+                json!({ "ok": true, "slot": slot, "fence": fence, "lease": lease, "tool_list": tool_list, "task": delivered })
+            }
+            Err(e) => json!({
+                "ok": false, "fence": fence,
+                "error": format!("the round's opening record was not written, so the round was not opened: {e}"),
+            }),
+        }
+    }
+
     /// ADR-0050 §6: every control action is written to the operator's round topic, where the
     /// other operators of its domain read it. An operator with no live lease has no open round:
     /// its deny goes to the `after` companion of its last one.
@@ -1284,7 +1409,7 @@ struct EffectCtx<'a> {
     domain: Domain,
     seq: Option<u64>,
     promoted: Option<Digest>,
-    break_glass: bool,
+    seat_kind: &'static str,
     /// The labels the admit carried (ADR-0047): how the Listener delivers what this effect returns.
     labels: Option<LabelFacts>,
     lease_bundle: Digest,
@@ -1309,7 +1434,9 @@ struct InFlight {
     fence: LogIndex,
     admit: LogIndex,
     tool: String,
-    break_glass: bool,
+    /// The kind of the seat that made the call (ADR-0042 A2, pending): `emergency` marks a call
+    /// under an activation, where the record used to say `breakGlass`.
+    seat_kind: &'static str,
     inputs: Value,
     /// The declared channel a Wasm tool was held to (ADR-0034 A2): recorded, so the record says
     /// which channel the effect could have used. It is the entry's declaration in the lease's
@@ -1335,7 +1462,7 @@ impl InFlight {
     fn record(&self, topic: &str, seq: u64, outcome: Outcome, result: Option<&Value>) -> EmitRecord {
         let mut envelope = json!({
             "tool": self.tool,
-            "breakGlass": self.break_glass,
+            "seatKind": self.seat_kind,
             "inputs": Digest::of_json(&self.inputs),
             "outcome": outcome,
             "result": result.map(Digest::of_json),

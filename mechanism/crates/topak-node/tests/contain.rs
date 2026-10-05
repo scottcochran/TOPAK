@@ -207,6 +207,9 @@ impl BundleDecider for AllowAll {
     fn input_types(&self, _rev: &Digest, _tool: &str) -> BTreeMap<String, String> {
         BTreeMap::new()
     }
+    fn run_entries(&self, _rev: &Digest) -> BTreeSet<String> {
+        BTreeSet::new()
+    }
     fn channel(&self, rev: &Digest, tool: &str) -> Option<topak_contain::wasmtool::Channel> {
         self.0.get(&(rev.clone(), tool.to_string())).cloned()
     }

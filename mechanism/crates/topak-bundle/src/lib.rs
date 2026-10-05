@@ -274,6 +274,13 @@ impl BundleTier {
         self.local.entry(rev, key)
     }
 
+    /// The keys of the Run entries of `rev` (ADR-0052 §2: what the domain's envelope draws on).
+    pub fn run_entries(&self, rev: &Digest) -> BTreeSet<String> {
+        let entries = self.local.allowlist(rev).map(|a| &a.entries);
+        let run = |(k, e): (&String, &Entry)| (e.domain == topak_core::Domain::Run).then(|| k.clone());
+        entries.into_iter().flatten().filter_map(run).collect()
+    }
+
     /// The label facts of a `Consult` or an `Actuate` under `rev` (ADR-0047 §4). A revision that
     /// is not held has no declarations, and nothing is delivered under it.
     pub fn label_facts(

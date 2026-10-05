@@ -294,6 +294,11 @@ pub fn project_entry(e: &Entry, oracle: Value) -> Value {
         Entry::EpochIncrement { id, .. } => json!({ "kind": "EpochIncrement", "id": id }),
         // `spec/Mechanism.tla` has no operator principal: a control entry is recorded by its
         // name and is not one the module's `Next` can match (ADR-0050; trace validation is owed).
+        // Nor has it an emergency seating: recorded by name, and matched by nothing (ADR-0052).
+        Entry::EmergencySeating { id, seat, .. } => json!({ "kind": "EmergencySeating", "id": id, "seat": seat }),
+        Entry::Activate { id, activation, .. } => json!({
+            "kind": "Activate", "id": id, "seat": activation.seat, "round": activation.round,
+        }),
         Entry::Control { id, control, .. } => json!({
             "kind": "Control", "id": id, "operator": control.request.operator, "action": control.request.action.name(),
         }),
@@ -315,6 +320,7 @@ pub fn project_entry(e: &Entry, oracle: Value) -> Value {
 
 pub fn project_applied(a: &Applied) -> Value {
     match a {
+        Applied::EmergencyPrepared => json!({ "kind": "EmergencyPrepared" }),
         Applied::LeaseGranted { fence } => json!({ "kind": "LeaseGranted", "fence": fence }),
         Applied::Renewed { fence } => json!({ "kind": "Renewed", "fence": fence }),
         Applied::Admitted { seq, promoted } => json!({

@@ -230,3 +230,67 @@ pub fn sign_on_verifies(
         providers.contains(&a.key) && authentic::verify(SIGN_ON_PURPOSE, &sign_on_body(chain, key, epoch, last_fence), a)
     })
 }
+
+// ---- the emergency seating (ADR-0052, Proposed) ------------------------------------------------
+
+pub const ACTIVATION_PURPOSE: &str = "emergency-activation";
+
+/// What an emergency seat may call (ADR-0052 §2).
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+#[serde(tag = "envelope", content = "tools", rename_all = "snake_case")]
+pub enum Envelope {
+    /// The generic default: every Run allowlist entry in force in the domain, computed at
+    /// activation and fixed for the round. It cannot go stale.
+    Domain,
+    /// A narrower one, named entry by entry (`name@digest`), from the seating's own bundle.
+    Named(BTreeSet<String>),
+}
+
+/// An emergency seating, prepared in advance (ADR-0052 §2): the seat, the persons who may hold
+/// it, its envelope, and the labels a task for it may carry. At the reference it is prepared by
+/// the BOOTSTRAP path and not by a promotion.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct EmergencySeating {
+    /// The persons' signing keys. The roster's approvals name the one seated.
+    pub persons: BTreeSet<KeyHex>,
+    pub bundle: Digest,
+    pub envelope: Envelope,
+    pub task_labels: Label,
+    /// A drill seating (§6): a real activation that can do nothing. Marked, and on the log.
+    #[serde(default)]
+    pub drill: bool,
+}
+
+/// One activation, as the roster's members sign it: one named person, one round, the round's
+/// task. There is no field for the reason: why the quorum acted is unknown to the mechanism, by
+/// construction (§5).
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct Activation {
+    pub seat: SeatId,
+    pub person: KeyHex,
+    pub epoch: Epoch,
+    pub round: Round,
+    pub ttl_ms: u64,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub task: Option<Digest>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub task_label: Option<Label>,
+}
+
+impl Activation {
+    pub fn body(&self, chain: &Digest) -> Value {
+        json!({ "chain": chain, "activation": self })
+    }
+}
+
+/// The forensic record of an activation (ADR-0052 §5; ADR-0028 F5): who approved, whom, on which
+/// seating, for which round, with the task's digest and label. Erasure does not remove it.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct ActivationRecord {
+    pub at: LogIndex,
+    pub activation: Activation,
+    pub approvers: BTreeSet<KeyHex>,
+    pub drill: bool,
+    /// The envelope as computed at activation: each entry, and the bundle revision that holds it.
+    pub envelope: std::collections::BTreeMap<String, Digest>,
+}

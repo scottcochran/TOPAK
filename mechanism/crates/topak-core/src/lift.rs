@@ -135,7 +135,6 @@ pub fn lift(
         ent("Workspace", &ws, json!({}), vec![]),
         ent("ToolSet", "build-allow", json!({}), vec![]),
         ent("ToolSet", "run-allow", json!({}), vec![]),
-        ent("ToolSet", "bg-tools", json!({}), vec![]),
     ];
 
     let alphabet: Vec<&str> = lease.alphabet.iter().map(|k| k.as_str()).collect();
@@ -158,11 +157,8 @@ pub fn lift(
             "epoch": long(state.epoch)?,
             "round": long(round)?,
             "runRoot": eref("CorpusRoot", "run-pinned"),
+            // ADR-0052 §2: no break-glass fields. An emergency seat's allowlist is its envelope.
             "toolAllowlist": eref("ToolSet", "run-allow"),
-            "breakGlass": {
-                "quorum": state.break_glass_quorum(seat),
-                "tools": eref("ToolSet", "bg-tools"),
-            },
             // ADR-0039 §1: live(o) for some cell Observer of this seat, computed by the mechanism.
             "observerLive": observer_live,
             // ADR-0047 §4: the round's `clearSet`, and what the call's inputs carry. A request
@@ -215,11 +211,15 @@ pub fn lift(
             if kind == ActionKind::Invoke && params.build_tools.contains(&tid) {
                 parents.push(uid("ToolSet", "build-allow"));
             }
-            if kind == ActionKind::Actuate && params.run_tools.contains(&tid) {
+            // Run's allowlist is the parameters'. An emergency seat's is its envelope, computed
+            // at activation and fixed for the round (ADR-0052 §2): the ordinary permit, `R1`,
+            // admits its calls, and no exception does.
+            let allowed = match &rec.envelope {
+                Some(envelope) => envelope.contains_key(&tid),
+                None => params.run_tools.contains(&tid),
+            };
+            if kind == ActionKind::Actuate && allowed {
                 parents.push(uid("ToolSet", "run-allow"));
-            }
-            if kind == ActionKind::Actuate && rules.break_glass.as_ref().is_some_and(|bg| bg.tools.contains(&tid)) {
-                parents.push(uid("ToolSet", "bg-tools"));
             }
             // ADR-0049 §4: `outward` is derived, never declared, and a Build tool has no channel.
             // An `Actuate` with no facts has no answer to whether it is outward, and is refused

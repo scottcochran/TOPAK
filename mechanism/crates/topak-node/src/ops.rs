@@ -77,6 +77,21 @@ pub enum OperatorOp {
     Issue {
         issuance: Issuance,
     },
+    /// BOOTSTRAP: prepares an emergency seating (ADR-0052 §2), standing in for the promotion
+    /// that prepares one. Unsigned.
+    PrepareEmergency {
+        seat: SeatId,
+        seating: topak_core::control::EmergencySeating,
+    },
+    /// Activates an emergency seating (ADR-0052 §2): the break-glass roster's quorum seats one
+    /// named person for one round. The approvals are the roster members' signatures over the
+    /// activation. `task` is the bytes its digest names. No operator's request is involved.
+    Activate {
+        activation: topak_core::control::Activation,
+        approvals: Vec<Signed>,
+        #[serde(default)]
+        task: Option<String>,
+    },
     /// An operator's signed request (ADR-0050 §4). `assertion` is the operator's own sign-on
     /// assertion, for a deny made with no live lease. `task` is the bytes of a `Regrant`'s task,
     /// whose digest the signed request carries (§5).
