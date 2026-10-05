@@ -17,6 +17,6 @@ SHA256SUMS-SLM-2026.09.28	rehearsal	2026.09.28	7542730	40	40	ADR-0035 §8
 SHA256SUMS-REF-2026.10.01	reference	2026.10.01	dacbb0c	66	66	ADR-0033 A6; the pin moves in the next commit
 SHA256SUMS-G7	checkpoint	2026.10.01	97d1b81	336	336	first cut under the 2026.09.30 layout; measures tools/cpc (ADR-0045 T-0045-14) beside the jar; the index itself is excluded from G7 on
 SHA256SUMS-G8	checkpoint	2026.10.02	1151832	372	372	first cut with a prover in the trusted base (ADR-0046, T-0045-31); tools/tlapm excluded with the TLC wrappers
-SHA256SUMS-REF-2026.10.02	reference	2026.10.02	c536e21	82	82	ADR-0033 A7 (pending): the launcher in the node; the ADR-0033 pin moves when A7 is inserted
-SHA256SUMS-REF-2026.10.02b	reference	2026.10.02	c534a42	84	84	ADR-0033 A8 (pending): Run tools held to their channel; the ADR-0033 pin and the register path move with A8
+SHA256SUMS-REF-2026.10.02	reference	2026.10.02	c536e21	82	82	ADR-0033 A7 (ratified 2026.10.04, Batch 29): the launcher in the node; the ADR-0033 pin moves when A7 is inserted
+SHA256SUMS-REF-2026.10.02b	reference	2026.10.02	c534a42	84	84	ADR-0033 A8 (ratified 2026.10.04, Batch 31): Run tools held to their channel; the ADR-0033 pin and the register path move with A8
 SHA256SUMS-G9	checkpoint	2026.10.02	97a61e8	392	392	first cut with a lease above rung 0 at the reference (rung 1; rung 3 SIMULATED); ADR-0033 A7, A8 and ADR-0034 A2 pending

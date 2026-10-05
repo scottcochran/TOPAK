@@ -52,7 +52,7 @@ resolves a debt) were ratified by one person and await the first post-bootstrap 
 | [ADR-0039](ADR-0039.md) | Observer liveness is progress, not presence: Run couples every admit to it, Build couples the gate, and the correlator is never coupled | Accepted (genesis); confirmation required: C4 | |
 | [ADR-0040](ADR-0040.md) | Run has its own alphabet: `Consult`, `Actuate` and `Report`, and it shares only the carrier with Build | Accepted (genesis); confirmation required: C3, C4 | |
 | [ADR-0041](ADR-0041.md) | Policy obligations for Run: one envelope for each variant, and coupling on effects only | Accepted (genesis); confirmation required: C1, C4 | |
-| [ADR-0042](ADR-0042.md) | Mechanism obligations for Run: the sequence counts effects, every `Actuate` leaves a record, and the round seals when the lease ends | Accepted (genesis) — §1–§5, §7, §8 only; §6 Proposed; confirmation required: C4 | |
+| [ADR-0042](ADR-0042.md) | Mechanism obligations for Run: the sequence counts effects, every `Actuate` leaves a record, and the round seals when the lease ends | Accepted (genesis), whole: §6 ratified in Batch 30, 2026.10.04, after G9; confirmation required: C4, and C2 for §6 | |
 | [ADR-0043](ADR-0043.md) | Cell obligations for Run: what the Listener delivers, what each seat holds, and what the Observer must read | Accepted (genesis); confirmation required: C4 | |
 | [ADR-0044](ADR-0044.md) | A bundle is trusted by its signature, not its file name: the bundle key lives in the issued rules | Accepted (genesis); confirmation required: C1 | |
 | [ADR-0045](ADR-0045.md) | The trusted base is declared row by row, and a component enters it only if its failure can only subtract, or its identity is issued | Accepted (genesis); confirmation required: C2, C4 | |
