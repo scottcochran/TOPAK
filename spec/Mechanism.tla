@@ -29,6 +29,24 @@
 (*                     an issued verifier key (ADR-0025 §1 (f))                   *)
 (*   ProfileRegister   what the file parses to: well-formed (`ok`), its digest,   *)
 (*                     its artifact digest, and the summary below                 *)
+(*   Grant             whether the sign-on assertion verifies for the seat, at    *)
+(*                     this state, under an issued provider key (`signOnOk`)      *)
+(*   Control           whether the request is signed by the operator seat's key   *)
+(*                     (`sigOk`); whether the operator's own assertion verifies   *)
+(*                     (`freshOk`), and a target operator's (`targetSignOnOk`);   *)
+(*                     and, for a Revoke, the seat it was lifted on, which is in  *)
+(*                     the carried facts: the model checks the seat is one the    *)
+(*                     target is seated at, in another domain if there is one,    *)
+(*                     and not which of several the code picked                   *)
+(*   Activate          the roster keys whose signature over this activation       *)
+(*                     verified (`approvers`); the grant's Persona and its        *)
+(*                     confinement digest, which are digests the code computes    *)
+(*                                                                                *)
+(* Labels (ADR-0047), operators (ADR-0050) and the emergency seating (ADR-0052),  *)
+(* all Proposed, are modelled as `apply` holds every replica to them: the round's *)
+(* labels folded from the admits, the control facts recomputed and compared, the  *)
+(* envelope of C1 to C9 restated (`Permitted`), the activation's quorum. X1 is    *)
+(* retired: a BreakGlassApprove is rejected, and `approvals` stays empty.         *)
 (*                                                                                *)
 (* Confinement (ADR-0034 §3, ADR-0036 §6) is modelled as the code checks it at    *)
 (* apply: the appraisal against the registered profile, the nonce's epoch, the    *)
@@ -47,14 +65,19 @@
 (* round>>`, and "none" stands for an absent value.                               *)
 (*                                                                                *)
 (* State: epoch rulesEpoch seats grantRoster vetoRoster quorum minGrant bgIssued  *)
-(*        bgRoster (a set, empty when no break-glass roster is issued)            *)
+(*        bgRoster (a set, empty when no break-glass roster is issued) bgQuorum   *)
+(*        seatings lastLease controlCtr emSeatings activations (a sequence)       *)
 (*        verifierKeys bundleKeys (ADR-0025 §1 (f)) personas criterion           *)
 (*        leases liveBySeat lastRound candidates gates approvals revoked          *)
 (*        appliedIds lastApplied k tPersona marks seals profiles contested        *)
 (*        contained wasmTools buildBound runBound                                 *)
 (* Seat: domain kind cell rung                                                    *)
-(* Lease: principal seat persona epoch rulesEpoch conf rung alphabet round role   *)
-(*        ttl ended actions seq att sessionCtr                                    *)
+(* Lease: principal seat persona bundle epoch rulesEpoch conf rung alphabet round *)
+(*        role ttl ended actions seq att sessionCtr clearSet results consults     *)
+(*        person envelope · Item: label delivery                                  *)
+(* Seating: principal persona bundle conf rung alphabet role taskLabels           *)
+(* EmSeating: persons bundle envDomain envNamed taskLabels drill                  *)
+(* Facts: the sixteen fields of `ControlFacts`                                    *)
 (* Att: verdict nEpoch nIndex gen key platform · Profile: artifact summary        *)
 (*        registeredAt · Summary: image persona measurement minTcb domain p3 p4 p5*)
 (* Appraisal: verdict rung profile persona nEpoch nIndex principal round key      *)
@@ -78,7 +101,8 @@ KindAllows(kind, k) ==
   CASE kind = "thinker"  -> k \in {"Read", "Draft", "Invoke", "Emit", "Submit", "Consult", "Actuate", "Report"}
     [] kind = "observer" -> k \in {"Read", "Emit", "Vote", "Consult", "Report"}
     [] kind = "grant"    -> k \in {"Read", "Emit", "Vote"}
-    [] OTHER             -> FALSE
+    [] kind = "emergency" -> k \in {"Consult", "Actuate", "Report"}   \* ADR-0052 §1
+    [] OTHER             -> FALSE                                    \* an operator is issued none
 
 \* TLC refuses `=` between an integer and a string, and `\in STRING` on an integer or a
 \* record, so an absent value is tested on its printed form, which every value has.
@@ -97,6 +121,13 @@ Watches(s, o, t) ==
   /\ IF s.seats[o].cell = NONE THEN s.seats[o].domain = s.seats[t].domain ELSE s.seats[o].cell = t
 
 HasLive(s, seat)   == seat \in DOMAIN s.liveBySeat
+
+\* --- operators and seatings (ADR-0050; control.rs) ----------------------------------
+OperatorsDeclared(s) == \E x \in DOMAIN s.seats : s.seats[x].kind = "operator"
+LiveOperators(s, dom) ==
+  {x \in DOMAIN s.liveBySeat : x \in DOMAIN s.seats /\ s.seats[x].kind = "operator" /\ s.seats[x].domain = dom}
+LastFence(s, seat) == IF seat \in DOMAIN s.lastLease THEN s.lastLease[seat] ELSE 0
+Ctr(s, op) == IF op \in DOMAIN s.controlCtr THEN s.controlCtr[op] ELSE 0
 TopicOf(lr)        == <<lr.seat, lr.epoch, lr.round>>
 Mark(s, o, topic)  == IF o \in DOMAIN s.marks /\ topic \in DOMAIN s.marks[o] THEN s.marks[o][topic] ELSE 0
 Bound(s, seat)     == IF SeatDomain(s, seat) = "run" THEN s.runBound ELSE s.buildBound
@@ -249,7 +280,9 @@ AppraisalOk(s, idx, e, w) ==
 AttOf(a) == [verdict |-> a.verdict, nEpoch |-> a.nEpoch, nIndex |-> a.nIndex,
              gen |-> a.gen, key |-> a.key, platform |-> a.platform]
 
-HasKey(lr) == ~IsNone(lr.att) /\ ~IsNone(lr.att.key)
+\* The key an action under the lease is signed with: an attested guest's session key
+\* (ADR-0034 §3.5), or, on an emergency seat's lease, the person's (ADR-0052 §1)
+HasKey(lr) == (~IsNone(lr.att) /\ ~IsNone(lr.att.key)) \/ ~IsNone(lr.person)
 
 \* State::contained (ADR-0034 §4): a lookup over the lease, the profile and the issued rules
 ContainedF(s, f) ==
@@ -274,6 +307,26 @@ TargetMatches(t, lr) ==
   \/ t.kind = "persona"     /\ t.id = lr.persona
   \/ t.kind = "confinement" /\ t.id = lr.conf
 
+\* State::seated: seated, and nothing it was seated with has been revoked
+Seated(s, seat) ==
+  /\ seat \in DOMAIN s.seatings
+  /\ ~\E t \in s.revoked : TargetMatches(t, s.seatings[seat])
+
+SameBinding(a, b) ==
+  a.principal = b.principal /\ a.persona = b.persona /\ a.bundle = b.bundle /\ a.conf = b.conf /\ a.rung = b.rung
+
+\* State::not_a_first_seating (ADR-0050 §2): an unsigned grant that keeps the seat's seated
+\* binding is a successor, and an operator's, wherever two operators of the domain are live
+NotAFirstSeating(s, e) ==
+  /\ OperatorsDeclared(s)
+  /\ e.seat \in DOMAIN s.seatings
+  /\ SameBinding(s.seatings[e.seat], e)
+  /\ SeatDomain(s, e.seat) # NONE
+  /\ Cardinality(LiveOperators(s, SeatDomain(s, e.seat))) >= 2
+
+SeatingOf(e) == [principal |-> e.principal, persona |-> e.persona, bundle |-> e.bundle, conf |-> e.conf,
+                 rung |-> e.rung, alphabet |-> e.alphabet, role |-> e.role, taskLabels |-> e.taskLabelsAllowed]
+
 \* State::apply_grant
 ApplyGrant(s, idx, e) ==
   LET dom  == SeatDomain(s, e.seat)
@@ -292,6 +345,7 @@ ApplyGrant(s, idx, e) ==
      ELSE IF revokedHit THEN Rej(s)
      ELSE IF e.rung > 3 THEN Rej(s)
      ELSE IF e.rung # s.seats[e.seat].rung THEN Rej(s)   \* ADR-0034 §3.4, M_DOWNGRADE
+     ELSE IF kind = "operator" /\ ~e.signOnOk THEN Rej(s)   \* ADR-0050 §3: sign-on at the lease boundary
      ELSE IF e.rung = 0 /\ ~IsNone(e.appraisal) THEN Rej(s)
      ELSE IF e.rung > 0 /\ IsNone(e.appraisal) THEN Rej(s)
      ELSE IF e.rung > 0 /\ ~AppraisalOk(s, idx, e, [principal |-> e.principal, round |-> e.round,
@@ -300,13 +354,16 @@ ApplyGrant(s, idx, e) ==
      ELSE IF e.ttl > s.tPersona THEN Rej(s)      \* ADR-0031 A2
      ELSE IF unread THEN Rej(s)
      ELSE IF reused THEN Rej(s)
-     ELSE LET lr == [principal |-> e.principal, seat |-> e.seat, persona |-> e.persona,
+     ELSE LET lr == [principal |-> e.principal, seat |-> e.seat, persona |-> e.persona, bundle |-> e.bundle,
                      epoch |-> s.epoch, rulesEpoch |-> s.rulesEpoch, conf |-> e.conf, rung |-> e.rung,
                      alphabet |-> e.alphabet, round |-> e.round, role |-> e.role, ttl |-> e.ttl,
                      ended |-> NONE, actions |-> 0, seq |-> 0,
-                     att |-> IF e.rung = 0 THEN NONE ELSE AttOf(e.appraisal), sessionCtr |-> 0]
+                     att |-> IF e.rung = 0 THEN NONE ELSE AttOf(e.appraisal), sessionCtr |-> 0,
+                     \* ADR-0047 §4: the task is delivered clear, so clearSet starts from its label
+                     clearSet |-> e.taskLabel, results |-> EmptyFn, consults |-> EmptyFn,
+                     person |-> NONE, envelope |-> EmptyFn]
           IN [st  |-> [s EXCEPT !.leases = Put(@, idx, lr), !.liveBySeat = Put(@, e.seat, idx),
-                                !.lastRound = Put(@, e.seat, e.round)],
+                                !.lastRound = Put(@, e.seat, e.round), !.lastLease = Put(@, e.seat, idx)],
               res |-> [kind |-> "LeaseGranted", fence |-> idx]]
 
 \* State::apply_renew (ADR-0031 §4, A1)
@@ -314,6 +371,7 @@ ApplyRenew(s, idx, e) ==
   IF e.fence \notin DOMAIN s.leases THEN Rej(s)
   ELSE LET old == s.leases[e.fence] IN
     IF old.seat # e.seat \/ old.ended # NONE THEN Rej(s)
+    ELSE IF SeatKindOf(s, e.seat) = "emergency" THEN Rej(s)   \* ADR-0052 §3: no renewal
     ELSE IF old.epoch # s.epoch \/ old.rulesEpoch # s.rulesEpoch THEN Rej(s)
     ELSE IF e.ttl > s.tPersona THEN Rej(s)      \* ADR-0031 A2
     ELSE IF ~(e.alphabet \subseteq old.alphabet) THEN Rej(s)
@@ -330,7 +388,7 @@ ApplyRenew(s, idx, e) ==
     ELSE LET new == [old EXCEPT !.alphabet = e.alphabet, !.ttl = e.ttl,
                                 !.att = IF IsNone(old.att) THEN NONE ELSE AttOf(e.appraisal)]
          IN [st  |-> [s EXCEPT !.leases = Put([@ EXCEPT ![e.fence].ended = "renewed"], idx, new),
-                               !.liveBySeat = Put(@, e.seat, idx)],
+                               !.liveBySeat = Put(@, e.seat, idx), !.lastLease = Put(@, e.seat, idx)],
              res |-> [kind |-> "Renewed", fence |-> idx]]
 
 \* State::apply_revoke (ADR-0031 §5 R3)
@@ -356,6 +414,10 @@ ApplyAdmit(s, idx, e) ==
   ELSE IF ~CheckLive(s, e) THEN Rej(s)
   ELSE IF e.action.kind \in RunEffects /\ SeatKindOf(s, e.seat) = "thinker" /\ ~ObserverCovers(s, e.seat) THEN Rej(s)
   ELSE IF e.action.kind = "Actuate" /\ ~ChannelFidelity(s, e.lease, e.action.tool) THEN Rej(s)
+  \* ADR-0047 §1, §4: no Run delivery is unlabelled, and the floor's answer was about the clearSet
+  \* the admit names; if the round's has grown since, the admit is refused
+  ELSE IF e.action.kind \in {"Consult", "Actuate"}
+          /\ (IsNone(e.labels) \/ e.labels.clearSet # s.leases[e.lease].clearSet) THEN Rej(s)
   \* ADR-0034 §3.5: under a session key, the attested guest's proof with a fresh counter
   ELSE IF HasKey(s.leases[e.lease])
           /\ (IsNone(e.session) \/ ~e.proofOk \/ e.session.ctr <= s.leases[e.lease].sessionCtr) THEN Rej(s)
@@ -363,9 +425,18 @@ ApplyAdmit(s, idx, e) ==
            a   == e.action
            lr1 == [s.leases[f] EXCEPT !.actions = @ + 1,
                                       !.sessionCtr = IF HasKey(s.leases[f]) THEN e.session.ctr ELSE @]
-       IN CASE a.kind \in {"Emit", "Report", "Actuate"} ->
+           item == [label |-> e.labels.resultLabel, delivery |-> e.labels.delivery]
+           \* ADR-0047 §4: what is delivered clear joins clearSet, at admit
+           Read(cs) == IF e.labels.delivery = "clear" THEN cs \cup e.labels.resultLabel ELSE cs
+       IN CASE a.kind \in {"Emit", "Report"} ->
                LET lr2 == [lr1 EXCEPT !.seq = @ + 1]
                IN [st |-> [s EXCEPT !.leases = Put(@, f, lr2)], res |-> Admitted(lr2.seq, NONE)]
+          [] a.kind = "Actuate" ->
+               LET lr2 == [lr1 EXCEPT !.seq = @ + 1, !.results = Put(@, lr1.seq + 1, item), !.clearSet = Read(@)]
+               IN [st |-> [s EXCEPT !.leases = Put(@, f, lr2)], res |-> Admitted(lr2.seq, NONE)]
+          [] a.kind = "Consult" ->
+               LET lr2 == [lr1 EXCEPT !.consults = Put(@, a.object, item), !.clearSet = Read(@)]
+               IN [st |-> [s EXCEPT !.leases = Put(@, f, lr2)], res |-> Admitted(NONE, NONE)]
           [] a.kind = "Heartbeat" ->
                LET lr2   == [lr1 EXCEPT !.seq = @ + 1]
                    marks == Put(s.marks, e.seat, Put(IF e.seat \in DOMAIN s.marks THEN s.marks[e.seat] ELSE EmptyFn, a.topic, a.watermark))
@@ -405,19 +476,178 @@ ApplyIssue(s, e) ==
   ELSE LET r  == e.rules
            s1 == [s EXCEPT !.rulesEpoch = r.rulesEpoch, !.seats = r.seats, !.grantRoster = r.grantRoster,
                            !.vetoRoster = r.vetoRoster, !.quorum = r.quorum, !.minGrant = r.minGrant,
-                           !.bgIssued = r.bgIssued, !.bgRoster = r.bgRoster,
+                           !.bgIssued = r.bgIssued, !.bgRoster = r.bgRoster, !.bgQuorum = r.bgQuorum,
                            !.verifierKeys = r.verifierKeys, !.bundleKeys = r.bundleKeys,
                            !.personas = r.personas, !.criterion = r.criterion]
        IN [st |-> EndAllLive(s1, "rules_changed"), res |-> [kind |-> "Issued", rulesEpoch |-> r.rulesEpoch]]
 
-ApplyBreakGlass(s, e) ==
-  IF ~s.bgIssued THEN Rej(s)
-  ELSE IF e.epoch # s.epoch THEN Rej(s)
-  ELSE IF e.key \notin s.bgRoster \/ ~e.ok THEN Rej(s)
-  ELSE LET bySeat == IF e.seat \in DOMAIN s.approvals THEN s.approvals[e.seat] ELSE EmptyFn
-           keys   == (IF e.epoch \in DOMAIN bySeat THEN bySeat[e.epoch] ELSE {}) \cup {e.key}
-       IN [st  |-> [s EXCEPT !.approvals = Put(@, e.seat, Put(bySeat, e.epoch, keys))],
-           res |-> [kind |-> "BreakGlassApproved", approvals |-> Cardinality(keys)]]
+\* --- the control alphabet (ADR-0050 §4; control.rs, State::control_facts, apply_control) ---
+
+NoFacts(s, e) ==
+  LET op == e.operator IN
+  [personaInForce |-> Seated(s, op), hasLease |-> HasLive(s, op),
+   peerLive |-> LiveOperators(s, SeatDomain(s, op)) \ {op} # {},
+   freshAssertion |-> e.freshOk,
+   targetSeated |-> FALSE, targetLive |-> FALSE, sameBinding |-> FALSE, nextRound |-> FALSE,
+   lastAlphabet |-> {}, newAlphabet |-> {}, taskLabelled |-> FALSE, taskLabel |-> {},
+   taskLabelsAllowed |-> {}, domain |-> SeatDomain(s, op), targetDomain |-> NONE, targetSeat |-> NONE]
+
+OnSeat(s, f, seat) ==
+  [f EXCEPT !.targetSeat = seat, !.targetDomain = SeatDomain(s, seat),
+            !.targetSeated = Seated(s, seat), !.targetLive = HasLive(s, seat)]
+
+HasLast(s, seat) == seat \in DOMAIN s.lastLease /\ s.lastLease[seat] \in DOMAIN s.leases
+LastOf(s, seat)  == s.leases[s.lastLease[seat]]
+
+\* The seats a revocation's target is seated at, in the operator's domain or outside it
+SeatedAt(s, t, dom, outside) ==
+  {x \in DOMAIN s.seatings :
+     /\ TargetMatches(t, s.seatings[x])
+     /\ SeatDomain(s, x) # NONE
+     /\ (SeatDomain(s, x) # dom) = outside}
+
+\* State::control_facts. `ok` is FALSE where the code returns an error and computes none.
+\* A revocation is lifted on a seat the target is seated at, one outside the operator's domain
+\* if there is one, so that C9 sees a revocation that reaches outside it. Which of several such
+\* seats is the code's choice, taken from the carried facts and checked to be one of them.
+ControlFacts(s, e) ==
+  LET op   == e.operator
+      a    == e.action
+      base == NoFacts(s, e)
+      dom  == SeatDomain(s, op)
+      bad  == [ok |-> FALSE, f |-> base]
+      good(f) == [ok |-> TRUE, f |-> f]
+  IN IF e.epoch # s.epoch THEN bad
+     ELSE CASE a.kind = "Regrant" ->
+            IF SeatKindOf(s, a.target) = "emergency" THEN bad   \* ADR-0052 §3: no successor
+            ELSE IF SeatDomain(s, a.target) = NONE THEN bad
+            ELSE LET f1 == OnSeat(s, base, a.target)
+                     f2 == IF a.target \in DOMAIN s.seatings /\ HasLast(s, a.target)
+                             THEN [f1 EXCEPT !.sameBinding = SameBinding(s.seatings[a.target], LastOf(s, a.target)),
+                                             !.nextRound = LastOf(s, a.target).round + 1 = a.round,
+                                             !.lastAlphabet = LastOf(s, a.target).alphabet,
+                                             !.taskLabelsAllowed = s.seatings[a.target].taskLabels]
+                             ELSE f1
+                 IN good([f2 EXCEPT !.newAlphabet = a.alphabet, !.taskLabelled = a.taskLabelled,
+                                    !.taskLabel = a.taskLabel])
+          [] a.kind = "Renew" ->
+            IF SeatKindOf(s, a.target) = "emergency" THEN bad   \* ADR-0052 §3: no renewal
+            ELSE IF SeatDomain(s, a.target) = NONE THEN bad
+            ELSE LET f1 == OnSeat(s, base, a.target)
+                 IN good([f1 EXCEPT !.lastAlphabet = IF HasLast(s, a.target) THEN LastOf(s, a.target).alphabet ELSE {},
+                                    !.newAlphabet = a.alphabet])
+          [] a.kind = "EndRound" ->
+            IF SeatDomain(s, a.target) = NONE THEN bad ELSE good(OnSeat(s, base, a.target))
+          [] a.kind = "Revoke" ->
+            LET outside == SeatedAt(s, a.target, dom, TRUE)
+                inside  == SeatedAt(s, a.target, dom, FALSE)
+                picked  == e.facts.targetSeat
+            IN IF outside \cup inside = {} THEN bad
+               ELSE IF outside # {} THEN (IF picked \in outside THEN good(OnSeat(s, base, picked)) ELSE bad)
+               ELSE (IF picked \in inside THEN good(OnSeat(s, base, picked)) ELSE bad)
+          [] OTHER -> good(base)                                \* AttestGates, FenceEpoch
+
+\* ControlFacts::permitted: the envelope of C1 to C9, restated at apply
+Permitted(f, a, op) ==
+  LET own    == f.domain # NONE /\ f.domain = f.targetDomain
+      isSelf == f.targetSeat = op
+      isAdd  == a.kind \in {"Regrant", "Renew", "AttestGates"}
+      c5     == isAdd => (f.hasLease /\ f.peerLive)
+      deny   == f.personaInForce /\ (f.hasLease \/ f.freshAssertion)
+  IN /\ c5
+     /\ CASE a.kind = "Regrant" ->
+               /\ ~isSelf                                                   \* C6
+               /\ f.taskLabelled /\ f.taskLabel \subseteq f.taskLabelsAllowed  \* C8
+               /\ own /\ f.targetSeated /\ ~f.targetLive /\ f.sameBinding /\ f.nextRound
+               /\ f.newAlphabet \subseteq f.lastAlphabet                     \* C1
+          [] a.kind = "Renew"       -> ~isSelf /\ own /\ f.targetLive       \* C6, C2
+          [] a.kind = "AttestGates" -> f.domain = "build"                  \* C3
+          [] a.kind = "FenceEpoch"  -> f.hasLease /\ deny                   \* C7, C4
+          [] OTHER                  -> own /\ deny                          \* C9, C4: EndRound, Revoke
+
+\* State::apply_control
+ApplyControl(s, idx, e) ==
+  LET op == e.operator
+      a  == e.action
+  IN IF SeatKindOf(s, op) # "operator" THEN Rej(s)
+     ELSE IF ~e.sigOk THEN Rej(s)
+     ELSE IF e.ctr <= Ctr(s, op) THEN Rej(s)
+     ELSE LET cf == ControlFacts(s, e) IN
+       IF ~cf.ok THEN Rej(s)
+       ELSE IF cf.f # e.facts THEN Rej(s)                 \* decided on facts that no longer hold
+       ELSE IF ~Permitted(cf.f, a, op) THEN Rej(s)
+       ELSE LET s1 == [s EXCEPT !.controlCtr = Put(@, op, e.ctr)] IN
+         CASE a.kind = "Regrant" ->
+                IF IsNone(e.grant) \/ a.target \notin DOMAIN s1.seatings THEN Rej(s1)
+                ELSE LET g  == e.grant
+                         sg == s1.seatings[a.target]
+                         asked  == /\ g.seat = a.target /\ g.round = a.round /\ g.alphabet = a.alphabet
+                                   /\ g.ttl = a.ttl /\ g.taskLabelled = a.taskLabelled
+                                   /\ g.taskLabel = a.taskLabel /\ e.signOnSame
+                         seated == SameBinding(g, sg) /\ g.role = sg.role
+                     IN IF ~(asked /\ seated) THEN Rej(s1) ELSE ApplyGrant(s1, idx, g)
+           [] a.kind = "Renew" ->
+                IF IsNone(e.renew) THEN Rej(s1)
+                ELSE LET r == e.renew IN
+                  IF r.seat # a.target \/ r.alphabet # a.alphabet \/ r.ttl # a.ttl THEN Rej(s1)
+                  ELSE IF SeatKindOf(s1, a.target) = "operator" /\ ~e.targetSignOnOk THEN Rej(s1)
+                  ELSE ApplyRenew(s1, idx, r)
+           [] a.kind = "AttestGates" ->
+                [st |-> [s1 EXCEPT !.gates = Put(@, a.artifact, a.evidence)], res |-> [kind |-> "GatesRecorded"]]
+           [] a.kind = "EndRound" ->
+                IF HasLive(s1, a.target)
+                  THEN [st |-> EndLease(s1, s1.liveBySeat[a.target], "operator"), res |-> [kind |-> "RoundEnded"]]
+                  ELSE Rej(s1)
+           [] a.kind = "Revoke" -> ApplyRevoke(s1, [target |-> a.target])
+           [] a.kind = "FenceEpoch" ->
+                [st |-> EndAllLive([s1 EXCEPT !.epoch = @ + 1], "fenced"),
+                 res |-> [kind |-> "EpochIncremented", epoch |-> s1.epoch + 1]]
+
+\* --- the emergency seating (ADR-0052; State::apply_activate) --------------------------
+
+\* State::apply_activate: the roster's quorum seats one named person for one round
+ApplyActivate(s, idx, e) ==
+  IF SeatKindOf(s, e.seat) # "emergency" THEN Rej(s)
+  ELSE IF e.seat \notin DOMAIN s.emSeatings THEN Rej(s)
+  ELSE LET sg == s.emSeatings[e.seat] IN
+    IF e.epoch # s.epoch THEN Rej(s)
+    ELSE IF e.person \notin sg.persons THEN Rej(s)
+    ELSE IF ~s.bgIssued THEN Rej(s)
+    ELSE IF Cardinality(e.approvers) < s.bgQuorum THEN Rej(s)
+    ELSE IF e.taskSome /\ ~e.taskLabelled THEN Rej(s)            \* ADR-0047 §1
+    ELSE IF e.taskLabelled /\ ~(e.taskLabel \subseteq sg.taskLabels) THEN Rej(s)
+    ELSE IF ~sg.envDomain /\ ~(DOMAIN e.envelope = sg.envNamed /\ \A t \in DOMAIN e.envelope : e.envelope[t] = sg.bundle)
+      THEN Rej(s)
+    ELSE LET g == [principal |-> e.person, seat |-> e.seat, persona |-> e.persona, bundle |-> sg.bundle,
+                   conf |-> e.conf, rung |-> 0, alphabet |-> {"Consult", "Actuate", "Report"},
+                   ttl |-> e.ttl, round |-> e.round, role |-> "author",
+                   taskLabelled |-> e.taskLabelled, taskLabel |-> e.taskLabel, taskLabelsAllowed |-> {},
+                   signOnOk |-> FALSE, appraisal |-> NONE, sigOk |-> FALSE, sigKey |-> NONE]
+             r == ApplyGrant(s, idx, g)
+         IN IF r.res.kind # "LeaseGranted" THEN r
+            ELSE LET seating == [SeatingOf(g) EXCEPT !.taskLabels = sg.taskLabels]
+                     rec == [at |-> idx, seat |-> e.seat, person |-> e.person, epoch |-> e.epoch,
+                             round |-> e.round, approvers |-> e.approvers, drill |-> sg.drill]
+                 IN [st  |-> [r.st EXCEPT !.leases = [@ EXCEPT ![idx].person = e.person, ![idx].envelope = e.envelope],
+                                          !.seatings = Put(@, e.seat, seating),
+                                          !.activations = Append(@, rec)],
+                     res |-> r.res]
+
+\* The unsigned grant: the BOOTSTRAP path's first seating (ADR-0050 §2)
+ApplySeating(s, idx, e) ==
+  IF SeatKindOf(s, e.seat) = "emergency" THEN Rej(s)             \* leased only by an activation
+  ELSE IF NotAFirstSeating(s, e) THEN Rej(s)
+  ELSE LET r == ApplyGrant(s, idx, e) IN
+    IF r.res.kind # "LeaseGranted" THEN r
+    ELSE [st |-> [r.st EXCEPT !.seatings = Put(@, e.seat, SeatingOf(e))], res |-> r.res]
+
+\* ADR-0050 §4: where the rules declare an operator, the unsigned path seats and does nothing
+\* else. What the mechanism orders for itself stays: an expiry, an abstention, a terminal vote,
+\* a re-attestation at renewal, a Contested verdict.
+Unsigned(e) ==
+  \/ e.kind = "Renew" /\ IsNone(e.appraisal)
+  \/ e.kind = "EndRound" /\ e.reason = "operator"
+  \/ e.kind \in {"Revoke", "EpochIncrement", "GatesPassed"}
 
 \* State::apply_contested (ADR-0034 §3.3, §3.7): a signed rung-3 Contested revokes the principal
 ApplyContested(s, e) ==
@@ -443,7 +673,14 @@ ApplyRaw(s0, idx, e) ==
   LET s == [s0 EXCEPT !.lastApplied = idx] IN
   IF e.id \in s.appliedIds THEN [st |-> s, res |-> [kind |-> "Duplicate"]]
   ELSE LET s1 == [s EXCEPT !.appliedIds = @ \cup {e.id}] IN
-    CASE e.kind = "Grant"             -> ApplyGrant(s1, idx, e)
+    IF OperatorsDeclared(s1) /\ Unsigned(e) THEN Rej(s1)
+    ELSE
+    CASE e.kind = "Grant"             -> ApplySeating(s1, idx, e)
+      [] e.kind = "Control"           -> ApplyControl(s1, idx, e)
+      [] e.kind = "Activate"          -> ApplyActivate(s1, idx, e)
+      [] e.kind = "EmergencySeating"  ->
+           IF SeatKindOf(s1, e.seat) # "emergency" THEN Rej(s1)
+           ELSE [st |-> [s1 EXCEPT !.emSeatings = Put(@, e.seat, e.seating)], res |-> [kind |-> "EmergencyPrepared"]]
       [] e.kind = "Renew"             -> ApplyRenew(s1, idx, e)
       [] e.kind = "Admit"             -> ApplyAdmit(s1, idx, e)
       [] e.kind = "EndRound"          -> ApplyEndRound(s1, e)
@@ -453,7 +690,7 @@ ApplyRaw(s0, idx, e) ==
       [] e.kind = "Issue"             -> ApplyIssue(s1, e)
       [] e.kind = "GatesPassed"       -> [st |-> [s1 EXCEPT !.gates = Put(@, e.artifact, e.evidence)],
                                           res |-> [kind |-> "GatesRecorded"]]
-      [] e.kind = "BreakGlassApprove" -> ApplyBreakGlass(s1, e)
+      [] e.kind = "BreakGlassApprove" -> Rej(s1)       \* X1 is retired (ADR-0052 §2)
       [] e.kind = "Contested"         -> ApplyContested(s1, e)
       [] e.kind = "ProfileRegister"   -> ApplyProfileRegister(s1, idx, e)
 

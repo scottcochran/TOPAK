@@ -291,6 +291,14 @@ impl Mechanism {
             let mut st = self.state.write().unwrap();
             let before: Vec<LogIndex> = st.live_by_seat.values().copied().collect();
             let applied = st.apply(slot, &entry, &self.params);
+            // The local observation of a grant is recorded before the state lock is released.
+            // A lease visible in the state with no observation reads as expired (fail closed),
+            // so recording it afterwards left a window in which the sweeper, or an admit, could
+            // see a lease just granted and end it. Lock order is state, then `observed`, as in
+            // `sweep_expired` and `admit`.
+            if let Applied::LeaseGranted { fence } | Applied::Renewed { fence } = &applied {
+                self.observed.lock().unwrap().insert(*fence, self.clock.now_ms());
+            }
             let ended: Vec<(LogIndex, String, String)> = before
                 .into_iter()
                 .filter_map(|f| {
@@ -307,9 +315,6 @@ impl Mechanism {
                 .collect();
             (applied, ended)
         };
-        if let Applied::LeaseGranted { fence } | Applied::Renewed { fence } = &applied {
-            self.observed.lock().unwrap().insert(*fence, self.clock.now_ms());
-        }
         // ADR-0039 §1: `heard(o)` is when *this replica* applied the heartbeat, on its own clock.
         if let Entry::Admit { rec, .. } = &entry
             && matches!(rec.action, Admitted::Heartbeat { .. })
@@ -1192,7 +1197,8 @@ impl Mechanism {
         let reasons = match self.floor.decide(&frozen) {
             topak_core::admit::FloorOutcome::Permit { reasons } => reasons,
             topak_core::admit::FloorOutcome::Deny { reasons } => {
-                return json!({ "ok": false, "denied": "floor", "floor": reasons });
+                // The facts the floor was asked about: what the operator needs to see why.
+                return json!({ "ok": false, "denied": "floor", "floor": reasons, "facts": facts });
             }
             topak_core::admit::FloorOutcome::Error { diagnostics } => {
                 return json!({ "ok": false, "denied": "floor", "error": diagnostics });

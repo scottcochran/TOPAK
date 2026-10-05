@@ -1,0 +1,14 @@
+base      none Safe
+nc1       none NC1
+nc2       none NC2
+erased    none NeverErased
+emeffect  none NeverEmEffect
+emerased  none NeverEmErased
+after     none NeverErasedAfterRound
+second    none NeverSecondActivation
+m1        M1   NC1
+m1x       M1   NC2
+m2        M2   NC2
+m2x       M2   NC1
+m3        M3   NC1
+m3x       M3   NC2

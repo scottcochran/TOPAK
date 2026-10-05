@@ -10,7 +10,10 @@ here=$(cd "$(dirname "$0")" && pwd)
 for t in "$@"; do
   gen=$(python3 "$here/trace2tla.py" "$t" "$here") || { echo "$t | ERROR converting"; continue; }
   mod=${gen% *}; steps=${gen#* }
-  out=$(cd "$here" && java -XX:+UseParallelGC -cp "$jar" tlc2.TLC -config $mod.cfg -workers 1 -deadlock -metadir /tmp/tlc_$mod $mod.tla 2>&1)
+  # Each TLC has its own temp directory: it unpacks the standard modules there, and runs in
+  # parallel (mechanism-trace-results.sh) collide on a shared one.
+  mkdir -p /tmp/tlc_$mod/tmp
+  out=$(cd "$here" && java -XX:+UseParallelGC -Djava.io.tmpdir=/tmp/tlc_$mod/tmp -cp "$jar" tlc2.TLC -config $mod.cfg -workers 1 -deadlock -metadir /tmp/tlc_$mod $mod.tla 2>&1)
   if echo "$out" | grep -q "No error has been found"; then r="MATCH"
   elif echo "$out" | grep -q "is violated"; then
     at=$(echo "$out" | grep -oE "^/\\\\ i = [0-9]+" | tail -1 | grep -oE "[0-9]+")
@@ -19,6 +22,6 @@ for t in "$@"; do
   else r="ERROR"; fi
   echo "$mod | $steps steps | $r"
   [ "$r" = "ERROR" ] && echo "$out" | grep -v "^$" | tail -15
-  rm -f "$here/$mod.cfg"
+  rm -f "$here/$mod.cfg"; rm -rf /tmp/tlc_$mod
 done
 exit 0

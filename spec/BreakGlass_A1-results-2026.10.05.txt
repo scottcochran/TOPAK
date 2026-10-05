@@ -1,0 +1,268 @@
+TOPAK — BreakGlass_A1.tla: break-glass as an emergency seating, successor to BreakGlass.tla (ADR-0029 §5; ADR-0026 A2 pending; ADR-0052 §9), run 2026.10.05
+Module: BreakGlass_A1.tla (sha256 b586a6afa4fd5136) · RulesFloorBase.tla (sha256 cf2351de2b39cccf) · TLC Version 2.19 of 08 August 2024 (jar sha256 936a262061c91469) · openjdk version "25.0.1" 2025-10-21
+Runner: a1-run.sh · rows: BreakGlass_A1-rows.txt · MaxRound = 2 · MaxEpoch = 2
+
+=== a1-base · Mut=none · Active={"R1","R2","R5","R6","R7","R9"} · INVARIANT EmergencyNeverChangesAuthority
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.6E-9
+  based on the actual fingerprints:  val = 6.9E-12
+3335244 states generated, 8649 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 31 and the 95th percentile is 2).
+Finished in 17s at (2026-10-05 02:53:52)
+
+=== a1-nor7 · Mut=none · Active={"R1","R2","R5","R6","R9"} · INVARIANT EmergencyNeverChangesAuthority
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.0E-7
+  based on the actual fingerprints:  val = 2.2E-10
+212476428 states generated, 69129 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 31 and the 95th percentile is 2).
+Finished in 02min 08s at (2026-10-05 02:56:01)
+
+=== a1-reach · Mut=none · Active={"R1","R2","R5","R6","R7","R9"} · INVARIANT NeverEmergencyAct
+Error: Invariant NeverEmergencyAct is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ epoch = 0
+/\ round = 0
+/\ rules = [ grant |-> {"h2", "h3", "h5"},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {"Op"},
+  exceptions |-> 2 ]
+/\ emDid = {}
+/\ lease = [alphabet |-> {}, round |-> 0]
+State 2: <Issue line 51, col 3 to line 55, col 31 of module BreakGlass_A1>
+/\ epoch = 1
+/\ round = 0
+/\ rules = [ grant |-> {},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {},
+  exceptions |-> 0 ]
+/\ emDid = {}
+/\ lease = [alphabet |-> {}, round |-> 0]
+State 3: <Issue line 51, col 3 to line 55, col 31 of module BreakGlass_A1>
+/\ epoch = 2
+/\ round = 0
+/\ rules = [ grant |-> {},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {},
+  exceptions |-> 0 ]
+/\ emDid = {}
+/\ lease = [alphabet |-> {}, round |-> 0]
+State 4: <Activate line 67, col 3 to line 72, col 38 of module BreakGlass_A1>
+/\ epoch = 2
+/\ round = 1
+/\ rules = [ grant |-> {},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {},
+  exceptions |-> 0 ]
+/\ emDid = {}
+/\ lease = [alphabet |-> {"Op"}, round |-> 1]
+State 5: <Act line 79, col 3 to line 81, col 45 of module BreakGlass_A1>
+/\ epoch = 2
+/\ round = 1
+/\ rules = [ grant |-> {},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {},
+  exceptions |-> 0 ]
+/\ emDid = {"Op"}
+/\ lease = [alphabet |-> {"Op"}, round |-> 1]
+374990 states generated, 2894 distinct states found, 1909 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 1 (minimum is 1, the maximum 31 and the 95th percentile is 1).
+Finished in 07s at (2026-10-05 02:56:09)
+
+=== a1-second · Mut=none · Active={"R1","R2","R5","R6","R7","R9"} · INVARIANT NeverSecondRound
+Error: Invariant NeverSecondRound is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ epoch = 0
+/\ round = 0
+/\ rules = [ grant |-> {"h2", "h3", "h5"},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {"Op"},
+  exceptions |-> 2 ]
+/\ emDid = {}
+/\ lease = [alphabet |-> {}, round |-> 0]
+State 2: <Issue line 51, col 3 to line 55, col 31 of module BreakGlass_A1>
+/\ epoch = 1
+/\ round = 0
+/\ rules = [ grant |-> {},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {"Op"},
+  exceptions |-> 1 ]
+/\ emDid = {}
+/\ lease = [alphabet |-> {}, round |-> 0]
+State 3: <Activate line 67, col 3 to line 72, col 38 of module BreakGlass_A1>
+/\ epoch = 1
+/\ round = 1
+/\ rules = [ grant |-> {},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {"Op"},
+  exceptions |-> 1 ]
+/\ emDid = {}
+/\ lease = [alphabet |-> {"Op"}, round |-> 1]
+State 4: <Issue line 51, col 3 to line 55, col 31 of module BreakGlass_A1>
+/\ epoch = 2
+/\ round = 1
+/\ rules = [ grant |-> {},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {},
+  exceptions |-> 0 ]
+/\ emDid = {}
+/\ lease = [alphabet |-> {}, round |-> 0]
+State 5: <Activate line 67, col 3 to line 72, col 38 of module BreakGlass_A1>
+/\ epoch = 2
+/\ round = 2
+/\ rules = [ grant |-> {},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {},
+  exceptions |-> 0 ]
+/\ emDid = {}
+/\ lease = [alphabet |-> {"Op"}, round |-> 2]
+738620 states generated, 3846 distinct states found, 1910 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 1 (minimum is 1, the maximum 31 and the 95th percentile is 1).
+Finished in 08s at (2026-10-05 02:56:17)
+
+=== a1-scope · Mut=M_SCOPE · Active={"R1","R2","R5","R6","R7","R9"} · INVARIANT EmergencyNeverChangesAuthority
+Error: Invariant EmergencyNeverChangesAuthority is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ epoch = 0
+/\ round = 0
+/\ rules = [ grant |-> {"h2", "h3", "h5"},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {"Op"},
+  exceptions |-> 2 ]
+/\ emDid = {}
+/\ lease = [alphabet |-> {}, round |-> 0]
+State 2: <Issue line 51, col 3 to line 55, col 31 of module BreakGlass_A1>
+/\ epoch = 1
+/\ round = 0
+/\ rules = [ grant |-> {},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {"Op"},
+  exceptions |-> 0 ]
+/\ emDid = {}
+/\ lease = [alphabet |-> {}, round |-> 0]
+State 3: <Issue line 51, col 3 to line 55, col 31 of module BreakGlass_A1>
+/\ epoch = 2
+/\ round = 0
+/\ rules = [ grant |-> {},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {},
+  exceptions |-> 0 ]
+/\ emDid = {}
+/\ lease = [alphabet |-> {}, round |-> 0]
+State 4: <Activate line 67, col 3 to line 72, col 38 of module BreakGlass_A1>
+/\ epoch = 2
+/\ round = 1
+/\ rules = [ grant |-> {},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {},
+  exceptions |-> 0 ]
+/\ emDid = {}
+/\ lease = [alphabet |-> {"Op"}, round |-> 1]
+State 5: <Act line 79, col 3 to line 81, col 45 of module BreakGlass_A1>
+/\ epoch = 2
+/\ round = 1
+/\ rules = [ grant |-> {},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {},
+  exceptions |-> 0 ]
+/\ emDid = {"Issue"}
+/\ lease = [alphabet |-> {"Op"}, round |-> 1]
+354996 states generated, 2388 distinct states found, 1433 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 1 (minimum is 1, the maximum 31 and the 95th percentile is 1).
+Finished in 06s at (2026-10-05 02:56:25)
+
+=== a1-kind · Mut=M_KIND · Active={"R1","R2","R5","R6","R7","R9"} · INVARIANT EmergencyNeverChangesAuthority
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.9E-11
+369409 states generated, 961 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 0 (minimum is 0, the maximum 31 and the 95th percentile is 0).
+Finished in 06s at (2026-10-05 02:56:32)
+
+=== a1-kindx · Mut=M_KIND · Active={"R1","R2","R5","R6","R7","R9"} · INVARIANT NeverEmergencyAct
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.9E-11
+369409 states generated, 961 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 0 (minimum is 0, the maximum 31 and the 95th percentile is 0).
+Finished in 06s at (2026-10-05 02:56:39)
+
+=== a1-kindr7 · Mut=M_KIND · Active={"R1","R2","R5","R6","R9"} · INVARIANT EmergencyNeverChangesAuthority
+Error: Invariant EmergencyNeverChangesAuthority is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ epoch = 0
+/\ round = 0
+/\ rules = [ grant |-> {"h2", "h3", "h5"},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {"Op"},
+  exceptions |-> 2 ]
+/\ emDid = {}
+/\ lease = [alphabet |-> {}, round |-> 0]
+State 2: <Issue line 51, col 3 to line 55, col 31 of module BreakGlass_A1>
+/\ epoch = 1
+/\ round = 0
+/\ rules = [ grant |-> {},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {},
+  exceptions |-> 1 ]
+/\ emDid = {}
+/\ lease = [alphabet |-> {}, round |-> 0]
+State 3: <Activate line 67, col 3 to line 72, col 38 of module BreakGlass_A1>
+/\ epoch = 1
+/\ round = 1
+/\ rules = [ grant |-> {},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {},
+  exceptions |-> 1 ]
+/\ emDid = {}
+/\ lease = [alphabet |-> {"Issue", "Vote", "Promote", "Op"}, round |-> 1]
+State 4: <Act line 79, col 3 to line 81, col 45 of module BreakGlass_A1>
+/\ epoch = 1
+/\ round = 1
+/\ rules = [ grant |-> {},
+  quorum |-> [mode |-> "all", k |-> 0],
+  minGrant |-> 2,
+  bgScope |-> {},
+  exceptions |-> 1 ]
+/\ emDid = {"Issue"}
+/\ lease = [alphabet |-> {"Issue", "Vote", "Promote", "Op"}, round |-> 1]
+20909131 states generated, 18763 distinct states found, 11519 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 1 (minimum is 1, the maximum 31 and the 95th percentile is 1).
+Finished in 17s at (2026-10-05 02:56:57)
+

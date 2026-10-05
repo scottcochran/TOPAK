@@ -63,6 +63,12 @@ fn rules() -> Rules {
     }
 }
 
+/// With `TOPAK_TRACE_DIR` set, every `apply` is recorded for `spec/Mechanism.tla` (`trace.rs`).
+fn traced(mut s: State) -> State {
+    s.trace = topak_core::trace::name_from_env("em");
+    s
+}
+
 fn params() -> Params {
     Params {
         corpus: BTreeSet::new(),
@@ -89,7 +95,7 @@ fn envelope() -> BTreeMap<String, Digest> {
 impl Log {
     /// Two operators seated, and two emergency seatings prepared: one real, one a drill.
     fn prepared() -> Log {
-        let mut log = Log { s: State::genesis(rules(), 2).unwrap(), at: 0 };
+        let mut log = Log { s: traced(State::genesis(rules(), 2).unwrap()), at: 0 };
         for op in ["opr1", "opr2"] {
             let body = sign_on_body(&log.s.chain, &public(op), 0, 0);
             let req = GrantRequest {

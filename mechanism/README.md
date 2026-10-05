@@ -36,7 +36,7 @@ affirmative bundle `true`, from the bundle revision the lease names, is a deny.
 ## Run it
 
 ```sh
-cargo test --workspace --release           # 131 tests (2026.10.05); needs a built bundle (next line); builds topak-demo-guest
+cargo test --workspace --release           # 132 tests (2026.10.05); needs a built bundle (next line); builds topak-demo-guest
 TOPAK_DOCKER_IMAGE=<image with python3> cargo test --release -p topak-contain --test launch   # + a real container round (skipped without it)
 scripts/build-bundle.sh                    # policies/ → bundles/<revision>.tar.gz (docker, OPA); TOPAK_BUNDLE_SECRET=<hex> also writes <revision>.sig
 

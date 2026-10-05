@@ -1,0 +1,518 @@
+TOPAK — NonComposition_A1.tla: NC-1 and NC-2 with break-glass as an emergency seating, successor to NonComposition.tla (ADR-0013 §4; ADR-0052 §9), run 2026.10.05
+Module: NonComposition_A1.tla (sha256 d1e9113480d016bb) · TLC Version 2.19 of 08 August 2024 (jar sha256 936a262061c91469) · openjdk version "25.0.1" 2025-10-21
+Runner: a1-run.sh · rows: NonComposition_A1-rows.txt · MaxRound = 2
+
+=== base · Mut=none · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.4E-15
+320 states generated, 157 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 3 and the 95th percentile is 3).
+Finished in 05s at (2026-10-05 02:57:02)
+
+=== nc1 · Mut=none · INVARIANT NC1
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.4E-15
+320 states generated, 157 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 9.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 3 and the 95th percentile is 3).
+Finished in 05s at (2026-10-05 02:57:08)
+
+=== nc2 · Mut=none · INVARIANT NC2
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.4E-15
+320 states generated, 157 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 9.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 3 and the 95th percentile is 3).
+Finished in 05s at (2026-10-05 02:57:14)
+
+=== erased · Mut=none · INVARIANT NeverErased
+Error: Invariant NeverErased is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ live = 0
+/\ via = {}
+/\ last = 0
+/\ retained = {}
+/\ admitted = {}
+/\ created = {}
+State 2: <Admit line 80, col 13 to line 85, col 39 of module NonComposition_A1>
+/\ live = 0
+/\ via = {}
+/\ last = 0
+/\ retained = { [kind |-> "F1", eff |-> "e2", round |-> 0],
+  [kind |-> "payload", eff |-> "e2", round |-> 0] }
+/\ admitted = {"e2"}
+/\ created = { [kind |-> "F1", eff |-> "e2", round |-> 0],
+  [kind |-> "payload", eff |-> "e2", round |-> 0] }
+State 3: <Erase line 89, col 10 to line 96, col 51 of module NonComposition_A1>
+/\ live = 0
+/\ via = {}
+/\ last = 0
+/\ retained = { [kind |-> "F1", eff |-> "e2", round |-> 0],
+  [kind |-> "F6", eff |-> "em", round |-> 0] }
+/\ admitted = {"e2"}
+/\ created = { [kind |-> "F1", eff |-> "e2", round |-> 0],
+  [kind |-> "F6", eff |-> "em", round |-> 0],
+  [kind |-> "payload", eff |-> "e2", round |-> 0] }
+37 states generated, 33 distinct states found, 4 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 3 (minimum is 1, the maximum 3 and the 95th percentile is 3).
+Finished in 05s at (2026-10-05 02:57:19)
+
+=== emeffect · Mut=none · INVARIANT NeverEmEffect
+Error: Invariant NeverEmEffect is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ live = 0
+/\ via = {}
+/\ last = 0
+/\ retained = {}
+/\ admitted = {}
+/\ created = {}
+State 2: <Activate line 64, col 13 to line 70, col 42 of module NonComposition_A1>
+/\ live = 1
+/\ via = {}
+/\ last = 1
+/\ retained = {[kind |-> "F5", eff |-> "em", round |-> 1]}
+/\ admitted = {}
+/\ created = {[kind |-> "F5", eff |-> "em", round |-> 1]}
+State 3: <EndRound line 73, col 13 to line 75, col 67 of module NonComposition_A1>
+/\ live = 0
+/\ via = {}
+/\ last = 1
+/\ retained = {[kind |-> "F5", eff |-> "em", round |-> 1]}
+/\ admitted = {}
+/\ created = {[kind |-> "F5", eff |-> "em", round |-> 1]}
+State 4: <Activate line 64, col 13 to line 70, col 42 of module NonComposition_A1>
+/\ live = 2
+/\ via = {}
+/\ last = 2
+/\ retained = { [kind |-> "F5", eff |-> "em", round |-> 1],
+  [kind |-> "F5", eff |-> "em", round |-> 2] }
+/\ admitted = {}
+/\ created = { [kind |-> "F5", eff |-> "em", round |-> 1],
+  [kind |-> "F5", eff |-> "em", round |-> 2] }
+State 5: <Admit line 80, col 13 to line 85, col 39 of module NonComposition_A1>
+/\ live = 2
+/\ via = {<<"e1", 2>>}
+/\ last = 2
+/\ retained = { [kind |-> "F1", eff |-> "e1", round |-> 0],
+  [kind |-> "F5", eff |-> "em", round |-> 1],
+  [kind |-> "F5", eff |-> "em", round |-> 2],
+  [kind |-> "payload", eff |-> "e1", round |-> 0] }
+/\ admitted = {"e1"}
+/\ created = { [kind |-> "F1", eff |-> "e1", round |-> 0],
+  [kind |-> "F5", eff |-> "em", round |-> 1],
+  [kind |-> "F5", eff |-> "em", round |-> 2],
+  [kind |-> "payload", eff |-> "e1", round |-> 0] }
+77 states generated, 52 distinct states found, 11 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 2 (minimum is 1, the maximum 3 and the 95th percentile is 3).
+Finished in 05s at (2026-10-05 02:57:25)
+
+=== emerased · Mut=none · INVARIANT NeverEmErased
+Error: Invariant NeverEmErased is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ live = 0
+/\ via = {}
+/\ last = 0
+/\ retained = {}
+/\ admitted = {}
+/\ created = {}
+State 2: <Activate line 64, col 13 to line 70, col 42 of module NonComposition_A1>
+/\ live = 1
+/\ via = {}
+/\ last = 1
+/\ retained = {[kind |-> "F5", eff |-> "em", round |-> 1]}
+/\ admitted = {}
+/\ created = {[kind |-> "F5", eff |-> "em", round |-> 1]}
+State 3: <Admit line 80, col 13 to line 85, col 39 of module NonComposition_A1>
+/\ live = 1
+/\ via = {<<"e1", 1>>}
+/\ last = 1
+/\ retained = { [kind |-> "F1", eff |-> "e1", round |-> 0],
+  [kind |-> "F5", eff |-> "em", round |-> 1],
+  [kind |-> "payload", eff |-> "e1", round |-> 0] }
+/\ admitted = {"e1"}
+/\ created = { [kind |-> "F1", eff |-> "e1", round |-> 0],
+  [kind |-> "F5", eff |-> "em", round |-> 1],
+  [kind |-> "payload", eff |-> "e1", round |-> 0] }
+State 4: <Erase line 89, col 10 to line 96, col 51 of module NonComposition_A1>
+/\ live = 1
+/\ via = {<<"e1", 1>>}
+/\ last = 1
+/\ retained = { [kind |-> "F1", eff |-> "e1", round |-> 0],
+  [kind |-> "F5", eff |-> "em", round |-> 1],
+  [kind |-> "F6", eff |-> "em", round |-> 0] }
+/\ admitted = {"e1"}
+/\ created = { [kind |-> "F1", eff |-> "e1", round |-> 0],
+  [kind |-> "F5", eff |-> "em", round |-> 1],
+  [kind |-> "F6", eff |-> "em", round |-> 0],
+  [kind |-> "payload", eff |-> "e1", round |-> 0] }
+102 states generated, 76 distinct states found, 22 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 3 and the 95th percentile is 3).
+Finished in 05s at (2026-10-05 02:57:30)
+
+=== after · Mut=none · INVARIANT NeverErasedAfterRound
+Error: Invariant NeverErasedAfterRound is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ live = 0
+/\ via = {}
+/\ last = 0
+/\ retained = {}
+/\ admitted = {}
+/\ created = {}
+State 2: <Activate line 64, col 13 to line 70, col 42 of module NonComposition_A1>
+/\ live = 1
+/\ via = {}
+/\ last = 1
+/\ retained = {[kind |-> "F5", eff |-> "em", round |-> 1]}
+/\ admitted = {}
+/\ created = {[kind |-> "F5", eff |-> "em", round |-> 1]}
+State 3: <Admit line 80, col 13 to line 85, col 39 of module NonComposition_A1>
+/\ live = 1
+/\ via = {<<"e2", 1>>}
+/\ last = 1
+/\ retained = { [kind |-> "F1", eff |-> "e2", round |-> 0],
+  [kind |-> "F5", eff |-> "em", round |-> 1],
+  [kind |-> "payload", eff |-> "e2", round |-> 0] }
+/\ admitted = {"e2"}
+/\ created = { [kind |-> "F1", eff |-> "e2", round |-> 0],
+  [kind |-> "F5", eff |-> "em", round |-> 1],
+  [kind |-> "payload", eff |-> "e2", round |-> 0] }
+State 4: <EndRound line 73, col 13 to line 75, col 67 of module NonComposition_A1>
+/\ live = 0
+/\ via = {<<"e2", 1>>}
+/\ last = 1
+/\ retained = { [kind |-> "F1", eff |-> "e2", round |-> 0],
+  [kind |-> "F5", eff |-> "em", round |-> 1],
+  [kind |-> "payload", eff |-> "e2", round |-> 0] }
+/\ admitted = {"e2"}
+/\ created = { [kind |-> "F1", eff |-> "e2", round |-> 0],
+  [kind |-> "F5", eff |-> "em", round |-> 1],
+  [kind |-> "payload", eff |-> "e2", round |-> 0] }
+State 5: <Erase line 89, col 10 to line 96, col 51 of module NonComposition_A1>
+/\ live = 0
+/\ via = {<<"e2", 1>>}
+/\ last = 1
+/\ retained = { [kind |-> "F1", eff |-> "e2", round |-> 0],
+  [kind |-> "F5", eff |-> "em", round |-> 1],
+  [kind |-> "F6", eff |-> "em", round |-> 0] }
+/\ admitted = {"e2"}
+/\ created = { [kind |-> "F1", eff |-> "e2", round |-> 0],
+  [kind |-> "F5", eff |-> "em", round |-> 1],
+  [kind |-> "F6", eff |-> "em", round |-> 0],
+  [kind |-> "payload", eff |-> "e2", round |-> 0] }
+140 states generated, 97 distinct states found, 37 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 3 and the 95th percentile is 3).
+Finished in 05s at (2026-10-05 02:57:36)
+
+=== second · Mut=none · INVARIANT NeverSecondActivation
+Error: Invariant NeverSecondActivation is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ live = 0
+/\ via = {}
+/\ last = 0
+/\ retained = {}
+/\ admitted = {}
+/\ created = {}
+State 2: <Activate line 64, col 13 to line 70, col 42 of module NonComposition_A1>
+/\ live = 1
+/\ via = {}
+/\ last = 1
+/\ retained = {[kind |-> "F5", eff |-> "em", round |-> 1]}
+/\ admitted = {}
+/\ created = {[kind |-> "F5", eff |-> "em", round |-> 1]}
+State 3: <EndRound line 73, col 13 to line 75, col 67 of module NonComposition_A1>
+/\ live = 0
+/\ via = {}
+/\ last = 1
+/\ retained = {[kind |-> "F5", eff |-> "em", round |-> 1]}
+/\ admitted = {}
+/\ created = {[kind |-> "F5", eff |-> "em", round |-> 1]}
+State 4: <Activate line 64, col 13 to line 70, col 42 of module NonComposition_A1>
+/\ live = 2
+/\ via = {}
+/\ last = 2
+/\ retained = { [kind |-> "F5", eff |-> "em", round |-> 1],
+  [kind |-> "F5", eff |-> "em", round |-> 2] }
+/\ admitted = {}
+/\ created = { [kind |-> "F5", eff |-> "em", round |-> 1],
+  [kind |-> "F5", eff |-> "em", round |-> 2] }
+71 states generated, 55 distinct states found, 14 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 4 and the 95th percentile is 4).
+Finished in 05s at (2026-10-05 02:57:42)
+
+=== m1 · Mut=M1 · INVARIANT NC1
+Error: Invariant NC1 is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ live = 0
+/\ via = {}
+/\ last = 0
+/\ retained = {}
+/\ admitted = {}
+/\ created = {}
+State 2: <Admit line 80, col 13 to line 85, col 39 of module NonComposition_A1>
+/\ live = 0
+/\ via = {}
+/\ last = 0
+/\ retained = { [kind |-> "F1", eff |-> "e1", round |-> 0],
+  [kind |-> "payload", eff |-> "e1", round |-> 0] }
+/\ admitted = {"e1"}
+/\ created = { [kind |-> "F1", eff |-> "e1", round |-> 0],
+  [kind |-> "payload", eff |-> "e1", round |-> 0] }
+State 3: <Activate line 64, col 13 to line 70, col 42 of module NonComposition_A1>
+/\ live = 1
+/\ via = {}
+/\ last = 1
+/\ retained = { [kind |-> "F1", eff |-> "e1", round |-> 0],
+  [kind |-> "F5", eff |-> "em", round |-> 1],
+  [kind |-> "payload", eff |-> "e1", round |-> 0] }
+/\ admitted = {"e1"}
+/\ created = { [kind |-> "F1", eff |-> "e1", round |-> 0],
+  [kind |-> "F5", eff |-> "em", round |-> 1],
+  [kind |-> "payload", eff |-> "e1", round |-> 0] }
+State 4: <Erase line 89, col 10 to line 96, col 51 of module NonComposition_A1>
+/\ live = 1
+/\ via = {}
+/\ last = 1
+/\ retained = { [kind |-> "F5", eff |-> "em", round |-> 1],
+  [kind |-> "F6", eff |-> "em", round |-> 0],
+  [kind |-> "payload", eff |-> "e1", round |-> 0] }
+/\ admitted = {"e1"}
+/\ created = { [kind |-> "F1", eff |-> "e1", round |-> 0],
+  [kind |-> "F5", eff |-> "em", round |-> 1],
+  [kind |-> "F6", eff |-> "em", round |-> 0],
+  [kind |-> "payload", eff |-> "e1", round |-> 0] }
+State 5: <Erase line 89, col 10 to line 96, col 51 of module NonComposition_A1>
+/\ live = 1
+/\ via = {}
+/\ last = 1
+/\ retained = { [kind |-> "F5", eff |-> "em", round |-> 1],
+  [kind |-> "F6", eff |-> "em", round |-> 0] }
+/\ admitted = {"e1"}
+/\ created = { [kind |-> "F1", eff |-> "e1", round |-> 0],
+  [kind |-> "F5", eff |-> "em", round |-> 1],
+  [kind |-> "F6", eff |-> "em", round |-> 0],
+  [kind |-> "payload", eff |-> "e1", round |-> 0] }
+67 states generated, 60 distinct states found, 29 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 3 (minimum is 1, the maximum 3 and the 95th percentile is 3).
+Finished in 05s at (2026-10-05 02:57:47)
+
+=== m1x · Mut=M1 · INVARIANT NC2
+Error: Invariant NC2 is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ live = 0
+/\ via = {}
+/\ last = 0
+/\ retained = {}
+/\ admitted = {}
+/\ created = {}
+State 2: <Admit line 80, col 13 to line 85, col 39 of module NonComposition_A1>
+/\ live = 0
+/\ via = {}
+/\ last = 0
+/\ retained = { [kind |-> "F1", eff |-> "e1", round |-> 0],
+  [kind |-> "payload", eff |-> "e1", round |-> 0] }
+/\ admitted = {"e1"}
+/\ created = { [kind |-> "F1", eff |-> "e1", round |-> 0],
+  [kind |-> "payload", eff |-> "e1", round |-> 0] }
+State 3: <Erase line 89, col 10 to line 96, col 51 of module NonComposition_A1>
+/\ live = 0
+/\ via = {}
+/\ last = 0
+/\ retained = { [kind |-> "F6", eff |-> "em", round |-> 0],
+  [kind |-> "payload", eff |-> "e1", round |-> 0] }
+/\ admitted = {"e1"}
+/\ created = { [kind |-> "F1", eff |-> "e1", round |-> 0],
+  [kind |-> "F6", eff |-> "em", round |-> 0],
+  [kind |-> "payload", eff |-> "e1", round |-> 0] }
+38 states generated, 35 distinct states found, 6 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 2 (minimum is 1, the maximum 3 and the 95th percentile is 3).
+Finished in 05s at (2026-10-05 02:57:53)
+
+=== m2 · Mut=M2 · INVARIANT NC2
+Error: Invariant NC2 is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ live = 0
+/\ via = {}
+/\ last = 0
+/\ retained = {}
+/\ admitted = {}
+/\ created = {}
+State 2: <Activate line 64, col 13 to line 70, col 42 of module NonComposition_A1>
+/\ live = 1
+/\ via = {}
+/\ last = 1
+/\ retained = {[kind |-> "F5", eff |-> "em", round |-> 1]}
+/\ admitted = {}
+/\ created = {[kind |-> "F5", eff |-> "em", round |-> 1]}
+State 3: <Erase line 89, col 10 to line 96, col 51 of module NonComposition_A1>
+/\ live = 1
+/\ via = {}
+/\ last = 1
+/\ retained = {[kind |-> "F6", eff |-> "em", round |-> 0]}
+/\ admitted = {}
+/\ created = { [kind |-> "F5", eff |-> "em", round |-> 1],
+  [kind |-> "F6", eff |-> "em", round |-> 0] }
+65 states generated, 49 distinct states found, 14 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 2 (minimum is 1, the maximum 4 and the 95th percentile is 4).
+Finished in 05s at (2026-10-05 02:57:58)
+
+=== m2x · Mut=M2 · INVARIANT NC1
+Error: Invariant NC1 is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ live = 0
+/\ via = {}
+/\ last = 0
+/\ retained = {}
+/\ admitted = {}
+/\ created = {}
+State 2: <Admit line 80, col 13 to line 85, col 39 of module NonComposition_A1>
+/\ live = 0
+/\ via = {}
+/\ last = 0
+/\ retained = { [kind |-> "F1", eff |-> "e1", round |-> 0],
+  [kind |-> "payload", eff |-> "e1", round |-> 0] }
+/\ admitted = {"e1"}
+/\ created = { [kind |-> "F1", eff |-> "e1", round |-> 0],
+  [kind |-> "payload", eff |-> "e1", round |-> 0] }
+State 3: <Activate line 64, col 13 to line 70, col 42 of module NonComposition_A1>
+/\ live = 1
+/\ via = {}
+/\ last = 1
+/\ retained = { [kind |-> "F1", eff |-> "e1", round |-> 0],
+  [kind |-> "F5", eff |-> "em", round |-> 1],
+  [kind |-> "payload", eff |-> "e1", round |-> 0] }
+/\ admitted = {"e1"}
+/\ created = { [kind |-> "F1", eff |-> "e1", round |-> 0],
+  [kind |-> "F5", eff |-> "em", round |-> 1],
+  [kind |-> "payload", eff |-> "e1", round |-> 0] }
+State 4: <Erase line 89, col 10 to line 96, col 51 of module NonComposition_A1>
+/\ live = 1
+/\ via = {}
+/\ last = 1
+/\ retained = { [kind |-> "F5", eff |-> "em", round |-> 1],
+  [kind |-> "F6", eff |-> "em", round |-> 0] }
+/\ admitted = {"e1"}
+/\ created = { [kind |-> "F1", eff |-> "e1", round |-> 0],
+  [kind |-> "F5", eff |-> "em", round |-> 1],
+  [kind |-> "F6", eff |-> "em", round |-> 0],
+  [kind |-> "payload", eff |-> "e1", round |-> 0] }
+160 states generated, 127 distinct states found, 76 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 3 (minimum is 1, the maximum 5 and the 95th percentile is 5).
+Finished in 05s at (2026-10-05 02:58:04)
+
+=== m3 · Mut=M3 · INVARIANT NC1
+Error: Invariant NC1 is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ live = 0
+/\ via = {}
+/\ last = 0
+/\ retained = {}
+/\ admitted = {}
+/\ created = {}
+State 2: <Activate line 64, col 13 to line 70, col 42 of module NonComposition_A1>
+/\ live = 1
+/\ via = {}
+/\ last = 1
+/\ retained = {[kind |-> "F5", eff |-> "em", round |-> 1]}
+/\ admitted = {}
+/\ created = {[kind |-> "F5", eff |-> "em", round |-> 1]}
+State 3: <Admit line 80, col 13 to line 85, col 39 of module NonComposition_A1>
+/\ live = 1
+/\ via = {<<"e1", 1>>}
+/\ last = 1
+/\ retained = { [kind |-> "F1", eff |-> "e1", round |-> 0],
+  [kind |-> "F5", eff |-> "em", round |-> 1],
+  [kind |-> "payload", eff |-> "e1", round |-> 0] }
+/\ admitted = {"e1"}
+/\ created = { [kind |-> "F1", eff |-> "e1", round |-> 0],
+  [kind |-> "F5", eff |-> "em", round |-> 1],
+  [kind |-> "payload", eff |-> "e1", round |-> 0] }
+State 4: <EndRound line 73, col 13 to line 75, col 67 of module NonComposition_A1>
+/\ live = 0
+/\ via = {<<"e1", 1>>}
+/\ last = 1
+/\ retained = { [kind |-> "F1", eff |-> "e1", round |-> 0],
+  [kind |-> "F5", eff |-> "em", round |-> 1],
+  [kind |-> "payload", eff |-> "e1", round |-> 0] }
+/\ admitted = {"e1"}
+/\ created = { [kind |-> "F1", eff |-> "e1", round |-> 0],
+  [kind |-> "F5", eff |-> "em", round |-> 1],
+  [kind |-> "payload", eff |-> "e1", round |-> 0] }
+State 5: <Erase line 89, col 10 to line 96, col 51 of module NonComposition_A1>
+/\ live = 0
+/\ via = {<<"e1", 1>>}
+/\ last = 1
+/\ retained = { [kind |-> "F1", eff |-> "e1", round |-> 0],
+  [kind |-> "F6", eff |-> "em", round |-> 0] }
+/\ admitted = {"e1"}
+/\ created = { [kind |-> "F1", eff |-> "e1", round |-> 0],
+  [kind |-> "F5", eff |-> "em", round |-> 1],
+  [kind |-> "F6", eff |-> "em", round |-> 0],
+  [kind |-> "payload", eff |-> "e1", round |-> 0] }
+218 states generated, 129 distinct states found, 63 states left on queue.
+The depth of the complete state graph search is 10.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 4 and the 95th percentile is 4).
+Finished in 05s at (2026-10-05 02:58:10)
+
+=== m3x · Mut=M3 · INVARIANT NC2
+Error: Invariant NC2 is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ live = 0
+/\ via = {}
+/\ last = 0
+/\ retained = {}
+/\ admitted = {}
+/\ created = {}
+State 2: <Activate line 64, col 13 to line 70, col 42 of module NonComposition_A1>
+/\ live = 1
+/\ via = {}
+/\ last = 1
+/\ retained = {[kind |-> "F5", eff |-> "em", round |-> 1]}
+/\ admitted = {}
+/\ created = {[kind |-> "F5", eff |-> "em", round |-> 1]}
+State 3: <EndRound line 73, col 13 to line 75, col 67 of module NonComposition_A1>
+/\ live = 0
+/\ via = {}
+/\ last = 1
+/\ retained = {[kind |-> "F5", eff |-> "em", round |-> 1]}
+/\ admitted = {}
+/\ created = {[kind |-> "F5", eff |-> "em", round |-> 1]}
+State 4: <Erase line 89, col 10 to line 96, col 51 of module NonComposition_A1>
+/\ live = 0
+/\ via = {}
+/\ last = 1
+/\ retained = {[kind |-> "F6", eff |-> "em", round |-> 0]}
+/\ admitted = {}
+/\ created = { [kind |-> "F5", eff |-> "em", round |-> 1],
+  [kind |-> "F6", eff |-> "em", round |-> 0] }
+61 states generated, 53 distinct states found, 18 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 2 (minimum is 1, the maximum 3 and the 95th percentile is 3).
+Finished in 05s at (2026-10-05 02:58:15)
+

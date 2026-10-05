@@ -883,3 +883,71 @@ fn vouching_keys_are_issued_and_must_be_keys() {
     r.bundle_keys.insert("cd".repeat(32));
     assert!(check_well_formed(&r).is_empty());
 }
+
+// ---- Labels.tla (ADR-0047, Proposed): the round's labels at apply -----------------------------
+
+/// What `apply` holds every replica to about labels (ADR-0047 §1, §4): no Run delivery is
+/// unlabelled; `clearSet` is a fold over what was delivered clear and only grows; a handle adds
+/// nothing to it; and an admit decided against a `clearSet` the round has since grown past is
+/// refused, because the floor's answer was about that set. `Labels.tla`'s `NoUnlabelledDelivery`,
+/// `ClearSetOnlyGrows` and its `M_RESET`.
+#[test]
+fn the_rounds_labels_are_folded_and_a_stale_clear_set_is_refused() {
+    use topak_core::labels::{Delivery, ItemLabel, LabelFacts};
+    let mut p = params();
+    p.round_bound = 20;
+    let mut s = run_state();
+    let mut req = grant_req("r1", RUN_THINKER);
+    req.task_label = Some(BTreeSet::from(["internal".to_string()]));
+    s.apply(1, &Entry::Grant { id: "gt".into(), req, appraisal: None }, &p);
+    s.apply(2, &Entry::Grant { id: "go".into(), req: grant_req("ro1", RUN_OBSERVER), appraisal: None }, &p);
+    let set = |names: &[&str]| names.iter().map(|n| n.to_string()).collect::<BTreeSet<String>>();
+    assert_eq!(s.leases[&1].labels.clear_set, set(&["internal"]), "clearSet starts from the task's label");
+
+    let mut at = 10;
+    let mut step = |s: &mut State, action: Admitted, labels: Option<LabelFacts>| {
+        at += 1;
+        let Entry::Admit { id, mut rec } = admit(&format!("l{at}"), "r1", 1, action, &p) else { unreachable!() };
+        rec.labels = labels;
+        s.apply(at, &Entry::Admit { id, rec }, &p)
+    };
+    let facts = |clear: &[&str], result: &[&str], delivery| {
+        Some(LabelFacts { clear_set: set(clear), result_label: set(result), delivery, ..Default::default() })
+    };
+    let object = |n: &[u8]| Admitted::Consult { object: Digest::of(n) };
+    let refused = |a: &Applied, why: &str| matches!(a, Applied::Rejected(r) if r.contains(why));
+
+    // No label, no delivery.
+    assert!(refused(&step(&mut s, object(b"a"), None), "carries no label"));
+    assert!(refused(&step(&mut s, actuate(), None), "carries no label"));
+    // Delivered as a handle: recorded, and clearSet is as it was.
+    let a = step(&mut s, object(b"a"), facts(&["internal"], &["restricted"], Delivery::Handle));
+    assert!(matches!(a, Applied::Admitted { .. }), "{a:?}");
+    assert_eq!(s.leases[&1].labels.clear_set, set(&["internal"]));
+    assert_eq!(
+        s.leases[&1].labels.consults[&Digest::of(b"a")],
+        ItemLabel { label: set(&["restricted"]), delivery: Delivery::Handle }
+    );
+    // Delivered clear: its label joins clearSet.
+    let a = step(&mut s, object(b"b"), facts(&["internal"], &["untrusted"], Delivery::Clear));
+    assert!(matches!(a, Applied::Admitted { .. }), "{a:?}");
+    assert_eq!(s.leases[&1].labels.clear_set, set(&["internal", "untrusted"]));
+    // M_RESET, and the consensus gap: an admit decided before that read names the clearSet as it
+    // stood. The floor answered about a set that no longer stands, so the admit is refused.
+    let stale = facts(&["internal"], &[], Delivery::Clear);
+    assert!(refused(&step(&mut s, actuate(), stale.clone()), "since grown past"));
+    assert!(refused(&step(&mut s, object(b"c"), stale), "since grown past"));
+    // An Actuate's result is named by its sequence number, and folds the same way.
+    let now = ["internal", "untrusted"];
+    let a = step(&mut s, actuate(), facts(&now, &["untrusted", "restricted"], Delivery::Handle));
+    assert_eq!(a, Applied::Admitted { seq: Some(1), promoted: None });
+    let a = step(&mut s, actuate(), facts(&now, &["restricted"], Delivery::Clear));
+    assert_eq!(a, Applied::Admitted { seq: Some(2), promoted: None });
+    let labels = &s.leases[&1].labels;
+    assert_eq!(labels.results[&1].delivery, Delivery::Handle);
+    assert_eq!(labels.results[&2].label, set(&["restricted"]));
+    assert_eq!(labels.clear_set, set(&["internal", "restricted", "untrusted"]), "it only grows");
+    // A Report delivers nothing and carries no label.
+    let report = Admitted::Report { record: Digest::of(b"r") };
+    assert_eq!(step(&mut s, report, None), Applied::Admitted { seq: Some(3), promoted: None });
+}

@@ -64,6 +64,12 @@ fn rules(build_operators: &[&str]) -> Rules {
     }
 }
 
+/// With `TOPAK_TRACE_DIR` set, every `apply` is recorded for `spec/Mechanism.tla` (`trace.rs`).
+fn traced(mut s: State) -> State {
+    s.trace = topak_core::trace::name_from_env("op");
+    s
+}
+
 fn params() -> Params {
     Params {
         corpus: BTreeSet::new(),
@@ -118,7 +124,7 @@ struct Log {
 impl Log {
     /// Every seat seated by the BOOTSTRAP path, each with its first lease.
     fn seated(build_operators: &[&str]) -> Log {
-        let mut log = Log { s: State::genesis(rules(build_operators), 2).unwrap(), at: 0, ctr: 0 };
+        let mut log = Log { s: traced(State::genesis(rules(build_operators), 2).unwrap()), at: 0, ctr: 0 };
         let seats: Vec<String> = log.s.rules.seats.keys().cloned().collect();
         for seat in seats {
             let req = seating(&log.s, &seat, 1);
@@ -207,7 +213,7 @@ fn refused_by(a: &Applied, entry: &str) -> bool {
 
 #[test]
 fn an_operators_lease_needs_a_sign_on_assertion() {
-    let mut log = Log { s: State::genesis(rules(&["op1", "op2"]), 2).unwrap(), at: 0, ctr: 0 };
+    let mut log = Log { s: traced(State::genesis(rules(&["op1", "op2"]), 2).unwrap()), at: 0, ctr: 0 };
     let grant = |req| Entry::Grant { id: Digest::of_json(&req).0, req, appraisal: None };
     // No assertion: no lease.
     let mut req = seating(&log.s, "op1", 1);

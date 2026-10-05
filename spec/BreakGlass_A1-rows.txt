@@ -1,0 +1,8 @@
+a1-base    none    EmergencyNeverChangesAuthority
+a1-nor7    none    EmergencyNeverChangesAuthority {"R1","R2","R5","R6","R9"}
+a1-reach   none    NeverEmergencyAct
+a1-second  none    NeverSecondRound
+a1-scope   M_SCOPE EmergencyNeverChangesAuthority
+a1-kind    M_KIND  EmergencyNeverChangesAuthority
+a1-kindx   M_KIND  NeverEmergencyAct
+a1-kindr7  M_KIND  EmergencyNeverChangesAuthority {"R1","R2","R5","R6","R9"}

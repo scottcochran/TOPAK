@@ -24,12 +24,14 @@ hand-assembled TLC output with a dated name and never change; the two generators
 | `RunCoupling.tla` | ADR-0042 §8 | `runcoupling-run.sh` | `RunCoupling-results-2026.09.29.txt` | ADR-0042 |
 | `RunSeats.tla` | ADR-0043 §8 | `runseats-run.sh` | `RunSeats-results-2026.09.29.txt` | ADR-0043 |
 | `Emergency.tla` | ADR-0052 §9 (Proposed) | `emergency-run.sh`; `emergency-gen-results.sh` with a row list | `Emergency-results-2026.10.04.txt` | ADR-0052 |
+| `BreakGlass_A1.tla` | ADR-0029 §5; ADR-0026 A2 (pending); ADR-0052 §9 (Proposed). Successor to `BreakGlass.tla` where it models X1 | `a1-run.sh` with `BreakGlass_A1-rows.txt` | `BreakGlass_A1-results-2026.10.05.txt` | none yet |
+| `NonComposition_A1.tla` | ADR-0013 §4, A1 (pending); ADR-0052 §9 (Proposed). Successor to `NonComposition.tla` where it models X1 | `a1-run.sh` with `NonComposition_A1-rows.txt` | `NonComposition_A1-results-2026.10.05.txt` | none yet |
 | `ToolList.tla` | ADR-0048 §8 (Proposed) | `toollist-run.sh`; `toollist-gen-results.sh` with a row list | `ToolList-results-2026.10.04.txt` | ADR-0048 |
 | `Operators.tla` | ADR-0050 §10 (Proposed) | `operators-run.sh`; `operators-gen-results.sh` with a row list | `Operators-results-2026.10.04.txt` | ADR-0050 |
 | `Correlator.tla` | ADR-0051 §10 (Proposed) | `correlator-run.sh`; `correlator-gen-results.sh` with a row list | `Correlator-results-2026.10.04.txt` | ADR-0051 |
 | `Labels.tla` | ADR-0047 §11 (Proposed) | `labels-run.sh`; `labels-gen-results.sh` with a row list | `Labels-results-2026.10.03.txt`, `-2026.10.04.txt` | ADR-0047 |
 | `FloorComposition.tla`, `Coupling.tla`, `RunCoupling.tla` | ADR-0046 §5 (the premise-table corrections) | `premise-corrections-results.sh` | `premise-corrections-results-2026.10.02.txt` | ADR-0046 |
-| `Mechanism.tla` | ADR-0045 T-0045-28; ADR-0033 A5 | `mechanism-trace-run.sh` on traces the reference records; `mechanism-trace-results.sh` regenerates the file; `trace2tla.py` converts | `Mechanism-trace-results-2026.09.30.txt`, `-2026.10.01.txt` | Pinned, not frozen: the operational model moves with the code |
+| `Mechanism.tla` | ADR-0045 T-0045-28; ADR-0033 A5 | `mechanism-trace-run.sh` on traces the reference records; `mechanism-trace-results.sh` regenerates the file; `trace2tla.py` converts | `Mechanism-trace-results-2026.09.30.txt`, `-2026.10.01.txt`, `-2026.10.02.txt`, `-2026.10.02b.txt`, `-2026.10.05.txt` (labels, operators and the emergency seating, all Proposed; X1 retired) | Pinned, not frozen: the operational model moves with the code |
 
 ## TLAPS proofs
 
@@ -47,8 +49,10 @@ describe the formal layer as TLC-checked until the next checkpoint is cut.
 **Certified runs (2026.10.04).** `proof-cert.sh <Module>_proof > <Module>-proof-cert-results-<date>.txt` reruns a
 proof module with Z3 replaced by `smt-checked` (cvc5 with proof production, each proof accepted by the ethos checker
 the floor gates use before `unsat` is forwarded) and with Zenon's proofs checked by Isabelle, and accounts for every
-obligation by the route that discharged it. Seventeen of the twenty proof modules certify; `RulesFloorNV_rev5`,
-`Confinement` and `Confinement_A1` do not, and their results files say why. `smt-checked-selftest.sh` checks the
+obligation by the route that discharged it. Seventeen of the first twenty proof modules certify; `RulesFloorNV_rev5`,
+`Confinement` and `Confinement_A1` do not, and their results files say why. The two added on 2026.10.05,
+`BreakGlass_A1_proof` and `NonComposition_A1_proof`, certify (`-proof-cert-results-2026.10.05.txt`), which makes
+nineteen of twenty-two. `smt-checked-selftest.sh` checks the
 wrapper against a dishonest solver. **`proof-certification.md` is the method**: what is checked and by what, how the
 wrapper binds a proof to its query, how to read and reproduce a results file, what stays trusted, and how to write
 proofs that certify. `proof-method.md` §5a has the first assessment.
@@ -76,6 +80,8 @@ The `1.6.0-pre` release tag is rebuilt by its upstream: on 2026.10.03 both asset
 | `Coupling_proof.tla` | `Coupling.tla` | ADR-0039 §8 | `NoAdmitWithoutLiveObserver`, `UnreadBounded`, `CorrelatorNeverGates`, for every K, R and MaxRound | `K, R, MaxRound ∈ Nat` | `Coupling-proof-results-2026.10.02.txt` |
 | `RunCoupling_proof.tla` | `RunCoupling.tla` | ADR-0042 §8; ADR-0041 §2 | all five, including the `ENABLED` invariant `ConsultNeverCoupled`, for every K, R and MaxRound | `K, R, MaxRound ∈ Nat` | `RunCoupling-proof-results-2026.10.02.txt` |
 | `Emergency_proof.tla` | `Emergency.tla` | ADR-0052 §9 (Proposed) | all six: a roster quorum behind every emergency lease, one round, a person as holder, no admit by an exception, the Thinker still coupled, every activation recorded | none | `Emergency-proof-results-2026.10.04.txt` |
+| `BreakGlass_A1_proof.tla` | `BreakGlass_A1.tla` | ADR-0029 §5; ADR-0026 A2 (pending) | `EmergencyNeverChangesAuthority`, under `Mut # "M_SCOPE"` and `Mut = "M_KIND" => "R7" \in Active` | none: unlike its predecessor's, it does not assume R7 is in force | `BreakGlass_A1-proof-results-2026.10.05.txt` |
+| `NonComposition_A1_proof.tla` | `NonComposition_A1.tla` | ADR-0013 §4, A1 (pending) | `NC1`, `NC2`, under none of the three mutations | none | `NonComposition_A1-proof-results-2026.10.05.txt` |
 | `Labels_proof.tla` | `Labels.tla` | ADR-0047 §11 (Proposed) | all ten, the floor's minimum (`NoReadThenSend`, `NoSteeredDestination`) among them, and the step property `ClearSetOnlyGrows`, for every `MaxSeq` | `MaxSeq ∈ Nat` | `Labels-proof-results-2026.10.04.txt` |
 | `ToolList_proof.tla` | `ToolList.tla` | ADR-0048 §8 (Proposed) | all five: `ToolListIsExact`, `ToldMatchesDecided`, `ListFixedForRound`, `OpeningRecordFirst`, `OpenedListIsTold` | none | `ToolList-proof-results-2026.10.04.txt` |
 | `Operators_proof.tla` | `Operators.tla` | ADR-0050 §10 (Proposed) | all thirteen, including the `ENABLED` invariant `DenyAlwaysAvailable`, for every set of operators and every round bound | none | `Operators-proof-results-2026.10.04.txt` |
