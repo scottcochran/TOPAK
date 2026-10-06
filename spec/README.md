@@ -92,6 +92,18 @@ The `1.6.0-pre` release tag is rebuilt by its upstream: on 2026.10.03 both asset
 All thirteen are cited by digest in ADR-0046, and frozen. **`proof-method.md`** records how they were written, the patterns they
 share, the prover's habits, and a dated assessment of why they were cheap and where that stops.
 
+### The small modules in Lean 4
+
+`lean/` (2026.10.05) re-encodes seven of the modules above as transition systems in Lean 4 and proves their
+`*_proof.tla` theorems by induction on reachable states: `Seats`, `Observers`, `RunSeats`, `FloorRouting`,
+`NonComposition`, `Anchor` and `BreakGlass`, with `RulesFloorBase`. What this adds to the TLAPS proofs is the
+temporal step: proof-method.md §5a counts 74 LS4 obligations, "holds initially, every step keeps it, so it
+holds always", that the certified run checks with nothing; in Lean that step is an induction the kernel checks.
+What it costs is a new premise, that the Lean encoding is the TLA+ module; a Lean theorem is of the encoding,
+not of the frozen text, and `lean/TopakSpec-results-2026.10.05.txt` binds each encoding to the digest of the
+module it transcribes. Lean is not yet a trusted-base row. `lean/README.md` has the theorem table, the
+encoding conventions, and a mutation check; `lean/results.sh` regenerates the results file.
+
 ## Practice
 
 What the modules, the runs and the proofs are expected to do, in the order a property passes through them. The

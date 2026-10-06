@@ -1,0 +1,44 @@
+TOPAK — Lean results for the small spec/ modules: every theorem of spec/lean/TopakSpec/*.lean, checked by the kernel below
+Transcribes: Seats.tla (sha256 903a1db686968df0) · Observers.tla (sha256 96b0792ce948ec80) · RunSeats.tla (sha256 1bb49475ab59f6de) · FloorRouting.tla (sha256 9d4c0f5e03defc1e) · NonComposition.tla (sha256 119f9a7e878f8929) · RulesFloorBase.tla (sha256 cf2351de2b39cccf) · Anchor.tla (sha256 a70187ef43058848) · BreakGlass.tla (sha256 2c3c3d75aba2a599)
+Sources: Prelude.lean (sha256 c4c2504b9945ee75) · Seats.lean (sha256 e7f3b5fefc58e20f) · Observers.lean (sha256 4def819b7c5dc7c0) · RunSeats.lean (sha256 adf93be6476c142a) · FloorRouting.lean (sha256 edc85be96d4461eb) · NonComposition.lean (sha256 c8060e8fc8c1633b) · RulesFloorBase.lean (sha256 b9a5735af7cf6b98) · Anchor.lean (sha256 ee0ea47c1574faa0) · BreakGlass.lean (sha256 ac25ee1ff4f76698) · lakefile.toml (sha256 25e516062f7a1661) · lean-toolchain leanprover/lean4:v4.24.0
+Prover: Lean (version 4.24.0, arm64-apple-darwin23.6.0, commit 797c613eb9b6d4ec95db23e3e00af9ac6657f24b, Release) · Lake version 5.0.0-src+797c613 (Lean version 4.24.0) · no Mathlib, no dependencies · driver: results.sh
+Theorems (Seats): OnlyThinkersAuthorAlways · OneSeatPerPrincipalAlways · SafeAlways
+Theorems (Observers): DenyByAnyOfAlways · ReachIsBoundedAlways · SafeAlways
+Theorems (RunSeats): OnlyThinkersActuateAlways · ObserversConsultAndReportAlways · NoNameCrossesDomainsAlways · SafeAlways
+Theorems (FloorRouting): SafeAlways · NoWideningAlways · NeverVacuousAlways
+Theorems (NonComposition): SafeAlways · NC1Always · NC2Always
+Theorems (RulesFloorBase): GenesisEntries · GenesisFloor
+Theorems (Anchor): FloorPreservedAlways · EpochMonotoneAlways
+Theorems (BreakGlass): NeverChangesAuthority
+A theorem holds of the Lean re-encoding, not of the frozen TLA+ text; the encoding's fidelity is read, each definition beside the TLA+ it transcribes. Spec => []P is induction on reachable states (Prelude.invariant), in place of LS4. Mutations and witnesses stay with TLC.
+
+✔ [2/12] Built TopakSpec.Prelude (151ms)
+ℹ [3/12] Built TopakSpec.FloorRouting (327ms)
+info: TopakSpec/FloorRouting.lean:173:0: 'Topak.Spec.FloorRouting.SafeAlways' depends on axioms: [propext]
+info: TopakSpec/FloorRouting.lean:174:0: 'Topak.Spec.FloorRouting.NoWideningAlways' depends on axioms: [propext]
+info: TopakSpec/FloorRouting.lean:175:0: 'Topak.Spec.FloorRouting.NeverVacuousAlways' depends on axioms: [propext]
+ℹ [4/12] Built TopakSpec.Seats (415ms)
+info: TopakSpec/Seats.lean:257:0: 'Topak.Spec.Seats.OnlyThinkersAuthorAlways' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Seats.lean:258:0: 'Topak.Spec.Seats.OneSeatPerPrincipalAlways' depends on axioms: [propext]
+info: TopakSpec/Seats.lean:259:0: 'Topak.Spec.Seats.SafeAlways' depends on axioms: [propext, Quot.sound]
+ℹ [5/12] Built TopakSpec.Observers (377ms)
+info: TopakSpec/Observers.lean:208:0: 'Topak.Spec.Observers.DenyByAnyOfAlways' depends on axioms: [propext]
+info: TopakSpec/Observers.lean:209:0: 'Topak.Spec.Observers.ReachIsBoundedAlways' depends on axioms: [propext]
+info: TopakSpec/Observers.lean:210:0: 'Topak.Spec.Observers.SafeAlways' depends on axioms: [propext]
+ℹ [6/12] Built TopakSpec.NonComposition (423ms)
+info: TopakSpec/NonComposition.lean:283:0: 'Topak.Spec.NonComposition.SafeAlways' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: TopakSpec/NonComposition.lean:284:0: 'Topak.Spec.NonComposition.NC1Always' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: TopakSpec/NonComposition.lean:285:0: 'Topak.Spec.NonComposition.NC2Always' depends on axioms: [propext, Classical.choice, Quot.sound]
+✔ [7/12] Built TopakSpec.RulesFloorBase (377ms)
+ℹ [8/12] Built TopakSpec.Anchor (179ms)
+info: TopakSpec/Anchor.lean:90:0: 'Topak.Spec.Anchor.FloorPreservedAlways' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Anchor.lean:91:0: 'Topak.Spec.Anchor.EpochMonotoneAlways' does not depend on any axioms
+ℹ [9/12] Built TopakSpec.BreakGlass (189ms)
+info: TopakSpec/BreakGlass.lean:109:0: 'Topak.Spec.BreakGlass.NeverChangesAuthority' depends on axioms: [propext, Quot.sound]
+ℹ [10/12] Built TopakSpec.RunSeats (598ms)
+info: TopakSpec/RunSeats.lean:251:0: 'Topak.Spec.RunSeats.OnlyThinkersActuateAlways' depends on axioms: [propext]
+info: TopakSpec/RunSeats.lean:252:0: 'Topak.Spec.RunSeats.ObserversConsultAndReportAlways' depends on axioms: [propext]
+info: TopakSpec/RunSeats.lean:253:0: 'Topak.Spec.RunSeats.NoNameCrossesDomainsAlways' depends on axioms: [propext]
+info: TopakSpec/RunSeats.lean:254:0: 'Topak.Spec.RunSeats.SafeAlways' depends on axioms: [propext]
+✔ [11/12] Built TopakSpec (115ms)
+Build completed successfully (12 jobs).

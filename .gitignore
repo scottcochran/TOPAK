@@ -12,6 +12,7 @@ spec/states/
 *.toolbox/
 # Lake's build directory for the Lean proof of the admit composition (mechanism/lean/results.sh rebuilds it)
 mechanism/lean/.lake/
+spec/lean/.lake/
 
 # Reference material: not ours to redistribute
 doc/
