@@ -80,7 +80,40 @@ of their branches; and `seal` renamed `seals`, since `seal` is a Lean keyword.
   row T-0045-37, pinned in `tools/LEAN-PIN`. Until it is ratified a Lean result is evidence no record cites.
 - **The encoding.** A proof here is of the Lean re-encoding, not of the frozen TLA+ text, which the TLAPS
   proofs are of. The encoding is written from the module and read against it; ADR-0053 §2 names this as the
-  premise the method adds. Where the encoding could be read two ways, the file says which was taken.
+  premise the method adds. Where the encoding could be read two ways, the file says which was taken. For `Seats`
+  and `FloorComposition` it is also checked, below.
+
+## The encodings checked against TLC's state graphs (2026.10.06)
+
+`Seats` and `FloorComposition` are the modules the code-level work in `mechanism/lean/` refines, so their encodings
+carry the most. `TopakSpec/Mirror/` gives each a mirror: a concrete state with Booleans for the encoding's `Prop`s
+and Boolean functions for its sets, a map into the encoding's states, and a list of successors, with these proved:
+
+| Theorem | Claim |
+|---|---|
+| `next_iff` | from a mirrored state, the encoding's `Next m` reaches exactly the mirrored states in the successor list |
+| `init_iff` | a state satisfies the encoding's `Init` exactly when it is the mirror's initial state |
+| `eqC_iff` | the mirror's equality is equality of the encoding's states |
+| one `*_iff` per property | each property, as a Boolean, equal to the encoding's |
+
+`graph-check.sh` has TLC dump each module's whole state graph (`-dump dot`) under every `Mut`. It goes through a
+wrapper module whose one derived variable carries every property's value, so the graph's shape is unchanged.
+`dot2lines.py` reads the dump, and `graphcheck` (`GraphCheck.lean`) evaluates the mirror on it. It checks that every TLC edge is
+a `Next` step, that every `Next` step from a TLC state is a TLC edge or a stutter, that the initial states are the
+encoding's `Init`, and that every property has TLC's value in every state.
+
+`GraphCheck-results-2026.10.06.txt`: all eight graphs MATCH, from 128 states (`FloorComposition`, `none`) to 53,248
+states and 442,368 edges (`Seats`, `M_KIND`). Both encodings fix the module's constants in their types, so a graph
+is every state the encoding can reach: the encoding and the module reach the same states by the same steps, with
+the same property values. The mirrors are proved; the evaluation, TLC's dump and its parse are a test.
+
+Three mutated TLA+ modules, each checked against the unchanged encoding, each failed:
+
+| Mutant | What the check found |
+|---|---|
+| `Grant` without "the seat has no live lease" | 3,552 TLC edges that are not `Next` steps. Both invariants still hold of it, so no proof sees it |
+| `Seal` that never fires | 64 `Next` steps that are not TLC edges |
+| `OnlyThinkersAuthor` without its `Vote` clause | the property's value differs on 6,656 states |
 
 ## Mutation check
 
@@ -116,6 +149,7 @@ into the inductive step; the theorems proved through that lemma then rest on `so
 cd spec/lean
 lake build                                        # the proofs; ~10 s
 ./results.sh > TopakSpec-results-<date>.txt       # clean build, digests, axioms, and the replay (~1 min); byte for byte
+./graph-check.sh > GraphCheck-results-<date>.txt  # Seats and FloorComposition against TLC's state graphs (~2 min); byte for byte
 ../../tools/lean-sync.sh                          # every Lean results file against the tree and the pin
 ```
 

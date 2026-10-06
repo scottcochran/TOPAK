@@ -5,3 +5,8 @@ defaultTargets = ["TopakSpec"]
 
 [[lean_lib]]
 name = "TopakSpec"
+
+# The checker of the re-encodings against TLC's state graphs (graph-check.sh); not part of the library.
+[[lean_exe]]
+name = "graphcheck"
+root = "GraphCheck"

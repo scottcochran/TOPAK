@@ -17,13 +17,16 @@ modules="Prelude Seats Observers RunSeats FloorRouting FloorComposition NonCompo
 echo "TOPAK — Lean results for the spec/ modules re-encoded in Lean: every theorem of spec/lean/TopakSpec/*.lean, checked by the kernel below"
 line="Transcribes:"; for m in $tla; do line="$line $(e spec/$m.tla) ·"; done; echo "${line% ·}"
 line="Sources:"; for m in $modules; do line="$line $(e spec/lean/TopakSpec/$m.lean) ·"; done
-echo "$line $(e spec/lean/TopakSpec.lean) · $(e spec/lean/lakefile.toml) · $(e spec/lean/lean-toolchain)"
+echo "$line $(e spec/lean/TopakSpec/Mirror/Seats.lean) · $(e spec/lean/TopakSpec/Mirror/FloorComposition.lean) · $(e spec/lean/TopakSpec.lean) · $(e spec/lean/lakefile.toml) · $(e spec/lean/lean-toolchain)"
 "$root/tools/lean-report.sh" "$here" --prover
 for m in $modules; do
   [ "$m" = Prelude ] && continue
   thms=$(grep -oE '^theorem [A-Za-z0-9_]+Always|^theorem NeverChangesAuthority|^theorem GenesisEntries|^theorem GenesisFloor|^theorem Confinement[A-Za-z0-9_]*SafeAlways' "$here/TopakSpec/$m.lean" | sed 's/theorem //' | paste -sd '|' - | sed 's/|/ · /g')
   echo "Theorems ($m): ${thms:-none}"
 done
-echo "A theorem holds of the Lean re-encoding, not of the frozen TLA+ text; the encoding's fidelity is read, each definition beside the TLA+ it transcribes. Spec => []P is induction on reachable states (Prelude.invariant), in place of LS4; the arithmetic the TLAPS proofs hand to SMT is closed by omega; Confinement.lean covers Confinement.tla and Confinement_A1.tla under one flag. Mutations and witnesses stay with TLC."
+for m in Seats FloorComposition; do
+  echo "Theorems (Mirror/$m): $(grep -oE '^theorem [A-Za-z0-9_]+_iff' "$here/TopakSpec/Mirror/$m.lean" | sed 's/theorem //' | paste -sd '|' - | sed 's/|/ · /g')"
+done
+echo "A theorem holds of the Lean re-encoding, not of the frozen TLA+ text; the encoding's fidelity is read, each definition beside the TLA+ it transcribes, and for Seats and FloorComposition also checked: their mirrors (TopakSpec/Mirror/) are proved equal to the encodings' Next, Init and properties, and graph-check.sh evaluates them on TLC's state graphs (GraphCheck-results-*.txt). Spec => []P is induction on reachable states (Prelude.invariant), in place of LS4; the arithmetic the TLAPS proofs hand to SMT is closed by omega; Confinement.lean covers Confinement.tla and Confinement_A1.tla under one flag. Mutations and witnesses stay with TLC."
 echo
 "$root/tools/lean-report.sh" "$here" TopakSpec

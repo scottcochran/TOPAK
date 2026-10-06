@@ -30,7 +30,8 @@ T-0045-37, drawn apart from the thirty-six), G3 (what the binding table would ga
 Lean statement carries ADR-0053's Proposed status. The files keep the family's date; the other 28 regenerate
 byte for byte. Amended again the same day for ADR-0053 R4: H7 and H3 draw the model of `State::apply` that refines
 `Seats`, and the replay of the reference's recorded traces through it; and for R5, the second model on it, with
-`Coupling`'s properties, and its replay.
+`Coupling`'s properties, and its replay; and for R6, the `Seats` and `FloorComposition` encodings checked against
+TLC's state graphs (H7).
 
 | Id | Diagram | What it shows |
 |---|---|---|

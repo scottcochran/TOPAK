@@ -114,6 +114,9 @@ T-0045-37, pinned in `tools/LEAN-PIN`. Every results file ends with a kernel rep
 `#print axioms` alone misses a declaration added past the kernel (`proof-method.md` §5b). `lean/README.md` has the
 theorem table, the encoding conventions, and a mutation check; `lean/results.sh` regenerates the results file, byte
 for byte; `tools/lean-sync.sh` is this package's `proof-sync.sh`, and covers `mechanism/lean/` and `floor/lean/` too.
+Two encodings, `Seats` and `FloorComposition`, are also checked rather than only read: `lean/graph-check.sh` has TLC
+dump each module's whole state graph under every `Mut` and checks, through a mirror proved equal to the encoding,
+that the two reach the same states by the same steps with the same property values (ADR-0053 R6).
 
 ## Practice
 

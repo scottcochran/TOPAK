@@ -303,6 +303,14 @@ and the first's theorems hold with no new proof (`base_reach`). The new invarian
 directly by induction over the nine arms, which reuse the first model's characterisation lemmas. One lemma covers
 every arm that ends leases.
 
+**2026.10.06: an encoding checked, not only read.** An encoding written from a module and read against it can be
+too lax or too strict and still prove every invariant. A `Seats` grant on a seat that already has a live lease
+keeps both invariants. `spec/lean/graph-check.sh` checks the encoding against the module instead. TLC dumps the
+module's whole state graph, with a derived variable carrying each property's value. A mirror of the encoding, proved
+equal to its `Next`, `Init` and properties, is evaluated on every state and edge in both directions. For `Seats` and
+`FloorComposition`, whose encodings fix the module's constants, that covers every state either can reach. The idea
+is the trace replay's, turned on the specification: the model is checked against what it claims to describe.
+
 **One control, and what it showed.** `#print axioms` lists the axioms a theorem uses, and is not enough. A scratch
 module that adds `False` as a theorem with the kernel check switched off (`set_option debug.skipKernelTC true`,
 then `addDecl`) builds, and a theorem `1 = 2` derived from it reports **no axioms at all**. `leanchecker --fresh`,

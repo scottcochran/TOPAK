@@ -12,3 +12,5 @@ import TopakSpec.RulesFloorNV_rev5
 import TopakSpec.Lease_A1
 import TopakSpec.Confinement
 import TopakSpec.FloorComposition
+import TopakSpec.Mirror.Seats
+import TopakSpec.Mirror.FloorComposition

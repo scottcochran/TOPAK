@@ -24,7 +24,8 @@ PKGS = [
      "Their twelve `*_proof.tla` modules' theorems, proved by induction on the reachable states "
      "(`Prelude.invariant`): the step TLAPS hands to LS4. Same inductive invariants, same hypotheses on `Mut`.",
      "The Lean transition system is the TLA+ module. Read, beside the frozen text; `Prelude.lean` states the "
-     "conventions and each file the places a reading was chosen."),
+     "conventions and each file the places a reading was chosen. For `Seats` and `FloorComposition`, also "
+     "**checked** against TLC's state graphs through a proved mirror (R6)."),
     ("mechanism/lean", "Admit-results-*.txt", "Transcription", "teal",
      "`admit.rs`'s `floor_gate` and `compose`, their call site in `topak-node`, and `clock.rs`'s "
      "`subtracting_interval_elapsed`, and the `topak-floor` wrapper, transcribed. `FloorComposition`'s three "
@@ -111,6 +112,19 @@ def read_creplay():
     return f"mechanism/lean/{f.name}", hashlib.sha256(raw).hexdigest()[:16], summ, ex
 
 
+def read_graphs():
+    """-> (file, digest, {module: (graphs, matching)}) of the newest check against TLC's state graphs (R6)."""
+    f = sorted((ROOT / "spec/lean").glob("GraphCheck-results-*.txt"))[-1]
+    raw = f.read_bytes()
+    out = {}
+    for ln in raw.decode("utf-8").splitlines():
+        m = re.match(r"(\w+) Mut=\S+ \| .* \| (MATCH|MISMATCH)$", ln)
+        if m:
+            n, k = out.get(m.group(1), (0, 0))
+            out[m.group(1)] = (n + 1, k + (m.group(2) == "MATCH"))
+    return f"spec/lean/{f.name}", hashlib.sha256(raw).hexdigest()[:16], out
+
+
 def read_pin():
     out = {}
     for ln in PIN.read_text(encoding="utf-8").splitlines():
@@ -142,6 +156,7 @@ def build():
     rp_ok = rp_summ.endswith("· 0 not matching")
     cp_file, cp_dig, cp_summ, cp_ex = read_creplay()
     cp_ok = cp_summ.endswith("· 0 not matching")
+    gr_file, gr_dig, gr = read_graphs()
     pin = read_pin()
     rowA, rowB, deps, finds, opens, cond, adr_dig = read_adr53()
     cert = {m: read_cert(m) for m, _ in ENC}
@@ -161,6 +176,7 @@ def build():
                f"decisions/ADR-0053.md (Proposed; {adr_dig}), §1–§7, Findings, Open obligations (read at build time); "
                f"the three Lean results files, read at build time: {', '.join(r['file'] for r in res.values())}; "
                f"the trace replays through the models of `apply`, read at build time: {rp_file}, {cp_file}; "
+               f"the check against TLC's state graphs, read at build time: {gr_file}; "
                "tools/LEAN-PIN (read at build time), tools/install-lean.sh, tools/lean-report.sh, tools/lean-sync.sh; "
                "spec/lean/README.md, mechanism/lean/README.md, floor/lean/README.md (mutation checks); "
                "spec/proof-method.md §5b, §6; spec/proof-certification.md §8, §12; the certified TLAPS results "
@@ -192,6 +208,13 @@ def build():
                 f"**Results.** `{r['file']}` (`{r['digest']}`): {len(r['files'])} files by repository path and "
                 f"digest; {r['built'].rstrip('.')}.",
                 _replay(r["replay"])]
+        if pkg == "spec/lean":
+            parts = ", ".join(f"`{m}` {k} of {n}" for m, (n, k) in gr.items())
+            allok = all(n == k for n, k in gr.values())
+            body.append(f"**Checked against TLC's state graphs** (`graph-check.sh`). `{gr_file}` (`{gr_dig}`): "
+                        f"graphs matching, under every `Mut`: {parts}: "
+                        f"{'[[teal|same states, same steps, same property values]]' if allok else '[[red|NOT ALL MATCH]]'}. "
+                        "The mirrors are proved; the evaluation is a test.")
         if pkg == "mechanism/lean":
             body.append(f"**Trace replay** (`seats-replay.sh`). `{rp_file}` (`{rp_dig}`): the six suites' recorded "
                         f"traces run through the model's own `apply`, {rp_summ}: "
@@ -325,6 +348,8 @@ def build():
         elif mod == "Confinement":
             th = th.replace(" · Confinement_A1_SafeAlways", "") + " (flag `a1 = false`)"
         trust = "the encoding, read; the kernel (T-0045-37, proposed)"
+        if mod in gr:
+            trust = "the encoding, read and checked against TLC's state graph (R6); the kernel (T-0045-37, proposed)"
         if mod == "NonComposition":
             trust += "; `Classical.choice`"
         cr = "[[teal|Certified]]" if r["certified"] else f"[[red|NOT CERTIFIED]]: {r['last'][15:]}"
