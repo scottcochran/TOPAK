@@ -624,7 +624,15 @@ def build():
     bj = json.loads((ROOT / "spec" / "theorem-premise-binding.json").read_text(encoding="utf-8"))
     th = bj["theorems"]
     n_lean = sum(1 for t in th if t.get("proved_in") and set(t["proved_in"]) <= lean_proofs)
-    y += c.heading(X0, y, "Proposed (ADR-0053 §5): a Lean route beside the proof column, and why no premise moves",
+    ov = json.loads((ROOT / "spec" / "theorem-premise-binding-ADR-0053.json").read_text(encoding="utf-8"))
+    n_inv = sum(1 for k in ov["derived"] if k.startswith("invariant(") and "," not in k)
+    n_chk = sum(1 for p in ov["premises"].values() if p["kind"] == "check")
+    rt = sorted((ROOT / "spec").glob("premise-routes-results-*.txt"))[-1]
+    rtx = rt.read_text(encoding="utf-8")
+    import re as _re
+    held = dict(_re.findall(r"=== (\S+)[^\n]*\n(?:.*\n)*?(\d+) of 43 rows hold", rtx))
+    no_ov = _re.search(r"without the overlay[^\n]*\n(\d+) of 43", rtx).group(1)
+    y += c.heading(X0, y, "Proposed (ADR-0053 §5, R7): a Lean route beside the proof column, as derived premises",
                    "amber", 22)
     y += c.para(X0, y, W, "Drafted 2026.10.05, after G10, and not ratified: nothing below is in the table yet. Counts "
                 "are computed from `spec/theorem-premise-binding.json` at build time against the proof modules "
@@ -639,12 +647,14 @@ def build():
             "**The floor gates' row** gains `floor/lean` for totality, non-vacuity and discrimination, on the genesis "
             "floor and the floor in force.",
         ], "amber"),
-        ("Why no premise moves", [
+        ("Two proofs, one derived premise (R7)", [
             "Two proofs give a disjunction: a property holds if **T-0045-31** holds, or if **T-0045-37** holds and the "
-            "encoding is the module. The table's form, holds = ¬(B·¬d), is a conjunction of premises.",
-            "So the table keeps T-0045-31 and records the Lean route as evidence. A deployment that excluded T-0045-31 "
-            "would learn of the second route from the *Checked in* column, not from the inventory (ADR-0053 finding "
-            "2, open).",
+            "encoding is the module. A **derived premise** names it: `invariant(M)`, an OR of AND-routes, still "
+            "monotone, so excluding a premise only voids.",
+            f"`{rt.name}`, read at build time: {n_inv} `invariant(M)`, {n_chk} encodings whose faithfulness is a "
+            f"`check` on the graph check, and `refines(Seats)`, T-0045-28 or the Lean stage. With T-0045-31 excluded and "
+            f"T-0045-37 trusted, **{held.get('2-lean-not-tlaps', '?')} of 43** rows hold, where the binding as it "
+            f"stands says {no_ov} (finding 13: no row named T-0045-31).",
         ], "amber"),
         ("The one reference verdict it changes the reason for", [
             "Totality's `holds°` rows rest today on cedar's term folding, under T-0045-3. Proved in Lean of the "
@@ -653,14 +663,13 @@ def build():
             "\"the Cedar engine, as faithful to the Lean model\".",
             "The verdict at the reference is unchanged: T-0045-3 is a trust root either way.",
         ], "amber"),
-        ("What the matrix cannot show", [
-            "An either-or premise set. The JSON's rows are single sets; `inventory.py` computes one verdict per row "
-            "and rung.",
-            "Whether the matrix should carry alternative premise sets is ADR-0053's open obligation; until then the "
-            "Lean route is a *Checked in* entry and nothing else.",
-            "**And a precondition** (ADR-0053 R1): a Lean refinement for T-0045-28 would refine the re-encodings, so a "
-            "row would rest through it on T-0045-37 and the encodings in place of T-0045-28 and T-0045-31. No ADR-0033 "
-            "addendum may cite such a stage until the table can say so.",
+        ("Until ratification", [
+            "The overlay `spec/theorem-premise-binding-ADR-0053.json` is applied by `inventory.py --with` and merged "
+            "into the binding at ratification; the table itself still has single premise sets, and the Lean route is "
+            "a *Checked in* entry.",
+            "**R1's precondition** (ADR-0053): a stage discharged through Lean waits on (a) the table stating "
+            "alternative sets, which derived premises do once merged, and (b) each refined encoding a named premise with "
+            "a check: `Seats` and `FloorComposition` have the graph check; eleven do not.",
         ], "red"),
     ]
     bw = (W - (len(b53) - 1) * bg) / len(b53)

@@ -403,9 +403,11 @@ def build():
     c.card(X0 + t5w + 40, y, W - t5w - 40, "Why two routes, and why the table's premises do not change", [
         "The two routes fail in different places: TLAPS on LS4 and its front end, Lean on the encoding. A theorem "
         "proved by both is wrong only if both fail.",
-        "**The premise table cannot say so** (ADR-0053 §5, finding 2). It computes holds = ¬(B·¬d), a conjunction "
-        "of premises; two proofs give \"T-0045-31, or T-0045-37 and the encoding\". So no premise moves: the table "
-        "keeps T-0045-31 and names the Lean file in its *Checked in* column, as evidence.",
+        "**The premise table cannot say so yet** (ADR-0053 §5, finding 2). It computes holds = ¬(B·¬d), a conjunction "
+        "of premises; two proofs give \"T-0045-31, or T-0045-37 and the encoding\". **R7 proposes derived premises**: "
+        "`invariant(M)`, an OR of the two routes, in place of each proved row's T-0045-29, merged at ratification "
+        "(`spec/theorem-premise-binding-ADR-0053.json`). Until then the table keeps T-0045-31 and names the Lean file "
+        "in its *Checked in* column, as evidence.",
         "**The floor's totality is the exception that changes what it rests on**: from cedar's folding code to the "
         "model's proved validator and T-0045-3, which already reads \"the Cedar engine, as faithful to the Lean "
         "model\".",
