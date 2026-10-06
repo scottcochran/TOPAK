@@ -1,4 +1,4 @@
-# The Lean toolchain and the Cedar model the Lean results files cite (ADR-0053, Proposed: T-0045-32). One line per
+# The Lean toolchain and the Cedar model the Lean results files cite (ADR-0053, Proposed: T-0045-37). One line per
 # field, `key value`. Every lean-toolchain under mechanism/lean, spec/lean and floor/lean names `toolchain`;
 # tools/install-lean.sh installs it through elan and compares the binaries with this file; tools/lean-sync.sh compares
 # the prover every Lean results file prints, and floor/lean's lake-manifest.json, with it. The kernel is in

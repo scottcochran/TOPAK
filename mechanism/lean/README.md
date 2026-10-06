@@ -49,7 +49,7 @@ Every proof is `omega` after unfolding. `Lease_A1.tla` abstracts time away; this
   `#print axioms` alone misses a declaration added with the kernel check off; the replay refuses it
   (`spec/proof-method.md` §5b). It is the same kernel in a fresh process, not an independent checker.
 - **The row.** ADR-0053 (Proposed) declares the method and proposes the kernel and toolchain as trusted-base
-  row T-0045-32, pinned in `tools/LEAN-PIN`. Until it is ratified a Lean result is evidence no record cites.
+  row T-0045-37, pinned in `tools/LEAN-PIN`. Until it is ratified a Lean result is evidence no record cites.
 - **The transcription.** No Rust-to-Lean translator was run; the Lean is written from the Rust and read against
   it. That reading is the new premise. `MechanismDeny` is opaque: `compose` neither produces nor inspects one,
   and `compose_deny_reasons` says so.

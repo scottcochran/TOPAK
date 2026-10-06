@@ -302,7 +302,7 @@ process, not an independent checker; lean4lean would be one.
 - In cedar-spec's model the kernel's `decide` cannot reduce maps and sets built by well-founded recursion; the
   floor's closed evaluations are `native_decide`, which trusts the compiler and shows one axiom per use.
 
-**What is still trusted, for a Lean result.** The kernel and the toolchain (T-0045-32, proposed), pinned in
+**What is still trusted, for a Lean result.** The kernel and the toolchain (T-0045-37, proposed), pinned in
 `tools/LEAN-PIN`; the encoding's, transcription's or parse's fidelity, read; for the floor, the compiler where
 `native_decide` evaluates, and the engine's fidelity to the model (T-0045-3). Not LS4, not an SMT solver, not
 tlapm's translation. The TLAPS proofs are unchanged, and so is their residual: the Lean results are a second

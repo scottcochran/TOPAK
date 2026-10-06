@@ -20,7 +20,8 @@ def build():
                "§3, §5, §6, §7 (items 12, 14, 73, 76, 79, 86, 90, 91, 98, 99), §9; ADR-0029 A4; ADR-0030 A3; ADR-0033 "
                "A9–A15 History; ADR-0046 A1; narrative/glossary.md and narrative/architecture-description.md headers; "
                "git log 44ff854 … bd26b97; git tags G10, ToO-rev14, glossary-2026.10.05, REF-2026.10.05 … f; "
-               "ToO rev 14 header, §0 and Appendix J")
+               "ToO rev 14 header, §0 and Appendix J; ADR-0053 (Proposed) §4, §6; tools/LEAN-PIN; spec/lean/README.md, "
+               "mechanism/lean/README.md, floor/lean/README.md")
     X0, X1 = c.x0, c.x1
     W = X1 - X0
     y = c.y
@@ -277,15 +278,19 @@ def build():
          "description, a draft; the closed archive of earlier revisions", "Head edited per revision and tagged; "
          "`revisions/` closed", "checkpoint manifest: 12 (G9's 11 and `architecture-description.md`)"],
         ["`spec/`", "TLA+ modules and twenty-two proof modules, run scripts, generators and checkers, the binding table, "
-         "the method and certification notes, dated TLC, proof and certified-proof results, trace results",
+         "the method and certification notes, dated TLC, proof and certified-proof results, trace results; since "
+         "2026.10.05 `lean/`, thirteen modules re-encoded in Lean ([[amber|ADR-0053, Proposed]])",
          "Cited modules and proof modules frozen (successors `_A1`); results never change; `Mechanism.tla` pinned, "
-         "not frozen", "checkpoint manifest: 172"],
+         "not frozen; Lean re-encodings frozen with their modules on ADR-0053's ratification",
+         "checkpoint manifest: 172; `lean/` enters the next (ADR-0053 §6)"],
         ["`floor/`", "The genesis policy floor in Cedar, with tests and gates, and three proposed stages under "
-         "`proposed/`", "Genesis text DRAFT; the floor in force genesis-provisional (ADR-0030 A3); dated gate runs "
+         "`proposed/`; since 2026.10.05 `lean/`, the genesis floor in Cedar's Lean model ([[amber|ADR-0053, "
+         "Proposed]])", "Genesis text DRAFT; the floor in force genesis-provisional (ADR-0030 A3); dated gate runs "
          "never change", "checkpoint manifest: 146 (fourteen under `floor/proposed/`)"],
         ["`policies/`", "Rego bundle-tier policies and tests", "Reference material", "`SHA256SUMS-REF-<date>`"],
-        ["`mechanism/`", "Rust reference implementation of the admit path", "Evidence, not the verified object; pins "
-         "what it follows", "`SHA256SUMS-REF-<date>` (sixteen cuts)"],
+        ["`mechanism/`", "Rust reference implementation of the admit path; since 2026.10.05 `lean/`, `admit.rs` and "
+         "`clock.rs` transcribed and proved in Lean ([[amber|ADR-0053, Proposed]])", "Evidence, not the verified "
+         "object; pins what it follows; the Lean transcriptions are pinned to the Rust by digest, not frozen", "`SHA256SUMS-REF-<date>` (sixteen cuts)"],
         ["`slm/`", "Small-model pre-training and the ADR-0035 lineage rehearsal", "Not a corpus record",
          "`SHA256SUMS-SLM-2026.09.28`"],
         ["`derived/`", "Dated, frozen analyses, reviews and assessments", "Never revised; a new one is written",
@@ -296,8 +301,9 @@ def build():
         ["`process/`", "The genesis cleanup's process logs", "Closed: nothing added after the cut",
          "checkpoint manifest: 6"],
         ["`tools/`", "The TLC jar and wrappers, the TLAPS wrapper, the installers, and the manifest and reference "
-         "checkers", "Scripts excluded; the prover binary not tracked", "checkpoint manifest: 55 (the jar, the 53 "
-         "files of `tools/cpc/`, `TLAPS-PIN`)"],
+         "checkers; since 2026.10.05 `LEAN-PIN`, `install-lean.sh`, `lean-report.sh` and `lean-sync.sh` "
+         "([[amber|ADR-0053, Proposed]])", "Scripts excluded; the prover binary and the Lean toolchain not tracked",
+         "checkpoint manifest: 55 (the jar, the 53 files of `tools/cpc/`, `TLAPS-PIN`); `LEAN-PIN` enters the next"],
         ["`diagrams/`", "Diagrams and their generators", "Derived from the records", "excluded"],
     ]
     for r in lay:

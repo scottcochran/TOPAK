@@ -1,6 +1,7 @@
 """H3 — Verification map: every check the corpus runs, what it checks, what must fail, where its result lives, and
 what none of it claims."""
 from lib import Canvas
+from d_h7_lean_route import ENC, PKGS, read_pin, read_results
 
 ID, SLUG = "H3", "verification-map"
 
@@ -37,7 +38,10 @@ def build():
                "proposed floor the reference now links; the reference's 133 tests restating the properties; the trace "
                "harness that replays those tests through an operational model, current with the tree, which found a "
                "race no proof could; the drift pins; and the lineage gate suite. Then the honesty layer: a proof is of "
-               "the module, a certified proof is not a verified one, and what runs is neither checked nor proved.",
+               "the module, a certified proof is not a verified one, and what runs is neither checked nor proved. Beside "
+               "them, **proposed and cited by no record yet**, a second route in Lean (ADR-0053; H7): twelve proof "
+               "modules' theorems proved again of re-encodings, the admit composition and the clock check of "
+               "transcriptions of the Rust, and the genesis floor's totality under Cedar's verified model.",
                3400,
                "spec/README.md and every spec/*.tla header and results file, among them Labels-results-2026.10.03.txt and "
                "-2026.10.04.txt, ToolList-, Operators-, Emergency- and Correlator-results-2026.10.04.txt, BreakGlass_A1- "
@@ -52,7 +56,9 @@ def build():
                "mechanism/corpus-pins.sha256 (57 lines); mechanism/crates/*/tests (thirteen binaries); "
                "slm/README.md Part B, slm/gate-suite-results-2026.09.28.txt; ADR-0029 §5 (A1, A3, A4); ADR-0030 §5 A1, "
                "A3; ADR-0033 A5–A15; ADR-0034 finding 6, A2; ADR-0035 (Proposed); ADR-0045 §5, T-0045-3, T-0045-14, "
-               "T-0045-28 to 31; ADR-0047 §11; ADR-0048 §8; ADR-0050 §10; ADR-0051 §10; ADR-0052 §9, R5; ADR-0013 A1; "
+               "T-0045-28 to 31; ADR-0053 (Proposed) and the three Lean results files spec/lean/TopakSpec-, "
+               "mechanism/lean/Admit- and floor/lean/TopakFloor-results-2026.10.05.txt, tools/LEAN-PIN, "
+               "tools/lean-sync.sh; ADR-0047 §11; ADR-0048 §8; ADR-0050 §10; ADR-0051 §10; ADR-0052 §9, R5; ADR-0013 A1; "
                "ADR-0026 A2; G5 §4; G7 §2.2, §3, §4; G8 §1, §5, §8; G9 §3; G10 §1, §2.1, §2.2, §2.6, §2.9, §3, §4, §5, "
                "§7 items 56, 69, 73–75, 78, 90, 91, 96, §8, §9; ToO rev 14 §11.3, §15")
     X0, X1 = c.x0, c.x1
@@ -60,7 +66,7 @@ def build():
     y = c.y
 
     # ================================================================ 1. the chains
-    y += c.heading(X0, y, "1 · Five chains of evidence, from the record to the running code", size=22)
+    y += c.heading(X0, y, "1 · Six chains of evidence, from the record to the running code; the third is proposed", size=22)
     y += 14
     LP = 30
 
@@ -98,7 +104,9 @@ def build():
          "red", "open", "", "6 4", None),
         ("Stage 2: a Lean model", ["With differential testing against the code (ADR-0033 open obligations; G10 "
                                    "item 56). **Not begun.** The proofs make its target precise and do nothing "
-                                   "else for it (ADR-0046 §2)."], "red", "notbuilt", "", None, None),
+                                   "else for it (ADR-0046 §2). Two functions are proved in Lean of a transcription "
+                                   "(ADR-0053, Proposed; lane 3): evidence for those functions, not a model of "
+                                   "`apply`, and not stage 2."], "red", "notbuilt", "", None, None),
         ("Stage 3: compilation", ["The Lean model compiled; with a reproducible build (T-0045-30), the rows "
                                   "leave Annex A only on the addendum that cites the chain. **Not begun.**"],
          "red", "notbuilt", "", None, None),
@@ -151,6 +159,48 @@ def build():
                                   "→ TLAPS → certified run", "teal", dash=None, sw=2, size=15)
     y += 44
 
+    # lane L: the Lean route (ADR-0053, Proposed), read from the Lean results files and the pin
+    lres = {pkg: read_results(pkg, g) for pkg, g, *_ in PKGS}
+    pin = read_pin()
+    nl = sum(r["nprint"] for r in lres.values())
+    top = y
+    y += 40
+    hL = lane(c, X0 + LP, y, W - 2 * LP, [
+        ("What is stated", ["A proved TLA+ module, a function of the reference, or the floor. The TLA+ text, its "
+                            "TLAPS proof and the Rust stay canonical: Lean proves again, of what its Lean states "
+                            "(ADR-0053 §1)."], "blue", None, "", None, None),
+        ("`spec/lean`: re-encodings", [f"Thirteen modules as Lean transition systems; the theorems of their "
+                                       f"**{len(ENC)} proof modules** by induction on the reachable states, the step "
+                                       "TLAPS hands to LS4. Among them the three that do not certify, every step "
+                                       "kernel-checked, of the encoding."], "amber", "proposed", "ADR-0053", None, None),
+        ("`mechanism/lean`: transcriptions", ["`admit.rs`'s `floor_gate` and `compose` and their call site: "
+                                             "`FloorComposition`'s three composition properties and `admit_iff`. "
+                                             "`clock.rs`'s subtracting interval: the margin moves expiry earlier, "
+                                             "never later. Read beside the Rust; pinned, not frozen."],
+         "amber", "proposed", "ADR-0053", None, None),
+        ("`floor/lean`: Cedar's model", ["The **genesis** floor in cedar-spec `" + pin["cedar_spec_tag"] + "`'s "
+                                         "syntax: its 23 totality `holds°` rows as one theorem of the model's proved "
+                                         "validator soundness; the 62 cases under the model's authorizer; witnesses "
+                                         "per action. The three stages are not stated yet."],
+         "amber", "proposed", "ADR-0053", None, None),
+        ("The kernel (T-0045-37, proposed)", [f"Lean {pin['version']}, kernel `libleanshared` "
+                                              f"`{pin['libleanshared_sha256_16']}…`, pinned by `tools/LEAN-PIN`; "
+                                              "installed through elan by `tools/install-lean.sh`, **not tracked**. "
+                                              "Not in ADR-0045 until ADR-0053 is ratified."],
+         "amber", "proposed", "", None, None),
+        ("Results, replay, sync", [f"Each `results.sh`: a clean build, `#print axioms` of {nl} theorems, and "
+                                   "`leanchecker --fresh` replaying every constant, because the axiom list alone "
+                                   "misses a declaration added past the kernel. Byte for byte. `tools/lean-sync.sh` "
+                                   "checks every digest against the tree and the pin."], "teal", None, "", None, None),
+        ("Of the encoding only", ["**Proved in Lean** holds of the encoding, transcription or statement, read against "
+                                  "what it states. Not a refinement: T-0045-28 is unchanged, and no premise in the "
+                                  "binding table moves (ADR-0053 §5)."], "red", None, "", "6 4", None),
+    ], size=14)
+    y += hL + 26
+    c.region(X0, top, W, y - top, "A second route, in Lean (ADR-0053, Proposed; H7): spec/lean, mechanism/lean, "
+                                  "floor/lean → the Lean kernel → replay", "amber", dash="10 6", sw=2, size=15)
+    y += 44
+
     # lane B: the floor
     top = y
     y += 40
@@ -175,7 +225,8 @@ def build():
         ("Results 2026.10.04, each stage", ["**RESULT: all gates pass**, in all three. `emergency`: 15 `unsat` with a "
                                             "checked proof, 41 totality checks `holds°` by cedar's folding (T-0045-3), "
                                             "none unchecked; evidence tree `974f339662a5289d`. A rerun reproduces each "
-                                            "file byte for byte (G10 §3)."], "teal",
+                                            "file byte for byte (G10 §3). The genesis floor's 23 are also proved in "
+                                            "Lean, under cedar-spec's model (lane 3)."], "teal",
          None, "", None, None),
         ("`topak-floor` pins it", ["Compiled in **by path**, refused at startup unless its bytes match the gated "
                                    "digests: since 2026.10.05 the `emergency` stage, switched outright from the genesis "
@@ -444,6 +495,22 @@ def build():
          "`-2026.10.02.txt` on, through `-2026.10.05.txt`: every state keeps the invariants", "[[grey|no proof]]: "
          "predicates over replayed trace states, not a specification (`proof-sync.sh`)", "pinned"],
     ]
+    # ADR-0053 (Proposed): the proof modules spec/lean re-encodes, read from its results file, gain a Lean note
+    enc_tla = {m for m, _ in ENC}
+    for r in rows:
+        cells = r["cells"] if isinstance(r, dict) and "cells" in r else (r if isinstance(r, list) else None)
+        if not cells:
+            continue
+        mod = cells[0].strip("`").removesuffix(".tla")
+        if mod in enc_tla:
+            lf = dict(ENC)[mod]
+            cells[7] += f" · [[amber|proved in Lean]]: `spec/lean/TopakSpec/{lf}.lean` (ADR-0053, Proposed)"
+        elif mod == "RulesFloorBase":
+            cells[7] += (" · [[amber|encoded in Lean]], its genesis `ASSUME` proved as a theorem: "
+                         "`spec/lean/TopakSpec/RulesFloorBase.lean` (ADR-0053, Proposed)")
+        elif mod == "FloorComposition":
+            cells[7] += (" · [[amber|proved in Lean]], three properties, of `admit.rs`'s transcription: "
+                         "`mechanism/lean/Topak/Admit.lean` (ADR-0053, Proposed)")
     y += c.table(X0, y, cols, rows, size=13.5) + 50
 
     # ================================================================ 3. gates + bootstrap
@@ -611,7 +678,8 @@ def build():
             "**Proved** names a claim TLAPS discharged and the hypotheses it was discharged under: twenty-two modules' "
             "invariants. **Certified** names a proof whose every obligation is closed by the prover's normalization, "
             "a checked proof or LS4: nineteen of them. **Checked** names TLC's evidence: the mutations and witnesses at "
-            "small constants. None is used of the running reference (ADR-0046 §1, A1).",
+            "small constants. None is used of the running reference (ADR-0046 §1, A1). A fourth, proposed: **proved "
+            "in Lean**, of an encoding, a transcription or a statement, never \"proved\" alone (ADR-0053 §1).",
             "Trace validation is drift detection against a model of the code: tested paths only, and it cannot check "
             "`ContainedMeansConfined`; a checked gate proof certifies an implication between two Cedar encodings, not "
             "the encoding (G8 §8). The theorem-to-premise table says what each property **assumed**."], "red"),
@@ -638,7 +706,8 @@ def build():
             "`Operators.tla` and `Emergency.tla` are tied to the reference by tests and no refinement (item 90)."], "red"),
         ("What the checks do not cover", [
             "A `holds°` is cedar's own term folding with no query to check: in the `emergency` stage's run, all 41 "
-            "totality checks rest on the engine's row (T-0045-3), not the checker's (G9 item 69).",
+            "totality checks rest on the engine's row (T-0045-3), not the checker's (G9 item 69). For the genesis "
+            "floor's 23, a Lean proof under cedar-spec's model is proposed (ADR-0053); the stages have none.",
             "The CPC signature is cvc5's own formalization, trusted as written (G7 §4). **The race in lease expiry had "
             "no property to violate**: the clock is outside every module, and it was found because a test failed one "
             "run in three under tracing, \"and no proof would have found it\" (ADR-0033 A13). Whether anything else a "
@@ -647,7 +716,8 @@ def build():
             "Stage 1, trace validation: A5 (Batch 21), rerun at A6, widened at A7 and A8, not rerun at A10 to A12, and "
             "**current with the tree again at A14**; A15 changed nothing `apply` does. Stage 2, a Lean model with "
             "differential testing, and stage 3, its compilation: \"the chain proper\", **not begun** (G10 item 56). "
-            "\"Of the refinement chain's three items, none is discharged\" (A15).",
+            "\"Of the refinement chain's three items, none is discharged\" (A15). Proving two functions in Lean of a "
+            "transcription (ADR-0053, Proposed) discharges none of them either.",
             "The reproducible build (T-0045-30) is untouched. Each addendum says which stage it discharges, and the "
             "rows leave Annex A only on that addendum."], "red"),
     ]

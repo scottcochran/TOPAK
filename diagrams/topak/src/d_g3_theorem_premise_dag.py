@@ -417,7 +417,8 @@ def build():
                "spec/theorem-premise-binding.json (2026.10.03); ADR-0045 §3, §5, Annex A, Annex B "
                "(B23, B24, B25, B28, B29, B30, A1, A2, B34); ADR-0046 §1–§5 (Batch 25), A1 (Batch 28); "
                "spec/proof-certification.md §9; spec/*-proof-cert-results-2026.10.04.txt and -2026.10.05.txt; "
-               "spec/premise-corrections-results-2026.10.02.txt; spec/RulesFloorBase.tla; spec/BreakGlass_A1.tla, "
+               "spec/premise-corrections-results-2026.10.02.txt; ADR-0053 §5 and finding 2 (Proposed); spec/lean's results "
+               "file; spec/RulesFloorBase.tla; spec/BreakGlass_A1.tla, "
                "spec/NonComposition_A1.tla (headers); ADR-0023 §2, §6a, A1 §6c; ADR-0026 A2 (provisional); ADR-0033 "
                "A5 to A9, A14; ADR-0034 A2 (B30); ADR-0042 §6 (B30); ADR-0030 §5 A1, A3; ADR-0047 §11; ADR-0048 §8; "
                "ADR-0050 §10; ADR-0051 (Proposed); ADR-0052 §9, R5; G8 §2.2, §3; "
@@ -614,6 +615,58 @@ def build():
     bh = max(c.card(0, 0, bw, t, b, accent=a, draw=False, size=14) for t, b, a in b25)
     for i, (t, b, a) in enumerate(b25):
         c.card(X0 + i * (bw + bg), y, bw, t, b, accent=a, h=bh, size=14)
+    y += bh + 54
+
+    # ---------------------------------------------------------------- ADR-0053 (Proposed): the Lean route
+    import json
+    from d_h7_lean_route import ENC
+    lean_proofs = {f"{m}_proof.tla" for m, _ in ENC}
+    bj = json.loads((ROOT / "spec" / "theorem-premise-binding.json").read_text(encoding="utf-8"))
+    th = bj["theorems"]
+    n_lean = sum(1 for t in th if t.get("proved_in") and set(t["proved_in"]) <= lean_proofs)
+    comp3 = {"AdmitImpliesFloorPermit", "FloorErrorIsDeny", "BundleRefusalHonored"}  # Admit.lean's three
+    n_comp = sum(1 for t in th if comp3 & set(t["names"]))
+    y += c.heading(X0, y, "Proposed (ADR-0053 §5): a Lean route beside the proof column, and why no premise moves",
+                   "amber", 22)
+    y += c.para(X0, y, W, "Drafted 2026.10.05, after G10, and not ratified: nothing below is in the table yet. Counts "
+                "are computed from `spec/theorem-premise-binding.json` at build time against the proof modules "
+                "`spec/lean` re-encodes (H7).", 15, "muted") + 16
+    b53 = [
+        ("What the table would gain", [
+            f"**{n_lean} of 43 rows** name only proof modules `spec/lean` re-encodes: their *Checked in* column gains "
+            "the Lean file, \"proved in Lean in `spec/lean/TopakSpec/<M>.lean`\".",
+            f"**{n_comp} rows** of `FloorComposition` gain \"of the code's composition, in Lean\": "
+            "`AdmitImpliesFloorPermit`, `FloorErrorIsDeny`, `BundleRefusalHonored` (`mechanism/lean`). "
+            "`BundleCannotWriteFloorInputs` and `EnvelopeHolds` are about the store, outside the function.",
+            "**The floor gates' row** gains `floor/lean` for totality, non-vacuity and discrimination, on the genesis "
+            "floor.",
+        ], "amber"),
+        ("Why no premise moves", [
+            "Two proofs give a disjunction: a property holds if **T-0045-31** holds, or if **T-0045-37** holds and the "
+            "encoding is the module. The table's form, holds = ¬(B·¬d), is a conjunction of premises.",
+            "So the table keeps T-0045-31 and records the Lean route as evidence. A deployment that excluded T-0045-31 "
+            "would learn of the second route from the *Checked in* column, not from the inventory (ADR-0053 finding "
+            "2, open).",
+        ], "amber"),
+        ("The one reference verdict it changes the reason for", [
+            "Totality's `holds°` rows rest today on cedar's term folding, under T-0045-3. Proved in Lean of the "
+            "genesis floor under cedar-spec's model, they would rest on **T-0045-37 and T-0045-3's own premise**, "
+            "\"the Cedar engine, as faithful to the Lean model\".",
+            "The verdict at the reference is unchanged: T-0045-3 is a trust root either way.",
+        ], "amber"),
+        ("What the matrix cannot show", [
+            "An either-or premise set. The JSON's rows are single sets; `inventory.py` computes one verdict per row "
+            "and rung.",
+            "Whether the matrix should carry alternative premise sets is ADR-0053's open obligation; until then the "
+            "Lean route is a *Checked in* entry and nothing else.",
+        ], "red"),
+    ]
+    bw = (W - (len(b53) - 1) * bg) / len(b53)
+    bh = max(c.card(0, 0, bw, t, b, accent=a, draw=False, size=14, status="proposed" if a == "amber" else "open")
+             for t, b, a in b53)
+    for i, (t, b, a) in enumerate(b53):
+        c.card(X0 + i * (bw + bg), y, bw, t, b, accent=a, h=bh, size=14,
+               status="proposed" if a == "amber" else "open", status_extra="ADR-0053" if a == "amber" else "")
     y += bh + 54
 
     # ---------------------------------------------------------------- part 1: the key chains as a DAG

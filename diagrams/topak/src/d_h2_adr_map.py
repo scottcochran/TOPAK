@@ -1,4 +1,4 @@
-"""H2 — The decision record map: ADR-0001 to ADR-0052 by area, with status, markers and edges."""
+"""H2 — The decision record map: ADR-0001 to ADR-0053 by area, with status, markers and edges."""
 import math
 
 from lib import Canvas
@@ -105,13 +105,16 @@ R = {
          "0003, 0004, 0007, 0037, 0038, 0039, 0042, 0043", "Drafted 10.04; `Correlator.tla` proved; not built"),
     52: ("Break-glass is an emergency seating; the floor's exception for it is retired", "provisional",
          "C1, C3, C4", "0013, 0028, 0031, 0037, 0050", "Batch 34; rests on 0050; X1 retired on this basis"),
+    53: ("A second deductive method: Lean re-encodings, code transcriptions, the floor in Cedar's model; the Lean "
+         "kernel a trusted-base row", "proposed", "", "0030, 0033, 0045, 0046",
+         "Drafted 10.05, after G10; proposes T-0045-37; dependent entries on 0030, 0032, 0033, 0045, 0046"),
 }
 
 # rows of regions: (label, accent, ncols, [ids in grid order, None for an empty slot])
 ROWS = [
     [("Authority and bootstrap", "brown", 5, [25, 26, 24, 27, 29]),
      ("Deployment variation", "violet", 1, [23]),
-     ("Reference, trusted base and method", "teal", 3, [33, 45, 46])],
+     ("Reference, trusted base and method", "teal", 2, [46, 45, 53, 33])],
     [("Domains, membrane and Build alphabet (B1–B3)", "teal", 5, [1, 2, 7, 15, 22]),
      ("Run", "green", 4, [40, 41, 42, 43])],
     [("Policy and floors", "blue", 4, [10, 12, 30, 44, 13, 6, 9, 14]),
@@ -126,7 +129,7 @@ ROWS = [
 # edges drawn under a tile row: (src, dst, kind) — kind: dep | sup | rev
 UNDER = [
     (26, 25, "dep"), (24, 25, "dep"), (24, 26, "dep"), (27, 25, "dep"), (27, 26, "dep"),
-    (29, 24, "dep"), (29, 25, "dep"), (29, 26, "dep"), (29, 27, "dep"), (46, 45, "dep"),
+    (29, 24, "dep"), (29, 25, "dep"), (29, 26, "dep"), (29, 27, "dep"), (46, 45, "dep"), (53, 33, "dep"),
     (41, 40, "dep"), (42, 40, "dep"), (43, 40, "dep"), (43, 42, "dep"),
     (30, 10, "dep"), (30, 12, "dep"), (44, 30, "dep"),
     (20, 4, "dep"), (20, 3, "dep"),
@@ -142,7 +145,7 @@ EDGE = {"dep": ("blue", None, 1.6), "sup": ("grey", None, 3.0), "rev": ("red", "
 
 
 def build():
-    c = Canvas(ID, "The decision records, ADR-0001 to ADR-0052, by area",
+    c = Canvas(ID, "The decision records, ADR-0001 to ADR-0053, by area",
                "Every record with its status and confirmation markers at G10, and its amendments since G9. Solid blue "
                "edges are dependencies taken "
                "from each record's \"Depends on\" line, drawn where both records sit in the same row of tiles (every "
@@ -151,7 +154,7 @@ def build():
                3600, "decisions/README.md; G10 §1, §1.1, §1.2, §2.4, §4, §5, §6, §7 items 6, 34, 43, 88, 92, 97; ToO rev 14 "
                "§0, §8.3, §9; ADR-0029 A4 (the provisional status); ADR-0026 W1; the History tables of every record "
                "amended since G9 (G10 §6); the Status, Status note, Pending, Depends on, Supersedes, Amends, Revises, "
-               "Narrows and Split from lines of ADR-0001 to ADR-0052; ADR-0018 Status note on 0037 §3; ADR-0023 Status "
+               "Narrows and Split from lines of ADR-0001 to ADR-0053; ADR-0018 Status note on 0037 §3; ADR-0023 Status "
                "note; ADR-0038 Supersedes; ADR-0040 Status note")
     X0 = c.x0
     tw, ig, rp = 330, 20, 22       # tile width, inner gap, region padding
@@ -306,5 +309,7 @@ def build():
         "**Reversals in effect** (ToO §8.3), all by the author alone in genesis: 0008 by 0038 (superseded); 0017's "
         "ordering-primacy clause (supersession unwritten, open item 6, as at G9); 0018's Reader scope by 0037 §3 (not "
         "superseded).",
+        "**Since G10**: [[amber|ADR-0053, Proposed]], drafted 2026.10.05, a second deductive method in Lean; it "
+        "changes no count above until it is ratified.",
     ], accent="grey", size=13.5)
     return c

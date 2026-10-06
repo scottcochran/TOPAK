@@ -47,7 +47,8 @@ def _build():
                "results; spec/Coupling_proof.tla, spec/RunCoupling_proof.tla, their 2026.10.02 proof results and "
                "2026.10.04 certified results; spec/premise-corrections-results-2026.10.02.txt; mechanism/"
                "GAPS-AND-ASSUMPTIONS.md findings 19, 20; ToO rev 14 §3.3, §5.4, §10, §15; G10 §2.2, §2.5, §3 results 2 "
-               "and 8, §7 items 8, 45–49, 60, §8")
+               "and 8, §7 items 8, 45–49, 60, §8; ADR-0053 (Proposed) §1, §4; mechanism/lean/Topak/Clock.lean over "
+               "mechanism/crates/topak-core/src/clock.rs; spec/lean/TopakSpec/Coupling.lean; the two Lean results files")
     X0, X1 = c.x0, c.x1
     W = X1 - X0
     y = c.y
@@ -489,7 +490,16 @@ def _build():
     yy += c.para(tx, yy, tw, "**The sum is the property; the ordering `W < L < D` is demoted** to a description of "
                  "magnitudes. Where `T_irrev` is smaller than any budget, the answer is not a faster clock: **the effect "
                  "must not be expressible in the alphabet at all.** `L` and `D` keep their 09.12-onward meanings (§5).",
-                 14)
+                 14) + 14
+    yy += c.card(tx, yy, tw, "§2's \"fails closed\", proved of the code's arithmetic (ADR-0053, Proposed)", [
+        "`mechanism/lean/Topak/Clock.lean` transcribes `clock.rs`'s `subtracting_interval_elapsed`, `now + margin ≥ "
+        "start + len` with `u64` saturating addition, and proves: **a larger margin elapses whenever a smaller one "
+        "does**, so the margin moves expiry earlier and never later; the check is monotone in `now`; where nothing "
+        "saturates it is the comment's inequality; and with a margin no longer than the interval, it has not elapsed "
+        "before the interval starts.",
+        "Of the transcription, read beside the Rust; on the Lean kernel (T-0045-37, proposed). Of the arithmetic only: "
+        "not of when a replica reads the clock, which is where A13's race was (below).",
+    ], accent="amber", status="proposed", status_extra="ADR-0053", size=14)
     y = max(y + h1, yy) + 50
 
     # ======================================================================== checks
@@ -519,6 +529,11 @@ def _build():
                 "A1): 316 of 320 and 463 of 469 obligations rest on normalization or a checked proof, and 4 and 6 on "
                 "LS4, which no checker confirms. The rows above stay with TLC; neither proof is a claim about the "
                 "reference.", 14, "teal") + 12
+    y += c.para(X0, y, W, "**Also proved in Lean, of a re-encoding** (ADR-0053, Proposed; H7): `spec/lean/TopakSpec/"
+                "Coupling.lean` states `Coupling.tla` as a Lean transition system and proves its three invariants for "
+                "every K, R and `MaxRound`, with the TLAPS proof's strengthening; neither `K < R` nor `MaxRound = 2` is "
+                "assumed, and the arithmetic the TLAPS proof hands to SMT is `omega`. The temporal step is a "
+                "kernel-checked induction, not LS4. `RunCoupling.tla` is not yet encoded.", 14, "amber") + 12
     y += c.para(X0, y, W, "At the reference (R4): every refusal seen to fire: no Observer lease, no heartbeat, a "
                 "dishonest heartbeat, a backlog of `K`, presence without progress, staleness after `T_obs`, a round-2 "
                 "grant while round 1 is unread; one Build promotion stalled for coverage and completed by a heartbeat "
@@ -539,6 +554,8 @@ def _build():
             "lock is released.",
             "Whether anything else a replica keeps beside the replicated state is recorded after the lock is released "
             "was not audited (item 96).",
+            "The Lean proof of the clock check (ADR-0053, Proposed) is of its arithmetic, not of when a replica reads "
+            "the clock or records what it read, and would not have found this either.",
         ], "red", "accepted", "A13 · fixed"),
         ("The backlog-bound test, freed of the clock (A15, Batch 35)", [
             "`e2e.rs` `actuate_is_counted_recorded_and_sealed` sent one heartbeat and then made `K` tool calls. Once its "

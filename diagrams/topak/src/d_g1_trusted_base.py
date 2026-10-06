@@ -109,7 +109,8 @@ def build():
                "Proof System (B25), with a certified configuration since B28; T-0045-32 to 34 for labels, handles and "
                "the tool list (A1, B34); T-0045-35 and 36 for the operator (A2, B34, provisional with ADR-0050). "
                "Tables below are drawn in full from the record; where the reference has moved past Annex B "
-               "(G10 §2.6, item 89), the row's note says so.",
+               "(G10 §2.6, item 89), the row's note says so. One more row is **proposed**, T-0045-37 for the Lean "
+               "kernel (ADR-0053, drafted after G10), and is drawn apart from the thirty-six, under Annex A.",
                3600, "ADR-0045 §1–§9, Findings 1–7, Annex A, Annex B, History (R1–R6, B22, B23, B24, B25, B27, B28, "
                "B29, B30, A1, A2, B34); ADR-0046 §1–§3 (B25), A1 (B28); "
                "ADR-0015 (authority "
@@ -119,7 +120,8 @@ def build():
                "(provisional); G8 §2.6; "
                "G10 §1.1, §2.3, §2.6, §2.7, §2.9, §3, §7 items 35, 56, 57, 64, 69, 73, 74, 80, 89, 90, §8; "
                "ToO rev 14 §7.9, §7.10; spec/proof-certification.md §9; spec/*-proof-cert-results; "
-               "spec/theorem-premise-binding.md (BASE paragraph; 43 rows, last revised 2026.10.02)")
+               "spec/theorem-premise-binding.md (BASE paragraph; 43 rows, last revised 2026.10.02); ADR-0053 §3 (Proposed; "
+               "its proposed row, read at build time)")
     X0, X1 = c.x0, c.x1
     y = c.y
 
@@ -352,6 +354,21 @@ def build():
         nrows += sum(1 for r in grouped[key] if "cells" in r)
     assert nrows == 36, nrows
     y += c.table(X0, y, cols, rows, size=13.5, accent="blue") + 18
+
+    # A proposed row, drawn apart: ADR-0053 §3 (Proposed). Not in ADR-0045 until a ratification lands it by
+    # dependent entry, with the re-pin ADR-0045's digest needs.
+    from d_h7_lean_route import read_adr53
+    prA, prB, *_ = read_adr53()
+    y += c.heading(X0, y, "Proposed, not a row: T-0045-37, the Lean kernel (ADR-0053 §3), for Annex A's third group "
+                          "beside T-0045-31", "amber", 19)
+    y += c.table(X0, y, cols, [{"cells": prA, "accent": "amber"}], size=13.5, accent="amber") + 8
+    y += c.table(X0, y, [("Row (Annex B)", 132, {"bold": True}), ("Instance at the reference", 1900),
+                         ("Class here", 170), ("Note", (X1 - X0) - 2202)], [{"cells": prB, "accent": "amber"}],
+                 size=13.5, accent="amber") + 8
+    y += c.para(X0, y, X1 - X0, "[[amber|Proposed]], drafted 2026.10.05 after G10: ADR-0045 is pinned by the reference's "
+                "drift test and changes only by a History row at ratification, so the row is drawn here and counted in "
+                "none of the totals above. It changes no premise in the binding table: a property proved both by TLAPS "
+                "and in Lean keeps T-0045-31 as its premise (ADR-0053 §5; H7).", 14, "muted") + 18
 
     nr = annex_a_text.split("**Not rows, and why.**")[1].split("---")[0]
     paras = [" ".join(p.split()) for p in annex_a_text.split("\n\n")]

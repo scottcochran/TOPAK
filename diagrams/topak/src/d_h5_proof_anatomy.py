@@ -18,7 +18,9 @@ def build():
                "the invariants, which are universal, under named hypotheses (ADR-0046 §1); a proof is **certified** "
                "when every obligation is closed by the prover's normalization, a checked proof, or LS4. None is a "
                "claim about the running reference (T-0045-28). Which modules are proved, with their counts, is H3; "
-               "certification route by route is H6; each property's hypotheses are G3's \"Breaks under\" column.",
+               "certification route by route is H6; each property's hypotheses are G3's \"Breaks under\" column. Section 4 "
+               "sets beside the loop the same loop for a **Lean re-encoding** (ADR-0053, **Proposed**; H7), which "
+               "proves the same theorems again, of an encoding, and is kept in step the same way.",
                3200, "spec/proof-method.md §1 (its table, with the five rows of 2026.10.04), §2, §3, §5, §5a, §6 "
                      "(as revised since 7075169); spec/proof-certification.md §2, §4, §9, §10; spec/proof-cert.sh; "
                      "spec/Lease_A1-proof-cert-results-2026.10.04.txt (a9e59ca0937e3fed); spec/README.md, TLAPS proofs "
@@ -32,7 +34,10 @@ def build():
                      "spec/RunCoupling_proof.tla, spec/Anchor_proof.tla; spec/proof-results.sh; spec/proof-sync.sh; "
                      "tools/tlapm; ADR-0046 §1 to §5, §7, R2, B25 and E1 (Batch 26); ADR-0045 T-0045-28, T-0045-31; "
                      "spec/RulesFloorBase.tla; ADR-0026 A1 note, A2; ADR-0046 A1, E2 (Batch 28); G8 §5; G9 §3 "
-                     "(finding 5); G10 §2.1, §2.9, §3, §5, §7 items 73, 74, 90; ToO rev 14 §11.3")
+                     "(finding 5); G10 §2.1, §2.9, §3, §5, §7 items 73, 74, 90; ToO rev 14 §11.3; ADR-0053 (Proposed) §1, §2, "
+                     "§4; spec/proof-method.md §5b and §6 (2026.10.05); tools/LEAN-PIN, tools/install-lean.sh, "
+                     "tools/lean-report.sh, tools/lean-sync.sh; spec/lean/results.sh and its results file; "
+                     "spec/lean/README.md (mutation check)")
     X0, X1 = c.x0, c.x1
     W = X1 - X0
     y = c.y
@@ -365,4 +370,54 @@ def build():
     sh = max(c.card(0, 0, tw3, t, b, a, status=s, status_extra=e, size=14, draw=False) for t, a, s, e, b in side)
     for i, (t, a, s, e, b) in enumerate(side):
         c.card(X0 + i * (tw3 + tg), y, tw3, t, b, a, status=s, status_extra=e, size=14, h=sh)
+    y += sh + 56
+
+    # ================================================================== 4 · the same loop, in Lean
+    y += c.heading(X0, y, "4 · The same loop, for a Lean re-encoding (ADR-0053, Proposed)", "amber", 22)
+    y += c.para(X0, y, W,
+                "A re-encoding does not extend its module: it is a second statement of it, in Lean, beside it under "
+                "`spec/lean/`, and the base module does not know it exists. So it drifts the way a proof does, when "
+                "the base module changes, and one more way a proof cannot: the Lean can say something other than the "
+                "module, which is read and not checked. Every row below is the TLAPS loop's, matched (proof-method "
+                "§5b, §6).", size=15, color="muted") + 18
+    tw4 = W * 0.66
+    t4 = c.table(X0, y, [("", tw4 * 0.17, {"bold": True}), ("A TLAPS proof", tw4 * 0.38),
+                         ("A Lean re-encoding (ADR-0053, Proposed)", tw4 * 0.45)], [
+        ["Relation to the module", "`EXTENDS` it: the proof is of the frozen text itself",
+         "Restates it beside the text: the theorems are of the encoding, read against the module"],
+        ["What binds the result to the text", "The `Modules:` line: every module of the `EXTENDS` chain by digest",
+         "The `Transcribes:` line: every TLA+ module encoded, by repository path and digest; the `Sources:` line: "
+         "every Lean file"],
+        ["The driver", "`spec/proof-results.sh <M>_proof`", "`spec/lean/results.sh`, through `tools/lean-report.sh`: a "
+                                                            "clean build, `#print axioms` sorted, and the replay"],
+        ["What says \"proved\"", "\"All N obligations proved\" (T-0045-31)", "\"Build completed\" and "
+         "`leanchecker --fresh`: every constant replayed through the kernel in a fresh environment (T-0045-37, "
+         "proposed)"],
+        ["The sync check", "`spec/proof-sync.sh`: `IN SYNC`, `STALE`, `MISSING RESULTS`",
+         "`tools/lean-sync.sh`: the same three, for `spec/lean`, `mechanism/lean` and `floor/lean`"],
+        ["The pin", "`tools/TLAPS-PIN`; `tools/tlapm` refuses another binary", "`tools/LEAN-PIN`; `lean-sync.sh` refuses "
+                                                                               "a results file naming another kernel"],
+        ["The install", "`tools/install-tlaps.sh`, 1.9 GB, not tracked", "`tools/install-lean.sh` through elan, about "
+                                                                         "2 GB, not tracked"],
+        ["When the module changes", "A successor module and a successor proof; the frozen pair stays",
+         "A successor encoding, a new Lean file; the old one stays as the encoding of the frozen module"],
+        ["Frozen when", "Cited by digest in a ratified record (ADR-0046 §4)", "With its base module, on ADR-0053's "
+                                                                              "ratification; until then cited by none"],
+        ["Its non-vacuity check", "Flip one hypothesis in a scratch copy: the prover must reject the proof at the guard",
+         "Mutate one definition in a scratch copy: the build must fail in the theorem the mutation breaks (eighteen "
+         "for `spec/lean`, 2026.10.05)"],
+        ["Not read by the sync", "The certified results file's `Modules:` line", "Whether the encoding says what the "
+                                                                              "module says: that is the reading"],
+    ], size=13.5, accent="amber")
+    c.card(X0 + tw4 + 40, y, W - tw4 - 40, "Why keep both", [
+        "**They fail in different places.** The TLAPS proof trusts LS4 for the temporal step and the prover's front "
+        "end; the Lean proof trusts the encoding. A theorem proved by both is wrong only if both fail.",
+        "**The Lean proof is not a successor of the TLAPS proof**, and neither replaces the other: the TLA+ module, "
+        "its proof and its certified run stay canonical (ADR-0053 §1).",
+        "**The same strengthenings carried over.** Every Lean proof reuses the inductive invariant its TLAPS proof "
+        "found, which is why thirteen modules took a day; what TLAPS proves as `TypeOK`, Lean's types carry.",
+        "**One more drift than a proof has**: an encoding can be wrong where a proof extending the text cannot. The "
+        "header of each Lean file names where a reading was chosen.",
+    ], accent="amber", status="proposed", status_extra="ADR-0053", size=14)
+    y += t4
     return c

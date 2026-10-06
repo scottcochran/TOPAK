@@ -106,7 +106,7 @@ holds always", that the certified run checks with nothing; in Lean that step is 
 What it costs is a new premise, that the Lean encoding is the TLA+ module; a Lean theorem is of the encoding,
 not of the frozen text, and `lean/TopakSpec-results-2026.10.05.txt` binds each encoding to the digest of the
 module it transcribes. ADR-0053 (Proposed) declares the method and proposes the Lean kernel as trusted-base row
-T-0045-32, pinned in `tools/LEAN-PIN`. Every results file ends with a kernel replay (`tools/lean-report.sh`), because
+T-0045-37, pinned in `tools/LEAN-PIN`. Every results file ends with a kernel replay (`tools/lean-report.sh`), because
 `#print axioms` alone misses a declaration added past the kernel (`proof-method.md` §5b). `lean/README.md` has the
 theorem table, the encoding conventions, and a mutation check; `lean/results.sh` regenerates the results file, byte
 for byte; `tools/lean-sync.sh` is this package's `proof-sync.sh`, and covers `mechanism/lean/` and `floor/lean/` too.
