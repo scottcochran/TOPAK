@@ -1,0 +1,47 @@
+TOPAK — Lean results for admit.rs, clock.rs, the topak-floor wrapper and a Seats-shaped model of State::apply: every theorem of mechanism/lean/Topak/*.lean, and of the spec/lean modules they refine, checked by the kernel below
+Transcribes: mechanism/crates/topak-core/src/admit.rs (sha256 88181d094da7a8b6) · mechanism/crates/topak-node/src/mechanism.rs (sha256 ba754394b045a1db) · mechanism/crates/topak-core/src/clock.rs (sha256 684599e3b20f7495) · mechanism/crates/topak-floor/src/lib.rs (sha256 0f280725956a15b4) · spec/FloorComposition.tla (sha256 3d30a058d8f8d9d1) · mechanism/crates/topak-core/src/state.rs (sha256 25eeeeb3830ee9f8) · mechanism/crates/topak-core/src/types.rs (sha256 6524de30f4ada72a) · mechanism/crates/topak-core/src/lease.rs (sha256 502e546467e8f3e3) · spec/Seats.tla (sha256 903a1db686968df0)
+Sources: mechanism/lean/Topak/Admit.lean (sha256 7d0f461707445bf0) · mechanism/lean/Topak/Clock.lean (sha256 171ae080564fb5d8) · mechanism/lean/Topak/FloorRefinement.lean (sha256 fc7bc813728c7192) · mechanism/lean/Topak/SeatsModel.lean (sha256 2f33ea455f0b9d25) · mechanism/lean/Topak.lean (sha256 d30c72405406052b) · mechanism/lean/lakefile.toml (sha256 9b1a860102739048) · mechanism/lean/lake-manifest.json (sha256 30646f23ac84209f) · mechanism/lean/lean-toolchain (sha256 3aac669c7a910ec2) · spec/lean/TopakSpec/Prelude.lean (sha256 032c31fe29025abe) · spec/lean/TopakSpec/FloorComposition.lean (sha256 4f1993c067399ee3) · spec/lean/TopakSpec/Seats.lean (sha256 e7f3b5fefc58e20f)
+Prover: Lean (version 4.33.1, arm64-apple-darwin24.6.0, commit 819816b2e0a3bf405af45ae5c7af2491d8f5bee6, Release) · kernel libleanshared (sha256 5a23395d981dbeeb) · leanchecker (sha256 9b9a22ecb11e8e59) · Lake version 5.0.0-src+819816b (Lean version 4.33.1) · toolchain leanprover/lean4:v4.33.1 · driver: results.sh, tools/lean-report.sh
+Theorems (Admit): floorGate_none_iff · floorGate_deny · floorGate_error · floor_deny_names_a_reason · gate_short_circuits · callSite_eq_compose · compose_permit_allow · compose_permit_refuse · compose_deny · compose_error · admit_witnesses · admit_implies_floor_permit · floor_error_is_deny · bundle_refusal_honored · bundle_refusal_is_deny · permit_and_allow_admit · admit_iff · compose_deny_reasons
+Theorems (Clock): elapsed_iff · elapsed_mono_margin · elapsed_never_later · elapsed_mono_now · not_elapsed_before_start
+Theorems (FloorRefinement): input_failure_is_error · engine_error_is_error · wrapper_permit_iff · wrapper_deny_reasons · engine_allow_iff · engine_err_iff · floorPermit_refines · codeAdmits_iff · codeAdmits_input_failure · fcAdmit_deny · codeDecide_refines · codeNext_refines · code_behaviours_safe · decide_is_code
+Theorems (SeatsModel): ActionKind.mem_all · withinKind_spec · subsetOf_spec · init_inv · inv_last · endMany_leases · endMany_live · endMany_some · endMany_lbs · endMany_inv · endAll_none · endAll_dead · heldElsewhere_false · applyGrant_cases · applyRenew_cases · applyAdmit_cases · rej_inv · fresh_of · grant_inv · renew_inv · admitted_inv · admit_inv · endMany_step_inv · issue_inv · step_inv · model_inv · model_one_seat_per_principal · model_acted_within_kind · codeKind_inj · allows_bound · allows_image · absLease_of · absLease_none · absLease_dangling · absLease_congr · Steps.single · Steps.trans · reach_steps · endOne · endSet_steps · abs_last · abs_endMany · endMany_steps · step_refines · model_refines_seats · model_seats_safe
+A theorem holds of the transcription, not of the Rust: admit.rs's floor_gate and compose, the call site in mechanism.rs (steps 5 and 6), clock.rs's subtracting_interval_elapsed and topak-floor's Floor::evaluate are read against their Lean, each definition beside the Rust it transcribes. FloorRefinement proves the code's decision a Decide step of spec/lean's re-encoding of FloorComposition.tla, on the engine premise T-0045-3 (Cedar's rule over the module's four policies) and with the module's own lift; it is not a refinement of the floor in force, and discharges no stage of T-0045-28 (ADR-0053 §5). SeatsModel is a model of State::apply, not a transcription: each arm keeps its checks and effects on the leases, the live index, the seat kinds and the admitted acts, and every other check is one oracle that can only refuse; it proves ADR-0037 §1 and §4 of the model at any size (model_inv) and the model a refinement of spec/lean's Seats.tla at that module's constants (model_refines_seats), on the premise that the log delivers increasing indices; seats-replay.sh checks the model against the reference's recorded traces (SeatsReplay-results-*.txt). Evidence, not a stage of T-0045-28 (ADR-0053 §5, R1).
+
+info: Topak/Admit.lean:336:0: 'Topak.Admit.floorGate_none_iff' depends on axioms: [propext, Quot.sound]
+info: Topak/Admit.lean:337:0: 'Topak.Admit.floor_deny_names_a_reason' depends on axioms: [propext]
+info: Topak/Admit.lean:338:0: 'Topak.Admit.gate_short_circuits' depends on axioms: [propext]
+info: Topak/Admit.lean:339:0: 'Topak.Admit.callSite_eq_compose' depends on axioms: [propext]
+info: Topak/Admit.lean:340:0: 'Topak.Admit.admit_witnesses' depends on axioms: [propext]
+info: Topak/Admit.lean:341:0: 'Topak.Admit.admit_implies_floor_permit' depends on axioms: [propext]
+info: Topak/Admit.lean:342:0: 'Topak.Admit.floor_error_is_deny' depends on axioms: [propext]
+info: Topak/Admit.lean:343:0: 'Topak.Admit.bundle_refusal_honored' depends on axioms: [propext]
+info: Topak/Admit.lean:344:0: 'Topak.Admit.bundle_refusal_is_deny' depends on axioms: [propext]
+info: Topak/Admit.lean:345:0: 'Topak.Admit.permit_and_allow_admit' depends on axioms: [propext]
+info: Topak/Admit.lean:346:0: 'Topak.Admit.admit_iff' depends on axioms: [propext]
+info: Topak/Admit.lean:347:0: 'Topak.Admit.compose_deny_reasons' depends on axioms: [propext, Quot.sound]
+info: Topak/Clock.lean:70:0: 'Topak.Clock.elapsed_iff' depends on axioms: [propext]
+info: Topak/Clock.lean:71:0: 'Topak.Clock.elapsed_mono_margin' depends on axioms: [propext, Quot.sound]
+info: Topak/Clock.lean:72:0: 'Topak.Clock.elapsed_never_later' depends on axioms: [propext, Quot.sound]
+info: Topak/Clock.lean:73:0: 'Topak.Clock.elapsed_mono_now' depends on axioms: [propext, Quot.sound]
+info: Topak/Clock.lean:74:0: 'Topak.Clock.not_elapsed_before_start' depends on axioms: [propext, Quot.sound]
+info: Topak/FloorRefinement.lean:268:0: 'Topak.FloorRefinement.wrapper_permit_iff' depends on axioms: [propext]
+info: Topak/FloorRefinement.lean:269:0: 'Topak.FloorRefinement.floorPermit_refines' depends on axioms: [propext]
+info: Topak/FloorRefinement.lean:270:0: 'Topak.FloorRefinement.codeAdmits_iff' depends on axioms: [propext]
+info: Topak/FloorRefinement.lean:271:0: 'Topak.FloorRefinement.codeDecide_refines' depends on axioms: [propext]
+info: Topak/FloorRefinement.lean:272:0: 'Topak.FloorRefinement.code_behaviours_safe' depends on axioms: [propext]
+info: Topak/FloorRefinement.lean:273:0: 'Topak.FloorRefinement.decide_is_code' depends on axioms: [propext]
+info: Topak/SeatsModel.lean:1034:0: 'Topak.SeatsModel.model_inv' depends on axioms: [propext, Quot.sound]
+info: Topak/SeatsModel.lean:1035:0: 'Topak.SeatsModel.Inst.model_refines_seats' depends on axioms: [propext, Quot.sound]
+info: Topak/SeatsModel.lean:1036:0: 'Topak.SeatsModel.Inst.model_seats_safe' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/FloorComposition.lean:347:0: 'Topak.Spec.FloorComposition.AdmitImpliesFloorPermitAlways' does not depend on any axioms
+info: TopakSpec/FloorComposition.lean:348:0: 'Topak.Spec.FloorComposition.FloorErrorIsDenyAlways' does not depend on any axioms
+info: TopakSpec/FloorComposition.lean:349:0: 'Topak.Spec.FloorComposition.BundleRefusalHonoredAlways' does not depend on any axioms
+info: TopakSpec/FloorComposition.lean:350:0: 'Topak.Spec.FloorComposition.BundleCannotWriteFloorInputsAlways' does not depend on any axioms
+info: TopakSpec/FloorComposition.lean:351:0: 'Topak.Spec.FloorComposition.EnvelopeHoldsAlways' depends on axioms: [propext]
+info: TopakSpec/FloorComposition.lean:352:0: 'Topak.Spec.FloorComposition.SafeAlways' depends on axioms: [propext]
+info: TopakSpec/Seats.lean:257:0: 'Topak.Spec.Seats.OnlyThinkersAuthorAlways' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Seats.lean:258:0: 'Topak.Spec.Seats.OneSeatPerPrincipalAlways' depends on axioms: [propext]
+info: TopakSpec/Seats.lean:259:0: 'Topak.Spec.Seats.SafeAlways' depends on axioms: [propext, Quot.sound]
+Build completed successfully (11 jobs).
+Replay: leanchecker --fresh Topak: every constant Topak reaches replayed through the kernel in a fresh environment, accepted

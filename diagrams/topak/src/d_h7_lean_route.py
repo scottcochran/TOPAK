@@ -30,9 +30,12 @@ PKGS = [
      "`subtracting_interval_elapsed`, and the `topak-floor` wrapper, transcribed. `FloorComposition`'s three "
      "composition properties and `admit ⟺ floor_permit ∧ ¬bundle_deny` of the transcription; since 2026.10.06 the "
      "whole decision, wrapper and `compose`, proved a `Decide` step of `FloorComposition`'s re-encoding, on Cedar's "
-     "rule as the engine premise (ADR-0053 R2); ADR-0032 §2's \"fails closed\" of the arithmetic.",
+     "rule as the engine premise (ADR-0053 R2); ADR-0032 §2's \"fails closed\" of the arithmetic. And a **model** "
+     "of `State::apply`'s seat and lease arms, every other check an oracle that can only refuse: ADR-0037 §1 and §4 "
+     "at any number of seats, and the model a refinement of `Seats`' re-encoding at its constants (R4).",
      "The Lean function is the Rust function. Read, each definition beside the Rust; no Rust-to-Lean translator was "
-     "run. Pinned, not frozen: the Rust moves."),
+     "run. For the model, that every Rust step is a model step: **checked** on the recorded traces by the replay, "
+     "not only read. Pinned, not frozen: the Rust moves."),
     ("floor/lean", "TopakFloor-results-*.txt", "Statement in Cedar's model", "violet",
      "The genesis floor and, since R3, **the floor in force**, the `emergency` stage the reference links, each with its "
      "schema S, in cedar-spec's abstract syntax (tag `v4.13.0`), generated through the cedar CLI's parser by `gen.py`. "
@@ -88,6 +91,14 @@ def _replay(line):
     return f"**Replay.** `{m.group(1)}`: {m.group(2)}, [[{acc}|{m.group(3)}]]"
 
 
+def read_replay():
+    """-> (file, digest, summary line) of the newest trace replay through the model of `apply` (ADR-0053 R4)."""
+    f = sorted((ROOT / "mechanism/lean").glob("SeatsReplay-results-*.txt"))[-1]
+    raw = f.read_bytes()
+    summ = next(ln for ln in raw.decode("utf-8").splitlines() if re.match(r"\d+ traces · \d+ steps", ln))
+    return f"mechanism/lean/{f.name}", hashlib.sha256(raw).hexdigest()[:16], summ
+
+
 def read_pin():
     out = {}
     for ln in PIN.read_text(encoding="utf-8").splitlines():
@@ -115,6 +126,8 @@ def read_adr53():
 
 def build():
     res = {p[0]: read_results(p[0], p[1]) for p in PKGS}
+    rp_file, rp_dig, rp_summ = read_replay()
+    rp_ok = rp_summ.endswith("· 0 not matching")
     pin = read_pin()
     rowA, rowB, deps, finds, opens, cond, adr_dig = read_adr53()
     cert = {m: read_cert(m) for m, _ in ENC}
@@ -133,6 +146,7 @@ def build():
                3200,
                f"decisions/ADR-0053.md (Proposed; {adr_dig}), §1–§7, Findings, Open obligations (read at build time); "
                f"the three Lean results files, read at build time: {', '.join(r['file'] for r in res.values())}; "
+               f"the trace replay through the model of `apply`, read at build time: {rp_file}; "
                "tools/LEAN-PIN (read at build time), tools/install-lean.sh, tools/lean-report.sh, tools/lean-sync.sh; "
                "spec/lean/README.md, mechanism/lean/README.md, floor/lean/README.md (mutation checks); "
                "spec/proof-method.md §5b, §6; spec/proof-certification.md §8, §12; the certified TLAPS results "
@@ -164,6 +178,11 @@ def build():
                 f"**Results.** `{r['file']}` (`{r['digest']}`): {len(r['files'])} files by repository path and "
                 f"digest; {r['built'].rstrip('.')}.",
                 _replay(r["replay"])]
+        if pkg == "mechanism/lean":
+            body.append(f"**Trace replay** (`seats-replay.sh`). `{rp_file}` (`{rp_dig}`): the six suites' recorded "
+                        f"traces run through the model's own `apply`, {rp_summ}: "
+                        f"{'[[teal|every step the reference took is a model step]]' if rp_ok else '[[red|NOT ALL MATCH]]'}. "
+                        "A test, not a proof; its first run found that `Submit` and `Vote` end the lease.")
         tops.append((pkg, use, acc, body))
     hs = [c.card(X0 + i * (cw + 40), y, cw, f"`{p}` · {u}", b, accent=a, status="proposed", status_extra="ADR-0053",
                  size=13.5, draw=False) for i, (p, u, a, b) in enumerate(tops)]
@@ -299,6 +318,13 @@ def build():
                  "five invariants hold of every behaviour in which the code decides; and `decide_is_code`",
                  "the transcriptions, read; the kernel; T-0045-3 at the module's size; the module's four policies, not "
                  "the floor in force"])
+    rows.append(["The seat rules of `State::apply`, refining `Seats` (ADR-0053 R4)", "—", "—",
+                 "not a TLAPS claim: of a model of the code", "`mechanism/lean/Topak/` `SeatsModel.lean`",
+                 "`model_inv`: one live lease per principal and per seat, alphabets and admitted acts within the "
+                 "seat's kind, at any number of seats; `model_refines_seats`: at `Seats`' constants every reachable "
+                 "state maps to one `Seats.Next` reaches, so `model_seats_safe`",
+                 f"the model, checked by the trace replay ({rp_summ.split(' · ')[0]}, all matching); the kernel; the "
+                 "log's increasing indices; at the constants, no issuance changes a seat's kind"])
     rows.append(["The floor's totality gate", "23 and 41 `holds°`", "—", "not a proof: cedar's term folding, on "
                  "T-0045-3", "`floor/lean/TopakFloor/` `Gates.lean`, `InForce.lean`", "`floor_never_errors` of the "
                  "genesis floor, `inForce_never_errors` of the floor in force (R3), by cedar-spec's proved "

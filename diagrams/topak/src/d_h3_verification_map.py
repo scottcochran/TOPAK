@@ -94,7 +94,10 @@ def build():
                                        "replays and checks `TraceMatches`. 21 traces (09.30); 62 traces, 709 steps "
                                        "(10.02b); **82 traces, 1,007 steps, every step matching** (10.05, A14), every "
                                        "state also read against `ConfinementRefinement.tla`. **Current with the tree**, "
-                                       "and checked to discriminate. It found a race in lease expiry (A13)."],
+                                       "and checked to discriminate. It found a race in lease expiry (A13). Since "
+                                       "2026.10.06 the same traces also run through a Lean model of `apply`'s seat "
+                                       "and lease arms: 82 traces, 1,014 steps, every one a model step (ADR-0053 R4, "
+                                       "Proposed)."],
          "teal", "built", "", None, None),
         ("Tested paths only (T-0045-28)", ["What no test reaches is asserted, and the model takes more from the "
                                            "trace than it did: whether a request's signature is its seat's, whether "
@@ -514,6 +517,10 @@ def build():
         if mod == "FloorComposition":
             cells[7] += (" · and the code's decision, wrapper and `compose`, [[amber|proved a `Decide` step]] of it: "
                          "`mechanism/lean/Topak/FloorRefinement.lean` (ADR-0053 R2)")
+        if mod == "Seats":
+            cells[7] += (" · and a model of `State::apply`'s seat and lease arms [[amber|proved to refine it]] at its "
+                         "constants, the reference's recorded traces replayed through the model: "
+                         "`mechanism/lean/Topak/SeatsModel.lean` (ADR-0053 R4)")
     y += c.table(X0, y, cols, rows, size=13.5) + 50
 
     # ================================================================ 3. gates + bootstrap
@@ -720,7 +727,9 @@ def build():
             "**current with the tree again at A14**; A15 changed nothing `apply` does. Stage 2, a Lean model with "
             "differential testing, and stage 3, its compilation: \"the chain proper\", **not begun** (G10 item 56). "
             "\"Of the refinement chain's three items, none is discharged\" (A15). Proving two functions in Lean of a "
-            "transcription (ADR-0053, Proposed) discharges none of them either.",
+            "transcription (ADR-0053, Proposed) discharges none of them either. Since R4 a Lean model of `apply`'s "
+            "seat and lease arms is proved to refine `Seats` and replayed against every recorded trace: stage 2's "
+            "shape for one module, with an oracle for the rest of `apply`, and not the stage (ADR-0053 §5).",
             "The reproducible build (T-0045-30) is untouched. Each addendum says which stage it discharges, and the "
             "rows leave Annex A only on that addendum."], "red"),
     ]

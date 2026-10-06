@@ -1,10 +1,12 @@
-# The admit composition in Lean 4
+# The mechanism's code in Lean 4
 
 `Topak/Admit.lean` transcribes `crates/topak-core/src/admit.rs` (ADR-0030 §1: `floor_gate`, `compose`, and the
 types they take and return) and the call site in `crates/topak-node/src/mechanism.rs` (steps 5 and 6) into Lean 4,
 and proves of the transcription what `spec/FloorComposition.tla` states of its model. TLAPS proves those
 properties of the TLA+ module (`spec/FloorComposition_proof.tla`, T-0045-31). This proves them of the code's
 composition: a first piece of the step from module to code that ADR-0045 T-0045-28 says the corpus lacks.
+Since 2026.10.06 it also holds a model of `State::apply`'s seat and lease arms, refining `Seats.tla` and replayed
+against the reference's recorded traces (below).
 
 Each Lean definition carries the Rust it transcribes in its doc-comment, so the two can be read side by side.
 
@@ -68,6 +70,49 @@ closes the gap between those outcomes and the module. It transcribes the `topak-
 - The lift is the module's own `Reassign` and `Seal`; the code's lift is not transcribed.
 - It is not a stage of T-0045-28's chain, and no addendum may cite it as one (ADR-0053 §5, R1 and R2).
 
+## A Seats-shaped model of `apply` (`Topak/SeatsModel.lean`, 2026.10.06)
+
+`State::apply` in [state.rs](../crates/topak-core/src/state.rs) is too long to transcribe whole. This file **models**
+the part of it `spec/Seats.tla` (ADR-0037) is about: which seats hold a live lease, for which principal, under which
+alphabet, and what was admitted under them. Each arm keeps its checks and its effects on those fields: grant on every
+path (unsigned, an operator's `Regrant`, an activation), renewal, admit (with `Submit` and `Vote` ending the lease),
+end of round on both paths, revocation and Contested, the fleet fence, issuance. Every other check the arm makes is
+one Boolean, `ok`, that can only refuse. So the model's steps include every step the code takes, whatever the
+checks it leaves out decide. An admitted act is recorded with its seat's kind in `acted`, a history variable; the
+code keeps none, and the log does.
+
+| Theorem | Claim |
+|---|---|
+| `model_inv` | on every state the model reaches, at any number of seats and principals: `live_by_seat` indexes exactly the live leases, each at its seat; no fence is past `last_applied`; every live alphabet is within its seat's kind; every admitted act was within the kind of the seat it was admitted under; two live leases are two principals |
+| `model_one_seat_per_principal`, `model_acted_within_kind` | ADR-0037 §1 and §4 of the code's `apply`, read off the invariant |
+| `step_refines` | at `Seats.tla`'s constants, every model step is a `Seats.Next` step at `Mut = "none"`, a run of `EndRound`s (a revocation, a fence, an issuance), an `Act` and an `EndRound` (a terminal act), or a stutter. The code's nine action kinds are read as the module's four, and under that reading each kind's `allows` is exactly `KindBound` (`allows_bound`, `allows_image`) |
+| `model_refines_seats`, `model_seats_safe` | every state the model reaches there maps to one `Seats.tla` reaches, so `Seats_proof.tla`'s `SafeAlways` holds of it |
+
+**What it premises.**
+- **The log** delivers increasing indices. `apply_inner` records any index as `last_applied` and inserts a granted
+  lease under it, so a fence's freshness is the consensus layer's (ADR-0053 finding 9).
+- **The model is the code**, on its fields. Each arm carries the Rust it models, and the trace replay below checks it.
+- **Where the model reads the state differently.** The Rust finds live leases through `live_by_seat`'s values. The
+  model finds them as live records indexed at their own seat. The two sets are equal wherever `model_inv` holds.
+- **At the module's constants, no issuance changes a seat's kind** (`INext`). The code allows one:
+  `validate_issuance` does not compare the issued seats with the current ones. `model_inv` needs no such premise,
+  because an issuance ends every live lease (ADR-0053 finding 8).
+- It is not a stage of T-0045-28's chain (ADR-0053 §5, R1 and R4): the oracle stands for most of `apply`, and the
+  refinement is of one module at its constants.
+
+**The trace replay** (`SeatsReplay.lean`, `seats-replay.sh`). `trace.rs` records every applied entry of the
+reference's suites, with its result and a projection of the state after it, for `spec/Mechanism.tla`'s trace
+validation. `seats-replay.sh` runs the same six suites and passes every trace to `SeatsReplay.lean`. That program
+applies each recorded entry with the model's own `apply`, the function the proofs are about, with `ok` set to whether
+the reference applied it. After each step it compares the result, the leases (seat, principal, Persona, confinement
+digest, alphabet, ended), `live_by_seat`, the seat kinds and `last_applied` with the projection. That is the
+direction the proofs need: every recorded code step is a model step. `SeatsReplay-results-2026.10.06.txt` reports
+82 traces and 1014 steps, all MATCH. It is a test over the traces the suites record, not a proof.
+
+The first replay failed 25 of 58 traces. The model left out that an admitted `Submit` or `Vote` ends the lease, and
+every proof held without it, since ending a lease breaks no safety invariant. The replay is what found it (ADR-0053
+finding 7).
+
 ## What it rests on
 
 - **The Lean 4 kernel**, toolchain `lean-toolchain` (`leanprover/lean4:v4.33.1`, the one `tools/LEAN-PIN`
@@ -106,16 +151,34 @@ Three more on 2026.10.06, against the wrapper and the abstraction, each built in
 | Fail-open input | an input rejected before evaluation becomes a `Permit` | `input_failure_is_error`, `codeAdmits_input_failure` |
 | `M_OVERRIDE`, in the abstraction | a bundle refusal read as an allow | `codeAdmits_iff`, `decide_is_code` |
 
+Four more on 2026.10.06, against the model of `apply`. Each drops one check, with the case lemma stating the arm
+revised to match, as an honest revision of the proof would be:
+
+| Mutant | What changes | Fails |
+|---|---|---|
+| `M_SEAT`, the reference before 2026.09.29 | a grant does not refuse a principal holding a live lease elsewhere | `grant_inv`, `step_refines` |
+| `M_KIND` | a grant does not bound the alphabet by the seat's kind | `grant_inv` |
+| Widening renewal | a renewal's alphabet need not be within the old one | `renew_inv` |
+| Issuance that leaves leases live | new seat kinds, no `end_all_live` | `issue_inv`, `step_refines` |
+
+And one against the Rust: a copy of `state.rs` without ADR-0037 §1's check, its `mutations` suite traced. The replay
+fails `one_seat_per_principal_and_m_seat_is_refused` at step 2, where the reference grants a held principal a second
+seat and the model refuses it. A model without the check fails the proofs, and code without it fails the replay.
+
 ## Run it
 
 ```sh
 cd mechanism/lean
 lake build                                   # the proofs; ~1 s
 ./results.sh > Admit-results-<date>.txt      # clean build, digests, axioms, and the replay (~30 s); byte for byte
-../../tools/lean-sync.sh                     # STALE when admit.rs, mechanism.rs, clock.rs, topak-floor or FloorComposition moved
+./seats-replay.sh > SeatsReplay-results-<date>.txt   # the six suites traced and replayed through the model
+../../tools/lean-sync.sh                     # STALE when admit.rs, mechanism.rs, clock.rs, topak-floor, state.rs,
+                                             # types.rs, lease.rs, trace.rs, FloorComposition or Seats moved
 ```
 
-`Admit-results-2026.10.06.txt` is the results file ADR-0053 cites since R2; the 2026.10.05 file stays beside it,
-unchanged. The transcriptions are pinned, not frozen: when `tools/lean-sync.sh` reports a Rust file moved, re-read
-the Lean against the new Rust, change it if the meaning changed, and regenerate the results file. `lake update`
-regenerates `lake-manifest.json` if the path to `spec/lean` changes.
+`Admit-results-2026.10.06b.txt` and `SeatsReplay-results-2026.10.06.txt` are the results files ADR-0053 cites since
+R4. The 2026.10.05 file and the 2026.10.06 file R2 cited stay beside them, unchanged. The replay is not regenerated
+byte for byte, since the e2e traces are named after their process ids; it is rerun, and every trace must match. The
+transcriptions are pinned, not frozen: when `tools/lean-sync.sh` reports a Rust file moved, re-read the Lean against
+the new Rust, change it if the meaning changed, and regenerate the results file. `lake update` regenerates
+`lake-manifest.json` if the path to `spec/lean` changes.

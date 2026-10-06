@@ -4,7 +4,8 @@ Fourteen TLA+ modules of `spec/`, re-encoded as transition systems in Lean 4 and
 by induction on reachable states. The seven small finite-set modules: `Seats`, `Observers`, `RunSeats`,
 `FloorRouting`, `NonComposition`, `Anchor` and `BreakGlass`, with `RulesFloorBase` as the last two's shared
 base. `FloorComposition` (2026.10.06), the admit composition, which `mechanism/lean/Topak/FloorRefinement.lean`
-proves the code's decision refines. And the parameterized ones: `Coupling` for every `K`, `R` and `MaxRound`; `Lease_A1` for every epoch
+proves the code's decision refines. `Seats` is also the target of `mechanism/lean/Topak/SeatsModel.lean`, a model
+of `State::apply`'s seat and lease arms proved to refine it at the module's constants (2026.10.06). And the parameterized ones: `Coupling` for every `K`, `R` and `MaxRound`; `Lease_A1` for every epoch
 and fence bound; `RulesFloorNV_rev5`, with its cardinalities computed over the five humans; and `Confinement`
 and `Confinement_A1` as one encoding under a flag, for every rung. Each `TopakSpec/<Module>.lean` carries
 the TLA+ it transcribes beside every definition and proves what `spec/<Module>_proof.tla` proves, with the

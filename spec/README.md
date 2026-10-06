@@ -97,7 +97,9 @@ share, the prover's habits, and a dated assessment of why they were cheap and wh
 `lean/` (2026.10.05) re-encodes fourteen of the modules above as transition systems in Lean 4 and proves their
 `*_proof.tla` theorems by induction on reachable states: `Seats`, `Observers`, `RunSeats`, `FloorRouting`,
 `NonComposition`, `Anchor` and `BreakGlass`, with `RulesFloorBase`; `FloorComposition` (2026.10.06), which
-`mechanism/lean/` proves the code's admit decision refines, step for step; and the parameterized ones, `Coupling` for
+`mechanism/lean/` proves the code's admit decision refines, step for step; `Seats`, which a model of
+`State::apply`'s seat and lease arms in `mechanism/lean/` is proved to refine at the module's constants, with the
+reference's recorded traces replayed through that model; and the parameterized ones, `Coupling` for
 every K, R and MaxRound, `Lease_A1` for every epoch and fence bound, `RulesFloorNV_rev5` with its cardinalities
 computed, and `Confinement` and `Confinement_A1` as one encoding under a flag, for every rung. The last three
 are the modules the certified TLAPS run does not certify (`proof-certification.md`); in Lean every step of

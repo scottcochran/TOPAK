@@ -48,7 +48,8 @@ deployable system.
 - **Lean:** `tools/install-lean.sh` installs the toolchain `tools/LEAN-PIN` names, through elan (not tracked).
   Three packages prove in Lean what the TLAPS proofs and the gates claim, by a second route (ADR-0053, Proposed):
   `spec/lean/` re-encodes fourteen modules, `mechanism/lean/` transcribes `admit.rs`, `clock.rs` and the floor
-  wrapper and proves the admit decision a step of `FloorComposition`, and
+  wrapper and proves the admit decision a step of `FloorComposition`, and models `State::apply`'s seat and lease arms,
+  proves the model refines `Seats` and replays the reference's recorded traces through it, and
   `floor/lean/` states the floor in Cedar's verified model. Each has a `results.sh`; `tools/lean-sync.sh` checks every
   Lean results file against the tree and the pin, as `spec/proof-sync.sh` does for the proofs.
 - **Verifying a cut:** `tools/verify-manifest.sh --all` checks every manifest at the commit it measured;

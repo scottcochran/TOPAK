@@ -288,6 +288,15 @@ moves the store as the module's does (`Reachable.mono` in `Prelude.lean`). The e
 authorization rule over the module's four policies, which is T-0045-3's own; and the floor is the module's, not the
 floor in force. ADR-0053 §5 says why this is not a stage of T-0045-28's chain.
 
+**2026.10.06: a model of `apply`, and a check behind it.** `mechanism/lean/Topak/SeatsModel.lean` models the arms of
+`State::apply` that `Seats.tla` is about, every other check one oracle that can only refuse, and proves the model
+refines `Seats` at the module's constants. A model has a premise a transcription has in a stronger form, that the
+model takes every step the code takes. `mechanism/lean/seats-replay.sh` checks it on the traces the suites record:
+each recorded entry is applied with the model's own `apply`, and the result and the state after it compared with
+the reference's. Its first run failed a third of the traces, at the step after an admitted `Submit`, which ends the
+lease in the code and did not in the model. Every proof had held, because ending a lease breaks no safety
+invariant. A model checked only by reading would have been wrong and proved (ADR-0053 finding 7).
+
 **One control, and what it showed.** `#print axioms` lists the axioms a theorem uses, and is not enough. A scratch
 module that adds `False` as a theorem with the kernel check switched off (`set_option debug.skipKernelTC true`,
 then `addDecl`) builds, and a theorem `1 = 2` derived from it reports **no axioms at all**. `leanchecker --fresh`,

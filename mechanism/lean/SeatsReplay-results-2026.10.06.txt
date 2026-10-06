@@ -1,0 +1,98 @@
+TOPAK — the reference's recorded behaviours replayed through the Seats-shaped model of State::apply (mechanism/lean/Topak/SeatsModel.lean)
+Model: mechanism/lean/Topak/SeatsModel.lean (sha256 2f33ea455f0b9d25) · replay: mechanism/lean/SeatsReplay.lean (sha256 e4f155a985cda491) · Lean (version 4.33.1, arm64-apple-darwin24.6.0, commit 819816b2e0a3bf405af45ae5c7af2491d8f5bee6, Release) · driver: seats-replay.sh
+Reference: mechanism/ at 4f4a1ba + working tree · mechanism/crates/topak-core/src/state.rs (sha256 25eeeeb3830ee9f8) · recorder: mechanism/crates/topak-core/src/trace.rs (sha256 5056e2da471b18a8)
+Suites traced: topak-core tests/mutations.rs, tests/confinement.rs, tests/operators.rs and tests/emergency.rs · topak-node tests/e2e.rs and tests/contain.rs (replica 1 of every cluster), as mechanism-trace-results.sh
+A MATCH line means that at every recorded step the model, given whether the reference applied the entry, returned the reference's result and left the leases (seat, principal, Persona, confinement digest, alphabet, ended), live_by_seat, the seat kinds and last_applied as the reference did.
+
+test result: ok. 36 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.21s
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.22s
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.37s
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.13s
+test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.85s
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.29s
+
+conf-a_contained_lease_stops_being_contained_when_it_ends-6 | 13 steps | MATCH
+conf-a_contested_verdict_ends_a_live_lease-3 | 12 steps | MATCH
+conf-a_contested_verdict_never_grants_and_revokes_the_principal-1 | 17 steps | MATCH
+conf-a_run_seat_is_never_granted_on_a_build_profile-5 | 11 steps | MATCH
+conf-a_run_seat_on_a_run_profile_is_contained_with_p4_as_channel_fidelity-15 | 13 steps | MATCH
+conf-a_run_seat_on_a_run_profile_is_contained_with_p4_as_channel_fidelity-8 | 11 steps | MATCH
+conf-a_rung_1_grant_is_the_launchers_assertion-7 | 11 steps | MATCH
+conf-an_attested_rung_3_grant_binds_the_guest_and_is_contained-2 | 11 steps | MATCH
+conf-an_epoch_fence_invalidates_a_pending_appraisal-9 | 13 steps | MATCH
+conf-channel_fidelity_is_checked_at_apply-0 | 14 steps | MATCH
+conf-channel_fidelity_is_checked_at_apply-18 | 13 steps | MATCH
+conf-contained_is_a_lookup_and_each_conjunct_matters-11 | 11 steps | MATCH
+conf-contained_is_a_lookup_and_each_conjunct_matters-16 | 11 steps | MATCH
+conf-contained_is_a_lookup_and_each_conjunct_matters-19 | 11 steps | MATCH
+conf-contained_is_a_lookup_and_each_conjunct_matters-21 | 11 steps | MATCH
+conf-contained_is_a_lookup_and_each_conjunct_matters-22 | 11 steps | MATCH
+conf-contained_is_a_lookup_and_each_conjunct_matters-23 | 11 steps | MATCH
+conf-contained_is_a_lookup_and_each_conjunct_matters-24 | 11 steps | MATCH
+conf-m_lower_and_m_renewlow_are_refused-10 | 15 steps | MATCH
+conf-no_silent_downgrade_at_grant-4 | 14 steps | MATCH
+conf-only_a_promoted_well_formed_build_profile_is_a_reference_value-12 | 42 steps | MATCH
+conf-renewal_re_attests_the_same_guest-13 | 18 steps | MATCH
+conf-rung_3_is_appraised_by_an_issued_verifier_against_the_profile-14 | 18 steps | MATCH
+conf-rung_3_is_appraised_by_an_issued_verifier_against_the_profile-20 | 11 steps | MATCH
+conf-the_session_is_the_attested_guests_and_m_unbound_is_refused-17 | 15 steps | MATCH
+contain-bundle-a_guest_that_cannot_verify_its_bundle_is_never_granted-10 | 11 steps | MATCH
+contain-host-every_host_power_subtracts-0 | 15 steps | MATCH
+contain-lying-every_host_power_subtracts-14 | 12 steps | MATCH
+contain-nocrit-without_the_criterion_nothing_is_contained-13 | 12 steps | MATCH
+contain-r1-rung_1_honest_round_and_its_refusals-3 | 26 steps | MATCH
+contain-r3-simulated_rung_3_round_is_contained_and_rung_0_beside_it_is_not-4 | 17 steps | MATCH
+contain-renew-renewal_re_attests_the_same_guest_and_lapses_when_it_cannot-1 | 14 steps | MATCH
+contain-rogue-a_rogue_image_is_contested_and_the_principal_is_revoked-8 | 13 steps | MATCH
+contain-run-a_run_seat_launches_nothing-6 | 11 steps | MATCH
+contain-run3-a_run_round_actuates_only_its_declared_channel-2 | 16 steps | MATCH
+contain-run3-undeclared-a_hosted_tool_with_no_channel_in_the_leases_revision_is_not_run-11 | 16 steps | MATCH
+contain-session-the_session_is_the_attested_guests-7 | 13 steps | MATCH
+contain-stale-an_epoch_fence_voids_a_pending_appraisal-9 | 12 steps | MATCH
+contain-unreach-an_unreachable_verifier_grants_nothing-5 | 12 steps | MATCH
+contain-withdraw-withdrawing_a_profile_fences_its_leases-12 | 13 steps | MATCH
+e2e-actuate-actuate_is_counted_recorded_and_sealed-1 | 34 steps | MATCH
+e2e-build-build_round_promotion_and_fencing-3 | 30 steps | MATCH
+e2e-coupling-observer_liveness_couples_run_admits-4 | 29 steps | MATCH
+e2e-emergency-break_glass_is_an_emergency_seating-6 | 17 steps | MATCH
+e2e-expiry-an_expired_lease_is_ended_and_refused-5 | 9 steps | MATCH
+e2e-labels-labels_bound_what_a_round_may_send_after_what_it_has_read-8 | 31 steps | MATCH
+e2e-operators-an_operator_is_a_principal_and_its_requests_are_decided-2 | 20 steps | MATCH
+e2e-toollist-the_tool_list_is_delivered_and_opens_the_round-7 | 14 steps | MATCH
+e2e-tools-tools_break_glass_issuance_and_partition-0 | 20 steps | MATCH
+em-a_drill_is_a_real_activation_on_the_log-2 | 7 steps | MATCH
+em-an_emergency_lease_has_a_roster_quorum-4 | 14 steps | MATCH
+em-an_emergency_lease_has_a_roster_quorum-5 | 5 steps | MATCH
+em-an_emergency_lease_is_one_round-1 | 9 steps | MATCH
+em-an_operator_ends_it_and_x1_is_retired-0 | 11 steps | MATCH
+em-the_actions_are_the_persons-3 | 9 steps | MATCH
+mut-a_revoked_principal_persona_or_profile_is_not_granted_again_and_m_revoke_is_refused-16 | 3 steps | MATCH
+mut-a_revoked_principal_persona_or_profile_is_not_granted_again_and_m_revoke_is_refused-17 | 3 steps | MATCH
+mut-a_revoked_principal_persona_or_profile_is_not_granted_again_and_m_revoke_is_refused-2 | 3 steps | MATCH
+mut-a_run_round_seals_with_its_lease_and_a_run_seat_cannot_abstain-18 | 2 steps | MATCH
+mut-a_run_round_seals_with_its_lease_and_a_run_seat_cannot_abstain-5 | 11 steps | MATCH
+mut-a_targeted_revocation_ends_one_round_and_not_the_fleet-4 | 3 steps | MATCH
+mut-a_ttl_over_t_persona_is_refused_at_grant_and_at_renewal-3 | 5 steps | MATCH
+mut-alphabets_are_bounded_by_seat_kind_and_m_kind_is_refused-1 | 6 steps | MATCH
+mut-lease_renewal_is_monotone_and_m_renew_is_refused-0 | 5 steps | MATCH
+mut-no_action_under_a_fenced_epoch_and_m_fence_is_refused-6 | 2 steps | MATCH
+mut-one_live_lease_per_principal-7 | 2 steps | MATCH
+mut-one_seat_per_principal_and_m_seat_is_refused-8 | 3 steps | MATCH
+mut-renewal_cannot_change_round_or_role_and_m_role_is_refused-9 | 1 steps | MATCH
+mut-run_alphabets_are_bounded_by_seat_kind_and_domain-10 | 5 steps | MATCH
+mut-rung_zero_is_never_contained_and_says_why-11 | 1 steps | MATCH
+mut-the_round_bound_counts_consult-12 | 5 steps | MATCH
+mut-the_round_bound_terminates_a_round-13 | 1 steps | MATCH
+mut-the_rounds_labels_are_folded_and_a_stale_clear_set_is_refused-14 | 11 steps | MATCH
+mut-the_sequence_counts_effects_and_m_emitseq_is_refused-15 | 16 steps | MATCH
+op-a_lapsed_operator_stops_its_own_domain_and_nothing_else-3 | 18 steps | MATCH
+op-a_lapsed_operator_stops_its_own_domain_and_nothing_else-7 | 9 steps | MATCH
+op-a_request_is_the_operators_and_is_not_replayed-0 | 14 steps | MATCH
+op-a_successor_grant_keeps_the_seating_and_never_widens-2 | 21 steps | MATCH
+op-an_operators_lease_needs_a_sign_on_assertion-5 | 8 steps | MATCH
+op-the_unsigned_path_seats_and_does_nothing_else-1 | 15 steps | MATCH
+op-three_operators_recover_a_lapse_and_two_cannot-4 | 9 steps | MATCH
+op-three_operators_recover_a_lapse_and_two_cannot-6 | 11 steps | MATCH
+
+82 traces · 1014 steps · 0 not matching
+model results: granted 407, admitted 317, unmodelled 101, revoked 15, rejected 129, fenced 8, renewed 9, ended 27, issued 1
