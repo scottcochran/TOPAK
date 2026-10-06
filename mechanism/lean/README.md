@@ -6,7 +6,7 @@ and proves of the transcription what `spec/FloorComposition.tla` states of its m
 properties of the TLA+ module (`spec/FloorComposition_proof.tla`, T-0045-31). This proves them of the code's
 composition: a first piece of the step from module to code that ADR-0045 T-0045-28 says the corpus lacks.
 Since 2026.10.06 it also holds a model of `State::apply`'s seat and lease arms, refining `Seats.tla` and replayed
-against the reference's recorded traces (below).
+against the reference's recorded traces, and a second model on it for what `Coupling.tla` is about (below).
 
 Each Lean definition carries the Rust it transcribes in its doc-comment, so the two can be read side by side.
 
@@ -113,6 +113,40 @@ The first replay failed 25 of 58 traces. The model left out that an admitted `Su
 every proof held without it, since ending a lease breaks no safety invariant. The replay is what found it (ADR-0053
 finding 7).
 
+## A Coupling-shaped model on it (`Topak/CouplingModel.lean`, 2026.10.06)
+
+The Seats-shaped model leaves every check outside its fields to `ok`. This file narrows that where
+`spec/Coupling.tla` (ADR-0039, ADR-0042) is about: what an Observer has read of a Thinker's round. Its state adds each
+lease's epoch, round, sequence number and action count, the seats' domains and cells, the fleet epoch, the
+watermarks, the seals and each seat's last round. Its checks add, at grant, the alphabet within the seat's domain,
+the cross-round condition and round numbers never reused; at admit, the round bound, a heartbeat's validity
+(`check_heartbeat`) and a Thinker's coupling to a cell Observer (`observer_covers`). Its `apply` is the Seats-shaped
+step with those checks folded into `ok`, then the new fields updated, so every step is a Seats-shaped step and
+every theorem there holds here (`base_reach`).
+
+| Theorem | Claim |
+|---|---|
+| `xstep_inv`, `model_xinv` | every step keeps the invariant: live alphabets within their seat's domain, and the two below |
+| `model_unread_bounded` | at any number of seats: a Run Thinker's live round has at most `K` effects unread by some cell Observer |
+| `model_prior_read` | and its last round was read to the seal by some cell Observer before this one was granted, and stays so |
+| `model_unread_bounded_one` | with one Observer in the cell, `Coupling.tla`'s `Unread + PriorUnread <= K` |
+| `admit_coupled` | an admitted `Actuate` or `Report` of a Thinker had a covering cell Observer |
+
+These are proved of the model directly, at any size; the model is **not** proved to refine `Coupling`'s encoding.
+The module counts one Thinker's rounds, keeps a seal per round and has a freshness flag; the code keeps the last
+seal only and reads freshness from a clock at decide (`observer_covers(.., &|_| true)` at apply). A refinement would
+need history the code does not keep.
+
+**With more than one Observer in a cell** the two halves have their own witnesses: one Observer may have read the
+last round to its seal and another be within `K` of the live one. What no Observer has read is at most `K`; what one
+has not read is not bounded (ADR-0053 finding 10).
+
+**The trace replay** (`CouplingReplay.lean`, `coupling-replay.sh`) runs the same six suites through the model's
+`rapply` and also compares each lease's epoch, round, sequence number and action count, the epoch, every watermark,
+every seal and every last round. `CouplingReplay-results-2026.10.06.txt`: 82 traces, 1015 steps, all MATCH, with 51
+coupled admits, 34 heartbeats and 7 cross-round grants among them. It matched on its first run; a model whose
+sequence number did not count `Actuate` failed four traces at the first `Actuate`.
+
 ## What it rests on
 
 - **The Lean 4 kernel**, toolchain `lean-toolchain` (`leanprover/lean4:v4.33.1`, the one `tools/LEAN-PIN`
@@ -161,6 +195,16 @@ revised to match, as an honest revision of the proof would be:
 | Widening renewal | a renewal's alphabet need not be within the old one | `renew_inv` |
 | Issuance that leaves leases live | new seat kinds, no `end_all_live` | `issue_inv`, `step_refines` |
 
+Five more against the coupling model, each a check made always true:
+
+| Mutant | What changes | Fails |
+|---|---|---|
+| `M_ROUNDS` | no cross-round condition at grant | `xstep_inv`, its grant arm |
+| `M_NOCOUPLE` | a Thinker's effect is not coupled | `xstep_inv`, its admit arm; `admit_coupled` |
+| `M_MARK` | coupling ignores the backlog | `xstep_inv`, its admit arm |
+| Domain | a grant's alphabet need not be its seat's domain | `xstep_inv`, its grant arm |
+| Lowering | a heartbeat may lower a watermark | `xstep_inv`, its admit arm |
+
 And one against the Rust: a copy of `state.rs` without ADR-0037 §1's check, its `mutations` suite traced. The replay
 fails `one_seat_per_principal_and_m_seat_is_refused` at step 2, where the reference grants a held principal a second
 seat and the model refuses it. A model without the check fails the proofs, and code without it fails the replay.
@@ -171,13 +215,15 @@ seat and the model refuses it. A model without the check fails the proofs, and c
 cd mechanism/lean
 lake build                                   # the proofs; ~1 s
 ./results.sh > Admit-results-<date>.txt      # clean build, digests, axioms, and the replay (~30 s); byte for byte
-./seats-replay.sh > SeatsReplay-results-<date>.txt   # the six suites traced and replayed through the model
+./seats-replay.sh > SeatsReplay-results-<date>.txt         # the six suites replayed through the Seats model
+./coupling-replay.sh > CouplingReplay-results-<date>.txt   # and through the Coupling model
 ../../tools/lean-sync.sh                     # STALE when admit.rs, mechanism.rs, clock.rs, topak-floor, state.rs,
-                                             # types.rs, lease.rs, trace.rs, FloorComposition or Seats moved
+                                             # types.rs, lease.rs, rules.rs, trace.rs, or a module, moved
 ```
 
-`Admit-results-2026.10.06b.txt` and `SeatsReplay-results-2026.10.06.txt` are the results files ADR-0053 cites since
-R4. The 2026.10.05 file and the 2026.10.06 file R2 cited stay beside them, unchanged. The replay is not regenerated
+`Admit-results-2026.10.06c.txt`, `SeatsReplay-results-2026.10.06.txt` and `CouplingReplay-results-2026.10.06.txt`
+are the results files ADR-0053 cites since R5. The 2026.10.05 file and the 2026.10.06 and 06b files R2 and R4 cited
+stay beside them, unchanged. The replay is not regenerated
 byte for byte, since the e2e traces are named after their process ids; it is rerun, and every trace must match. The
 transcriptions are pinned, not frozen: when `tools/lean-sync.sh` reports a Rust file moved, re-read the Lean against
 the new Rust, change it if the meaning changed, and regenerate the results file. `lake update` regenerates

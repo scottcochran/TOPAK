@@ -297,6 +297,12 @@ the reference's. Its first run failed a third of the traces, at the step after a
 lease in the code and did not in the model. Every proof had held, because ending a lease breaks no safety
 invariant. A model checked only by reading would have been wrong and proved (ADR-0053 finding 7).
 
+**A model on a model.** `mechanism/lean/Topak/CouplingModel.lean` narrows that oracle by defining its `apply` as the
+Seats-shaped one with further checks folded into the gate. Every step is then a step of the first, by definition,
+and the first's theorems hold with no new proof (`base_reach`). The new invariants, ADR-0039 §2's, are proved
+directly by induction over the nine arms, which reuse the first model's characterisation lemmas. One lemma covers
+every arm that ends leases.
+
 **One control, and what it showed.** `#print axioms` lists the axioms a theorem uses, and is not enough. A scratch
 module that adds `False` as a theorem with the kernel check switched off (`set_option debug.skipKernelTC true`,
 then `addDecl`) builds, and a theorem `1 = 2` derived from it reports **no axioms at all**. `leanchecker --fresh`,

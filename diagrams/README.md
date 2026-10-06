@@ -29,7 +29,8 @@ T-0045-37, drawn apart from the thirty-six), G3 (what the binding table would ga
 **proved in Lean**, of an encoding, a transcription or a statement, never "proved" alone (ADR-0053 §1), and every
 Lean statement carries ADR-0053's Proposed status. The files keep the family's date; the other 28 regenerate
 byte for byte. Amended again the same day for ADR-0053 R4: H7 and H3 draw the model of `State::apply` that refines
-`Seats`, and the replay of the reference's recorded traces through it.
+`Seats`, and the replay of the reference's recorded traces through it; and for R5, the second model on it, with
+`Coupling`'s properties, and its replay.
 
 | Id | Diagram | What it shows |
 |---|---|---|

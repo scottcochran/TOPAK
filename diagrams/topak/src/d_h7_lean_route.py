@@ -32,7 +32,8 @@ PKGS = [
      "whole decision, wrapper and `compose`, proved a `Decide` step of `FloorComposition`'s re-encoding, on Cedar's "
      "rule as the engine premise (ADR-0053 R2); ADR-0032 §2's \"fails closed\" of the arithmetic. And a **model** "
      "of `State::apply`'s seat and lease arms, every other check an oracle that can only refuse: ADR-0037 §1 and §4 "
-     "at any number of seats, and the model a refinement of `Seats`' re-encoding at its constants (R4).",
+     "at any number of seats, and the model a refinement of `Seats`' re-encoding at its constants (R4); a second model "
+     "on it with ADR-0039's checks: `Coupling`'s `UnreadBounded` at any size, proved directly (R5).",
      "The Lean function is the Rust function. Read, each definition beside the Rust; no Rust-to-Lean translator was "
      "run. For the model, that every Rust step is a model step: **checked** on the recorded traces by the replay, "
      "not only read. Pinned, not frozen: the Rust moves."),
@@ -99,6 +100,17 @@ def read_replay():
     return f"mechanism/lean/{f.name}", hashlib.sha256(raw).hexdigest()[:16], summ
 
 
+def read_creplay():
+    """-> (file, digest, summary, exercised) of the newest replay through the Coupling-shaped model (ADR-0053 R5)."""
+    f = sorted((ROOT / "mechanism/lean").glob("CouplingReplay-results-*.txt"))[-1]
+    raw = f.read_bytes()
+    lines = raw.decode("utf-8").splitlines()
+    summ = next(ln for ln in lines if re.match(r"\d+ traces · \d+ steps", ln))
+    res = next(ln for ln in lines if ln.startswith("model results: "))
+    ex = {k: v for k, v in re.findall(r"(coupled admits|heartbeats admitted|cross-round grants) (\d+)", res)}
+    return f"mechanism/lean/{f.name}", hashlib.sha256(raw).hexdigest()[:16], summ, ex
+
+
 def read_pin():
     out = {}
     for ln in PIN.read_text(encoding="utf-8").splitlines():
@@ -128,6 +140,8 @@ def build():
     res = {p[0]: read_results(p[0], p[1]) for p in PKGS}
     rp_file, rp_dig, rp_summ = read_replay()
     rp_ok = rp_summ.endswith("· 0 not matching")
+    cp_file, cp_dig, cp_summ, cp_ex = read_creplay()
+    cp_ok = cp_summ.endswith("· 0 not matching")
     pin = read_pin()
     rowA, rowB, deps, finds, opens, cond, adr_dig = read_adr53()
     cert = {m: read_cert(m) for m, _ in ENC}
@@ -146,7 +160,7 @@ def build():
                3200,
                f"decisions/ADR-0053.md (Proposed; {adr_dig}), §1–§7, Findings, Open obligations (read at build time); "
                f"the three Lean results files, read at build time: {', '.join(r['file'] for r in res.values())}; "
-               f"the trace replay through the model of `apply`, read at build time: {rp_file}; "
+               f"the trace replays through the models of `apply`, read at build time: {rp_file}, {cp_file}; "
                "tools/LEAN-PIN (read at build time), tools/install-lean.sh, tools/lean-report.sh, tools/lean-sync.sh; "
                "spec/lean/README.md, mechanism/lean/README.md, floor/lean/README.md (mutation checks); "
                "spec/proof-method.md §5b, §6; spec/proof-certification.md §8, §12; the certified TLAPS results "
@@ -183,6 +197,11 @@ def build():
                         f"traces run through the model's own `apply`, {rp_summ}: "
                         f"{'[[teal|every step the reference took is a model step]]' if rp_ok else '[[red|NOT ALL MATCH]]'}. "
                         "A test, not a proof; its first run found that `Submit` and `Vote` end the lease.")
+            body.append(f"**Coupling replay** (`coupling-replay.sh`). `{cp_file}` (`{cp_dig}`): {cp_summ}, sequence "
+                        f"numbers, watermarks and seals compared too, over {cp_ex.get('coupled admits', '0')} coupled "
+                        f"admits, {cp_ex.get('heartbeats admitted', '0')} heartbeats and "
+                        f"{cp_ex.get('cross-round grants', '0')} cross-round grants: "
+                        f"{'[[teal|every step a model step]]' if cp_ok else '[[red|NOT ALL MATCH]]'}.")
         tops.append((pkg, use, acc, body))
     hs = [c.card(X0 + i * (cw + 40), y, cw, f"`{p}` · {u}", b, accent=a, status="proposed", status_extra="ADR-0053",
                  size=13.5, draw=False) for i, (p, u, a, b) in enumerate(tops)]
@@ -325,6 +344,14 @@ def build():
                  "state maps to one `Seats.Next` reaches, so `model_seats_safe`",
                  f"the model, checked by the trace replay ({rp_summ.split(' · ')[0]}, all matching); the kernel; the "
                  "log's increasing indices; at the constants, no issuance changes a seat's kind"])
+    rows.append(["ADR-0039 §2 of `State::apply`: `Coupling`'s properties (ADR-0053 R5)", "—", "—",
+                 "not a TLAPS claim: of a model of the code", "`mechanism/lean/Topak/` `CouplingModel.lean`",
+                 "`model_unread_bounded`, `model_prior_read`: at any number of seats, a Run Thinker's live round has at "
+                 "most `K` effects unread by some cell Observer and its last was read to the seal; "
+                 "`model_unread_bounded_one`: `Unread + PriorUnread <= K` with one Observer; not a refinement of "
+                 "`Coupling`'s encoding",
+                 f"the model, checked by the trace replay ({cp_summ.split(' · ')[0]}, all matching); the kernel; the "
+                 "log's increasing indices; freshness, a clock read at decide"])
     rows.append(["The floor's totality gate", "23 and 41 `holds°`", "—", "not a proof: cedar's term folding, on "
                  "T-0045-3", "`floor/lean/TopakFloor/` `Gates.lean`, `InForce.lean`", "`floor_never_errors` of the "
                  "genesis floor, `inForce_never_errors` of the floor in force (R3), by cedar-spec's proved "

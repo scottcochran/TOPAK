@@ -97,7 +97,8 @@ def build():
                                        "and checked to discriminate. It found a race in lease expiry (A13). Since "
                                        "2026.10.06 the same traces also run through a Lean model of `apply`'s seat "
                                        "and lease arms: 82 traces, 1,014 steps, every one a model step (ADR-0053 R4, "
-                                       "Proposed)."],
+                                       "Proposed), and through a second model that adds sequence numbers, "
+                                       "watermarks and seals (R5)."],
          "teal", "built", "", None, None),
         ("Tested paths only (T-0045-28)", ["What no test reaches is asserted, and the model takes more from the "
                                            "trace than it did: whether a request's signature is its seat's, whether "
@@ -521,6 +522,10 @@ def build():
             cells[7] += (" · and a model of `State::apply`'s seat and lease arms [[amber|proved to refine it]] at its "
                          "constants, the reference's recorded traces replayed through the model: "
                          "`mechanism/lean/Topak/SeatsModel.lean` (ADR-0053 R4)")
+        if mod == "Coupling":
+            cells[7] += (" · and `UnreadBounded` [[amber|proved of a model of `apply`]] at any number of seats, directly "
+                         "and not by refinement, the recorded traces replayed through it: "
+                         "`mechanism/lean/Topak/CouplingModel.lean` (ADR-0053 R5)")
     y += c.table(X0, y, cols, rows, size=13.5) + 50
 
     # ================================================================ 3. gates + bootstrap
@@ -729,7 +734,8 @@ def build():
             "\"Of the refinement chain's three items, none is discharged\" (A15). Proving two functions in Lean of a "
             "transcription (ADR-0053, Proposed) discharges none of them either. Since R4 a Lean model of `apply`'s "
             "seat and lease arms is proved to refine `Seats` and replayed against every recorded trace: stage 2's "
-            "shape for one module, with an oracle for the rest of `apply`, and not the stage (ADR-0053 §5).",
+            "shape for one module, with an oracle for the rest of `apply`, and not the stage (ADR-0053 §5). R5 narrows "
+            "that oracle with ADR-0039's checks and proves `Coupling`'s properties of the result; still not the stage.",
             "The reproducible build (T-0045-30) is untouched. Each addendum says which stage it discharges, and the "
             "rows leave Annex A only on that addendum."], "red"),
     ]
