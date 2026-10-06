@@ -1,0 +1,28 @@
+TOPAK — Lean results for the genesis floor under Cedar's verified semantics: every theorem of floor/lean/TopakFloor/*.lean, checked by the kernel below
+Floor: genesis-floor.cedar (sha256 28ec0e4552c6a915) · schema genesis.cedarschema (sha256 0ec2fa215eefe136) · tests genesis-tests.json (sha256 f3d4d369e5d174a7) · parsed by cedar-policy-cli 4.13.0
+Sources: Basic.lean (sha256 444dc133fa3a34a0) · Genesis.lean (sha256 237c5adf71c08653, generated) · Tests.lean (sha256 de9b861ef1726d1c, generated) · Gates.lean (sha256 2d984d2e80bb4351) · gen.py (sha256 40009fb1d2e5a506) · lakefile.lean (sha256 2121113d971594b8)
+Model: cedar-spec v4.13.0 (commit 8aa1a2a67f62d824abead35a9aef757ad3a35595), cedar-lean libraries Cedar.Spec, Cedar.Validation, Cedar.Thm.Validation · the mechanism links cedar-policy 4.13.0
+Prover: Lean (version 4.33.1, arm64-apple-darwin24.6.0, commit 819816b2e0a3bf405af45ae5c7af2491d8f5bee6, Release) · Lake version 5.0.0-src+819816b (Lean version 4.33.1) · toolchain leanprover/lean4:v4.33.1 · driver: results.sh
+Theorems (Gates): schema_wf · floor_validates · floor_never_errors · policy_never_errors · floor_no_ext_no_arith · cases_conform · not_always_allows · not_always_denies_but_erase
+Theorems (Tests): 62 cases of genesis-tests.json, each isAuthorized = the case's response
+A theorem holds of the floor as gen.py states it in the model's syntax from the cedar CLI's parse, under the model's semantics; the model's fidelity to the engine is cedar-spec's claim. Closed evaluations are by native_decide, one axiom per use in the #print axioms lines below; the kernel's decide cannot reduce the model's definitions. The solver-backed gates (routing, every-entry-matters) stay with run-gates.py and the checker.
+
+✔ [164/169] Built TopakFloor.Basic (464ms)
+✔ [165/169] Built TopakFloor.Genesis (387ms)
+✔ [166/169] Built TopakFloor.Tests (755ms)
+ℹ [167/169] Built TopakFloor.Gates (474ms)
+info: TopakFloor/Gates.lean:115:0: 'TopakFloor.floor_never_errors' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ floor_validates._native.native_decide.ax_1_1,
+ schema_wf._native.native_decide.ax_1_1]
+info: TopakFloor/Gates.lean:116:0: 'TopakFloor.floor_validates' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ floor_validates._native.native_decide.ax_1_1]
+info: TopakFloor/Gates.lean:117:0: 'TopakFloor.not_always_allows' depends on axioms: [propext,
+ Classical.choice,
+ Quot.sound,
+ not_always_allows._native.native_decide.ax_1_1]
+✔ [168/169] Built TopakFloor (298ms)
+Build completed successfully (169 jobs).
