@@ -1,0 +1,22 @@
+TOPAK — Lean results for admit.rs: every theorem of mechanism/lean/Topak/Admit.lean, checked by the kernel below
+Transcribes: mechanism/crates/topak-core/src/admit.rs (sha256 88181d094da7a8b6) · topak-node/src/mechanism.rs call site, steps 5 and 6
+Sources: Topak/Admit.lean (sha256 7d0f461707445bf0) · lakefile.toml (sha256 52e65ae26f44a3dd) · lean-toolchain leanprover/lean4:v4.24.0
+Prover: Lean (version 4.24.0, arm64-apple-darwin23.6.0, commit 797c613eb9b6d4ec95db23e3e00af9ac6657f24b, Release) · Lake version 5.0.0-src+797c613 (Lean version 4.24.0) · no Mathlib, no dependencies · driver: results.sh
+Theorems: floorGate_none_iff · floorGate_deny · floorGate_error · floor_deny_names_a_reason · gate_short_circuits · callSite_eq_compose · compose_permit_allow · compose_permit_refuse · compose_deny · compose_error · admit_witnesses · admit_implies_floor_permit · floor_error_is_deny · bundle_refusal_honored · bundle_refusal_is_deny · permit_and_allow_admit · admit_iff · compose_deny_reasons
+A theorem holds of the transcription, not of the Rust; the transcription's fidelity to admit.rs is read, each definition beside the Rust it transcribes. The lift, the store and the envelope (BundleCannotWriteFloorInputs, EnvelopeHolds) are outside this function and stay with the TLA+ module.
+
+ℹ [2/4] Built Topak.Admit (288ms)
+info: Topak/Admit.lean:336:0: 'Topak.Admit.floorGate_none_iff' depends on axioms: [propext, Quot.sound]
+info: Topak/Admit.lean:337:0: 'Topak.Admit.floor_deny_names_a_reason' depends on axioms: [propext]
+info: Topak/Admit.lean:338:0: 'Topak.Admit.gate_short_circuits' does not depend on any axioms
+info: Topak/Admit.lean:339:0: 'Topak.Admit.callSite_eq_compose' does not depend on any axioms
+info: Topak/Admit.lean:340:0: 'Topak.Admit.admit_witnesses' depends on axioms: [propext]
+info: Topak/Admit.lean:341:0: 'Topak.Admit.admit_implies_floor_permit' depends on axioms: [propext]
+info: Topak/Admit.lean:342:0: 'Topak.Admit.floor_error_is_deny' does not depend on any axioms
+info: Topak/Admit.lean:343:0: 'Topak.Admit.bundle_refusal_honored' depends on axioms: [propext]
+info: Topak/Admit.lean:344:0: 'Topak.Admit.bundle_refusal_is_deny' does not depend on any axioms
+info: Topak/Admit.lean:345:0: 'Topak.Admit.permit_and_allow_admit' does not depend on any axioms
+info: Topak/Admit.lean:346:0: 'Topak.Admit.admit_iff' depends on axioms: [propext]
+info: Topak/Admit.lean:347:0: 'Topak.Admit.compose_deny_reasons' depends on axioms: [propext, Quot.sound]
+✔ [3/4] Built Topak (119ms)
+Build completed successfully (4 jobs).

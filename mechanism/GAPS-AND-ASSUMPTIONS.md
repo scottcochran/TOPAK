@@ -321,6 +321,7 @@ Every traced state is also read against `Confinement_A1.tla`'s invariants
 | `FloorComposition.tla` | `FloorErrorIsDeny` / `M_ERR` | same test; `floor.rs` `an_incomplete_slice_is_a_deny_not_a_skipped_forbid` |
 | `FloorComposition.tla` | `BundleRefusalHonored` / `M_FAILOPEN` | `bundle_refusal_is_honored…`; `fallback.rs` (6 cases) |
 | `FloorComposition.tla` | narrowing witness | e2e: `Invoke` floor-permitted, bundle-refused |
+| `FloorComposition.tla` | `AdmitImpliesFloorPermit`, `FloorErrorIsDeny`, `BundleRefusalHonored`, and §1 R4, **proved of the code's composition** | `lean/Topak/Admit.lean` transcribes `admit.rs` (`floor_gate`, `compose`) and the call site in `mechanism.rs`, and proves the three properties, `admit ⟺ floor_permit ∧ ¬bundle_deny` (`admit_iff`), and that every floor deny names a reason, of the transcription; Lean 4 kernel, no Mathlib, no `sorry`; `lean/Admit-results-2026.10.05.txt`. The transcription's fidelity to the Rust is read, not checked (`lean/README.md`) |
 | `RulesFloorNV_rev5.tla` | each entry's mutation fails | `every_rules_floor_entry_has_a_violation_it_catches`; e2e issuance rejections (R1+R9, R2, Authentic) |
 | `RulesFloorNV.tla` | dropping R2 promotes with zero votes | `without_r2_an_empty_roster_promotes_with_zero_votes` |
 | G2 §3 | a threshold needs ≥ 3 counted seats | `a_threshold_needs_three_counted_seats_to_differ_from_unanimity` |

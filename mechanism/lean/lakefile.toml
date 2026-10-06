@@ -1,0 +1,7 @@
+# The admit composition in Lean 4: a transcription of crates/topak-core/src/admit.rs with the
+# FloorComposition.tla properties proved of it. No dependencies: core Lean only, no Mathlib.
+name = "topak"
+defaultTargets = ["Topak"]
+
+[[lean_lib]]
+name = "Topak"

@@ -44,6 +44,7 @@ TOPAK_TRACE_DIR=/tmp/t cargo test --release -p topak-core --test mutations   # r
 ../spec/mechanism-trace-run.sh /tmp/t/*.jsonl                                 # … replay it through spec/Mechanism.tla,
                                                                              # and read each state against ConfinementRefinement.tla
 ../spec/mechanism-trace-results.sh > ../spec/Mechanism-trace-results-<date>.txt  # every suite, one results file
+(cd lean && ./results.sh > Admit-results-<date>.txt)   # Lean: the admit composition of admit.rs, transcribed and proved (lean/README.md)
 scripts/dev-init.sh                        # 3 replicas, in-memory transport, WASM bundle only
 python3 scripts/smoke.py                   # live: processes, TCP, operator CLI, MCP client
 
@@ -100,6 +101,10 @@ anchor issuance puts the simulator's key in `verifier_keys`. What they reach is 
 - The bundle entrypoint is `policies/bundle.rego` (`data.topak.bundle.allow`), which composes
   `policies/tool_invocation.rego`.
 - `PROVISIONAL (<tag>)` in the code marks every place a gap or assumption lives.
+- **One function is proved, not only tested.** `lean/Topak/Admit.lean` transcribes `admit.rs` into Lean 4 and proves
+  `FloorComposition.tla`'s three composition properties and ADR-0030 §1's `admit ⟺ floor_permit ∧ ¬bundle_deny`
+  of the transcription; `lean/results.sh` rebuilds it and prints the results file. The transcription is read against
+  the Rust, not generated from it ([lean/README.md](lean/README.md)).
 - Records are **pinned, not followed silently**. `corpus-pins.sha256` holds the digest of every
   record and TLA+ module the reference follows, as it last followed them. `cargo test -p topak-core
   --test drift` fails when a pinned file changes, or when the code cites a record that is not
