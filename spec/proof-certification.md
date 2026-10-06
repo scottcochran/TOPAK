@@ -217,7 +217,7 @@ doing work and is not a formality.
 | Zenon's soundness | **No longer trusted.** Its script is checked by Isabelle |
 | — | **The checker, its signature and the wrapper** are trusted in the solver's place. These are the floor's T-0045-14, and the wrapper has the test of §7 |
 | Isabelle | Still trusted, for its own proofs and for checking Zenon's |
-| **LS4** | **Still trusted.** One to three obligations per theorem: the step that turns "the invariant holds initially and every step keeps it" into "it holds always". No checker confirms it |
+| **LS4** | **Still trusted.** One to three obligations per theorem: the step that turns "the invariant holds initially and every step keeps it" into "it holds always". No checker confirms it. For twelve modules a second derivation, in Lean, does that step as a kernel-checked induction (`proof-method.md` §5b; ADR-0053, Proposed); it does not change what this run certifies |
 | **tlapm's translation** of an obligation into an SMT query | **Still trusted**, as `cedar symcc`'s encoding of a policy question is for the floor. The checker certifies that the query is unsatisfiable. That the query says what the obligation says is the prover's |
 | **tlapm's normalization** | **Still trusted.** About two obligations in three are closed by it with no backend |
 | The prover's expansion of definitions, of `ENABLED`, and of primes | Still trusted; part of the translation |
@@ -296,10 +296,14 @@ What the first twenty modules taught.
 ## 12. Open
 
 - **LS4.** No route checks a temporal step. The steps are few and of one shape, and a small fixed lemma library
-  proved once in Isabelle could replace them.
+  proved once in Isabelle could replace them. *2026.10.05:* the Lean re-encodings in `spec/lean/` are a route beside this one
+  in which the temporal step is an induction the Lean kernel checks, for twelve of the proof modules, at the price of
+  the encoding (`proof-method.md` §5b). They do not certify the TLAPS proofs; they prove the same theorems again.
 - **The translation.** Nothing here examines how the prover turns an obligation into a query.
 - **One solver, one version.** cvc5 1.4.0 is pinned by digest because the floor pins it. A newer cvc5 may prove the
   six obligations that fail, and would be a different certification.
-- **The three modules that do not certify** (§9).
+- **The three modules that do not certify** (§9). Still uncertified here. Their theorems are also proved in Lean,
+  every step kernel-checked, of a re-encoding (`spec/lean/TopakSpec/RulesFloorNV_rev5.lean`,
+  `spec/lean/TopakSpec/Confinement.lean`; ADR-0053, Proposed).
 - **The evidence is not kept.** A digest and a deterministic rerun stand in for it.
 - **This document is the drafter's**, as the wrapper, the driver and seventeen of the twenty results are.

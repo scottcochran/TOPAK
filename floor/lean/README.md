@@ -33,7 +33,7 @@ queries about pairs of floors (`implies`, `equivalent`), and the negative contro
 
 ## What it rests on
 
-- **The Lean kernel**, toolchain v4.33.1, cedar-spec's own.
+- **The Lean kernel**, toolchain `leanprover/lean4:v4.33.1`, cedar-spec's own and the one `tools/LEAN-PIN` names.
 - **cedar-spec at tag `v4.13.0`**, the tag matching the cedar-policy 4.13.0 the mechanism links and the
   cedar-policy-cli 4.13.0 the gate run records. `lakefile.lean` pins the tag; `lake-manifest.json` the commit.
   The model's fidelity to the Rust engine is cedar-spec's claim, kept by differential testing; the symbolic
@@ -47,7 +47,12 @@ queries about pairs of floors (`implies`, `equivalent`), and the negative contro
   are built by well-founded recursion), so this is not a choice. `floor_never_errors` itself is a kernel-checked
   application of cedar-spec's theorem to those two evaluations; the model's proofs bring `propext`,
   `Classical.choice` and `Quot.sound`.
-- Lean is not yet a trusted-base row.
+- **The replay.** Every results file ends with `leanchecker --fresh`, which replays every constant the package
+  reaches, Lean's own library included, through the kernel in a fresh environment (`tools/lean-report.sh`).
+  `#print axioms` alone misses a declaration added with the kernel check off; the replay refuses it
+  (`spec/proof-method.md` §5b). It is the same kernel in a fresh process, not an independent checker.
+- **The row.** ADR-0053 (Proposed) declares the method and proposes the kernel and toolchain as trusted-base
+  row T-0045-32, pinned in `tools/LEAN-PIN`. Until it is ratified a Lean result is evidence no record cites.
 
 ## Mutation check
 
@@ -69,5 +74,9 @@ cd floor/lean
 export PATH="$HOME/.cargo/bin:$PATH"               # cedar-policy-cli 4.13.0
 python3 gen.py                                     # regenerate Genesis.lean and Tests.lean from the floor's files
 lake build                                         # first run fetches cedar-spec and batteries and builds the model: minutes, ~GB
-./results.sh > TopakFloor-results-<date>.txt       # regenerate, clean build, digests, axioms
+./results.sh > TopakFloor-results-<date>.txt       # regenerate, clean build, digests, axioms, replay (~2 min); byte for byte
+../../tools/lean-sync.sh                           # STALE when the floor, the schema or the tests moved; checks cedar-spec's commit
 ```
+
+`TopakFloor-results-2026.10.05.txt` is the results file ADR-0053 cites. The statement is pinned, not frozen: a
+floor change is a regenerated results file, and `tools/lean-sync.sh` reports one that was not regenerated.

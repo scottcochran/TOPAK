@@ -44,7 +44,8 @@ TOPAK_TRACE_DIR=/tmp/t cargo test --release -p topak-core --test mutations   # r
 ../spec/mechanism-trace-run.sh /tmp/t/*.jsonl                                 # … replay it through spec/Mechanism.tla,
                                                                              # and read each state against ConfinementRefinement.tla
 ../spec/mechanism-trace-results.sh > ../spec/Mechanism-trace-results-<date>.txt  # every suite, one results file
-(cd lean && ./results.sh > Admit-results-<date>.txt)   # Lean: the admit composition of admit.rs, transcribed and proved (lean/README.md)
+(cd lean && ./results.sh > Admit-results-<date>.txt)   # Lean: admit.rs and clock.rs, transcribed and proved, with the kernel replay (lean/README.md)
+../tools/lean-sync.sh                      # STALE when admit.rs, mechanism.rs or clock.rs moved since the Lean results
 scripts/dev-init.sh                        # 3 replicas, in-memory transport, WASM bundle only
 python3 scripts/smoke.py                   # live: processes, TCP, operator CLI, MCP client
 

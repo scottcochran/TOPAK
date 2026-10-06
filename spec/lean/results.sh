@@ -1,32 +1,29 @@
 #!/bin/bash
-# Regenerates the Lean results file for the re-encoded TLA+ modules: a clean build of TopakSpec/*.lean, each a
-# transition system transcribed from a spec/*.tla module with its *_proof.tla theorems proved by induction on
-# reachable states, with the digests of the TLA+ modules transcribed, the Lean sources and the toolchain, and what
-# each theorem rests on (`#print axioms`).
+# Regenerates the Lean results file for the spec/ modules re-encoded in Lean (ADR-0053, Proposed): a clean build of
+# TopakSpec/*.lean, each a transition system transcribed from a spec/*.tla module with its *_proof.tla theorems proved
+# by induction on reachable states, with the digests of the TLA+ modules transcribed, the Lean sources and the
+# toolchain, the `#print axioms` of every theorem, and the kernel replay. Regenerates byte for byte on the same machine.
 #   usage: results.sh > TopakSpec-results-<date>.txt     (from spec/lean/)
 # What each file claims and where its encoding departs from the TLA+ text are in the file's header and in
-# TopakSpec/Prelude.lean's conventions. Needs the toolchain `lean-toolchain` names, installed by elan; exits
-# non-zero if any theorem fails.
+# TopakSpec/Prelude.lean's conventions. Needs the toolchain tools/LEAN-PIN names (tools/install-lean.sh); exits
+# non-zero if a theorem or the replay fails. tools/lean-sync.sh says whether the newest results file matches the tree.
 set -u
 here=$(cd "$(dirname "$0")" && pwd)
-spec=$(cd "$here/.." && pwd)
-d16() { shasum -a 256 "$1" | cut -c1-16; }
+root=$(cd "$here/../.." && pwd)
+d16() { shasum -a 256 "$root/$1" | cut -c1-16; }
+e() { echo "$1 (sha256 $(d16 "$1"))"; }
 tla="Seats Observers RunSeats FloorRouting NonComposition RulesFloorBase Anchor BreakGlass Coupling Lease_A1 RulesFloorNV_rev5 Confinement Confinement_A1"
-modules="Seats Observers RunSeats FloorRouting NonComposition RulesFloorBase Anchor BreakGlass Coupling Lease_A1 RulesFloorNV_rev5 Confinement"
+modules="Prelude Seats Observers RunSeats FloorRouting NonComposition RulesFloorBase Anchor BreakGlass Coupling Lease_A1 RulesFloorNV_rev5 Confinement"
 echo "TOPAK — Lean results for the spec/ modules re-encoded in Lean: every theorem of spec/lean/TopakSpec/*.lean, checked by the kernel below"
-line="Transcribes:"
-for m in $tla; do line="$line $m.tla (sha256 $(d16 "$spec/$m.tla")) ·"; done
-echo "${line% ·}"
-line="Sources: Prelude.lean (sha256 $(d16 "$here/TopakSpec/Prelude.lean")) ·"
-for m in $modules; do line="$line $m.lean (sha256 $(d16 "$here/TopakSpec/$m.lean")) ·"; done
-echo "$line lakefile.toml (sha256 $(d16 "$here/lakefile.toml")) · lean-toolchain $(cat "$here/lean-toolchain")"
-echo "Prover: $(cd "$here" && lean --version) · $(cd "$here" && lake --version | head -1) · no Mathlib, no dependencies · driver: results.sh"
+line="Transcribes:"; for m in $tla; do line="$line $(e spec/$m.tla) ·"; done; echo "${line% ·}"
+line="Sources:"; for m in $modules; do line="$line $(e spec/lean/TopakSpec/$m.lean) ·"; done
+echo "$line $(e spec/lean/TopakSpec.lean) · $(e spec/lean/lakefile.toml) · $(e spec/lean/lean-toolchain)"
+"$root/tools/lean-report.sh" "$here" --prover
 for m in $modules; do
-  thms=$(grep -oE '^theorem [A-Za-z0-9_]+Always|^theorem NeverChangesAuthority|^theorem GenesisEntries|^theorem GenesisFloor' "$here/TopakSpec/$m.lean" | sed 's/theorem //' | paste -sd '|' - | sed 's/|/ · /g')
+  [ "$m" = Prelude ] && continue
+  thms=$(grep -oE '^theorem [A-Za-z0-9_]+Always|^theorem NeverChangesAuthority|^theorem GenesisEntries|^theorem GenesisFloor|^theorem Confinement[A-Za-z0-9_]*SafeAlways' "$here/TopakSpec/$m.lean" | sed 's/theorem //' | paste -sd '|' - | sed 's/|/ · /g')
   echo "Theorems ($m): ${thms:-none}"
 done
 echo "A theorem holds of the Lean re-encoding, not of the frozen TLA+ text; the encoding's fidelity is read, each definition beside the TLA+ it transcribes. Spec => []P is induction on reachable states (Prelude.invariant), in place of LS4; the arithmetic the TLAPS proofs hand to SMT is closed by omega; Confinement.lean covers Confinement.tla and Confinement_A1.tla under one flag. Mutations and witnesses stay with TLC."
 echo
-(cd "$here" && rm -rf .lake && lake build 2>&1 | grep -vE '^\s*$|^trace:')
-status=${PIPESTATUS[0]}
-exit $status
+"$root/tools/lean-report.sh" "$here" TopakSpec

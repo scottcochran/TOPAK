@@ -63,17 +63,23 @@ of their branches; and `seal` renamed `seals`, since `seal` is a Lean keyword.
 
 ## What it rests on
 
-- **The Lean 4 kernel**, toolchain `lean-toolchain` (v4.24.0). No Mathlib, no dependencies. `#print axioms`:
-  `propext` and `Quot.sound` at most for twelve modules; `NonComposition` also uses `Classical.choice`,
-  because its `Erase` step cases on a set membership, as TLA+ does. No `sorry`. Lean is not yet a
-  trusted-base row.
+- **The Lean 4 kernel**, toolchain `lean-toolchain` (`leanprover/lean4:v4.33.1`, the one `tools/LEAN-PIN`
+  names). No Mathlib, no dependencies. `#print axioms`: `propext` and `Quot.sound` at most for twelve modules;
+  `NonComposition` also uses `Classical.choice`, because its `Erase` step cases on a set membership, as TLA+
+  does. No `sorry`.
+- **The replay.** Every results file ends with `leanchecker --fresh`, which replays every constant the package
+  reaches, Lean's own library included, through the kernel in a fresh environment (`tools/lean-report.sh`).
+  `#print axioms` alone misses a declaration added with the kernel check off; the replay refuses it
+  (`spec/proof-method.md` §5b). It is the same kernel in a fresh process, not an independent checker.
+- **The row.** ADR-0053 (Proposed) declares the method and proposes the kernel and toolchain as trusted-base
+  row T-0045-32, pinned in `tools/LEAN-PIN`. Until it is ratified a Lean result is evidence no record cites.
 - **The encoding.** A proof here is of the Lean re-encoding, not of the frozen TLA+ text, which the TLAPS
-  proofs are of. The encoding is written from the module and read against it; `derived/lean.md` names this
-  as the new premise. Where the encoding could be read two ways, the file says which was taken.
+  proofs are of. The encoding is written from the module and read against it; ADR-0053 §2 names this as the
+  premise the method adds. Where the encoding could be read two ways, the file says which was taken.
 
 ## Mutation check
 
-Twenty mutated copies of the encodings were built on 2026.10.05, each a spec mutation with its `Mut` guard
+Eighteen mutated copies of the encodings were built on 2026.10.05, each a spec mutation with its `Mut` guard
 removed or a finite table widened. Each fails to build, in the lemma that carries the mutated definition
 into the inductive step; the theorems proved through that lemma then rest on `sorryAx`.
 
@@ -101,11 +107,14 @@ into the inductive step; the theorems proved through that lemma then rest on `so
 ## Run it
 
 ```sh
+../../tools/install-lean.sh                       # the pinned toolchain, once, through elan; compares it with tools/LEAN-PIN
 cd spec/lean
 lake build                                        # the proofs; ~10 s
-./results.sh > TopakSpec-results-<date>.txt       # clean build, with the digests of the TLA+ modules, the Lean sources and the toolchain
+./results.sh > TopakSpec-results-<date>.txt       # clean build, digests, axioms, and the replay (~1 min); byte for byte
+../../tools/lean-sync.sh                          # every Lean results file against the tree and the pin
 ```
 
-`TopakSpec-results-2026.10.05.txt` is the first results file. Its `Transcribes:` line binds each Lean file to
-the digest of the TLA+ module it encodes, as a TLAPS results file's `Modules:` line does; when a module gets a
-successor, the successor's encoding is a new file.
+`TopakSpec-results-2026.10.05.txt` is the results file ADR-0053 cites. Its `Transcribes:` line binds each Lean
+file to the digest of the TLA+ module it encodes, as a TLAPS results file's `Modules:` line does, and
+`tools/lean-sync.sh` reads it as `spec/proof-sync.sh` reads those. When a module gets a successor, the successor's
+encoding is a new file (`spec/proof-method.md` §6).

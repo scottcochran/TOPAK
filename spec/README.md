@@ -92,7 +92,7 @@ The `1.6.0-pre` release tag is rebuilt by its upstream: on 2026.10.03 both asset
 All thirteen are cited by digest in ADR-0046, and frozen. **`proof-method.md`** records how they were written, the patterns they
 share, the prover's habits, and a dated assessment of why they were cheap and where that stops.
 
-### The small modules in Lean 4
+### The modules in Lean 4
 
 `lean/` (2026.10.05) re-encodes thirteen of the modules above as transition systems in Lean 4 and proves their
 `*_proof.tla` theorems by induction on reachable states: `Seats`, `Observers`, `RunSeats`, `FloorRouting`,
@@ -105,8 +105,11 @@ temporal step: proof-method.md §5a counts 74 LS4 obligations, "holds initially,
 holds always", that the certified run checks with nothing; in Lean that step is an induction the kernel checks.
 What it costs is a new premise, that the Lean encoding is the TLA+ module; a Lean theorem is of the encoding,
 not of the frozen text, and `lean/TopakSpec-results-2026.10.05.txt` binds each encoding to the digest of the
-module it transcribes. Lean is not yet a trusted-base row. `lean/README.md` has the theorem table, the
-encoding conventions, and a mutation check; `lean/results.sh` regenerates the results file.
+module it transcribes. ADR-0053 (Proposed) declares the method and proposes the Lean kernel as trusted-base row
+T-0045-32, pinned in `tools/LEAN-PIN`. Every results file ends with a kernel replay (`tools/lean-report.sh`), because
+`#print axioms` alone misses a declaration added past the kernel (`proof-method.md` §5b). `lean/README.md` has the
+theorem table, the encoding conventions, and a mutation check; `lean/results.sh` regenerates the results file, byte
+for byte; `tools/lean-sync.sh` is this package's `proof-sync.sh`, and covers `mechanism/lean/` and `floor/lean/` too.
 
 ## Practice
 

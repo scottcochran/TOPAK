@@ -41,10 +41,15 @@ Every proof is `omega` after unfolding. `Lease_A1.tla` abstracts time away; this
 
 ## What it rests on
 
-- **The Lean 4 kernel**, toolchain `lean-toolchain` (v4.24.0), installed by `elan`. No Mathlib, no dependencies.
-  `#print axioms` on every theorem: `propext` and `Quot.sound` at most, Lean's own; no `Classical.choice`,
-  no `sorry`. Lean is not yet a trusted-base row; citing this result in a record would want one, as ADR-0046
-  gave TLAPS T-0045-31.
+- **The Lean 4 kernel**, toolchain `lean-toolchain` (`leanprover/lean4:v4.33.1`, the one `tools/LEAN-PIN`
+  names), installed by `tools/install-lean.sh`. No Mathlib, no dependencies. `#print axioms` on every theorem:
+  `propext` and `Quot.sound` at most, Lean's own; no `Classical.choice`, no `sorry`.
+- **The replay.** Every results file ends with `leanchecker --fresh`, which replays every constant the package
+  reaches, Lean's own library included, through the kernel in a fresh environment (`tools/lean-report.sh`).
+  `#print axioms` alone misses a declaration added with the kernel check off; the replay refuses it
+  (`spec/proof-method.md` §5b). It is the same kernel in a fresh process, not an independent checker.
+- **The row.** ADR-0053 (Proposed) declares the method and proposes the kernel and toolchain as trusted-base
+  row T-0045-32, pinned in `tools/LEAN-PIN`. Until it is ratified a Lean result is evidence no record cites.
 - **The transcription.** No Rust-to-Lean translator was run; the Lean is written from the Rust and read against
   it. That reading is the new premise. `MechanismDeny` is opaque: `compose` neither produces nor inspects one,
   and `compose_deny_reasons` says so.
@@ -68,9 +73,11 @@ proved through them then rests on `sorryAx`.
 
 ```sh
 cd mechanism/lean
-lake build                                   # the proof; ~1 s
-./results.sh > Admit-results-<date>.txt      # clean build, with the digests of admit.rs, the Lean sources and the toolchain
+lake build                                   # the proofs; ~1 s
+./results.sh > Admit-results-<date>.txt      # clean build, digests, axioms, and the replay (~30 s); byte for byte
+../../tools/lean-sync.sh                     # STALE here when admit.rs, mechanism.rs or clock.rs has moved
 ```
 
-`Admit-results-2026.10.05.txt` is the results file, regenerated when `Clock.lean` was added. Re-run after any change to `admit.rs` and compare the
-transcription with the new Rust before re-pinning the digest it prints.
+`Admit-results-2026.10.05.txt` is the results file ADR-0053 cites. The transcriptions are pinned, not frozen: when
+`tools/lean-sync.sh` reports `admit.rs`, `mechanism.rs` or `clock.rs` moved, re-read the Lean against the new Rust,
+change it if the meaning changed, and regenerate the results file.

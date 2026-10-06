@@ -1,4 +1,13 @@
-Still surveying the repo: I've looked at the TLA+ specs, proofs and Cedar floor, and now I'm checking what the existing proof certification leaves trusted.
+<!-- AUTHORED · 2026-10-05 -->
+> **Provenance note.** Written 2026.10.05 by the assistant, at the custodian's request, as an answer to "what in the
+> corpus could be formalized in Lean, and what would it gain"; entered here the same day under the name lean.md and
+> renamed to the index's convention when ADR-0053 (Proposed) came to cite it. One line of session residue that
+> opened it ("Still surveying the repo…") is removed, and one citation of `admit.rs` by line range is
+> rewritten so that `tools/check-refs.py` can follow it; nothing else is changed. Items 1 to 4 were then carried out
+> the same day: `mechanism/lean/`, `spec/lean/` and `floor/lean/`, with ADR-0053 declaring the method. Item 5
+> (Paxos) and item 6 (the premise matrix) were not.
+
+# Formalizing the corpus in Lean: what is easiest, and what it gains
 
 **Short answer:** start with the admit-path composition (`FloorComposition` together with `admit.rs`), then the small set-theoretic modules, then the Cedar floor. The Cedar floor matters because Cedar's own semantics and its symbolic compiler are already formalized in Lean. Paxos is a good target but a big one. The operational model, transport and containment layers are the least suited.
 
@@ -8,7 +17,7 @@ Nothing in the repo uses Lean today. All the deductive work is TLAPS, plus the c
 
 **1. The admit composition: easiest, and the biggest gain.**
 - `spec/FloorComposition.tla` (158 lines) is proved in TLAPS with no assumptions. Its five theorems include `AdmitImpliesFloorPermit` and `BundleCannotWriteFloorInputs`.
-- The Rust it describes, `compose` and `floor_gate` at `mechanism/crates/topak-core/src/admit.rs:64-87`, is about 20 lines of pure pattern matching over enums.
+- The Rust it describes, `compose` and `floor_gate` at `mechanism/crates/topak-core/src/admit.rs` (lines 64 to 87), is about 20 lines of pure pattern matching over enums.
 - In Lean you could prove the theorems directly about a translation of that Rust code. Tools that translate Rust to Lean (Aeneas or hax) would produce it, but I haven't checked that either handles this crate.
 - That would attack T-0045-28, "the running code refines the checked spec." TLAPS cannot reach that row, and today only trace replay through `Mechanism.tla` covers it.
 
