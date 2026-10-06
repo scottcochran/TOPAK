@@ -637,7 +637,7 @@ def build():
             "(`mechanism/lean`, ADR-0053 R2): its invariants hold of every behaviour in which the code decides, on "
             "T-0045-3 at the module's size.",
             "**The floor gates' row** gains `floor/lean` for totality, non-vacuity and discrimination, on the genesis "
-            "floor.",
+            "floor and the floor in force.",
         ], "amber"),
         ("Why no premise moves", [
             "Two proofs give a disjunction: a property holds if **T-0045-31** holds, or if **T-0045-37** holds and the "
@@ -648,7 +648,8 @@ def build():
         ], "amber"),
         ("The one reference verdict it changes the reason for", [
             "Totality's `holds°` rows rest today on cedar's term folding, under T-0045-3. Proved in Lean of the "
-            "genesis floor under cedar-spec's model, they would rest on **T-0045-37 and T-0045-3's own premise**, "
+            "genesis floor and the floor in force (R3) under cedar-spec's model, they would rest on **T-0045-37 and "
+            "T-0045-3's own premise**, "
             "\"the Cedar engine, as faithful to the Lean model\".",
             "The verdict at the reference is unchanged: T-0045-3 is a trust root either way.",
         ], "amber"),

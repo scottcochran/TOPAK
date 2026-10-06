@@ -34,9 +34,10 @@ PKGS = [
      "The Lean function is the Rust function. Read, each definition beside the Rust; no Rust-to-Lean translator was "
      "run. Pinned, not frozen: the Rust moves."),
     ("floor/lean", "TopakFloor-results-*.txt", "Statement in Cedar's model", "violet",
-     "`genesis-floor.cedar` and schema S in cedar-spec's abstract syntax (tag `v4.13.0`), generated through the cedar "
-     "CLI's parser by `gen.py`. The floor validates, so by cedar-spec's proved `validation_is_sound` it never errors on "
-     "a conforming input but by a missing entity; the 62 cases under the model's authorizer; per-action witnesses.",
+     "The genesis floor and, since R3, **the floor in force**, the `emergency` stage the reference links, each with its "
+     "schema S, in cedar-spec's abstract syntax (tag `v4.13.0`), generated through the cedar CLI's parser by `gen.py`. "
+     "Each validates, so by cedar-spec's proved `validation_is_sound` it never errors on a conforming input but by a "
+     "missing entity; the 62 and 107 cases under the model's authorizer; per-action witnesses.",
      "The CLI's parse and `gen.py`'s walk are the policies and schema. The model's fidelity to the engine is "
      "T-0045-3's own premise, not a new one. Closed evaluations by `native_decide`, which trusts the compiler."),
 ]
@@ -298,8 +299,9 @@ def build():
                  "five invariants hold of every behaviour in which the code decides; and `decide_is_code`",
                  "the transcriptions, read; the kernel; T-0045-3 at the module's size; the module's four policies, not "
                  "the floor in force"])
-    rows.append(["The floor's totality gate", "23 `holds°`", "—", "not a proof: cedar's term folding, on T-0045-3",
-                 "`floor/lean/TopakFloor/Gates.lean`", "`floor_never_errors`, by cedar-spec's proved "
+    rows.append(["The floor's totality gate", "23 and 41 `holds°`", "—", "not a proof: cedar's term folding, on "
+                 "T-0045-3", "`floor/lean/TopakFloor/` `Gates.lean`, `InForce.lean`", "`floor_never_errors` of the "
+                 "genesis floor, `inForce_never_errors` of the floor in force (R3), by cedar-spec's proved "
                  "`validation_is_sound`", "the parse, read; the kernel; `native_decide`; T-0045-3"])
     y += c.table(X0, y, cols, rows, size=13.5, accent="blue") + 56
 

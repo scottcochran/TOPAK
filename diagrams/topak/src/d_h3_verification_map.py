@@ -179,10 +179,11 @@ def build():
                                              "`clock.rs`'s subtracting interval: the margin moves expiry earlier, "
                                              "never later. Read beside the Rust; pinned, not frozen."],
          "amber", "proposed", "ADR-0053", None, None),
-        ("`floor/lean`: Cedar's model", ["The **genesis** floor in cedar-spec `" + pin["cedar_spec_tag"] + "`'s "
-                                         "syntax: its 23 totality `holds°` rows as one theorem of the model's proved "
-                                         "validator soundness; the 62 cases under the model's authorizer; witnesses "
-                                         "per action. The three stages are not stated yet."],
+        ("`floor/lean`: Cedar's model", ["The genesis floor and **the floor in force**, the `emergency` stage the "
+                                         "reference links (R3), in cedar-spec `" + pin["cedar_spec_tag"] + "`'s "
+                                         "syntax: totality as one theorem of the model's proved validator soundness; "
+                                         "the 62 and 107 cases under the model's authorizer; witnesses per action. "
+                                         "The sync fails if the reference links a floor no file states."],
          "amber", "proposed", "ADR-0053", None, None),
         ("The kernel (T-0045-37, proposed)", [f"Lean {pin['version']}, kernel `libleanshared` "
                                               f"`{pin['libleanshared_sha256_16']}…`, pinned by `tools/LEAN-PIN`; "
@@ -226,8 +227,9 @@ def build():
         ("Results 2026.10.04, each stage", ["**RESULT: all gates pass**, in all three. `emergency`: 15 `unsat` with a "
                                             "checked proof, 41 totality checks `holds°` by cedar's folding (T-0045-3), "
                                             "none unchecked; evidence tree `974f339662a5289d`. A rerun reproduces each "
-                                            "file byte for byte (G10 §3). The genesis floor's 23 are also proved in "
-                                            "Lean, under cedar-spec's model (lane 3)."], "teal",
+                                            "file byte for byte (G10 §3). The `emergency` stage's 41, and the "
+                                            "genesis floor's 23, are also proved in Lean, under cedar-spec's model "
+                                            "(lane 3)."], "teal",
          None, "", None, None),
         ("`topak-floor` pins it", ["Compiled in **by path**, refused at startup unless its bytes match the gated "
                                    "digests: since 2026.10.05 the `emergency` stage, switched outright from the genesis "
@@ -707,8 +709,8 @@ def build():
             "`Operators.tla` and `Emergency.tla` are tied to the reference by tests and no refinement (item 90)."], "red"),
         ("What the checks do not cover", [
             "A `holds°` is cedar's own term folding with no query to check: in the `emergency` stage's run, all 41 "
-            "totality checks rest on the engine's row (T-0045-3), not the checker's (G9 item 69). For the genesis "
-            "floor's 23, a Lean proof under cedar-spec's model is proposed (ADR-0053); the stages have none.",
+            "totality checks rest on the engine's row (T-0045-3), not the checker's (G9 item 69). For those 41, and "
+            "the genesis floor's 23, a Lean proof under cedar-spec's model is proposed (ADR-0053 R3).",
             "The CPC signature is cvc5's own formalization, trusted as written (G7 §4). **The race in lease expiry had "
             "no property to violate**: the clock is outside every module, and it was found because a test failed one "
             "run in three under tracing, \"and no proof would have found it\" (ADR-0033 A13). Whether anything else a "

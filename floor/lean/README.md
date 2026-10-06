@@ -1,8 +1,10 @@
-# The genesis floor under Cedar's verified semantics
+# The genesis floor and the floor in force under Cedar's verified semantics
 
 `genesis-floor.cedar` and `genesis.cedarschema` stated in the abstract syntax of cedar-spec, the Lean model of
 Cedar that AWS maintains and proves properties of, with ADR-0030 §5's totality gate proved as a theorem of that
-model and the 62 behavioral cases of `genesis-tests.json` checked under its authorizer.
+model and the 62 behavioral cases of `genesis-tests.json` checked under its authorizer. **And since 2026.10.06 the
+floor in force**: `proposed/emergency-floor.cedar` and `emergency.cedarschema`, the stage the reference links and
+pins (`mechanism/crates/topak-floor`), with the same theorems and its 107 cases (`InForce.lean`; ADR-0053 R3).
 
 ## Why
 
@@ -27,6 +29,24 @@ except for three runtime errors the validator cannot see, and the genesis floor 
 | `not_always_allows` | non-vacuity: for each of the ten actions, a conforming case the floor denies |
 | `not_always_denies_but_erase` | discrimination: for each action but `Erase`, a conforming case the floor allows; at genesis no erasure roster is issued, so `X2-erasure` admits nothing |
 | `case01` to `case62` (`Tests.lean`) | each case's request, under `isAuthorized`, returns the case's decision, its determining policies and no error |
+
+## The floor in force (`TopakFloor/InForce.lean`, 2026.10.06)
+
+`gen.py emergency` states the `emergency` stage from the bytes `topak-floor` pins (28 policies; schema S with the
+control alphabet), into `Emergency.lean` and `EmergencyTests.lean`. `gen.py` with no stage writes both statements; the
+genesis files come out byte for byte as before.
+
+| Theorem | Claim |
+|---|---|
+| `inForce_schema_wf`, `inForce_validates` | the stage's schema is well-formed, and its 28 policies validate against it |
+| `inForce_never_errors` | totality: on every conforming request and store, every policy evaluates to a boolean or a residual runtime error; the `emergency` gate run's 41 totality `holds°` rows as one theorem |
+| `inForce_no_ext_no_arith` | no extension call and no arithmetic, so the residual is `entityDoesNotExist`, a lift fault |
+| `inForce_cases_conform` | every one of the 107 cases' requests, and the shared store, validate against S |
+| `inForce_not_always_allows`, `inForce_not_always_denies` | non-vacuity and discrimination on **all sixteen** actions, with no exception: the stage's cases include an allowed `Erase` |
+| `emCase001` to `emCase107` (`EmergencyTests.lean`) | each case under `isAuthorized` returns its decision, its determining policies and no error |
+
+`tools/lean-sync.sh` reads the floor and schema `topak-floor` links and fails if the newest results file does not state
+them, so a move of the reference to another stage cannot leave the floor that runs without a Lean statement.
 
 What stays with `run-gates.py` and the checker: the every-entry-matters gate and routing, which are solver
 queries about pairs of floors (`implies`, `equivalent`), and the negative controls.
@@ -63,6 +83,8 @@ removed so the gate theorems are what fails. Each fails to build in the theorem 
 |---|---|
 | `B1-read-corpus` compares `principal.domain` with a `Long` instead of a `String` | `floor_validates` (the policy is false under every environment), and `not_always_denies_but_erase` (nothing admits `Read`) |
 | a permit-all policy appended to the floor | `not_always_allows` (the actions with no forbid are then always allowed) |
+| the floor in force with a permit-all appended (2026.10.06) | `inForce_not_always_allows` |
+| the floor in force with `F-forensic-classes` made inert, a condition that never holds (2026.10.06) | `emCase052` to `emCase057`, the six cases that erase a forensic class under an erasure quorum |
 
 With the case theorems left in, both mutants fail there first: the first in `case01`, the second in every
 denied case of an action with no forbid.
@@ -72,11 +94,12 @@ denied case of an action with no forbid.
 ```sh
 cd floor/lean
 export PATH="$HOME/.cargo/bin:$PATH"               # cedar-policy-cli 4.13.0
-python3 gen.py                                     # regenerate Genesis.lean and Tests.lean from the floor's files
+python3 gen.py                                     # regenerate both statements: genesis, and the emergency stage in force
 lake build                                         # first run fetches cedar-spec and batteries and builds the model: minutes, ~GB
 ./results.sh > TopakFloor-results-<date>.txt       # regenerate, clean build, digests, axioms, replay (~2 min); byte for byte
-../../tools/lean-sync.sh                           # STALE when the floor, the schema or the tests moved; checks cedar-spec's commit
+../../tools/lean-sync.sh                           # STALE when a floor, schema or tests moved; checks cedar-spec and the linked floor
 ```
 
-`TopakFloor-results-2026.10.05.txt` is the results file ADR-0053 cites. The statement is pinned, not frozen: a
-floor change is a regenerated results file, and `tools/lean-sync.sh` reports one that was not regenerated.
+`TopakFloor-results-2026.10.06.txt` is the results file ADR-0053 cites since R3; the 2026.10.05 file, the genesis
+floor alone, stays beside it unchanged. The statements are pinned, not frozen: a floor change is a regenerated results
+file, and `tools/lean-sync.sh` reports one that was not regenerated.

@@ -284,8 +284,8 @@ def build():
          "not frozen; Lean re-encodings frozen with their modules on ADR-0053's ratification",
          "checkpoint manifest: 172; `lean/` enters the next (ADR-0053 §6)"],
         ["`floor/`", "The genesis policy floor in Cedar, with tests and gates, and three proposed stages under "
-         "`proposed/`; since 2026.10.05 `lean/`, the genesis floor in Cedar's Lean model ([[amber|ADR-0053, "
-         "Proposed]])", "Genesis text DRAFT; the floor in force genesis-provisional (ADR-0030 A3); dated gate runs "
+         "`proposed/`; since 2026.10.05 `lean/`, the genesis floor and the floor in force in Cedar's Lean model "
+         "([[amber|ADR-0053, Proposed]])", "Genesis text DRAFT; the floor in force genesis-provisional (ADR-0030 A3); dated gate runs "
          "never change", "checkpoint manifest: 146 (fourteen under `floor/proposed/`)"],
         ["`policies/`", "Rego bundle-tier policies and tests", "Reference material", "`SHA256SUMS-REF-<date>`"],
         ["`mechanism/`", "Rust reference implementation of the admit path; since 2026.10.05 `lean/`, `admit.rs` and "
