@@ -103,4 +103,13 @@ theorem invariant {σ : Type} {Init : σ → Prop} {Next : σ → σ → Prop} (
   | init hi => exact hinit _ hi
   | step _ hn ih => exact hstep _ _ ih hn
 
+/-- A refinement's last step: if every step of `Next₂` is a step of `Next₁`, every state `Next₂` reaches from `Init`
+is one `Next₁` reaches, so every invariant proved of `Next₁` holds of it. -/
+theorem Reachable.mono {σ : Type} {Init : σ → Prop} {Next₁ Next₂ : σ → σ → Prop}
+    (h : ∀ s s', Next₂ s s' → Next₁ s s') : ∀ s, Reachable Init Next₂ s → Reachable Init Next₁ s := by
+  intro s hr
+  induction hr with
+  | init hi => exact .init hi
+  | step _ hn ih => exact .step ih (h _ _ hn)
+
 end Topak.Spec

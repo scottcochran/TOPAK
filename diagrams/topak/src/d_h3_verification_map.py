@@ -39,9 +39,9 @@ def build():
                "harness that replays those tests through an operational model, current with the tree, which found a "
                "race no proof could; the drift pins; and the lineage gate suite. Then the honesty layer: a proof is of "
                "the module, a certified proof is not a verified one, and what runs is neither checked nor proved. Beside "
-               "them, **proposed and cited by no record yet**, a second route in Lean (ADR-0053; H7): twelve proof "
-               "modules' theorems proved again of re-encodings, the admit composition and the clock check of "
-               "transcriptions of the Rust, and the genesis floor's totality under Cedar's verified model.",
+               "them, **proposed and cited by no record yet**, a second route in Lean (ADR-0053; H7): thirteen proof "
+               "modules' theorems proved again of re-encodings, the admit decision proved a step of `FloorComposition` and the "
+               "clock check of transcriptions of the Rust, and the genesis floor's totality under Cedar's verified model.",
                3400,
                "spec/README.md and every spec/*.tla header and results file, among them Labels-results-2026.10.03.txt and "
                "-2026.10.04.txt, ToolList-, Operators-, Emergency- and Correlator-results-2026.10.04.txt, BreakGlass_A1- "
@@ -169,12 +169,13 @@ def build():
         ("What is stated", ["A proved TLA+ module, a function of the reference, or the floor. The TLA+ text, its "
                             "TLAPS proof and the Rust stay canonical: Lean proves again, of what its Lean states "
                             "(ADR-0053 §1)."], "blue", None, "", None, None),
-        ("`spec/lean`: re-encodings", [f"Thirteen modules as Lean transition systems; the theorems of their "
+        ("`spec/lean`: re-encodings", [f"Fourteen modules as Lean transition systems; the theorems of their "
                                        f"**{len(ENC)} proof modules** by induction on the reachable states, the step "
                                        "TLAPS hands to LS4. Among them the three that do not certify, every step "
                                        "kernel-checked, of the encoding."], "amber", "proposed", "ADR-0053", None, None),
-        ("`mechanism/lean`: transcriptions", ["`admit.rs`'s `floor_gate` and `compose` and their call site: "
-                                             "`FloorComposition`'s three composition properties and `admit_iff`. "
+        ("`mechanism/lean`: transcriptions", ["`admit.rs`'s `floor_gate` and `compose`, their call site and the "
+                                             "`topak-floor` wrapper: the whole decision **proved a `Decide` step of "
+                                             "`FloorComposition`**, on Cedar's rule as the engine premise (R2). "
                                              "`clock.rs`'s subtracting interval: the margin moves expiry earlier, "
                                              "never later. Read beside the Rust; pinned, not frozen."],
          "amber", "proposed", "ADR-0053", None, None),
@@ -508,9 +509,9 @@ def build():
         elif mod == "RulesFloorBase":
             cells[7] += (" · [[amber|encoded in Lean]], its genesis `ASSUME` proved as a theorem: "
                          "`spec/lean/TopakSpec/RulesFloorBase.lean` (ADR-0053, Proposed)")
-        elif mod == "FloorComposition":
-            cells[7] += (" · [[amber|proved in Lean]], three properties, of `admit.rs`'s transcription: "
-                         "`mechanism/lean/Topak/Admit.lean` (ADR-0053, Proposed)")
+        if mod == "FloorComposition":
+            cells[7] += (" · and the code's decision, wrapper and `compose`, [[amber|proved a `Decide` step]] of it: "
+                         "`mechanism/lean/Topak/FloorRefinement.lean` (ADR-0053 R2)")
     y += c.table(X0, y, cols, rows, size=13.5) + 50
 
     # ================================================================ 3. gates + bootstrap

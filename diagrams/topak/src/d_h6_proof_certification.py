@@ -378,8 +378,8 @@ def build():
             res = ("[[teal|Certified]]" if r["certified"] else f"[[red|NOT CERTIFIED]]: {r['last'][15:]}")
             if m in in_lean:
                 res += " · [[amber|also proved in Lean]] (ADR-0053, Proposed)"
-            elif m == "FloorComposition":
-                res += " · three properties [[amber|proved in Lean]] of `admit.rs`'s transcription (ADR-0053, Proposed)"
+            if m == "FloorComposition":
+                res += "; the code's decision proved a `Decide` step of it (R2)"
             cells = [f"`{m}_proof`", rec, f"**{r['n']}**", str(r["triv"]), str(r["smt"]), zen, str(r["isa"]),
                      str(r["ls4"]), f"[[red|{r['fail']}]]" if r["fail"] else "0",
                      ("[[red|×10]]" if r["stretch"] == "x10" else "×1"), f"`{r['evidence']}`",

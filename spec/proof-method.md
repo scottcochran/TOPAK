@@ -281,6 +281,13 @@ the arithmetic of `Coupling` and the cardinalities of `RulesFloorNV_rev5`, is `o
 What TLAPS proves as `TypeOK` has no counterpart: Lean's types carry it, which is also why the three Z3-only steps
 of `Confinement` vanish rather than move. Thirteen modules took one working day, as the thirteen TLAPS proofs did.
 
+**2026.10.06: a first refinement.** `FloorComposition` joined the re-encodings, and `mechanism/lean/Topak/
+FloorRefinement.lean` proves the code's admit decision, `admit.rs`'s `compose` with the `topak-floor` wrapper, a
+`Decide` step of it, so the module's five invariants hold of every behaviour in which the code decides and the lift
+moves the store as the module's does (`Reachable.mono` in `Prelude.lean`). The engine is a premise there, Cedar's
+authorization rule over the module's four policies, which is T-0045-3's own; and the floor is the module's, not the
+floor in force. ADR-0053 §5 says why this is not a stage of T-0045-28's chain.
+
 **One control, and what it showed.** `#print axioms` lists the axioms a theorem uses, and is not enough. A scratch
 module that adds `False` as a theorem with the kernel check switched off (`set_option debug.skipKernelTC true`,
 then `addDecl`) builds, and a theorem `1 = 2` derived from it reports **no axioms at all**. `leanchecker --fresh`,

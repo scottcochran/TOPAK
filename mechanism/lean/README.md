@@ -39,11 +39,40 @@ larger margin elapses whenever a smaller one does, so the margin moves expiry ea
 a margin no larger than the length, an interval has not elapsed before it starts (`not_elapsed_before_start`).
 Every proof is `omega` after unfolding. `Lease_A1.tla` abstracts time away; this is the arithmetic beneath it.
 
+## The decision refines `FloorComposition` (`Topak/FloorRefinement.lean`, 2026.10.06)
+
+`Admit.lean` proves the composition's properties of `compose` over abstract floor and bundle outcomes. This file
+closes the gap between those outcomes and the module. It transcribes the `topak-floor` wrapper
+(`Floor::evaluate` in `crates/topak-floor/src/lib.rs`), which turns the Cedar engine's response into a
+`FloorOutcome`. It then proves the code's whole decision, wrapper and `compose`, a step of the module's `Decide`, against
+`spec/lean`'s re-encoding of `FloorComposition.tla`, on which this package now depends by path.
+
+| Theorem | Claim |
+|---|---|
+| `input_failure_is_error`, `engine_error_is_error` | an input rejected before evaluation, and any error diagnostic whatever Cedar decided, is `Error` |
+| `wrapper_permit_iff` | the wrapper permits exactly when Cedar allows with no error |
+| `wrapper_deny_reasons` | on Cedar's rule with no error, a deny's reasons are the satisfied forbids, so an empty one is `FloorNoPermit` |
+| `engine_allow_iff`, `engine_err_iff` | the module's `EngineAllow` and `EngineErr` are Cedar's rule read over its four policies |
+| `floorPermit_refines` | the wrapper's permit is the module's `FloorPermit` at `Mut = "none"` |
+| `codeAdmits_iff` | the code admits exactly when the module's `Admit` does, for every slice, seat, act and bundle outcome |
+| `codeDecide_refines` | **every code decision is a `Decide` step of the module**; an input rejected before evaluation is the module's refusal |
+| `code_behaviours_safe` | every state reached by the module's lift and the code's decisions keeps all five of the module's invariants, `EnvelopeHolds` and `BundleCannotWriteFloorInputs` included |
+| `decide_is_code` | and every `Decide` step at `Mut = "none"` is a code decision: the code can take every decision the module can |
+
+**What it premises, and what it is not.**
+- The engine is Cedar's authorization rule as cedar-spec's `isAuthorized` states it, over the module's four
+  policies, or a rejection before evaluation (`EngineFaithful`). That is T-0045-3's own premise, at the module's
+  size.
+- The floor is the module's four policies. It is neither the genesis floor that `floor/lean/` states nor the floor in
+  force that the reference links (ADR-0053 finding 6).
+- The lift is the module's own `Reassign` and `Seal`; the code's lift is not transcribed.
+- It is not a stage of T-0045-28's chain, and no addendum may cite it as one (ADR-0053 §5, R1 and R2).
+
 ## What it rests on
 
 - **The Lean 4 kernel**, toolchain `lean-toolchain` (`leanprover/lean4:v4.33.1`, the one `tools/LEAN-PIN`
-  names), installed by `tools/install-lean.sh`. No Mathlib, no dependencies. `#print axioms` on every theorem:
-  `propext` and `Quot.sound` at most, Lean's own; no `Classical.choice`, no `sorry`.
+  names), installed by `tools/install-lean.sh`. No Mathlib; one dependency, `spec/lean`, by path. `#print axioms` on
+  every theorem: `propext` and `Quot.sound` at most, Lean's own; no `Classical.choice`, no `sorry`.
 - **The replay.** Every results file ends with `leanchecker --fresh`, which replays every constant the package
   reaches, Lean's own library included, through the kernel in a fresh environment (`tools/lean-report.sh`).
   `#print axioms` alone misses a declaration added with the kernel check off; the replay refuses it
@@ -53,9 +82,9 @@ Every proof is `omega` after unfolding. `Lease_A1.tla` abstracts time away; this
 - **The transcription.** No Rust-to-Lean translator was run; the Lean is written from the Rust and read against
   it. That reading is the new premise. `MechanismDeny` is opaque: `compose` neither produces nor inspects one,
   and `compose_deny_reasons` says so.
-- **Not the engines.** `FloorOutcome` and `BundleOutcome` are inputs. That the Cedar wrapper folds "Allow with
-  no evaluation errors" into `Permit` and everything else into `Deny` or `Error` is `topak-floor`'s, and the
-  bundle client's `Allow`/`Refuse` is `topak-bundle`'s; neither is proved here.
+- **Not the engines.** In `Admit.lean`, `FloorOutcome` and `BundleOutcome` are inputs. Since 2026.10.06 the floor
+  wrapper is transcribed and proved (`FloorRefinement.lean`); the Cedar engine behind it is T-0045-3's premise. The
+  bundle client's `Allow`/`Refuse` is `topak-bundle`'s and is still not proved.
 
 ## Mutation check
 
@@ -69,15 +98,24 @@ proved through them then rests on `sorryAx`.
 | `M_ERR` | a floor error passes the gate | `floorGate_error`, `floorGate_none_iff`, `compose_error`, examples |
 | R4 | an empty forbid list is reported as `Floor []` | `floorGate_deny`, `floorGate_none_iff`, examples |
 
+Three more on 2026.10.06, against the wrapper and the abstraction, each built in a scratch copy of both packages:
+
+| Mutant | What changes | Fails |
+|---|---|---|
+| `M_ERR`, in the wrapper | Cedar's error diagnostics ignored | `engine_error_is_error`, `wrapper_permit_iff` |
+| Fail-open input | an input rejected before evaluation becomes a `Permit` | `input_failure_is_error`, `codeAdmits_input_failure` |
+| `M_OVERRIDE`, in the abstraction | a bundle refusal read as an allow | `codeAdmits_iff`, `decide_is_code` |
+
 ## Run it
 
 ```sh
 cd mechanism/lean
 lake build                                   # the proofs; ~1 s
 ./results.sh > Admit-results-<date>.txt      # clean build, digests, axioms, and the replay (~30 s); byte for byte
-../../tools/lean-sync.sh                     # STALE here when admit.rs, mechanism.rs or clock.rs has moved
+../../tools/lean-sync.sh                     # STALE when admit.rs, mechanism.rs, clock.rs, topak-floor or FloorComposition moved
 ```
 
-`Admit-results-2026.10.05.txt` is the results file ADR-0053 cites. The transcriptions are pinned, not frozen: when
-`tools/lean-sync.sh` reports `admit.rs`, `mechanism.rs` or `clock.rs` moved, re-read the Lean against the new Rust,
-change it if the meaning changed, and regenerate the results file.
+`Admit-results-2026.10.06.txt` is the results file ADR-0053 cites since R2; the 2026.10.05 file stays beside it,
+unchanged. The transcriptions are pinned, not frozen: when `tools/lean-sync.sh` reports a Rust file moved, re-read
+the Lean against the new Rust, change it if the meaning changed, and regenerate the results file. `lake update`
+regenerates `lake-manifest.json` if the path to `spec/lean` changes.

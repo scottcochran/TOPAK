@@ -27,8 +27,10 @@ PKGS = [
      "conventions and each file the places a reading was chosen."),
     ("mechanism/lean", "Admit-results-*.txt", "Transcription", "teal",
      "`admit.rs`'s `floor_gate` and `compose`, their call site in `topak-node`, and `clock.rs`'s "
-     "`subtracting_interval_elapsed`, transcribed. `FloorComposition`'s three composition properties and "
-     "`admit ⟺ floor_permit ∧ ¬bundle_deny` of the transcription; ADR-0032 §2's \"fails closed\" of the arithmetic.",
+     "`subtracting_interval_elapsed`, and the `topak-floor` wrapper, transcribed. `FloorComposition`'s three "
+     "composition properties and `admit ⟺ floor_permit ∧ ¬bundle_deny` of the transcription; since 2026.10.06 the "
+     "whole decision, wrapper and `compose`, proved a `Decide` step of `FloorComposition`'s re-encoding, on Cedar's "
+     "rule as the engine premise (ADR-0053 R2); ADR-0032 §2's \"fails closed\" of the arithmetic.",
      "The Lean function is the Rust function. Read, each definition beside the Rust; no Rust-to-Lean translator was "
      "run. Pinned, not frozen: the Rust moves."),
     ("floor/lean", "TopakFloor-results-*.txt", "Statement in Cedar's model", "violet",
@@ -39,8 +41,9 @@ PKGS = [
      "T-0045-3's own premise, not a new one. Closed evaluations by `native_decide`, which trusts the compiler."),
 ]
 
-# The twelve proof modules spec/lean re-encodes, and the Lean file for each (spec/lean/README.md; ADR-0053 §4).
+# The thirteen proof modules spec/lean re-encodes, and the Lean file for each (spec/lean/README.md; ADR-0053 §4, R2).
 ENC = [("Seats", "Seats"), ("Observers", "Observers"), ("RunSeats", "RunSeats"), ("FloorRouting", "FloorRouting"),
+       ("FloorComposition", "FloorComposition"),
        ("NonComposition", "NonComposition"), ("Anchor", "Anchor"), ("BreakGlass", "BreakGlass"),
        ("Coupling", "Coupling"), ("Lease_A1", "Lease_A1"), ("RulesFloorNV_rev5", "RulesFloorNV_rev5"),
        ("Confinement", "Confinement"), ("Confinement_A1", "Confinement")]
@@ -288,12 +291,13 @@ def build():
         cr = "[[teal|Certified]]" if r["certified"] else f"[[red|NOT CERTIFIED]]: {r['last'][15:]}"
         cells = [f"`{mod}_proof`", f"**{r['n']}**", str(r["ls4"]), cr, f"`{lf}.lean`", th, trust]
         rows.append({"cells": cells, "accent": "red"} if not r["certified"] else cells)
-    rows.append({"group": "At the code level and in the model, not by re-encoding", "accent": "teal"})
-    rows.append(["`FloorComposition_proof`", f"**{read_cert('FloorComposition')['n']}**",
-                 str(read_cert("FloorComposition")["ls4"]), "[[teal|Certified]]", "`mechanism/lean/Topak/Admit.lean`",
-                 "Its three composition properties and `admit_iff`, of the transcription of `admit.rs`; "
-                 "`BundleCannotWriteFloorInputs` and `EnvelopeHolds` stay with the module",
-                 "the transcription, read; the kernel"])
+    rows.append({"group": "At the code level and in the model", "accent": "teal"})
+    rows.append(["The admit decision, refining `FloorComposition`'s `Decide` (ADR-0053 R2)", "—", "—",
+                 "not a TLAPS claim: of the code", "`mechanism/lean/Topak/` `FloorRefinement.lean`",
+                 "`codeDecide_refines`: wrapper and `compose` together are a `Decide` step, so `code_behaviours_safe`: all "
+                 "five invariants hold of every behaviour in which the code decides; and `decide_is_code`",
+                 "the transcriptions, read; the kernel; T-0045-3 at the module's size; the module's four policies, not "
+                 "the floor in force"])
     rows.append(["The floor's totality gate", "23 `holds°`", "—", "not a proof: cedar's term folding, on T-0045-3",
                  "`floor/lean/TopakFloor/Gates.lean`", "`floor_never_errors`, by cedar-spec's proved "
                  "`validation_is_sound`", "the parse, read; the kernel; `native_decide`; T-0045-3"])

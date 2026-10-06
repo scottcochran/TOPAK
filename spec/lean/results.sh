@@ -12,8 +12,8 @@ here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/../.." && pwd)
 d16() { shasum -a 256 "$root/$1" | cut -c1-16; }
 e() { echo "$1 (sha256 $(d16 "$1"))"; }
-tla="Seats Observers RunSeats FloorRouting NonComposition RulesFloorBase Anchor BreakGlass Coupling Lease_A1 RulesFloorNV_rev5 Confinement Confinement_A1"
-modules="Prelude Seats Observers RunSeats FloorRouting NonComposition RulesFloorBase Anchor BreakGlass Coupling Lease_A1 RulesFloorNV_rev5 Confinement"
+tla="Seats Observers RunSeats FloorRouting FloorComposition NonComposition RulesFloorBase Anchor BreakGlass Coupling Lease_A1 RulesFloorNV_rev5 Confinement Confinement_A1"
+modules="Prelude Seats Observers RunSeats FloorRouting FloorComposition NonComposition RulesFloorBase Anchor BreakGlass Coupling Lease_A1 RulesFloorNV_rev5 Confinement"
 echo "TOPAK — Lean results for the spec/ modules re-encoded in Lean: every theorem of spec/lean/TopakSpec/*.lean, checked by the kernel below"
 line="Transcribes:"; for m in $tla; do line="$line $(e spec/$m.tla) ·"; done; echo "${line% ·}"
 line="Sources:"; for m in $modules; do line="$line $(e spec/lean/TopakSpec/$m.lean) ·"; done

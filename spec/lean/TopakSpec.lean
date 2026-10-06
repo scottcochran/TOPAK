@@ -11,3 +11,4 @@ import TopakSpec.Coupling
 import TopakSpec.RulesFloorNV_rev5
 import TopakSpec.Lease_A1
 import TopakSpec.Confinement
+import TopakSpec.FloorComposition

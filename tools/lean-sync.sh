@@ -50,10 +50,6 @@ enc=$(grep -m1 '^Transcribes:' "$(ls -1 "$root/spec/lean/"*-results-*.txt | sort
 for pf in "$root"/spec/*_proof.tla; do
   m=$(basename "$pf" _proof.tla)
   echo " $enc " | grep -q " $m " && continue
-  case "$m" in
-    FloorComposition) why="at the code level instead: mechanism/lean proves its three composition properties of admit.rs" ;;
-    *) why="not yet encoded" ;;
-  esac
-  echo "  $m: $why"
+  echo "  $m: not yet encoded"
 done
 exit $status

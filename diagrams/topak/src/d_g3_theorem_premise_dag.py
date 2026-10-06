@@ -417,7 +417,7 @@ def build():
                "spec/theorem-premise-binding.json (2026.10.03); ADR-0045 §3, §5, Annex A, Annex B "
                "(B23, B24, B25, B28, B29, B30, A1, A2, B34); ADR-0046 §1–§5 (Batch 25), A1 (Batch 28); "
                "spec/proof-certification.md §9; spec/*-proof-cert-results-2026.10.04.txt and -2026.10.05.txt; "
-               "spec/premise-corrections-results-2026.10.02.txt; ADR-0053 §5 and finding 2 (Proposed); spec/lean's results "
+               "spec/premise-corrections-results-2026.10.02.txt; ADR-0053 §5 and finding 2 (Proposed; R1); spec/lean's results "
                "file; spec/RulesFloorBase.tla; spec/BreakGlass_A1.tla, "
                "spec/NonComposition_A1.tla (headers); ADR-0023 §2, §6a, A1 §6c; ADR-0026 A2 (provisional); ADR-0033 "
                "A5 to A9, A14; ADR-0034 A2 (B30); ADR-0042 §6 (B30); ADR-0030 §5 A1, A3; ADR-0047 §11; ADR-0048 §8; "
@@ -624,8 +624,6 @@ def build():
     bj = json.loads((ROOT / "spec" / "theorem-premise-binding.json").read_text(encoding="utf-8"))
     th = bj["theorems"]
     n_lean = sum(1 for t in th if t.get("proved_in") and set(t["proved_in"]) <= lean_proofs)
-    comp3 = {"AdmitImpliesFloorPermit", "FloorErrorIsDeny", "BundleRefusalHonored"}  # Admit.lean's three
-    n_comp = sum(1 for t in th if comp3 & set(t["names"]))
     y += c.heading(X0, y, "Proposed (ADR-0053 §5): a Lean route beside the proof column, and why no premise moves",
                    "amber", 22)
     y += c.para(X0, y, W, "Drafted 2026.10.05, after G10, and not ratified: nothing below is in the table yet. Counts "
@@ -635,9 +633,9 @@ def build():
         ("What the table would gain", [
             f"**{n_lean} of 43 rows** name only proof modules `spec/lean` re-encodes: their *Checked in* column gains "
             "the Lean file, \"proved in Lean in `spec/lean/TopakSpec/<M>.lean`\".",
-            f"**{n_comp} rows** of `FloorComposition` gain \"of the code's composition, in Lean\": "
-            "`AdmitImpliesFloorPermit`, `FloorErrorIsDeny`, `BundleRefusalHonored` (`mechanism/lean`). "
-            "`BundleCannotWriteFloorInputs` and `EnvelopeHolds` are about the store, outside the function.",
+            f"**`FloorComposition`'s rows** also gain \"the code's decision refines its `Decide`, in Lean\" "
+            "(`mechanism/lean`, ADR-0053 R2): its invariants hold of every behaviour in which the code decides, on "
+            "T-0045-3 at the module's size.",
             "**The floor gates' row** gains `floor/lean` for totality, non-vacuity and discrimination, on the genesis "
             "floor.",
         ], "amber"),
@@ -659,6 +657,9 @@ def build():
             "and rung.",
             "Whether the matrix should carry alternative premise sets is ADR-0053's open obligation; until then the "
             "Lean route is a *Checked in* entry and nothing else.",
+            "**And a precondition** (ADR-0053 R1): a Lean refinement for T-0045-28 would refine the re-encodings, so a "
+            "row would rest through it on T-0045-37 and the encodings in place of T-0045-28 and T-0045-31. No ADR-0033 "
+            "addendum may cite such a stage until the table can say so.",
         ], "red"),
     ]
     bw = (W - (len(b53) - 1) * bg) / len(b53)

@@ -94,9 +94,10 @@ share, the prover's habits, and a dated assessment of why they were cheap and wh
 
 ### The modules in Lean 4
 
-`lean/` (2026.10.05) re-encodes thirteen of the modules above as transition systems in Lean 4 and proves their
+`lean/` (2026.10.05) re-encodes fourteen of the modules above as transition systems in Lean 4 and proves their
 `*_proof.tla` theorems by induction on reachable states: `Seats`, `Observers`, `RunSeats`, `FloorRouting`,
-`NonComposition`, `Anchor` and `BreakGlass`, with `RulesFloorBase`; and the parameterized ones, `Coupling` for
+`NonComposition`, `Anchor` and `BreakGlass`, with `RulesFloorBase`; `FloorComposition` (2026.10.06), which
+`mechanism/lean/` proves the code's admit decision refines, step for step; and the parameterized ones, `Coupling` for
 every K, R and MaxRound, `Lease_A1` for every epoch and fence bound, `RulesFloorNV_rev5` with its cardinalities
 computed, and `Confinement` and `Confinement_A1` as one encoding under a flag, for every rung. The last three
 are the modules the certified TLAPS run does not certify (`proof-certification.md`); in Lean every step of
@@ -104,7 +105,7 @@ them is kernel-checked, and the arithmetic the TLAPS proofs hand to SMT is `omeg
 temporal step: proof-method.md §5a counts 74 LS4 obligations, "holds initially, every step keeps it, so it
 holds always", that the certified run checks with nothing; in Lean that step is an induction the kernel checks.
 What it costs is a new premise, that the Lean encoding is the TLA+ module; a Lean theorem is of the encoding,
-not of the frozen text, and `lean/TopakSpec-results-2026.10.05.txt` binds each encoding to the digest of the
+not of the frozen text, and the newest `lean/TopakSpec-results-<date>.txt` binds each encoding to the digest of the
 module it transcribes. ADR-0053 (Proposed) declares the method and proposes the Lean kernel as trusted-base row
 T-0045-37, pinned in `tools/LEAN-PIN`. Every results file ends with a kernel replay (`tools/lean-report.sh`), because
 `#print axioms` alone misses a declaration added past the kernel (`proof-method.md` §5b). `lean/README.md` has the

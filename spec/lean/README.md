@@ -1,9 +1,10 @@
 # The spec/ modules in Lean 4
 
-Thirteen TLA+ modules of `spec/`, re-encoded as transition systems in Lean 4 and their TLAPS theorems proved
+Fourteen TLA+ modules of `spec/`, re-encoded as transition systems in Lean 4 and their TLAPS theorems proved
 by induction on reachable states. The seven small finite-set modules: `Seats`, `Observers`, `RunSeats`,
 `FloorRouting`, `NonComposition`, `Anchor` and `BreakGlass`, with `RulesFloorBase` as the last two's shared
-base. And the parameterized ones: `Coupling` for every `K`, `R` and `MaxRound`; `Lease_A1` for every epoch
+base. `FloorComposition` (2026.10.06), the admit composition, which `mechanism/lean/Topak/FloorRefinement.lean`
+proves the code's decision refines. And the parameterized ones: `Coupling` for every `K`, `R` and `MaxRound`; `Lease_A1` for every epoch
 and fence bound; `RulesFloorNV_rev5`, with its cardinalities computed over the five humans; and `Confinement`
 and `Confinement_A1` as one encoding under a flag, for every rung. Each `TopakSpec/<Module>.lean` carries
 the TLA+ it transcribes beside every definition and proves what `spec/<Module>_proof.tla` proves, with the
@@ -40,6 +41,7 @@ be, since the property is R7's claim.
 | `Anchor.lean` | `FloorPreservedAlways`, `EpochMonotoneAlways` | `none`; any `m` |
 | `BreakGlass.lean` | `NeverChangesAuthority` | `none`, `R7 ∈ Active` |
 | `RulesFloorBase.lean` | `GenesisEntries`, `GenesisFloor` | the module's `ASSUME`, proved |
+| `FloorComposition.lean` | `AdmitImpliesFloorPermitAlways`, `FloorErrorIsDenyAlways`, `BundleRefusalHonoredAlways`, `BundleCannotWriteFloorInputsAlways`, `EnvelopeHoldsAlways`, `SafeAlways` | `m ∉ {M_ERR, M_OVERRIDE}`; the same; `m ∉ {M_FAILOPEN, M_OVERRIDE}`; `m ≠ M_WRITE`; `m ∉ {M_WRITE, M_ERR, M_OVERRIDE}`; `none`. Its `TypeOK` is not needed: `NONE` in the truth only makes a policy "ERR", which denies |
 | `Coupling.lean` | `UnreadBoundedAlways`, `NoAdmitWithoutLiveObserverAlways`, `CorrelatorNeverGatesAlways`, `SafeAlways` | `m ∉ {M_MARK, M_ROUNDS, M_NOCOUPLE}`; `m ≠ M_NOCOUPLE`; `m ≠ M_CORR`; `none`; every K, R, MaxRound |
 | `Lease_A1.lean` | `LeaseAuthorityMonotoneAlways`, `NoActionUnderFencedEpochAlways`, `Rung0NeverContainedAlways`, `RevokedStaysStoppedAlways`, `SafeAlways` | `m ∉ {M_RENEW, M_ROLE, M_LOWER}`; `m ≠ M_FENCE`; `m ≠ M_RUNG`; `m ≠ M_REVOKE`; `none` |
 | `RulesFloorNV_rev5.lean` | `P1Always` to `P9Always`, `SafeAlways`; `GenesisEntries`, `EntriesIndependent`, `R9IndependentUnderThreshold` | `R1 ∈ Active`; `R2`; `rev5`; `R5`; `R7`; `R2 ∧ (R1 ∨ R9)`; all entries and `rev5`; the module's three `ASSUME`s, proved |
@@ -64,7 +66,7 @@ of their branches; and `seal` renamed `seals`, since `seal` is a Lean keyword.
 ## What it rests on
 
 - **The Lean 4 kernel**, toolchain `lean-toolchain` (`leanprover/lean4:v4.33.1`, the one `tools/LEAN-PIN`
-  names). No Mathlib, no dependencies. `#print axioms`: `propext` and `Quot.sound` at most for twelve modules;
+  names). No Mathlib, no dependencies. `#print axioms`: `propext` and `Quot.sound` at most for thirteen modules;
   `NonComposition` also uses `Classical.choice`, because its `Erase` step cases on a set membership, as TLA+
   does. No `sorry`.
 - **The replay.** Every results file ends with `leanchecker --fresh`, which replays every constant the package
@@ -79,7 +81,7 @@ of their branches; and `seal` renamed `seals`, since `seal` is a Lean keyword.
 
 ## Mutation check
 
-Eighteen mutated copies of the encodings were built on 2026.10.05, each a spec mutation with its `Mut` guard
+Eighteen mutated copies of the encodings were built on 2026.10.05 (`FloorComposition`'s mutations are the code's, `mechanism/lean/README.md`), each a spec mutation with its `Mut` guard
 removed or a finite table widened. Each fails to build, in the lemma that carries the mutated definition
 into the inductive step; the theorems proved through that lemma then rest on `sorryAx`.
 

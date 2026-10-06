@@ -279,7 +279,7 @@ def build():
          "`revisions/` closed", "checkpoint manifest: 12 (G9's 11 and `architecture-description.md`)"],
         ["`spec/`", "TLA+ modules and twenty-two proof modules, run scripts, generators and checkers, the binding table, "
          "the method and certification notes, dated TLC, proof and certified-proof results, trace results; since "
-         "2026.10.05 `lean/`, thirteen modules re-encoded in Lean ([[amber|ADR-0053, Proposed]])",
+         "2026.10.05 `lean/`, fourteen modules re-encoded in Lean ([[amber|ADR-0053, Proposed]])",
          "Cited modules and proof modules frozen (successors `_A1`); results never change; `Mechanism.tla` pinned, "
          "not frozen; Lean re-encodings frozen with their modules on ADR-0053's ratification",
          "checkpoint manifest: 172; `lean/` enters the next (ADR-0053 §6)"],
@@ -289,7 +289,8 @@ def build():
          "never change", "checkpoint manifest: 146 (fourteen under `floor/proposed/`)"],
         ["`policies/`", "Rego bundle-tier policies and tests", "Reference material", "`SHA256SUMS-REF-<date>`"],
         ["`mechanism/`", "Rust reference implementation of the admit path; since 2026.10.05 `lean/`, `admit.rs` and "
-         "`clock.rs` transcribed and proved in Lean ([[amber|ADR-0053, Proposed]])", "Evidence, not the verified "
+         "`clock.rs` and the floor wrapper transcribed and proved in Lean, the decision a step of `FloorComposition` "
+         "([[amber|ADR-0053, Proposed]])", "Evidence, not the verified "
          "object; pins what it follows; the Lean transcriptions are pinned to the Rust by digest, not frozen", "`SHA256SUMS-REF-<date>` (sixteen cuts)"],
         ["`slm/`", "Small-model pre-training and the ADR-0035 lineage rehearsal", "Not a corpus record",
          "`SHA256SUMS-SLM-2026.09.28`"],
