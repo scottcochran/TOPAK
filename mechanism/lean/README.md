@@ -29,6 +29,16 @@ touches either, so they stay with the TLA+ module.
 The seven `example`s at the end are the assertions of the Rust tests in `tests/mutations.rs`, each closed by
 `rfl`: the transcription evaluates to what the tests assert.
 
+## The clock check (`Topak/Clock.lean`)
+
+`subtracting_interval_elapsed` in [clock.rs](../crates/topak-core/src/clock.rs) is the one arithmetic check the
+mechanism's clock makes (ADR-0032 §2). Transcribed with `u64` as naturals below `2^64` and `saturating_add` as a
+capped sum, and proved: where nothing saturates the check is `now + margin ≥ start + len` (`elapsed_iff`); a
+larger margin elapses whenever a smaller one does, so the margin moves expiry earlier and never later
+(`elapsed_mono_margin`, `elapsed_never_later`); the check is monotone in `now` (`elapsed_mono_now`); and with
+a margin no larger than the length, an interval has not elapsed before it starts (`not_elapsed_before_start`).
+Every proof is `omega` after unfolding. `Lease_A1.tla` abstracts time away; this is the arithmetic beneath it.
+
 ## What it rests on
 
 - **The Lean 4 kernel**, toolchain `lean-toolchain` (v4.24.0), installed by `elan`. No Mathlib, no dependencies.
@@ -62,5 +72,5 @@ lake build                                   # the proof; ~1 s
 ./results.sh > Admit-results-<date>.txt      # clean build, with the digests of admit.rs, the Lean sources and the toolchain
 ```
 
-`Admit-results-2026.10.05.txt` is the first results file. Re-run after any change to `admit.rs` and compare the
+`Admit-results-2026.10.05.txt` is the results file, regenerated when `Clock.lean` was added. Re-run after any change to `admit.rs` and compare the
 transcription with the new Rust before re-pinning the digest it prints.

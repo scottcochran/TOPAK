@@ -10,11 +10,13 @@ here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/../.." && pwd)
 d16() { shasum -a 256 "$1" | cut -c1-16; }
 rs="mechanism/crates/topak-core/src/admit.rs"
-echo "TOPAK — Lean results for admit.rs: every theorem of mechanism/lean/Topak/Admit.lean, checked by the kernel below"
-echo "Transcribes: $rs (sha256 $(d16 "$root/$rs")) · topak-node/src/mechanism.rs call site, steps 5 and 6"
-echo "Sources: Topak/Admit.lean (sha256 $(d16 "$here/Topak/Admit.lean")) · lakefile.toml (sha256 $(d16 "$here/lakefile.toml")) · lean-toolchain $(cat "$here/lean-toolchain")"
+echo "TOPAK — Lean results for admit.rs and clock.rs: every theorem of mechanism/lean/Topak/*.lean, checked by the kernel below"
+clk="mechanism/crates/topak-core/src/clock.rs"
+echo "Transcribes: $rs (sha256 $(d16 "$root/$rs")) · topak-node/src/mechanism.rs call site, steps 5 and 6 · $clk subtracting_interval_elapsed (sha256 $(d16 "$root/$clk"))"
+echo "Sources: Topak/Admit.lean (sha256 $(d16 "$here/Topak/Admit.lean")) · Topak/Clock.lean (sha256 $(d16 "$here/Topak/Clock.lean")) · lakefile.toml (sha256 $(d16 "$here/lakefile.toml")) · lean-toolchain $(cat "$here/lean-toolchain")"
 echo "Prover: $(cd "$here" && lean --version) · $(cd "$here" && lake --version | head -1) · no Mathlib, no dependencies · driver: results.sh"
-echo "Theorems: $(grep -oE '^(@\[simp\] )?theorem [A-Za-z0-9_]+' "$here/Topak/Admit.lean" | sed 's/.*theorem //' | paste -sd '|' - | sed 's/|/ · /g')"
+echo "Theorems (Admit): $(grep -oE '^(@\[simp\] )?theorem [A-Za-z0-9_]+' "$here/Topak/Admit.lean" | sed 's/.*theorem //' | paste -sd '|' - | sed 's/|/ · /g')"
+echo "Theorems (Clock): $(grep -oE '^theorem [A-Za-z0-9_]+' "$here/Topak/Clock.lean" | sed 's/theorem //' | paste -sd '|' - | sed 's/|/ · /g')"
 echo "A theorem holds of the transcription, not of the Rust; the transcription's fidelity to admit.rs is read, each definition beside the Rust it transcribes. The lift, the store and the envelope (BundleCannotWriteFloorInputs, EnvelopeHolds) are outside this function and stay with the TLA+ module."
 echo
 (cd "$here" && rm -rf .lake && lake build 2>&1 | grep -vE '^\s*$|^trace:')

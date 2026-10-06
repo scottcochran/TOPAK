@@ -94,9 +94,13 @@ share, the prover's habits, and a dated assessment of why they were cheap and wh
 
 ### The small modules in Lean 4
 
-`lean/` (2026.10.05) re-encodes seven of the modules above as transition systems in Lean 4 and proves their
+`lean/` (2026.10.05) re-encodes thirteen of the modules above as transition systems in Lean 4 and proves their
 `*_proof.tla` theorems by induction on reachable states: `Seats`, `Observers`, `RunSeats`, `FloorRouting`,
-`NonComposition`, `Anchor` and `BreakGlass`, with `RulesFloorBase`. What this adds to the TLAPS proofs is the
+`NonComposition`, `Anchor` and `BreakGlass`, with `RulesFloorBase`; and the parameterized ones, `Coupling` for
+every K, R and MaxRound, `Lease_A1` for every epoch and fence bound, `RulesFloorNV_rev5` with its cardinalities
+computed, and `Confinement` and `Confinement_A1` as one encoding under a flag, for every rung. The last three
+are the modules the certified TLAPS run does not certify (`proof-certification.md`); in Lean every step of
+them is kernel-checked, and the arithmetic the TLAPS proofs hand to SMT is `omega`. What this adds to the TLAPS proofs is the
 temporal step: proof-method.md §5a counts 74 LS4 obligations, "holds initially, every step keeps it, so it
 holds always", that the certified run checks with nothing; in Lean that step is an induction the kernel checks.
 What it costs is a new premise, that the Lean encoding is the TLA+ module; a Lean theorem is of the encoding,

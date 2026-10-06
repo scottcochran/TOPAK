@@ -103,7 +103,8 @@ anchor issuance puts the simulator's key in `verifier_keys`. What they reach is 
 - `PROVISIONAL (<tag>)` in the code marks every place a gap or assumption lives.
 - **One function is proved, not only tested.** `lean/Topak/Admit.lean` transcribes `admit.rs` into Lean 4 and proves
   `FloorComposition.tla`'s three composition properties and ADR-0030 §1's `admit ⟺ floor_permit ∧ ¬bundle_deny`
-  of the transcription; `lean/results.sh` rebuilds it and prints the results file. The transcription is read against
+  of the transcription; `lean/Topak/Clock.lean` does the same for `clock.rs`'s subtracting interval, the margin
+  moving expiry earlier and never later; `lean/results.sh` rebuilds both and prints the results file. The transcription is read against
   the Rust, not generated from it ([lean/README.md](lean/README.md)).
 - Records are **pinned, not followed silently**. `corpus-pins.sha256` holds the digest of every
   record and TLA+ module the reference follows, as it last followed them. `cargo test -p topak-core

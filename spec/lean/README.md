@@ -1,8 +1,11 @@
-# The small spec/ modules in Lean 4
+# The spec/ modules in Lean 4
 
-Seven TLA+ modules of `spec/`, re-encoded as transition systems in Lean 4 and their TLAPS theorems proved by
-induction on reachable states: `Seats`, `Observers`, `RunSeats`, `FloorRouting`, `NonComposition`, `Anchor`
-and `BreakGlass`, with `RulesFloorBase` as the last two's shared base. Each `TopakSpec/<Module>.lean` carries
+Thirteen TLA+ modules of `spec/`, re-encoded as transition systems in Lean 4 and their TLAPS theorems proved
+by induction on reachable states. The seven small finite-set modules: `Seats`, `Observers`, `RunSeats`,
+`FloorRouting`, `NonComposition`, `Anchor` and `BreakGlass`, with `RulesFloorBase` as the last two's shared
+base. And the parameterized ones: `Coupling` for every `K`, `R` and `MaxRound`; `Lease_A1` for every epoch
+and fence bound; `RulesFloorNV_rev5`, with its cardinalities computed over the five humans; and `Confinement`
+and `Confinement_A1` as one encoding under a flag, for every rung. Each `TopakSpec/<Module>.lean` carries
 the TLA+ it transcribes beside every definition and proves what `spec/<Module>_proof.tla` proves, with the
 same inductive invariants and the same hypotheses on `Mut`.
 
@@ -13,6 +16,12 @@ checked SMT proof, or by **LS4** for the temporal step of each theorem, "the inv
 step keeps it, so it holds always", which is checked by nothing. Here that step is `Prelude.invariant`,
 an induction on `Reachable`, and the kernel checks it. The Lean theorems are therefore the TLAPS theorems with
 the LS4 premise removed and a different one added: that the Lean encoding is the TLA+ module.
+
+**Three of the sixteen TLAPS modules do not certify** under the checked backends (`proof-certification.md` §5a):
+`RulesFloorNV_rev5`, where Isabelle refuses one of Zenon's scripts, and `Confinement` and `Confinement_A1`,
+where three `TypeOK` steps each are proved by Z3 alone. All three are here, every step kernel-checked. The
+arithmetic those proofs hand to SMT, and `Coupling`'s, is `omega`; `TypeOK` has no counterpart; the
+`FiniteSetTheorems` facts about cardinalities are a count over five humans.
 
 Three of the TLAPS proofs' assumptions vanish under Lean's types. `TypeOK` lemmas have no counterpart.
 `Active ⊆ AllEntries` (Anchor, BreakGlass) holds because `Active` is a set of entry names. `MaxEpoch ∈ Nat`
@@ -31,6 +40,10 @@ be, since the property is R7's claim.
 | `Anchor.lean` | `FloorPreservedAlways`, `EpochMonotoneAlways` | `none`; any `m` |
 | `BreakGlass.lean` | `NeverChangesAuthority` | `none`, `R7 ∈ Active` |
 | `RulesFloorBase.lean` | `GenesisEntries`, `GenesisFloor` | the module's `ASSUME`, proved |
+| `Coupling.lean` | `UnreadBoundedAlways`, `NoAdmitWithoutLiveObserverAlways`, `CorrelatorNeverGatesAlways`, `SafeAlways` | `m ∉ {M_MARK, M_ROUNDS, M_NOCOUPLE}`; `m ≠ M_NOCOUPLE`; `m ≠ M_CORR`; `none`; every K, R, MaxRound |
+| `Lease_A1.lean` | `LeaseAuthorityMonotoneAlways`, `NoActionUnderFencedEpochAlways`, `Rung0NeverContainedAlways`, `RevokedStaysStoppedAlways`, `SafeAlways` | `m ∉ {M_RENEW, M_ROLE, M_LOWER}`; `m ≠ M_FENCE`; `m ≠ M_RUNG`; `m ≠ M_REVOKE`; `none` |
+| `RulesFloorNV_rev5.lean` | `P1Always` to `P9Always`, `SafeAlways`; `GenesisEntries`, `EntriesIndependent`, `R9IndependentUnderThreshold` | `R1 ∈ Active`; `R2`; `rev5`; `R5`; `R7`; `R2 ∧ (R1 ∨ R9)`; all entries and `rev5`; the module's three `ASSUME`s, proved |
+| `Confinement.lean` | `ContainedMeansConfinedAlways`, `NoSilentDowngradeAlways`, `ContestedStoppedAlways`, `FreshAppraisalAlways`, `SafeAlways`, and the two modules by name | `m ∉ {M_HOST, M_HW, M_CONTESTED, M_UNBOUND, M_PROFILE}`; `m ∉ {M_DOWNGRADE, M_RENEWLOW}`; `m ≠ M_CONTESTED`; `m ≠ M_STALE`; `none`; every `Declared`, both `Evidence` clauses |
 
 Each file also carries the TLAPS module's "why the mutation must fail" lemmas where they are about the
 definitions rather than about a TLC run. Witnesses stay with TLC.
@@ -42,20 +55,25 @@ inductive type; a BOOLEAN variable is a `Prop` and `x' = (a \/ b)` is `x' ↔ a 
 condition is `if`, on a set membership it is a pair of implications; `S # {}` is `NonEmpty S`;
 `Cardinality` is the relation `HasCard`; stuttering steps are dropped. Two renamings: the TLA+ action
 `Act(s)` is `ActStep` where `Act` names the set of acts, and `Finding(o, t)` is `FindingStep` where
-`Finding` names the record.
+`Finding` names the record. The parameterized modules add: constants bundled in a `Cfg`; TLA+'s `-` on
+naturals computed in `Int`; variables only ever set to TRUE or FALSE as `Bool`; sets of humans as `Human →
+Bool` with a computable `card`; a successor state written `st' = { st with ... }`, which is the primed
+conjuncts and the `UNCHANGED` list at once; `IF`/`CASE` chains with different successors as disjunctions
+of their branches; and `seal` renamed `seals`, since `seal` is a Lean keyword.
 
 ## What it rests on
 
 - **The Lean 4 kernel**, toolchain `lean-toolchain` (v4.24.0). No Mathlib, no dependencies. `#print axioms`:
-  `propext` and `Quot.sound` at most for six modules; `NonComposition` also uses `Classical.choice`, because
-  its `Erase` step cases on a set membership, as TLA+ does. No `sorry`. Lean is not yet a trusted-base row.
+  `propext` and `Quot.sound` at most for twelve modules; `NonComposition` also uses `Classical.choice`,
+  because its `Erase` step cases on a set membership, as TLA+ does. No `sorry`. Lean is not yet a
+  trusted-base row.
 - **The encoding.** A proof here is of the Lean re-encoding, not of the frozen TLA+ text, which the TLAPS
   proofs are of. The encoding is written from the module and read against it; `derived/lean.md` names this
   as the new premise. Where the encoding could be read two ways, the file says which was taken.
 
 ## Mutation check
 
-Nine mutated copies of the encodings were built on 2026.10.05, each a spec mutation with its `Mut` guard
+Twenty mutated copies of the encodings were built on 2026.10.05, each a spec mutation with its `Mut` guard
 removed or a finite table widened. Each fails to build, in the lemma that carries the mutated definition
 into the inductive step; the theorems proved through that lemma then rest on `sorryAx`.
 
@@ -70,12 +88,21 @@ into the inductive step; the theorems proved through that lemma then rest on `so
 | NonComposition | F1 is erasable under `none` (M1 always) | `ForensicKept` (feeds `NC2Always`) |
 | BreakGlass | the envelope is ignored (M_SCOPE always) | `NextInv` (feeds `NeverChangesAuthority`) |
 | Anchor | the floor check is omitted (M_FLOOR always) | `NextFloor` (feeds `FloorPreservedAlways`) |
+| Coupling | `LiveO` ignores the watermark (M_MARK always) | `NextInvU` (feeds `UnreadBoundedAlways`) |
+| Coupling | the grant does not wait for coverage (M_ROUNDS always) | `NextInvU` |
+| Lease_A1 | a renewal may lower the rung (M_LOWER always) | `RenewRefines` (feeds `LeaseAuthorityMonotoneAlways`) |
+| Lease_A1 | the fence is not checked at an act (M_FENCE always) | `NextFenced` (feeds `NoActionUnderFencedEpochAlways`) |
+| RulesFloorNV_rev5 | the author is a counted seat (norecuse always) | `author_not_counted` (feeds `P3Always`) |
+| RulesFloorNV_rev5 | R9 accepts a threshold of 1 | `NextP9` (feeds `P9Always`), and the R9 independence witness |
+| Confinement | the lease is not bound to the attested guest, at grant and at act (M_UNBOUND) | `NextInvC` (feeds `ContainedMeansConfinedAlways`) |
+| Confinement | an Unattestable appraisal is recorded instead of refused (M_DOWNGRADE) | `NextInvD` (feeds `NoSilentDowngradeAlways`) |
+| Confinement | an appraisal survives a fence (M_STALE always) | `NextInvF` (feeds `FreshAppraisalAlways`) |
 
 ## Run it
 
 ```sh
 cd spec/lean
-lake build                                        # the proofs; ~3 s
+lake build                                        # the proofs; ~10 s
 ./results.sh > TopakSpec-results-<date>.txt       # clean build, with the digests of the TLA+ modules, the Lean sources and the toolchain
 ```
 
