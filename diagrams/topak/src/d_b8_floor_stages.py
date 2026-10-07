@@ -105,7 +105,7 @@ def build():
                ".cedarschema, the three *-gates-results-2026.10.04.txt, emergency-tests.json; floor/genesis-floor.cedar, "
                "genesis.cedarschema, genesis-values.json, genesis-tests.json, run-gates.py, "
                "genesis-gates-results-2026.10.01.txt; mechanism/crates/topak-floor/src/lib.rs (the pins); ADR-0053 R3 "
-               "(Proposed); floor/lean/TopakFloor/InForce.lean and floor/lean/TopakFloor-results-2026.10.06.txt")
+               "(B36); floor/lean/TopakFloor/InForce.lean and floor/lean/TopakFloor-results-2026.10.06.txt")
     X0, X1 = c.x0, c.x1
     y = c.y
     y += c.legend(X0, y, [
@@ -390,7 +390,7 @@ def build():
            "pinned `ethos` checker accepted against cvc5's rule signature (ADR-0030 A1); a `holds°` is one cedar decided "
            "without a solver query, by folding the authorizer term, and rests on the engine's faithfulness (T-0045-3). "
            "Every totality row in every stage is `holds°`; the `emergency` stage's are also proved in Lean under "
-           "cedar-spec's model ([[amber|ADR-0053 R3, Proposed]]; H7). A `refuted` needs no proof: it can only subtract. Toolchain: "
+           "cedar-spec's model ([[blue|ADR-0053 R3, B36]]; H7). A `refuted` needs no proof: it can only subtract. Toolchain: "
            "cedar-policy-cli 4.13.0, cvc5 1.4.0, `ethos` 8dc85c4.", 13.5, "muted")
     rx = X0 + gw + 40
     rw = X1 - rx

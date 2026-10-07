@@ -1,5 +1,5 @@
 #!/bin/bash
-# Are the Lean results in step with what they transcribe, and with the pin? (ADR-0053, Proposed.) For each Lean
+# Are the Lean results in step with what they transcribe, and with the pin? (ADR-0053.) For each Lean
 # package, the newest results file of each series names the digest of every file it transcribes (`Transcribes:` or
 # `Floor:`) and every Lean source it was built from (`Sources:`), by repository path; mechanism/lean's trace replays
 # (SeatsReplay-, CouplingReplay-results-*.txt) name their model and the Rust the traces were recorded from (`Model:`,

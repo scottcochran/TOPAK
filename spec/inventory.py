@@ -75,9 +75,18 @@ def annex_rungs(path):
     return out
 
 
+NOTE = re.compile(r"(T-0045-\d+) as `([^`]+)`")
+
+
+def notes_in(cell):
+    """A premise cell's replacements of BASE rows: "T-0045-n as `name`"."""
+    return dict(NOTE.findall(strip_struck(cell)))
+
+
 def rows_in(cell, rung, applies):
-    """The T-rows a premise cell requires at this rung."""
+    """The T-rows a premise cell requires at this rung (its replacement notes are not rows)."""
     out = []
+    cell = NOTE.sub("", cell)
     for seg in strip_struck(cell).split(";"):
         m = re.match(r"\s*at rung (\d)", seg)
         if m and int(m.group(1)) != rung:
@@ -353,6 +362,8 @@ def check(path, table_path, annex_path, overlay=None):
         for p in t["premises"]:
             if p not in binding["premises"]:
                 errors.append(f"{', '.join(t['names'])}: premise {p} has no column")
+        if notes_in(cells[4]) != t.get("replaces", {}):
+            errors.append(f"{', '.join(t['names'])}: table replaces {notes_in(cells[4])}, JSON {t.get('replaces', {})}")
     for e in errors:
         print("MISMATCH", e)
     print(f"{len(binding['theorems'])} rows, {len(binding['premises'])} non-row premises: "
@@ -396,10 +407,13 @@ def main():
     declared = decl.get("rows", {})
     print(f"Inventory for rung {rung}, {len(declared)} rows declared · from {binding}")
     for theorem, _checked, _record, _breaks, premises, params, _ref in table(binding):
-        need = BASE + rows_in(premises, rung, applies)
+        notes = notes_in(premises)
+        need = [r for r in BASE if r not in notes] + rows_in(premises, rung, applies)
         bad = [r for r in dict.fromkeys(need) if declared.get(r, "undeclared") not in HOLDS]
         verdict = "rows hold" if not bad else "void: " + ", ".join(f"{r} {declared.get(r, 'undeclared')}" for r in bad)
         print(f"- {theorem}: {verdict}")
+        if notes:
+            print(f"    derived, evaluated with the JSON: {', '.join(f'{r} as {d}' for r, d in notes.items())}")
         if params not in ("—", ""):
             print(f"    to judge: {strip_struck(params)}")
 

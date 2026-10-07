@@ -42,7 +42,8 @@ def load_table():
         if not line.startswith("| ") or line.startswith("| Theorem"):
             continue
         cells = [_clean(c.strip()) for c in line.strip()[1:-1].split(" | ")]
-        assert len(cells) == 7, line
+        if len(cells) != 7:      # the derived-premises tables below the theorem table (ADR-0053, B36)
+            continue
         rows.append(cells)
     return rows
 
@@ -50,6 +51,7 @@ def load_table():
 def t_rows(cell, proved=False):
     """Every T-0045-n named in a Row premises cell; ranges expanded; BASE expanded (with the prover if proved)."""
     out = (set(BASE) | ({PROVER} if proved else set())) if "BASE" in cell else set()
+    cell = re.sub(r"T-0045-\d+ as `[^`]+`", "", cell)   # "T-0045-29 as `invariant(M)`": a BASE row, renamed (B36)
     for m in re.finditer(r"T-0045-(\d+)(?:\s+to\s+(\d+))?", cell):
         a = int(m.group(1))
         b = int(m.group(2)) if m.group(2) else a
@@ -318,7 +320,7 @@ def model():
     for cells, meta in zip(table, META):
         match, label, group, vcls, vlab, params, cond = meta
         assert match in cells[0], (match, cells[0])
-        proved = "proved in" in cells[1]
+        proved = bool(re.search(r"proved in `[A-Za-z0-9_]+_proof\.tla`", cells[1]))   # TLAPS, not "proved in Lean"
         assert proved == (group != "Unmodelled"), (match, "proof column", cells[1])
         prem = _unstruck(cells[4] + " ; " + cells[5])
         found = {k for k, t in TOKENS.items() if re.search(t, prem)}
@@ -417,7 +419,7 @@ def build():
                "spec/theorem-premise-binding.json (2026.10.03); ADR-0045 §3, §5, Annex A, Annex B "
                "(B23, B24, B25, B28, B29, B30, A1, A2, B34); ADR-0046 §1–§5 (Batch 25), A1 (Batch 28); "
                "spec/proof-certification.md §9; spec/*-proof-cert-results-2026.10.04.txt and -2026.10.05.txt; "
-               "spec/premise-corrections-results-2026.10.02.txt; ADR-0053 §5 and finding 2 (Proposed; R1); spec/lean's results "
+               "spec/premise-corrections-results-2026.10.02.txt; ADR-0053 §5 and finding 2 (B36; R1); spec/lean's results "
                "file; spec/RulesFloorBase.tla; spec/BreakGlass_A1.tla, "
                "spec/NonComposition_A1.tla (headers); ADR-0023 §2, §6a, A1 §6c; ADR-0026 A2 (provisional); ADR-0033 "
                "A5 to A9, A14; ADR-0034 A2 (B30); ADR-0042 §6 (B30); ADR-0030 §5 A1, A3; ADR-0047 §11; ADR-0048 §8; "
@@ -617,7 +619,7 @@ def build():
         c.card(X0 + i * (bw + bg), y, bw, t, b, accent=a, h=bh, size=14)
     y += bh + 54
 
-    # ---------------------------------------------------------------- ADR-0053 (Proposed): the Lean route
+    # ---------------------------------------------------------------- ADR-0053 (B36): the Lean route
     import json
     from d_h7_lean_route import ENC
     lean_proofs = {f"{m}_proof.tla" for m, _ in ENC}
@@ -631,14 +633,16 @@ def build():
     rtx = rt.read_text(encoding="utf-8")
     import re as _re
     held = dict(_re.findall(r"=== (\S+)[^\n]*\n(?:.*\n)*?(\d+) of 43 rows hold", rtx))
-    no_ov = _re.search(r"without the overlay[^\n]*\n(\d+) of 43", rtx).group(1)
-    y += c.heading(X0, y, "Proposed (ADR-0053 §5, R7): a Lean route beside the proof column, as derived premises",
+    no_ov = next((m.group(1) for f in sorted((ROOT / "spec").glob("premise-routes-results-*.txt"))
+                  for m in [_re.search(r"without the overlay[^\n]*\n(\d+) of 43", f.read_text(encoding="utf-8"))] if m),
+                 "?")
+    y += c.heading(X0, y, "Since Batch 36 (ADR-0053 §5, R7): a Lean route beside the proof column, as derived premises",
                    "amber", 22)
-    y += c.para(X0, y, W, "Drafted 2026.10.05, after G10, and not ratified: nothing below is in the table yet. Counts "
+    y += c.para(X0, y, W, "Ratified 2026.10.06 in Batch 36: the table carries what follows. Counts "
                 "are computed from `spec/theorem-premise-binding.json` at build time against the proof modules "
                 "`spec/lean` re-encodes (H7).", 15, "muted") + 16
     b53 = [
-        ("What the table would gain", [
+        ("What the table gained", [
             f"**{n_lean} of 43 rows** name only proof modules `spec/lean` re-encodes: their *Checked in* column gains "
             "the Lean file, \"proved in Lean in `spec/lean/TopakSpec/<M>.lean`\".",
             f"**`FloorComposition`'s rows** also gain \"the code's decision refines its `Decide`, in Lean\" "
@@ -646,38 +650,36 @@ def build():
             "T-0045-3 at the module's size.",
             "**The floor gates' row** gains `floor/lean` for totality, non-vacuity and discrimination, on the genesis "
             "floor and the floor in force.",
-        ], "amber"),
+        ], "blue"),
         ("Two proofs, one derived premise (R7)", [
             "Two proofs give a disjunction: a property holds if **T-0045-31** holds, or if **T-0045-37** holds and the "
             "encoding is the module. A **derived premise** names it: `invariant(M)`, an OR of AND-routes, still "
             "monotone, so excluding a premise only voids.",
             f"`{rt.name}`, read at build time: {n_inv} `invariant(M)`, {n_chk} encodings whose faithfulness is a "
             f"`check` on the graph check, and `refines(Seats)`, T-0045-28 or the Lean stage. With T-0045-31 excluded and "
-            f"T-0045-37 trusted, **{held.get('2-lean-not-tlaps', '?')} of 43** rows hold, where the binding as it "
-            f"stands says {no_ov} (finding 13: no row named T-0045-31).",
-        ], "amber"),
-        ("The one reference verdict it changes the reason for", [
-            "Totality's `holds°` rows rest today on cedar's term folding, under T-0045-3. Proved in Lean of the "
-            "genesis floor and the floor in force (R3) under cedar-spec's model, they would rest on **T-0045-37 and "
+            f"T-0045-37 trusted, **{held.get('2-lean-not-tlaps', '?')} of 43** rows hold, where the binding before the "
+            f"merge said {no_ov} (finding 13: no row named T-0045-31).",
+        ], "blue"),
+        ("The one reference verdict whose reason changed", [
+            "Totality's `holds°` rows rested until Batch 36 on cedar's term folding, under T-0045-3. Proved in Lean of "
+            "the genesis floor and the floor in force (R3) under cedar-spec's model, they rest on **T-0045-37 and "
             "T-0045-3's own premise**, "
             "\"the Cedar engine, as faithful to the Lean model\".",
             "The verdict at the reference is unchanged: T-0045-3 is a trust root either way.",
-        ], "amber"),
-        ("Until ratification", [
-            "The overlay `spec/theorem-premise-binding-ADR-0053.json` is applied by `inventory.py --with` and merged "
-            "into the binding at ratification; the table itself still has single premise sets, and the Lean route is "
-            "a *Checked in* entry.",
-            "**R1's precondition** (ADR-0053): a stage discharged through Lean waits on (a) the table stating "
-            "alternative sets, which derived premises do once merged, and (b) each refined encoding a named premise with "
-            "a check: `Seats` and `FloorComposition` have the graph check; eleven do not.",
+        ], "blue"),
+        ("What is still open", [
+            "**R1's precondition** (ADR-0053): (a) the table states alternative sets, since the merge; (b) each refined "
+            "encoding a named premise with a check: `Seats` and `FloorComposition` have the graph check, eleven do not.",
+            "`refines(Seats)` is a route a deployment may declare, by declaring the Seats-shaped model faithful; **no "
+            "ADR-0033 addendum cites it as a stage**, and confirmation is required for it (ADR-0029 C4).",
         ], "red"),
     ]
     bw = (W - (len(b53) - 1) * bg) / len(b53)
-    bh = max(c.card(0, 0, bw, t, b, accent=a, draw=False, size=14, status="proposed" if a == "amber" else "open")
+    bh = max(c.card(0, 0, bw, t, b, accent=a, draw=False, size=14, status="accepted" if a == "blue" else "open")
              for t, b, a in b53)
     for i, (t, b, a) in enumerate(b53):
         c.card(X0 + i * (bw + bg), y, bw, t, b, accent=a, h=bh, size=14,
-               status="proposed" if a == "amber" else "open", status_extra="ADR-0053" if a == "amber" else "")
+               status="accepted" if a == "blue" else "open", status_extra="ADR-0053 · B36" if a == "blue" else "")
     y += bh + 54
 
     # ---------------------------------------------------------------- part 1: the key chains as a DAG

@@ -55,6 +55,6 @@ python3 run-gates.py genesis-gates-results-<date>.txt
 - **Invoke hermeticity** is not in the floor; it is an obligation on each allowlist entry (ADR-0022 §3).
 - **What the checker does not cover.** A `holds°` is cedar's own term folding, with no solver query to check; it
   rests on the engine's row (ADR-0045 T-0045-3). The totality rows are also proved in Lean, of this floor and of the
-  `emergency` stage in force under cedar-spec's model (`lean/`; ADR-0053, Proposed), where they rest on the kernel and
+  `emergency` stage in force under cedar-spec's model (`lean/`; ADR-0053), where they rest on the kernel and
   on T-0045-3's own premise, the engine's fidelity to that model, and no longer on cedar's folding code. The checker's rule signature (`tools/cpc/`) is trusted as written
   by cvc5's authors; a wrong rule there is the residual ADR-0045 T-0045-14 states.

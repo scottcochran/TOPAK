@@ -31,7 +31,9 @@ Lean statement carries ADR-0053's Proposed status. The files keep the family's d
 byte for byte. Amended again the same day for ADR-0053 R4: H7 and H3 draw the model of `State::apply` that refines
 `Seats`, and the replay of the reference's recorded traces through it; and for R5, the second model on it, with
 `Coupling`'s properties, and its replay; and for R6, the `Seats` and `FloorComposition` encodings checked against
-TLC's state graphs (H7); and for R7, derived premises in the premise table (G3, H7).
+TLC's state graphs (H7); and for R7, derived premises in the premise table (G3, H7). **ADR-0053 was ratified on
+2026.10.06 (Batch 36)**: the twelve diagrams that drew it as Proposed now draw it accepted, G1 counts thirty-seven
+Annex A rows with T-0045-37 in the third group, and G3 reads the merged premise binding.
 
 | Id | Diagram | What it shows |
 |---|---|---|

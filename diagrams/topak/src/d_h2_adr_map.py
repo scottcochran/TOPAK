@@ -106,8 +106,8 @@ R = {
     52: ("Break-glass is an emergency seating; the floor's exception for it is retired", "provisional",
          "C1, C3, C4", "0013, 0028, 0031, 0037, 0050", "Batch 34; rests on 0050; X1 retired on this basis"),
     53: ("A second deductive method: Lean re-encodings, code transcriptions, the floor in Cedar's model; the Lean "
-         "kernel a trusted-base row", "proposed", "", "0030, 0033, 0045, 0046",
-         "Drafted 10.05, after G10; proposes T-0045-37; dependent entries on 0030, 0032, 0033, 0045, 0046"),
+         "kernel a trusted-base row", "accepted", "C4 (refines(Seats))", "0030, 0033, 0045, 0046",
+         "Batch 36, 10.06; T-0045-37 in Annex A; dependent entries on 0030, 0032, 0033, 0037, 0039, 0045, 0046"),
 }
 
 # rows of regions: (label, accent, ncols, [ids in grid order, None for an empty slot])
@@ -309,7 +309,7 @@ def build():
         "**Reversals in effect** (ToO §8.3), all by the author alone in genesis: 0008 by 0038 (superseded); 0017's "
         "ordering-primacy clause (supersession unwritten, open item 6, as at G9); 0018's Reader scope by 0037 §3 (not "
         "superseded).",
-        "**Since G10**: [[amber|ADR-0053, Proposed]], drafted 2026.10.05, a second deductive method in Lean; it "
-        "changes no count above until it is ratified.",
+        "**Since G10**: [[blue|ADR-0053]], drafted 2026.10.05, a second deductive method in Lean, ratified "
+        "2026.10.06 in Batch 36; the counts above are G10's and do not include it.",
     ], accent="grey", size=13.5)
     return c

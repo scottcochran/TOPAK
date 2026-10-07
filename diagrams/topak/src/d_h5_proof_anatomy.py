@@ -19,7 +19,7 @@ def build():
                "when every obligation is closed by the prover's normalization, a checked proof, or LS4. None is a "
                "claim about the running reference (T-0045-28). Which modules are proved, with their counts, is H3; "
                "certification route by route is H6; each property's hypotheses are G3's \"Breaks under\" column. Section 4 "
-               "sets beside the loop the same loop for a **Lean re-encoding** (ADR-0053, **Proposed**; H7), which "
+               "sets beside the loop the same loop for a **Lean re-encoding** (ADR-0053, ratified in **Batch 36**; H7), which "
                "proves the same theorems again, of an encoding, and is kept in step the same way.",
                3200, "spec/proof-method.md §1 (its table, with the five rows of 2026.10.04), §2, §3, §5, §5a, §6 "
                      "(as revised since 7075169); spec/proof-certification.md §2, §4, §9, §10; spec/proof-cert.sh; "
@@ -34,7 +34,7 @@ def build():
                      "spec/RunCoupling_proof.tla, spec/Anchor_proof.tla; spec/proof-results.sh; spec/proof-sync.sh; "
                      "tools/tlapm; ADR-0046 §1 to §5, §7, R2, B25 and E1 (Batch 26); ADR-0045 T-0045-28, T-0045-31; "
                      "spec/RulesFloorBase.tla; ADR-0026 A1 note, A2; ADR-0046 A1, E2 (Batch 28); G8 §5; G9 §3 "
-                     "(finding 5); G10 §2.1, §2.9, §3, §5, §7 items 73, 74, 90; ToO rev 14 §11.3; ADR-0053 (Proposed) §1, §2, "
+                     "(finding 5); G10 §2.1, §2.9, §3, §5, §7 items 73, 74, 90; ToO rev 14 §11.3; ADR-0053 (B36) §1, §2, "
                      "§4; spec/proof-method.md §5b and §6 (2026.10.05); tools/LEAN-PIN, tools/install-lean.sh, "
                      "tools/lean-report.sh, tools/lean-sync.sh; spec/lean/results.sh and its results file; "
                      "spec/lean/README.md (mutation check)")
@@ -373,7 +373,7 @@ def build():
     y += sh + 56
 
     # ================================================================== 4 · the same loop, in Lean
-    y += c.heading(X0, y, "4 · The same loop, for a Lean re-encoding (ADR-0053, Proposed)", "amber", 22)
+    y += c.heading(X0, y, "4 · The same loop, for a Lean re-encoding (ADR-0053, B36)", "amber", 22)
     y += c.para(X0, y, W,
                 "A re-encoding does not extend its module: it is a second statement of it, in Lean, beside it under "
                 "`spec/lean/`, and the base module does not know it exists. So it drifts the way a proof does, when "
@@ -382,7 +382,7 @@ def build():
                 "§5b, §6).", size=15, color="muted") + 18
     tw4 = W * 0.66
     t4 = c.table(X0, y, [("", tw4 * 0.17, {"bold": True}), ("A TLAPS proof", tw4 * 0.38),
-                         ("A Lean re-encoding (ADR-0053, Proposed)", tw4 * 0.45)], [
+                         ("A Lean re-encoding (ADR-0053, B36)", tw4 * 0.45)], [
         ["Relation to the module", "`EXTENDS` it: the proof is of the frozen text itself",
          "Restates it beside the text: the theorems are of the encoding, read against the module"],
         ["What binds the result to the text", "The `Modules:` line: every module of the `EXTENDS` chain by digest",
@@ -418,6 +418,6 @@ def build():
         "found, which is why thirteen modules took a day; what TLAPS proves as `TypeOK`, Lean's types carry.",
         "**One more drift than a proof has**: an encoding can be wrong where a proof extending the text cannot. The "
         "header of each Lean file names where a reading was chosen.",
-    ], accent="amber", status="proposed", status_extra="ADR-0053", size=14)
+    ], accent="amber", status="accepted", status_extra="ADR-0053 · B36", size=14)
     y += t4
     return c

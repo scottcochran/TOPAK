@@ -109,7 +109,7 @@ temporal step: proof-method.md §5a counts 74 LS4 obligations, "holds initially,
 holds always", that the certified run checks with nothing; in Lean that step is an induction the kernel checks.
 What it costs is a new premise, that the Lean encoding is the TLA+ module; a Lean theorem is of the encoding,
 not of the frozen text, and the newest `lean/TopakSpec-results-<date>.txt` binds each encoding to the digest of the
-module it transcribes. ADR-0053 (Proposed) declares the method and proposes the Lean kernel as trusted-base row
+module it transcribes. ADR-0053 (Batch 36) declares the method and makes the Lean kernel trusted-base row
 T-0045-37, pinned in `tools/LEAN-PIN`. Every results file ends with a kernel replay (`tools/lean-report.sh`), because
 `#print axioms` alone misses a declaration added past the kernel (`proof-method.md` §5b). `lean/README.md` has the
 theorem table, the encoding conventions, and a mutation check; `lean/results.sh` regenerates the results file, byte
@@ -160,9 +160,10 @@ most expensive, each with the kind of evidence it gives.
 degeneracy parameters and declared gaps it rests on, with the reference's inventory computed in its last column. **`theorem-premise-binding.json`** is the same table as a Boolean matrix with the parameter and gap
 premises as columns; `inventory.py` evaluates a declaration against either, and `inventory.py --check` keeps the two in
 step. Since 2026.10.06 `inventory.py` also evaluates **derived premises**, a named OR of premise sets, so that a theorem
-proved twice is voided only when both routes are lost (ADR-0053 R7, Proposed). The revision ADR-0053 proposes is
-`theorem-premise-binding-ADR-0053.json`, applied with `--with` and merged at ratification; `premise-routes.sh` shows
-what it changes for five declarations (`premise-routes-results-2026.10.06.txt`).
+proved twice is voided only when both routes are lost (ADR-0053 R7). The binding has carried them since ADR-0053's
+ratification (Batch 36), which merged `theorem-premise-binding-ADR-0053.json` into it; `premise-routes.sh` shows what
+they change for five declarations (`premise-routes-results-2026.10.06b.txt`; the 2026.10.06 file is the run before
+the merge).
 
 Every `*-run.sh` and `simulate-run.sh` finds the jar at `../tools/tla2tools.jar` or `$TLA_JAR`; from `spec/` no
 export is needed. TLC writes its metadata under `/tmp/tlc_<name>`.

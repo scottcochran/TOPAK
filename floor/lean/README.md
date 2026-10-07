@@ -71,8 +71,8 @@ queries about pairs of floors (`implies`, `equivalent`), and the negative contro
   reaches, Lean's own library included, through the kernel in a fresh environment (`tools/lean-report.sh`).
   `#print axioms` alone misses a declaration added with the kernel check off; the replay refuses it
   (`spec/proof-method.md` §5b). It is the same kernel in a fresh process, not an independent checker.
-- **The row.** ADR-0053 (Proposed) declares the method and proposes the kernel and toolchain as trusted-base
-  row T-0045-37, pinned in `tools/LEAN-PIN`. Until it is ratified a Lean result is evidence no record cites.
+- **The row.** ADR-0053, ratified 2026.10.06 (Batch 36), declares the method and makes the kernel and toolchain
+  trusted-base row T-0045-37, pinned in `tools/LEAN-PIN`. A Lean result is cited by the results file ADR-0053 §4 names.
 
 ## Mutation check
 

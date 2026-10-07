@@ -217,7 +217,7 @@ doing work and is not a formality.
 | Zenon's soundness | **No longer trusted.** Its script is checked by Isabelle |
 | — | **The checker, its signature and the wrapper** are trusted in the solver's place. These are the floor's T-0045-14, and the wrapper has the test of §7 |
 | Isabelle | Still trusted, for its own proofs and for checking Zenon's |
-| **LS4** | **Still trusted.** One to three obligations per theorem: the step that turns "the invariant holds initially and every step keeps it" into "it holds always". No checker confirms it. For twelve modules a second derivation, in Lean, does that step as a kernel-checked induction (`proof-method.md` §5b; ADR-0053, Proposed); it does not change what this run certifies |
+| **LS4** | **Still trusted.** One to three obligations per theorem: the step that turns "the invariant holds initially and every step keeps it" into "it holds always". No checker confirms it. For twelve modules a second derivation, in Lean, does that step as a kernel-checked induction (`proof-method.md` §5b; ADR-0053); it does not change what this run certifies |
 | **tlapm's translation** of an obligation into an SMT query | **Still trusted**, as `cedar symcc`'s encoding of a policy question is for the floor. The checker certifies that the query is unsatisfiable. That the query says what the obligation says is the prover's |
 | **tlapm's normalization** | **Still trusted.** About two obligations in three are closed by it with no backend |
 | The prover's expansion of definitions, of `ENABLED`, and of primes | Still trusted; part of the translation |
@@ -304,6 +304,6 @@ What the first twenty modules taught.
   six obligations that fail, and would be a different certification.
 - **The three modules that do not certify** (§9). Still uncertified here. Their theorems are also proved in Lean,
   every step kernel-checked, of a re-encoding (`spec/lean/TopakSpec/RulesFloorNV_rev5.lean`,
-  `spec/lean/TopakSpec/Confinement.lean`; ADR-0053, Proposed).
+  `spec/lean/TopakSpec/Confinement.lean`; ADR-0053).
 - **The evidence is not kept.** A digest and a deterministic rerun stand in for it.
 - **This document is the drafter's**, as the wrapper, the driver and seventeen of the twenty results are.

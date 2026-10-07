@@ -1,4 +1,4 @@
-"""H7 — The Lean route (ADR-0053, Proposed): a second derivation beside the TLAPS proofs and the floor's gates, in three
+"""H7 — The Lean route (ADR-0053, B36): a second derivation beside the TLAPS proofs and the floor's gates, in three
 uses and one kernel; how a Lean result is made, replayed and kept in step; what it trusts against a certified proof;
 and the trusted-base row ADR-0053 proposes. The three Lean results files, tools/LEAN-PIN, ADR-0053's row, dependent
 entries, findings and open obligations, and the certified TLAPS results are read at build time."""
@@ -164,7 +164,7 @@ def build():
     total_thm = sum(r["nprint"] for r in res.values())
     c = Canvas(ID, "The Lean route: a second derivation, in three uses and one kernel",
                "Beside the TLAPS proofs and the floor's gates, three Lean 4 packages prove the same claims again by a "
-               "different route (ADR-0053, **Proposed**, drafted 2026.10.05). A **re-encoding** writes a TLA+ module as "
+               "different route (ADR-0053, ratified in **Batch 36**, drafted 2026.10.05). A **re-encoding** writes a TLA+ module as "
                "a Lean transition system; a **transcription** writes a function of the reference in Lean; a "
                "**statement in Cedar's model** writes the floor in cedar-spec's syntax. Each is proved by the Lean "
                "kernel, and each adds one premise that is read and not checked: that the Lean is what it claims to "
@@ -173,7 +173,7 @@ def build():
                "module, its TLAPS proof and the Rust stay canonical; nothing here is a claim about the running "
                "reference (T-0045-28).",
                3200,
-               f"decisions/ADR-0053.md (Proposed; {adr_dig}), §1–§7, Findings, Open obligations (read at build time); "
+               f"decisions/ADR-0053.md (Accepted, B36; {adr_dig}), §1–§7, Findings, Open obligations (read at build time); "
                f"the three Lean results files, read at build time: {', '.join(r['file'] for r in res.values())}; "
                f"the trace replays through the models of `apply`, read at build time: {rp_file}, {cp_file}; "
                f"the check against TLC's state graphs, read at build time: {gr_file}; "
@@ -189,10 +189,10 @@ def build():
 
     # ---- status band
     sx = X0
-    sx += c.status(sx, y, "proposed", "ADR-0053 · drafted 2026.10.05, after G10") + 14
-    c.text(sx, y + 16, "Not ratified. The kernel and toolchain are proposed as trusted-base row **T-0045-37** (§6 below); "
-                       "until then a Lean result is evidence no record cites. The packages, the results and the tooling "
-                       "are the drafter's.", 14.5, "muted")
+    sx += c.status(sx, y, "accepted", "ADR-0053 · Batch 36, 2026.10.06 · C4 for refines(Seats)") + 14
+    c.text(sx, y + 16, "Ratified 2026.10.06 at R8. The kernel and toolchain are trusted-base row **T-0045-37**, in ADR-0045's "
+                       "Annex A (§6 below); a Lean result is cited by the results files §4 names. The packages, the "
+                       "results and the tooling are the drafter's.", 14.5, "muted")
     y += 52
 
     # ================================================================ 1 · three uses
@@ -226,10 +226,10 @@ def build():
                         f"{cp_ex.get('cross-round grants', '0')} cross-round grants: "
                         f"{'[[teal|every step a model step]]' if cp_ok else '[[red|NOT ALL MATCH]]'}.")
         tops.append((pkg, use, acc, body))
-    hs = [c.card(X0 + i * (cw + 40), y, cw, f"`{p}` · {u}", b, accent=a, status="proposed", status_extra="ADR-0053",
+    hs = [c.card(X0 + i * (cw + 40), y, cw, f"`{p}` · {u}", b, accent=a, status="accepted", status_extra="ADR-0053 · B36",
                  size=13.5, draw=False) for i, (p, u, a, b) in enumerate(tops)]
     for i, (p, u, a, b) in enumerate(tops):
-        c.card(X0 + i * (cw + 40), y, cw, f"`{p}` · {u}", b, accent=a, status="proposed", status_extra="ADR-0053",
+        c.card(X0 + i * (cw + 40), y, cw, f"`{p}` · {u}", b, accent=a, status="accepted", status_extra="ADR-0053 · B36",
                size=13.5, h=max(hs))
     y += max(hs) + 18
     axs = []
@@ -347,9 +347,9 @@ def build():
             th = "the same theorems, under the flag `a1 = true`; by name, `Confinement_A1_SafeAlways`"
         elif mod == "Confinement":
             th = th.replace(" · Confinement_A1_SafeAlways", "") + " (flag `a1 = false`)"
-        trust = "the encoding, read; the kernel (T-0045-37, proposed)"
+        trust = "the encoding, read; the kernel (T-0045-37)"
         if mod in gr:
-            trust = "the encoding, read and checked against TLC's state graph (R6); the kernel (T-0045-37, proposed)"
+            trust = "the encoding, read and checked against TLC's state graph (R6); the kernel (T-0045-37)"
         if mod == "NonComposition":
             trust += "; `Classical.choice`"
         cr = "[[teal|Certified]]" if r["certified"] else f"[[red|NOT CERTIFIED]]: {r['last'][15:]}"
@@ -397,7 +397,7 @@ def build():
         ["What is proved of", "[[teal|The frozen TLA+ text itself]]",
          "[[red|An encoding of it, read]]: the premise this route adds"],
         ["The checker or kernel", "`ethos` and its signature (T-0045-14); Isabelle for Zenon's scripts",
-         "The Lean kernel (T-0045-37, proposed); the replay is the same kernel"],
+         "The Lean kernel (T-0045-37); the replay is the same kernel"],
         ["Floor package only", "—", "[[red|The compiler]], where `native_decide` evaluates"],
     ], size=14, accent="red")
     c.card(X0 + t5w + 40, y, W - t5w - 40, "Why two routes, and why the table's premises do not change", [
@@ -415,34 +415,34 @@ def build():
     y += t5 + 56
 
     # ================================================================ 6 · the row
-    y += c.heading(X0, y, "6 · The trusted-base row ADR-0053 proposes: not in ADR-0045 until ratified", "amber", 22)
+    y += c.heading(X0, y, "6 · The trusted-base row: T-0045-37, in ADR-0045's Annex A since Batch 36", "blue", 22)
     colsA = [("Id", 130), ("Component", 420), ("Layer", 110), ("Trusted for", 380), ("Rungs", 70), ("Class", 110),
              ("Failure can produce", 380), ("Identity fixed by", 400), ("Residual", W - 2000)]
-    y += c.table(X0, y, colsA, [{"cells": rowA, "accent": "amber"}], size=13.5, accent="amber") + 14
+    y += c.table(X0, y, colsA, [{"cells": rowA, "accent": "blue"}], size=13.5, accent="blue") + 14
     colsB = [("Row (Annex B)", 160), ("Instance at the reference", W * 0.5), ("Class here", 130),
              ("Note", W - 160 - W * 0.5 - 130)]
-    y += c.table(X0, y, colsB, [{"cells": rowB, "accent": "amber"}], size=13.5, accent="amber") + 14
-    y += c.para(X0, y, W, "Both rows are read from ADR-0053 §3 at build time. ADR-0045 is pinned by the reference's "
-                "drift test (`mechanism/corpus-pins.sha256`) and changes only by a History row at ratification, so "
-                "the row lands there then, with the re-pin, and not before. T-0045-31's row does not change: the TLAPS "
-                "proofs still rest on LS4 and, for three modules, on Z3.", 14, "muted") + 44
+    y += c.table(X0, y, colsB, [{"cells": rowB, "accent": "blue"}], size=13.5, accent="blue") + 14
+    y += c.para(X0, y, W, "Both rows are read from ADR-0053 §3 at build time; ADR-0045 holds the same rows since Batch 36, "
+                "by dependent entry, re-pinned in `mechanism/corpus-pins.sha256`. T-0045-31's row does not change: the "
+                "TLAPS proofs still rest on LS4 and, for three modules, on Z3.", 14, "muted") + 44
 
     # ================================================================ 7 · ratification, findings, open
     y += c.heading(X0, y, "7 · On ratification, what it found, and what is open", size=22)
     w7 = (W - 2 * 40) / 3
-    h7 = [c.card(X0, y, w7, "Dependent entries on ratification (ADR-0053 §6)", deps, accent="amber",
-                 status="proposed", size=13.5, draw=False),
+    h7 = [c.card(X0, y, w7, "Dependent entries, applied in Batch 36 (ADR-0053 §6)", deps, accent="blue",
+                 status="accepted", size=13.5, draw=False),
           c.card(X0 + w7 + 40, y, w7, "Findings (ADR-0053)", finds, accent="red", size=13.5, draw=False),
           c.card(X0 + 2 * (w7 + 40), y, w7, "Open obligations (ADR-0053)", opens, accent="red", status="open",
                  size=13.5, draw=False)]
     hh = max(h7)
-    c.card(X0, y, w7, "Dependent entries on ratification (ADR-0053 §6)", deps, accent="amber", status="proposed",
+    c.card(X0, y, w7, "Dependent entries, applied in Batch 36 (ADR-0053 §6)", deps, accent="blue", status="accepted",
            size=13.5, h=hh)
     c.card(X0 + w7 + 40, y, w7, "Findings (ADR-0053)", finds, accent="red", size=13.5, h=hh)
     c.card(X0 + 2 * (w7 + 40), y, w7, "Open obligations (ADR-0053)", opens, accent="red", status="open",
            size=13.5, h=hh)
     y += hh + 18
-    y += c.card(X0, y, W, "Ratification condition (ADR-0053 §7)", [cond], accent="amber", size=14, bullets=False) + 18
+    y += c.card(X0, y, W, "Ratification condition (ADR-0053 §7), met on 2026.10.06", [cond], accent="blue", size=14,
+                bullets=False) + 18
     mut = [
         "**Mutation checks, 2026.10.05** (each package's README): nine mutated encodings of the small modules and "
         "nine of the parameterized ones, three of the code (`M_OVERRIDE`, `M_ERR`, R4) and two of the floor (a "
@@ -451,7 +451,7 @@ def build():
     ]
     y += c.card(X0, y, W, "What must fail, and did", mut, accent="green", size=14, bullets=False) + 30
     c.legend(X0, y, [("box", "teal", "kernel-checked, or a check that ran"),
-                     ("box", "amber", "Proposed (ADR-0053)"),
+                     ("box", "amber", "the custodian's to decide"),
                      ("box", "red", "trusted unchecked, refused, or a gap"),
                      ("box", "blue", "the record, the pin, the sync"),
                      ("box", "violet", "the floor, genesis-provisional, in Cedar's model")])

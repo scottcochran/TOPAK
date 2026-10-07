@@ -258,7 +258,7 @@ different checker than it names. Neither record is edited here.
 
 ## 5b. Assessment, 2026.10.05: a second route, in Lean
 
-*ADR-0053 (Proposed) declares the method; `spec/lean/README.md`, `mechanism/lean/README.md` and
+*ADR-0053 (Batch 36) declares the method; `spec/lean/README.md`, `mechanism/lean/README.md` and
 `floor/lean/README.md` have the theorem tables and the mutation checks.*
 
 **What was done.** Thirteen of the modules above were re-encoded as transition systems in Lean 4
@@ -373,7 +373,7 @@ run. And the proof carries hypotheses (`Mut # "M_X"`, `"R7" \in Active`) that th
 written so TLC can flip each mutation, and a hypothesis is the proof's way of naming which flip breaks what.
 The cost of keeping them apart is one line per module in `proof-sync.sh` and one digest line per results file.
 
-**The Lean re-encodings follow the same rule** (§5b; ADR-0053, Proposed). `spec/lean/TopakSpec-results-<date>.txt`
+**The Lean re-encodings follow the same rule** (§5b; ADR-0053). `spec/lean/TopakSpec-results-<date>.txt`
 names on its `Transcribes:` line the digest of every TLA+ module encoded, and on its `Sources:` line the digest of
 every Lean file, as a proof results file's `Modules:` line does. `tools/lean-sync.sh` reads both and reports `IN SYNC`
 or `STALE`, for this package and for the code transcriptions (`mechanism/lean/`) and the floor (`floor/lean/`), and

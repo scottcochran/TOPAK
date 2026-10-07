@@ -119,13 +119,13 @@ def build():
                "spec/*-proof-cert-results-2026.10.04.txt and -2026.10.05.txt files, read at build time; "
                "spec/proof-method.md §5a; spec/README.md (TLAPS proofs, certified runs); ADR-0046 §1, §3 with A1, "
                "open obligations, E2, A1, B28; ADR-0045 Annex A and Annex B rows T-0045-14 and T-0045-31 (read at "
-               "build time), B24, B25, B28; ADR-0053 (Proposed) §2, §5 and spec/lean/TopakSpec-results-2026.10.05.txt; "
+               "build time), B24, B25, B28; ADR-0053 (B36) §2, §5 and spec/lean/TopakSpec-results-2026.10.05.txt; "
                "proof-certification.md §8, §12 as amended 2026.10.05; ADR-0030 §5 A1 and floor/cvc5-checked; G10 §1 (Batch 28), §2.6, §2.9, "
                "§3 (results 9; \"What these checks are\"), §5, §7 items 73, 74, §8; ToO rev 14 §7.9, §11.3")
     X0, X1 = c.x0, c.x1
     W = X1 - X0
     y = c.y
-    from d_h7_lean_route import ENC  # ADR-0053 (Proposed): the proof modules spec/lean re-encodes
+    from d_h7_lean_route import ENC  # ADR-0053 (B36): the proof modules spec/lean re-encodes
     in_lean = {m for m, _ in ENC}
 
     # ---- status band
@@ -377,7 +377,7 @@ def build():
                 zen = f"[[red|{zen}]]"
             res = ("[[teal|Certified]]" if r["certified"] else f"[[red|NOT CERTIFIED]]: {r['last'][15:]}")
             if m in in_lean:
-                res += " · [[amber|also proved in Lean]] (ADR-0053, Proposed)"
+                res += " · [[teal|also proved in Lean]] (ADR-0053, B36)"
             if m == "FloorComposition":
                 res += "; the code's decision proved a `Decide` step of it (R2)"
             cells = [f"`{m}_proof`", rec, f"**{r['n']}**", str(r["triv"]), str(r["smt"]), zen, str(r["isa"]),
@@ -435,7 +435,7 @@ def build():
         "of T-0045-31 as first written, the SMT solver's soundness included.",
         "Item 74, \"the SMT backends' proofs checked\", is discharged for nineteen of twenty-two, **by cvc5 and the "
         "`ethos` checker and not by Isabelle**, the checker it named.",
-        "**Proposed, a second route** (ADR-0053; H7): all three are also proved in Lean, every step kernel-checked, of "
+        "**A second route, since Batch 36** (ADR-0053; H7): all three are also proved in Lean, every step kernel-checked, of "
         "a re-encoding (`RulesFloorNV_rev5.lean`, `Confinement.lean` under a flag). That does not certify them; it "
         "proves the same theorems again, on the encoding.",
         ]
@@ -461,7 +461,7 @@ def build():
         ["Isabelle", "[[red|Still trusted]], for its own proofs and for checking Zenon's"],
         ["**LS4**", "[[red|Still trusted.]] One to three obligations per theorem: the step from \"holds initially and "
                     "every step keeps it\" to \"holds always\". No checker confirms it. For twelve modules a Lean "
-                    "re-encoding does that step as a kernel-checked induction ([[amber|ADR-0053, Proposed]]); it does "
+                    "re-encoding does that step as a kernel-checked induction ([[blue|ADR-0053, B36]]); it does "
                     "not change what this run certifies"],
         ["**tlapm's translation** of an obligation into an SMT query", "[[red|Still trusted]], as `cedar symcc`'s "
          "encoding is for the floor. The checker certifies that the query is unsatisfiable; that the query says what "
@@ -548,7 +548,7 @@ def build():
         "**One solver, one version.** cvc5 1.4.0 is pinned by digest because the floor pins it. A newer cvc5 may prove "
         "the six obligations that fail, and would be a different certification.",
         "**The three modules that do not certify** (section 4). Still uncertified here; also proved in Lean of a "
-        "re-encoding (ADR-0053, Proposed).",
+        "re-encoding (ADR-0053, B36).",
         "**The evidence is not kept.** A digest and a deterministic rerun stand in for it.",
         "**The prover itself**: pinned by `tools/TLAPS-PIN` (2026.10.03, G10 item 73 discharged), the full binary digest "
         "still owed; the `1.6.0-pre` tag is rebuilt upstream, so a fresh install does not yield the pinned prover.",

@@ -1,5 +1,5 @@
 #!/bin/bash
-# The build-and-check half of every Lean results file (ADR-0053, Proposed). Given a Lean package directory and its
+# The build-and-check half of every Lean results file (ADR-0053). Given a Lean package directory and its
 # root module: a clean build, whose `#print axioms` lines it prints joined and sorted so that the output regenerates
 # byte for byte; then `leanchecker --fresh <root>`, which replays every constant the root reaches, Lean's own library
 # and any dependency included, through the kernel in a fresh environment from the stored .olean files.
