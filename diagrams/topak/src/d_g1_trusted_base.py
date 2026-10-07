@@ -1,4 +1,4 @@
-"""G1 — The trusted base: the admission rule, three classes and a refusal, and all thirty-six rows (ADR-0045)."""
+"""G1 — The trusted base: the admission rule, three classes and a refusal, and all thirty-seven rows (ADR-0045)."""
 import pathlib
 import re
 
@@ -103,15 +103,16 @@ def build():
 
     c = Canvas(ID, "The trusted base: a component enters only if its failure can only subtract, or its identity is issued",
                "ADR-0045 (Accepted (genesis) 2026.10.01, Batch 22, confirmation required C2 and C4) declares the trusted "
-               "base row by row: a fixed schema, three classes and a refusal, thirty-six archetype rows in five groups "
+               "base row by row: a fixed schema, three classes and a refusal, thirty-seven archetype rows in five groups "
                "(Annex A), and the reference's own declaration (Annex B). Since ratification three rows changed class "
-               "(T-0045-27 B23, T-0045-14 B24, T-0045-24 B30 at the archetype) and six were added: T-0045-31, the TLA+ "
+               "(T-0045-27 B23, T-0045-14 B24, T-0045-24 B30 at the archetype) and seven were added: T-0045-31, the TLA+ "
                "Proof System (B25), with a certified configuration since B28; T-0045-32 to 34 for labels, handles and "
-               "the tool list (A1, B34); T-0045-35 and 36 for the operator (A2, B34, provisional with ADR-0050). "
+               "the tool list (A1, B34); T-0045-35 and 36 for the operator (A2, B34, provisional with ADR-0050); "
+               "T-0045-37, the Lean kernel and toolchain (B36, with ADR-0053). "
                "Tables below are drawn in full from the record; where the reference has moved past Annex B "
                "(G10 §2.6, item 89), the row's note says so.",
                3600, "ADR-0045 §1–§9, Findings 1–7, Annex A, Annex B, History (R1–R6, B22, B23, B24, B25, B27, B28, "
-               "B29, B30, A1, A2, B34); ADR-0046 §1–§3 (B25), A1 (B28); "
+               "B29, B30, A1, A2, B34, B36); ADR-0046 §1–§3 (B25), A1 (B28); "
                "ADR-0015 (authority "
                "changes); ADR-0023 §4a, §6a, §6b, A1 §6c (B29); ADR-0025 §1; ADR-0029 A4; ADR-0030 A1 (B24); ADR-0033 "
                "A6 (B23), A7 (B29), A8 (B31), A9 (B32), A10 to A12 and A14 (B34); ADR-0034 §5, §6, A2 (B30); "
@@ -119,7 +120,7 @@ def build():
                "(provisional); G8 §2.6; "
                "G10 §1.1, §2.3, §2.6, §2.7, §2.9, §3, §7 items 35, 56, 57, 64, 69, 73, 74, 80, 89, 90, §8; "
                "ToO rev 14 §7.9, §7.10; spec/proof-certification.md §9; spec/*-proof-cert-results; "
-               "spec/theorem-premise-binding.md (BASE paragraph; 43 rows, last revised 2026.10.02)")
+               "spec/theorem-premise-binding.md (BASE paragraph; 43 rows, revised 2026.10.06); ADR-0053 §3 (Batch 36)")
     X0, X1 = c.x0, c.x1
     y = c.y
 
@@ -294,9 +295,9 @@ def build():
     y += hh + 56
 
     # ======================================================================== Annex A in full
-    y += c.heading(X0, y, "Annex A · The archetype's trusted base: thirty-six rows in five groups (archetype version: "
+    y += c.heading(X0, y, "Annex A · The archetype's trusted base: thirty-seven rows in five groups (archetype version: "
                           "the corpus at Batch 20, 2026.09.30; T-0045-31 added by dependent entry, B25; T-0045-32 to 36 "
-                          "by A1 and A2, B34)", "blue", 21)
+                          "by A1 and A2, B34; T-0045-37 by dependent entry, B36)", "blue", 21)
     y += c.legend(X0, y, [("box", "blue", "trust root (identity issued or promoted)"),
                           ("box", "green", "delegated (failure only subtracts)"),
                           ("box", "grey", "excluded (trusted for nothing; premised theorems void)"),
@@ -311,7 +312,8 @@ def build():
                                                      "and T-0045-35, 36 (A2)",
         "Toolchain, at the Build gate": "2 · Toolchain, at the Build gate: T-0045-13 to 15",
         "The verified object's evidence": "3 · The verified object's evidence (R1): what stands between the "
-                                          "specification and a running deployment, and the tools that check it: T-0045-28 to 31",
+                                          "specification and a running deployment, and the tools that check it: T-0045-28 to 31, "
+                                          "and T-0045-37 (B36)",
         "Confinement axis (ADR-0034 §6, flattened)": "4 · Confinement axis (ADR-0034 §6, flattened): T-0045-16 to 22",
         "Tools and the cell": "5 · Tools and the cell: T-0045-23 to 27, and T-0045-32 to 34 (A1)",
     }
@@ -350,7 +352,7 @@ def build():
         rows.append({"group": group_titles[key], "accent": "blue"})
         rows.extend(grouped[key])
         nrows += sum(1 for r in grouped[key] if "cells" in r)
-    assert nrows == 36, nrows
+    assert nrows == 37, nrows
     y += c.table(X0, y, cols, rows, size=13.5, accent="blue") + 18
 
     nr = annex_a_text.split("**Not rows, and why.**")[1].split("---")[0]

@@ -1,0 +1,21 @@
+# The Lean toolchain and the Cedar model the Lean results files cite (ADR-0053, Proposed: T-0045-37). One line per
+# field, `key value`. Every lean-toolchain under mechanism/lean, spec/lean and floor/lean names `toolchain`;
+# tools/install-lean.sh installs it through elan and compares the binaries with this file; tools/lean-sync.sh compares
+# the prover every Lean results file prints, and floor/lean's lake-manifest.json, with it. The kernel is in
+# libleanshared; `lean` is a small launcher. This file is measured by the checkpoint manifests, where the toolchain
+# (about 2 GB, under ~/.elan, untracked) cannot be, as tools/TLAPS-PIN is for the TLA+ Proof System.
+toolchain leanprover/lean4:v4.33.1
+version 4.33.1
+commit 819816b2e0a3bf405af45ae5c7af2491d8f5bee6
+platform arm64-darwin
+libleanshared_sha256_16 5a23395d981dbeeb
+lean_sha256_16 1b370cfcbf44e80d
+leanchecker_sha256_16 9b9a22ecb11e8e59
+lake_sha256_16 58261a1a2fa1a362
+cedar_spec_tag v4.13.0
+cedar_spec_commit 8aa1a2a67f62d824abead35a9aef757ad3a35595
+batteries_commit 4488d40d070b9700d4d5a6aa342f0d40c31b2a2d
+pinned 2026.10.05
+# cedar-spec's tag matches the cedar-policy 4.13.0 the mechanism links (mechanism/Cargo.lock) and the cedar-policy-cli
+# 4.13.0 the floor's gate run records; its toolchain is this one. Moving either is a change every floor/lean results
+# file shows, and moving this pin is the review's record of that.

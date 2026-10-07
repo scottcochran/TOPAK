@@ -256,6 +256,88 @@ its place. Z3 is not run.
 "ethos, tlapm's encoding and LS4". G9 item 74 ("the SMT backends' proofs checked by Isabelle") is answered by a
 different checker than it names. Neither record is edited here.
 
+## 5b. Assessment, 2026.10.05: a second route, in Lean
+
+*ADR-0053 (Batch 36) declares the method; `spec/lean/README.md`, `mechanism/lean/README.md` and
+`floor/lean/README.md` have the theorem tables and the mutation checks.*
+
+**What was done.** Thirteen of the modules above were re-encoded as transition systems in Lean 4
+(`spec/lean/`), and the theorems of their twelve proof modules proved by induction on the reachable states, with the
+same inductive invariants and the same hypotheses on `Mut`. That induction is the step §5a's 74 LS4 obligations
+carry, and the Lean kernel checks it. The three modules that do not certify, `RulesFloorNV_rev5`, `Confinement` and
+`Confinement_A1`, are among the thirteen, and every step of them is kernel-checked. Beside them, `mechanism/lean/`
+proves `FloorComposition`'s three composition properties of a transcription of `admit.rs`, and `floor/lean/` proves
+the floor's totality gate under Cedar's model.
+
+**What it costs.** A premise TLAPS does not have: that the Lean is the module. A TLAPS proof extends the frozen text;
+a Lean proof is of an encoding, written beside the text and read against it. `spec/lean/TopakSpec/Prelude.lean`
+states the encoding's conventions (sets as predicates; a BOOLEAN that is only ever set as `Bool`; `IF` on a set
+membership as two implications; a successor as `{ st with … }`, which is the primed conjuncts and the `UNCHANGED`
+list at once), and each file names the places a reading was chosen.
+
+**Why it was cheap.** For the reason §5 gives for TLAPS: the invariants are inductive, or inductive with the
+strengthening the TLAPS proof already found. Every Lean proof reuses that strengthening. What TLAPS hands to SMT,
+the arithmetic of `Coupling` and the cardinalities of `RulesFloorNV_rev5`, is `omega` and a count over five humans.
+What TLAPS proves as `TypeOK` has no counterpart: Lean's types carry it, which is also why the three Z3-only steps
+of `Confinement` vanish rather than move. Thirteen modules took one working day, as the thirteen TLAPS proofs did.
+
+**2026.10.06: a first refinement.** `FloorComposition` joined the re-encodings, and `mechanism/lean/Topak/
+FloorRefinement.lean` proves the code's admit decision, `admit.rs`'s `compose` with the `topak-floor` wrapper, a
+`Decide` step of it, so the module's five invariants hold of every behaviour in which the code decides and the lift
+moves the store as the module's does (`Reachable.mono` in `Prelude.lean`). The engine is a premise there, Cedar's
+authorization rule over the module's four policies, which is T-0045-3's own; and the floor is the module's, not the
+floor in force. ADR-0053 §5 says why this is not a stage of T-0045-28's chain.
+
+**2026.10.06: a model of `apply`, and a check behind it.** `mechanism/lean/Topak/SeatsModel.lean` models the arms of
+`State::apply` that `Seats.tla` is about, every other check one oracle that can only refuse, and proves the model
+refines `Seats` at the module's constants. A model has a premise a transcription has in a stronger form, that the
+model takes every step the code takes. `mechanism/lean/seats-replay.sh` checks it on the traces the suites record:
+each recorded entry is applied with the model's own `apply`, and the result and the state after it compared with
+the reference's. Its first run failed a third of the traces, at the step after an admitted `Submit`, which ends the
+lease in the code and did not in the model. Every proof had held, because ending a lease breaks no safety
+invariant. A model checked only by reading would have been wrong and proved (ADR-0053 finding 7).
+
+**A model on a model.** `mechanism/lean/Topak/CouplingModel.lean` narrows that oracle by defining its `apply` as the
+Seats-shaped one with further checks folded into the gate. Every step is then a step of the first, by definition,
+and the first's theorems hold with no new proof (`base_reach`). The new invariants, ADR-0039 §2's, are proved
+directly by induction over the nine arms, which reuse the first model's characterisation lemmas. One lemma covers
+every arm that ends leases.
+
+**2026.10.06: an encoding checked, not only read.** An encoding written from a module and read against it can be
+too lax or too strict and still prove every invariant. A `Seats` grant on a seat that already has a live lease
+keeps both invariants. `spec/lean/graph-check.sh` checks the encoding against the module instead. TLC dumps the
+module's whole state graph, with a derived variable carrying each property's value. A mirror of the encoding, proved
+equal to its `Next`, `Init` and properties, is evaluated on every state and edge in both directions. For `Seats` and
+`FloorComposition`, whose encodings fix the module's constants, that covers every state either can reach. The idea
+is the trace replay's, turned on the specification: the model is checked against what it claims to describe.
+
+**One control, and what it showed.** `#print axioms` lists the axioms a theorem uses, and is not enough. A scratch
+module that adds `False` as a theorem with the kernel check switched off (`set_option debug.skipKernelTC true`,
+then `addDecl`) builds, and a theorem `1 = 2` derived from it reports **no axioms at all**. `leanchecker --fresh`,
+which replays every constant the package's root reaches through the kernel in a fresh environment, refuses it and
+exits 1; so does the incremental replay. Every Lean results file therefore ends with the replay
+(`tools/lean-report.sh`), and a results file without one would not count. The replay is the same kernel in a fresh
+process, not an independent checker; lean4lean would be one.
+
+**Habits of the Lean prover that cost time**, in the form of §4:
+
+- `omega` does not unfold definitions: destructure `Rounds c r` and the like before calling it.
+- `simp only [upd_same, upd_other …]` must be applied to the hypotheses as well as the goal (`at h ⊢`), or a
+  hypothesis about the old state no longer matches the new one's type. After `simp only`, `a = a` is `True`: close
+  it with `trivial`, not `rfl`.
+- A term-mode `by …` inside `⟨…, …⟩` swallows the comma after it; parenthesize it.
+- `by decide` on a proposition about a structure literal with free variables fails; `by simp` does it.
+- `seal` is a keyword; a field of that name is renamed.
+- `by_contra` and `push_neg` are Mathlib's, and the packages have no Mathlib.
+- In cedar-spec's model the kernel's `decide` cannot reduce maps and sets built by well-founded recursion; the
+  floor's closed evaluations are `native_decide`, which trusts the compiler and shows one axiom per use.
+
+**What is still trusted, for a Lean result.** The kernel and the toolchain (T-0045-37, proposed), pinned in
+`tools/LEAN-PIN`; the encoding's, transcription's or parse's fidelity, read; for the floor, the compiler where
+`native_decide` evaluates, and the engine's fidelity to the model (T-0045-3). Not LS4, not an SMT solver, not
+tlapm's translation. The TLAPS proofs are unchanged, and so is their residual: the Lean results are a second
+derivation beside them.
+
 ## 6. Keeping proofs in step with specifications
 
 A proof module extends the module it proves, so the two can drift in exactly one way: the base module changes.
@@ -290,6 +372,15 @@ digest, and adding a proof to it would make it a successor of itself. TLC runs t
 run. And the proof carries hypotheses (`Mut # "M_X"`, `"R7" \in Active`) that the module must not: the module is
 written so TLC can flip each mutation, and a hypothesis is the proof's way of naming which flip breaks what.
 The cost of keeping them apart is one line per module in `proof-sync.sh` and one digest line per results file.
+
+**The Lean re-encodings follow the same rule** (§5b; ADR-0053). `spec/lean/TopakSpec-results-<date>.txt`
+names on its `Transcribes:` line the digest of every TLA+ module encoded, and on its `Sources:` line the digest of
+every Lean file, as a proof results file's `Modules:` line does. `tools/lean-sync.sh` reads both and reports `IN SYNC`
+or `STALE`, for this package and for the code transcriptions (`mechanism/lean/`) and the floor (`floor/lean/`), and
+checks every results file's kernel against `tools/LEAN-PIN`. A successor module gets a successor encoding, a new
+Lean file beside the old one, which stays as the encoding of the frozen module; the results file is regenerated in
+the same commit by `spec/lean/results.sh`. Unlike the proof modules, an encoding is never merged into anything: it
+lives under `spec/lean/` and the base module does not know it exists.
 
 ## 7. ADR-0046, ratified 2026.10.02 (Batch 25)
 

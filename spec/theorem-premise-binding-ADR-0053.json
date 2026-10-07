@@ -1,0 +1,640 @@
+{
+ "_about": "MERGED into theorem-premise-binding.json at ADR-0053's ratification (Batch 36, 2026.10.06), and kept as the proposal ADR-0053 R7 cites; applying it again is refused, since every name it defines is now in the binding. As proposed: ADR-0053 R7 (Proposed): the revision of theorem-premise-binding.json that §5 and §6 propose, kept apart until ratification and applied by `inventory.py ... --with` this file. It adds derived premises, each an OR of routes (option 2 of the premise-table question): `invariant(M)` for every proof module, TLAPS or Lean, and `refines(Seats)`, T-0045-28 or the Lean stage; premise columns for each encoding's faithfulness, two of them `check`s on the graph check's results, and for the Seats-shaped model's; and each proved row's replacement of BASE's T-0045-29 by its `invariant(M)`, the two Seats rows' of T-0045-28 by `refines(Seats)`. At ratification it is merged into the binding and the table gains the definitions.",
+ "date": "2026.10.06",
+ "revises": "spec/theorem-premise-binding.json",
+ "premises": {
+  "enc-faithful(Seats)": {
+   "kind": "check",
+   "text": "the Lean encoding of Seats.tla is the module: TLC's state graph under every Mut and the encoding reach the same states by the same steps, with the same property values",
+   "record": "ADR-0053 §5 R1(b), R6",
+   "check": {
+    "results": "spec/lean/GraphCheck-results-*.txt",
+    "lines": "^Seats Mut=",
+    "want": "| MATCH"
+   }
+  },
+  "enc-faithful(Observers)": {
+   "kind": "condition",
+   "text": "the Lean encoding of Observers.tla (spec/lean/TopakSpec/Observers.lean) is the module, read against it by someone other than the drafter; no graph check yet",
+   "record": "ADR-0053 §5 R1(b)"
+  },
+  "enc-faithful(RunSeats)": {
+   "kind": "condition",
+   "text": "the Lean encoding of RunSeats.tla (spec/lean/TopakSpec/RunSeats.lean) is the module, read against it by someone other than the drafter; no graph check yet",
+   "record": "ADR-0053 §5 R1(b)"
+  },
+  "enc-faithful(FloorRouting)": {
+   "kind": "condition",
+   "text": "the Lean encoding of FloorRouting.tla (spec/lean/TopakSpec/FloorRouting.lean) is the module, read against it by someone other than the drafter; no graph check yet",
+   "record": "ADR-0053 §5 R1(b)"
+  },
+  "enc-faithful(FloorComposition)": {
+   "kind": "check",
+   "text": "the Lean encoding of FloorComposition.tla is the module: TLC's state graph under every Mut and the encoding reach the same states by the same steps, with the same property values",
+   "record": "ADR-0053 §5 R1(b), R6",
+   "check": {
+    "results": "spec/lean/GraphCheck-results-*.txt",
+    "lines": "^FloorComposition Mut=",
+    "want": "| MATCH"
+   }
+  },
+  "enc-faithful(NonComposition)": {
+   "kind": "condition",
+   "text": "the Lean encoding of NonComposition.tla (spec/lean/TopakSpec/NonComposition.lean) is the module, read against it by someone other than the drafter; no graph check yet",
+   "record": "ADR-0053 §5 R1(b)"
+  },
+  "enc-faithful(Anchor)": {
+   "kind": "condition",
+   "text": "the Lean encoding of Anchor.tla (spec/lean/TopakSpec/Anchor.lean) is the module, read against it by someone other than the drafter; no graph check yet",
+   "record": "ADR-0053 §5 R1(b)"
+  },
+  "enc-faithful(BreakGlass)": {
+   "kind": "condition",
+   "text": "the Lean encoding of BreakGlass.tla (spec/lean/TopakSpec/BreakGlass.lean) is the module, read against it by someone other than the drafter; no graph check yet",
+   "record": "ADR-0053 §5 R1(b)"
+  },
+  "enc-faithful(Coupling)": {
+   "kind": "condition",
+   "text": "the Lean encoding of Coupling.tla (spec/lean/TopakSpec/Coupling.lean) is the module, read against it by someone other than the drafter; no graph check yet",
+   "record": "ADR-0053 §5 R1(b)"
+  },
+  "enc-faithful(Lease_A1)": {
+   "kind": "condition",
+   "text": "the Lean encoding of Lease_A1.tla (spec/lean/TopakSpec/Lease_A1.lean) is the module, read against it by someone other than the drafter; no graph check yet",
+   "record": "ADR-0053 §5 R1(b)"
+  },
+  "enc-faithful(RulesFloorNV_rev5)": {
+   "kind": "condition",
+   "text": "the Lean encoding of RulesFloorNV_rev5.tla (spec/lean/TopakSpec/RulesFloorNV_rev5.lean) is the module, read against it by someone other than the drafter; no graph check yet",
+   "record": "ADR-0053 §5 R1(b)"
+  },
+  "enc-faithful(Confinement)": {
+   "kind": "condition",
+   "text": "the Lean encoding of Confinement.tla (spec/lean/TopakSpec/Confinement.lean) is the module, read against it by someone other than the drafter; no graph check yet",
+   "record": "ADR-0053 §5 R1(b)"
+  },
+  "enc-faithful(Confinement_A1)": {
+   "kind": "condition",
+   "text": "the Lean encoding of Confinement_A1.tla (spec/lean/TopakSpec/Confinement.lean) is the module, read against it by someone other than the drafter; no graph check yet",
+   "record": "ADR-0053 §5 R1(b)"
+  },
+  "model-faithful(apply/Seats)": {
+   "kind": "condition",
+   "text": "the Seats-shaped model of State::apply (mechanism/lean/Topak/SeatsModel.lean) takes every step the code takes: each arm read against state.rs, every check it leaves out one oracle that can only refuse, and the log's indices increasing; its trace replay is evidence, a test over the suites' traces",
+   "record": "ADR-0053 §1, §5, R4",
+   "evidence": "mechanism/lean/SeatsReplay-results-*.txt"
+  }
+ },
+ "derived": {
+  "invariant(Lease_A1)": {
+   "any_of": [
+    [
+     "T-0045-31"
+    ],
+    [
+     "T-0045-37",
+     "enc-faithful(Lease_A1)"
+    ]
+   ],
+   "text": "Lease_A1_proof.tla's invariants hold for every constant its assumptions admit: proved by TLAPS, or proved in Lean of an encoding that is the module",
+   "record": "ADR-0046; ADR-0053 §5 R1, R7",
+   "corrects": "the table's BASE paragraph: a proved invariant rests on T-0045-31 in place of T-0045-29 (ADR-0046); the JSON carried T-0045-29 for every row and T-0045-31 for none (ADR-0053 finding 13)"
+  },
+  "invariant(FloorComposition)": {
+   "any_of": [
+    [
+     "T-0045-31"
+    ],
+    [
+     "T-0045-37",
+     "enc-faithful(FloorComposition)"
+    ]
+   ],
+   "text": "FloorComposition_proof.tla's invariants hold for every constant its assumptions admit: proved by TLAPS, or proved in Lean of an encoding that is the module",
+   "record": "ADR-0046; ADR-0053 §5 R1, R7",
+   "corrects": "the table's BASE paragraph: a proved invariant rests on T-0045-31 in place of T-0045-29 (ADR-0046); the JSON carried T-0045-29 for every row and T-0045-31 for none (ADR-0053 finding 13)"
+  },
+  "invariant(FloorRouting)": {
+   "any_of": [
+    [
+     "T-0045-31"
+    ],
+    [
+     "T-0045-37",
+     "enc-faithful(FloorRouting)"
+    ]
+   ],
+   "text": "FloorRouting_proof.tla's invariants hold for every constant its assumptions admit: proved by TLAPS, or proved in Lean of an encoding that is the module",
+   "record": "ADR-0046; ADR-0053 §5 R1, R7",
+   "corrects": "the table's BASE paragraph: a proved invariant rests on T-0045-31 in place of T-0045-29 (ADR-0046); the JSON carried T-0045-29 for every row and T-0045-31 for none (ADR-0053 finding 13)"
+  },
+  "invariant(NonComposition)": {
+   "any_of": [
+    [
+     "T-0045-31"
+    ],
+    [
+     "T-0045-37",
+     "enc-faithful(NonComposition)"
+    ]
+   ],
+   "text": "NonComposition_proof.tla's invariants hold for every constant its assumptions admit: proved by TLAPS, or proved in Lean of an encoding that is the module",
+   "record": "ADR-0046; ADR-0053 §5 R1, R7",
+   "corrects": "the table's BASE paragraph: a proved invariant rests on T-0045-31 in place of T-0045-29 (ADR-0046); the JSON carried T-0045-29 for every row and T-0045-31 for none (ADR-0053 finding 13)"
+  },
+  "invariant(RulesFloorNV_rev5)": {
+   "any_of": [
+    [
+     "T-0045-31"
+    ],
+    [
+     "T-0045-37",
+     "enc-faithful(RulesFloorNV_rev5)"
+    ]
+   ],
+   "text": "RulesFloorNV_rev5_proof.tla's invariants hold for every constant its assumptions admit: proved by TLAPS, or proved in Lean of an encoding that is the module",
+   "record": "ADR-0046; ADR-0053 §5 R1, R7",
+   "corrects": "the table's BASE paragraph: a proved invariant rests on T-0045-31 in place of T-0045-29 (ADR-0046); the JSON carried T-0045-29 for every row and T-0045-31 for none (ADR-0053 finding 13)"
+  },
+  "invariant(Anchor)": {
+   "any_of": [
+    [
+     "T-0045-31"
+    ],
+    [
+     "T-0045-37",
+     "enc-faithful(Anchor)"
+    ]
+   ],
+   "text": "Anchor_proof.tla's invariants hold for every constant its assumptions admit: proved by TLAPS, or proved in Lean of an encoding that is the module",
+   "record": "ADR-0046; ADR-0053 §5 R1, R7",
+   "corrects": "the table's BASE paragraph: a proved invariant rests on T-0045-31 in place of T-0045-29 (ADR-0046); the JSON carried T-0045-29 for every row and T-0045-31 for none (ADR-0053 finding 13)"
+  },
+  "invariant(BreakGlass)": {
+   "any_of": [
+    [
+     "T-0045-31"
+    ],
+    [
+     "T-0045-37",
+     "enc-faithful(BreakGlass)"
+    ]
+   ],
+   "text": "BreakGlass_proof.tla's invariants hold for every constant its assumptions admit: proved by TLAPS, or proved in Lean of an encoding that is the module",
+   "record": "ADR-0046; ADR-0053 §5 R1, R7",
+   "corrects": "the table's BASE paragraph: a proved invariant rests on T-0045-31 in place of T-0045-29 (ADR-0046); the JSON carried T-0045-29 for every row and T-0045-31 for none (ADR-0053 finding 13)"
+  },
+  "invariant(Confinement)": {
+   "any_of": [
+    [
+     "T-0045-31"
+    ],
+    [
+     "T-0045-37",
+     "enc-faithful(Confinement)"
+    ]
+   ],
+   "text": "Confinement_proof.tla's invariants hold for every constant its assumptions admit: proved by TLAPS, or proved in Lean of an encoding that is the module",
+   "record": "ADR-0046; ADR-0053 §5 R1, R7",
+   "corrects": "the table's BASE paragraph: a proved invariant rests on T-0045-31 in place of T-0045-29 (ADR-0046); the JSON carried T-0045-29 for every row and T-0045-31 for none (ADR-0053 finding 13)"
+  },
+  "invariant(Confinement_A1)": {
+   "any_of": [
+    [
+     "T-0045-31"
+    ],
+    [
+     "T-0045-37",
+     "enc-faithful(Confinement_A1)"
+    ]
+   ],
+   "text": "Confinement_A1_proof.tla's invariants hold for every constant its assumptions admit: proved by TLAPS, or proved in Lean of an encoding that is the module",
+   "record": "ADR-0046; ADR-0053 §5 R1, R7",
+   "corrects": "the table's BASE paragraph: a proved invariant rests on T-0045-31 in place of T-0045-29 (ADR-0046); the JSON carried T-0045-29 for every row and T-0045-31 for none (ADR-0053 finding 13)"
+  },
+  "invariant(RunConfinement)": {
+   "any_of": [
+    [
+     "T-0045-31"
+    ]
+   ],
+   "text": "RunConfinement_proof.tla's invariants hold for every constant its assumptions admit: proved by TLAPS; no Lean encoding yet",
+   "record": "ADR-0046; ADR-0053 §5 R1, R7",
+   "corrects": "the table's BASE paragraph: a proved invariant rests on T-0045-31 in place of T-0045-29 (ADR-0046); the JSON carried T-0045-29 for every row and T-0045-31 for none (ADR-0053 finding 13)"
+  },
+  "invariant(Seats)": {
+   "any_of": [
+    [
+     "T-0045-31"
+    ],
+    [
+     "T-0045-37",
+     "enc-faithful(Seats)"
+    ]
+   ],
+   "text": "Seats_proof.tla's invariants hold for every constant its assumptions admit: proved by TLAPS, or proved in Lean of an encoding that is the module",
+   "record": "ADR-0046; ADR-0053 §5 R1, R7",
+   "corrects": "the table's BASE paragraph: a proved invariant rests on T-0045-31 in place of T-0045-29 (ADR-0046); the JSON carried T-0045-29 for every row and T-0045-31 for none (ADR-0053 finding 13)"
+  },
+  "invariant(Observers)": {
+   "any_of": [
+    [
+     "T-0045-31"
+    ],
+    [
+     "T-0045-37",
+     "enc-faithful(Observers)"
+    ]
+   ],
+   "text": "Observers_proof.tla's invariants hold for every constant its assumptions admit: proved by TLAPS, or proved in Lean of an encoding that is the module",
+   "record": "ADR-0046; ADR-0053 §5 R1, R7",
+   "corrects": "the table's BASE paragraph: a proved invariant rests on T-0045-31 in place of T-0045-29 (ADR-0046); the JSON carried T-0045-29 for every row and T-0045-31 for none (ADR-0053 finding 13)"
+  },
+  "invariant(Coupling)": {
+   "any_of": [
+    [
+     "T-0045-31"
+    ],
+    [
+     "T-0045-37",
+     "enc-faithful(Coupling)"
+    ]
+   ],
+   "text": "Coupling_proof.tla's invariants hold for every constant its assumptions admit: proved by TLAPS, or proved in Lean of an encoding that is the module",
+   "record": "ADR-0046; ADR-0053 §5 R1, R7",
+   "corrects": "the table's BASE paragraph: a proved invariant rests on T-0045-31 in place of T-0045-29 (ADR-0046); the JSON carried T-0045-29 for every row and T-0045-31 for none (ADR-0053 finding 13)"
+  },
+  "invariant(RunCoupling)": {
+   "any_of": [
+    [
+     "T-0045-31"
+    ]
+   ],
+   "text": "RunCoupling_proof.tla's invariants hold for every constant its assumptions admit: proved by TLAPS; no Lean encoding yet",
+   "record": "ADR-0046; ADR-0053 §5 R1, R7",
+   "corrects": "the table's BASE paragraph: a proved invariant rests on T-0045-31 in place of T-0045-29 (ADR-0046); the JSON carried T-0045-29 for every row and T-0045-31 for none (ADR-0053 finding 13)"
+  },
+  "invariant(RunSeats)": {
+   "any_of": [
+    [
+     "T-0045-31"
+    ],
+    [
+     "T-0045-37",
+     "enc-faithful(RunSeats)"
+    ]
+   ],
+   "text": "RunSeats_proof.tla's invariants hold for every constant its assumptions admit: proved by TLAPS, or proved in Lean of an encoding that is the module",
+   "record": "ADR-0046; ADR-0053 §5 R1, R7",
+   "corrects": "the table's BASE paragraph: a proved invariant rests on T-0045-31 in place of T-0045-29 (ADR-0046); the JSON carried T-0045-29 for every row and T-0045-31 for none (ADR-0053 finding 13)"
+  },
+  "invariant(FloorComposition, FloorRouting)": {
+   "any_of": [
+    [
+     "invariant(FloorComposition)",
+     "invariant(FloorRouting)"
+    ]
+   ],
+   "text": "the row's theorems are proved in FloorComposition_proof.tla and in FloorRouting_proof.tla; both proofs carry it",
+   "record": "ADR-0053 R7",
+   "corrects": "the table's BASE paragraph: a proved invariant rests on T-0045-31 in place of T-0045-29 (ADR-0046); the JSON carried T-0045-29 for every row and T-0045-31 for none (ADR-0053 finding 13)"
+  },
+  "invariant(Confinement, Confinement_A1)": {
+   "any_of": [
+    [
+     "invariant(Confinement)",
+     "invariant(Confinement_A1)"
+    ]
+   ],
+   "text": "the row's theorems are proved in Confinement_proof.tla and in Confinement_A1_proof.tla; both proofs carry it",
+   "record": "ADR-0053 R7",
+   "corrects": "the table's BASE paragraph: a proved invariant rests on T-0045-31 in place of T-0045-29 (ADR-0046); the JSON carried T-0045-29 for every row and T-0045-31 for none (ADR-0053 finding 13)"
+  },
+  "refines(Seats)": {
+   "any_of": [
+    [
+     "T-0045-28"
+    ],
+    [
+     "T-0045-37",
+     "enc-faithful(Seats)",
+     "model-faithful(apply/Seats)"
+    ]
+   ],
+   "text": "the running code keeps Seats.tla's invariants: T-0045-28 as stated, or the Seats-shaped model of apply refining the module's encoding (model_refines_seats), proved in Lean, with the encoding and the model faithful",
+   "record": "ADR-0045 T-0045-28; ADR-0053 §5 R1, R4, R7"
+  }
+ },
+ "theorems": [
+  {
+   "names": [
+    "LeaseAuthorityMonotone"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(Lease_A1)"
+   }
+  },
+  {
+   "names": [
+    "NoActionUnderFencedEpoch"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(Lease_A1)"
+   }
+  },
+  {
+   "names": [
+    "Rung0NeverContained"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(Lease_A1)"
+   }
+  },
+  {
+   "names": [
+    "RevokedStaysStopped"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(Lease_A1)"
+   }
+  },
+  {
+   "names": [
+    "AdmitImpliesFloorPermit"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(FloorComposition)"
+   }
+  },
+  {
+   "names": [
+    "FloorErrorIsDeny"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(FloorComposition)"
+   }
+  },
+  {
+   "names": [
+    "BundleRefusalHonored"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(FloorComposition)"
+   }
+  },
+  {
+   "names": [
+    "BundleCannotWriteFloorInputs"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(FloorComposition)"
+   }
+  },
+  {
+   "names": [
+    "EnvelopeHolds",
+    "FloorNeverVacuous"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(FloorComposition, FloorRouting)"
+   }
+  },
+  {
+   "names": [
+    "NoWideningWithoutIssuance"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(FloorRouting)"
+   }
+  },
+  {
+   "names": [
+    "NC1",
+    "NC2"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(NonComposition)"
+   }
+  },
+  {
+   "names": [
+    "P1_Unanimity"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(RulesFloorNV_rev5)"
+   }
+  },
+  {
+   "names": [
+    "P2_TwoSeatsCounted"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(RulesFloorNV_rev5)"
+   }
+  },
+  {
+   "names": [
+    "P3_AuthorNotCounted"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(RulesFloorNV_rev5)"
+   }
+  },
+  {
+   "names": [
+    "P5_AnchorNotApprover"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(RulesFloorNV_rev5)"
+   }
+  },
+  {
+   "names": [
+    "P7_BGNoAuthority"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(RulesFloorNV_rev5)"
+   }
+  },
+  {
+   "names": [
+    "P9_NoSoloGrant"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(RulesFloorNV_rev5)"
+   }
+  },
+  {
+   "names": [
+    "FloorPreserved"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(Anchor)"
+   }
+  },
+  {
+   "names": [
+    "BreakGlassNeverChangesAuthority"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(BreakGlass)"
+   }
+  },
+  {
+   "names": [
+    "ContainedMeansConfined"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(Confinement, Confinement_A1)"
+   }
+  },
+  {
+   "names": [
+    "NoSilentDowngrade"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(Confinement, Confinement_A1)"
+   }
+  },
+  {
+   "names": [
+    "ContestedStopped"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(Confinement, Confinement_A1)"
+   }
+  },
+  {
+   "names": [
+    "FreshAppraisal"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(Confinement, Confinement_A1)"
+   }
+  },
+  {
+   "names": [
+    "EffectsOnDeclaredChannels",
+    "ContainedEffectsUseHeldTools"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(RunConfinement)"
+   }
+  },
+  {
+   "names": [
+    "OnlyThinkersAuthor"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(Seats)",
+    "T-0045-28": "refines(Seats)"
+   }
+  },
+  {
+   "names": [
+    "OneSeatPerPrincipal"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(Seats)",
+    "T-0045-28": "refines(Seats)"
+   }
+  },
+  {
+   "names": [
+    "DenyByAnyOf"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(Observers)"
+   }
+  },
+  {
+   "names": [
+    "ReachIsBounded"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(Observers)"
+   }
+  },
+  {
+   "names": [
+    "NoAdmitWithoutLiveObserver"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(Coupling)"
+   }
+  },
+  {
+   "names": [
+    "UnreadBounded"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(Coupling)"
+   }
+  },
+  {
+   "names": [
+    "CorrelatorNeverGates"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(Coupling)"
+   }
+  },
+  {
+   "names": [
+    "UnreadEffectsBounded"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(RunCoupling)"
+   }
+  },
+  {
+   "names": [
+    "ConsultNeverCoupled"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(RunCoupling)"
+   }
+  },
+  {
+   "names": [
+    "SealCountsEffects"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(RunCoupling)"
+   }
+  },
+  {
+   "names": [
+    "RoundBoundCountsAll"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(RunCoupling)"
+   }
+  },
+  {
+   "names": [
+    "NoEffectWithoutLiveObserver"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(RunCoupling)"
+   }
+  },
+  {
+   "names": [
+    "OnlyThinkersActuate",
+    "ObserversConsultAndReport"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(RunSeats)"
+   }
+  },
+  {
+   "names": [
+    "NoNameCrossesDomains"
+   ],
+   "replaces": {
+    "T-0045-29": "invariant(RunSeats)"
+   }
+  }
+ ]
+}

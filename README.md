@@ -36,7 +36,7 @@ deployable system.
 | [`derived/`](derived/) | Dated, frozen analyses, reviews and assessments ([index](derived/README.md)) |
 | [`manifests/`](manifests/) | Digest manifests for checkpoint, reference and rehearsal cuts, with an index of what each measures ([README](manifests/README.md)) |
 | [`process/`](process/) | The genesis cleanup's process logs ([README](process/README.md)) |
-| [`tools/`](tools/) | The TLC jar and wrappers, the TLAPS wrapper, the installers, and the manifest and reference checkers |
+| [`tools/`](tools/) | The TLC jar and wrappers, the TLAPS wrapper and pin, the Lean pin, report and sync, the installers, and the manifest and reference checkers |
 | [`diagrams/`](diagrams/) | Diagrams and their generators |
 
 ## Running things
@@ -45,6 +45,15 @@ deployable system.
   module has a `*-run.sh` in `spec/` ([README](spec/README.md)).
 - **Proofs:** `tools/tlapm` wraps the TLA+ Proof System, which `tools/install-tlaps.sh` installs beside it (1.9 GB,
   not tracked); `spec/proof-results.sh` checks a `spec/*_proof.tla` module and prints its results file.
+- **Lean:** `tools/install-lean.sh` installs the toolchain `tools/LEAN-PIN` names, through elan (not tracked).
+  Three packages prove in Lean what the TLAPS proofs and the gates claim, by a second route (ADR-0053, ratified in Batch 36).
+  `spec/lean/` re-encodes fourteen modules, and checks the `Seats` and `FloorComposition` encodings against TLC's
+  state graphs. `mechanism/lean/` transcribes `admit.rs`, `clock.rs` and the floor wrapper and proves the admit
+  decision a step of `FloorComposition`. It also models `State::apply`'s seat and lease arms and proves that model
+  refines `Seats`. It proves `Coupling`'s properties of a second model built on the first, and replays the
+  reference's recorded traces through both. `floor/lean/` states the floor in Cedar's verified model. Each has a `results.sh`;
+  `tools/lean-sync.sh` checks every Lean results file against the tree and the pin, as `spec/proof-sync.sh` does for
+  the proofs.
 - **Verifying a cut:** `tools/verify-manifest.sh --all` checks every manifest at the commit it measured;
   `tools/check-refs.py` checks every path a document cites.
 - **Floor, mechanism, SLM:** see the README in each directory.

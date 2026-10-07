@@ -44,6 +44,10 @@ TOPAK_TRACE_DIR=/tmp/t cargo test --release -p topak-core --test mutations   # r
 ../spec/mechanism-trace-run.sh /tmp/t/*.jsonl                                 # … replay it through spec/Mechanism.tla,
                                                                              # and read each state against ConfinementRefinement.tla
 ../spec/mechanism-trace-results.sh > ../spec/Mechanism-trace-results-<date>.txt  # every suite, one results file
+(cd lean && ./results.sh > Admit-results-<date>.txt)   # Lean: admit.rs, clock.rs, the floor wrapper and a model of apply, proved, with the kernel replay (lean/README.md)
+(cd lean && ./seats-replay.sh > SeatsReplay-results-<date>.txt)   # every suite traced and replayed through the Lean model of apply
+(cd lean && ./coupling-replay.sh > CouplingReplay-results-<date>.txt)   # … and through the Coupling-shaped model on it
+../tools/lean-sync.sh                      # STALE when a file the Lean results transcribe, model or replay moved
 scripts/dev-init.sh                        # 3 replicas, in-memory transport, WASM bundle only
 python3 scripts/smoke.py                   # live: processes, TCP, operator CLI, MCP client
 
@@ -100,6 +104,21 @@ anchor issuance puts the simulator's key in `verifier_keys`. What they reach is 
 - The bundle entrypoint is `policies/bundle.rego` (`data.topak.bundle.allow`), which composes
   `policies/tool_invocation.rego`.
 - `PROVISIONAL (<tag>)` in the code marks every place a gap or assumption lives.
+- **One function is proved, not only tested.** `lean/Topak/Admit.lean` transcribes `admit.rs` into Lean 4 and proves
+  `FloorComposition.tla`'s three composition properties and ADR-0030 §1's `admit ⟺ floor_permit ∧ ¬bundle_deny`
+  of the transcription; `lean/Topak/Clock.lean` does the same for `clock.rs`'s subtracting interval, the margin
+  moving expiry earlier and never later; `lean/results.sh` rebuilds both and prints the results file. The transcription is read against
+  the Rust, not generated from it ([lean/README.md](lean/README.md)).
+- **`apply`'s seat rules are proved of a model and checked against the traces.** `lean/Topak/SeatsModel.lean`
+  models the grant, renewal, admit, end-of-round, revocation, fence and issuance arms of `State::apply` on the
+  leases, the live index and the seat kinds, every other check an oracle that can only refuse. It proves ADR-0037
+  §1 and §4 of the model at any number of seats, and the model a refinement of `Seats.tla` at that module's
+  constants. `lean/seats-replay.sh` runs every recorded trace through the model and compares each step with the
+  reference's; on 2026.10.06 all 82 traces matched. Evidence, not a stage of T-0045-28 (ADR-0053 R4).
+  `lean/Topak/CouplingModel.lean` narrows that oracle with ADR-0039's checks, the cross-round condition, the round
+  bound, heartbeats and coupling, and proves at any number of seats that a Run Thinker's live round has at most `K`
+  effects unread by some cell Observer and its last round was read to the seal; `lean/coupling-replay.sh` replays
+  every trace through it, sequence numbers, watermarks and seals compared (ADR-0053 R5).
 - Records are **pinned, not followed silently**. `corpus-pins.sha256` holds the digest of every
   record and TLA+ module the reference follows, as it last followed them. `cargo test -p topak-core
   --test drift` fails when a pinned file changes, or when the code cites a record that is not

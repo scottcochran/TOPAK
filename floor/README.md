@@ -19,6 +19,7 @@
 | `genesis-gates-results-2026.09.29-adr0041.txt` | The gate run after ADR-0040 and ADR-0041 (both Proposed): `Consult`, `Actuate` and `Report` in S, `runRoot` in RunCtx, R4-consult-pinned added, R3 over effects only. All gates pass; 62/62 cases; two controls added. **These are the digests the mechanism pins** |
 | `genesis-gates-results-2026.09.30.txt` | The gate run after ADR-0031 A2 (Pending): `persona.T_persona_ms` joins the values file, so its digest moves. Floor and schema unchanged; every gate result identical to the 09.29-adr0041 run |
 | `genesis-gates-results-2026.10.01.txt` | The first **proof-carrying** run (ADR-0030 A1, Batch 24). Floor, schema and values unchanged from 09.30. 81 cedar calls, 56 solver queries: 4 `unsat` each with a proof the checker accepted (`holds✓`), 49 `sat`, 3 `unknown` from the three lying-solver controls; 25 `holds°` cedar decided without a solver query (never-errors, and a permit-all under always-allows). Every run before it is a D-0030-2 run |
+| `lean/` | **The floor under Cedar's verified semantics** (2026.10.05; the floor in force since 2026.10.06): the genesis floor and the `emergency` stage the reference links, each with its schema S, in the abstract syntax of cedar-spec's Lean model at tag `v4.13.0`, generated from these files through the cedar CLI; the totality gate's 23 `holds°` rows as one theorem of the model's proved validator soundness (`floor_never_errors`); the 62 genesis cases and the stage's 107 each a theorem under the model's `isAuthorized`; non-vacuity and discrimination witnesses per action. The solver-backed gates stay with `run-gates.py`. `lean/README.md`; `lean/results.sh` regenerates `lean/TopakFloor-results-<date>.txt` |
 | `genesis-gates-evidence-2026.10.01/` | That run's evidence: per cedar call, the query (`q-N.smt2`), the bound proof (`q-N.cpc`) and the verdict (`q-N.json`, with the query, proof, solver and checker digests); `index.tsv` maps calls to analyses. Tree digest `f8b1196a427a35ed`, printed at the end of the results and reproducible run to run |
 
 ## Running
@@ -53,5 +54,7 @@ python3 run-gates.py genesis-gates-results-<date>.txt
   configuration, and the mechanism checks `K < R` for each domain at startup.
 - **Invoke hermeticity** is not in the floor; it is an obligation on each allowlist entry (ADR-0022 §3).
 - **What the checker does not cover.** A `holds°` is cedar's own term folding, with no solver query to check; it
-  rests on the engine's row (ADR-0045 T-0045-3). The checker's rule signature (`tools/cpc/`) is trusted as written
+  rests on the engine's row (ADR-0045 T-0045-3). The totality rows are also proved in Lean, of this floor and of the
+  `emergency` stage in force under cedar-spec's model (`lean/`; ADR-0053), where they rest on the kernel and
+  on T-0045-3's own premise, the engine's fidelity to that model, and no longer on cedar's folding code. The checker's rule signature (`tools/cpc/`) is trusted as written
   by cvc5's authors; a wrong rule there is the residual ADR-0045 T-0045-14 states.

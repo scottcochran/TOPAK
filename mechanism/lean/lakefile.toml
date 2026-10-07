@@ -1,0 +1,12 @@
+# The admit composition in Lean 4: transcriptions of crates/topak-core/src/admit.rs, clock.rs and the topak-floor
+# wrapper, with FloorComposition.tla's properties proved of them and the code's decision proved a step of the module's
+# re-encoding in spec/lean. One dependency, that package, by path; core Lean only, no Mathlib.
+name = "topak"
+defaultTargets = ["Topak"]
+
+[[lean_lib]]
+name = "Topak"
+
+[[require]]
+name = "topak-spec"
+path = "../../spec/lean"

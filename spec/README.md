@@ -92,6 +92,32 @@ The `1.6.0-pre` release tag is rebuilt by its upstream: on 2026.10.03 both asset
 All thirteen are cited by digest in ADR-0046, and frozen. **`proof-method.md`** records how they were written, the patterns they
 share, the prover's habits, and a dated assessment of why they were cheap and where that stops.
 
+### The modules in Lean 4
+
+`lean/` (2026.10.05) re-encodes fourteen of the modules above as transition systems in Lean 4 and proves their
+`*_proof.tla` theorems by induction on reachable states: `Seats`, `Observers`, `RunSeats`, `FloorRouting`,
+`NonComposition`, `Anchor` and `BreakGlass`, with `RulesFloorBase`; `FloorComposition` (2026.10.06), which
+`mechanism/lean/` proves the code's admit decision refines, step for step; `Seats`, which a model of
+`State::apply`'s seat and lease arms in `mechanism/lean/` is proved to refine at the module's constants, with the
+reference's recorded traces replayed through that model; `Coupling`, whose `UnreadBounded` is proved of a second
+model of `apply` on the first, directly and not by refinement; and the parameterized ones, `Coupling` for
+every K, R and MaxRound, `Lease_A1` for every epoch and fence bound, `RulesFloorNV_rev5` with its cardinalities
+computed, and `Confinement` and `Confinement_A1` as one encoding under a flag, for every rung. The last three
+are the modules the certified TLAPS run does not certify (`proof-certification.md`); in Lean every step of
+them is kernel-checked, and the arithmetic the TLAPS proofs hand to SMT is `omega`. What this adds to the TLAPS proofs is the
+temporal step: proof-method.md §5a counts 74 LS4 obligations, "holds initially, every step keeps it, so it
+holds always", that the certified run checks with nothing; in Lean that step is an induction the kernel checks.
+What it costs is a new premise, that the Lean encoding is the TLA+ module; a Lean theorem is of the encoding,
+not of the frozen text, and the newest `lean/TopakSpec-results-<date>.txt` binds each encoding to the digest of the
+module it transcribes. ADR-0053 (Batch 36) declares the method and makes the Lean kernel trusted-base row
+T-0045-37, pinned in `tools/LEAN-PIN`. Every results file ends with a kernel replay (`tools/lean-report.sh`), because
+`#print axioms` alone misses a declaration added past the kernel (`proof-method.md` §5b). `lean/README.md` has the
+theorem table, the encoding conventions, and a mutation check; `lean/results.sh` regenerates the results file, byte
+for byte; `tools/lean-sync.sh` is this package's `proof-sync.sh`, and covers `mechanism/lean/` and `floor/lean/` too.
+Two encodings, `Seats` and `FloorComposition`, are also checked rather than only read: `lean/graph-check.sh` has TLC
+dump each module's whole state graph under every `Mut` and checks, through a mirror proved equal to the encoding,
+that the two reach the same states by the same steps with the same property values (ADR-0053 R6).
+
 ## Practice
 
 What the modules, the runs and the proofs are expected to do, in the order a property passes through them. The
@@ -133,7 +159,11 @@ most expensive, each with the kind of evidence it gives.
 **`theorem-premise-binding.md`** is the table ADR-0045 §3 owes: for every property above, the trusted-base rows,
 degeneracy parameters and declared gaps it rests on, with the reference's inventory computed in its last column. **`theorem-premise-binding.json`** is the same table as a Boolean matrix with the parameter and gap
 premises as columns; `inventory.py` evaluates a declaration against either, and `inventory.py --check` keeps the two in
-step.
+step. Since 2026.10.06 `inventory.py` also evaluates **derived premises**, a named OR of premise sets, so that a theorem
+proved twice is voided only when both routes are lost (ADR-0053 R7). The binding has carried them since ADR-0053's
+ratification (Batch 36), which merged `theorem-premise-binding-ADR-0053.json` into it; `premise-routes.sh` shows what
+they change for five declarations (`premise-routes-results-2026.10.06b.txt`; the 2026.10.06 file is the run before
+the merge).
 
 Every `*-run.sh` and `simulate-run.sh` finds the jar at `../tools/tla2tools.jar` or `$TLA_JAR`; from `spec/` no
 export is needed. TLC writes its metadata under `/tmp/tlc_<name>`.

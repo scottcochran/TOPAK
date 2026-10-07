@@ -23,7 +23,8 @@ def build():
                "§5 with A1, §8 (D-0030-2), §10, header with A3; ADR-0041 A1, A2, A3, R2; ADR-0047 R16; ADR-0049 §6; "
                "ADR-0050 §4, R8; ADR-0052 §2, §9 (R4); ADR-0045 T-0045-3, T-0045-14; floor/README.md; "
                "floor/proposed/README.md; floor/proposed/labels-, control- and "
-               "emergency-gates-results-2026.10.04.txt; floor/genesis-gates-results-2026.10.01.txt")
+               "emergency-gates-results-2026.10.04.txt; floor/genesis-gates-results-2026.10.01.txt; ADR-0053 (B36) §2, "
+               "§5, R3; floor/lean/README.md and floor/lean/TopakFloor-results-2026.10.06.txt")
     X0, X1 = c.x0, c.x1
     y = c.y
     y += c.legend(X0, y, [
@@ -192,6 +193,11 @@ def build():
             "The checker certifies that the query entails false, **not that cedar's encoding of the floor is "
             "faithful**; that is T-0045-3 and ADR-0030 §3's soundness argument. The signature's rules are trusted as "
             "cvc5's authors wrote them.",
+            "[[blue|ADR-0053, B36]]: the genesis floor's 23 totality rows, and since R3 the floor in force's 41, "
+            "are proved in Lean under cedar-spec `v4.13.0`'s model, by its proved validator soundness (`floor/lean`; "
+            "H7). They would then rest on the Lean kernel (T-0045-37) and on T-0045-3's own premise, the engine's "
+            "fidelity to that model, and no longer on cedar's folding code. The `labels` and `control` stages are "
+            "not stated in Lean; the reference links neither.",
         ], "open", ""),
         ("D-0030-2: routing verdicts unchecked", "red", [
             "Declared by a deployment that runs the gates without the checker, and the position of **every gate run "

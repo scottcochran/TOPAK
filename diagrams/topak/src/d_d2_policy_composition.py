@@ -80,7 +80,9 @@ def build():
                "data.json; mechanism/crates/topak-core/src/admit.rs, lift.rs (`FrozenInput`, `bundle_input`, "
                "`lift_control`), control.rs, rules.rs; topak-floor/src/lib.rs; topak-bundle/src/lib.rs, allowlist.rs; "
                "topak-node/src/lib.rs; scripts/build-bundle.sh; GAPS G11; "
-               "derived/topak-format-and-schema-inventory-2026.10.03.md §2.1, §3.1, §3.2, findings 11, 23")
+               "derived/topak-format-and-schema-inventory-2026.10.03.md §2.1, §3.1, §3.2, findings 11, 23; ADR-0053 (B36) "
+               "§1, §2, R2; mechanism/lean/Topak/Admit.lean, FloorRefinement.lean and mechanism/lean/Admit-results-2026.10.06.txt; "
+               "mechanism/lean/README.md (mutation check)")
     X0, X1 = c.x0, c.x1
     y = c.y
 
@@ -410,12 +412,30 @@ def build():
         "Two languages and two engines; the floor must fit PARC: no aggregation, no regex, no computed data.",
     ], accent="red", size=14, tint=False, dash="6 4")
     cy += h + 24
-    c.card(rx, cy, rw, "Nothing translates (§6)", [
+    h = c.card(rx, cy, rw, "Nothing translates (§6)", [
         "Neither Rego → Cedar nor Cedar → Rego is in the archetype. A transpiler is a **Build artifact whose output "
         "becomes the enforced floor**, and Build is where the Byzantine threat lives: a silent mistranslation means "
         "the proven text is not the enforced text.",
         "Cedar's analyses compare Cedar with Cedar. A deployment that keeps a Rego floor declares **D-0030-1**.",
     ], accent="blue", size=14)
+    cy += h + 24
+    c.card(rx, cy, rw, "The truth table's first two groups, proved of the code (ADR-0053, B36)", [
+        "`mechanism/lean/Topak/Admit.lean` transcribes `floor_gate` and `compose` from `admit.rs`, and the call site in "
+        "`mechanism.rs`, and proves of the transcription: **`admit_iff`**, that the decision is "
+        "`floor_permit ∧ ¬bundle_deny` at every floor and bundle outcome; that an admit carries exactly the floor's "
+        "reasons and the bundle's engine and digest; that a floor error is a deny whatever the bundle said; that every "
+        "floor deny names a reason, `FloorNoPermit` and never an empty `Floor([])`; and that the node's own gate check "
+        "before the bundle call is `compose`.",
+        "Of the transcription, read beside the Rust; on the Lean kernel (T-0045-37). Three mutated "
+        "transcriptions (`M_OVERRIDE`, `M_ERR`, the empty-reason deny) each fail to build.",
+        "**Since 2026.10.06 the whole decision refines the module** (ADR-0053 R2): `FloorRefinement.lean` transcribes "
+        "the `topak-floor` wrapper, which makes any Cedar error diagnostic an `Error` whatever Cedar decided, and proves "
+        "wrapper and `compose` together a `Decide` step of `FloorComposition`'s re-encoding, on Cedar's rule over the "
+        "module's four policies as the engine premise (T-0045-3). Not a stage of T-0045-28's chain.",
+        "**The control-request rows are not covered**: there `mechanism.rs` matches the floor's outcome directly, "
+        "without `floor_gate` or `compose`, and a deny with no forbid fired is returned with its facts and an empty "
+        "reason list rather than as `FloorNoPermit`.",
+    ], accent="amber", status="accepted", status_extra="ADR-0053 · B36", size=14)
 
     # ---- schema S, drawn
     y = c.ymax + 60
