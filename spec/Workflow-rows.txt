@@ -1,4 +1,5 @@
 safe none Safe
+reach none LogReach
 w_routed none NeverRouted
 w_completed none NeverCompleted
 w_voidfinding none NeverVoidedByFinding
@@ -8,6 +9,7 @@ w_decisionfailed none NeverDecisionFailed
 w_outward none NeverOutward
 w_computed none NeverComputed
 w_refused none NeverRefusedAtGrant
+w_logsix none NeverLogSix
 do1 M_DECIDEONLY AppliedRouteEnabled
 do2 M_DECIDEONLY FindingPrecedesNoRoute
 do3 M_DECIDEONLY OneRoutePerDecision
@@ -26,6 +28,6 @@ ge_rest M_GRANTANYEPOCH AppliedRouteEnabled,OneRoutePerDecision,FindingPrecedesN
 td1 M_TIMEOUTDONE CompletedOnlyBySink
 td_rest M_TIMEOUTDONE AppliedRouteEnabled,OneRoutePerDecision,FindingPrecedesNoRoute,ChosenOnlyByRoute,EdgeAfterCoverage,TaintedNeverOutward,GrantUnderPromotion,PromotedAlternates,BasisStable
 rw1 M_REWRITE BasisStable
-rw_rest M_REWRITE AppliedRouteEnabled,OneRoutePerDecision,FindingPrecedesNoRoute,ChosenOnlyByRoute,EdgeAfterCoverage,TaintedNeverOutward,GrantUnderPromotion,PromotedAlternates,CompletedOnlyBySink
+rw_rest M_REWRITE AppliedRouteEnabled,OneRoutePerDecision,FindingPrecedesNoRoute,ChosenOnlyByRoute,EdgeAfterCoverage,TaintedNeverOutward,GrantUnderPromotion,PromotedAlternates,CompletedOnlyBySink CapLog
 nl1 M_NOLINEAGE PromotedAlternates
 nl_rest M_NOLINEAGE AppliedRouteEnabled,OneRoutePerDecision,FindingPrecedesNoRoute,ChosenOnlyByRoute,EdgeAfterCoverage,TaintedNeverOutward,GrantUnderPromotion,CompletedOnlyBySink,BasisStable

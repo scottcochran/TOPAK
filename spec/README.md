@@ -30,7 +30,7 @@ hand-assembled TLC output with a dated name and never change; the two generators
 | `Operators.tla` | ADR-0050 §10 (Proposed) | `operators-run.sh`; `operators-gen-results.sh` with a row list | `Operators-results-2026.10.04.txt` | ADR-0050 |
 | `Correlator.tla` | ADR-0051 §10 (Proposed) | `correlator-run.sh`; `correlator-gen-results.sh` with a row list | `Correlator-results-2026.10.04.txt` | ADR-0051 |
 | `Labels.tla` | ADR-0047 §11 (Proposed) | `labels-run.sh`; `labels-gen-results.sh` with a row list | `Labels-results-2026.10.03.txt`, `-2026.10.04.txt` | ADR-0047 |
-| `Workflow.tla` | ADR-0054 §12 (Proposed) | `workflow-run.sh`; `workflow-gen-results.sh` with `Workflow-rows.txt` | `Workflow-results-2026.10.07.txt` | ADR-0054 |
+| `Workflow.tla` | ADR-0054 §12 (Proposed) | `workflow-run.sh`; `workflow-gen-results.sh` with `Workflow-rows.txt` | `Workflow-results-2026.10.08.txt` | ADR-0054 |
 | `Mesh.tla` | ADR-0055 §11 (Proposed) | `mesh-run.sh`; `mesh-gen-results.sh` with `Mesh-rows.txt` | `Mesh-results-2026.10.07.txt` | ADR-0055 |
 | `FloorComposition.tla`, `Coupling.tla`, `RunCoupling.tla` | ADR-0046 §5 (the premise-table corrections) | `premise-corrections-results.sh` | `premise-corrections-results-2026.10.02.txt` | ADR-0046 |
 | `Mechanism.tla` | ADR-0045 T-0045-28; ADR-0033 A5 | `mechanism-trace-run.sh` on traces the reference records; `mechanism-trace-results.sh` regenerates the file; `trace2tla.py` converts | `Mechanism-trace-results-2026.09.30.txt`, `-2026.10.01.txt`, `-2026.10.02.txt`, `-2026.10.02b.txt`, `-2026.10.05.txt` (labels, operators and the emergency seating, all Proposed; X1 retired) | Pinned, not frozen: the operational model moves with the code |

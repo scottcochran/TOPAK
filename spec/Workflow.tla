@@ -349,6 +349,17 @@ Safe == /\ AppliedRouteEnabled /\ OneRoutePerDecision /\ FindingPrecedesNoRoute
         /\ ChosenOnlyByRoute /\ EdgeAfterCoverage /\ TaintedNeverOutward
         /\ GrantUnderPromotion /\ PromotedAlternates /\ CompletedOnlyBySink /\ BasisStable
 
+\* --- a state constraint, for one row only -------------------------------------
+
+\* M_REWRITE lets a worker change its outcome after its node has ended, so a route can be decided,
+\* voided at apply and decided again without end, and the log index has no bound. Its remainder row
+\* is checked up to log index 6, the furthest the unmutated module reaches: LogReach holds and
+\* NeverLogSix is violated with Mut = "none" (ADR-0054 §12). No other row uses it.
+CapLog == idx <= 6
+
+\* The bound CapLog rests on. Not a property of the design: it must hold with Mut = "none".
+LogReach == idx <= 6
+
 \* --- reachability witnesses: each must be VIOLATED ---------------------------
 
 \* A route is applied, and the workflow completes.
@@ -369,4 +380,6 @@ NeverOutward == activatedBy["c"] = "none"
 NeverComputed == \A n \in Nodes : activatedBy[n] # "computed"
 \* A ready node is refused at grant after a fence.
 NeverRefusedAtGrant == ~(\E n \in Nodes : status[n] = "failed" /\ grantEpoch[n] = -1)
+\* The log reaches index 6, so CapLog cuts nothing the unmutated module does.
+NeverLogSix == idx < 6
 =============================================================================
