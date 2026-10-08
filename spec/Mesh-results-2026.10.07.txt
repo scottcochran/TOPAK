@@ -1,0 +1,7546 @@
+TOPAK — Mesh.tla: a workflow that is a mesh, ADR-0055 (Proposed) ratification condition (§11), run 2026.10.07
+Module: Mesh.tla (sha256 a5bc64953c38c9a9) · TLC Version 2.19 of 08 August 2024 (jar sha256 936a262061c91469) · openjdk version "25.0.1" 2025-10-21
+Runner: mesh-gen-results.sh · Nodes = {s, w, x} · a clear cycle s -e1-> w -e3-> s (e1 chosen, e3 computed) and a chosen handle exit e2 from s to the outward sink x, guarded by s ok · budget N = 6 · lineages {A, B}
+
+=== safe · Mut=none · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.6E-7
+  based on the actual fingerprints:  val = 2.8E-7
+3537577 states generated, 2142317 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 26.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 9 and the 95th percentile is 3).
+Finished in 14s at (2026-10-07 21:57:17)
+
+=== w_looped · Mut=none · INVARIANT NeverLooped
+Error: Invariant NeverLooped is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = <<>>
+/\ nCharged = 0
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 0
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = FALSE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "A", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 2: <Promote line 160, col 3 to line 166, col 45 of module Mesh>
+/\ acts = << [ st |-> "none",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 0
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 0
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 3: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "none",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 1
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 1
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 4: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 1
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 1
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 5: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 6: <Decide line 220, col 3 to line 223, col 99 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {[ev |-> 1, edge |-> "e1", round |-> 1]}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 7: <Next line 281, col 12 to line 281, col 38 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 2
+/\ exhausted = FALSE
+/\ wf = "running"
+State 8: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 3
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 3
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 2
+/\ exhausted = FALSE
+/\ wf = "running"
+State 9: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 3
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 3
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 3
+/\ exhausted = FALSE
+/\ wf = "running"
+646 states generated, 532 distinct states found, 199 states left on queue.
+The depth of the complete state graph search is 9.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 5 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 21:57:23)
+
+=== w_completedloop · Mut=none · INVARIANT NeverCompletedAfterLoop
+Error: Invariant NeverCompletedAfterLoop is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = <<>>
+/\ nCharged = 0
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 0
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = FALSE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "A", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 2: <Promote line 160, col 3 to line 166, col 45 of module Mesh>
+/\ acts = << [ st |-> "none",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 0
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 0
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 3: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "none",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 1
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 1
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 4: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 1
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 1
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 5: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 6: <Decide line 220, col 3 to line 223, col 99 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {[ev |-> 1, edge |-> "e1", round |-> 1]}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 7: <Next line 281, col 12 to line 281, col 38 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 2
+/\ exhausted = FALSE
+/\ wf = "running"
+State 8: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 3
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 3
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 2
+/\ exhausted = FALSE
+/\ wf = "running"
+State 9: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 3
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 3
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 3
+/\ exhausted = FALSE
+/\ wf = "running"
+State 10: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 4
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 4
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 3
+/\ exhausted = FALSE
+/\ wf = "running"
+State 11: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 4
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 4
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 4
+/\ exhausted = FALSE
+/\ wf = "running"
+State 12: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 5
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 3, id |-> 2]
+/\ nAll = 5
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 2
+/\ idx = 4
+/\ exhausted = FALSE
+/\ wf = "running"
+State 13: <Decide line 220, col 3 to line 223, col 99 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 5
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 3, id |-> 2]
+/\ nAll = 5
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {[ev |-> 3, edge |-> "e2", round |-> 2]}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 2
+/\ idx = 4
+/\ exhausted = FALSE
+/\ wf = "running"
+State 14: <Next line 281, col 12 to line 281, col 38 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 5,
+     node |-> "x",
+     trig |-> 3,
+     via |-> "e2",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3, 4},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 5
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 3, id |-> 2]
+/\ nAll = 5
+/\ consumed = {1, 3}
+/\ applied = { [ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1],
+  [ev |-> 3, at |-> 5, edge |-> "e2", to |-> 3] }
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 2
+/\ idx = 5
+/\ exhausted = FALSE
+/\ wf = "running"
+State 15: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 5,
+     node |-> "x",
+     trig |-> 3,
+     via |-> "e2",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3, 4},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 6
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 3, id |-> 2]
+/\ nAll = 6
+/\ consumed = {1, 3}
+/\ applied = { [ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1],
+  [ev |-> 3, at |-> 5, edge |-> "e2", to |-> 3] }
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 2
+/\ idx = 5
+/\ exhausted = FALSE
+/\ wf = "running"
+State 16: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "bad",
+     at |-> 5,
+     node |-> "x",
+     trig |-> 3,
+     via |-> "e2",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3, 4},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 6
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 3, id |-> 2]
+/\ nAll = 6
+/\ consumed = {1, 3}
+/\ applied = { [ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1],
+  [ev |-> 3, at |-> 5, edge |-> "e2", to |-> 3] }
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 2
+/\ idx = 6
+/\ exhausted = FALSE
+/\ wf = "running"
+State 17: <Settle line 271, col 3 to line 275, col 63 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "bad",
+     at |-> 5,
+     node |-> "x",
+     trig |-> 3,
+     via |-> "e2",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3, 4},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 6
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 3, id |-> 2]
+/\ nAll = 6
+/\ consumed = {1, 3}
+/\ applied = { [ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1],
+  [ev |-> 3, at |-> 5, edge |-> "e2", to |-> 3] }
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 2
+/\ idx = 6
+/\ exhausted = FALSE
+/\ wf = "completed"
+85955 states generated, 60009 distinct states found, 24630 states left on queue.
+The depth of the complete state graph search is 17.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 7 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 21:57:29)
+
+=== w_exhausted · Mut=none · INVARIANT NeverExhausted
+Error: Invariant NeverExhausted is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = <<>>
+/\ nCharged = 0
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 0
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = FALSE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "A", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 2: <Promote line 160, col 3 to line 166, col 45 of module Mesh>
+/\ acts = << [ st |-> "none",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 0
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 0
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 3: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "none",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 1
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 1
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 4: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 1
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 1
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 5: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 6: <Decide line 220, col 3 to line 223, col 99 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {[ev |-> 1, edge |-> "e1", round |-> 1]}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 7: <Next line 281, col 12 to line 281, col 38 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 2
+/\ exhausted = FALSE
+/\ wf = "running"
+State 8: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 3
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 3
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 2
+/\ exhausted = FALSE
+/\ wf = "running"
+State 9: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 3
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 3
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 3
+/\ exhausted = FALSE
+/\ wf = "running"
+State 10: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 4
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 4
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 3
+/\ exhausted = FALSE
+/\ wf = "running"
+State 11: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 4
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 4
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 4
+/\ exhausted = FALSE
+/\ wf = "running"
+State 12: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 5
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 3, id |-> 2]
+/\ nAll = 5
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 2
+/\ idx = 4
+/\ exhausted = FALSE
+/\ wf = "running"
+State 13: <Decide line 220, col 3 to line 223, col 99 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 5
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 3, id |-> 2]
+/\ nAll = 5
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {[ev |-> 3, edge |-> "e1", round |-> 2]}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 2
+/\ idx = 4
+/\ exhausted = FALSE
+/\ wf = "running"
+State 14: <Next line 281, col 12 to line 281, col 38 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 5,
+     node |-> "w",
+     trig |-> 3,
+     via |-> "e1",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3, 4},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 5
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 3, id |-> 2]
+/\ nAll = 5
+/\ consumed = {1, 3}
+/\ applied = { [ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1],
+  [ev |-> 3, at |-> 5, edge |-> "e1", to |-> 3] }
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 2
+/\ idx = 5
+/\ exhausted = FALSE
+/\ wf = "running"
+State 15: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 5,
+     node |-> "w",
+     trig |-> 3,
+     via |-> "e1",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3, 4},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 6
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 3, id |-> 2]
+/\ nAll = 6
+/\ consumed = {1, 3}
+/\ applied = { [ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1],
+  [ev |-> 3, at |-> 5, edge |-> "e1", to |-> 3] }
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 2
+/\ idx = 5
+/\ exhausted = FALSE
+/\ wf = "running"
+State 16: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 5,
+     node |-> "w",
+     trig |-> 3,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3, 4},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 6,
+     node |-> "s",
+     trig |-> 4,
+     via |-> "e3",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2, 3, 4, 5},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 6
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 3, id |-> 2]
+/\ nAll = 6
+/\ consumed = {1, 3}
+/\ applied = { [ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1],
+  [ev |-> 3, at |-> 5, edge |-> "e1", to |-> 3] }
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 2
+/\ idx = 6
+/\ exhausted = FALSE
+/\ wf = "running"
+State 17: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 5,
+     node |-> "w",
+     trig |-> 3,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3, 4},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 6,
+     node |-> "s",
+     trig |-> 4,
+     via |-> "e3",
+     status |-> "failed",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2, 3, 4, 5},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 6
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 3, id |-> 2]
+/\ nAll = 6
+/\ consumed = {1, 3}
+/\ applied = { [ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1],
+  [ev |-> 3, at |-> 5, edge |-> "e1", to |-> 3] }
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 2
+/\ idx = 6
+/\ exhausted = TRUE
+/\ wf = "running"
+91813 states generated, 63724 distinct states found, 25569 states left on queue.
+The depth of the complete state graph search is 17.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 7 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 21:57:35)
+
+=== w_taintloop · Mut=none · INVARIANT NeverTaintAroundLoop
+Error: Invariant NeverTaintAroundLoop is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = <<>>
+/\ nCharged = 0
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 0
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = FALSE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "A", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 2: <Promote line 160, col 3 to line 166, col 45 of module Mesh>
+/\ acts = << [ st |-> "none",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 0
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 0
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "B", x |-> "B", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 3: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "none",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 1
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 1
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "B", x |-> "B", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 4: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 1
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 1
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "B", x |-> "B", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 5: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "B", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 6: <Decide line 220, col 3 to line 223, col 99 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {[ev |-> 1, edge |-> "e1", round |-> 1]}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "B", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 7: <Next line 281, col 12 to line 281, col 38 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "B", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 2
+/\ exhausted = FALSE
+/\ wf = "running"
+State 8: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 3
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 3
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "B", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 2
+/\ exhausted = FALSE
+/\ wf = "running"
+State 9: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ready",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "B",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 3
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 3
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "B", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 3
+/\ exhausted = FALSE
+/\ wf = "running"
+663 states generated, 550 distinct states found, 212 states left on queue.
+The depth of the complete state graph search is 9.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 5 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 21:57:40)
+
+=== w_exitclosed · Mut=none · INVARIANT NeverExitClosedByTaint
+Error: Invariant NeverExitClosedByTaint is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = <<>>
+/\ nCharged = 0
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 0
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = FALSE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "A", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 2: <Promote line 160, col 3 to line 166, col 45 of module Mesh>
+/\ acts = << [ st |-> "none",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 0
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 0
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 3: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "none",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 1
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 1
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 4: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 1
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 1
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 5: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 6: <OrchLapse line 252, col 3 to line 254, col 77 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 7: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {1}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 8: <Settle line 271, col 3 to line 275, col 63 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {1}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "failed"
+514 states generated, 417 distinct states found, 159 states left on queue.
+The depth of the complete state graph search is 9.
+The average outdegree of the complete state graph is 2 (minimum is 1, the maximum 5 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 21:57:46)
+
+=== w_voidhistory · Mut=none · INVARIANT NeverVoidedByHistory
+Error: Invariant NeverVoidedByHistory is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = <<>>
+/\ nCharged = 0
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 0
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = FALSE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "A", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 2: <Promote line 160, col 3 to line 166, col 45 of module Mesh>
+/\ acts = << [ st |-> "none",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 0
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 0
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 3: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "none",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 1
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 1
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 4: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 1
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 1
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 0
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 5: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 6: <Decide line 220, col 3 to line 223, col 99 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {[ev |-> 1, edge |-> "e1", round |-> 1]}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 7: <Next line 281, col 12 to line 281, col 38 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 2
+/\ exhausted = FALSE
+/\ wf = "running"
+State 8: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 3
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 3
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 2
+/\ exhausted = FALSE
+/\ wf = "running"
+State 9: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 3
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 3
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 3
+/\ exhausted = FALSE
+/\ wf = "running"
+State 10: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 4
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 4
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 3
+/\ exhausted = FALSE
+/\ wf = "running"
+State 11: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 4
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 4
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 4
+/\ exhausted = FALSE
+/\ wf = "running"
+State 12: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 5
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 3, id |-> 2]
+/\ nAll = 5
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 2
+/\ idx = 4
+/\ exhausted = FALSE
+/\ wf = "running"
+State 13: <Decide line 220, col 3 to line 223, col 99 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 5
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 3, id |-> 2]
+/\ nAll = 5
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {[ev |-> 3, edge |-> "e1", round |-> 2]}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 2
+/\ idx = 4
+/\ exhausted = FALSE
+/\ wf = "running"
+State 14: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> TRUE,
+     foundAt |-> 5 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 5
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 3, id |-> 2]
+/\ nAll = 5
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {[ev |-> 3, edge |-> "e1", round |-> 2]}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 2
+/\ idx = 5
+/\ exhausted = FALSE
+/\ wf = "running"
+State 15: <Next line 281, col 12 to line 281, col 38 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> TRUE,
+     foundAt |-> 5 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 5
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 3, id |-> 2]
+/\ nAll = 5
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {[edge |-> "e1", why |-> "history"]}
+/\ served = {1, 3}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 2
+/\ idx = 6
+/\ exhausted = FALSE
+/\ wf = "running"
+28186 states generated, 21320 distinct states found, 10831 states left on queue.
+The depth of the complete state graph search is 15.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 7 and the 95th percentile is 5).
+Finished in 05s at (2026-10-07 21:57:52)
+
+=== w_voidlease · Mut=none · INVARIANT NeverVoidedByLease
+Error: Invariant NeverVoidedByLease is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = <<>>
+/\ nCharged = 0
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 0
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = FALSE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "A", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 2: <Promote line 160, col 3 to line 166, col 45 of module Mesh>
+/\ acts = << [ st |-> "none",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 0
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 0
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "B", x |-> "B", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 3: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "none",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 1
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 1
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "B", x |-> "B", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 4: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 1
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 1
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "B", x |-> "B", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 5: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "B", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 6: <Decide line 220, col 3 to line 223, col 99 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {[ev |-> 1, edge |-> "e1", round |-> 1]}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "B", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 7: <OrchLapse line 252, col 3 to line 254, col 77 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {[ev |-> 1, edge |-> "e1", round |-> 1]}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "B", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 8: <Next line 281, col 12 to line 281, col 38 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {[edge |-> "e1", why |-> "lease"]}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "B", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 2
+/\ exhausted = FALSE
+/\ wf = "running"
+369 states generated, 305 distinct states found, 122 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 2 (minimum is 1, the maximum 5 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 21:57:57)
+
+=== ov1 · Mut=M_OVERRUN · INVARIANT BudgetBound
+Error: Invariant BudgetBound is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = <<>>
+/\ nCharged = 0
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 0
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = FALSE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "A", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 2: <Promote line 160, col 3 to line 166, col 45 of module Mesh>
+/\ acts = << [ st |-> "none",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 0
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 0
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "A", x |-> "A", w |-> "B"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 3: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "none",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 1
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 1
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "A", x |-> "A", w |-> "B"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 4: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 1
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 1
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "A", x |-> "A", w |-> "B"]
+/\ nRounds = 0
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 5: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "A", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 6: <Decide line 220, col 3 to line 223, col 99 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {[ev |-> 1, edge |-> "e1", round |-> 1]}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "A", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 7: <Next line 281, col 12 to line 281, col 38 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "A", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 2
+/\ exhausted = FALSE
+/\ wf = "running"
+State 8: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 3
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 3
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "A", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 2
+/\ exhausted = FALSE
+/\ wf = "running"
+State 9: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 3
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 3
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "A", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 3
+/\ exhausted = FALSE
+/\ wf = "running"
+State 10: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 4
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 4
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "A", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 3
+/\ exhausted = FALSE
+/\ wf = "running"
+State 11: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "bad",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 4
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 4
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "A", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 4
+/\ exhausted = FALSE
+/\ wf = "running"
+State 12: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "bad",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 5
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 3, id |-> 2]
+/\ nAll = 5
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "A", x |-> "A", w |-> "B"]
+/\ nRounds = 2
+/\ idx = 4
+/\ exhausted = FALSE
+/\ wf = "running"
+State 13: <Decide line 220, col 3 to line 223, col 99 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "bad",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 5
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 3, id |-> 2]
+/\ nAll = 5
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {[ev |-> 3, edge |-> "e1", round |-> 2]}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "A", x |-> "A", w |-> "B"]
+/\ nRounds = 2
+/\ idx = 4
+/\ exhausted = FALSE
+/\ wf = "running"
+State 14: <Next line 281, col 12 to line 281, col 38 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "bad",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 5,
+     node |-> "w",
+     trig |-> 3,
+     via |-> "e1",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2, 3, 4},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 5
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 3, id |-> 2]
+/\ nAll = 5
+/\ consumed = {1, 3}
+/\ applied = { [ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1],
+  [ev |-> 3, at |-> 5, edge |-> "e1", to |-> 3] }
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "A", x |-> "A", w |-> "B"]
+/\ nRounds = 2
+/\ idx = 5
+/\ exhausted = FALSE
+/\ wf = "running"
+State 15: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "bad",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 5,
+     node |-> "w",
+     trig |-> 3,
+     via |-> "e1",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2, 3, 4},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 6
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 3, id |-> 2]
+/\ nAll = 6
+/\ consumed = {1, 3}
+/\ applied = { [ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1],
+  [ev |-> 3, at |-> 5, edge |-> "e1", to |-> 3] }
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "A", x |-> "A", w |-> "B"]
+/\ nRounds = 2
+/\ idx = 5
+/\ exhausted = FALSE
+/\ wf = "running"
+State 16: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "bad",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 5,
+     node |-> "w",
+     trig |-> 3,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2, 3, 4},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 6,
+     node |-> "s",
+     trig |-> 4,
+     via |-> "e3",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3, 4, 5},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 6
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 3, id |-> 2]
+/\ nAll = 6
+/\ consumed = {1, 3}
+/\ applied = { [ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1],
+  [ev |-> 3, at |-> 5, edge |-> "e1", to |-> 3] }
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "A", x |-> "A", w |-> "B"]
+/\ nRounds = 2
+/\ idx = 6
+/\ exhausted = FALSE
+/\ wf = "running"
+State 17: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "bad",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 5,
+     node |-> "w",
+     trig |-> 3,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2, 3, 4},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 6,
+     node |-> "s",
+     trig |-> 4,
+     via |-> "e3",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3, 4, 5},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 7
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 3, id |-> 2]
+/\ nAll = 7
+/\ consumed = {1, 3}
+/\ applied = { [ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1],
+  [ev |-> 3, at |-> 5, edge |-> "e1", to |-> 3] }
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "A", x |-> "A", w |-> "B"]
+/\ nRounds = 2
+/\ idx = 6
+/\ exhausted = FALSE
+/\ wf = "running"
+90314 states generated, 62802 distinct states found, 25384 states left on queue.
+The depth of the complete state graph search is 17.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 7 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 21:58:03)
+
+=== ov_rest · Mut=M_OVERRUN · INVARIANT CompletedOnlyBySink, RouteOnItsEvent, NoActivationAfterFinding, LabelCoversTruth, TaintedNeverOutward, ClearHopsAlternate
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 6.6E-5
+  based on the actual fingerprints:  val = 9.1E-4
+69681641 states generated, 35179821 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 29.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 3).
+Finished in 03min 09s at (2026-10-07 22:01:14)
+
+=== of1 · Mut=M_ORCHFREE · INVARIANT BudgetBound
+Error: Invariant BudgetBound is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = <<>>
+/\ nCharged = 0
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 0
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = FALSE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "A", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 2: <Promote line 160, col 3 to line 166, col 45 of module Mesh>
+/\ acts = << [ st |-> "none",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 0
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 0
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 3: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "none",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 1
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 1
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 4: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 1
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 1
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 0
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 5: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 1
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 6: <Decide line 220, col 3 to line 223, col 99 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 1
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {[ev |-> 1, edge |-> "e1", round |-> 1]}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 7: <Next line 281, col 12 to line 281, col 38 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 1
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 2
+/\ exhausted = FALSE
+/\ wf = "running"
+State 8: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 3
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 2
+/\ exhausted = FALSE
+/\ wf = "running"
+State 9: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 3
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 3
+/\ exhausted = FALSE
+/\ wf = "running"
+State 10: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 3
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 4
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 3
+/\ exhausted = FALSE
+/\ wf = "running"
+State 11: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "bad",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 3
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 4
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 4
+/\ exhausted = FALSE
+/\ wf = "running"
+State 12: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "bad",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 3
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 3, id |-> 2]
+/\ nAll = 5
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 2
+/\ idx = 4
+/\ exhausted = FALSE
+/\ wf = "running"
+State 13: <Decide line 220, col 3 to line 223, col 99 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "bad",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 3
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 3, id |-> 2]
+/\ nAll = 5
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {[ev |-> 3, edge |-> "e1", round |-> 2]}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 2
+/\ idx = 4
+/\ exhausted = FALSE
+/\ wf = "running"
+State 14: <Next line 281, col 12 to line 281, col 38 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "bad",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 5,
+     node |-> "w",
+     trig |-> 3,
+     via |-> "e1",
+     status |-> "ready",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "B",
+     hist |-> {1, 2, 3, 4},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 3
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 3, id |-> 2]
+/\ nAll = 5
+/\ consumed = {1, 3}
+/\ applied = { [ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1],
+  [ev |-> 3, at |-> 5, edge |-> "e1", to |-> 3] }
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 2
+/\ idx = 5
+/\ exhausted = FALSE
+/\ wf = "running"
+State 15: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "bad",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 5,
+     node |-> "w",
+     trig |-> 3,
+     via |-> "e1",
+     status |-> "running",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "B",
+     hist |-> {1, 2, 3, 4},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 4
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 3, id |-> 2]
+/\ nAll = 6
+/\ consumed = {1, 3}
+/\ applied = { [ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1],
+  [ev |-> 3, at |-> 5, edge |-> "e1", to |-> 3] }
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 2
+/\ idx = 5
+/\ exhausted = FALSE
+/\ wf = "running"
+State 16: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "bad",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 5,
+     node |-> "w",
+     trig |-> 3,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "B",
+     hist |-> {1, 2, 3, 4},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 6,
+     node |-> "s",
+     trig |-> 4,
+     via |-> "e3",
+     status |-> "ready",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "A",
+     hist |-> {1, 2, 3, 4, 5},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 4
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 3, id |-> 2]
+/\ nAll = 6
+/\ consumed = {1, 3}
+/\ applied = { [ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1],
+  [ev |-> 3, at |-> 5, edge |-> "e1", to |-> 3] }
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 2
+/\ idx = 6
+/\ exhausted = FALSE
+/\ wf = "running"
+State 17: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "bad",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 5,
+     node |-> "w",
+     trig |-> 3,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "B",
+     hist |-> {1, 2, 3, 4},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 6,
+     node |-> "s",
+     trig |-> 4,
+     via |-> "e3",
+     status |-> "running",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "A",
+     hist |-> {1, 2, 3, 4, 5},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 5
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 3, id |-> 2]
+/\ nAll = 7
+/\ consumed = {1, 3}
+/\ applied = { [ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1],
+  [ev |-> 3, at |-> 5, edge |-> "e1", to |-> 3] }
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 2
+/\ idx = 6
+/\ exhausted = FALSE
+/\ wf = "running"
+85903 states generated, 59893 distinct states found, 24485 states left on queue.
+The depth of the complete state graph search is 17.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 7 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 22:01:20)
+
+=== of_rest · Mut=M_ORCHFREE · INVARIANT CompletedOnlyBySink, RouteOnItsEvent, NoActivationAfterFinding, LabelCoversTruth, TaintedNeverOutward, ClearHopsAlternate · CONSTRAINT CapOnePast
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.2E-5
+  based on the actual fingerprints:  val = 2.0E-6
+29586953 states generated, 13624749 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 27.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 3).
+Finished in 01min 28s at (2026-10-07 22:02:48)
+
+=== bd1 · Mut=M_BUDGETDONE · INVARIANT CompletedOnlyBySink
+Error: Invariant CompletedOnlyBySink is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = <<>>
+/\ nCharged = 0
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 0
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = FALSE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "A", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 2: <Promote line 160, col 3 to line 166, col 45 of module Mesh>
+/\ acts = << [ st |-> "none",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 0
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 0
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "A", x |-> "A", w |-> "B"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 3: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "none",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 1
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 1
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "A", x |-> "A", w |-> "B"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 4: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 1
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 1
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "A", x |-> "A", w |-> "B"]
+/\ nRounds = 0
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 5: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "A", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 6: <Decide line 220, col 3 to line 223, col 99 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {[ev |-> 1, edge |-> "e1", round |-> 1]}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "A", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 7: <Next line 281, col 12 to line 281, col 38 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "A", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 2
+/\ exhausted = FALSE
+/\ wf = "running"
+State 8: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 3
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 3
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "A", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 2
+/\ exhausted = FALSE
+/\ wf = "running"
+State 9: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 3
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 3
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "A", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 3
+/\ exhausted = FALSE
+/\ wf = "running"
+State 10: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 4
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 4
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "A", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 3
+/\ exhausted = FALSE
+/\ wf = "running"
+State 11: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 4
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 4
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "A", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 4
+/\ exhausted = FALSE
+/\ wf = "running"
+State 12: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 5
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 3, id |-> 2]
+/\ nAll = 5
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "A", x |-> "A", w |-> "B"]
+/\ nRounds = 2
+/\ idx = 4
+/\ exhausted = FALSE
+/\ wf = "running"
+State 13: <Decide line 220, col 3 to line 223, col 99 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 5
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 3, id |-> 2]
+/\ nAll = 5
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {[ev |-> 3, edge |-> "e1", round |-> 2]}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "A", x |-> "A", w |-> "B"]
+/\ nRounds = 2
+/\ idx = 4
+/\ exhausted = FALSE
+/\ wf = "running"
+State 14: <Next line 281, col 12 to line 281, col 38 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 5,
+     node |-> "w",
+     trig |-> 3,
+     via |-> "e1",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2, 3, 4},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 5
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 3, id |-> 2]
+/\ nAll = 5
+/\ consumed = {1, 3}
+/\ applied = { [ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1],
+  [ev |-> 3, at |-> 5, edge |-> "e1", to |-> 3] }
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "A", x |-> "A", w |-> "B"]
+/\ nRounds = 2
+/\ idx = 5
+/\ exhausted = FALSE
+/\ wf = "running"
+State 15: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 5,
+     node |-> "w",
+     trig |-> 3,
+     via |-> "e1",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2, 3, 4},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 6
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 3, id |-> 2]
+/\ nAll = 6
+/\ consumed = {1, 3}
+/\ applied = { [ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1],
+  [ev |-> 3, at |-> 5, edge |-> "e1", to |-> 3] }
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "A", x |-> "A", w |-> "B"]
+/\ nRounds = 2
+/\ idx = 5
+/\ exhausted = FALSE
+/\ wf = "running"
+State 16: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 5,
+     node |-> "w",
+     trig |-> 3,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "B",
+     hist |-> {1, 2, 3, 4},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 6,
+     node |-> "s",
+     trig |-> 4,
+     via |-> "e3",
+     status |-> "ready",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "A",
+     hist |-> {1, 2, 3, 4, 5},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 6
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 3, id |-> 2]
+/\ nAll = 6
+/\ consumed = {1, 3}
+/\ applied = { [ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1],
+  [ev |-> 3, at |-> 5, edge |-> "e1", to |-> 3] }
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "A", x |-> "A", w |-> "B"]
+/\ nRounds = 2
+/\ idx = 6
+/\ exhausted = FALSE
+/\ wf = "running"
+State 17: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 5,
+     node |-> "w",
+     trig |-> 3,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "B",
+     hist |-> {1, 2, 3, 4},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 6,
+     node |-> "s",
+     trig |-> 4,
+     via |-> "e3",
+     status |-> "failed",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "A",
+     hist |-> {1, 2, 3, 4, 5},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 6
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 3, id |-> 2]
+/\ nAll = 6
+/\ consumed = {1, 3}
+/\ applied = { [ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1],
+  [ev |-> 3, at |-> 5, edge |-> "e1", to |-> 3] }
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "A", x |-> "A", w |-> "B"]
+/\ nRounds = 2
+/\ idx = 6
+/\ exhausted = TRUE
+/\ wf = "running"
+State 18: <Settle line 271, col 3 to line 275, col 63 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 5,
+     node |-> "w",
+     trig |-> 3,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "B",
+     hist |-> {1, 2, 3, 4},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 6,
+     node |-> "s",
+     trig |-> 4,
+     via |-> "e3",
+     status |-> "failed",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "A",
+     hist |-> {1, 2, 3, 4, 5},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 6
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 3, id |-> 2]
+/\ nAll = 6
+/\ consumed = {1, 3}
+/\ applied = { [ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1],
+  [ev |-> 3, at |-> 5, edge |-> "e1", to |-> 3] }
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "A", x |-> "A", w |-> "B"]
+/\ nRounds = 2
+/\ idx = 6
+/\ exhausted = TRUE
+/\ wf = "completed"
+157147 states generated, 109369 distinct states found, 42003 states left on queue.
+The depth of the complete state graph search is 18.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 9 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 22:02:54)
+
+=== bd_rest · Mut=M_BUDGETDONE · INVARIANT BudgetBound, RouteOnItsEvent, NoActivationAfterFinding, LabelCoversTruth, TaintedNeverOutward, ClearHopsAlternate
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.6E-7
+  based on the actual fingerprints:  val = 6.7E-8
+3537577 states generated, 2142317 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 26.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 9 and the 95th percentile is 3).
+Finished in 14s at (2026-10-07 22:03:09)
+
+=== tr1 · Mut=M_TRACKER · INVARIANT RouteOnItsEvent
+Error: Invariant RouteOnItsEvent is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = <<>>
+/\ nCharged = 0
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 0
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = FALSE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "A", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 2: <Promote line 160, col 3 to line 166, col 45 of module Mesh>
+/\ acts = << [ st |-> "none",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 0
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 0
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 3: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "none",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 1
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 1
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 4: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 1
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 1
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 5: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 0, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 6: <Decide line 220, col 3 to line 223, col 99 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 0, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {[ev |-> 1, edge |-> "e1", round |-> 1]}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 7: <Decide line 220, col 3 to line 223, col 99 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 0, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {[ev |-> 1, edge |-> "e1", round |-> 1], [ev |-> 1, edge |-> "e2", round |-> 1]}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 8: <Next line 281, col 12 to line 281, col 38 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 0, id |-> 1]
+/\ nAll = 2
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {[ev |-> 1, edge |-> "e2", round |-> 1]}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 2
+/\ exhausted = FALSE
+/\ wf = "running"
+State 9: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 3
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 0, id |-> 1]
+/\ nAll = 3
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {[ev |-> 1, edge |-> "e2", round |-> 1]}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 2
+/\ exhausted = FALSE
+/\ wf = "running"
+State 10: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 3
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 0, id |-> 1]
+/\ nAll = 3
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {[ev |-> 1, edge |-> "e2", round |-> 1]}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 3
+/\ exhausted = FALSE
+/\ wf = "running"
+State 11: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 4
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 0, id |-> 1]
+/\ nAll = 4
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {[ev |-> 1, edge |-> "e2", round |-> 1]}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 3
+/\ exhausted = FALSE
+/\ wf = "running"
+State 12: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 4
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 0, id |-> 1]
+/\ nAll = 4
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {[ev |-> 1, edge |-> "e2", round |-> 1]}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 4
+/\ exhausted = FALSE
+/\ wf = "running"
+State 13: <Next line 281, col 12 to line 281, col 38 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 5,
+     node |-> "x",
+     trig |-> 3,
+     via |-> "e2",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3, 4},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 4
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 0, id |-> 1]
+/\ nAll = 4
+/\ consumed = {1, 3}
+/\ applied = { [ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1],
+  [ev |-> 1, at |-> 5, edge |-> "e2", to |-> 3] }
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 5
+/\ exhausted = FALSE
+/\ wf = "running"
+10078 states generated, 6808 distinct states found, 3597 states left on queue.
+The depth of the complete state graph search is 13.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 8 and the 95th percentile is 5).
+Finished in 05s at (2026-10-07 22:03:15)
+
+=== tr_rest · Mut=M_TRACKER · INVARIANT BudgetBound, CompletedOnlyBySink, NoActivationAfterFinding, LabelCoversTruth, TaintedNeverOutward, ClearHopsAlternate · CONSTRAINT CapOnePast
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = .0081
+  based on the actual fingerprints:  val = .0031
+783450185 states generated, 452432065 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 33.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 11 and the 95th percentile is 3).
+Finished in 59min 41s at (2026-10-07 23:02:57)
+
+=== so1 · Mut=M_SOURCEONLY · INVARIANT NoActivationAfterFinding
+Error: Invariant NoActivationAfterFinding is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = <<>>
+/\ nCharged = 0
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 0
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = FALSE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "A", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 2: <Promote line 160, col 3 to line 166, col 45 of module Mesh>
+/\ acts = << [ st |-> "none",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 0
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 0
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 3: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "none",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 1
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 1
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 4: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 1
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 1
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 0
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 5: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 6: <Decide line 220, col 3 to line 223, col 99 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {[ev |-> 1, edge |-> "e1", round |-> 1]}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 7: <Next line 281, col 12 to line 281, col 38 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 2
+/\ exhausted = FALSE
+/\ wf = "running"
+State 8: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> TRUE,
+     foundAt |-> 3 ],
+   [ st |-> "none",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 3
+/\ exhausted = FALSE
+/\ wf = "running"
+State 9: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> TRUE,
+     foundAt |-> 3 ],
+   [ st |-> "none",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 3
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 3
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 3
+/\ exhausted = FALSE
+/\ wf = "running"
+State 10: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> TRUE,
+     foundAt |-> 3 ],
+   [ st |-> "ok",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 4,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 3
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 3
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "B", w |-> "B"]
+/\ nRounds = 1
+/\ idx = 4
+/\ exhausted = FALSE
+/\ wf = "running"
+1028 states generated, 856 distinct states found, 344 states left on queue.
+The depth of the complete state graph search is 10.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 6 and the 95th percentile is 5).
+Finished in 05s at (2026-10-07 23:03:03)
+
+=== so_rest · Mut=M_SOURCEONLY · INVARIANT BudgetBound, CompletedOnlyBySink, RouteOnItsEvent, LabelCoversTruth, TaintedNeverOutward, ClearHopsAlternate
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.2E-6
+  based on the actual fingerprints:  val = 2.0E-6
+9638393 states generated, 5555341 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 26.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 9 and the 95th percentile is 3).
+Finished in 57s at (2026-10-07 23:04:00)
+
+=== ft1 · Mut=M_FORGETTAINT · INVARIANT LabelCoversTruth
+Error: Invariant LabelCoversTruth is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = <<>>
+/\ nCharged = 0
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 0
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = FALSE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "A", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 2: <Promote line 160, col 3 to line 166, col 45 of module Mesh>
+/\ acts = << [ st |-> "none",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 0
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 0
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 3: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "none",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 1
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 1
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 4: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 1
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 1
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 5: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 6: <Decide line 220, col 3 to line 223, col 99 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {[ev |-> 1, edge |-> "e1", round |-> 1]}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 7: <Next line 281, col 12 to line 281, col 38 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> TRUE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 2
+/\ exhausted = FALSE
+/\ wf = "running"
+226 states generated, 194 distinct states found, 82 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 2 (minimum is 1, the maximum 5 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 23:04:06)
+
+=== ft2 · Mut=M_FORGETTAINT · INVARIANT TaintedNeverOutward
+Error: Invariant TaintedNeverOutward is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = <<>>
+/\ nCharged = 0
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 0
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = FALSE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "A", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 2: <Promote line 160, col 3 to line 166, col 45 of module Mesh>
+/\ acts = << [ st |-> "none",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 0
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 0
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "B", x |-> "B", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 3: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "none",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 1
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 1
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "B", x |-> "B", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 4: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 1
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 1
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "B", x |-> "B", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 5: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "B", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 6: <Decide line 220, col 3 to line 223, col 99 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {[ev |-> 1, edge |-> "e1", round |-> 1]}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "B", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 7: <Next line 281, col 12 to line 281, col 38 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "B", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 2
+/\ exhausted = FALSE
+/\ wf = "running"
+State 8: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 3
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 3
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "B", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 2
+/\ exhausted = FALSE
+/\ wf = "running"
+State 9: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "bad",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> TRUE,
+     lin |-> "B",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 3
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 3
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "B", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 3
+/\ exhausted = FALSE
+/\ wf = "running"
+State 10: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "bad",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> TRUE,
+     lin |-> "B",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 4
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 4
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "B", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 3
+/\ exhausted = FALSE
+/\ wf = "running"
+State 11: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "bad",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> TRUE,
+     lin |-> "B",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 4
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 4
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "B", x |-> "B", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 4
+/\ exhausted = FALSE
+/\ wf = "running"
+State 12: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "bad",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> TRUE,
+     lin |-> "B",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 5
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 3, id |-> 2]
+/\ nAll = 5
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "B", x |-> "B", w |-> "A"]
+/\ nRounds = 2
+/\ idx = 4
+/\ exhausted = FALSE
+/\ wf = "running"
+State 13: <Decide line 220, col 3 to line 223, col 99 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "bad",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> TRUE,
+     lin |-> "B",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 5
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 3, id |-> 2]
+/\ nAll = 5
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {[ev |-> 3, edge |-> "e2", round |-> 2]}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "B", x |-> "B", w |-> "A"]
+/\ nRounds = 2
+/\ idx = 4
+/\ exhausted = FALSE
+/\ wf = "running"
+State 14: <Next line 281, col 12 to line 281, col 38 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "bad",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ended",
+     lbl |-> TRUE,
+     truth |-> TRUE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "ok",
+     at |-> 3,
+     node |-> "s",
+     trig |-> 2,
+     via |-> "e3",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> TRUE,
+     lin |-> "B",
+     hist |-> {1, 2, 3},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 5,
+     node |-> "x",
+     trig |-> 3,
+     via |-> "e2",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "B",
+     hist |-> {1, 2, 3, 4},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 5
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 3, id |-> 2]
+/\ nAll = 5
+/\ consumed = {1, 3}
+/\ applied = { [ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1],
+  [ev |-> 3, at |-> 5, edge |-> "e2", to |-> 3] }
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1, 3}
+/\ seat = [s |-> "B", x |-> "B", w |-> "A"]
+/\ nRounds = 2
+/\ idx = 5
+/\ exhausted = FALSE
+/\ wf = "running"
+21272 states generated, 18122 distinct states found, 10533 states left on queue.
+The depth of the complete state graph search is 14.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 7 and the 95th percentile is 5).
+Finished in 05s at (2026-10-07 23:04:13)
+
+=== ft_rest · Mut=M_FORGETTAINT · INVARIANT BudgetBound, CompletedOnlyBySink, RouteOnItsEvent, NoActivationAfterFinding, ClearHopsAlternate
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.9E-7
+  based on the actual fingerprints:  val = 1.3E-5
+8326977 states generated, 5135077 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 26.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 9 and the 95th percentile is 3).
+Finished in 47s at (2026-10-07 23:05:00)
+
+=== nl1 · Mut=M_NOLINEAGE · INVARIANT ClearHopsAlternate
+Error: Invariant ClearHopsAlternate is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = <<>>
+/\ nCharged = 0
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 0
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = FALSE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "A", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 2: <Promote line 160, col 3 to line 166, col 45 of module Mesh>
+/\ acts = << [ st |-> "none",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 0
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 0
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "A", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 3: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "none",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "running",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 1
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 1
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "A", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 0
+/\ exhausted = FALSE
+/\ wf = "running"
+State 4: <Next line 279, col 12 to line 279, col 69 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 1
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 0, id |-> 0]
+/\ nAll = 1
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {}
+/\ seat = [s |-> "A", x |-> "A", w |-> "A"]
+/\ nRounds = 0
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 5: <Next line 278, col 12 to line 278, col 89 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 6: <Decide line 220, col 3 to line 223, col 99 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> TRUE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {}
+/\ applied = {}
+/\ promoted = TRUE
+/\ pending = {[ev |-> 1, edge |-> "e1", round |-> 1]}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 1
+/\ exhausted = FALSE
+/\ wf = "running"
+State 7: <Next line 281, col 12 to line 281, col 38 of module Mesh>
+/\ acts = << [ st |-> "ok",
+     at |-> 0,
+     node |-> "s",
+     trig |-> 0,
+     via |-> "root",
+     status |-> "ended",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1},
+     found |-> FALSE,
+     foundAt |-> 0 ],
+   [ st |-> "none",
+     at |-> 2,
+     node |-> "w",
+     trig |-> 1,
+     via |-> "e1",
+     status |-> "ready",
+     lbl |-> FALSE,
+     truth |-> FALSE,
+     lin |-> "A",
+     hist |-> {1, 2},
+     found |-> FALSE,
+     foundAt |-> 0 ] >>
+/\ nCharged = 2
+/\ decFailed = {}
+/\ orch = [live |-> FALSE, ev |-> 1, id |-> 1]
+/\ nAll = 2
+/\ consumed = {1}
+/\ applied = {[ev |-> 1, at |-> 2, edge |-> "e1", to |-> 1]}
+/\ promoted = TRUE
+/\ pending = {}
+/\ voided = {}
+/\ served = {1}
+/\ seat = [s |-> "A", x |-> "A", w |-> "A"]
+/\ nRounds = 1
+/\ idx = 2
+/\ exhausted = FALSE
+/\ wf = "running"
+457 states generated, 388 distinct states found, 167 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 8 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 23:05:06)
+
+=== nl_rest · Mut=M_NOLINEAGE · INVARIANT BudgetBound, CompletedOnlyBySink, RouteOnItsEvent, NoActivationAfterFinding, LabelCoversTruth, TaintedNeverOutward
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 6.5E-7
+  based on the actual fingerprints:  val = 3.2E-6
+7075157 states generated, 4284633 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 26.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 9 and the 95th percentile is 3).
+Finished in 24s at (2026-10-07 23:05:31)
+
