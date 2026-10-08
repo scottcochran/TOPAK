@@ -385,8 +385,8 @@ closed `Spec => []P` whose `P` is expanded and has such a quantifier is the case
 abstracts, and every atom it hands LS4, is named by 20 bits of a hash it does not check, of a print that shows a
 bound variable as it shows a constant of its name, so two terms of one obligation can be one: by a collision of the
 hash, or by a capture, when a definition is expanded at an argument that names one of its bound variables. Either
-way a false statement can prove, and certify, by the second through `PTL` as well (`proof-certification.md` §8; to
-be recorded against T-0045-31 by ADR-0046 A2, pending). The two `ENABLED` invariants are therefore proved each in
+way a false statement can prove, and certify, by the second through `PTL` as well (`proof-certification.md` §8;
+recorded against T-0045-31 by ADR-0046 A2, Batch 37). The two `ENABLED` invariants are therefore proved each in
 one step from the expansion. The rule that avoids the first keeps untranslated terms behind hidden definitions: a
 temporal property of a parameter is a definition `LT(n)`, hidden in every step a backend other than LS4 discharges,
 where quantifying over `n` is sound, and expanded only in `PTL` steps; and no definition is expanded at an argument

@@ -25,7 +25,7 @@ an induction on `Reachable`, and the kernel checks it. The Lean theorems are the
 the LS4 premise removed and a different one added: that the Lean encoding is the TLA+ module.
 
 **Three of the sixteen TLAPS modules do not certify** under the checked backends (`proof-certification.md` §5a):
-`RulesFloorNV_rev5`, where Isabelle refuses all five of Zenon's scripts (tlapm reports one; ADR-0053 E1, pending),
+`RulesFloorNV_rev5`, where Isabelle refuses all five of Zenon's scripts (tlapm reports one; ADR-0053 E1, Batch 37),
 and `Confinement` and `Confinement_A1`, where three `TypeOK` steps each are proved by Z3 alone. All three are here,
 every step kernel-checked. The arithmetic those proofs hand to SMT, and `Coupling`'s, is `omega`; `TypeOK` has no
 counterpart; the `FiniteSetTheorems` facts about cardinalities are a count over five humans.

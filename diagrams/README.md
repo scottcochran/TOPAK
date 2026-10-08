@@ -35,6 +35,17 @@ TLC's state graphs (H7); and for R7, derived premises in the premise table (G3, 
 2026.10.06 (Batch 36)**: the twelve diagrams that drew it as Proposed now draw it accepted, G1 counts thirty-seven
 Annex A rows with T-0045-37 in the third group, and G3 reads the merged premise binding.
 
+**Amended 2026.10.08** for Batch 37 (ADR-0046 A2, E3 and E4; ADR-0045 A3 and E1; ADR-0053 E1): four diagrams. G1 and
+H6 draw T-0045-31's rows as amended: its residual names two known unsound cases in the prover's translation, and its
+instance notes that build 7824dab has both and that no result a record cites rests on either. H6 and H3 count all
+five of `RulesFloorNV_rev5`'s Zenon scripts refused by Isabelle, where tlapm reports one; H6 reads the refusals from
+the newest scan results file, now `spec/proof-scan-results-2026.10.08.txt`. G3 reads the premise routes renewed with
+ADR-0045's pin (`premise-routes-results-2026.10.08b.txt`). Regenerated, H3 also counts the Lean theorems of
+`TopakSpec-results-2026.10.07.txt` (136 with their axioms printed). H7 is left as drawn at Batch 36: regenerated, it
+would draw the Lean results of 2026.10.07 without `Emergency`'s graph check, which has a series of its own that H7's
+generator does not read yet, and it is owed with the liveness work at the next cut. The other 34 regenerate byte for
+byte.
+
 | Id | Diagram | What it shows |
 |---|---|---|
 | **A · Orientation** | | |

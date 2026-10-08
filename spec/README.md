@@ -81,7 +81,7 @@ first in every proof module, checks every module for a collision of the hash by 
 reads every obligation as tlapm prints it for a capture (`proof-scan-results-2026.10.08.txt`); with a reading of
 each step it lists, no proof module rests on either. §10 has the rules that avoid the first and a capture:
 untranslated terms behind hidden definitions, and no definition expanded at an argument that names one of its bound
-variables. A pending amendment is to record both against T-0045-31 (ADR-0046 A2, with ADR-0045 A3). `smt-checked-selftest.sh` checks the
+variables. Both are recorded against T-0045-31 (ADR-0046 A2, with ADR-0045 A3, ratified in Batch 37). `smt-checked-selftest.sh` checks the
 wrapper against a dishonest solver. **`proof-certification.md` is the method**: what is checked and by what, how the
 wrapper binds a proof to its query, how to read and reproduce a results file, what stays trusted, and how to write
 proofs that certify. `proof-method.md` §5a has the first assessment.
@@ -202,7 +202,8 @@ ratification (Batch 36), which merged `theorem-premise-binding-ADR-0053.json` in
 they change for five declarations (`premise-routes-results-2026.10.06b.txt`; the 2026.10.06 file is the run before
 the merge; `-2026.10.08.txt` is the same run, with the same verdicts, against `lean/GraphCheck-results-2026.10.07.txt`,
 which names no `Emergency` file, since `Emergency`'s graph check has its own series; it also names `ADR-0045.md` at
-the digest its pending A3 and E1 give it).
+the digest its A3 and E1 gave it as drafted, and `-2026.10.08b.txt` is the same again at their ratification in Batch
+37).
 
 Every `*-run.sh` and `simulate-run.sh` finds the jar at `../tools/tla2tools.jar` or `$TLA_JAR`; from `spec/` no
 export is needed. TLC writes its metadata under `/tmp/tlc_<name>`.

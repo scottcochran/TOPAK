@@ -354,7 +354,7 @@ No result in the 24 proof modules rests on the case. Not seen: a collision both 
 collision between terms that hold no renamed identifier, of which there is none; and a capture the display printer
 failed to rename, on which section 4 relies.
 
-The two are to be recorded against T-0045-31 by a pending amendment (ADR-0046 A2, with ADR-0045 A3), and are not
+The two are recorded against T-0045-31 (ADR-0046 A2, with ADR-0045 A3, ratified 2026.10.08 in Batch 37), and are not
 reported upstream yet (the custodian's decision, 2026.10.07). §10 has the rules that avoid the first and a capture;
 nothing a proof writes avoids a collision of the hash, and the scan's renamed run is what checks a module for it. To
 reproduce them, put these in a copy of `spec/` with `tools/` beside it and run `../tools/tlapm --toolbox 0 0` on
@@ -650,10 +650,10 @@ What the first twenty modules taught.
 | ADR-0045 T-0045-31; ADR-0046 §3 | The prover as a trust root. Its residual names "the SMT backends' soundness" |
 | **ADR-0046 E2** (ratified 2026.10.04, Batch 28) | Corrects the sentence on what `-C` checks (§1) |
 | **ADR-0046 A1** (ratified 2026.10.04, Batch 28) | Gives T-0045-31 a certified configuration and lists which modules are in it. Its ratification condition, the regeneration of §6 and the test of §7, was run on 2026.10.04 and met |
-| **ADR-0046 A2, ADR-0045 A3** (pending, drafted 2026.10.07) | Record the two unsound cases of §8 against T-0045-31: in its residual, in Annex B's instance for build 7824dab, and as an open obligation for a check that sees the first |
-| **ADR-0045 E1** (pending, drafted 2026.10.08) | Corrects what Annex B says of a certified results file: it names the driver without its digest, and a rerun can differ in its split between calls and reuse, and in which of Zenon's refused proofs it names (§6) |
-| **ADR-0046 E3, E4** (pending, drafted 2026.10.08) | Correct what §3 says a rerun reproduces (§6), and how many of `RulesFloorNV_rev5`'s Zenon proofs Isabelle refuses (all five; §9) |
-| **ADR-0053 E1** (pending, drafted 2026.10.08) | The same correction of the refused proofs |
+| **ADR-0046 A2, ADR-0045 A3** (ratified 2026.10.08, Batch 37) | Record the two unsound cases of §8 against T-0045-31: in its residual, in Annex B's instance for build 7824dab, and as an open obligation for a check that sees the first. Their ratification condition, §8's reproductions, a rerun of `proof-scan.sh` and a reading of each step it lists, was met on 2026.10.08 |
+| **ADR-0045 E1** (ratified 2026.10.08, Batch 37) | Corrects what Annex B says of a certified results file: it names the driver without its digest, and a rerun can differ in its split between calls and reuse, and in which of Zenon's refused proofs it names (§6) |
+| **ADR-0046 E3, E4** (ratified 2026.10.08, Batch 37) | Correct what §3 says a rerun reproduces (§6), and how many of `RulesFloorNV_rev5`'s Zenon proofs Isabelle refuses (all five; §9) |
+| **ADR-0053 E1** (ratified 2026.10.08, Batch 37) | The same correction of the refused proofs |
 | G9 open item 74 | "The SMT backends' proofs checked by Isabelle": answered by a different checker than it names |
 | ADR-0047, 0048, 0050, 0052 (Proposed) | Each cites its module's certified results file by digest in its ratification condition |
 
@@ -666,7 +666,7 @@ What the first twenty modules taught.
   in which the temporal step is an induction the Lean kernel checks, for fifteen of the proof modules, at the price of
   the encoding (`proof-method.md` §5b). They do not certify the TLAPS proofs; they prove the same theorems again.
 - **The translation.** Nothing here examines how the prover turns an obligation into a query in general. Two cases
-  are known to be unsound (§8). No check detects the first, and ADR-0046 A2 (pending) owes one: it needs what the
+  are known to be unsound (§8). No check detects the first, and ADR-0046 A2 (Batch 37) owes one: it needs what the
   prover's abstractions stand for, in the obligation as the prover forms it, and neither the query, which keeps only
   a name, nor the source, before quantifiers are moved out of temporal bodies, shows that; `spec/proof-scan.sh` says
   where to look. For a collision of the hash the scan's renamed run is a check by a second naming, not a proof, and
