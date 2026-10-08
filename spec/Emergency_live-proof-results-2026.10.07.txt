@@ -1,0 +1,10 @@
+TOPAK — TLAPS proof results for Emergency_live.tla: every obligation of Emergency_live_proof.tla, checked by the prover below
+Modules: Emergency.tla (sha256 1abae9beb82b00fa) · Emergency_live.tla (sha256 9685c67b42910b85) · Emergency_proof.tla (sha256 a1e5a82ad625496b) · Emergency_live_proof.tla (sha256 63c8ec703e6097d9)
+Prover: tlapm 7824dab (binary sha256 e150fb793fb28592) · backends: Z3 version 4.8.9 - 64 bit · zenon version 0.8.4 [a268] 2017-11-14 · Isabelle2025 · LS4 for PTL · driver: proof-results.sh
+Assumptions: none
+Theorems: SpecLImpliesSpec · TypeAlwaysL · LiveHasRoundAlwaysL · EmergencyLeaseHasARosterQuorumAlwaysL · EmergencyLeaseIsOneRoundAlwaysL · NoAgentHoldsAnEmergencySeatAlwaysL · CallsAreAllowlistedAlwaysL · ThinkerStillCoupledAlwaysL · ActivationIsForensicAlwaysL · SafeAlwaysL · EmergencyNeverCoupledAlways · EnvelopeHasTeAlways · EnvelopeHasTeAlwaysL · EmergencyCallsWithoutObserverAlways
+Lemmas: EmAdmitIsEmCall · EmRefuseIsEmCall · EmRefuseIsThinkerCall · NextLIsNext · EmCallSplits · NextIsNextL · EmergencyNeverCoupledValid · EnvelopeHasTeNext · EmergencyCallsWithoutObserverHolds · MutEmCoupleWaits · MutEmCouple2Waits
+A proved obligation is a theorem of the module under its assumptions and the hypotheses the statement names; the prover, not the constants, bounds the claim. Mutations and witnesses are behaviours and stay with TLC.
+
+File "./Emergency_live_proof.tla", line 1, character 1 to line 296, character 77:
+[INFO]: All 160 obligations proved.

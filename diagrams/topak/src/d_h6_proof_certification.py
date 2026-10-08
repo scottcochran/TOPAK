@@ -56,6 +56,21 @@ def _num(pat, t):
     return int(m.group(1)) if m else 0
 
 
+def read_scan_refused():
+    """Zenon proofs Isabelle refused, per module, from the newest proof-scan results file, which reads tlapm's trace of
+    Isabelle's check; tlapm reports only the first refusal Isabelle prints (ADR-0046 E4, B37)."""
+    f = sorted(SPEC.glob("proof-scan-results-*.txt"))[-1]
+    out, mod = {}, None
+    for ln in f.read_text(encoding="utf-8").splitlines():
+        m = re.match(r"== (\S+)_proof\.tla", ln)
+        if m:
+            mod = m.group(1)
+        m = re.search(r"Isabelle did not accept (\d+) of Zenon's proofs", ln)
+        if m and mod:
+            out[mod] = int(m.group(1))
+    return f.name, out
+
+
 def read_cert(mod):
     """-> dict of one module's certified results file, as printed (spec/proof-certification.md §5)."""
     f = sorted(SPEC.glob(f"{mod}-proof-cert-results-*.txt"))[-1]
@@ -93,9 +108,12 @@ def _row45(text, rid, annex):
 
 def _clean(s):
     s = re.sub(r"~~(.+?)~~\s*", "", s)
-    s = re.sub(r"⟨(B\d+|A\d+)⟩", r"(\1)", s)
-    # a bold span holding code cannot nest in lib's markup: keep the code and drop the bold there
-    s = re.sub(r"\*\*([^*]*`[^*]*)\*\*", r"\1", s)
+    s = re.sub(r"⟨(B\d+|A\d+|E\d+)⟩", r"(\1)", s)
+    # a bold span holding code cannot nest in lib's markup: keep the code and drop the bold there. The ** are
+    # paired first, so that a cell with two bold spans is not read as one from the end of the first to the second
+    segs = s.split("**")
+    if len(segs) % 2 == 1:
+        s = "".join(g if k % 2 == 0 or "`" in g else f"**{g}**" for k, g in enumerate(segs))
     s = re.sub(r"(?<![*\w])\*(?!\*)([^*]+?)(?<!\*)\*(?![*\w])", r"\1", s)
     return s.strip()
 
@@ -118,8 +136,9 @@ def build():
                "(315fa3d07b7a42de); spec/smt-checked (bb86642633822ae5); spec/smt-checked-selftest.sh; the twenty-two "
                "spec/*-proof-cert-results-2026.10.04.txt and -2026.10.05.txt files, read at build time; "
                "spec/proof-method.md §5a; spec/README.md (TLAPS proofs, certified runs); ADR-0046 §1, §3 with A1, "
-               "open obligations, E2, A1, B28; ADR-0045 Annex A and Annex B rows T-0045-14 and T-0045-31 (read at "
-               "build time), B24, B25, B28; ADR-0053 (B36) §2, §5 and spec/lean/TopakSpec-results-2026.10.05.txt; "
+               "open obligations, E2, A1, B28, A2, E3, E4, B37; ADR-0045 Annex A and Annex B rows T-0045-14 and T-0045-31 "
+               "(read at build time), B24, B25, B28, A3, E1, B37; the newest spec/proof-scan-results file (read at "
+               "build time, for Isabelle's refusals); ADR-0053 (B36) §2, §5 and spec/lean/TopakSpec-results-2026.10.05.txt; "
                "proof-certification.md §8, §12 as amended 2026.10.05; ADR-0030 §5 A1 and floor/cvc5-checked; G10 §1 (Batch 28), §2.6, §2.9, "
                "§3 (results 9; \"What these checks are\"), §5, §7 items 73, 74, §8; ToO rev 14 §7.9, §11.3")
     X0, X1 = c.x0, c.x1
@@ -179,8 +198,9 @@ def build():
 
     cert = {m: read_cert(m) for _, _, mods in GROUPS for m, _ in mods}
     tot = {k: sum(r[k] for r in cert.values()) for k in ("n", "triv", "smt", "zen", "isa", "ls4", "fail")}
-    zen_refused = sum(int(re.search(r"REJECTED (\d+)", r["zen_note"]).group(1))
-                      for r in cert.values() if "REJECTED" in r["zen_note"])
+    scan_file, scan_refused = read_scan_refused()
+    zen_refused = sum(max(int(re.search(r"REJECTED (\d+)", r["zen_note"]).group(1)), scan_refused.get(m, 0))
+                      for m, r in cert.items() if "REJECTED" in r["zen_note"])
 
     LWc, RTc, CKc, CNc, RSc = 430, 720, 640, 520, W - 430 - 720 - 640 - 520 - 4 * 70
     xs = [X0]
@@ -202,7 +222,7 @@ def build():
         ("Zenon, its script checked by Isabelle (`-C`)", "teal", None,
          ["What no SMT answer closed goes on to Zenon. `Operators_proof` has two `ENABLED` goals there that "
           "Isabelle accepted; `RulesFloorNV_rev5_proof` has five, the cases of `BaseNext`, under Z3 as under cvc5, "
-          "and Isabelle refuses one."],
+          "and Isabelle refuses all five, though tlapm reports one (ADR-0046 E4, B37)."],
          "Isabelle2025 reconstructs the script", ["A script Isabelle refuses, or cannot check, is not a checked "
                                                    "proof: the module does not certify."], "teal",
          f"**Counts** when Isabelle confirms it.\n**{tot['zen']}**: {tot['zen'] - zen_refused} accepted, "
@@ -225,7 +245,7 @@ def build():
          "—", ["The run is refused as a whole: `proof-cert.sh` exits non-zero and the file ends `NOT CERTIFIED: "
                "<reason>`."], "red",
          f"[[red|The module is not certified.]]\n**{tot['fail']}** failed, in two modules; and the "
-         f"{zen_refused} refused Zenon proof above", "red"),
+         f"{zen_refused} refused Zenon proof{'' if zen_refused == 1 else 's'} above", "red"),
     ]
     rows_h = []
     for rt, ra, rd, rb, ck, cb, ca, cn, cna in routes:
@@ -374,6 +394,8 @@ def build():
             r = cert[m]
             zen = str(r["zen"]) + (f": {r['zen_note']}" if r["zen_note"] else "")
             if "REJECTED" in zen:
+                if scan_refused.get(m, 0) > int(re.search(r"REJECTED (\d+)", zen).group(1)):
+                    zen += f"; Isabelle's trace: all {scan_refused[m]} refused (E4, B37)"
                 zen = f"[[red|{zen}]]"
             res = ("[[teal|Certified]]" if r["certified"] else f"[[red|NOT CERTIFIED]]: {r['last'][15:]}")
             if m in in_lean:
@@ -398,7 +420,8 @@ def build():
                  "accent": "teal"})
     y += c.table(X0, y, cols, rows, size=13.5, accent="blue") + 14
     y += c.para(X0, y, W, "proof-certification.md §9 reports twenty modules and 5,084 obligations on 2026.10.04 (trivial "
-                "3,330; SMT 1,621; Zenon 10, nine accepted and one refused; Isabelle 2; LS4 115; failed 6); the two "
+                "3,330; SMT 1,621; Zenon 10, five accepted and five refused, of which tlapm reported one (ADR-0046 E4, B37); "
+                "Isabelle 2; LS4 115; failed 6); the two "
                 "successors certified on 2026.10.05 add 141 and make the totals above. Time-outs ×10 is `STRETCH=10`: "
                 "it recovered one obligation in `Confinement` and none elsewhere (§10).", 14, "muted") + 50
 
@@ -410,7 +433,8 @@ def build():
     three = [
         ("`RulesFloorNV_rev5_proof`", [
             f"**{cert['RulesFloorNV_rev5']['n']} obligations**: five are Zenon's (the cases of `BaseNext`, lines 115 to "
-            "126), under Z3 as under cvc5, and **Isabelle refuses the script for one** (obligation 55). The 10.02 "
+            "126), under Z3 as under cvc5, and **Isabelle refuses the scripts for all five**, though tlapm reports only "
+            "the first, obligation 55 (ADR-0046 E4, B37). The 10.02 "
             "results never ran the check.",
             "**What it would take:** smaller steps for those cases, so that SMT proves them or Zenon's script "
             "reconstructs.",
@@ -513,7 +537,7 @@ def build():
     # the two trusted-base rows, as ADR-0045 has them
     text45 = strip_external(ADR45.read_text(encoding="utf-8"))
     y += c.heading(X0, y, "The two trusted-base rows certification rests on: ADR-0045 Annex A and Annex B, as amended "
-                          "(B24, B25, B28)", "blue", 19)
+                          "(B24, B25, B28, B37)", "blue", 19)
     a14, a31 = _row45(text45, "T-0045-14", "A"), _row45(text45, "T-0045-31", "A")
     colsA = [("Id", 120), ("Component", 300), ("Layer", 100), ("Trusted for", 330), ("Rungs", 110), ("Class", 110),
              ("Failure can produce", 280), ("Identity fixed by", 360), ("Residual", W - 1710)]

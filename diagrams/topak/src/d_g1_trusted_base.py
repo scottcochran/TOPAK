@@ -112,7 +112,7 @@ def build():
                "Tables below are drawn in full from the record; where the reference has moved past Annex B "
                "(G10 §2.6, item 89), the row's note says so.",
                3600, "ADR-0045 §1–§9, Findings 1–7, Annex A, Annex B, History (R1–R6, B22, B23, B24, B25, B27, B28, "
-               "B29, B30, A1, A2, B34, B36); ADR-0046 §1–§3 (B25), A1 (B28); "
+               "B29, B30, A1, A2, B34, B36, A3, E1, B37); ADR-0046 §1–§3 (B25), A1 (B28), A2 (B37); "
                "ADR-0015 (authority "
                "changes); ADR-0023 §4a, §6a, §6b, A1 §6c (B29); ADR-0025 §1; ADR-0029 A4; ADR-0030 A1 (B24); ADR-0033 "
                "A6 (B23), A7 (B29), A8 (B31), A9 (B32), A10 to A12 and A14 (B34); ADR-0034 §5, §6, A2 (B30); "
@@ -297,7 +297,8 @@ def build():
     # ======================================================================== Annex A in full
     y += c.heading(X0, y, "Annex A · The archetype's trusted base: thirty-seven rows in five groups (archetype version: "
                           "the corpus at Batch 20, 2026.09.30; T-0045-31 added by dependent entry, B25; T-0045-32 to 36 "
-                          "by A1 and A2, B34; T-0045-37 by dependent entry, B36)", "blue", 21)
+                          "by A1 and A2, B34; T-0045-37 by dependent entry, B36; T-0045-31's residual and instance amended "
+                          "by A3 and E1, B37)", "blue", 21)
     y += c.legend(X0, y, [("box", "blue", "trust root (identity issued or promoted)"),
                           ("box", "green", "delegated (failure only subtracts)"),
                           ("box", "grey", "excluded (trusted for nothing; premised theorems void)"),
@@ -402,7 +403,8 @@ def build():
             cells[3] = (f"[[brown|Changed class after ratification, by dependent entry ({batch}).]] " + cells[3])
         if r[0].strip() == "T-0045-31":
             cells[3] = ("[[brown|Added by dependent entry (B25, ADR-0046 §3); certified configuration added by "
-                        "B28 (ADR-0046 A1).]] " + cells[3])
+                        "B28 (ADR-0046 A1); the last clause corrected and both unsound cases noted by B37 (ADR-0045 "
+                        "E1, A3).]] " + cells[3])
         if r[0].strip() == "T-0045-6":
             cells[3] += (" [[red|Stale against G10 §2.7 (unchanged since G7): since ADR-0033 A6 (B23) the reference "
                          "loads a bundle only under a verified signature; the checkpoint wins.]]")
@@ -436,7 +438,9 @@ def build():
         "(B28, ADR-0046 A1): cvc5 behind `spec/smt-checked` and the checker of T-0045-14 in place of Z3, Zenon's "
         "proofs checked by Isabelle. At G10 **nineteen of twenty-two modules certify** (G10 §2.9); the row's own "
         "residual still reads eleven of thirteen, as written at B28. The prover is pinned by `tools/TLAPS-PIN` and "
-        "its wrapper refuses another binary (G10 item 73, discharged).",
+        "its wrapper refuses another binary (G10 item 73, discharged). **Since B37** (ADR-0046 A2, ADR-0045 A3) its "
+        "residual names two known unsound cases in the prover's translation, and Annex B notes that build 7824dab "
+        "has both and that no result a record cites rests on either.",
         "**T-0045-5** drops \"Proposed\" with ADR-0005's ratification (B27); its class is unchanged.",
         "**Annex B's confinement rows follow the launcher** (B29, ADR-0033 A7): rung 1 real, filling T-0045-19 and 20; "
         "rung 3 SIMULATED under test keys standing in for 16 and 17; rung 2 a seam. The declaration template "

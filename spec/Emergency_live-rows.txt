@@ -1,0 +1,45 @@
+# Rows for live-gen-results.sh Emergency_live: name mut spec kind property expected [CONST=value ...] [states=N]
+# MaxRound = 2 unless the row says otherwise. states=N is Emergency.tla's own graph under that Mut
+# (Emergency-results-2026.10.04.txt): under each of its eight Muts EmAdmit and EmRefuse together are EmCall, so NextL
+# is its Next. Under M_EMCOUPLE2 every successor of a state is one it has under none, and it reaches all 25728 of
+# none's states, so no invariant over the variables can tell M_EMCOUPLE2 from none.
+# expected: none: SpecL is Emergency's Spec (its 25728 states, Safe HOLDS, the witness w3 VIOLATED, no deadlock) and both ENABLED invariants HOLD, at MaxRound=2 and at MaxRound=3, as does EnvelopeHasT1 (t1 is in every envelope, so neither property rests on te alone); under each of Emergency.tla's seven mutations both HOLD, on that mutation's own state graph (none of them couples the emergency seat); M_EMCOUPLE keeps Safe and the absence of deadlock and breaks both, and w3 HOLDS, so the witness run catches it too; M_EMCOUPLE2 reaches Emergency's 25728 states, keeps Safe and the absence of deadlock and breaks both, and w3 is still VIOLATED, in round one, so only the two properties catch it
+#
+# Mut = none: Emergency's graph, its Safe and its witness w3.
+s-none-safe          none         SpecL  INVARIANT  Safe                           HOLDS     states=25728
+d-none-deadlock      none         SpecL  DEADLOCK   Safe                           HOLDS     states=25728
+w-none-w3            none         SpecL  INVARIANT  NeverUnobservedEmergencyCall   VIOLATED
+# The two properties.
+e-none-nc            none         SpecL  INVARIANT  EmergencyNeverCoupled          HOLDS     states=25728
+e-none-cwo           none         SpecL  INVARIANT  EmergencyCallsWithoutObserver  HOLDS     states=25728
+# The header's reading that the envelope is never empty without te: t1 is in every envelope the seat has had.
+e-none-t1            none         SpecL  INVARIANT  EnvelopeHasT1                  HOLDS     states=25728
+# Emergency.tla's seven mutations: none couples the emergency seat.
+m-noquorum-nc        M_NOQUORUM   SpecL  INVARIANT  EmergencyNeverCoupled          HOLDS     states=92288
+m-noquorum-cwo       M_NOQUORUM   SpecL  INVARIANT  EmergencyCallsWithoutObserver  HOLDS     states=92288
+m-regrant-nc         M_REGRANT    SpecL  INVARIANT  EmergencyNeverCoupled          HOLDS     states=30848
+m-regrant-cwo        M_REGRANT    SpecL  INVARIANT  EmergencyCallsWithoutObserver  HOLDS     states=30848
+m-renew-nc           M_RENEW      SpecL  INVARIANT  EmergencyNeverCoupled          HOLDS     states=51328
+m-renew-cwo          M_RENEW      SpecL  INVARIANT  EmergencyCallsWithoutObserver  HOLDS     states=51328
+m-agent-nc           M_AGENT      SpecL  INVARIANT  EmergencyNeverCoupled          HOLDS     states=92288
+m-agent-cwo          M_AGENT      SpecL  INVARIANT  EmergencyCallsWithoutObserver  HOLDS     states=92288
+m-x1-nc              M_X1         SpecL  INVARIANT  EmergencyNeverCoupled          HOLDS     states=50912
+m-x1-cwo             M_X1         SpecL  INVARIANT  EmergencyCallsWithoutObserver  HOLDS     states=50912
+m-uncouple-nc        M_UNCOUPLE   SpecL  INVARIANT  EmergencyNeverCoupled          HOLDS     states=29632
+m-uncouple-cwo       M_UNCOUPLE   SpecL  INVARIANT  EmergencyCallsWithoutObserver  HOLDS     states=29632
+m-erase-nc           M_ERASE      SpecL  INVARIANT  EmergencyNeverCoupled          HOLDS     states=38528
+m-erase-cwo          M_ERASE      SpecL  INVARIANT  EmergencyCallsWithoutObserver  HOLDS     states=38528
+# This module's two mutations.
+m-emcouple-nc        M_EMCOUPLE   SpecL  INVARIANT  EmergencyNeverCoupled          VIOLATED
+m-emcouple-cwo       M_EMCOUPLE   SpecL  INVARIANT  EmergencyCallsWithoutObserver  VIOLATED
+m-emcouple-safe      M_EMCOUPLE   SpecL  INVARIANT  Safe                           HOLDS
+m-emcouple-w3        M_EMCOUPLE   SpecL  INVARIANT  NeverUnobservedEmergencyCall   HOLDS     # the witness is no longer reached
+d-emcouple-deadlock  M_EMCOUPLE   SpecL  DEADLOCK   Safe                           HOLDS     # ObsToggle is always enabled, so no state lacks a successor
+m-emcouple2-nc       M_EMCOUPLE2  SpecL  INVARIANT  EmergencyNeverCoupled          VIOLATED
+m-emcouple2-cwo      M_EMCOUPLE2  SpecL  INVARIANT  EmergencyCallsWithoutObserver  VIOLATED
+m-emcouple2-safe     M_EMCOUPLE2  SpecL  INVARIANT  Safe                           HOLDS     states=25728
+m-emcouple2-w3       M_EMCOUPLE2  SpecL  INVARIANT  NeverUnobservedEmergencyCall   VIOLATED  # still reached, in round one
+d-emcouple2-deadlock M_EMCOUPLE2  SpecL  DEADLOCK   Safe                           HOLDS     # ObsToggle is always enabled, so no state lacks a successor
+# A larger round bound.
+b-none-nc            none         SpecL  INVARIANT  EmergencyNeverCoupled          HOLDS     MaxRound=3
+b-none-cwo           none         SpecL  INVARIANT  EmergencyCallsWithoutObserver  HOLDS     MaxRound=3

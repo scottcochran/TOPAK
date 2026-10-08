@@ -1,0 +1,122 @@
+TOPAK — Lean results for the spec/ modules re-encoded in Lean: every theorem of spec/lean/TopakSpec/*.lean, checked by the kernel below
+Transcribes: spec/Seats.tla (sha256 903a1db686968df0) · spec/Observers.tla (sha256 96b0792ce948ec80) · spec/RunSeats.tla (sha256 1bb49475ab59f6de) · spec/FloorRouting.tla (sha256 9d4c0f5e03defc1e) · spec/FloorComposition.tla (sha256 3d30a058d8f8d9d1) · spec/NonComposition.tla (sha256 119f9a7e878f8929) · spec/RulesFloorBase.tla (sha256 cf2351de2b39cccf) · spec/Anchor.tla (sha256 a70187ef43058848) · spec/BreakGlass.tla (sha256 2c3c3d75aba2a599) · spec/Coupling.tla (sha256 6d1e7a07f3d102ef) · spec/Lease_A1.tla (sha256 0b5eac7a7309be2f) · spec/RulesFloorNV_rev5.tla (sha256 3034df144d75ec3a) · spec/Confinement.tla (sha256 d0dcf21ce9774885) · spec/Confinement_A1.tla (sha256 715b1c291771c527) · spec/Emergency.tla (sha256 1abae9beb82b00fa) · spec/Emergency_live.tla (sha256 9685c67b42910b85)
+Sources: spec/lean/TopakSpec/Prelude.lean (sha256 032c31fe29025abe) · spec/lean/TopakSpec/Temporal.lean (sha256 432d1c610dfeb10f) · spec/lean/TopakSpec/Seats.lean (sha256 e7f3b5fefc58e20f) · spec/lean/TopakSpec/Observers.lean (sha256 4def819b7c5dc7c0) · spec/lean/TopakSpec/RunSeats.lean (sha256 adf93be6476c142a) · spec/lean/TopakSpec/FloorRouting.lean (sha256 edc85be96d4461eb) · spec/lean/TopakSpec/FloorComposition.lean (sha256 4f1993c067399ee3) · spec/lean/TopakSpec/NonComposition.lean (sha256 c8060e8fc8c1633b) · spec/lean/TopakSpec/RulesFloorBase.lean (sha256 b9a5735af7cf6b98) · spec/lean/TopakSpec/Anchor.lean (sha256 ee0ea47c1574faa0) · spec/lean/TopakSpec/BreakGlass.lean (sha256 ac25ee1ff4f76698) · spec/lean/TopakSpec/Coupling.lean (sha256 c52978c1f30448a4) · spec/lean/TopakSpec/Lease_A1.lean (sha256 89ca6c689cf45f74) · spec/lean/TopakSpec/RulesFloorNV_rev5.lean (sha256 d18bcad5feacef59) · spec/lean/TopakSpec/Confinement.lean (sha256 d08b9e6dfd0ea306) · spec/lean/TopakSpec/Emergency.lean (sha256 74688740192781b9) · spec/lean/TopakSpec/Mirror/Seats.lean (sha256 4b00f6a6a6e63fab) · spec/lean/TopakSpec/Mirror/FloorComposition.lean (sha256 7b8700eb353fd0a3) · spec/lean/TopakSpec/Mirror/Emergency.lean (sha256 893852a917470660) · spec/lean/TopakSpec.lean (sha256 4d85c59f8b13a3d9) · spec/lean/lakefile.toml (sha256 efda263910b17701) · spec/lean/lean-toolchain (sha256 3aac669c7a910ec2)
+Prover: Lean (version 4.33.1, arm64-apple-darwin24.6.0, commit 819816b2e0a3bf405af45ae5c7af2491d8f5bee6, Release) · kernel libleanshared (sha256 5a23395d981dbeeb) · leanchecker (sha256 9b9a22ecb11e8e59) · Lake version 5.0.0-src+819816b (Lean version 4.33.1) · toolchain leanprover/lean4:v4.33.1 · driver: results.sh, tools/lean-report.sh
+Theorems (Seats): OnlyThinkersAuthorAlways · OneSeatPerPrincipalAlways · SafeAlways
+Theorems (Observers): DenyByAnyOfAlways · ReachIsBoundedAlways · SafeAlways
+Theorems (RunSeats): OnlyThinkersActuateAlways · ObserversConsultAndReportAlways · NoNameCrossesDomainsAlways · SafeAlways
+Theorems (FloorRouting): SafeAlways · NoWideningAlways · NeverVacuousAlways
+Theorems (FloorComposition): AdmitImpliesFloorPermitAlways · FloorErrorIsDenyAlways · BundleRefusalHonoredAlways · BundleCannotWriteFloorInputsAlways · EnvelopeHoldsAlways · SafeAlways
+Theorems (NonComposition): SafeAlways · NC1Always · NC2Always
+Theorems (RulesFloorBase): GenesisEntries · GenesisFloor
+Theorems (Anchor): FloorPreservedAlways · EpochMonotoneAlways
+Theorems (BreakGlass): NeverChangesAuthority
+Theorems (Coupling): UnreadBoundedAlways · NoAdmitWithoutLiveObserverAlways · CorrelatorNeverGatesAlways · SafeAlways
+Theorems (Lease_A1): LeaseAuthorityMonotoneAlways · NoActionUnderFencedEpochAlways · Rung0NeverContainedAlways · RevokedStaysStoppedAlways · SafeAlways
+Theorems (RulesFloorNV_rev5): GenesisEntries · P1Always · P2Always · P3Always · P5Always · P7Always · P9Always · SafeAlways
+Theorems (Confinement): ContainedMeansConfinedAlways · NoSilentDowngradeAlways · ContestedStoppedAlways · FreshAppraisalAlways · SafeAlways · Confinement_A1_SafeAlways · Confinement_SafeAlways
+Theorems (Emergency): LiveHasRoundAlways · EmergencyLeaseHasARosterQuorumAlways · EmergencyLeaseIsOneRoundAlways · NoAgentHoldsAnEmergencySeatAlways · CallsAreAllowlistedAlways · ThinkerStillCoupledAlways · ActivationIsForensicAlways · SafeAlways · UnobservedEmergencyCallEnabledAlways · SafeLAlways · EmergencyNeverCoupledAlways · EmergencyCallsWithoutObserverAlways
+Theorems (Mirror/Seats): eqC_iff · heldB_iff · next_iff · init_iff · ota_iff · osp_iff
+Theorems (Mirror/FloorComposition): eqC_iff · next_iff · init_iff · aifp_iff · fed_iff · brh_iff · env_iff · bcw_iff
+Theorems (Mirror/Emergency): eqC_iff · next_iff · nextL_iff · init_iff · elhq_iff · elo_iff · nah_iff · caa_iff · tsc_iff · aif_iff · enabled_iff · enc_iff · ecwo_iff
+A theorem holds of the Lean re-encoding, not of the frozen TLA+ text; the encoding's fidelity is read, each definition beside the TLA+ it transcribes, and for Seats, FloorComposition and Emergency also checked: their mirrors (TopakSpec/Mirror/) are proved equal to the encodings' Next (Emergency's at MaxRound = 2, and also to Emergency_live's NextL), Init and properties, and graph-check.sh and graph-check-emergency.sh evaluate them on TLC's state graphs (GraphCheck-results-*.txt for Seats and FloorComposition, GraphCheckEmergency-results-*.txt for Emergency). Spec => []P is induction on reachable states (Prelude.invariant), in place of LS4; the arithmetic the TLAPS proofs hand to SMT is closed by omega; Confinement.lean covers Confinement.tla and Confinement_A1.tla under one flag; Emergency.lean covers Emergency.tla and Emergency_live.tla, which extends it. Mutations and witnesses stay with TLC.
+
+info: TopakSpec/Anchor.lean:90:0: 'Topak.Spec.Anchor.FloorPreservedAlways' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Anchor.lean:91:0: 'Topak.Spec.Anchor.EpochMonotoneAlways' does not depend on any axioms
+info: TopakSpec/BreakGlass.lean:109:0: 'Topak.Spec.BreakGlass.NeverChangesAuthority' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Confinement.lean:734:0: 'Topak.Spec.Confinement.ContainedMeansConfinedAlways' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Confinement.lean:735:0: 'Topak.Spec.Confinement.NoSilentDowngradeAlways' depends on axioms: [propext]
+info: TopakSpec/Confinement.lean:736:0: 'Topak.Spec.Confinement.ContestedStoppedAlways' depends on axioms: [propext]
+info: TopakSpec/Confinement.lean:737:0: 'Topak.Spec.Confinement.FreshAppraisalAlways' depends on axioms: [propext]
+info: TopakSpec/Confinement.lean:738:0: 'Topak.Spec.Confinement.SafeAlways' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Coupling.lean:483:0: 'Topak.Spec.Coupling.UnreadBoundedAlways' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Coupling.lean:484:0: 'Topak.Spec.Coupling.NoAdmitWithoutLiveObserverAlways' does not depend on any axioms
+info: TopakSpec/Coupling.lean:485:0: 'Topak.Spec.Coupling.CorrelatorNeverGatesAlways' does not depend on any axioms
+info: TopakSpec/Coupling.lean:486:0: 'Topak.Spec.Coupling.SafeAlways' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Emergency.lean:1097:0: 'Topak.Spec.Emergency.LiveHasRoundAlways' does not depend on any axioms
+info: TopakSpec/Emergency.lean:1098:0: 'Topak.Spec.Emergency.EmergencyLeaseHasARosterQuorumAlways' does not depend on any axioms
+info: TopakSpec/Emergency.lean:1099:0: 'Topak.Spec.Emergency.EmergencyLeaseIsOneRoundAlways' does not depend on any axioms
+info: TopakSpec/Emergency.lean:1100:0: 'Topak.Spec.Emergency.NoAgentHoldsAnEmergencySeatAlways' does not depend on any axioms
+info: TopakSpec/Emergency.lean:1101:0: 'Topak.Spec.Emergency.CallsAreAllowlistedAlways' does not depend on any axioms
+info: TopakSpec/Emergency.lean:1102:0: 'Topak.Spec.Emergency.ThinkerStillCoupledAlways' does not depend on any axioms
+info: TopakSpec/Emergency.lean:1103:0: 'Topak.Spec.Emergency.ActivationIsForensicAlways' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Emergency.lean:1104:0: 'Topak.Spec.Emergency.SafeAlways' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Emergency.lean:1105:0: 'Topak.Spec.Emergency.UnobservedEmergencyCallEnabledAlways' does not depend on any axioms
+info: TopakSpec/Emergency.lean:1106:0: 'Topak.Spec.Emergency.nextL_next' does not depend on any axioms
+info: TopakSpec/Emergency.lean:1107:0: 'Topak.Spec.Emergency.SafeLAlways' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Emergency.lean:1108:0: 'Topak.Spec.Emergency.nextL_iff_next' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: TopakSpec/Emergency.lean:1109:0: 'Topak.Spec.Emergency.nextL_iff_next_needs_em' does not depend on any axioms
+info: TopakSpec/Emergency.lean:1110:0: 'Topak.Spec.Emergency.reachL_iff' does not depend on any axioms
+info: TopakSpec/Emergency.lean:1111:0: 'Topak.Spec.Emergency.EmergencyNeverCoupledValid' does not depend on any axioms
+info: TopakSpec/Emergency.lean:1112:0: 'Topak.Spec.Emergency.EmergencyNeverCoupledAlways' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Emergency.lean:1113:0: 'Topak.Spec.Emergency.EmergencyCallsWithoutObserverAlways' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Emergency.lean:1114:0: 'Topak.Spec.Emergency.EmergencyNeverCoupledIff' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Emergency.lean:1115:0: 'Topak.Spec.Emergency.EmergencyCallsWithoutObserverIff' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/FloorComposition.lean:347:0: 'Topak.Spec.FloorComposition.AdmitImpliesFloorPermitAlways' does not depend on any axioms
+info: TopakSpec/FloorComposition.lean:348:0: 'Topak.Spec.FloorComposition.FloorErrorIsDenyAlways' does not depend on any axioms
+info: TopakSpec/FloorComposition.lean:349:0: 'Topak.Spec.FloorComposition.BundleRefusalHonoredAlways' does not depend on any axioms
+info: TopakSpec/FloorComposition.lean:350:0: 'Topak.Spec.FloorComposition.BundleCannotWriteFloorInputsAlways' does not depend on any axioms
+info: TopakSpec/FloorComposition.lean:351:0: 'Topak.Spec.FloorComposition.EnvelopeHoldsAlways' depends on axioms: [propext]
+info: TopakSpec/FloorComposition.lean:352:0: 'Topak.Spec.FloorComposition.SafeAlways' depends on axioms: [propext]
+info: TopakSpec/FloorRouting.lean:173:0: 'Topak.Spec.FloorRouting.SafeAlways' depends on axioms: [propext]
+info: TopakSpec/FloorRouting.lean:174:0: 'Topak.Spec.FloorRouting.NoWideningAlways' depends on axioms: [propext]
+info: TopakSpec/FloorRouting.lean:175:0: 'Topak.Spec.FloorRouting.NeverVacuousAlways' depends on axioms: [propext]
+info: TopakSpec/Lease_A1.lean:358:0: 'Topak.Spec.Lease_A1.LeaseAuthorityMonotoneAlways' depends on axioms: [propext]
+info: TopakSpec/Lease_A1.lean:359:0: 'Topak.Spec.Lease_A1.NoActionUnderFencedEpochAlways' depends on axioms: [propext]
+info: TopakSpec/Lease_A1.lean:360:0: 'Topak.Spec.Lease_A1.Rung0NeverContainedAlways' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Lease_A1.lean:361:0: 'Topak.Spec.Lease_A1.RevokedStaysStoppedAlways' depends on axioms: [propext]
+info: TopakSpec/Lease_A1.lean:362:0: 'Topak.Spec.Lease_A1.SafeAlways' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Mirror/Emergency.lean:964:0: 'Topak.Spec.Emergency.Mirror.next_iff' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Mirror/Emergency.lean:965:0: 'Topak.Spec.Emergency.Mirror.nextL_iff' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Mirror/Emergency.lean:966:0: 'Topak.Spec.Emergency.Mirror.init_iff' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Mirror/Emergency.lean:967:0: 'Topak.Spec.Emergency.Mirror.eqC_iff' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Mirror/Emergency.lean:968:0: 'Topak.Spec.Emergency.Mirror.elhq_iff' depends on axioms: [propext]
+info: TopakSpec/Mirror/Emergency.lean:969:0: 'Topak.Spec.Emergency.Mirror.elo_iff' depends on axioms: [propext]
+info: TopakSpec/Mirror/Emergency.lean:970:0: 'Topak.Spec.Emergency.Mirror.nah_iff' depends on axioms: [propext]
+info: TopakSpec/Mirror/Emergency.lean:971:0: 'Topak.Spec.Emergency.Mirror.caa_iff' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Mirror/Emergency.lean:972:0: 'Topak.Spec.Emergency.Mirror.tsc_iff' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Mirror/Emergency.lean:973:0: 'Topak.Spec.Emergency.Mirror.aif_iff' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Mirror/Emergency.lean:974:0: 'Topak.Spec.Emergency.Mirror.enabled_iff' depends on axioms: [propext]
+info: TopakSpec/Mirror/Emergency.lean:975:0: 'Topak.Spec.Emergency.Mirror.enc_iff' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Mirror/Emergency.lean:976:0: 'Topak.Spec.Emergency.Mirror.ecwo_iff' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Mirror/FloorComposition.lean:170:0: 'Topak.Spec.FloorComposition.Mirror.next_iff' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Mirror/FloorComposition.lean:171:0: 'Topak.Spec.FloorComposition.Mirror.init_iff' depends on axioms: [propext]
+info: TopakSpec/Mirror/FloorComposition.lean:172:0: 'Topak.Spec.FloorComposition.Mirror.eqC_iff' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Mirror/FloorComposition.lean:173:0: 'Topak.Spec.FloorComposition.Mirror.aifp_iff' depends on axioms: [propext]
+info: TopakSpec/Mirror/FloorComposition.lean:174:0: 'Topak.Spec.FloorComposition.Mirror.fed_iff' depends on axioms: [propext]
+info: TopakSpec/Mirror/FloorComposition.lean:175:0: 'Topak.Spec.FloorComposition.Mirror.brh_iff' depends on axioms: [propext]
+info: TopakSpec/Mirror/FloorComposition.lean:176:0: 'Topak.Spec.FloorComposition.Mirror.bcw_iff' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Mirror/FloorComposition.lean:177:0: 'Topak.Spec.FloorComposition.Mirror.env_iff' depends on axioms: [propext]
+info: TopakSpec/Mirror/Seats.lean:298:0: 'Topak.Spec.Seats.Mirror.next_iff' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Mirror/Seats.lean:299:0: 'Topak.Spec.Seats.Mirror.init_iff' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Mirror/Seats.lean:300:0: 'Topak.Spec.Seats.Mirror.eqC_iff' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Mirror/Seats.lean:301:0: 'Topak.Spec.Seats.Mirror.ota_iff' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Mirror/Seats.lean:302:0: 'Topak.Spec.Seats.Mirror.osp_iff' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/NonComposition.lean:283:0: 'Topak.Spec.NonComposition.SafeAlways' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: TopakSpec/NonComposition.lean:284:0: 'Topak.Spec.NonComposition.NC1Always' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: TopakSpec/NonComposition.lean:285:0: 'Topak.Spec.NonComposition.NC2Always' depends on axioms: [propext, Classical.choice, Quot.sound]
+info: TopakSpec/Observers.lean:208:0: 'Topak.Spec.Observers.DenyByAnyOfAlways' depends on axioms: [propext]
+info: TopakSpec/Observers.lean:209:0: 'Topak.Spec.Observers.ReachIsBoundedAlways' depends on axioms: [propext]
+info: TopakSpec/Observers.lean:210:0: 'Topak.Spec.Observers.SafeAlways' depends on axioms: [propext]
+info: TopakSpec/RulesFloorNV_rev5.lean:409:0: 'Topak.Spec.RulesFloorNV_rev5.P1Always' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/RulesFloorNV_rev5.lean:410:0: 'Topak.Spec.RulesFloorNV_rev5.P2Always' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/RulesFloorNV_rev5.lean:411:0: 'Topak.Spec.RulesFloorNV_rev5.P3Always' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/RulesFloorNV_rev5.lean:412:0: 'Topak.Spec.RulesFloorNV_rev5.P5Always' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/RulesFloorNV_rev5.lean:413:0: 'Topak.Spec.RulesFloorNV_rev5.P7Always' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/RulesFloorNV_rev5.lean:414:0: 'Topak.Spec.RulesFloorNV_rev5.P9Always' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/RulesFloorNV_rev5.lean:415:0: 'Topak.Spec.RulesFloorNV_rev5.SafeAlways' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/RunSeats.lean:251:0: 'Topak.Spec.RunSeats.OnlyThinkersActuateAlways' depends on axioms: [propext]
+info: TopakSpec/RunSeats.lean:252:0: 'Topak.Spec.RunSeats.ObserversConsultAndReportAlways' depends on axioms: [propext]
+info: TopakSpec/RunSeats.lean:253:0: 'Topak.Spec.RunSeats.NoNameCrossesDomainsAlways' depends on axioms: [propext]
+info: TopakSpec/RunSeats.lean:254:0: 'Topak.Spec.RunSeats.SafeAlways' depends on axioms: [propext]
+info: TopakSpec/Seats.lean:257:0: 'Topak.Spec.Seats.OnlyThinkersAuthorAlways' depends on axioms: [propext, Quot.sound]
+info: TopakSpec/Seats.lean:258:0: 'Topak.Spec.Seats.OneSeatPerPrincipalAlways' depends on axioms: [propext]
+info: TopakSpec/Seats.lean:259:0: 'Topak.Spec.Seats.SafeAlways' depends on axioms: [propext, Quot.sound]
+warning: TopakSpec/Mirror/FloorComposition.lean:146:16: This simp argument is unused: toState
+warning: TopakSpec/Mirror/FloorComposition.lean:157:40: This simp argument is unused: toState
+warning: TopakSpec/Mirror/FloorComposition.lean:159:32: This simp argument is unused: toState
+warning: TopakSpec/Mirror/FloorComposition.lean:161:36: This simp argument is unused: toState
+warning: TopakSpec/Mirror/FloorComposition.lean:163:29: This simp argument is unused: toState
+warning: TopakSpec/Mirror/FloorComposition.lean:165:79: This simp argument is unused: toState
+Build completed successfully (22 jobs).
+Replay: leanchecker --fresh TopakSpec: every constant TopakSpec reaches replayed through the kernel in a fresh environment, accepted

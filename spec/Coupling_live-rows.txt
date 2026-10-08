@@ -1,0 +1,93 @@
+# Rows for live-gen-results.sh Coupling_live: name mut spec kind property expected [CONST=value ...] [states=N]
+# K = 1, R = 3, MaxRound = 2 unless the row says otherwise. Coupling's PriorUnread assumes MaxRound = 2, so Safe is
+# not run at MaxRound = 3. states=N is Coupling.tla's own graph under that Mut (1124, and Coupling-results-2026.09.29.txt
+# for M_MARK, M_ROUNDS, M_CORR): under those NextL is Coupling's Next. Under M_HBLIVE NextL is a restriction of Next
+# that reaches all 1124 of its states, so no invariant over the variables can tell M_HBLIVE from none.
+# expected: none: SpecL is Coupling's Spec (its 1124 states, Safe HOLDS, every witness VIOLATED, no deadlock); the four properties HOLD, each under the conditions it needs (A12, that is ObserverRegranted and ObserverKeepsUp, for AdmitStallEnds and GrantStallEnds; A12 with ThinkerAsks for AdmitsResume; A12 with GrantsMade for NextRoundGranted), at K=1 R=3 MaxRound=2 and at K=2 R=4 MaxRound=3, and every fair spec has a behaviour (NoBehaviour VIOLATED); with no fairness, without ObserverRegranted, without ObserverKeepsUp, with WF on KeepUp in place of SF (SpecWFKeepUp), with SF on any heartbeat in its place (SpecAnyBeat), with WF on Admit in place of SF (SpecWFAdmit) and without GrantsMade (SpecNoGrant), the property the row names is VIOLATED; at K=0 the two admit properties are VIOLATED and the two grant properties HOLD; M_HBLIVE reaches Coupling's 1124 states, keeps Safe, every witness and the absence of deadlock, and breaks GrantStallEnds and NextRoundGranted (also at K=2 R=4 MaxRound=3), not AdmitStallEnds or AdmitsResume; M_HBCOUPLED keeps Safe, admits nothing, breaks AdmitStallEnds, reaches no refusal for the backlog, and HOLDS GrantStallEnds and NextRoundGranted only because no grant stall is reachable; M_CORR breaks AdmitStallEnds, not GrantStallEnds; M_NOCOUPLE HOLDS AdmitStallEnds and M_ROUNDS GrantStallEnds with no fairness, since neither stall is reachable; M_MARK HOLDS both under A12
+#
+# Safety. SpecL is Coupling's Spec under none; under the two liveness mutations NextL is a restriction of Next.
+s-none-safe          none         SpecL          INVARIANT  Safe                       HOLDS     states=1124
+s-hblive-safe        M_HBLIVE     SpecL          INVARIANT  Safe                       HOLDS     states=1124
+s-hbcoupled-safe     M_HBCOUPLED  SpecL          INVARIANT  Safe                       HOLDS
+# TLC's deadlock check, on: it reports nothing, with or without the mutation that stalls the next round, since
+# GrantO and EndO are always enabled. What M_HBLIVE stops is the Thinker; the Observer's lease still toggles.
+d-none-deadlock      none         SpecL          DEADLOCK   Safe                       HOLDS     states=1124
+d-hblive-deadlock    M_HBLIVE     SpecL          DEADLOCK   Safe                       HOLDS     states=1124
+# Witnesses. Coupling's four, under none and under M_HBLIVE, which reaches every one. NeverRoundTwo is reached
+# trivially (round 1 admits nothing, seal[1] = 0 = mark[1]); NeverRoundTwoAfterReading is a round that admitted
+# something, read to its seal and followed. Coupling's NeverBacklogRefusal reads the flag refused, which an earlier
+# refusal for a stale Observer may have set; NeverBacklogRefusalStep is the refusal for the backlog itself.
+w-none-round2        none         SpecL          INVARIANT  NeverRoundTwo              VIOLATED
+w-hblive-round2      M_HBLIVE     SpecL          INVARIANT  NeverRoundTwo              VIOLATED
+w-hbcoupled-round2   M_HBCOUPLED  SpecL          INVARIANT  NeverRoundTwo              VIOLATED
+w-none-refused       none         SpecL          INVARIANT  NeverRefused               VIOLATED
+w-hblive-refused     M_HBLIVE     SpecL          INVARIANT  NeverRefused               VIOLATED
+w-none-stale         none         SpecL          INVARIANT  NeverStaleRefusal          VIOLATED
+w-hblive-stale       M_HBLIVE     SpecL          INVARIANT  NeverStaleRefusal          VIOLATED
+w-none-backlog       none         SpecL          INVARIANT  NeverBacklogRefusal        VIOLATED
+w-hblive-backlog     M_HBLIVE     SpecL          INVARIANT  NeverBacklogRefusal        VIOLATED
+w-none-read          none         SpecL          INVARIANT  NeverRoundTwoAfterReading  VIOLATED
+w-hblive-read        M_HBLIVE     SpecL          INVARIANT  NeverRoundTwoAfterReading  VIOLATED
+w-none-backlogstep   none         SpecL          PROPERTY   NeverBacklogRefusalStep    VIOLATED
+w-hblive-backlogstep M_HBLIVE     SpecL          PROPERTY   NeverBacklogRefusalStep    VIOLATED
+w-none-admitted      none         SpecL          INVARIANT  NeverAdmitted              VIOLATED
+# M_HBCOUPLED admits nothing, so none of the last three is reached under it: Coupling's own witness run catches it.
+w-hbcoupled-admitted M_HBCOUPLED  SpecL          INVARIANT  NeverAdmitted              HOLDS
+w-hbcoupled-read     M_HBCOUPLED  SpecL          INVARIANT  NeverRoundTwoAfterReading  HOLDS
+w-hbcoupled-backlogstep M_HBCOUPLED SpecL        PROPERTY   NeverBacklogRefusalStep    HOLDS
+w-hbcoupled-backlog  M_HBCOUPLED  SpecL          INVARIANT  NeverBacklogRefusal        HOLDS
+# Each fair spec under which a row HOLDS has a behaviour. SpecFull has every condition, so its behaviours are also
+# SpecA12's, SpecResume's and SpecNext's.
+n-none-full          none         SpecFull       PROPERTY   NoBehaviour                VIOLATED
+n-hblive-full        M_HBLIVE     SpecFull       PROPERTY   NoBehaviour                VIOLATED
+n-hbcoupled-full     M_HBCOUPLED  SpecFull       PROPERTY   NoBehaviour                VIOLATED
+n-corr-full          M_CORR       SpecFull       PROPERTY   NoBehaviour                VIOLATED
+n-mark-full          M_MARK       SpecFull       PROPERTY   NoBehaviour                VIOLATED
+n-k0-full            none         SpecFull       PROPERTY   NoBehaviour                VIOLATED  K=0
+n-big-full           none         SpecFull       PROPERTY   NoBehaviour                VIOLATED  K=2 R=4 MaxRound=3
+# The four properties, each under the conditions it needs and no more.
+l-none-admit         none         SpecA12        PROPERTY   AdmitStallEnds             HOLDS     states=1124
+l-none-grant         none         SpecA12        PROPERTY   GrantStallEnds             HOLDS     states=1124
+l-none-resume        none         SpecResume     PROPERTY   AdmitsResume               HOLDS     states=1124
+l-none-next          none         SpecNext       PROPERTY   NextRoundGranted           HOLDS     states=1124
+# Each condition dropped or weakened, the others kept.
+f-nofair-admit       none         SpecL          PROPERTY   AdmitStallEnds             VIOLATED
+f-nofair-grant       none         SpecL          PROPERTY   GrantStallEnds             VIOLATED
+f-noregrant-admit    none         SpecNoRegrant  PROPERTY   AdmitStallEnds             VIOLATED
+f-noregrant-grant    none         SpecNoRegrant  PROPERTY   GrantStallEnds             VIOLATED
+f-nokeepup-admit     none         SpecNoKeepUp   PROPERTY   AdmitStallEnds             VIOLATED
+f-nokeepup-grant     none         SpecNoKeepUp   PROPERTY   GrantStallEnds             VIOLATED
+f-wfkeepup-admit     none         SpecWFKeepUp   PROPERTY   AdmitStallEnds             VIOLATED  # the lease ends before every heartbeat that keeps up
+f-wfkeepup-grant     none         SpecWFKeepUp   PROPERTY   GrantStallEnds             VIOLATED
+f-anybeat-admit      none         SpecAnyBeat    PROPERTY   AdmitStallEnds             VIOLATED  # a heartbeat that repeats an old watermark
+f-anybeat-grant      none         SpecAnyBeat    PROPERTY   GrantStallEnds             VIOLATED
+f-wfadmit-resume     none         SpecWFAdmit    PROPERTY   AdmitsResume               VIOLATED
+f-nogrant-next       none         SpecNoGrant    PROPERTY   NextRoundGranted           VIOLATED
+# K = 0, the quarantine hold: the admit properties break, and the grant properties do not need K >= 1.
+f-k0-admit           none         SpecFull       PROPERTY   AdmitStallEnds             VIOLATED  K=0
+f-k0-resume          none         SpecFull       PROPERTY   AdmitsResume               VIOLATED  K=0
+k0-grant             none         SpecA12        PROPERTY   GrantStallEnds             HOLDS     K=0
+k0-next              none         SpecNext       PROPERTY   NextRoundGranted           HOLDS     K=0
+# The two liveness mutations, on all four properties: each must-break row under every condition, each HOLDS row under
+# only the conditions its property needs.
+m-hblive-grant       M_HBLIVE     SpecFull       PROPERTY   GrantStallEnds             VIOLATED
+m-hblive-next        M_HBLIVE     SpecFull       PROPERTY   NextRoundGranted           VIOLATED
+m-hblive-admit       M_HBLIVE     SpecA12        PROPERTY   AdmitStallEnds             HOLDS     states=1124
+m-hblive-resume      M_HBLIVE     SpecResume     PROPERTY   AdmitsResume               HOLDS     states=1124
+m-hbcoupled-admit    M_HBCOUPLED  SpecFull       PROPERTY   AdmitStallEnds             VIOLATED
+m-hbcoupled-grant    M_HBCOUPLED  SpecA12        PROPERTY   GrantStallEnds             HOLDS     # no grant stall is reachable: nothing is admitted
+m-hbcoupled-next     M_HBCOUPLED  SpecNext       PROPERTY   NextRoundGranted           HOLDS     # the same
+# Coupling's own mutations.
+m-corr-admit         M_CORR       SpecFull       PROPERTY   AdmitStallEnds             VIOLATED
+m-corr-grant         M_CORR       SpecA12        PROPERTY   GrantStallEnds             HOLDS     states=1684  # the grant does not read the correlator
+m-nocouple-admit     M_NOCOUPLE   SpecL          PROPERTY   AdmitStallEnds             HOLDS     # no fairness at all: no admit stall is reachable
+m-rounds-grant       M_ROUNDS     SpecL          PROPERTY   GrantStallEnds             HOLDS     states=1796  # no fairness at all: no grant stall is reachable
+m-mark-admit         M_MARK       SpecA12        PROPERTY   AdmitStallEnds             HOLDS     states=1604
+m-mark-grant         M_MARK       SpecA12        PROPERTY   GrantStallEnds             HOLDS     states=1604
+# Larger constants, where KeepUp's "within K" is not "to the sequence".
+b-none-admit         none         SpecA12        PROPERTY   AdmitStallEnds             HOLDS     K=2 R=4 MaxRound=3
+b-none-grant         none         SpecA12        PROPERTY   GrantStallEnds             HOLDS     K=2 R=4 MaxRound=3
+b-none-resume        none         SpecResume     PROPERTY   AdmitsResume               HOLDS     K=2 R=4 MaxRound=3
+b-none-next          none         SpecNext       PROPERTY   NextRoundGranted           HOLDS     K=2 R=4 MaxRound=3
+b-hblive-grant       M_HBLIVE     SpecFull       PROPERTY   GrantStallEnds             VIOLATED  K=2 R=4 MaxRound=3
+b-hblive-next        M_HBLIVE     SpecFull       PROPERTY   NextRoundGranted           VIOLATED  K=2 R=4 MaxRound=3

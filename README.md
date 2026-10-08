@@ -44,11 +44,13 @@ deployable system.
 - **Model checking:** `tools/tlc` and `tools/tlc-workers` wrap TLC over the tracked `tools/tla2tools.jar`; each
   module has a `*-run.sh` in `spec/` ([README](spec/README.md)).
 - **Proofs:** `tools/tlapm` wraps the TLA+ Proof System, which `tools/install-tlaps.sh` installs beside it (1.9 GB,
-  not tracked); `spec/proof-results.sh` checks a `spec/*_proof.tla` module and prints its results file.
+  not tracked); `spec/proof-results.sh` checks a `spec/*_proof.tla` module and prints its results file. The build
+  pinned has two known unsound cases, recorded against its trusted-base row in Batch 37 (ADR-0046 A2): write proofs
+  by `spec/proof-certification.md` §10, and run `spec/proof-scan.sh` on every new proof module.
 - **Lean:** `tools/install-lean.sh` installs the toolchain `tools/LEAN-PIN` names, through elan (not tracked).
   Three packages prove in Lean what the TLAPS proofs and the gates claim, by a second route (ADR-0053, ratified in Batch 36).
-  `spec/lean/` re-encodes fourteen modules, and checks the `Seats` and `FloorComposition` encodings against TLC's
-  state graphs. `mechanism/lean/` transcribes `admit.rs`, `clock.rs` and the floor wrapper and proves the admit
+  `spec/lean/` re-encodes sixteen modules, and checks the `Seats`, `FloorComposition` and `Emergency` encodings
+  against TLC's state graphs. `mechanism/lean/` transcribes `admit.rs`, `clock.rs` and the floor wrapper and proves the admit
   decision a step of `FloorComposition`. It also models `State::apply`'s seat and lease arms and proves that model
   refines `Seats`. It proves `Coupling`'s properties of a second model built on the first, and replays the
   reference's recorded traces through both. `floor/lean/` states the floor in Cedar's verified model. Each has a `results.sh`;

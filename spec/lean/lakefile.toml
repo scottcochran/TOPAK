@@ -6,7 +6,17 @@ defaultTargets = ["TopakSpec"]
 [[lean_lib]]
 name = "TopakSpec"
 
-# The checker of the re-encodings against TLC's state graphs (graph-check.sh); not part of the library.
+# The checkers of the re-encodings against TLC's state graphs; not part of the library. Each has its own script and
+# results series: graphcheck for Seats and FloorComposition (graph-check.sh), graphcheck-emergency for Emergency and
+# Emergency_live (graph-check-emergency.sh). Both import GraphCheckCore, the reading of a graph and the check, which
+# is a library of its own because Lake builds an executable's imports only from a library.
+[[lean_lib]]
+name = "GraphCheckCore"
+
 [[lean_exe]]
 name = "graphcheck"
 root = "GraphCheck"
+
+[[lean_exe]]
+name = "graphcheck-emergency"
+root = "GraphCheckEmergency"
