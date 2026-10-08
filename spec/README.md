@@ -30,10 +30,27 @@ hand-assembled TLC output with a dated name and never change; the two generators
 | `Operators.tla` | ADR-0050 §10 (Proposed) | `operators-run.sh`; `operators-gen-results.sh` with a row list | `Operators-results-2026.10.04.txt` | ADR-0050 |
 | `Correlator.tla` | ADR-0051 §10 (Proposed) | `correlator-run.sh`; `correlator-gen-results.sh` with a row list | `Correlator-results-2026.10.04.txt` | ADR-0051 |
 | `Labels.tla` | ADR-0047 §11 (Proposed) | `labels-run.sh`; `labels-gen-results.sh` with a row list | `Labels-results-2026.10.03.txt`, `-2026.10.04.txt` | ADR-0047 |
+| `Coupling_live.tla` | ADR-0039 §2; A12 (Theory of Operation §13); the liveness plan, Tier 1 item 1 (CR-37). Extends `Coupling.tla` without editing it: four leads-to properties, under fairness on the Observer's actions (A12), on the Thinker's `Admit` and on the grants, and two liveness mutations | `live-gen-results.sh` with `Coupling_live-rows.txt` | `Coupling_live-results-2026.10.07.txt` | none yet |
+| `Emergency_live.tla` | ADR-0039 A2; ADR-0052 §9 (provisional, B34); the liveness plan, Tier 0. Extends `Emergency.tla` without editing it: the emergency call split into its admit and its refusal, two `ENABLED` invariants, two mutations | `live-gen-results.sh` with `Emergency_live-rows.txt` | `Emergency_live-results-2026.10.07.txt` | none yet |
+| every module a `-deadlock` script checks, unmutated, at its results files' constants (`Operators` at two operators only) | the liveness plan's note on TLC's `-deadlock` flag ("Why it's worth the cost") | `deadlock-audit.sh` | `deadlock-audit-results-2026.10.07.txt` | none yet |
 | `Workflow.tla` | ADR-0054 §12 (Proposed) | `workflow-run.sh`; `workflow-gen-results.sh` with `Workflow-rows.txt` | `Workflow-results-2026.10.08.txt` | ADR-0054 |
 | `Mesh.tla` | ADR-0055 §11 (Proposed) | `mesh-run.sh`; `mesh-gen-results.sh` with `Mesh-rows.txt` | `Mesh-results-2026.10.07.txt` | ADR-0055 |
 | `FloorComposition.tla`, `Coupling.tla`, `RunCoupling.tla` | ADR-0046 §5 (the premise-table corrections) | `premise-corrections-results.sh` | `premise-corrections-results-2026.10.02.txt` | ADR-0046 |
 | `Mechanism.tla` | ADR-0045 T-0045-28; ADR-0033 A5 | `mechanism-trace-run.sh` on traces the reference records; `mechanism-trace-results.sh` regenerates the file; `trace2tla.py` converts | `Mechanism-trace-results-2026.09.30.txt`, `-2026.10.01.txt`, `-2026.10.02.txt`, `-2026.10.02b.txt`, `-2026.10.05.txt` (labels, operators and the emergency seating, all Proposed; X1 retired) | Pinned, not frozen: the operational model moves with the code |
+
+**Liveness (2026.10.07).** `Coupling_live.tla` and `Emergency_live.tla` extend frozen modules, as a proof module does,
+and add what they cannot state: fairness, leads-to properties, and invariants over `ENABLED`. Under every `Mut` of
+the module it extends, each one's `NextL` is that module's `Next`, and under its own mutations a restriction of it,
+so the state graphs and the safety results carry over (the proof modules below prove it). `live-gen-results.sh
+<Module> <rows> "<title>"` regenerates either results file from a row list: a row is `name mut spec kind property
+expected [CONST=value ...] [states=N]`, `kind` being `INVARIANT`, `PROPERTY` (TLC's liveness checker) or `DEADLOCK`
+(the deadlock check on); each section ends with its verdict and whether it is the expected one, and the driver exits
+non-zero otherwise. It runs TLC on one worker with a fixed fingerprint function, so that a liveness counterexample
+is the same on every run. TLC's deadlock check is not a liveness check: in both modules every state has a
+successor, so it reports nothing even under the mutation that stalls the next round for good. `deadlock-audit.sh`
+asks the converse question of every module a `-deadlock` script checks: at the constants its results files use
+(`Operators` at two operators only; three are beyond TLC), unmutated, every state with no successor is at a bound the
+module imposes, and 28 of its 48 lines have none. No stray deadlock was found.
 
 ## TLAPS proofs
 
@@ -54,7 +71,19 @@ the floor gates use before `unsat` is forwarded) and with Zenon's proofs checked
 obligation by the route that discharged it. Seventeen of the first twenty proof modules certify; `RulesFloorNV_rev5`,
 `Confinement` and `Confinement_A1` do not, and their results files say why. The two added on 2026.10.05,
 `BreakGlass_A1_proof` and `NonComposition_A1_proof`, certify (`-proof-cert-results-2026.10.05.txt`), which makes
-nineteen of twenty-two. `smt-checked-selftest.sh` checks the
+nineteen of twenty-two. The two added on 2026.10.07, `Emergency_live_proof` and `Coupling_live_proof`, certify
+(`Emergency_live-proof-cert-results-2026.10.07.txt`, `Coupling_live-proof-cert-results-2026.10.08.txt`), which makes
+twenty-one of twenty-four; the first proves both its `ENABLED` invariants through Isabelle. Writing it found a defect in the prover's translation, and a review of the record a second: a term the prover does
+not translate, an `ENABLED` or `\cdot` not expanded or a temporal formula, becomes a constant that drops any
+variable bound around it, quantifiers being moved out of temporal bodies first; and every term it abstracts, and
+every atom it hands LS4, is named by 20 bits of a hash it does not check, of a print that does not tell a bound
+variable from a constant of its name, so that two terms can be one. Either way a false statement can prove and
+certify, by the second through `PTL` too (`proof-certification.md` §8). `proof-scan.sh` says where to look for the
+first in every proof module, checks every module for a collision of the hash by a run over renamed sources, and
+reads every obligation as tlapm prints it for a capture (`proof-scan-results-2026.10.08.txt`); with a reading of
+each step it lists, no proof module rests on either. §10 has the rules that avoid the first and a capture:
+untranslated terms behind hidden definitions, and no definition expanded at an argument that names one of its bound
+variables. Both are recorded against T-0045-31 (ADR-0046 A2, with ADR-0045 A3, ratified in Batch 37). `smt-checked-selftest.sh` checks the
 wrapper against a dishonest solver. **`proof-certification.md` is the method**: what is checked and by what, how the
 wrapper binds a proof to its query, how to read and reproduce a results file, what stays trusted, and how to write
 proofs that certify. `proof-method.md` §5a has the first assessment.
@@ -90,13 +119,15 @@ The `1.6.0-pre` release tag is rebuilt by its upstream: on 2026.10.03 both asset
 | `Correlator_proof.tla` | `Correlator.tla` | ADR-0051 §10 (Proposed) | all eight, including the `ENABLED` invariant `LagNeverGates`, for every set of Thinkers, shared targets and correlators and every bound | none | `Correlator-proof-results-2026.10.04.txt` |
 | `Lease_A1_proof.tla` | `Lease_A1.tla` | ADR-0031 §4, A1 | all four: `LeaseAuthorityMonotone`, `NoActionUnderFencedEpoch`, `Rung0NeverContained`, `RevokedStaysStopped` | none | `Lease_A1-proof-results-2026.10.02.txt` |
 | `Confinement_proof.tla` | `Confinement.tla` | ADR-0034 §7, A1 | all four: `ContainedMeansConfined`, `NoSilentDowngrade`, `ContestedStopped`, `FreshAppraisal`, for every rung at once | `Declared ∈ 0..3` | `Confinement-proof-results-2026.10.02.txt` |
+| `Emergency_live_proof.tla` | `Emergency_live.tla`, extending `Emergency_proof.tla` | ADR-0039 A2; ADR-0052 (provisional, B34) | the two `ENABLED` invariants `EmergencyNeverCoupled` and `EmergencyCallsWithoutObserver`, under `Mut \notin {"M_EMCOUPLE", "M_EMCOUPLE2"}`; `SpecL => Spec` under every `Mut`, and with it `Emergency_proof`'s six for `SpecL`, each under its own hypothesis, and `SafeAlwaysL` under `Mut \in {"none", "M_EMCOUPLE", "M_EMCOUPLE2"}`; for every round bound | none | `Emergency_live-proof-results-2026.10.07.txt` |
+| `Coupling_live_proof.tla` | `Coupling_live.tla`, extending `Coupling_proof.tla` | ADR-0039 §2 | `SpecL => Spec` under every `Mut`, and with it `Coupling_proof`'s three for `SpecL`, each under its own hypothesis, and `SafeAlwaysL` under `Mut \in {"none", "M_HBLIVE", "M_HBCOUPLED"}`, for every K, R and MaxRound. Not the four leads-to properties: they are owed, and TLC checks them (`Coupling_live-results-2026.10.07.txt`) | `K, R, MaxRound ∈ Nat` (`Coupling_proof`'s, restated) | `Coupling_live-proof-results-2026.10.08.txt` |
 
-All thirteen are cited by digest in ADR-0046, and frozen. **`proof-method.md`** records how they were written, the patterns they
+The thirteen of 2026.10.02 are cited by digest in ADR-0046, and frozen. **`proof-method.md`** records how they were written, the patterns they
 share, the prover's habits, and a dated assessment of why they were cheap and where that stops.
 
 ### The modules in Lean 4
 
-`lean/` (2026.10.05) re-encodes fourteen of the modules above as transition systems in Lean 4 and proves their
+`lean/` (2026.10.05) re-encodes sixteen of the modules above as transition systems in Lean 4 and proves their
 `*_proof.tla` theorems by induction on reachable states: `Seats`, `Observers`, `RunSeats`, `FloorRouting`,
 `NonComposition`, `Anchor` and `BreakGlass`, with `RulesFloorBase`; `FloorComposition` (2026.10.06), which
 `mechanism/lean/` proves the code's admit decision refines, step for step; `Seats`, which a model of
@@ -104,8 +135,10 @@ share, the prover's habits, and a dated assessment of why they were cheap and wh
 reference's recorded traces replayed through that model; `Coupling`, whose `UnreadBounded` is proved of a second
 model of `apply` on the first, directly and not by refinement; and the parameterized ones, `Coupling` for
 every K, R and MaxRound, `Lease_A1` for every epoch and fence bound, `RulesFloorNV_rev5` with its cardinalities
-computed, and `Confinement` and `Confinement_A1` as one encoding under a flag, for every rung. The last three
-are the modules the certified TLAPS run does not certify (`proof-certification.md`); in Lean every step of
+computed, and `Confinement` and `Confinement_A1` as one encoding under a flag, for every rung; and `Emergency`
+with `Emergency_live` as one encoding (2026.10.06), for every `MaxRound`, with the unobserved emergency call that
+`Emergency_proof` dropped proved of the frozen module's `Next`. `RulesFloorNV_rev5`, `Confinement` and
+`Confinement_A1` are the modules the certified TLAPS run does not certify (`proof-certification.md`); in Lean every step of
 them is kernel-checked, and the arithmetic the TLAPS proofs hand to SMT is `omega`. What this adds to the TLAPS proofs is the
 temporal step: proof-method.md §5a counts 74 LS4 obligations, "holds initially, every step keeps it, so it
 holds always", that the certified run checks with nothing; in Lean that step is an induction the kernel checks.
@@ -116,9 +149,12 @@ T-0045-37, pinned in `tools/LEAN-PIN`. Every results file ends with a kernel rep
 `#print axioms` alone misses a declaration added past the kernel (`proof-method.md` §5b). `lean/README.md` has the
 theorem table, the encoding conventions, and a mutation check; `lean/results.sh` regenerates the results file, byte
 for byte; `tools/lean-sync.sh` is this package's `proof-sync.sh`, and covers `mechanism/lean/` and `floor/lean/` too.
-Two encodings, `Seats` and `FloorComposition`, are also checked rather than only read: `lean/graph-check.sh` has TLC
-dump each module's whole state graph under every `Mut` and checks, through a mirror proved equal to the encoding,
-that the two reach the same states by the same steps with the same property values (ADR-0053 R6).
+Three encodings, `Seats`, `FloorComposition` and `Emergency` (with `Emergency_live`, at `MaxRound = 2`), are also
+checked rather than only read: `lean/graph-check.sh` (`Seats`, `FloorComposition`) and `lean/graph-check-emergency.sh`
+(`Emergency`, `Emergency_live`) have TLC dump each module's whole state graph under every `Mut` (`Emergency_live` under
+`none` and its own two) and check, through a mirror proved equal to the encoding, that the two reach the same states
+by the same steps with the same property values (ADR-0053 R6). Each writes its own results series,
+`lean/GraphCheck-results-<date>.txt` and `lean/GraphCheckEmergency-results-<date>.txt`.
 
 ## Practice
 
@@ -132,8 +168,9 @@ most expensive, each with the kind of evidence it gives.
    literals). Give each module one `Mut` switch, one guard per mutation, and a `Never…` witness for every claim that
    something is reachable. Carry a type invariant. Keep actions shallow: a guard, one `EXCEPT`, `UNCHANGED` for the
    rest. Leave constants unconstrained in the module and bound them in the run script. State no liveness unless the
-   record claims it; a liveness property needs fairness, a variant and a WF1-shaped proof, and none of the
-   properties so far does.
+   record claims it, and then write its fairness as conditions on actions, each named for whose obligation it is,
+   with a row that drops each one: `Coupling_live.tla` does so for ADR-0039 §2's claim that the stall ends
+   (2026.10.07). A liveness property also needs a variant and a WF1-shaped proof; for `Coupling_live` it is owed.
 2. **Model-check at small constants** (every `*-run.sh`): every mutation fails its property, every witness is
    violated, `Safe` holds. This is non-vacuity and discrimination (ADR-0026 §6). The results file is dated, prints
    the jar's digest, and is regenerated by a generator script where one exists; it is never edited.
@@ -165,7 +202,10 @@ step. Since 2026.10.06 `inventory.py` also evaluates **derived premises**, a nam
 proved twice is voided only when both routes are lost (ADR-0053 R7). The binding has carried them since ADR-0053's
 ratification (Batch 36), which merged `theorem-premise-binding-ADR-0053.json` into it; `premise-routes.sh` shows what
 they change for five declarations (`premise-routes-results-2026.10.06b.txt`; the 2026.10.06 file is the run before
-the merge).
+the merge; `-2026.10.08.txt` is the same run, with the same verdicts, against `lean/GraphCheck-results-2026.10.07.txt`,
+which names no `Emergency` file, since `Emergency`'s graph check has its own series; it also names `ADR-0045.md` at
+the digest its A3 and E1 gave it as drafted, and `-2026.10.08b.txt` is the same again at their ratification in Batch
+37).
 
 Every `*-run.sh` and `simulate-run.sh` finds the jar at `../tools/tla2tools.jar` or `$TLA_JAR`; from `spec/` no
 export is needed. TLC writes its metadata under `/tmp/tlc_<name>`.

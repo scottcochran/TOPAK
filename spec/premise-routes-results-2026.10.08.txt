@@ -1,0 +1,289 @@
+TOPAK — the premise table with derived premises (ADR-0053, Batch 36): which route carries each theorem, and what a deployment cannot lose
+Sources: spec/theorem-premise-binding.json (sha256 3590ae1af467fa02) · spec/theorem-premise-binding.md (sha256 8fc5629220aaa173) · spec/inventory.py (sha256 20dbddd6a819b4b7) · spec/premise-routes.sh (sha256 6f58c54237ea3671) · decisions/ADR-0045.md (sha256 8d8336927cd0089c)
+Each declaration: the reference's rows from ADR-0045 Annex B (inventory.py --annex-b), with the changes its heading names, and every premise column of kind parameter, condition or gap that is not an encoding's or a model's faithfulness declared true, so that a verdict differs only by its rows and routes. A check premise takes its value from its results file.
+
+43 rows, 34 non-row premises: JSON and table agree at every rung
+18 derived premises: well formed
+
+=== 1-reference
+Inventory for rung 0, 24 rows and 20 of 34 other premises true · from theorem-premise-binding.json
+  check enc-faithful(Seats): true (spec/lean/GraphCheck-results-2026.10.07.txt: 3 of 3 lines MATCH, in sync)
+  check enc-faithful(FloorComposition): true (spec/lean/GraphCheck-results-2026.10.07.txt: 5 of 5 lines MATCH, in sync)
+- LeaseAuthorityMonotone: holds (via invariant(Lease_A1) by T-0045-31)
+    cuts: 5 single; pairs: T-0045-31 + T-0045-37, T-0045-31 + enc-faithful(Lease_A1)
+- NoActionUnderFencedEpoch: holds (via invariant(Lease_A1) by T-0045-31)
+    cuts: 4 single; pairs: T-0045-31 + T-0045-37, T-0045-31 + enc-faithful(Lease_A1)
+- Rung0NeverContained: holds (via invariant(Lease_A1) by T-0045-31)
+    cuts: 4 single; pairs: T-0045-31 + T-0045-37, T-0045-31 + enc-faithful(Lease_A1)
+- RevokedStaysStopped: holds (via invariant(Lease_A1) by T-0045-31)
+    cuts: 5 single; pairs: T-0045-31 + T-0045-37, T-0045-31 + enc-faithful(Lease_A1)
+- AdmitImpliesFloorPermit: holds (via invariant(FloorComposition) by T-0045-31)
+    cuts: 6 single; pairs: T-0045-31 + T-0045-37, T-0045-31 + enc-faithful(FloorComposition)
+- FloorErrorIsDeny: holds (via invariant(FloorComposition) by T-0045-31)
+    cuts: 6 single; pairs: T-0045-31 + T-0045-37, T-0045-31 + enc-faithful(FloorComposition)
+- BundleRefusalHonored: holds (via invariant(FloorComposition) by T-0045-31)
+    cuts: 7 single; pairs: T-0045-31 + T-0045-37, T-0045-31 + enc-faithful(FloorComposition)
+- BundleCannotWriteFloorInputs: holds (via invariant(FloorComposition) by T-0045-31)
+    cuts: 5 single; pairs: T-0045-31 + T-0045-37, T-0045-31 + enc-faithful(FloorComposition)
+- EnvelopeHolds, FloorNeverVacuous: holds (via invariant(FloorComposition, FloorRouting) by invariant(FloorComposition) + invariant(FloorRouting))
+    cuts: 6 single; pairs: T-0045-31 + T-0045-37, T-0045-31 + enc-faithful(FloorComposition), T-0045-31 + enc-faithful(FloorRouting)
+- NoWideningWithoutIssuance: holds (via invariant(FloorRouting) by T-0045-31)
+    cuts: 7 single; pairs: T-0045-31 + T-0045-37, T-0045-31 + enc-faithful(FloorRouting)
+- NC1, NC2: holds (via invariant(NonComposition) by T-0045-31)
+    cuts: 8 single; pairs: T-0045-31 + T-0045-37, T-0045-31 + enc-faithful(NonComposition)
+- P1_Unanimity: holds (via invariant(RulesFloorNV_rev5) by T-0045-31)
+    cuts: 8 single; pairs: T-0045-31 + T-0045-37, T-0045-31 + enc-faithful(RulesFloorNV_rev5)
+- P2_TwoSeatsCounted: holds (via invariant(RulesFloorNV_rev5) by T-0045-31)
+    cuts: 6 single; pairs: T-0045-31 + T-0045-37, T-0045-31 + enc-faithful(RulesFloorNV_rev5)
+- P3_AuthorNotCounted: holds (via invariant(RulesFloorNV_rev5) by T-0045-31)
+    cuts: 4 single; pairs: T-0045-31 + T-0045-37, T-0045-31 + enc-faithful(RulesFloorNV_rev5)
+- P5_AnchorNotApprover: holds (via invariant(RulesFloorNV_rev5) by T-0045-31)
+    cuts: 6 single; pairs: T-0045-31 + T-0045-37, T-0045-31 + enc-faithful(RulesFloorNV_rev5)
+- P7_BGNoAuthority: holds (via invariant(RulesFloorNV_rev5) by T-0045-31)
+    cuts: 5 single; pairs: T-0045-31 + T-0045-37, T-0045-31 + enc-faithful(RulesFloorNV_rev5)
+- P9_NoSoloGrant: holds (via invariant(RulesFloorNV_rev5) by T-0045-31)
+    cuts: 6 single; pairs: T-0045-31 + T-0045-37, T-0045-31 + enc-faithful(RulesFloorNV_rev5)
+- FloorPreserved: holds (via invariant(Anchor) by T-0045-31)
+    cuts: 8 single; pairs: T-0045-31 + T-0045-37, T-0045-31 + enc-faithful(Anchor)
+- BreakGlassNeverChangesAuthority: holds (via invariant(BreakGlass) by T-0045-31)
+    cuts: 6 single; pairs: T-0045-31 + T-0045-37, T-0045-31 + enc-faithful(BreakGlass)
+- ContainedMeansConfined: void: confinement>=1
+- NoSilentDowngrade: holds (via invariant(Confinement, Confinement_A1) by invariant(Confinement) + invariant(Confinement_A1))
+    cuts: 4 single; pairs: T-0045-31 + T-0045-37, T-0045-31 + enc-faithful(Confinement), T-0045-31 + enc-faithful(Confinement_A1)
+- ContestedStopped: void: confinement>=2
+- FreshAppraisal: void: confinement>=1
+- EffectsOnDeclaredChannels, ContainedEffectsUseHeldTools: holds (via invariant(RunConfinement) by T-0045-31)
+    cuts: 8 single; no pair
+- OnlyThinkersAuthor: holds (via refines(Seats) by T-0045-28; invariant(Seats) by T-0045-31)
+    cuts: 5 single; pairs: T-0045-28 + T-0045-37, T-0045-28 + enc-faithful(Seats), T-0045-28 + model-faithful(apply/Seats), T-0045-31 + T-0045-37, T-0045-31 + enc-faithful(Seats)
+- OneSeatPerPrincipal: holds (via refines(Seats) by T-0045-28; invariant(Seats) by T-0045-31)
+    cuts: 4 single; pairs: T-0045-28 + T-0045-37, T-0045-28 + enc-faithful(Seats), T-0045-28 + model-faithful(apply/Seats), T-0045-31 + T-0045-37, T-0045-31 + enc-faithful(Seats)
+- DenyByAnyOf: holds (via invariant(Observers) by T-0045-31)
+    cuts: 5 single; pairs: T-0045-31 + T-0045-37, T-0045-31 + enc-faithful(Observers)
+- ReachIsBounded: holds (via invariant(Observers) by T-0045-31)
+    cuts: 5 single; pairs: T-0045-31 + T-0045-37, T-0045-31 + enc-faithful(Observers)
+- NoAdmitWithoutLiveObserver: holds (via invariant(Coupling) by T-0045-31)
+    cuts: 8 single; pairs: T-0045-31 + T-0045-37, T-0045-31 + enc-faithful(Coupling)
+- UnreadBounded: holds (via invariant(Coupling) by T-0045-31)
+    cuts: 8 single; pairs: T-0045-31 + T-0045-37, T-0045-31 + enc-faithful(Coupling)
+- CorrelatorNeverGates: holds (via invariant(Coupling) by T-0045-31)
+    cuts: 6 single; pairs: T-0045-31 + T-0045-37, T-0045-31 + enc-faithful(Coupling)
+- UnreadEffectsBounded: holds (via invariant(RunCoupling) by T-0045-31)
+    cuts: 11 single; no pair
+- ConsultNeverCoupled: holds (via invariant(RunCoupling) by T-0045-31)
+    cuts: 7 single; no pair
+- SealCountsEffects: holds (via invariant(RunCoupling) by T-0045-31)
+    cuts: 7 single; no pair
+- RoundBoundCountsAll: holds (via invariant(RunCoupling) by T-0045-31)
+    cuts: 5 single; no pair
+- NoEffectWithoutLiveObserver: holds (via invariant(RunCoupling) by T-0045-31)
+    cuts: 9 single; no pair
+- OnlyThinkersActuate, ObserversConsultAndReport: holds (via invariant(RunSeats) by T-0045-31)
+    cuts: 6 single; pairs: T-0045-31 + T-0045-37, T-0045-31 + enc-faithful(RunSeats)
+- NoNameCrossesDomains: holds (via invariant(RunSeats) by T-0045-31)
+    cuts: 5 single; pairs: T-0045-31 + T-0045-37, T-0045-31 + enc-faithful(RunSeats)
+- Effect exclusivity: void: T-0045-23 excluded, T-0045-24 excluded, T-0045-22 excluded, confinement>=1
+- PromotionMeetsIssuedQuorum: void: T-0045-13 excluded, T-0045-15 undeclared
+- OneValuePerBallot, chosen-unique, agreement: holds
+    cuts: 5 single; no pair
+- floor gates: holds
+    cuts: 8 single; no pair
+- TraceMatches, ConfinementRefined: holds
+    cuts: 5 single; no pair
+38 of 43 rows hold
+
+=== 2-lean-not-tlaps
+Inventory for rung 0, 24 rows and 20 of 34 other premises true · from theorem-premise-binding.json
+  check enc-faithful(Seats): true (spec/lean/GraphCheck-results-2026.10.07.txt: 3 of 3 lines MATCH, in sync)
+  check enc-faithful(FloorComposition): true (spec/lean/GraphCheck-results-2026.10.07.txt: 5 of 5 lines MATCH, in sync)
+- LeaseAuthorityMonotone: void: invariant(Lease_A1) [T-0045-31 excluded | enc-faithful(Lease_A1)]
+- NoActionUnderFencedEpoch: void: invariant(Lease_A1) [T-0045-31 excluded | enc-faithful(Lease_A1)]
+- Rung0NeverContained: void: invariant(Lease_A1) [T-0045-31 excluded | enc-faithful(Lease_A1)]
+- RevokedStaysStopped: void: invariant(Lease_A1) [T-0045-31 excluded | enc-faithful(Lease_A1)]
+- AdmitImpliesFloorPermit: holds (via invariant(FloorComposition) by T-0045-37 + enc-faithful(FloorComposition))
+- FloorErrorIsDeny: holds (via invariant(FloorComposition) by T-0045-37 + enc-faithful(FloorComposition))
+- BundleRefusalHonored: holds (via invariant(FloorComposition) by T-0045-37 + enc-faithful(FloorComposition))
+- BundleCannotWriteFloorInputs: holds (via invariant(FloorComposition) by T-0045-37 + enc-faithful(FloorComposition))
+- EnvelopeHolds, FloorNeverVacuous: void: invariant(FloorComposition, FloorRouting) [invariant(FloorRouting) [T-0045-31 excluded | enc-faithful(FloorRouting)]]
+- NoWideningWithoutIssuance: void: invariant(FloorRouting) [T-0045-31 excluded | enc-faithful(FloorRouting)]
+- NC1, NC2: void: invariant(NonComposition) [T-0045-31 excluded | enc-faithful(NonComposition)]
+- P1_Unanimity: void: invariant(RulesFloorNV_rev5) [T-0045-31 excluded | enc-faithful(RulesFloorNV_rev5)]
+- P2_TwoSeatsCounted: void: invariant(RulesFloorNV_rev5) [T-0045-31 excluded | enc-faithful(RulesFloorNV_rev5)]
+- P3_AuthorNotCounted: void: invariant(RulesFloorNV_rev5) [T-0045-31 excluded | enc-faithful(RulesFloorNV_rev5)]
+- P5_AnchorNotApprover: void: invariant(RulesFloorNV_rev5) [T-0045-31 excluded | enc-faithful(RulesFloorNV_rev5)]
+- P7_BGNoAuthority: void: invariant(RulesFloorNV_rev5) [T-0045-31 excluded | enc-faithful(RulesFloorNV_rev5)]
+- P9_NoSoloGrant: void: invariant(RulesFloorNV_rev5) [T-0045-31 excluded | enc-faithful(RulesFloorNV_rev5)]
+- FloorPreserved: void: invariant(Anchor) [T-0045-31 excluded | enc-faithful(Anchor)]
+- BreakGlassNeverChangesAuthority: void: invariant(BreakGlass) [T-0045-31 excluded | enc-faithful(BreakGlass)]
+- ContainedMeansConfined: void: invariant(Confinement, Confinement_A1) [invariant(Confinement) [T-0045-31 excluded | enc-faithful(Confinement)] + invariant(Confinement_A1) [T-0045-31 excluded | enc-faithful(Confinement_A1)]], confinement>=1
+- NoSilentDowngrade: void: invariant(Confinement, Confinement_A1) [invariant(Confinement) [T-0045-31 excluded | enc-faithful(Confinement)] + invariant(Confinement_A1) [T-0045-31 excluded | enc-faithful(Confinement_A1)]]
+- ContestedStopped: void: invariant(Confinement, Confinement_A1) [invariant(Confinement) [T-0045-31 excluded | enc-faithful(Confinement)] + invariant(Confinement_A1) [T-0045-31 excluded | enc-faithful(Confinement_A1)]], confinement>=2
+- FreshAppraisal: void: invariant(Confinement, Confinement_A1) [invariant(Confinement) [T-0045-31 excluded | enc-faithful(Confinement)] + invariant(Confinement_A1) [T-0045-31 excluded | enc-faithful(Confinement_A1)]], confinement>=1
+- EffectsOnDeclaredChannels, ContainedEffectsUseHeldTools: void: invariant(RunConfinement) [T-0045-31 excluded]
+- OnlyThinkersAuthor: holds (via refines(Seats) by T-0045-28; invariant(Seats) by T-0045-37 + enc-faithful(Seats))
+- OneSeatPerPrincipal: holds (via refines(Seats) by T-0045-28; invariant(Seats) by T-0045-37 + enc-faithful(Seats))
+- DenyByAnyOf: void: invariant(Observers) [T-0045-31 excluded | enc-faithful(Observers)]
+- ReachIsBounded: void: invariant(Observers) [T-0045-31 excluded | enc-faithful(Observers)]
+- NoAdmitWithoutLiveObserver: void: invariant(Coupling) [T-0045-31 excluded | enc-faithful(Coupling)]
+- UnreadBounded: void: invariant(Coupling) [T-0045-31 excluded | enc-faithful(Coupling)]
+- CorrelatorNeverGates: void: invariant(Coupling) [T-0045-31 excluded | enc-faithful(Coupling)]
+- UnreadEffectsBounded: void: invariant(RunCoupling) [T-0045-31 excluded]
+- ConsultNeverCoupled: void: invariant(RunCoupling) [T-0045-31 excluded]
+- SealCountsEffects: void: invariant(RunCoupling) [T-0045-31 excluded]
+- RoundBoundCountsAll: void: invariant(RunCoupling) [T-0045-31 excluded]
+- NoEffectWithoutLiveObserver: void: invariant(RunCoupling) [T-0045-31 excluded]
+- OnlyThinkersActuate, ObserversConsultAndReport: void: invariant(RunSeats) [T-0045-31 excluded | enc-faithful(RunSeats)]
+- NoNameCrossesDomains: void: invariant(RunSeats) [T-0045-31 excluded | enc-faithful(RunSeats)]
+- Effect exclusivity: void: T-0045-23 excluded, T-0045-24 excluded, T-0045-22 excluded, confinement>=1
+- PromotionMeetsIssuedQuorum: void: T-0045-13 excluded, T-0045-15 undeclared
+- OneValuePerBallot, chosen-unique, agreement: holds
+- floor gates: holds
+- TraceMatches, ConfinementRefined: holds
+9 of 43 rows hold
+
+=== 3-lean-every-encoding-read
+Inventory for rung 0, 24 rows and 31 of 34 other premises true · from theorem-premise-binding.json
+  check enc-faithful(Seats): true (spec/lean/GraphCheck-results-2026.10.07.txt: 3 of 3 lines MATCH, in sync)
+  check enc-faithful(FloorComposition): true (spec/lean/GraphCheck-results-2026.10.07.txt: 5 of 5 lines MATCH, in sync)
+- LeaseAuthorityMonotone: holds (via invariant(Lease_A1) by T-0045-37 + enc-faithful(Lease_A1))
+- NoActionUnderFencedEpoch: holds (via invariant(Lease_A1) by T-0045-37 + enc-faithful(Lease_A1))
+- Rung0NeverContained: holds (via invariant(Lease_A1) by T-0045-37 + enc-faithful(Lease_A1))
+- RevokedStaysStopped: holds (via invariant(Lease_A1) by T-0045-37 + enc-faithful(Lease_A1))
+- AdmitImpliesFloorPermit: holds (via invariant(FloorComposition) by T-0045-37 + enc-faithful(FloorComposition))
+- FloorErrorIsDeny: holds (via invariant(FloorComposition) by T-0045-37 + enc-faithful(FloorComposition))
+- BundleRefusalHonored: holds (via invariant(FloorComposition) by T-0045-37 + enc-faithful(FloorComposition))
+- BundleCannotWriteFloorInputs: holds (via invariant(FloorComposition) by T-0045-37 + enc-faithful(FloorComposition))
+- EnvelopeHolds, FloorNeverVacuous: holds (via invariant(FloorComposition, FloorRouting) by invariant(FloorComposition) + invariant(FloorRouting))
+- NoWideningWithoutIssuance: holds (via invariant(FloorRouting) by T-0045-37 + enc-faithful(FloorRouting))
+- NC1, NC2: holds (via invariant(NonComposition) by T-0045-37 + enc-faithful(NonComposition))
+- P1_Unanimity: holds (via invariant(RulesFloorNV_rev5) by T-0045-37 + enc-faithful(RulesFloorNV_rev5))
+- P2_TwoSeatsCounted: holds (via invariant(RulesFloorNV_rev5) by T-0045-37 + enc-faithful(RulesFloorNV_rev5))
+- P3_AuthorNotCounted: holds (via invariant(RulesFloorNV_rev5) by T-0045-37 + enc-faithful(RulesFloorNV_rev5))
+- P5_AnchorNotApprover: holds (via invariant(RulesFloorNV_rev5) by T-0045-37 + enc-faithful(RulesFloorNV_rev5))
+- P7_BGNoAuthority: holds (via invariant(RulesFloorNV_rev5) by T-0045-37 + enc-faithful(RulesFloorNV_rev5))
+- P9_NoSoloGrant: holds (via invariant(RulesFloorNV_rev5) by T-0045-37 + enc-faithful(RulesFloorNV_rev5))
+- FloorPreserved: holds (via invariant(Anchor) by T-0045-37 + enc-faithful(Anchor))
+- BreakGlassNeverChangesAuthority: holds (via invariant(BreakGlass) by T-0045-37 + enc-faithful(BreakGlass))
+- ContainedMeansConfined: void: confinement>=1
+- NoSilentDowngrade: holds (via invariant(Confinement, Confinement_A1) by invariant(Confinement) + invariant(Confinement_A1))
+- ContestedStopped: void: confinement>=2
+- FreshAppraisal: void: confinement>=1
+- EffectsOnDeclaredChannels, ContainedEffectsUseHeldTools: void: invariant(RunConfinement) [T-0045-31 excluded]
+- OnlyThinkersAuthor: holds (via refines(Seats) by T-0045-28; invariant(Seats) by T-0045-37 + enc-faithful(Seats))
+- OneSeatPerPrincipal: holds (via refines(Seats) by T-0045-28; invariant(Seats) by T-0045-37 + enc-faithful(Seats))
+- DenyByAnyOf: holds (via invariant(Observers) by T-0045-37 + enc-faithful(Observers))
+- ReachIsBounded: holds (via invariant(Observers) by T-0045-37 + enc-faithful(Observers))
+- NoAdmitWithoutLiveObserver: holds (via invariant(Coupling) by T-0045-37 + enc-faithful(Coupling))
+- UnreadBounded: holds (via invariant(Coupling) by T-0045-37 + enc-faithful(Coupling))
+- CorrelatorNeverGates: holds (via invariant(Coupling) by T-0045-37 + enc-faithful(Coupling))
+- UnreadEffectsBounded: void: invariant(RunCoupling) [T-0045-31 excluded]
+- ConsultNeverCoupled: void: invariant(RunCoupling) [T-0045-31 excluded]
+- SealCountsEffects: void: invariant(RunCoupling) [T-0045-31 excluded]
+- RoundBoundCountsAll: void: invariant(RunCoupling) [T-0045-31 excluded]
+- NoEffectWithoutLiveObserver: void: invariant(RunCoupling) [T-0045-31 excluded]
+- OnlyThinkersActuate, ObserversConsultAndReport: holds (via invariant(RunSeats) by T-0045-37 + enc-faithful(RunSeats))
+- NoNameCrossesDomains: holds (via invariant(RunSeats) by T-0045-37 + enc-faithful(RunSeats))
+- Effect exclusivity: void: T-0045-23 excluded, T-0045-24 excluded, T-0045-22 excluded, confinement>=1
+- PromotionMeetsIssuedQuorum: void: T-0045-13 excluded, T-0045-15 undeclared
+- OneValuePerBallot, chosen-unique, agreement: holds
+- floor gates: holds
+- TraceMatches, ConfinementRefined: holds
+32 of 43 rows hold
+
+=== 4-lean-stage-not-T28
+Inventory for rung 0, 24 rows and 21 of 34 other premises true · from theorem-premise-binding.json
+  check enc-faithful(Seats): true (spec/lean/GraphCheck-results-2026.10.07.txt: 3 of 3 lines MATCH, in sync)
+  check enc-faithful(FloorComposition): true (spec/lean/GraphCheck-results-2026.10.07.txt: 5 of 5 lines MATCH, in sync)
+- LeaseAuthorityMonotone: void: T-0045-28 excluded
+- NoActionUnderFencedEpoch: void: T-0045-28 excluded
+- Rung0NeverContained: void: T-0045-28 excluded
+- RevokedStaysStopped: void: T-0045-28 excluded
+- AdmitImpliesFloorPermit: void: T-0045-28 excluded
+- FloorErrorIsDeny: void: T-0045-28 excluded
+- BundleRefusalHonored: void: T-0045-28 excluded
+- BundleCannotWriteFloorInputs: void: T-0045-28 excluded
+- EnvelopeHolds, FloorNeverVacuous: void: T-0045-28 excluded
+- NoWideningWithoutIssuance: void: T-0045-28 excluded
+- NC1, NC2: void: T-0045-28 excluded
+- P1_Unanimity: void: T-0045-28 excluded
+- P2_TwoSeatsCounted: void: T-0045-28 excluded
+- P3_AuthorNotCounted: void: T-0045-28 excluded
+- P5_AnchorNotApprover: void: T-0045-28 excluded
+- P7_BGNoAuthority: void: T-0045-28 excluded
+- P9_NoSoloGrant: void: T-0045-28 excluded
+- FloorPreserved: void: T-0045-28 excluded
+- BreakGlassNeverChangesAuthority: void: T-0045-28 excluded
+- ContainedMeansConfined: void: T-0045-28 excluded, confinement>=1
+- NoSilentDowngrade: void: T-0045-28 excluded
+- ContestedStopped: void: T-0045-28 excluded, confinement>=2
+- FreshAppraisal: void: T-0045-28 excluded, confinement>=1
+- EffectsOnDeclaredChannels, ContainedEffectsUseHeldTools: void: T-0045-28 excluded
+- OnlyThinkersAuthor: holds (via refines(Seats) by T-0045-37 + enc-faithful(Seats) + model-faithful(apply/Seats); invariant(Seats) by T-0045-31)
+- OneSeatPerPrincipal: holds (via refines(Seats) by T-0045-37 + enc-faithful(Seats) + model-faithful(apply/Seats); invariant(Seats) by T-0045-31)
+- DenyByAnyOf: void: T-0045-28 excluded
+- ReachIsBounded: void: T-0045-28 excluded
+- NoAdmitWithoutLiveObserver: void: T-0045-28 excluded
+- UnreadBounded: void: T-0045-28 excluded
+- CorrelatorNeverGates: void: T-0045-28 excluded
+- UnreadEffectsBounded: void: T-0045-28 excluded
+- ConsultNeverCoupled: void: T-0045-28 excluded
+- SealCountsEffects: void: T-0045-28 excluded
+- RoundBoundCountsAll: void: T-0045-28 excluded
+- NoEffectWithoutLiveObserver: void: T-0045-28 excluded
+- OnlyThinkersActuate, ObserversConsultAndReport: void: T-0045-28 excluded
+- NoNameCrossesDomains: void: T-0045-28 excluded
+- Effect exclusivity: void: T-0045-28 excluded, T-0045-23 excluded, T-0045-24 excluded, T-0045-22 excluded, confinement>=1
+- PromotionMeetsIssuedQuorum: void: T-0045-28 excluded, T-0045-13 excluded, T-0045-15 undeclared
+- OneValuePerBallot, chosen-unique, agreement: void: T-0045-28 excluded
+- floor gates: void: T-0045-28 excluded
+- TraceMatches, ConfinementRefined: void: T-0045-28 excluded
+2 of 43 rows hold
+
+=== 5-graph-check-refused
+Inventory for rung 0, 24 rows and 18 of 34 other premises true · from theorem-premise-binding.json
+  check enc-faithful(Seats): false (declared false)
+  check enc-faithful(FloorComposition): false (declared false)
+- LeaseAuthorityMonotone: void: invariant(Lease_A1) [T-0045-31 excluded | enc-faithful(Lease_A1)]
+- NoActionUnderFencedEpoch: void: invariant(Lease_A1) [T-0045-31 excluded | enc-faithful(Lease_A1)]
+- Rung0NeverContained: void: invariant(Lease_A1) [T-0045-31 excluded | enc-faithful(Lease_A1)]
+- RevokedStaysStopped: void: invariant(Lease_A1) [T-0045-31 excluded | enc-faithful(Lease_A1)]
+- AdmitImpliesFloorPermit: void: invariant(FloorComposition) [T-0045-31 excluded | enc-faithful(FloorComposition)]
+- FloorErrorIsDeny: void: invariant(FloorComposition) [T-0045-31 excluded | enc-faithful(FloorComposition)]
+- BundleRefusalHonored: void: invariant(FloorComposition) [T-0045-31 excluded | enc-faithful(FloorComposition)]
+- BundleCannotWriteFloorInputs: void: invariant(FloorComposition) [T-0045-31 excluded | enc-faithful(FloorComposition)]
+- EnvelopeHolds, FloorNeverVacuous: void: invariant(FloorComposition, FloorRouting) [invariant(FloorComposition) [T-0045-31 excluded | enc-faithful(FloorComposition)] + invariant(FloorRouting) [T-0045-31 excluded | enc-faithful(FloorRouting)]]
+- NoWideningWithoutIssuance: void: invariant(FloorRouting) [T-0045-31 excluded | enc-faithful(FloorRouting)]
+- NC1, NC2: void: invariant(NonComposition) [T-0045-31 excluded | enc-faithful(NonComposition)]
+- P1_Unanimity: void: invariant(RulesFloorNV_rev5) [T-0045-31 excluded | enc-faithful(RulesFloorNV_rev5)]
+- P2_TwoSeatsCounted: void: invariant(RulesFloorNV_rev5) [T-0045-31 excluded | enc-faithful(RulesFloorNV_rev5)]
+- P3_AuthorNotCounted: void: invariant(RulesFloorNV_rev5) [T-0045-31 excluded | enc-faithful(RulesFloorNV_rev5)]
+- P5_AnchorNotApprover: void: invariant(RulesFloorNV_rev5) [T-0045-31 excluded | enc-faithful(RulesFloorNV_rev5)]
+- P7_BGNoAuthority: void: invariant(RulesFloorNV_rev5) [T-0045-31 excluded | enc-faithful(RulesFloorNV_rev5)]
+- P9_NoSoloGrant: void: invariant(RulesFloorNV_rev5) [T-0045-31 excluded | enc-faithful(RulesFloorNV_rev5)]
+- FloorPreserved: void: invariant(Anchor) [T-0045-31 excluded | enc-faithful(Anchor)]
+- BreakGlassNeverChangesAuthority: void: invariant(BreakGlass) [T-0045-31 excluded | enc-faithful(BreakGlass)]
+- ContainedMeansConfined: void: invariant(Confinement, Confinement_A1) [invariant(Confinement) [T-0045-31 excluded | enc-faithful(Confinement)] + invariant(Confinement_A1) [T-0045-31 excluded | enc-faithful(Confinement_A1)]], confinement>=1
+- NoSilentDowngrade: void: invariant(Confinement, Confinement_A1) [invariant(Confinement) [T-0045-31 excluded | enc-faithful(Confinement)] + invariant(Confinement_A1) [T-0045-31 excluded | enc-faithful(Confinement_A1)]]
+- ContestedStopped: void: invariant(Confinement, Confinement_A1) [invariant(Confinement) [T-0045-31 excluded | enc-faithful(Confinement)] + invariant(Confinement_A1) [T-0045-31 excluded | enc-faithful(Confinement_A1)]], confinement>=2
+- FreshAppraisal: void: invariant(Confinement, Confinement_A1) [invariant(Confinement) [T-0045-31 excluded | enc-faithful(Confinement)] + invariant(Confinement_A1) [T-0045-31 excluded | enc-faithful(Confinement_A1)]], confinement>=1
+- EffectsOnDeclaredChannels, ContainedEffectsUseHeldTools: void: invariant(RunConfinement) [T-0045-31 excluded]
+- OnlyThinkersAuthor: void: invariant(Seats) [T-0045-31 excluded | enc-faithful(Seats)]
+- OneSeatPerPrincipal: void: invariant(Seats) [T-0045-31 excluded | enc-faithful(Seats)]
+- DenyByAnyOf: void: invariant(Observers) [T-0045-31 excluded | enc-faithful(Observers)]
+- ReachIsBounded: void: invariant(Observers) [T-0045-31 excluded | enc-faithful(Observers)]
+- NoAdmitWithoutLiveObserver: void: invariant(Coupling) [T-0045-31 excluded | enc-faithful(Coupling)]
+- UnreadBounded: void: invariant(Coupling) [T-0045-31 excluded | enc-faithful(Coupling)]
+- CorrelatorNeverGates: void: invariant(Coupling) [T-0045-31 excluded | enc-faithful(Coupling)]
+- UnreadEffectsBounded: void: invariant(RunCoupling) [T-0045-31 excluded]
+- ConsultNeverCoupled: void: invariant(RunCoupling) [T-0045-31 excluded]
+- SealCountsEffects: void: invariant(RunCoupling) [T-0045-31 excluded]
+- RoundBoundCountsAll: void: invariant(RunCoupling) [T-0045-31 excluded]
+- NoEffectWithoutLiveObserver: void: invariant(RunCoupling) [T-0045-31 excluded]
+- OnlyThinkersActuate, ObserversConsultAndReport: void: invariant(RunSeats) [T-0045-31 excluded | enc-faithful(RunSeats)]
+- NoNameCrossesDomains: void: invariant(RunSeats) [T-0045-31 excluded | enc-faithful(RunSeats)]
+- Effect exclusivity: void: T-0045-23 excluded, T-0045-24 excluded, T-0045-22 excluded, confinement>=1
+- PromotionMeetsIssuedQuorum: void: T-0045-13 excluded, T-0045-15 undeclared
+- OneValuePerBallot, chosen-unique, agreement: holds
+- floor gates: holds
+- TraceMatches, ConfinementRefined: holds
+3 of 43 rows hold

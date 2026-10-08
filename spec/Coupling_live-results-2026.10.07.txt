@@ -1,0 +1,3794 @@
+TOPAK — Coupling_live.tla: liveness of ADR-0039 §2's stall (the liveness plan, Tier 1 item 1), run 2026.10.07
+Module: Coupling_live.tla (sha256 d65189d3c71b30b4) · extends Coupling.tla (sha256 6d1e7a07f3d102ef) · TLC Version 2.19 of 08 August 2024 (jar sha256 936a262061c91469) · openjdk version "25.0.1" 2025-10-21
+Runner: live-gen-results.sh (sha256 b4d8857ad6fb6081) · rows: Coupling_live-rows.txt (sha256 b99d458446b078ae) · K = 1 · R = 3 · MaxRound = 2 unless the row says otherwise · one Thinker, its cell Observer, one correlator · TLC -workers 1 -fp 0, with -deadlock except on a DEADLOCK row
+expected: none: SpecL is Coupling's Spec (its 1124 states, Safe HOLDS, every witness VIOLATED, no deadlock); the four properties HOLD, each under the conditions it needs (A12, that is ObserverRegranted and ObserverKeepsUp, for AdmitStallEnds and GrantStallEnds; A12 with ThinkerAsks for AdmitsResume; A12 with GrantsMade for NextRoundGranted), at K=1 R=3 MaxRound=2 and at K=2 R=4 MaxRound=3, and every fair spec has a behaviour (NoBehaviour VIOLATED); with no fairness, without ObserverRegranted, without ObserverKeepsUp, with WF on KeepUp in place of SF (SpecWFKeepUp), with SF on any heartbeat in its place (SpecAnyBeat), with WF on Admit in place of SF (SpecWFAdmit) and without GrantsMade (SpecNoGrant), the property the row names is VIOLATED; at K=0 the two admit properties are VIOLATED and the two grant properties HOLD; M_HBLIVE reaches Coupling's 1124 states, keeps Safe, every witness and the absence of deadlock, and breaks GrantStallEnds and NextRoundGranted (also at K=2 R=4 MaxRound=3), not AdmitStallEnds or AdmitsResume; M_HBCOUPLED keeps Safe, admits nothing, breaks AdmitStallEnds, reaches no refusal for the backlog, and HOLDS GrantStallEnds and NextRoundGranted only because no grant stall is reachable; M_CORR breaks AdmitStallEnds, not GrantStallEnds; M_NOCOUPLE HOLDS AdmitStallEnds and M_ROUNDS GrantStallEnds with no fairness, since neither stall is reachable; M_MARK HOLDS both under A12
+
+=== s-none-safe · Mut=none · K=1 R=3 MaxRound=2 · SPECIFICATION SpecL · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.8E-13
+5677 states generated, 1124 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 23.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 4 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 05:07:40)
+→ HOLDS (expected HOLDS: as expected) · 1124 distinct states (expected 1124: as expected)
+
+=== s-hblive-safe · Mut=M_HBLIVE · K=1 R=3 MaxRound=2 · SPECIFICATION SpecL · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.4E-13
+5053 states generated, 1124 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 23.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 4 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 05:07:46)
+→ HOLDS (expected HOLDS: as expected) · 1124 distinct states (expected 1124: as expected)
+
+=== s-hbcoupled-safe · Mut=M_HBCOUPLED · K=1 R=3 MaxRound=2 · SPECIFICATION SpecL · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.9E-16
+135 states generated, 36 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 4 and the 95th percentile is 3).
+Finished in 05s at (2026-10-07 05:07:51)
+→ HOLDS (expected HOLDS: as expected)
+
+=== d-none-deadlock · Mut=none · K=1 R=3 MaxRound=2 · SPECIFICATION SpecL · INVARIANT Safe · deadlock check on
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.8E-13
+5677 states generated, 1124 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 23.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 4 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 05:07:57)
+→ HOLDS (expected HOLDS: as expected) · 1124 distinct states (expected 1124: as expected)
+
+=== d-hblive-deadlock · Mut=M_HBLIVE · K=1 R=3 MaxRound=2 · SPECIFICATION SpecL · INVARIANT Safe · deadlock check on
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.4E-13
+5053 states generated, 1124 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 23.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 4 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 05:08:03)
+→ HOLDS (expected HOLDS: as expected) · 1124 distinct states (expected 1124: as expected)
+
+=== w-none-round2 · Mut=none · K=1 R=3 MaxRound=2 · SPECIFICATION SpecL · INVARIANT NeverRoundTwo
+Error: Invariant NeverRoundTwo is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <EndRoundT line 76, col 3 to line 79, col 91 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 4: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 2
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+20 states generated, 13 distinct states found, 6 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 4 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 05:08:08)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-hblive-round2 · Mut=M_HBLIVE · K=1 R=3 MaxRound=2 · SPECIFICATION SpecL · INVARIANT NeverRoundTwo
+Error: Invariant NeverRoundTwo is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <EndRoundT line 76, col 3 to line 79, col 91 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 4: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 2
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+20 states generated, 13 distinct states found, 6 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 4 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 05:08:14)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-hbcoupled-round2 · Mut=M_HBCOUPLED · K=1 R=3 MaxRound=2 · SPECIFICATION SpecL · INVARIANT NeverRoundTwo
+Error: Invariant NeverRoundTwo is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <EndRoundT line 76, col 3 to line 79, col 91 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 4: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 2
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+20 states generated, 13 distinct states found, 6 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 4 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 05:08:20)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-none-refused · Mut=none · K=1 R=3 MaxRound=2 · SPECIFICATION SpecL · INVARIANT NeverRefused
+Error: Invariant NeverRefused is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <Refuse line 70, col 3 to line 73, col 79 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+5 states generated, 5 distinct states found, 2 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 3 (minimum is 3, the maximum 3 and the 95th percentile is 3).
+Finished in 05s at (2026-10-07 05:08:25)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-hblive-refused · Mut=M_HBLIVE · K=1 R=3 MaxRound=2 · SPECIFICATION SpecL · INVARIANT NeverRefused
+Error: Invariant NeverRefused is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <Refuse line 70, col 3 to line 73, col 79 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+5 states generated, 5 distinct states found, 2 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 3 (minimum is 3, the maximum 3 and the 95th percentile is 3).
+Finished in 05s at (2026-10-07 05:08:31)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-none-stale · Mut=none · K=1 R=3 MaxRound=2 · SPECIFICATION SpecL · INVARIANT NeverStaleRefusal
+Error: Invariant NeverStaleRefusal is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <Refuse line 70, col 3 to line 73, col 79 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 4: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+19 states generated, 12 distinct states found, 6 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 4 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 05:08:36)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-hblive-stale · Mut=M_HBLIVE · K=1 R=3 MaxRound=2 · SPECIFICATION SpecL · INVARIANT NeverStaleRefusal
+Error: Invariant NeverStaleRefusal is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <Refuse line 70, col 3 to line 73, col 79 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 4: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+19 states generated, 12 distinct states found, 6 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 4 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 05:08:42)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-none-backlog · Mut=none · K=1 R=3 MaxRound=2 · SPECIFICATION SpecL · INVARIANT NeverBacklogRefusal
+Error: Invariant NeverBacklogRefusal is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <Refuse line 70, col 3 to line 73, col 79 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 4: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 5: <HeartbeatL line 105, col 21 to line 107, col 53 of module Coupling_live>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 6: <Admit line 64, col 3 to line 67, col 83 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+92 states generated, 37 distinct states found, 14 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 4 and the 95th percentile is 3).
+Finished in 05s at (2026-10-07 05:08:47)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-hblive-backlog · Mut=M_HBLIVE · K=1 R=3 MaxRound=2 · SPECIFICATION SpecL · INVARIANT NeverBacklogRefusal
+Error: Invariant NeverBacklogRefusal is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <Refuse line 70, col 3 to line 73, col 79 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 4: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 5: <HeartbeatL line 105, col 21 to line 107, col 53 of module Coupling_live>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 6: <Admit line 64, col 3 to line 67, col 83 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+90 states generated, 36 distinct states found, 13 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 4 and the 95th percentile is 3).
+Finished in 05s at (2026-10-07 05:08:53)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-none-read · Mut=none · K=1 R=3 MaxRound=2 · SPECIFICATION SpecL · INVARIANT NeverRoundTwoAfterReading
+Error: Invariant NeverRoundTwoAfterReading is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 4: <HeartbeatL line 105, col 21 to line 107, col 53 of module Coupling_live>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 5: <Admit line 64, col 3 to line 67, col 83 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 6: <EndRoundT line 76, col 3 to line 79, col 91 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<1, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 7: <HeartbeatL line 105, col 21 to line 107, col 53 of module Coupling_live>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<1, 0>>
+/\ tLive = FALSE
+/\ seal = <<1, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 8: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<1, 0>>
+/\ tLive = TRUE
+/\ seal = <<1, 0>>
+/\ round = 2
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+389 states generated, 113 distinct states found, 37 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 4 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 05:08:59)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-hblive-read · Mut=M_HBLIVE · K=1 R=3 MaxRound=2 · SPECIFICATION SpecL · INVARIANT NeverRoundTwoAfterReading
+Error: Invariant NeverRoundTwoAfterReading is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 4: <HeartbeatL line 105, col 21 to line 107, col 53 of module Coupling_live>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 5: <Admit line 64, col 3 to line 67, col 83 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 6: <HeartbeatL line 105, col 21 to line 107, col 53 of module Coupling_live>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<1, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 7: <EndRoundT line 76, col 3 to line 79, col 91 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<1, 0>>
+/\ tLive = FALSE
+/\ seal = <<1, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 8: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<1, 0>>
+/\ tLive = TRUE
+/\ seal = <<1, 0>>
+/\ round = 2
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+376 states generated, 117 distinct states found, 39 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 4 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 05:09:04)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-none-backlogstep · Mut=none · K=1 R=3 MaxRound=2 · SPECIFICATION SpecL · PROPERTY NeverBacklogRefusalStep
+Error: Action property NeverBacklogRefusalStep is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 4: <HeartbeatL line 105, col 21 to line 107, col 53 of module Coupling_live>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 5: <Admit line 64, col 3 to line 67, col 83 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 6: <Refuse line 70, col 3 to line 73, col 79 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+129 states generated, 46 distinct states found, 17 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 4 and the 95th percentile is 3).
+Finished in 05s at (2026-10-07 05:09:10)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-hblive-backlogstep · Mut=M_HBLIVE · K=1 R=3 MaxRound=2 · SPECIFICATION SpecL · PROPERTY NeverBacklogRefusalStep
+Error: Action property NeverBacklogRefusalStep is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 4: <HeartbeatL line 105, col 21 to line 107, col 53 of module Coupling_live>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 5: <Admit line 64, col 3 to line 67, col 83 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 6: <Refuse line 70, col 3 to line 73, col 79 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+121 states generated, 45 distinct states found, 17 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 4 and the 95th percentile is 3).
+Finished in 05s at (2026-10-07 05:09:16)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-none-admitted · Mut=none · K=1 R=3 MaxRound=2 · SPECIFICATION SpecL · INVARIANT NeverAdmitted
+Error: Invariant NeverAdmitted is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 4: <HeartbeatL line 105, col 21 to line 107, col 53 of module Coupling_live>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 5: <Admit line 64, col 3 to line 67, col 83 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+68 states generated, 29 distinct states found, 11 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 4 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 05:09:21)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-hbcoupled-admitted · Mut=M_HBCOUPLED · K=1 R=3 MaxRound=2 · SPECIFICATION SpecL · INVARIANT NeverAdmitted
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.9E-16
+135 states generated, 36 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 4 and the 95th percentile is 3).
+Finished in 05s at (2026-10-07 05:09:27)
+→ HOLDS (expected HOLDS: as expected)
+
+=== w-hbcoupled-read · Mut=M_HBCOUPLED · K=1 R=3 MaxRound=2 · SPECIFICATION SpecL · INVARIANT NeverRoundTwoAfterReading
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.9E-16
+135 states generated, 36 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 4 and the 95th percentile is 3).
+Finished in 05s at (2026-10-07 05:09:32)
+→ HOLDS (expected HOLDS: as expected)
+
+=== w-hbcoupled-backlogstep · Mut=M_HBCOUPLED · K=1 R=3 MaxRound=2 · SPECIFICATION SpecL · PROPERTY NeverBacklogRefusalStep
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.9E-16
+135 states generated, 36 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 4 and the 95th percentile is 3).
+Finished in 05s at (2026-10-07 05:09:38)
+→ HOLDS (expected HOLDS: as expected)
+
+=== w-hbcoupled-backlog · Mut=M_HBCOUPLED · K=1 R=3 MaxRound=2 · SPECIFICATION SpecL · INVARIANT NeverBacklogRefusal
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.9E-16
+135 states generated, 36 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 4 and the 95th percentile is 3).
+Finished in 05s at (2026-10-07 05:09:44)
+→ HOLDS (expected HOLDS: as expected)
+
+=== n-none-full · Mut=none · K=1 R=3 MaxRound=2 · SPECIFICATION SpecFull · PROPERTY NoBehaviour
+Error: Temporal properties were violated.
+Error: The following behavior constitutes a counter-example:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 4: <Refuse line 70, col 3 to line 73, col 79 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 5: <EndRoundT line 76, col 3 to line 79, col 91 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 6: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 2
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 7: <EndRoundT line 76, col 3 to line 79, col 91 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 2
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 8: <HeartbeatL line 105, col 21 to line 107, col 53 of module Coupling_live>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 2
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 9: <EndO line 98, col 11 to line 99, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 2
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 10: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 2
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+Back to state 9: <EndO line 98, col 11 to line 99, col 104 of module Coupling>
+Finished checking temporal properties in 00s at 2026-10-07 05:09:49
+5677 states generated, 1124 distinct states found, 0 states left on queue.
+Finished in 05s at (2026-10-07 05:09:49)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== n-hblive-full · Mut=M_HBLIVE · K=1 R=3 MaxRound=2 · SPECIFICATION SpecFull · PROPERTY NoBehaviour
+Error: Temporal properties were violated.
+Error: The following behavior constitutes a counter-example:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <CorrBeat line 89, col 13 to line 90, col 107 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 4: <EndRoundT line 76, col 3 to line 79, col 91 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 5: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 2
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 6: <Refuse line 70, col 3 to line 73, col 79 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 2
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 7: <EndRoundT line 76, col 3 to line 79, col 91 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 2
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 8: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 2
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+Back to state 7: <EndO line 98, col 11 to line 99, col 104 of module Coupling>
+Finished checking temporal properties in 00s at 2026-10-07 05:09:55
+5053 states generated, 1124 distinct states found, 0 states left on queue.
+Finished in 05s at (2026-10-07 05:09:55)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== n-hbcoupled-full · Mut=M_HBCOUPLED · K=1 R=3 MaxRound=2 · SPECIFICATION SpecFull · PROPERTY NoBehaviour
+Error: Temporal properties were violated.
+Error: The following behavior constitutes a counter-example:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <CorrBeat line 89, col 13 to line 90, col 107 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 4: <EndRoundT line 76, col 3 to line 79, col 91 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 5: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 2
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 6: <Refuse line 70, col 3 to line 73, col 79 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 2
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 7: <EndRoundT line 76, col 3 to line 79, col 91 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 2
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 8: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 2
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+Back to state 7: <EndO line 98, col 11 to line 99, col 104 of module Coupling>
+Finished checking temporal properties in 00s at 2026-10-07 05:10:00
+135 states generated, 36 distinct states found, 0 states left on queue.
+Finished in 05s at (2026-10-07 05:10:00)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== n-corr-full · Mut=M_CORR · K=1 R=3 MaxRound=2 · SPECIFICATION SpecFull · PROPERTY NoBehaviour
+Error: Temporal properties were violated.
+Error: The following behavior constitutes a counter-example:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 4: <EndRoundT line 76, col 3 to line 79, col 91 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 5: <HeartbeatL line 105, col 21 to line 107, col 53 of module Coupling_live>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 6: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 2
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 7: <Refuse line 70, col 3 to line 73, col 79 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 2
+/\ oLease = TRUE
+/\ refusedForCorr = TRUE
+/\ refused = TRUE
+State 8: <EndRoundT line 76, col 3 to line 79, col 91 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 2
+/\ oLease = TRUE
+/\ refusedForCorr = TRUE
+/\ refused = TRUE
+State 9: <CorrBeat line 89, col 13 to line 90, col 107 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 2
+/\ oLease = TRUE
+/\ refusedForCorr = TRUE
+/\ refused = TRUE
+Back to state 8: <Stale line 92, col 13 to line 94, col 107 of module Coupling>
+Finished checking temporal properties in 00s at 2026-10-07 05:10:06
+8463 states generated, 1684 distinct states found, 0 states left on queue.
+Finished in 05s at (2026-10-07 05:10:06)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== n-mark-full · Mut=M_MARK · K=1 R=3 MaxRound=2 · SPECIFICATION SpecFull · PROPERTY NoBehaviour
+Error: Temporal properties were violated.
+Error: The following behavior constitutes a counter-example:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <CorrBeat line 89, col 13 to line 90, col 107 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 4: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 5: <Refuse line 70, col 3 to line 73, col 79 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 6: <EndRoundT line 76, col 3 to line 79, col 91 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 7: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 2
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 8: <HeartbeatL line 105, col 21 to line 107, col 53 of module Coupling_live>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 2
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 9: <EndO line 98, col 11 to line 99, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 2
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 10: <EndRoundT line 76, col 3 to line 79, col 91 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 2
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 11: <Stale line 92, col 13 to line 94, col 107 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 2
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 12: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 2
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 13: <EndO line 98, col 11 to line 99, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 2
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+Back to state 10: <CorrBeat line 89, col 13 to line 90, col 107 of module Coupling>
+Finished checking temporal properties in 00s at 2026-10-07 05:10:12
+8459 states generated, 1604 distinct states found, 0 states left on queue.
+Finished in 05s at (2026-10-07 05:10:12)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== n-k0-full · Mut=none · K=0 R=3 MaxRound=2 · SPECIFICATION SpecFull · PROPERTY NoBehaviour
+Error: Temporal properties were violated.
+Error: The following behavior constitutes a counter-example:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <CorrBeat line 89, col 13 to line 90, col 107 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 4: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 5: <Refuse line 70, col 3 to line 73, col 79 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 6: <EndRoundT line 76, col 3 to line 79, col 91 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 7: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 2
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 8: <EndRoundT line 76, col 3 to line 79, col 91 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 2
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 9: <HeartbeatL line 105, col 21 to line 107, col 53 of module Coupling_live>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 2
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 10: Stuttering
+Finished checking temporal properties in 00s at 2026-10-07 05:10:17
+335 states generated, 68 distinct states found, 0 states left on queue.
+Finished in 05s at (2026-10-07 05:10:17)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== n-big-full · Mut=none · K=2 R=4 MaxRound=3 · SPECIFICATION SpecFull · PROPERTY NoBehaviour
+Error: Temporal properties were violated.
+Error: The following behavior constitutes a counter-example:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <Refuse line 70, col 3 to line 73, col 79 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 4: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 5: <HeartbeatL line 105, col 21 to line 107, col 53 of module Coupling_live>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 6: <EndO line 98, col 11 to line 99, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 7: <EndRoundT line 76, col 3 to line 79, col 91 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 8: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0, 0>>
+/\ round = 2
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 9: <EndRoundT line 76, col 3 to line 79, col 91 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0, 0>>
+/\ round = 2
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 10: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0, 0>>
+/\ round = 3
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 11: <EndRoundT line 76, col 3 to line 79, col 91 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0, 0>>
+/\ round = 3
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 12: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0, 0>>
+/\ round = 3
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+Back to state 11: <EndO line 98, col 11 to line 99, col 104 of module Coupling>
+Finished checking temporal properties in 00s at 2026-10-07 05:10:23
+68529 states generated, 11908 distinct states found, 0 states left on queue.
+Finished in 05s at (2026-10-07 05:10:23)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== l-none-admit · Mut=none · K=1 R=3 MaxRound=2 · SPECIFICATION SpecA12 · PROPERTY AdmitStallEnds
+Finished checking temporal properties in 00s at 2026-10-07 05:10:29
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.8E-13
+5677 states generated, 1124 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 23.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 4 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 05:10:29)
+→ HOLDS (expected HOLDS: as expected) · 1124 distinct states (expected 1124: as expected)
+
+=== l-none-grant · Mut=none · K=1 R=3 MaxRound=2 · SPECIFICATION SpecA12 · PROPERTY GrantStallEnds
+Finished checking temporal properties in 00s at 2026-10-07 05:10:35
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.8E-13
+5677 states generated, 1124 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 23.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 4 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 05:10:35)
+→ HOLDS (expected HOLDS: as expected) · 1124 distinct states (expected 1124: as expected)
+
+=== l-none-resume · Mut=none · K=1 R=3 MaxRound=2 · SPECIFICATION SpecResume · PROPERTY AdmitsResume
+Checking 4 branches of temporal properties for the complete state space with 4496 total distinct states at (2026-10-07 05:10:40)
+Finished checking temporal properties in 00s at 2026-10-07 05:10:41
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.8E-13
+5677 states generated, 1124 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 23.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 4 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 05:10:41)
+→ HOLDS (expected HOLDS: as expected) · 1124 distinct states (expected 1124: as expected)
+
+=== l-none-next · Mut=none · K=1 R=3 MaxRound=2 · SPECIFICATION SpecNext · PROPERTY NextRoundGranted
+Checking 3 branches of temporal properties for the complete state space with 3372 total distinct states at (2026-10-07 05:10:46)
+Finished checking temporal properties in 00s at 2026-10-07 05:10:46
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.8E-13
+5677 states generated, 1124 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 23.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 4 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 05:10:46)
+→ HOLDS (expected HOLDS: as expected) · 1124 distinct states (expected 1124: as expected)
+
+=== f-nofair-admit · Mut=none · K=1 R=3 MaxRound=2 · SPECIFICATION SpecL · PROPERTY AdmitStallEnds
+Error: Temporal properties were violated.
+Error: The following behavior constitutes a counter-example:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <Refuse line 70, col 3 to line 73, col 79 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 4: Stuttering
+Finished checking temporal properties in 00s at 2026-10-07 05:10:52
+5677 states generated, 1124 distinct states found, 0 states left on queue.
+Finished in 05s at (2026-10-07 05:10:52)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== f-nofair-grant · Mut=none · K=1 R=3 MaxRound=2 · SPECIFICATION SpecL · PROPERTY GrantStallEnds
+Error: Temporal properties were violated.
+Error: The following behavior constitutes a counter-example:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 4: <Refuse line 70, col 3 to line 73, col 79 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 5: <HeartbeatL line 105, col 21 to line 107, col 53 of module Coupling_live>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 6: <Admit line 64, col 3 to line 67, col 83 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 7: <EndRoundT line 76, col 3 to line 79, col 91 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<1, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 8: Stuttering
+Finished checking temporal properties in 00s at 2026-10-07 05:10:58
+5677 states generated, 1124 distinct states found, 0 states left on queue.
+Finished in 05s at (2026-10-07 05:10:58)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== f-noregrant-admit · Mut=none · K=1 R=3 MaxRound=2 · SPECIFICATION SpecNoRegrant · PROPERTY AdmitStallEnds
+Error: Temporal properties were violated.
+Error: The following behavior constitutes a counter-example:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <Refuse line 70, col 3 to line 73, col 79 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 4: Stuttering
+Finished checking temporal properties in 00s at 2026-10-07 05:11:03
+5677 states generated, 1124 distinct states found, 0 states left on queue.
+Finished in 05s at (2026-10-07 05:11:03)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== f-noregrant-grant · Mut=none · K=1 R=3 MaxRound=2 · SPECIFICATION SpecNoRegrant · PROPERTY GrantStallEnds
+Error: Temporal properties were violated.
+Error: The following behavior constitutes a counter-example:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <CorrBeat line 89, col 13 to line 90, col 107 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 4: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 5: <Refuse line 70, col 3 to line 73, col 79 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 6: <HeartbeatL line 105, col 21 to line 107, col 53 of module Coupling_live>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 7: <Admit line 64, col 3 to line 67, col 83 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 8: <EndO line 98, col 11 to line 99, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 9: <EndRoundT line 76, col 3 to line 79, col 91 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<1, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 10: <Stale line 92, col 13 to line 94, col 107 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<1, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 11: Stuttering
+Finished checking temporal properties in 00s at 2026-10-07 05:11:09
+5677 states generated, 1124 distinct states found, 0 states left on queue.
+Finished in 05s at (2026-10-07 05:11:09)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== f-nokeepup-admit · Mut=none · K=1 R=3 MaxRound=2 · SPECIFICATION SpecNoKeepUp · PROPERTY AdmitStallEnds
+Error: Temporal properties were violated.
+Error: The following behavior constitutes a counter-example:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <Refuse line 70, col 3 to line 73, col 79 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 4: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+Back to state 3: <EndO line 98, col 11 to line 99, col 104 of module Coupling>
+Finished checking temporal properties in 00s at 2026-10-07 05:11:15
+5677 states generated, 1124 distinct states found, 0 states left on queue.
+Finished in 05s at (2026-10-07 05:11:15)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== f-nokeepup-grant · Mut=none · K=1 R=3 MaxRound=2 · SPECIFICATION SpecNoKeepUp · PROPERTY GrantStallEnds
+Error: Temporal properties were violated.
+Error: The following behavior constitutes a counter-example:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 4: <Refuse line 70, col 3 to line 73, col 79 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 5: <HeartbeatL line 105, col 21 to line 107, col 53 of module Coupling_live>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 6: <Admit line 64, col 3 to line 67, col 83 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 7: <EndRoundT line 76, col 3 to line 79, col 91 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<1, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 8: Stuttering
+Finished checking temporal properties in 00s at 2026-10-07 05:11:20
+5677 states generated, 1124 distinct states found, 0 states left on queue.
+Finished in 05s at (2026-10-07 05:11:20)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== f-wfkeepup-admit · Mut=none · K=1 R=3 MaxRound=2 · SPECIFICATION SpecWFKeepUp · PROPERTY AdmitStallEnds
+Error: Temporal properties were violated.
+Error: The following behavior constitutes a counter-example:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <Refuse line 70, col 3 to line 73, col 79 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 4: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+Back to state 3: <EndO line 98, col 11 to line 99, col 104 of module Coupling>
+Finished checking temporal properties in 00s at 2026-10-07 05:11:26
+5677 states generated, 1124 distinct states found, 0 states left on queue.
+Finished in 05s at (2026-10-07 05:11:26)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== f-wfkeepup-grant · Mut=none · K=1 R=3 MaxRound=2 · SPECIFICATION SpecWFKeepUp · PROPERTY GrantStallEnds
+Error: Temporal properties were violated.
+Error: The following behavior constitutes a counter-example:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 4: <Refuse line 70, col 3 to line 73, col 79 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 5: <HeartbeatL line 105, col 21 to line 107, col 53 of module Coupling_live>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 6: <Admit line 64, col 3 to line 67, col 83 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 7: <EndRoundT line 76, col 3 to line 79, col 91 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<1, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 8: <Stale line 92, col 13 to line 94, col 107 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<1, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 9: <HeartbeatL line 105, col 21 to line 107, col 53 of module Coupling_live>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<1, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 10: <EndO line 98, col 11 to line 99, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<1, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 11: <Stale line 92, col 13 to line 94, col 107 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<1, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 12: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<1, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+Back to state 7: <HeartbeatL line 105, col 21 to line 107, col 53 of module Coupling_live>
+Finished checking temporal properties in 00s at 2026-10-07 05:11:32
+5677 states generated, 1124 distinct states found, 0 states left on queue.
+Finished in 05s at (2026-10-07 05:11:32)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== f-anybeat-admit · Mut=none · K=1 R=3 MaxRound=2 · SPECIFICATION SpecAnyBeat · PROPERTY AdmitStallEnds
+Error: Temporal properties were violated.
+Error: The following behavior constitutes a counter-example:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <CorrBeat line 89, col 13 to line 90, col 107 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 4: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 5: <Refuse line 70, col 3 to line 73, col 79 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 6: <HeartbeatL line 105, col 21 to line 107, col 53 of module Coupling_live>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 7: <Admit line 64, col 3 to line 67, col 83 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 8: <Stale line 92, col 13 to line 94, col 107 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 9: <HeartbeatL line 105, col 21 to line 107, col 53 of module Coupling_live>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+Back to state 8: <Stale line 92, col 13 to line 94, col 107 of module Coupling>
+Finished checking temporal properties in 00s at 2026-10-07 05:11:37
+5677 states generated, 1124 distinct states found, 0 states left on queue.
+Finished in 05s at (2026-10-07 05:11:37)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== f-anybeat-grant · Mut=none · K=1 R=3 MaxRound=2 · SPECIFICATION SpecAnyBeat · PROPERTY GrantStallEnds
+Error: Temporal properties were violated.
+Error: The following behavior constitutes a counter-example:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 4: <Refuse line 70, col 3 to line 73, col 79 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 5: <HeartbeatL line 105, col 21 to line 107, col 53 of module Coupling_live>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 6: <Admit line 64, col 3 to line 67, col 83 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 7: <EndRoundT line 76, col 3 to line 79, col 91 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<1, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 8: <Stale line 92, col 13 to line 94, col 107 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<1, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+Back to state 7: <HeartbeatL line 105, col 21 to line 107, col 53 of module Coupling_live>
+Finished checking temporal properties in 00s at 2026-10-07 05:11:43
+5677 states generated, 1124 distinct states found, 0 states left on queue.
+Finished in 05s at (2026-10-07 05:11:43)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== f-wfadmit-resume · Mut=none · K=1 R=3 MaxRound=2 · SPECIFICATION SpecWFAdmit · PROPERTY AdmitsResume
+Checking 4 branches of temporal properties for the complete state space with 4496 total distinct states at (2026-10-07 05:11:49)
+Error: Temporal properties were violated.
+Error: The following behavior constitutes a counter-example:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <CorrBeat line 89, col 13 to line 90, col 107 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 4: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 5: <Refuse line 70, col 3 to line 73, col 79 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 6: <HeartbeatL line 105, col 21 to line 107, col 53 of module Coupling_live>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> TRUE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 7: <Stale line 92, col 13 to line 94, col 107 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 8: <EndO line 98, col 11 to line 99, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 9: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+Back to state 6: <CorrBeat line 89, col 13 to line 90, col 107 of module Coupling>
+Finished checking temporal properties in 00s at 2026-10-07 05:11:49
+5677 states generated, 1124 distinct states found, 0 states left on queue.
+Finished in 05s at (2026-10-07 05:11:49)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== f-nogrant-next · Mut=none · K=1 R=3 MaxRound=2 · SPECIFICATION SpecNoGrant · PROPERTY NextRoundGranted
+Checking 3 branches of temporal properties for the complete state space with 3372 total distinct states at (2026-10-07 05:11:54)
+Error: Temporal properties were violated.
+Error: The following behavior constitutes a counter-example:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+Back to state 1: <EndO line 98, col 11 to line 99, col 104 of module Coupling>
+Finished checking temporal properties in 00s at 2026-10-07 05:11:54
+5677 states generated, 1124 distinct states found, 0 states left on queue.
+Finished in 05s at (2026-10-07 05:11:54)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== f-k0-admit · Mut=none · K=0 R=3 MaxRound=2 · SPECIFICATION SpecFull · PROPERTY AdmitStallEnds
+Error: Temporal properties were violated.
+Error: The following behavior constitutes a counter-example:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <Refuse line 70, col 3 to line 73, col 79 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 4: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+Back to state 3: <EndO line 98, col 11 to line 99, col 104 of module Coupling>
+Finished checking temporal properties in 00s at 2026-10-07 05:12:00
+335 states generated, 68 distinct states found, 0 states left on queue.
+Finished in 05s at (2026-10-07 05:12:00)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== f-k0-resume · Mut=none · K=0 R=3 MaxRound=2 · SPECIFICATION SpecFull · PROPERTY AdmitsResume
+Checking 4 branches of temporal properties for the complete state space with 272 total distinct states at (2026-10-07 05:12:06)
+Error: Temporal properties were violated.
+Error: The following behavior constitutes a counter-example:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <Refuse line 70, col 3 to line 73, col 79 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 4: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+Back to state 3: <EndO line 98, col 11 to line 99, col 104 of module Coupling>
+Finished checking temporal properties in 00s at 2026-10-07 05:12:06
+335 states generated, 68 distinct states found, 0 states left on queue.
+Finished in 05s at (2026-10-07 05:12:06)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== k0-grant · Mut=none · K=0 R=3 MaxRound=2 · SPECIFICATION SpecA12 · PROPERTY GrantStallEnds
+Finished checking temporal properties in 00s at 2026-10-07 05:12:11
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 9.8E-16
+335 states generated, 68 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 10.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 4 and the 95th percentile is 3).
+Finished in 05s at (2026-10-07 05:12:11)
+→ HOLDS (expected HOLDS: as expected)
+
+=== k0-next · Mut=none · K=0 R=3 MaxRound=2 · SPECIFICATION SpecNext · PROPERTY NextRoundGranted
+Checking 3 branches of temporal properties for the complete state space with 204 total distinct states at (2026-10-07 05:12:17)
+Finished checking temporal properties in 00s at 2026-10-07 05:12:17
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 9.8E-16
+335 states generated, 68 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 10.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 4 and the 95th percentile is 3).
+Finished in 05s at (2026-10-07 05:12:17)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-hblive-grant · Mut=M_HBLIVE · K=1 R=3 MaxRound=2 · SPECIFICATION SpecFull · PROPERTY GrantStallEnds
+Error: Temporal properties were violated.
+Error: The following behavior constitutes a counter-example:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 4: <Refuse line 70, col 3 to line 73, col 79 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 5: <HeartbeatL line 105, col 21 to line 107, col 53 of module Coupling_live>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 6: <Admit line 64, col 3 to line 67, col 83 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 7: <EndRoundT line 76, col 3 to line 79, col 91 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<1, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 8: <Stale line 92, col 13 to line 94, col 107 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<1, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 9: <EndO line 98, col 11 to line 99, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<1, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+Back to state 8: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+Finished checking temporal properties in 00s at 2026-10-07 05:12:22
+5053 states generated, 1124 distinct states found, 0 states left on queue.
+Finished in 05s at (2026-10-07 05:12:22)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-hblive-next · Mut=M_HBLIVE · K=1 R=3 MaxRound=2 · SPECIFICATION SpecFull · PROPERTY NextRoundGranted
+Checking 3 branches of temporal properties for the complete state space with 3372 total distinct states at (2026-10-07 05:12:28)
+Error: Temporal properties were violated.
+Error: The following behavior constitutes a counter-example:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 4: <Refuse line 70, col 3 to line 73, col 79 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 5: <HeartbeatL line 105, col 21 to line 107, col 53 of module Coupling_live>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 6: <Admit line 64, col 3 to line 67, col 83 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 7: <EndRoundT line 76, col 3 to line 79, col 91 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<1, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 8: <Stale line 92, col 13 to line 94, col 107 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<1, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 9: <EndO line 98, col 11 to line 99, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<1, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+Back to state 8: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+Finished checking temporal properties in 00s at 2026-10-07 05:12:28
+5053 states generated, 1124 distinct states found, 0 states left on queue.
+Finished in 05s at (2026-10-07 05:12:28)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-hblive-admit · Mut=M_HBLIVE · K=1 R=3 MaxRound=2 · SPECIFICATION SpecA12 · PROPERTY AdmitStallEnds
+Finished checking temporal properties in 00s at 2026-10-07 05:12:34
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.4E-13
+5053 states generated, 1124 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 23.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 4 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 05:12:34)
+→ HOLDS (expected HOLDS: as expected) · 1124 distinct states (expected 1124: as expected)
+
+=== m-hblive-resume · Mut=M_HBLIVE · K=1 R=3 MaxRound=2 · SPECIFICATION SpecResume · PROPERTY AdmitsResume
+Checking 4 branches of temporal properties for the complete state space with 4496 total distinct states at (2026-10-07 05:12:40)
+Finished checking temporal properties in 00s at 2026-10-07 05:12:40
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.4E-13
+5053 states generated, 1124 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 23.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 4 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 05:12:40)
+→ HOLDS (expected HOLDS: as expected) · 1124 distinct states (expected 1124: as expected)
+
+=== m-hbcoupled-admit · Mut=M_HBCOUPLED · K=1 R=3 MaxRound=2 · SPECIFICATION SpecFull · PROPERTY AdmitStallEnds
+Error: Temporal properties were violated.
+Error: The following behavior constitutes a counter-example:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <Refuse line 70, col 3 to line 73, col 79 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 4: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+Back to state 3: <EndO line 98, col 11 to line 99, col 104 of module Coupling>
+Finished checking temporal properties in 00s at 2026-10-07 05:12:46
+135 states generated, 36 distinct states found, 0 states left on queue.
+Finished in 05s at (2026-10-07 05:12:46)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-hbcoupled-grant · Mut=M_HBCOUPLED · K=1 R=3 MaxRound=2 · SPECIFICATION SpecA12 · PROPERTY GrantStallEnds
+Finished checking temporal properties in 00s at 2026-10-07 05:12:51
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.9E-16
+135 states generated, 36 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 4 and the 95th percentile is 3).
+Finished in 05s at (2026-10-07 05:12:51)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-hbcoupled-next · Mut=M_HBCOUPLED · K=1 R=3 MaxRound=2 · SPECIFICATION SpecNext · PROPERTY NextRoundGranted
+Checking 3 branches of temporal properties for the complete state space with 108 total distinct states at (2026-10-07 05:12:57)
+Finished checking temporal properties in 00s at 2026-10-07 05:12:57
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.9E-16
+135 states generated, 36 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 4 and the 95th percentile is 3).
+Finished in 05s at (2026-10-07 05:12:57)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-corr-admit · Mut=M_CORR · K=1 R=3 MaxRound=2 · SPECIFICATION SpecFull · PROPERTY AdmitStallEnds
+Error: Temporal properties were violated.
+Error: The following behavior constitutes a counter-example:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 4: <HeartbeatL line 105, col 21 to line 107, col 53 of module Coupling_live>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 5: <Refuse line 70, col 3 to line 73, col 79 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> FALSE]
+/\ mark = <<0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = TRUE
+/\ refused = TRUE
+State 6: Stuttering
+Finished checking temporal properties in 00s at 2026-10-07 05:13:03
+8463 states generated, 1684 distinct states found, 0 states left on queue.
+Finished in 05s at (2026-10-07 05:13:03)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-corr-grant · Mut=M_CORR · K=1 R=3 MaxRound=2 · SPECIFICATION SpecA12 · PROPERTY GrantStallEnds
+Finished checking temporal properties in 00s at 2026-10-07 05:13:09
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 6.2E-13
+8463 states generated, 1684 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 24.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 5 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 05:13:09)
+→ HOLDS (expected HOLDS: as expected) · 1684 distinct states (expected 1684: as expected)
+
+=== m-nocouple-admit · Mut=M_NOCOUPLE · K=1 R=3 MaxRound=2 · SPECIFICATION SpecL · PROPERTY AdmitStallEnds
+Finished checking temporal properties in 00s at 2026-10-07 05:13:15
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 4.2E-13
+7159 states generated, 1332 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 22.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 6 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 05:13:15)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-rounds-grant · Mut=M_ROUNDS · K=1 R=3 MaxRound=2 · SPECIFICATION SpecL · PROPERTY GrantStallEnds
+Finished checking temporal properties in 00s at 2026-10-07 05:13:22
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 7.5E-13
+9487 states generated, 1796 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 23.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 5 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 05:13:22)
+→ HOLDS (expected HOLDS: as expected) · 1796 distinct states (expected 1796: as expected)
+
+=== m-mark-admit · Mut=M_MARK · K=1 R=3 MaxRound=2 · SPECIFICATION SpecA12 · PROPERTY AdmitStallEnds
+Finished checking temporal properties in 00s at 2026-10-07 05:13:28
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 6.0E-13
+8459 states generated, 1604 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 6 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 05:13:28)
+→ HOLDS (expected HOLDS: as expected) · 1604 distinct states (expected 1604: as expected)
+
+=== m-mark-grant · Mut=M_MARK · K=1 R=3 MaxRound=2 · SPECIFICATION SpecA12 · PROPERTY GrantStallEnds
+Finished checking temporal properties in 00s at 2026-10-07 05:13:34
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 6.0E-13
+8459 states generated, 1604 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 6 and the 95th percentile is 4).
+Finished in 05s at (2026-10-07 05:13:34)
+→ HOLDS (expected HOLDS: as expected) · 1604 distinct states (expected 1604: as expected)
+
+=== b-none-admit · Mut=none · K=2 R=4 MaxRound=3 · SPECIFICATION SpecA12 · PROPERTY AdmitStallEnds
+Finished checking temporal properties in 00s at 2026-10-07 05:13:40
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 3.7E-11
+68529 states generated, 11908 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 31.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 5 and the 95th percentile is 4).
+Finished in 06s at (2026-10-07 05:13:40)
+→ HOLDS (expected HOLDS: as expected)
+
+=== b-none-grant · Mut=none · K=2 R=4 MaxRound=3 · SPECIFICATION SpecA12 · PROPERTY GrantStallEnds
+Finished checking temporal properties in 00s at 2026-10-07 05:13:47
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 3.7E-11
+68529 states generated, 11908 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 31.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 5 and the 95th percentile is 4).
+Finished in 06s at (2026-10-07 05:13:47)
+→ HOLDS (expected HOLDS: as expected)
+
+=== b-none-resume · Mut=none · K=2 R=4 MaxRound=3 · SPECIFICATION SpecResume · PROPERTY AdmitsResume
+Checking 5 branches of temporal properties for the complete state space with 59540 total distinct states at (2026-10-07 05:13:55)
+Finished checking temporal properties in 00s at 2026-10-07 05:13:55
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 3.7E-11
+68529 states generated, 11908 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 31.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 5 and the 95th percentile is 4).
+Finished in 08s at (2026-10-07 05:13:55)
+→ HOLDS (expected HOLDS: as expected)
+
+=== b-none-next · Mut=none · K=2 R=4 MaxRound=3 · SPECIFICATION SpecNext · PROPERTY NextRoundGranted
+Checking 4 branches of temporal properties for the complete state space with 47632 total distinct states at (2026-10-07 05:14:03)
+Finished checking temporal properties in 00s at 2026-10-07 05:14:03
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 3.7E-11
+68529 states generated, 11908 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 31.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 5 and the 95th percentile is 4).
+Finished in 07s at (2026-10-07 05:14:03)
+→ HOLDS (expected HOLDS: as expected)
+
+=== b-hblive-grant · Mut=M_HBLIVE · K=2 R=4 MaxRound=3 · SPECIFICATION SpecFull · PROPERTY GrantStallEnds
+Error: Temporal properties were violated.
+Error: The following behavior constitutes a counter-example:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <CorrBeat line 89, col 13 to line 90, col 107 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 4: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 5: <HeartbeatL line 105, col 21 to line 107, col 53 of module Coupling_live>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> TRUE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 6: <EndRoundT line 76, col 3 to line 79, col 91 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> TRUE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 7: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> TRUE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0, 0>>
+/\ round = 2
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 8: <Admit line 64, col 3 to line 67, col 83 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> TRUE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0, 0>>
+/\ round = 2
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 9: <EndO line 98, col 11 to line 99, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> TRUE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0, 0>>
+/\ round = 2
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 10: <Refuse line 70, col 3 to line 73, col 79 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> TRUE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0, 0>>
+/\ round = 2
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 11: <EndRoundT line 76, col 3 to line 79, col 91 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> TRUE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 1, 0>>
+/\ round = 2
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 12: <Stale line 92, col 13 to line 94, col 107 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 1, 0>>
+/\ round = 2
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 13: <Stale line 92, col 13 to line 94, col 107 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 1, 0>>
+/\ round = 2
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 14: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 1, 0>>
+/\ round = 2
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+State 15: <EndO line 98, col 11 to line 99, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 1, 0>>
+/\ round = 2
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = TRUE
+Back to state 12: <CorrBeat line 89, col 13 to line 90, col 107 of module Coupling>
+Finished checking temporal properties in 00s at 2026-10-07 05:14:10
+57793 states generated, 11908 distinct states found, 0 states left on queue.
+Finished in 06s at (2026-10-07 05:14:10)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== b-hblive-next · Mut=M_HBLIVE · K=2 R=4 MaxRound=3 · SPECIFICATION SpecFull · PROPERTY NextRoundGranted
+Checking 4 branches of temporal properties for the complete state space with 47632 total distinct states at (2026-10-07 05:14:17)
+Error: Temporal properties were violated.
+Error: The following behavior constitutes a counter-example:
+State 1: <Initial predicate>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = FALSE
+/\ seal = <<0, 0, 0>>
+/\ round = 0
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 2: <GrantT line 55, col 3 to line 58, col 85 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 3: <CorrBeat line 89, col 13 to line 90, col 107 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 4: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 5: <HeartbeatL line 105, col 21 to line 107, col 53 of module Coupling_live>
+/\ admittedUnlive = FALSE
+/\ seq = 0
+/\ fresh = [o |-> TRUE, c |-> TRUE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 6: <Admit line 64, col 3 to line 67, col 83 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> TRUE, c |-> TRUE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 7: <Stale line 92, col 13 to line 94, col 107 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = TRUE
+/\ seal = <<0, 0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 8: <EndRoundT line 76, col 3 to line 79, col 91 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = FALSE
+/\ seal = <<1, 0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 9: <EndO line 98, col 11 to line 99, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> FALSE, c |-> TRUE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = FALSE
+/\ seal = <<1, 0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 10: <Stale line 92, col 13 to line 94, col 107 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = FALSE
+/\ seal = <<1, 0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 11: <GrantO line 96, col 11 to line 97, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = FALSE
+/\ seal = <<1, 0, 0>>
+/\ round = 1
+/\ oLease = TRUE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+State 12: <EndO line 98, col 11 to line 99, col 104 of module Coupling>
+/\ admittedUnlive = FALSE
+/\ seq = 1
+/\ fresh = [o |-> FALSE, c |-> FALSE]
+/\ mark = <<0, 0, 0>>
+/\ tLive = FALSE
+/\ seal = <<1, 0, 0>>
+/\ round = 1
+/\ oLease = FALSE
+/\ refusedForCorr = FALSE
+/\ refused = FALSE
+Back to state 9: <CorrBeat line 89, col 13 to line 90, col 107 of module Coupling>
+Finished checking temporal properties in 00s at 2026-10-07 05:14:17
+57793 states generated, 11908 distinct states found, 0 states left on queue.
+Finished in 07s at (2026-10-07 05:14:17)
+→ VIOLATED (expected VIOLATED: as expected)
+
+Rows: 69 · as expected: 69 · not as expected: none · ERROR: none

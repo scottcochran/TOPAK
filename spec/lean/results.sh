@@ -12,21 +12,21 @@ here=$(cd "$(dirname "$0")" && pwd)
 root=$(cd "$here/../.." && pwd)
 d16() { shasum -a 256 "$root/$1" | cut -c1-16; }
 e() { echo "$1 (sha256 $(d16 "$1"))"; }
-tla="Seats Observers RunSeats FloorRouting FloorComposition NonComposition RulesFloorBase Anchor BreakGlass Coupling Lease_A1 RulesFloorNV_rev5 Confinement Confinement_A1"
-modules="Prelude Seats Observers RunSeats FloorRouting FloorComposition NonComposition RulesFloorBase Anchor BreakGlass Coupling Lease_A1 RulesFloorNV_rev5 Confinement"
+tla="Seats Observers RunSeats FloorRouting FloorComposition NonComposition RulesFloorBase Anchor BreakGlass Coupling Lease_A1 RulesFloorNV_rev5 Confinement Confinement_A1 Emergency Emergency_live"
+modules="Prelude Temporal Seats Observers RunSeats FloorRouting FloorComposition NonComposition RulesFloorBase Anchor BreakGlass Coupling Lease_A1 RulesFloorNV_rev5 Confinement Emergency"
 echo "TOPAK — Lean results for the spec/ modules re-encoded in Lean: every theorem of spec/lean/TopakSpec/*.lean, checked by the kernel below"
 line="Transcribes:"; for m in $tla; do line="$line $(e spec/$m.tla) ·"; done; echo "${line% ·}"
 line="Sources:"; for m in $modules; do line="$line $(e spec/lean/TopakSpec/$m.lean) ·"; done
-echo "$line $(e spec/lean/TopakSpec/Mirror/Seats.lean) · $(e spec/lean/TopakSpec/Mirror/FloorComposition.lean) · $(e spec/lean/TopakSpec.lean) · $(e spec/lean/lakefile.toml) · $(e spec/lean/lean-toolchain)"
+echo "$line $(e spec/lean/TopakSpec/Mirror/Seats.lean) · $(e spec/lean/TopakSpec/Mirror/FloorComposition.lean) · $(e spec/lean/TopakSpec/Mirror/Emergency.lean) · $(e spec/lean/TopakSpec.lean) · $(e spec/lean/lakefile.toml) · $(e spec/lean/lean-toolchain)"
 "$root/tools/lean-report.sh" "$here" --prover
 for m in $modules; do
-  [ "$m" = Prelude ] && continue
+  case $m in Prelude|Temporal) continue;; esac   # the shared vocabulary, which transcribes no module
   thms=$(grep -oE '^theorem [A-Za-z0-9_]+Always|^theorem NeverChangesAuthority|^theorem GenesisEntries|^theorem GenesisFloor|^theorem Confinement[A-Za-z0-9_]*SafeAlways' "$here/TopakSpec/$m.lean" | sed 's/theorem //' | paste -sd '|' - | sed 's/|/ · /g')
   echo "Theorems ($m): ${thms:-none}"
 done
-for m in Seats FloorComposition; do
+for m in Seats FloorComposition Emergency; do
   echo "Theorems (Mirror/$m): $(grep -oE '^theorem [A-Za-z0-9_]+_iff' "$here/TopakSpec/Mirror/$m.lean" | sed 's/theorem //' | paste -sd '|' - | sed 's/|/ · /g')"
 done
-echo "A theorem holds of the Lean re-encoding, not of the frozen TLA+ text; the encoding's fidelity is read, each definition beside the TLA+ it transcribes, and for Seats and FloorComposition also checked: their mirrors (TopakSpec/Mirror/) are proved equal to the encodings' Next, Init and properties, and graph-check.sh evaluates them on TLC's state graphs (GraphCheck-results-*.txt). Spec => []P is induction on reachable states (Prelude.invariant), in place of LS4; the arithmetic the TLAPS proofs hand to SMT is closed by omega; Confinement.lean covers Confinement.tla and Confinement_A1.tla under one flag. Mutations and witnesses stay with TLC."
+echo "A theorem holds of the Lean re-encoding, not of the frozen TLA+ text; the encoding's fidelity is read, each definition beside the TLA+ it transcribes, and for Seats, FloorComposition and Emergency also checked: their mirrors (TopakSpec/Mirror/) are proved equal to the encodings' Next (Emergency's at MaxRound = 2, and also to Emergency_live's NextL), Init and properties, and graph-check.sh and graph-check-emergency.sh evaluate them on TLC's state graphs (GraphCheck-results-*.txt for Seats and FloorComposition, GraphCheckEmergency-results-*.txt for Emergency). Spec => []P is induction on reachable states (Prelude.invariant), in place of LS4; the arithmetic the TLAPS proofs hand to SMT is closed by omega; Confinement.lean covers Confinement.tla and Confinement_A1.tla under one flag; Emergency.lean covers Emergency.tla and Emergency_live.tla, which extends it. Mutations and witnesses stay with TLC."
 echo
 "$root/tools/lean-report.sh" "$here" TopakSpec

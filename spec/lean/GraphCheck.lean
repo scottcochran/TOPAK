@@ -1,13 +1,14 @@
-import Lean.Data.Json
-import Std.Data.HashMap
+import GraphCheckCore
 import TopakSpec.Mirror.Seats
 import TopakSpec.Mirror.FloorComposition
 /-!
-# Checking a re-encoding against TLC's state graph
+# Checking the Seats and FloorComposition encodings against TLC's state graphs
 
-`graph-check.sh` has TLC dump every reachable state and transition of a TLA+ module at its configured constants, with
-a derived variable `props` carrying each property's value, and `dot2lines.py` turns the dump into lines. This program
-reads them and, for the module's Lean encoding through its proved mirror (`TopakSpec/Mirror/*.lean`), checks:
+`graph-check.sh` has TLC dump every reachable state and transition of `Seats.tla` and `FloorComposition.tla` at their
+configured constants, under every `Mut`, with a derived variable `props` carrying each property's value, and
+`dot2lines.py` turns each dump into lines. This program decodes them and evaluates the module's Lean encoding on them
+through its proved mirror (`TopakSpec/Mirror/Seats.lean`, `TopakSpec/Mirror/FloorComposition.lean`), with
+`GraphCheckCore.lean`'s `check`:
 
 1. every TLC edge is a step of the encoding's `Next` (through `next_iff`: the target is among `succC`);
 2. every step of the encoding's `Next` from a TLC state is a TLC edge, or leaves the state as it is;
@@ -17,90 +18,10 @@ reads them and, for the module's Lean encoding through its proved mirror (`Topak
 With 1 to 3 the encoding and the module reach the same states by the same steps, at those constants. The mirror's
 theorems are proved; this evaluation is a test.
 
-usage: `graphcheck <module> <mut> <graph.lines>`
+usage: `graphcheck <module> <mut> <graph.lines>`, the module `Seats` or `FloorComposition`
 -/
 
-open Lean Std
-
-structure Graph (α : Type) where
-  states : HashMap String α
-  props : HashMap String Json
-  init : Array String
-  edges : Array (String × String)
-  succ : HashMap String (Array String)
-
-def readGraph (decode : Json → Except String α) (path : String) : IO (Graph α) := do
-  let lines ← IO.FS.lines path
-  let mut states : HashMap String α := {}
-  let mut props : HashMap String Json := {}
-  let mut init := #[]
-  let mut edges := #[]
-  let mut succ : HashMap String (Array String) := {}
-  for line in lines do
-    if line.startsWith "S " then
-      let id := (line.splitOn " ").getD 1 ""
-      let j ← IO.ofExcept (Json.parse (line.drop ("S " ++ id ++ " ").length).toString)
-      states := states.insert id (← IO.ofExcept (decode j))
-      props := props.insert id ((j.getObjVal? "props").toOption.getD Json.null)
-    else if line.startsWith "I " then
-      init := init.push (line.drop 2).toString
-    else if line.startsWith "E " then
-      match line.splitOn " " with
-      | [_, a, b] =>
-        edges := edges.push (a, b)
-        succ := succ.insert a ((succ.getD a #[]).push b)
-      | _ => throw (IO.userError s!"bad edge line {line}")
-  pure { states, props, init, edges, succ }
-
-/-- What a module supplies: its mirror's successors, equality, initial state and properties. -/
-structure Mirror (α : Type) where
-  decode : Json → Except String α
-  succ : α → List α
-  eq : α → α → Bool
-  cInit : α
-  props : List (String × (α → Bool))
-
-def check [Inhabited α] (name : String) (M : Mirror α) (path : String) : IO Bool := do
-  let g ← readGraph M.decode path
-  let get := fun id => g.states.get! id
-  let mut bad : Array String := #[]
-  -- 1. every TLC edge is a Next step
-  let mut n1 := 0
-  for (a, b) in g.edges do
-    if !(M.succ (get a)).any (M.eq · (get b)) then
-      n1 := n1 + 1
-      if bad.size < 5 then bad := bad.push s!"edge {a} -> {b} is not a Next step"
-  -- 2. every Next step from a TLC state is a TLC edge or a stutter
-  let mut n2 := 0
-  let mut nsteps := 0
-  for (a, s) in g.states.toList do
-    let tlc := (g.succ.getD a #[]).map get
-    for d in M.succ s do
-      nsteps := nsteps + 1
-      if !(M.eq d s || tlc.any (M.eq d ·)) then
-        n2 := n2 + 1
-        if bad.size < 5 then bad := bad.push s!"a Next step from {a} is not a TLC edge"
-  -- 3. Init
-  let initOk := g.init.size == 1 && g.init.all fun i => M.eq (get i) M.cInit
-  if !initOk then bad := bad.push s!"the initial states differ ({g.init.size} in TLC)"
-  -- 4. properties
-  let mut propLines : Array String := #[]
-  for (pn, pf) in M.props do
-    let mut disagree := 0
-    let mut falses := 0
-    for (a, s) in g.states.toList do
-      let tlcVal := ((g.props.getD a Json.null).getObjValAs? Bool pn).toOption
-      let leanVal := pf s
-      if !leanVal then falses := falses + 1
-      if tlcVal != some leanVal then
-        disagree := disagree + 1
-        if bad.size < 5 then bad := bad.push s!"{pn} at {a}: TLC {tlcVal}, Lean {leanVal}"
-    propLines := propLines.push s!"{pn} agrees on {g.states.size - disagree} of {g.states.size} states, false in {falses}"
-  let ok := n1 == 0 && n2 == 0 && initOk && bad.isEmpty
-  IO.println s!"{name} | {g.states.size} states · {g.edges.size} edges · {nsteps} Next steps · {g.init.size} initial | {if ok then "MATCH" else "MISMATCH"}"
-  IO.println s!"  edges not Next steps: {n1} · Next steps not TLC edges: {n2} · Init {if initOk then "agrees" else "DIFFERS"} · {String.intercalate " · " propLines.toList}"
-  for b in bad do IO.println s!"  {b}"
-  pure ok
+open Lean
 
 /-! ## Seats -/
 

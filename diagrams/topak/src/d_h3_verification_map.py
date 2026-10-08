@@ -49,7 +49,7 @@ def build():
                "spec/<Module>-proof-results-*.txt and spec/<Module>-proof-cert-results-*.txt (22 each); "
                "spec/Mechanism-trace-results-2026.10.05.txt (3b1ad26dfd432d48) and its predecessors; spec/proof-method.md "
                "§1, §5a; spec/proof-certification.md §9; spec/proof-sync.sh, proof-results.sh, proof-cert.sh; "
-               "spec/theorem-premise-binding.md; tools/TLAPS-PIN; ADR-0046 §1–§5, §7, E1, E2, A1 (B28); "
+               "spec/theorem-premise-binding.md; tools/TLAPS-PIN; ADR-0046 §1–§5, §7, E1, E2, A1 (B28), E4 (B37); "
                "floor/README.md, floor/run-gates.py, floor/genesis-gates-results-2026.10.01.txt; floor/proposed/README.md, "
                "build.py, run-gates.py and labels-, control- and emergency-gates-results-2026.10.04.txt; "
                "mechanism/README.md, mechanism/GAPS-AND-ASSUMPTIONS.md §6, I46–I48, findings 19, 20; "
@@ -311,7 +311,7 @@ def build():
          "`NeverPromoted`", "`RulesFloorNV_rev5-run.sh`", "`RulesFloorNV-rev5-results-2026.09.23.txt`; five humans "
          "(at four, threshold equals unanimity)", "`RulesFloorNV_rev5_proof.tla` · **262**: each property under "
          "the entry it rests on, `P9` under R2 and (R1 or R9); the three `ASSUME`s proved as lemmas · " + NOCERT +
-         ": Isabelle refuses one of five Zenon scripts",
+         ": Isabelle refuses all five Zenon scripts, tlapm reporting one (ADR-0046 E4, B37)",
          "ADR-0026, ADR-0033, ADR-0046 · **pinned**"],
         ["`NonComposition.tla`", "ADR-0013 §4 (erasure, ADR-0006, with break-glass, ADR-0009, against ADR-0028)",
          "`NC1`, `NC2`", "`M1` (F1 decisions erasable), `M2` (break-glass widens erasure)",
