@@ -1,0 +1,285 @@
+TOPAK — the prover's unsound cases (proof-certification.md §8) looked for: the untranslated operators in spec/*.tla; in each proof module's certified run, the queries that hold an opaque constant under a binder and the obligations Zenon or Isabelle closed; the names the run gives abstracted terms, against a run over renamed sources; and, in the obligations as tlapm prints them, the bound variables that capture a name
+Runner: proof-scan.sh (sha256 9da631cea50b3807) · tlapm 7824dab (binary sha256 e150fb793fb28592) · smt-checked (sha256 bb86642633822ae5) · cvc5 (sha256 a4ce24a176532209) · ethos (sha256 4eb41c1f1f9fce88) · tla2tools.jar (sha256 936a262061c91469) · one thread · backend timeouts x1
+An opaque constant under a binder is sound when the term it stands for mentions no variable bound around it (a step's primed goal, the prime of a variable-tuple definition); it is the binder case when the term does (an ENABLED, a \cdot or a temporal formula over the bound variable). The listings say where; the step at each line says which. A difference under renaming is two terms that shared a name in one run; a capture is a bound variable tlapm's printer renames (x_1) over the name it would capture, which the print tlapm hashes shows as another term.
+
+1. Sources
+  Anchor.tla (sha256 a70187ef43058848): 1 lines (1 [][A]_v, the box of an action)
+  Anchor_proof.tla (sha256 8a482305f19d8bbd): 2 lines (2 Spec => []P, P a bare name)
+  BreakGlass.tla (sha256 2c3c3d75aba2a599): 1 lines (1 [][A]_v, the box of an action)
+  BreakGlass_A1.tla (sha256 b586a6afa4fd5136): 1 lines (1 [][A]_v, the box of an action)
+  BreakGlass_A1_proof.tla (sha256 6bf26fc5a91638b7): 1 lines (1 Spec => []P, P a bare name)
+  BreakGlass_proof.tla (sha256 d6d49a5329a27e1c): 1 lines (1 Spec => []P, P a bare name)
+  Confinement.tla (sha256 d0dcf21ce9774885): 4 lines (3 [] between CASE arms; 1 [][A]_v, the box of an action)
+  Confinement_A1.tla (sha256 715b1c291771c527): 4 lines (3 [] between CASE arms; 1 [][A]_v, the box of an action)
+  Confinement_A1_proof.tla (sha256 63c7d90a7fc2ccf8): 9 lines (9 Spec => []P, P a bare name)
+  Confinement_proof.tla (sha256 2f4b4bb96d1f83f3): 9 lines (9 Spec => []P, P a bare name)
+  Correlator.tla (sha256 351b4159e0e298d9): 2 lines (1 [][A]_v, the box of an action)
+    302: ENABLED · LagNeverGates == \A t \in Thinkers : \A x \in Stores : ~Blocked(t) => ENABLED Touch(t, x)
+  Correlator_proof.tla (sha256 5dc0e337ead963dd): 23 lines (22 Spec => []P, P a bare name)
+    517: ENABLED · PROVE  ENABLED Report(c, s)
+  Coupling.tla (sha256 6d1e7a07f3d102ef): 1 lines (1 [][A]_v, the box of an action)
+  Coupling_live.tla (sha256 d65189d3c71b30b4): 14 lines (2 [][A]_v, the box of an action)
+    123: WF_ · ObserverRegranted == WF_vars(GrantO)
+    124: SF_ · ObserverKeepsUp   == SF_vars(KeepUp)
+    128: SF_ · ThinkerAsks == SF_vars(Admit)
+    129: WF_ · GrantsMade  == WF_vars(GrantT)
+    140: WF_ · SpecWFKeepUp  == SpecL /\ ObserverRegranted /\ WF_vars(KeepUp) /\ ThinkerAsks /\ GrantsMade
+    142: SF_ · /\ SF_vars(\E r \in Rounds, w \in 0..R : HeartbeatL(r, w))
+    143: WF_ · SpecWFAdmit   == SpecA12 /\ WF_vars(Admit) /\ GrantsMade
+    149: ENABLED ~> · AdmitStallEnds == (tLive /\ seq < R) ~> (~tLive \/ ENABLED Admit)
+    152: ENABLED ~> · GrantStallEnds == (~tLive /\ round < MaxRound) ~> ENABLED GrantT
+    155: ~> · AdmitsResume     == \A n \in 0..R : (tLive /\ seq = n /\ n < R) ~> (~tLive \/ seq > n)
+    156: ~> · NextRoundGranted == \A r \in 0..MaxRound : (~tLive /\ round = r /\ r < MaxRound) ~> (round > r)
+    172: <> · NoBehaviour == <>FALSE
+  Coupling_live_proof.tla (sha256 9efafeccf705dde2): 7 lines (7 Spec => []P, P a bare name)
+  Coupling_proof.tla (sha256 9c37a36c2e607d54): 8 lines (7 Spec => []P, P a bare name)
+    268: ENABLED · PROVE  ENABLED GrantT
+  Emergency.tla (sha256 1abae9beb82b00fa): 1 lines (1 [][A]_v, the box of an action)
+  Emergency_live.tla (sha256 9685c67b42910b85): 3 lines (1 [][A]_v, the box of an action)
+    80: ENABLED · EmergencyNeverCoupled == \A t \in Tools : (em.live /\ t \in em.envelope) => ENABLED EmAdmit(t)
+    82: ENABLED · EmergencyCallsWithoutObserver == (em.live /\ ~obsLive) => \E t \in Tools : ENABLED EmAdmit(t)
+  Emergency_live_proof.tla (sha256 63c8ec703e6097d9): 24 lines (22 Spec => []P, P a bare name)
+    288: ENABLED · PROVE  ~ENABLED EmAdmit(t)
+    294: ENABLED · PROVE  ~ENABLED EmAdmit(t)
+  Emergency_proof.tla (sha256 a1e5a82ad625496b): 23 lines (23 Spec => []P, P a bare name)
+  FloorComposition.tla (sha256 3d30a058d8f8d9d1): 3 lines (2 [] between CASE arms; 1 [][A]_v, the box of an action)
+  FloorComposition_proof.tla (sha256 17a6c22eb9e7f30c): 13 lines (11 Spec => []P, P a bare name; 2 [] between CASE arms)
+  FloorRouting.tla (sha256 9d4c0f5e03defc1e): 1 lines (1 [][A]_v, the box of an action)
+  FloorRouting_proof.tla (sha256 df536eefdb805f08): 3 lines (3 Spec => []P, P a bare name)
+  Labels.tla (sha256 cc124f5c406aedac): 5 lines (3 [] between CASE arms; 2 [][A]_v, the box of an action)
+  Labels_proof.tla (sha256 877d9361051a9fbb): 34 lines (33 Spec => []P, P a bare name)
+    564: [] · THEOREM BaseAlways == Spec => [](TypeOK /\ IdsUsed /\ GuestIn)
+  Lease.tla (sha256 7636c6c3364bca9c): 3 lines (2 [] between CASE arms; 1 [][A]_v, the box of an action)
+  Lease_A1.tla (sha256 0b5eac7a7309be2f): 4 lines (3 [] between CASE arms; 1 [][A]_v, the box of an action)
+  Lease_A1_proof.tla (sha256 6f39c7711252c8de): 10 lines (9 Spec => []P, P a bare name)
+    300: ENABLED · PROVE  ENABLED Grant(p)
+  Mechanism.tla (sha256 e29dbaf0936dbae1): 40 lines (39 [] between CASE arms; 1 [][A]_v, the box of an action)
+  NonComposition.tla (sha256 119f9a7e878f8929): 3 lines (2 [] between CASE arms; 1 [][A]_v, the box of an action)
+  NonComposition_A1.tla (sha256 d1e9113480d016bb): 4 lines (3 [] between CASE arms; 1 [][A]_v, the box of an action)
+  NonComposition_A1_proof.tla (sha256 11033360d0998c95): 5 lines (5 Spec => []P, P a bare name)
+  NonComposition_proof.tla (sha256 6ce6aee98a43d40e): 5 lines (5 Spec => []P, P a bare name)
+  Observers.tla (sha256 96b0792ce948ec80): 1 lines (1 [][A]_v, the box of an action)
+  Observers_proof.tla (sha256 f70c3246962b1837): 5 lines (5 Spec => []P, P a bare name)
+  Operators.tla (sha256 a465d7af62becd03): 2 lines (1 [][A]_v, the box of an action)
+    249: ENABLED · \A o \in Ops : (inForce[o] /\ vouched[o]) => \A p \in Principals : inForce[p] => ENABLED Revoke(o, p)
+  Operators_proof.tla (sha256 226230ef1e56b413): 32 lines (31 Spec => []P, P a bare name)
+    498: ENABLED · PROVE  ENABLED FenceEpoch(o)
+  RulesFloorBase.tla (sha256 cf2351de2b39cccf): 5 lines (5 [] between CASE arms)
+  RulesFloorNV.tla (sha256 1468d8bab89bb076): 6 lines (5 [] between CASE arms; 1 [][A]_v, the box of an action)
+  RulesFloorNV_rev5.tla (sha256 3034df144d75ec3a): 5 lines (4 [] between CASE arms; 1 [][A]_v, the box of an action)
+  RulesFloorNV_rev5_proof.tla (sha256 8ecd73b3451018c5): 13 lines (13 Spec => []P, P a bare name)
+  RunConfinement.tla (sha256 d0c4aa37934b78b5): 5 lines (4 [] between CASE arms; 1 [][A]_v, the box of an action)
+  RunConfinement_proof.tla (sha256 e8612bf4111c7599): 5 lines (5 Spec => []P, P a bare name)
+  RunCoupling.tla (sha256 781fdbc135f37491): 2 lines (1 [][A]_v, the box of an action)
+    162: ENABLED · ConsultNeverCoupled == (tLive /\ acts < R) => ENABLED Consult
+  RunCoupling_proof.tla (sha256 493b5b19b5e5ae05): 14 lines (11 Spec => []P, P a bare name)
+    336: ENABLED · PROVE  ENABLED Consult
+    384: ENABLED · PROVE  ENABLED GrantT
+    394: ENABLED · PROVE  ENABLED Consult
+  RunSeats.tla (sha256 1bb49475ab59f6de): 2 lines (1 [] between CASE arms; 1 [][A]_v, the box of an action)
+  RunSeats_proof.tla (sha256 1356d403035e3357): 7 lines (7 Spec => []P, P a bare name)
+  Seats.tla (sha256 903a1db686968df0): 3 lines (2 [] between CASE arms; 1 [][A]_v, the box of an action)
+  Seats_proof.tla (sha256 e5a0fa0b5e17b2c9): 5 lines (5 Spec => []P, P a bare name)
+  ToolList.tla (sha256 7c0a18b897e6cb98): 1 lines (1 [][A]_v, the box of an action)
+  ToolList_proof.tla (sha256 c6b7ac1be332dfd6): 18 lines (18 Spec => []P, P a bare name)
+  lines with an untranslated operator, outside comments: 403, of which listed in full: 27
+
+2. Runs
+== Anchor_proof.tla (sha256 8a482305f19d8bbd): 40 obligations (trivial 23 · SMT 15 · Zenon 0 · Isabelle 0 · LS4 2 · not proved 0) · 0 results reused · tlapm exit 0 · this run certifies
+   SMT queries with an opaque constant under a binder: 0
+   Obligations Zenon or Isabelle closed: 0
+== BreakGlass_A1_proof.tla (sha256 6bf26fc5a91638b7): 45 obligations (trivial 26 · SMT 18 · Zenon 0 · Isabelle 0 · LS4 1 · not proved 0) · 0 results reused · tlapm exit 0 · this run certifies
+   SMT queries with an opaque constant under a binder: 0
+   Obligations Zenon or Isabelle closed: 0
+== BreakGlass_proof.tla (sha256 d6d49a5329a27e1c): 37 obligations (trivial 22 · SMT 14 · Zenon 0 · Isabelle 0 · LS4 1 · not proved 0) · 0 results reused · tlapm exit 0 · this run certifies
+   SMT queries with an opaque constant under a binder: 0
+   Obligations Zenon or Isabelle closed: 0
+== Confinement_A1_proof.tla (sha256 63c7d90a7fc2ccf8): 503 obligations (trivial 338 · SMT 156 · Zenon 0 · Isabelle 0 · LS4 5 · not proved 4) · 1 results reused · tlapm exit 10 · this run does not certify: 4 obligation(s) not proved
+   SMT queries with an opaque constant under a binder: 5
+     line 111 · q-8a755aa41d5dbb52 · content 3cce2dda320c6c18 · h15bf9
+     line 299 · q-9f5c5c48daba7ccd · content f2fff429ba000ebb · h66e32
+     line 373 · q-a79faf229da9212d · content 37467512fb7bd9b3 · h3d501
+     line 446 · q-14aedba15068fede · content da2e85a0ed5ad5b0 · h4ebdf
+     line 512 · q-5f62a98e7d1d975c · content 059d0799611d5448 · h4a299
+   Obligations Zenon or Isabelle closed: 0
+== Confinement_proof.tla (sha256 2f4b4bb96d1f83f3): 502 obligations (trivial 337 · SMT 156 · Zenon 0 · Isabelle 0 · LS4 5 · not proved 4) · 1 results reused · tlapm exit 10 · this run does not certify: 4 obligation(s) not proved
+   SMT queries with an opaque constant under a binder: 5
+     line 108 · q-4ef268141c836919 · content 3cce2dda320c6c18 · h15bf9
+     line 296 · q-2158d49c64db943f · content f2fff429ba000ebb · h66e32
+     line 370 · q-e1a78d09c454cf86 · content e2b4ca83c280f6ba · h3d501
+     line 443 · q-bf02ca9e46456303 · content 33e433ee1d2b4923 · h4ebdf
+     line 509 · q-48fe5c8c4cb5afeb · content acbf889a53461b1f · h4a299
+   Obligations Zenon or Isabelle closed: 0
+== Correlator_proof.tla (sha256 5dc0e337ead963dd): 455 obligations (trivial 286 · SMT 158 · Zenon 1 · Isabelle 0 · LS4 10 · not proved 0) · 0 results reused · tlapm exit 0 · this run certifies
+   SMT queries with an opaque constant under a binder: 0
+   Obligations Zenon or Isabelle closed: 1
+     line 518 · zenon
+== Coupling_live_proof.tla (sha256 9efafeccf705dde2): 31 obligations (trivial 17 · SMT 12 · Zenon 0 · Isabelle 0 · LS4 2 · not proved 0) · 0 results reused · tlapm exit 0 · this run certifies
+   SMT queries with an opaque constant under a binder: 0
+   Obligations Zenon or Isabelle closed: 0
+== Coupling_proof.tla (sha256 9c37a36c2e607d54): 320 obligations (trivial 249 · SMT 67 · Zenon 0 · Isabelle 0 · LS4 4 · not proved 0) · 0 results reused · tlapm exit 0 · this run certifies
+   SMT queries with an opaque constant under a binder: 2
+     line 106 · q-b94bfe38e7b6f55e · content 37f24a56f0f8205b · h815c3
+     line 168 · q-ee2bb320ee69451e · content 1fdb206d293e078f · h9c871
+   Obligations Zenon or Isabelle closed: 0
+== Emergency_live_proof.tla (sha256 63c8ec703e6097d9): 160 obligations (trivial 97 · SMT 56 · Zenon 0 · Isabelle 2 · LS4 5 · not proved 0) · 3 results reused · tlapm exit 0 · this run certifies
+   SMT queries with an opaque constant under a binder: 0
+   Obligations Zenon or Isabelle closed: 2
+     line 209 · isabelle
+     line 266 · isabelle
+== Emergency_proof.tla (sha256 a1e5a82ad625496b): 373 obligations (trivial 234 · SMT 130 · Zenon 0 · Isabelle 0 · LS4 9 · not proved 0) · 7 results reused · tlapm exit 0 · this run certifies
+   SMT queries with an opaque constant under a binder: 1
+     line 66 · q-4e06a88622b1deef · content 1141a81bcfe1080d · h15bf9
+   Obligations Zenon or Isabelle closed: 0
+== FloorComposition_proof.tla (sha256 17a6c22eb9e7f30c): 171 obligations (trivial 101 · SMT 64 · Zenon 0 · Isabelle 0 · LS4 6 · not proved 0) · 3 results reused · tlapm exit 0 · this run certifies
+   SMT queries with an opaque constant under a binder: 2
+     line 77 · q-b289d85bd8377fe5 · content 0abe59a5409b9bea · h15bf9
+     line 176 · q-f93d1a286013b64b · content 5fa805f5b652c568 · h47e68
+   Obligations Zenon or Isabelle closed: 0
+== FloorRouting_proof.tla (sha256 df536eefdb805f08): 36 obligations (trivial 21 · SMT 12 · Zenon 0 · Isabelle 0 · LS4 3 · not proved 0) · 0 results reused · tlapm exit 0 · this run certifies
+   SMT queries with an opaque constant under a binder: 1
+     line 49 · q-5101427b622120eb · content 80d67bb7332d12cb · hf8d40
+   Obligations Zenon or Isabelle closed: 0
+== Labels_proof.tla (sha256 877d9361051a9fbb): 651 obligations (trivial 421 · SMT 216 · Zenon 0 · Isabelle 0 · LS4 14 · not proved 0) · 9 results reused · tlapm exit 0 · this run certifies
+   SMT queries with an opaque constant under a binder: 11
+     line 142 · q-ad8ff74dcafafd66 · content 4966703509788418 · h15bf9
+     line 165 · q-0fbd450c679bcb48 · content b0b5f3fe8c3fd12d · hf2551
+     line 198 · q-ca0affe29f698cdb · content a36f8c63a2c2440c · hdc158
+     line 214 · q-d0f641a39133762b · content 3ab58925913add9f · hf1b27
+     line 242 · q-11f9017ff4cb7b9e · content 97214c2f7b758a43 · h424ec
+     line 283 · q-3e799fd6ad32a92d · content d91b79eeb40ec29b · h12c3d
+     line 334 · q-f598756d5969fbc2 · content dea33aff45b1eec6 · h247ac
+     line 383 · q-b4361dbf4c946c74 · content 842acd119fec956f · hab4e7
+     line 480 · q-cba599d4dce997db · content 5456ed63e7483bb5 · hf3bb3
+     line 517 · q-ee1b53ca264a24cb · content 1eb00f972e6a44bb · h777ba
+     line 555 · q-aad34c5dda092026 · content 3161d7713ae8daf2 · hf461d
+   Obligations Zenon or Isabelle closed: 0
+== Lease_A1_proof.tla (sha256 6f39c7711252c8de): 200 obligations (trivial 121 · SMT 73 · Zenon 0 · Isabelle 1 · LS4 5 · not proved 0) · 2 results reused · tlapm exit 0 · this run certifies
+   SMT queries with an opaque constant under a binder: 4
+     line 76 · q-f6ee0a6db04e1757 · content 08fdb9bb8c952cca · h15bf9
+     line 130 · q-76bd0112e9aa4025 · content a6d54977bb9ff77e · h8bee6
+     line 172 · q-34491510a8452804 · content 252d4a967004302c · hb07aa
+     line 235 · q-f2978ad634746148 · content 18dcf3d4aae0966b · h808f1
+   Obligations Zenon or Isabelle closed: 1
+     line 301 · isabelle
+== NonComposition_A1_proof.tla (sha256 11033360d0998c95): 96 obligations (trivial 57 · SMT 36 · Zenon 0 · Isabelle 0 · LS4 3 · not proved 0) · 1 results reused · tlapm exit 0 · this run certifies
+   SMT queries with an opaque constant under a binder: 1
+     line 107 · q-99e88404c0a88d02 · content 6951657252ce3aa5 · hdb2fe
+   Obligations Zenon or Isabelle closed: 0
+== NonComposition_proof.tla (sha256 6ce6aee98a43d40e): 58 obligations (trivial 34 · SMT 21 · Zenon 0 · Isabelle 0 · LS4 3 · not proved 0) · 1 results reused · tlapm exit 0 · this run certifies
+   SMT queries with an opaque constant under a binder: 1
+     line 80 · q-e96d011f5bf3bc63 · content 789f617fae6c8bd4 · hdb2fe
+   Obligations Zenon or Isabelle closed: 0
+== Observers_proof.tla (sha256 f70c3246962b1837): 65 obligations (trivial 39 · SMT 23 · Zenon 0 · Isabelle 0 · LS4 3 · not proved 0) · 0 results reused · tlapm exit 0 · this run certifies
+   SMT queries with an opaque constant under a binder: 2
+     line 41 · q-67678ed0ccf84497 · content 483686896c7b9a48 · h63729
+     line 71 · q-c3160830134bfc74 · content 687e40762d292667 · h61238
+   Obligations Zenon or Isabelle closed: 0
+== Operators_proof.tla (sha256 226230ef1e56b413): 354 obligations (trivial 215 · SMT 122 · Zenon 2 · Isabelle 0 · LS4 15 · not proved 0) · 2 results reused · tlapm exit 0 · this run certifies
+   SMT queries with an opaque constant under a binder: 1
+     line 94 · q-0a1dc8c50af84881 · content 21e8d8736bde3483 · h15bf9
+   Obligations Zenon or Isabelle closed: 2
+     line 303 · zenon
+     line 499 · zenon
+== RulesFloorNV_rev5_proof.tla (sha256 8ecd73b3451018c5): 262 obligations (trivial 165 · SMT 84 · Zenon 5 · Isabelle 1 · LS4 7 · not proved 0) · 0 results reused · tlapm exit 0 · this run does not certify: Isabelle accepted 0 of Zenon's 5 proofs (tlapm reports 1 refused)
+   SMT queries with an opaque constant under a binder: 2
+     line 128 · q-14b76d7015cc61a2 · content c99c46744b31de98 · h38e16
+     line 274 · q-712d768c18620778 · content 25008e59e620eb7a · h3b770
+   Obligations Zenon or Isabelle closed: 6, of which Isabelle did not accept 5 of Zenon's proofs
+     line 115 · zenon · NOT ACCEPTED by Isabelle
+     line 120 · zenon · NOT ACCEPTED by Isabelle
+     line 122 · zenon · NOT ACCEPTED by Isabelle
+     line 124 · zenon · NOT ACCEPTED by Isabelle
+     line 126 · zenon · NOT ACCEPTED by Isabelle
+     line 160 · isabelle
+== RunConfinement_proof.tla (sha256 e8612bf4111c7599): 116 obligations (trivial 71 · SMT 42 · Zenon 0 · Isabelle 0 · LS4 3 · not proved 0) · 0 results reused · tlapm exit 0 · this run certifies
+   SMT queries with an opaque constant under a binder: 2
+     line 103 · q-367ad0bac4f29324 · content 9c93d1cbd437ca82 · h9c8c5
+     line 130 · q-fa82f5032f2ef228 · content 8709a15a71c589b8 · haf55e
+   Obligations Zenon or Isabelle closed: 0
+== RunCoupling_proof.tla (sha256 493b5b19b5e5ae05): 469 obligations (trivial 364 · SMT 99 · Zenon 0 · Isabelle 0 · LS4 6 · not proved 0) · 0 results reused · tlapm exit 0 · this run certifies
+   SMT queries with an opaque constant under a binder: 5
+     line 117 · q-c1bb099405b99ab8 · content 906445d8d5a8dce7 · h815c3
+     line 162 · q-46dd3502acade043 · content 6e2a679dcb3d52f2 · h4ebdf
+     line 246 · q-7c01f3879a50c373 · content 0c510dc2f3bed284 · h9c871
+     line 286 · q-ec24948cd12a743a · content c314cb3d87ca2792 · h9be82 hfac6f
+     line 316 · q-673a61bb94c75499 · content f562fb5f2dbc5054 · h9be82 hff064
+   Obligations Zenon or Isabelle closed: 0
+== RunSeats_proof.tla (sha256 1356d403035e3357): 147 obligations (trivial 89 · SMT 54 · Zenon 0 · Isabelle 0 · LS4 4 · not proved 0) · 2 results reused · tlapm exit 0 · this run certifies
+   SMT queries with an opaque constant under a binder: 4
+     line 72 · q-0f05ed947649575f · content 697bf8c0865a3201 · h15bf9
+     line 123 · q-4f43f91eef02c727 · content de2ef7f33d96842a · hfa2d1
+     line 143 · q-06c09031d0c61aa0 · content 6aad0ae7761b1f57 · ha27c3
+     line 163 · q-e577ac06816be5d5 · content cb60d0b2c667cecd · h026b0
+   Obligations Zenon or Isabelle closed: 0
+== Seats_proof.tla (sha256 e5a0fa0b5e17b2c9): 110 obligations (trivial 67 · SMT 38 · Zenon 2 · Isabelle 0 · LS4 3 · not proved 0) · 0 results reused · tlapm exit 0 · this run certifies
+   SMT queries with an opaque constant under a binder: 3
+     line 55 · q-d1c195ccb9ac2fbd · content ea6446f84c207a25 · h15bf9
+     line 94 · q-4ab21d0ccde2c738 · content 2085c41755185d9a · h456b4
+     line 138 · q-fc46df6d967a8005 · content 744e2b761701626d · h4ebdf
+   Obligations Zenon or Isabelle closed: 2
+     line 73 · zenon
+     line 173 · zenon
+== ToolList_proof.tla (sha256 c6b7ac1be332dfd6): 215 obligations (trivial 133 · SMT 75 · Zenon 0 · Isabelle 0 · LS4 7 · not proved 0) · 4 results reused · tlapm exit 0 · this run certifies
+   SMT queries with an opaque constant under a binder: 1
+     line 57 · q-b642dbe1ed94acd9 · content fd41552b2ccdc9ee · h15bf9
+   Obligations Zenon or Isabelle closed: 0
+
+Modules run: 24, of which this run certifies: 21 · SMT queries with an opaque constant under a binder: 53 · obligations Zenon or Isabelle closed: 14
+
+3. Names
+  renamed copy: 419 modules copied; 1185 identifiers renamed, each to a name of the same length; 884 keyword, standard and module names kept
+== Anchor_proof.tla: SMT 15 (4 with two or more names, at most 2, 4 pairs) · Zenon 0 · Isabelle 0 · LS4 2 (2 with two or more names, at most 5, 16 pairs) · renamed run: each of 40 obligations by the same route, no difference
+== BreakGlass_A1_proof.tla: SMT 18 (2 with two or more names, at most 2, 2 pairs) · Zenon 0 · Isabelle 0 · LS4 1 (1 with two or more names, at most 8, 28 pairs) · renamed run: each of 45 obligations by the same route, no difference
+== BreakGlass_proof.tla: SMT 14 (2 with two or more names, at most 2, 2 pairs) · Zenon 0 · Isabelle 0 · LS4 1 (1 with two or more names, at most 6, 15 pairs) · renamed run: each of 37 obligations by the same route, no difference
+== Confinement_A1_proof.tla: SMT 159 (49 with two or more names, at most 8, 178 pairs) · Zenon 4 · Isabelle 4 · LS4 5 (5 with two or more names, at most 10, 111 pairs) · renamed run: each of 503 obligations by the same route, no difference
+== Confinement_proof.tla: SMT 159 (49 with two or more names, at most 8, 178 pairs) · Zenon 4 · Isabelle 4 · LS4 5 (5 with two or more names, at most 10, 111 pairs) · renamed run: each of 502 obligations by the same route, no difference
+== Correlator_proof.tla: SMT 159 (8 with two or more names, at most 4, 17 pairs) · Zenon 1 · Isabelle 0 · LS4 10 (10 with two or more names, at most 10, 176 pairs) · renamed run: each of 455 obligations by the same route, no difference
+== Coupling_live_proof.tla: SMT 12 · Zenon 0 · Isabelle 0 · LS4 2 (2 with two or more names, at most 5, 16 pairs) · renamed run: each of 31 obligations by the same route, no difference
+== Coupling_proof.tla: SMT 67 (24 with two or more names, at most 4, 76 pairs) · Zenon 0 · Isabelle 0 · LS4 4 (4 with two or more names, at most 11, 139 pairs) · renamed run: each of 320 obligations by the same route, no difference
+== Emergency_live_proof.tla: SMT 53 (1 with two or more names, at most 2, 1 pairs) · Zenon 0 · Isabelle 2 · LS4 5 (5 with two or more names, at most 8, 57 pairs) · renamed run: each of 160 obligations by the same route, no difference
+== Emergency_proof.tla: SMT 123 (9 with two or more names, at most 2, 9 pairs) · Zenon 0 · Isabelle 0 · LS4 9 (9 with two or more names, at most 8, 147 pairs) · renamed run: each of 373 obligations by the same route, no difference
+== FloorComposition_proof.tla: SMT 61 (19 with two or more names, at most 3, 33 pairs) · Zenon 0 · Isabelle 0 · LS4 6 (6 with two or more names, at most 8, 121 pairs) · renamed run: each of 171 obligations by the same route, no difference
+== FloorRouting_proof.tla: SMT 12 (2 with two or more names, at most 2, 2 pairs) · Zenon 0 · Isabelle 0 · LS4 3 (3 with two or more names, at most 5, 22 pairs) · renamed run: each of 36 obligations by the same route, no difference
+== Labels_proof.tla: SMT 208 (24 with two or more names, at most 4, 29 pairs) · Zenon 0 · Isabelle 0 · LS4 13 (13 with two or more names, at most 11, 368 pairs) · renamed run: each of 651 obligations by the same route, no difference
+== Lease_A1_proof.tla: SMT 72 (8 with two or more names, at most 3, 12 pairs) · Zenon 1 · Isabelle 1 · LS4 5 (5 with two or more names, at most 8, 71 pairs) · renamed run: each of 200 obligations by the same route, no difference
+== NonComposition_A1_proof.tla: SMT 35 (5 with two or more names, at most 5, 23 pairs) · Zenon 0 · Isabelle 0 · LS4 3 (3 with two or more names, at most 8, 58 pairs) · renamed run: each of 96 obligations by the same route, no difference
+== NonComposition_proof.tla: SMT 20 (4 with two or more names, at most 5, 13 pairs) · Zenon 0 · Isabelle 0 · LS4 3 (3 with two or more names, at most 7, 41 pairs) · renamed run: each of 58 obligations by the same route, no difference
+== Observers_proof.tla: SMT 23 (4 with two or more names, at most 2, 4 pairs) · Zenon 0 · Isabelle 0 · LS4 3 (3 with two or more names, at most 5, 26 pairs) · renamed run: each of 65 obligations by the same route, no difference
+== Operators_proof.tla: SMT 122 (13 with two or more names, at most 3, 15 pairs) · Zenon 2 · Isabelle 0 · LS4 15 (15 with two or more names, at most 14, 250 pairs) · renamed run: each of 354 obligations by the same route, no difference
+== RulesFloorNV_rev5_proof.tla: SMT 90 (15 with two or more names, at most 3, 27 pairs) · Zenon 6 · Isabelle 1 · LS4 7 (7 with two or more names, at most 9, 139 pairs) · renamed run: each of 262 obligations by the same route, no difference
+== RunConfinement_proof.tla: SMT 42 (6 with two or more names, at most 2, 6 pairs) · Zenon 0 · Isabelle 0 · LS4 3 (3 with two or more names, at most 7, 37 pairs) · renamed run: each of 116 obligations by the same route, no difference
+== RunCoupling_proof.tla: SMT 99 (52 with two or more names, at most 7, 246 pairs) · Zenon 0 · Isabelle 0 · LS4 6 (6 with two or more names, at most 12, 223 pairs) · renamed run: each of 469 obligations by the same route, no difference
+== RunSeats_proof.tla: SMT 52 (10 with two or more names, at most 3, 16 pairs) · Zenon 0 · Isabelle 0 · LS4 4 (4 with two or more names, at most 7, 61 pairs) · renamed run: each of 147 obligations by the same route, no difference
+== Seats_proof.tla: SMT 40 (12 with two or more names, at most 3, 14 pairs) · Zenon 2 · Isabelle 0 · LS4 3 (3 with two or more names, at most 6, 36 pairs) · renamed run: each of 110 obligations by the same route, no difference
+== ToolList_proof.tla: SMT 72 (6 with two or more names, at most 3, 8 pairs) · Zenon 0 · Isabelle 0 · LS4 6 (6 with two or more names, at most 7, 99 pairs) · renamed run: each of 215 obligations by the same route, no difference
+
+Modules run: 24 · backend inputs: 1883, of which hold two or more names: 452 · pairs of names within an input: 3283, so 0.0031 collisions to expect by accident · modules whose renamed run differs: 0
+
+4. Capture
+== Anchor_proof.tla: 17 obligations printed normalized, of the 17 sent to a backend · no capture · SANY: parses
+== BreakGlass_A1_proof.tla: 19 obligations printed normalized, of the 19 sent to a backend · no capture · SANY: parses
+== BreakGlass_proof.tla: 15 obligations printed normalized, of the 15 sent to a backend · no capture · SANY: parses
+== Confinement_A1_proof.tla: 164 obligations printed normalized, of the 164 sent to a backend · no capture · SANY: parses
+== Confinement_proof.tla: 164 obligations printed normalized, of the 164 sent to a backend · no capture · SANY: parses
+== Correlator_proof.tla: 169 obligations printed normalized, of the 169 sent to a backend · no capture · SANY: parses
+== Coupling_live_proof.tla: 14 obligations printed normalized, of the 14 sent to a backend · no capture · SANY: parses
+== Coupling_proof.tla: 71 obligations printed normalized, of the 71 sent to a backend · no capture · SANY: parses
+== Emergency_live_proof.tla: 60 obligations printed normalized, of the 60 sent to a backend · no capture · SANY: parses
+== Emergency_proof.tla: 132 obligations printed normalized, of the 132 sent to a backend · no capture · SANY: parses
+== FloorComposition_proof.tla: 67 obligations printed normalized, of the 67 sent to a backend · no capture · SANY: parses
+== FloorRouting_proof.tla: 15 obligations printed normalized, of the 15 sent to a backend · no capture · SANY: parses
+== Labels_proof.tla: 221 obligations printed normalized, of the 221 sent to a backend · no capture · SANY: parses
+== Lease_A1_proof.tla: 77 obligations printed normalized, of the 77 sent to a backend · no capture · SANY: parses
+== NonComposition_A1_proof.tla: 38 obligations printed normalized, of the 38 sent to a backend · no capture · SANY: parses
+== NonComposition_proof.tla: 23 obligations printed normalized, of the 23 sent to a backend · no capture · SANY: parses
+== Observers_proof.tla: 26 obligations printed normalized, of the 26 sent to a backend · no capture · SANY: parses
+== Operators_proof.tla: 137 obligations printed normalized, of the 137 sent to a backend · no capture · SANY: parses
+== RulesFloorNV_rev5_proof.tla: 97 obligations printed normalized, of the 97 sent to a backend · no capture · SANY: parses
+== RunConfinement_proof.tla: 45 obligations printed normalized, of the 45 sent to a backend · no capture · SANY: parses
+== RunCoupling_proof.tla: 105 obligations printed normalized, of the 105 sent to a backend · no capture · SANY: parses
+== RunSeats_proof.tla: 56 obligations printed normalized, of the 56 sent to a backend · no capture · SANY: parses
+== Seats_proof.tla: 43 obligations printed normalized, of the 43 sent to a backend · no capture · SANY: parses
+== ToolList_proof.tla: 78 obligations printed normalized, of the 78 sent to a backend · no capture · SANY: parses
+
+Modules: 24 · obligations sent to a backend: 1853, printed normalized: 1853 · captures: 0 · modules SANY parses: 24 of 24

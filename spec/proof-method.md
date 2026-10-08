@@ -67,6 +67,8 @@ declared, in the place T-0045-29 declares TLC.
 | `Coupling_proof.tla` | 320 | 3 | a shape invariant under every mutation (future rounds zero, mark at most the sequence, an idle round's seal is its sequence), plus "past marks equal seals" and "the backlog is at most K" |
 | `RunCoupling_proof.tla` | 469 | 5 | the Coupling shape with effect seals, plus "the sequence counts effects" and "past seals agree"; the `ENABLED` invariant is a state lemma |
 | `RulesFloorNV_rev5_proof.tla` | 262 | 6 | "the issued rules are in the rule space and satisfy the floor"; each property is established at Promote and frozen, since Issue and Vote need `~promoted` |
+| `Emergency_live_proof.tla` (2026.10.07, ADR-0052 provisional) | 160 | 2 `ENABLED` invariants, and Emergency's six for `SpecL` | `EmergencyNeverCoupled` is a state lemma; `EmergencyCallsWithoutObserver` adds "te is in every envelope the seat has had", with `LiveHasRound`; the six by `SpecL => Spec` |
+| `Coupling_live_proof.tla` (2026.10.07) | 31 | Coupling's three for `SpecL` | none: `SpecL => Spec`, and `Coupling_proof`'s theorems. The module's four leads-to properties are owed |
 
 ## 2. Process, per module
 
@@ -232,7 +234,7 @@ says nothing. Thirteen of the sixteen modules are in that position or close to i
 |---|---|---|
 | Trivial: closed by tlapm's normalization, no backend | 2,248 | Nothing beyond tlapm |
 | SMT: cvc5, proof accepted | 1,038 | ethos, against the CPC signature |
-| Zenon | 8 | Isabelle, which accepted 7 and refused 1 |
+| Zenon | 8 | Isabelle, which accepted 3 and refused 5: tlapm reported one refusal, the first Isabelle printed, and Isabelle's own log shows all five of `RulesFloorNV_rev5`'s refused (2026.10.08) |
 | Isabelle | 2 | Isabelle |
 | LS4: the temporal step of each theorem | 74 | Nothing |
 | Failed under the checked backends | 6 | — |
@@ -240,9 +242,10 @@ says nothing. Thirteen of the sixteen modules are in that position or close to i
 - **Thirteen modules certify**: Anchor, BreakGlass, Coupling, FloorComposition, FloorRouting, Lease_A1,
   NonComposition, Observers, Operators, RunConfinement, RunCoupling, RunSeats, Seats. Every obligation in them is
   trivial, or has a checked proof, or is an LS4 step.
-- **`RulesFloorNV_rev5_proof` does not.** Five of its obligations (the cases of `BaseNext`, lines 115 to 126) are
-  proved by Zenon, under Z3 as well as under cvc5, and Isabelle refuses the Isar proof of one. The 10.02 results file
-  never ran the check. A refused reconstruction is not a refutation; it is an obligation with no checked proof.
+- **`RulesFloorNV_rev5_proof` does not.** Five of its obligations (the cases of `NextBase`, lines 115 to 126) are
+  proved by Zenon, under Z3 as well as under cvc5, and Isabelle refuses their Isar proofs: tlapm reports one, and
+  Isabelle's own log shows all five (2026.10.08). The 10.02 results file never ran the check. A refused
+  reconstruction is not a refutation; it is an obligation with no checked proof.
 - **`Confinement_proof` and `Confinement_A1_proof` do not.** Three obligations in each (the `TypeOK` steps at lines
   97, 102 and 190 of the first) are proved by Z3 and by nothing else here: cvc5 does not prove them at ten times the
   timeout or under five instantiation strategies. They need smaller steps, and the modules are cited by digest.
@@ -337,6 +340,68 @@ process, not an independent checker; lean4lean would be one.
 `native_decide` evaluates, and the engine's fidelity to the model (T-0045-3). Not LS4, not an SMT solver, not
 tlapm's translation. The TLAPS proofs are unchanged, and so is their residual: the Lean results are a second
 derivation beside them.
+
+## 5c. Assessment, 2026.10.07: the first liveness, and an availability invariant restored
+
+*`spec/README.md` (Liveness) has the files; `derived/topak-liveness-2026.10.07.md` is the plan.*
+
+**What was done.** §5's "No liveness" was one reason the proofs were cheap, and CR-37's objection: a design whose
+answer to most failures is to stall cannot tell, in its models, a stall that ends from one that does not.
+`Coupling_live.tla` states ADR-0039 §2's claim that coupling's stall ends, as four leads-to properties, and
+`Emergency_live.tla` states ADR-0039 A2 as two invariants over `ENABLED`. Each extends a frozen module and changes
+its `Next` only under its own mutations, so the safety proofs carry over: `*_live_proof.tla` proves `SpecL => Spec`
+under every `Mut`, and with it every invariant of the module extended. TLC checks the leads-to properties at two
+sets of constants. The `ENABLED` invariants are proved twice, in TLAPS through Isabelle and in Lean, where the
+encoding is also checked against TLC's state graphs, since an `ENABLED` theorem over a laxer encoding could be
+proved and false.
+
+**Fairness on actions, named for whose obligation it is.** A12 reads most simply as "the Observer eventually holds
+its lease for good". No one-Observer cell meets that, since a lease lasts one round (ADR-0031 §2). (A general caution
+besides: a condition on states is not machine-closed as fairness on an action of `Next` is, and under a mutation that
+blocks the grant it can leave a spec with no behaviour, under which every property holds.) A12 is read as weak
+fairness on the Observer's next grant and strong fairness on its keeping up, a watermark within K and the seal once
+the round has ended; strong, because its lease may end first. The Thinker's asking (strong fairness on `Admit`) and
+the grants (weak fairness on `GrantT`: the tally's for the first round, an operator's after it) are separate
+conditions, each needed by one progress property only, and every condition assumes that the mechanism's ordering
+makes progress, which the plan declares (Tier 2). Each condition has a row that drops or weakens it and breaks a property, and
+each fair spec has a row that shows it has a behaviour. The weaker forms first proposed fail: fairness on any
+heartbeat, which CR-37 proposed weak, fails even strong (`SpecAnyBeat`), and weak fairness on keeping up fails once
+leases turn over (`SpecWFKeepUp`).
+
+**A mutation only liveness sees.** Under `M_HBLIVE` an Observer may heartbeat only while its Thinker's lease is live.
+It reaches every state the unmutated module reaches, so no invariant tells it from `none`: every safety property
+holds and every witness is reached. Only `GrantStallEnds` and `NextRoundGranted` break. `Emergency_live`'s
+`M_EMCOUPLE2` is the same for an `ENABLED` invariant: it reaches all of `Emergency`'s states and its witness w3, and
+only the two invariants catch it. TLC's deadlock check catches neither: every state of both models has a
+successor, so a Thinker stalled for good is a livelock. `deadlock-audit.sh` asks the converse of every module a
+`-deadlock` script checks, at the constants its results files use and unmutated (`Operators` at two operators
+only), and finds every state with no successor at a bound the module imposes.
+
+**Two defects in the prover's translation.** A term the prover does not translate, an `ENABLED` or `\cdot` not
+expanded or a temporal formula, reaches SMT, Zenon and Isabelle as a constant that drops any variable bound around
+it, and quantifiers are moved out of temporal bodies first (`[]` distributed over `/\` and `<>` over `\/`, then a
+`\A` at the head of a `[]` body or conjunct and an `\E` at the head of a `<>` body or disjunct moved outward), so a
+closed `Spec => []P` whose `P` is expanded and has such a quantifier is the case too. And every term the prover
+abstracts, and every atom it hands LS4, is named by 20 bits of a hash it does not check, of a print that shows a
+bound variable as it shows a constant of its name, so two terms of one obligation can be one: by a collision of the
+hash, or by a capture, when a definition is expanded at an argument that names one of its bound variables. Either
+way a false statement can prove, and certify, by the second through `PTL` as well (`proof-certification.md` §8; to
+be recorded against T-0045-31 by ADR-0046 A2, pending). The two `ENABLED` invariants are therefore proved each in
+one step from the expansion. The rule that avoids the first keeps untranslated terms behind hidden definitions: a
+temporal property of a parameter is a definition `LT(n)`, hidden in every step a backend other than LS4 discharges,
+where quantifying over `n` is sound, and expanded only in `PTL` steps; and no definition is expanded at an argument
+that names one of its bound variables, in the obligation as tlapm forms it, a `TAKE` or `WITNESS` included, which
+avoids a capture (`proof-certification.md` §10). Nothing a proof writes avoids a collision of the hash;
+`proof-scan.sh` checks every module for one by a run over renamed sources, and reads every obligation as tlapm
+prints it for a capture. Of the four leads-to properties, two are quantified and all four have `ENABLED` premises,
+and a `WF1` or `SF1` argument over a measure needs a quantified leads-to hypothesis, which `PTL` cannot combine from
+instances. In Lean neither case can arise; in TLAPS no route for that step under the rule is known yet.
+
+**What the leads-to proofs will cost.** A variant per property (the unread backlog `seq - mark[round]` and the
+unread tail of an ended round, with the Observer's lease), `K >= 1` as a hypothesis of the two admit properties,
+and a lemma that `KeepUp`
+is a `NextL` step in every reachable state. In Lean, behaviours, `WF` and `SF` beside `Temporal.lean`'s `Enabled`,
+and `WF1` and `SF1` proved once; their premises are step lemmas of the kind the package already proves.
 
 ## 6. Keeping proofs in step with specifications
 

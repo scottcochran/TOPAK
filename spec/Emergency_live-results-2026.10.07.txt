@@ -1,0 +1,982 @@
+TOPAK — Emergency_live.tla: ADR-0039 A2 as an ENABLED invariant (the liveness plan, Tier 0), run 2026.10.07
+Module: Emergency_live.tla (sha256 9685c67b42910b85) · extends Emergency.tla (sha256 1abae9beb82b00fa) · TLC Version 2.19 of 08 August 2024 (jar sha256 936a262061c91469) · openjdk version "25.0.1" 2025-10-21
+Runner: live-gen-results.sh (sha256 b4d8857ad6fb6081) · rows: Emergency_live-rows.txt (sha256 787fe2a5d51979a9) · MaxRound = 2 unless the row says otherwise · roster of three, quorum two · one person, one agent · tools t1, t2 (promoted), te (emergency-only), tx (in no bundle) · TLC -workers 1 -fp 0, with -deadlock except on a DEADLOCK row
+expected: none: SpecL is Emergency's Spec (its 25728 states, Safe HOLDS, the witness w3 VIOLATED, no deadlock) and both ENABLED invariants HOLD, at MaxRound=2 and at MaxRound=3, as does EnvelopeHasT1 (t1 is in every envelope, so neither property rests on te alone); under each of Emergency.tla's seven mutations both HOLD, on that mutation's own state graph (none of them couples the emergency seat); M_EMCOUPLE keeps Safe and the absence of deadlock and breaks both, and w3 HOLDS, so the witness run catches it too; M_EMCOUPLE2 reaches Emergency's 25728 states, keeps Safe and the absence of deadlock and breaks both, and w3 is still VIOLATED, in round one, so only the two properties catch it
+
+=== s-none-safe · Mut=none · MaxRound=2 · SPECIFICATION SpecL · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 3.2E-10
+  based on the actual fingerprints:  val = 3.1E-11
+258369 states generated, 25728 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 3).
+Finished in 06s at (2026-10-07 05:14:24)
+→ HOLDS (expected HOLDS: as expected) · 25728 distinct states (expected 25728: as expected)
+
+=== d-none-deadlock · Mut=none · MaxRound=2 · SPECIFICATION SpecL · INVARIANT Safe · deadlock check on
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 3.2E-10
+  based on the actual fingerprints:  val = 3.1E-11
+258369 states generated, 25728 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 3).
+Finished in 06s at (2026-10-07 05:14:31)
+→ HOLDS (expected HOLDS: as expected) · 25728 distinct states (expected 25728: as expected)
+
+=== w-none-w3 · Mut=none · MaxRound=2 · SPECIFICATION SpecL · INVARIANT NeverUnobservedEmergencyCall
+Error: Invariant NeverUnobservedEmergencyCall is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ obsLive = TRUE
+/\ refused = FALSE
+/\ approvals = {}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 0,
+  live |-> FALSE,
+  envelope |-> {},
+  holder |-> "none",
+  quorate |-> FALSE,
+  by |-> "none",
+  renewed |-> FALSE ]
+State 2: <Approve line 101, col 3 to line 103, col 82 of module Emergency>
+/\ obsLive = TRUE
+/\ refused = FALSE
+/\ approvals = {"r1"}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 0,
+  live |-> FALSE,
+  envelope |-> {},
+  holder |-> "none",
+  quorate |-> FALSE,
+  by |-> "none",
+  renewed |-> FALSE ]
+State 3: <Approve line 101, col 3 to line 103, col 82 of module Emergency>
+/\ obsLive = TRUE
+/\ refused = FALSE
+/\ approvals = {"r1", "r2"}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 0,
+  live |-> FALSE,
+  envelope |-> {},
+  holder |-> "none",
+  quorate |-> FALSE,
+  by |-> "none",
+  renewed |-> FALSE ]
+State 4: <Activate line 108, col 3 to line 116, col 69 of module Emergency>
+/\ obsLive = TRUE
+/\ refused = FALSE
+/\ approvals = {}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {[round |-> 1, holder |-> "h", approvers |-> {"r1", "r2"}]}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 1,
+  live |-> TRUE,
+  envelope |-> {"t1", "te"},
+  holder |-> "h",
+  quorate |-> TRUE,
+  by |-> "roster",
+  renewed |-> FALSE ]
+State 5: <ObsToggle line 161, col 14 to line 162, col 95 of module Emergency>
+/\ obsLive = FALSE
+/\ refused = FALSE
+/\ approvals = {}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {[round |-> 1, holder |-> "h", approvers |-> {"r1", "r2"}]}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 1,
+  live |-> TRUE,
+  envelope |-> {"t1", "te"},
+  holder |-> "h",
+  quorate |-> TRUE,
+  by |-> "roster",
+  renewed |-> FALSE ]
+State 6: <EmAdmit line 54, col 3 to line 59, col 86 of module Emergency_live>
+/\ obsLive = FALSE
+/\ refused = FALSE
+/\ approvals = {}
+/\ domainTools = {"t1"}
+/\ calls = { [ seat |-> "emergency",
+    tool |-> "t1",
+    allowlisted |-> TRUE,
+    observed |-> FALSE ] }
+/\ records = {[round |-> 1, holder |-> "h", approvers |-> {"r1", "r2"}]}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 1,
+  live |-> TRUE,
+  envelope |-> {"t1", "te"},
+  holder |-> "h",
+  quorate |-> TRUE,
+  by |-> "roster",
+  renewed |-> FALSE ]
+903 states generated, 229 distinct states found, 128 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 10 and the 95th percentile is 10).
+Finished in 05s at (2026-10-07 05:14:37)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== e-none-nc · Mut=none · MaxRound=2 · SPECIFICATION SpecL · INVARIANT EmergencyNeverCoupled
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 3.2E-10
+  based on the actual fingerprints:  val = 3.1E-11
+258369 states generated, 25728 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 3).
+Finished in 06s at (2026-10-07 05:14:43)
+→ HOLDS (expected HOLDS: as expected) · 25728 distinct states (expected 25728: as expected)
+
+=== e-none-cwo · Mut=none · MaxRound=2 · SPECIFICATION SpecL · INVARIANT EmergencyCallsWithoutObserver
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 3.2E-10
+  based on the actual fingerprints:  val = 3.1E-11
+258369 states generated, 25728 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 3).
+Finished in 05s at (2026-10-07 05:14:49)
+→ HOLDS (expected HOLDS: as expected) · 25728 distinct states (expected 25728: as expected)
+
+=== e-none-t1 · Mut=none · MaxRound=2 · SPECIFICATION SpecL · INVARIANT EnvelopeHasT1
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 3.2E-10
+  based on the actual fingerprints:  val = 3.1E-11
+258369 states generated, 25728 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 3).
+Finished in 05s at (2026-10-07 05:14:56)
+→ HOLDS (expected HOLDS: as expected) · 25728 distinct states (expected 25728: as expected)
+
+=== m-noquorum-nc · Mut=M_NOQUORUM · MaxRound=2 · SPECIFICATION SpecL · INVARIANT EmergencyNeverCoupled
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 4.2E-9
+  based on the actual fingerprints:  val = 8.1E-10
+926401 states generated, 92288 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 3).
+Finished in 07s at (2026-10-07 05:15:04)
+→ HOLDS (expected HOLDS: as expected) · 92288 distinct states (expected 92288: as expected)
+
+=== m-noquorum-cwo · Mut=M_NOQUORUM · MaxRound=2 · SPECIFICATION SpecL · INVARIANT EmergencyCallsWithoutObserver
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 4.2E-9
+  based on the actual fingerprints:  val = 8.1E-10
+926401 states generated, 92288 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 3).
+Finished in 07s at (2026-10-07 05:15:11)
+→ HOLDS (expected HOLDS: as expected) · 92288 distinct states (expected 92288: as expected)
+
+=== m-regrant-nc · Mut=M_REGRANT · MaxRound=2 · SPECIFICATION SpecL · INVARIANT EmergencyNeverCoupled
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 4.7E-10
+  based on the actual fingerprints:  val = 3.1E-11
+311617 states generated, 30848 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 3).
+Finished in 05s at (2026-10-07 05:15:18)
+→ HOLDS (expected HOLDS: as expected) · 30848 distinct states (expected 30848: as expected)
+
+=== m-regrant-cwo · Mut=M_REGRANT · MaxRound=2 · SPECIFICATION SpecL · INVARIANT EmergencyCallsWithoutObserver
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 4.7E-10
+  based on the actual fingerprints:  val = 3.1E-11
+311617 states generated, 30848 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 3).
+Finished in 05s at (2026-10-07 05:15:24)
+→ HOLDS (expected HOLDS: as expected) · 30848 distinct states (expected 30848: as expected)
+
+=== m-renew-nc · Mut=M_RENEW · MaxRound=2 · SPECIFICATION SpecL · INVARIANT EmergencyNeverCoupled
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.4E-9
+  based on the actual fingerprints:  val = 4.3E-11
+541249 states generated, 51328 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 20.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 11 and the 95th percentile is 3).
+Finished in 06s at (2026-10-07 05:15:30)
+→ HOLDS (expected HOLDS: as expected) · 51328 distinct states (expected 51328: as expected)
+
+=== m-renew-cwo · Mut=M_RENEW · MaxRound=2 · SPECIFICATION SpecL · INVARIANT EmergencyCallsWithoutObserver
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.4E-9
+  based on the actual fingerprints:  val = 4.3E-11
+541249 states generated, 51328 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 20.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 11 and the 95th percentile is 3).
+Finished in 06s at (2026-10-07 05:15:37)
+→ HOLDS (expected HOLDS: as expected) · 51328 distinct states (expected 51328: as expected)
+
+=== m-agent-nc · Mut=M_AGENT · MaxRound=2 · SPECIFICATION SpecL · INVARIANT EmergencyNeverCoupled
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 4.2E-9
+  based on the actual fingerprints:  val = 2.5E-10
+929025 states generated, 92288 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 3).
+Finished in 06s at (2026-10-07 05:15:44)
+→ HOLDS (expected HOLDS: as expected) · 92288 distinct states (expected 92288: as expected)
+
+=== m-agent-cwo · Mut=M_AGENT · MaxRound=2 · SPECIFICATION SpecL · INVARIANT EmergencyCallsWithoutObserver
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 4.2E-9
+  based on the actual fingerprints:  val = 2.5E-10
+929025 states generated, 92288 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 3).
+Finished in 06s at (2026-10-07 05:15:51)
+→ HOLDS (expected HOLDS: as expected) · 92288 distinct states (expected 92288: as expected)
+
+=== m-x1-nc · Mut=M_X1 · MaxRound=2 · SPECIFICATION SpecL · INVARIANT EmergencyNeverCoupled
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.9E-9
+  based on the actual fingerprints:  val = 1.7E-10
+723321 states generated, 50912 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 11 and the 95th percentile is 3).
+Finished in 06s at (2026-10-07 05:15:57)
+→ HOLDS (expected HOLDS: as expected) · 50912 distinct states (expected 50912: as expected)
+
+=== m-x1-cwo · Mut=M_X1 · MaxRound=2 · SPECIFICATION SpecL · INVARIANT EmergencyCallsWithoutObserver
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.9E-9
+  based on the actual fingerprints:  val = 1.7E-10
+723321 states generated, 50912 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 11 and the 95th percentile is 3).
+Finished in 06s at (2026-10-07 05:16:04)
+→ HOLDS (expected HOLDS: as expected) · 50912 distinct states (expected 50912: as expected)
+
+=== m-uncouple-nc · Mut=M_UNCOUPLE · MaxRound=2 · SPECIFICATION SpecL · INVARIANT EmergencyNeverCoupled
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 4.3E-10
+  based on the actual fingerprints:  val = 3.1E-10
+297569 states generated, 29632 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 3).
+Finished in 05s at (2026-10-07 05:16:10)
+→ HOLDS (expected HOLDS: as expected) · 29632 distinct states (expected 29632: as expected)
+
+=== m-uncouple-cwo · Mut=M_UNCOUPLE · MaxRound=2 · SPECIFICATION SpecL · INVARIANT EmergencyCallsWithoutObserver
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 4.3E-10
+  based on the actual fingerprints:  val = 3.1E-10
+297569 states generated, 29632 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 3).
+Finished in 05s at (2026-10-07 05:16:16)
+→ HOLDS (expected HOLDS: as expected) · 29632 distinct states (expected 29632: as expected)
+
+=== m-erase-nc · Mut=M_ERASE · MaxRound=2 · SPECIFICATION SpecL · INVARIANT EmergencyNeverCoupled
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.4E-10
+  based on the actual fingerprints:  val = 1.4E-9
+442369 states generated, 38528 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 12 and the 95th percentile is 3).
+Finished in 05s at (2026-10-07 05:16:23)
+→ HOLDS (expected HOLDS: as expected) · 38528 distinct states (expected 38528: as expected)
+
+=== m-erase-cwo · Mut=M_ERASE · MaxRound=2 · SPECIFICATION SpecL · INVARIANT EmergencyCallsWithoutObserver
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.4E-10
+  based on the actual fingerprints:  val = 1.4E-9
+442369 states generated, 38528 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 12 and the 95th percentile is 3).
+Finished in 05s at (2026-10-07 05:16:29)
+→ HOLDS (expected HOLDS: as expected) · 38528 distinct states (expected 38528: as expected)
+
+=== m-emcouple-nc · Mut=M_EMCOUPLE · MaxRound=2 · SPECIFICATION SpecL · INVARIANT EmergencyNeverCoupled
+Error: Invariant EmergencyNeverCoupled is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ obsLive = TRUE
+/\ refused = FALSE
+/\ approvals = {}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 0,
+  live |-> FALSE,
+  envelope |-> {},
+  holder |-> "none",
+  quorate |-> FALSE,
+  by |-> "none",
+  renewed |-> FALSE ]
+State 2: <Approve line 101, col 3 to line 103, col 82 of module Emergency>
+/\ obsLive = TRUE
+/\ refused = FALSE
+/\ approvals = {"r1"}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 0,
+  live |-> FALSE,
+  envelope |-> {},
+  holder |-> "none",
+  quorate |-> FALSE,
+  by |-> "none",
+  renewed |-> FALSE ]
+State 3: <Approve line 101, col 3 to line 103, col 82 of module Emergency>
+/\ obsLive = TRUE
+/\ refused = FALSE
+/\ approvals = {"r1", "r2"}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 0,
+  live |-> FALSE,
+  envelope |-> {},
+  holder |-> "none",
+  quorate |-> FALSE,
+  by |-> "none",
+  renewed |-> FALSE ]
+State 4: <Activate line 108, col 3 to line 116, col 69 of module Emergency>
+/\ obsLive = TRUE
+/\ refused = FALSE
+/\ approvals = {}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {[round |-> 1, holder |-> "h", approvers |-> {"r1", "r2"}]}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 1,
+  live |-> TRUE,
+  envelope |-> {"t1", "te"},
+  holder |-> "h",
+  quorate |-> TRUE,
+  by |-> "roster",
+  renewed |-> FALSE ]
+State 5: <ObsToggle line 161, col 14 to line 162, col 95 of module Emergency>
+/\ obsLive = FALSE
+/\ refused = FALSE
+/\ approvals = {}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {[round |-> 1, holder |-> "h", approvers |-> {"r1", "r2"}]}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 1,
+  live |-> TRUE,
+  envelope |-> {"t1", "te"},
+  holder |-> "h",
+  quorate |-> TRUE,
+  by |-> "roster",
+  renewed |-> FALSE ]
+369 states generated, 100 distinct states found, 53 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 7 and the 95th percentile is 5).
+Finished in 05s at (2026-10-07 05:16:35)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-emcouple-cwo · Mut=M_EMCOUPLE · MaxRound=2 · SPECIFICATION SpecL · INVARIANT EmergencyCallsWithoutObserver
+Error: Invariant EmergencyCallsWithoutObserver is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ obsLive = TRUE
+/\ refused = FALSE
+/\ approvals = {}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 0,
+  live |-> FALSE,
+  envelope |-> {},
+  holder |-> "none",
+  quorate |-> FALSE,
+  by |-> "none",
+  renewed |-> FALSE ]
+State 2: <Approve line 101, col 3 to line 103, col 82 of module Emergency>
+/\ obsLive = TRUE
+/\ refused = FALSE
+/\ approvals = {"r1"}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 0,
+  live |-> FALSE,
+  envelope |-> {},
+  holder |-> "none",
+  quorate |-> FALSE,
+  by |-> "none",
+  renewed |-> FALSE ]
+State 3: <Approve line 101, col 3 to line 103, col 82 of module Emergency>
+/\ obsLive = TRUE
+/\ refused = FALSE
+/\ approvals = {"r1", "r2"}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 0,
+  live |-> FALSE,
+  envelope |-> {},
+  holder |-> "none",
+  quorate |-> FALSE,
+  by |-> "none",
+  renewed |-> FALSE ]
+State 4: <Activate line 108, col 3 to line 116, col 69 of module Emergency>
+/\ obsLive = TRUE
+/\ refused = FALSE
+/\ approvals = {}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {[round |-> 1, holder |-> "h", approvers |-> {"r1", "r2"}]}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 1,
+  live |-> TRUE,
+  envelope |-> {"t1", "te"},
+  holder |-> "h",
+  quorate |-> TRUE,
+  by |-> "roster",
+  renewed |-> FALSE ]
+State 5: <ObsToggle line 161, col 14 to line 162, col 95 of module Emergency>
+/\ obsLive = FALSE
+/\ refused = FALSE
+/\ approvals = {}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {[round |-> 1, holder |-> "h", approvers |-> {"r1", "r2"}]}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 1,
+  live |-> TRUE,
+  envelope |-> {"t1", "te"},
+  holder |-> "h",
+  quorate |-> TRUE,
+  by |-> "roster",
+  renewed |-> FALSE ]
+369 states generated, 100 distinct states found, 53 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 7 and the 95th percentile is 5).
+Finished in 05s at (2026-10-07 05:16:40)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-emcouple-safe · Mut=M_EMCOUPLE · MaxRound=2 · SPECIFICATION SpecL · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.3E-10
+  based on the actual fingerprints:  val = 2.2E-12
+158465 states generated, 16768 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 18.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 3).
+Finished in 05s at (2026-10-07 05:16:46)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-emcouple-w3 · Mut=M_EMCOUPLE · MaxRound=2 · SPECIFICATION SpecL · INVARIANT NeverUnobservedEmergencyCall
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.3E-10
+  based on the actual fingerprints:  val = 2.2E-12
+158465 states generated, 16768 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 18.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 3).
+Finished in 05s at (2026-10-07 05:16:52)
+→ HOLDS (expected HOLDS: as expected)
+
+=== d-emcouple-deadlock · Mut=M_EMCOUPLE · MaxRound=2 · SPECIFICATION SpecL · INVARIANT Safe · deadlock check on
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.3E-10
+  based on the actual fingerprints:  val = 2.2E-12
+158465 states generated, 16768 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 18.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 3).
+Finished in 05s at (2026-10-07 05:16:58)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-emcouple2-nc · Mut=M_EMCOUPLE2 · MaxRound=2 · SPECIFICATION SpecL · INVARIANT EmergencyNeverCoupled
+Error: Invariant EmergencyNeverCoupled is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ obsLive = TRUE
+/\ refused = FALSE
+/\ approvals = {}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 0,
+  live |-> FALSE,
+  envelope |-> {},
+  holder |-> "none",
+  quorate |-> FALSE,
+  by |-> "none",
+  renewed |-> FALSE ]
+State 2: <Approve line 101, col 3 to line 103, col 82 of module Emergency>
+/\ obsLive = TRUE
+/\ refused = FALSE
+/\ approvals = {"r1"}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 0,
+  live |-> FALSE,
+  envelope |-> {},
+  holder |-> "none",
+  quorate |-> FALSE,
+  by |-> "none",
+  renewed |-> FALSE ]
+State 3: <Approve line 101, col 3 to line 103, col 82 of module Emergency>
+/\ obsLive = TRUE
+/\ refused = FALSE
+/\ approvals = {"r1", "r2"}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 0,
+  live |-> FALSE,
+  envelope |-> {},
+  holder |-> "none",
+  quorate |-> FALSE,
+  by |-> "none",
+  renewed |-> FALSE ]
+State 4: <Activate line 108, col 3 to line 116, col 69 of module Emergency>
+/\ obsLive = TRUE
+/\ refused = FALSE
+/\ approvals = {}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {[round |-> 1, holder |-> "h", approvers |-> {"r1", "r2"}]}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 1,
+  live |-> TRUE,
+  envelope |-> {"t1", "te"},
+  holder |-> "h",
+  quorate |-> TRUE,
+  by |-> "roster",
+  renewed |-> FALSE ]
+State 5: <Approve line 101, col 3 to line 103, col 82 of module Emergency>
+/\ obsLive = TRUE
+/\ refused = FALSE
+/\ approvals = {"r1"}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {[round |-> 1, holder |-> "h", approvers |-> {"r1", "r2"}]}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 1,
+  live |-> TRUE,
+  envelope |-> {"t1", "te"},
+  holder |-> "h",
+  quorate |-> TRUE,
+  by |-> "roster",
+  renewed |-> FALSE ]
+State 6: <Approve line 101, col 3 to line 103, col 82 of module Emergency>
+/\ obsLive = TRUE
+/\ refused = FALSE
+/\ approvals = {"r1", "r2"}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {[round |-> 1, holder |-> "h", approvers |-> {"r1", "r2"}]}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 1,
+  live |-> TRUE,
+  envelope |-> {"t1", "te"},
+  holder |-> "h",
+  quorate |-> TRUE,
+  by |-> "roster",
+  renewed |-> FALSE ]
+State 7: <EndEm line 120, col 3 to line 122, col 89 of module Emergency>
+/\ obsLive = TRUE
+/\ refused = FALSE
+/\ approvals = {"r1", "r2"}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {[round |-> 1, holder |-> "h", approvers |-> {"r1", "r2"}]}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 1,
+  live |-> FALSE,
+  envelope |-> {"t1", "te"},
+  holder |-> "h",
+  quorate |-> TRUE,
+  by |-> "roster",
+  renewed |-> FALSE ]
+State 8: <Activate line 108, col 3 to line 116, col 69 of module Emergency>
+/\ obsLive = TRUE
+/\ refused = FALSE
+/\ approvals = {}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = { [round |-> 1, holder |-> "h", approvers |-> {"r1", "r2"}],
+  [round |-> 2, holder |-> "h", approvers |-> {"r1", "r2"}] }
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 2,
+  live |-> TRUE,
+  envelope |-> {"t1", "te"},
+  holder |-> "h",
+  quorate |-> TRUE,
+  by |-> "roster",
+  renewed |-> FALSE ]
+State 9: <ObsToggle line 161, col 14 to line 162, col 95 of module Emergency>
+/\ obsLive = FALSE
+/\ refused = FALSE
+/\ approvals = {}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = { [round |-> 1, holder |-> "h", approvers |-> {"r1", "r2"}],
+  [round |-> 2, holder |-> "h", approvers |-> {"r1", "r2"}] }
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 2,
+  live |-> TRUE,
+  envelope |-> {"t1", "te"},
+  holder |-> "h",
+  quorate |-> TRUE,
+  by |-> "roster",
+  renewed |-> FALSE ]
+16508 states generated, 2695 distinct states found, 1308 states left on queue.
+The depth of the complete state graph search is 9.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 10 and the 95th percentile is 6).
+Finished in 05s at (2026-10-07 05:17:04)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-emcouple2-cwo · Mut=M_EMCOUPLE2 · MaxRound=2 · SPECIFICATION SpecL · INVARIANT EmergencyCallsWithoutObserver
+Error: Invariant EmergencyCallsWithoutObserver is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ obsLive = TRUE
+/\ refused = FALSE
+/\ approvals = {}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 0,
+  live |-> FALSE,
+  envelope |-> {},
+  holder |-> "none",
+  quorate |-> FALSE,
+  by |-> "none",
+  renewed |-> FALSE ]
+State 2: <Approve line 101, col 3 to line 103, col 82 of module Emergency>
+/\ obsLive = TRUE
+/\ refused = FALSE
+/\ approvals = {"r1"}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 0,
+  live |-> FALSE,
+  envelope |-> {},
+  holder |-> "none",
+  quorate |-> FALSE,
+  by |-> "none",
+  renewed |-> FALSE ]
+State 3: <Approve line 101, col 3 to line 103, col 82 of module Emergency>
+/\ obsLive = TRUE
+/\ refused = FALSE
+/\ approvals = {"r1", "r2"}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 0,
+  live |-> FALSE,
+  envelope |-> {},
+  holder |-> "none",
+  quorate |-> FALSE,
+  by |-> "none",
+  renewed |-> FALSE ]
+State 4: <Activate line 108, col 3 to line 116, col 69 of module Emergency>
+/\ obsLive = TRUE
+/\ refused = FALSE
+/\ approvals = {}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {[round |-> 1, holder |-> "h", approvers |-> {"r1", "r2"}]}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 1,
+  live |-> TRUE,
+  envelope |-> {"t1", "te"},
+  holder |-> "h",
+  quorate |-> TRUE,
+  by |-> "roster",
+  renewed |-> FALSE ]
+State 5: <Approve line 101, col 3 to line 103, col 82 of module Emergency>
+/\ obsLive = TRUE
+/\ refused = FALSE
+/\ approvals = {"r1"}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {[round |-> 1, holder |-> "h", approvers |-> {"r1", "r2"}]}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 1,
+  live |-> TRUE,
+  envelope |-> {"t1", "te"},
+  holder |-> "h",
+  quorate |-> TRUE,
+  by |-> "roster",
+  renewed |-> FALSE ]
+State 6: <Approve line 101, col 3 to line 103, col 82 of module Emergency>
+/\ obsLive = TRUE
+/\ refused = FALSE
+/\ approvals = {"r1", "r2"}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {[round |-> 1, holder |-> "h", approvers |-> {"r1", "r2"}]}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 1,
+  live |-> TRUE,
+  envelope |-> {"t1", "te"},
+  holder |-> "h",
+  quorate |-> TRUE,
+  by |-> "roster",
+  renewed |-> FALSE ]
+State 7: <EndEm line 120, col 3 to line 122, col 89 of module Emergency>
+/\ obsLive = TRUE
+/\ refused = FALSE
+/\ approvals = {"r1", "r2"}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {[round |-> 1, holder |-> "h", approvers |-> {"r1", "r2"}]}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 1,
+  live |-> FALSE,
+  envelope |-> {"t1", "te"},
+  holder |-> "h",
+  quorate |-> TRUE,
+  by |-> "roster",
+  renewed |-> FALSE ]
+State 8: <Activate line 108, col 3 to line 116, col 69 of module Emergency>
+/\ obsLive = TRUE
+/\ refused = FALSE
+/\ approvals = {}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = { [round |-> 1, holder |-> "h", approvers |-> {"r1", "r2"}],
+  [round |-> 2, holder |-> "h", approvers |-> {"r1", "r2"}] }
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 2,
+  live |-> TRUE,
+  envelope |-> {"t1", "te"},
+  holder |-> "h",
+  quorate |-> TRUE,
+  by |-> "roster",
+  renewed |-> FALSE ]
+State 9: <ObsToggle line 161, col 14 to line 162, col 95 of module Emergency>
+/\ obsLive = FALSE
+/\ refused = FALSE
+/\ approvals = {}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = { [round |-> 1, holder |-> "h", approvers |-> {"r1", "r2"}],
+  [round |-> 2, holder |-> "h", approvers |-> {"r1", "r2"}] }
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 2,
+  live |-> TRUE,
+  envelope |-> {"t1", "te"},
+  holder |-> "h",
+  quorate |-> TRUE,
+  by |-> "roster",
+  renewed |-> FALSE ]
+16508 states generated, 2695 distinct states found, 1308 states left on queue.
+The depth of the complete state graph search is 9.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 10 and the 95th percentile is 6).
+Finished in 05s at (2026-10-07 05:17:09)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-emcouple2-safe · Mut=M_EMCOUPLE2 · MaxRound=2 · SPECIFICATION SpecL · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 3.1E-10
+  based on the actual fingerprints:  val = 3.1E-11
+246081 states generated, 25728 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 3).
+Finished in 05s at (2026-10-07 05:17:15)
+→ HOLDS (expected HOLDS: as expected) · 25728 distinct states (expected 25728: as expected)
+
+=== m-emcouple2-w3 · Mut=M_EMCOUPLE2 · MaxRound=2 · SPECIFICATION SpecL · INVARIANT NeverUnobservedEmergencyCall
+Error: Invariant NeverUnobservedEmergencyCall is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ obsLive = TRUE
+/\ refused = FALSE
+/\ approvals = {}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 0,
+  live |-> FALSE,
+  envelope |-> {},
+  holder |-> "none",
+  quorate |-> FALSE,
+  by |-> "none",
+  renewed |-> FALSE ]
+State 2: <Approve line 101, col 3 to line 103, col 82 of module Emergency>
+/\ obsLive = TRUE
+/\ refused = FALSE
+/\ approvals = {"r1"}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 0,
+  live |-> FALSE,
+  envelope |-> {},
+  holder |-> "none",
+  quorate |-> FALSE,
+  by |-> "none",
+  renewed |-> FALSE ]
+State 3: <Approve line 101, col 3 to line 103, col 82 of module Emergency>
+/\ obsLive = TRUE
+/\ refused = FALSE
+/\ approvals = {"r1", "r2"}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 0,
+  live |-> FALSE,
+  envelope |-> {},
+  holder |-> "none",
+  quorate |-> FALSE,
+  by |-> "none",
+  renewed |-> FALSE ]
+State 4: <Activate line 108, col 3 to line 116, col 69 of module Emergency>
+/\ obsLive = TRUE
+/\ refused = FALSE
+/\ approvals = {}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {[round |-> 1, holder |-> "h", approvers |-> {"r1", "r2"}]}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 1,
+  live |-> TRUE,
+  envelope |-> {"t1", "te"},
+  holder |-> "h",
+  quorate |-> TRUE,
+  by |-> "roster",
+  renewed |-> FALSE ]
+State 5: <ObsToggle line 161, col 14 to line 162, col 95 of module Emergency>
+/\ obsLive = FALSE
+/\ refused = FALSE
+/\ approvals = {}
+/\ domainTools = {"t1"}
+/\ calls = {}
+/\ records = {[round |-> 1, holder |-> "h", approvers |-> {"r1", "r2"}]}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 1,
+  live |-> TRUE,
+  envelope |-> {"t1", "te"},
+  holder |-> "h",
+  quorate |-> TRUE,
+  by |-> "roster",
+  renewed |-> FALSE ]
+State 6: <EmAdmit line 54, col 3 to line 59, col 86 of module Emergency_live>
+/\ obsLive = FALSE
+/\ refused = FALSE
+/\ approvals = {}
+/\ domainTools = {"t1"}
+/\ calls = { [ seat |-> "emergency",
+    tool |-> "t1",
+    allowlisted |-> TRUE,
+    observed |-> FALSE ] }
+/\ records = {[round |-> 1, holder |-> "h", approvers |-> {"r1", "r2"}]}
+/\ thinkerAllow = {"t1"}
+/\ em = [ round |-> 1,
+  live |-> TRUE,
+  envelope |-> {"t1", "te"},
+  holder |-> "h",
+  quorate |-> TRUE,
+  by |-> "roster",
+  renewed |-> FALSE ]
+903 states generated, 229 distinct states found, 128 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 10 and the 95th percentile is 10).
+Finished in 05s at (2026-10-07 05:17:21)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== d-emcouple2-deadlock · Mut=M_EMCOUPLE2 · MaxRound=2 · SPECIFICATION SpecL · INVARIANT Safe · deadlock check on
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 3.1E-10
+  based on the actual fingerprints:  val = 3.1E-11
+246081 states generated, 25728 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 3).
+Finished in 05s at (2026-10-07 05:17:27)
+→ HOLDS (expected HOLDS: as expected)
+
+=== b-none-nc · Mut=none · MaxRound=3 · SPECIFICATION SpecL · INVARIANT EmergencyNeverCoupled
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 5.7E-9
+  based on the actual fingerprints:  val = 6.3E-10
+1084737 states generated, 107648 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 24.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 3).
+Finished in 07s at (2026-10-07 05:17:35)
+→ HOLDS (expected HOLDS: as expected)
+
+=== b-none-cwo · Mut=none · MaxRound=3 · SPECIFICATION SpecL · INVARIANT EmergencyCallsWithoutObserver
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 5.7E-9
+  based on the actual fingerprints:  val = 6.3E-10
+1084737 states generated, 107648 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 24.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 3).
+Finished in 06s at (2026-10-07 05:17:42)
+→ HOLDS (expected HOLDS: as expected)
+
+Rows: 32 · as expected: 32 · not as expected: none · ERROR: none

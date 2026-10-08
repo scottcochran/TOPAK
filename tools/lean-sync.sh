@@ -3,8 +3,8 @@
 # package, the newest results file of each series names the digest of every file it transcribes (`Transcribes:` or
 # `Floor:`) and every Lean source it was built from (`Sources:`), by repository path; mechanism/lean's trace replays
 # (SeatsReplay-, CouplingReplay-results-*.txt) name their model and the Rust the traces were recorded from (`Model:`,
-# `Reference:`), and spec/lean's check against TLC's state graphs (GraphCheck-results-*.txt) the modules and the
-# encodings and mirrors it checks.
+# `Reference:`), and spec/lean's checks against TLC's state graphs (GraphCheck-results-*.txt, and
+# GraphCheckEmergency-results-*.txt for the Emergency encoding) the modules and the encodings and mirrors they check.
 # This script compares those digests with the tree and reports one row per series; then compares the kernel each
 # results file names, each package's lean-toolchain, and floor/lean's cedar-spec and batteries commits with
 # tools/LEAN-PIN; then checks that the floor and schema mechanism/crates/topak-floor links are among those the newest
@@ -21,12 +21,13 @@ root=$(cd "$(dirname "$0")/.." && pwd)
 pin() { grep -E "^$1 " "$root/tools/LEAN-PIN" | head -1 | cut -d' ' -f2; }
 # The newest results file of a series: a package's proofs, or mechanism/lean's trace replay.
 series() { case $1 in mechanism/lean) echo Admit;; spec/lean) echo TopakSpec;; floor/lean) echo TopakFloor;;
-  replay) echo SeatsReplay;; creplay) echo CouplingReplay;; graph) echo GraphCheck;; esac; }
-dir() { case $1 in replay|creplay) echo mechanism/lean;; graph) echo spec/lean;; *) echo "$1";; esac; }
+  replay) echo SeatsReplay;; creplay) echo CouplingReplay;; graph) echo GraphCheck;;
+  egraph) echo GraphCheckEmergency;; esac; }
+dir() { case $1 in replay|creplay) echo mechanism/lean;; graph|egraph) echo spec/lean;; *) echo "$1";; esac; }
 newest() { ls -1 "$root/$(dir "$1")/$(series "$1")-results-"*.txt 2>/dev/null | sort | tail -1; }
 status=0
 echo "package | results file | files as built -> now | state"
-for pkg in mechanism/lean replay creplay spec/lean graph floor/lean; do
+for pkg in mechanism/lean replay creplay spec/lean graph egraph floor/lean; do
   res=$(newest "$pkg")
   if [ -z "$res" ]; then echo "$pkg | (none) | - | MISSING RESULTS"; status=1; continue; fi
   stale=""; n=0
@@ -39,6 +40,7 @@ for pkg in mechanism/lean replay creplay spec/lean graph floor/lean; do
   name=$pkg; [ "$pkg" = replay ] && name="mechanism/lean (Seats trace replay)"
   [ "$pkg" = creplay ] && name="mechanism/lean (Coupling trace replay)"
   [ "$pkg" = graph ] && name="spec/lean (TLC state graphs)"
+  [ "$pkg" = egraph ] && name="spec/lean (TLC state graphs, Emergency)"
   if [ -z "$stale" ]; then echo "$name | $(basename "$res") | $n files ok | IN SYNC"
   else echo "$name | $(basename "$res") |$stale | STALE"; status=1; fi
 done

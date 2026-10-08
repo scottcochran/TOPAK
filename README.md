@@ -47,8 +47,8 @@ deployable system.
   not tracked); `spec/proof-results.sh` checks a `spec/*_proof.tla` module and prints its results file.
 - **Lean:** `tools/install-lean.sh` installs the toolchain `tools/LEAN-PIN` names, through elan (not tracked).
   Three packages prove in Lean what the TLAPS proofs and the gates claim, by a second route (ADR-0053, ratified in Batch 36).
-  `spec/lean/` re-encodes fourteen modules, and checks the `Seats` and `FloorComposition` encodings against TLC's
-  state graphs. `mechanism/lean/` transcribes `admit.rs`, `clock.rs` and the floor wrapper and proves the admit
+  `spec/lean/` re-encodes sixteen modules, and checks the `Seats`, `FloorComposition` and `Emergency` encodings
+  against TLC's state graphs. `mechanism/lean/` transcribes `admit.rs`, `clock.rs` and the floor wrapper and proves the admit
   decision a step of `FloorComposition`. It also models `State::apply`'s seat and lease arms and proves that model
   refines `Seats`. It proves `Coupling`'s properties of a second model built on the first, and replays the
   reference's recorded traces through both. `floor/lean/` states the floor in Cedar's verified model. Each has a `results.sh`;
