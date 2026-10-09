@@ -166,11 +166,13 @@ impl EndKind {
     }
 }
 
+/// The one count a guard may compare (ADR-0054 §4, R6): admitted calls, counted at apply on every
+/// replica and bounded by `R`. A count of denials was dropped from the record: a denial is written to
+/// the topic by one replica and never ordered (ADR-0015), so no replica holds a count all agree on.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
 #[serde(rename_all = "lowercase")]
 pub enum Counter {
     Actuates,
-    Denials,
 }
 
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -241,7 +243,6 @@ impl Guard {
             Guard::Count { node, of, cmp, value } => at(node).is_some_and(|a| {
                 let n = match of {
                     Counter::Actuates => a.actuates,
-                    Counter::Denials => a.denials,
                 };
                 match cmp {
                     Cmp::Lt => n < *value,
@@ -264,9 +265,6 @@ impl Guard {
 pub struct Attributes {
     pub end: EndKind,
     pub actuates: u64,
-    /// PROVISIONAL (workflow-denials): a denial is never logged (ADR-0015), so no replica can count
-    /// one. Always 0 in the reference.
-    pub denials: u64,
     /// The worker's `clearSet` at its seal. Every attribute of the node carries it (§5).
     pub label: Label,
     /// The declared outcome, `None` if the worker reported none.
@@ -1279,7 +1277,6 @@ impl State {
                         a.attrs = Some(Attributes {
                             end,
                             actuates: b.actuates,
-                            denials: 0,
                             label: rec.labels.clear_set.clone(),
                             outcome: b.outcome.clone(),
                             output: b.reports.clone(),
