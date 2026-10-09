@@ -1,25 +1,29 @@
 # TOPAK — Glossary
 
-**2026.10.05** · narrative · the glossary head, revised in place · DRAFT
+**2026.10.09** · narrative · the glossary head, revised in place · DRAFT
 
-**Basis.** Genesis Checkpoint G10 (2026.10.05) and Theory of Operation revision 14 (`narrative/theory-of-operation.md`,
-tag `ToO-rev14`), with the record files they cite. Where the two disagree, G10 wins. The three Proposed records
-(ADR-0035, ADR-0036, ADR-0051) and the one Proposed section (ADR-0022 §6) appear under their subjects, tagged
-**[P]**, and are collected in §10. No amendment is pending. Two records, ADR-0050 and ADR-0052, and the amendments
-that depend on them are in force and **provisional**; their terms are tagged **[A·Pv]**.
+**Basis.** Genesis Checkpoint G11 (2026.10.09) and Theory of Operation revision 15 (`narrative/theory-of-operation.md`,
+tag `ToO-rev15`), with the record files they cite. Where the two disagree, G11 wins. The five Proposed records
+(ADR-0035, ADR-0036, ADR-0051, ADR-0054, ADR-0055) and the one Proposed section (ADR-0022 §6) appear under their
+subjects, tagged **[P]**, and are collected in §10. **Twelve amendments are pending**, every one on a Proposed record,
+and their terms are tagged **[P]** too. Two records, ADR-0050 and ADR-0052, and the amendments that depend on them are
+in force and **provisional**; their terms are tagged **[A·Pv]**.
 
-**What this supersedes.** The 2026.10.02 revisions (tags `glossary-2026.10.02` and `glossary-2026.10.02b`), the
-second cut against G9 and revision 13; `git diff glossary-2026.10.02b glossary-2026.10.05 -- narrative/glossary.md`
-reads the two side by side. The entries G10 changed are rewritten: break-glass, which is now an emergency seating
-and no longer a floor exception; the rules-floor entries R6 to R8; Run's ingress and the `Actuate` record; channel
-fidelity, the Run profile and the launcher's addenda, which are ratified; Kafka's role, ratified; the floor's status
-and floor fitness; the proofs, and what *certified* means. The terms the records owed are added: *label*, *handle*,
-*clear set*, *outward entry*, *releasing entry*, *tool list*, *interface*, *allowlist entry*, *operator*, *seating*,
-*successor grant*, *control alphabet*, *emergency seat*, *emergency seating*, *activation*, *drill*, *provisional*
-and *genesis-provisional*. §14 lists the wording that retired. Before these, the 2026.10.01 revision (tag `glossary-2026.10.01`, against G7, which rewrote the entries Batch 25 changed). Before that, the
-2026.09.30 revision (tag `glossary-2026.09.30`, against G6) and the 2026.09.29 glossary
-(`derived/topak-glossary-2026.09.29.md` until the reorganization; `git log --follow` reads it). The glossary has no
-dated copies: a revision is a commit to this file, and the checkpoint cut with it measures the head.
+**What this supersedes.** The 2026.10.05 revision (tag `glossary-2026.10.05`), cut against G10 and revision 14;
+`git diff glossary-2026.10.05 glossary-2026.10.09 -- narrative/glossary.md` reads the two side by side. The entries
+G11 changed are rewritten: *checked* and *proved*, *certified*, *the prover*, which is now known to be unsound in two
+ways, the trusted base's count, the binding table, the floor stages and schema S, refinement, trace validation, the
+reference implementation and its findings, and the counts of batches, confirmation markers and pending amendments.
+The terms the records owed are added. From ADR-0053: *proved in Lean*, *re-encoding*, *transcription*, *model*,
+*statement in the model*, *replay* and *trace replay*, with *graph check*, *derived premise*, `refines(Seats)` and
+*the Lean toolchain*. From ADR-0054, Proposed: *workflow*, *node*, *edge*, *guard*, *decision point*,
+*orchestrator*, *input* and *route*. From ADR-0055, Proposed: *mesh*, *activation*, *causal history*, *decision
+event*, *budget* and *track*. From G11: *unsound case*, *proof scan*, *liveness extension*, *leads-to* and *fairness*.
+§14 lists the wording that retired. Before these, the 2026.10.02 revisions (tags `glossary-2026.10.02` and
+`glossary-2026.10.02b`, against G9), the 2026.10.01 revision (tag `glossary-2026.10.01`, against G7), the 2026.09.30
+revision (tag `glossary-2026.09.30`, against G6) and the 2026.09.29 glossary (`derived/topak-glossary-2026.09.29.md`
+until the reorganization; `git log --follow` reads it). The glossary has no dated copies: a revision is a commit to
+this file, and the checkpoint cut with it measures the head.
 
 **This document decides nothing.** It reports what the terms mean in the corpus as it stands, including where two
 sources disagree.
@@ -35,12 +39,12 @@ sources disagree.
 | **[A·Pv]** | Defined by a record or amendment Accepted **provisional**: in force, confirmation-required, and subject to redesign (ADR-0029 A4; §9). Cite as *provisional* |
 | **[P]** | Defined by a Proposed record, a pending amendment, or a DRAFT artifact. The wording can still move |
 | **[D]** | Derived: used in the narrative, with no record of its own |
-| **[C]** | Checkpoint convention, fixed by G1–G10 |
+| **[C]** | Checkpoint convention, fixed by G1–G11 |
 | **[R]** | The reference implementation (ADR-0033). It is evidence, not the verified object |
-| **[O]** | Outstanding: the term names a hole rather than a mechanism. Numbers refer to the G10 §7 open list |
+| **[O]** | Outstanding: the term names a hole rather than a mechanism. Numbers refer to the G11 §7 open list |
 | **[X]** | Superseded: the term's record is superseded and its text is no longer in force |
 
-Record status is G10 §1 and is not restated here except where the status changes what a term means.
+Record status is G11 §1 and is not restated here except where the status changes what a term means.
 
 ---
 
@@ -52,7 +56,7 @@ instrument that meets it may be substituted.
 
 | Letter | Role | Instrument at the reference |
 |---|---|---|
-| **T** | Formal specification and model checking | TLA+, TLC |
+| **T** | Formal specification, model checking and proof | TLA+, TLC, the TLA+ Proof System; Lean 4 as a second deductive method (ADR-0053) |
 | **O** | Policy as code: a verified floor evaluator and a per-request bundle engine | Cedar (floor), OPA and Rego (bundle) |
 | **P** | Consensus over the control plane | Sans-IO Multi-Paxos |
 | **A** | The principals doing the work | Agents, reached through MCP |
@@ -121,7 +125,8 @@ ADR-0015's tool-invocation class. **`Report(record)`** appends to the principal'
 **A read of live state is an `Actuate`.** There is no terminal variant: **a Run round ends when its lease ends**, and a
 Run seat cannot abstain (ADR-0042 §5). The provisional pair `RunInvoke` and `RunEmit` is retired; a request naming
 either fails validation against S. Its obligations are owned: policy by ADR-0041, mechanism by ADR-0042, the cell by
-ADR-0043.
+ADR-0043. A fourth variant, `Route(edge)`, held only by an `orchestrator` seat, is pending with ADR-0054 [P] (§2,
+*Workflows*), as are two more ends of a round, on a worker's outcome and on an applied route (ADR-0042 A3).
 
 **Run root** [A·CR]: a second pinned, content-addressed set, as Build's corpus root is; `Consult` is scoped to it
 (ADR-0040 §3). What may enter it, and who admits it, is open (ADR-0041 open obligations).
@@ -144,7 +149,8 @@ as `unknown` ahead of the seal marker, and **a result the record does not name i
 
 **Recorded ingress** [A·CR]: a tool's result is ingress and is recorded by digest, so Run's ingress is a closed list
 of **four items, each with a label**: the task, each admitted `Consult`'s content, each admitted `Actuate`'s result,
-and the round's tool list (ADR-0042 §4; ADR-0043 §1 as amended by A1; ADR-0048).
+and the round's tool list (ADR-0042 §4; ADR-0043 §1 as amended by A1; ADR-0048). A fifth, `input`, is pending with
+ADR-0054 [P].
 
 **Label** [A·CR]: a set of names, from a vocabulary the bundle declares, attached to every item of Run's ingress. **A
 label is a function of the item's source**, declared where the source is: the task's at the grant, a `Consult`'s at
@@ -245,6 +251,92 @@ today, and the article has to say so first.
 the whole **protocol**, not the whole **channel**: an agent with a shell never has to ask. For a guest the node
 launches, the launcher's bridge is the channel and the protocol at once (ADR-0036 §2, ADR-0033 A7).
 
+**Workflows.** The entries below are ADR-0054's and ADR-0055's, **both Proposed**, with the ten amendments ADR-0054
+drafted into accepted records **pending**. Nothing here is in force; the reference follows it (ADR-0033 A16, A17).
+
+**Workflow** [P]: a Build artifact, promoted like any other, that lets one cell's work reach another during Run: nodes,
+a task template per node whose slots only a handle can fill, edges with guards and delivery modes, a join rule
+(`any` or `all`) where edges meet, and a step bound and a time bound `T_wf` (ADR-0054 §1). Its kind is `dag`, the
+default, acyclic and checked at load, or `mesh` (below). **Its promotion is the grant**: the quorum votes on the graph
+and its seatings together, and the mechanism grants each node's lease when the node is reached, under that authority
+(§2; ADR-0024 A4, ADR-0031 A4). No principal grants another.
+
+**Node** [P]: one seating in a workflow; **one round of one cell**. In a mesh a node may run more than once, and each
+run is an *activation*.
+
+**Edge** · **computed** · **chosen** [P]: a **computed** edge fires when its guard holds, evaluated by the mechanism in
+the apply that made it evaluable, with no gap between deciding and applying. A **chosen** edge is selected by the
+orchestrator from a decision point, among edges whose guards already hold. Each edge declares a delivery mode,
+`clear` or `handle`, for the source's output.
+
+**Guard** [P]: a predicate in a fixed, decidable language: equality and membership over enums and labels, bounded
+counts against constants, and the connectives; no strings, arithmetic or temporal operator. **The mechanism evaluates
+it; it is not policy**, so it is re-run at apply. It reads only what is settled: in a DAG, the attributes of the edge's
+source and of the nodes that dominate it; in a mesh, the triggering activation and its causal history, never a node's
+latest value.
+
+**Attributes** (of a node) [P]: lifted by the mechanism once, when a node's round ends: `end`, `actuates`, `label` (the
+worker's `clearSet` at its seal), `covered`, `found`, a declared `outcome` from the node's closed enum, and `output`, a
+handle. **None is a literal.** All are written once except `found`, which moves only from false to true, so a guard
+can change only towards disabled. A denial count was dropped: a denial is never ordered, so no replica holds a count
+every replica agrees on (ADR-0054 R6). **Policy reads none of them**: a guard is a mechanism check. They are not the
+attributes of a call that policy reads (*clear set*, above), though the rule that only the mechanism computes them is
+the same (ADR-0047 R13).
+
+**Decision point** · **decision event** [P]: a node with more than one chosen outgoing edge. In a mesh the end of an
+activation at such a node is a **decision event**. One route consumes it.
+
+**Orchestrator** [P]: a sixth seat kind, Run only (ADR-0037 A5): alphabet `Route` and `Report`, coupled to an
+Observer as a Thinker is (ADR-0039 A3), delivered handles and never bytes, and seated only when the graph has a chosen
+edge. **It may only narrow**: it cannot enable an edge, so every safety property holds whichever enabled edge it takes.
+One round per decision point or event; in a mesh it holds nothing between rounds. A Byzantine orchestrator can stall
+a workflow and cannot misroute it. Not ADR-0008's "orchestrator-level Observer group" (§13).
+
+**`Route(edge)`** · **route** [P]: the orchestrator's variant (ADR-0040 A2), classed as an emission (ADR-0015 A1).
+Checked at decide and **again at apply**, and void if it fails there, so a finding ordered between the two is not
+overtaken. One per decision point; a second is void. It carries its **basis**, the log index of what the orchestrator
+was shown. A lapsed orchestrator takes no default edge.
+
+**`input`** [P]: a fifth item of Run's ingress (ADR-0043 A3): a predecessor's output, delivered along an edge, labelled
+with the reporting worker's `clearSet`. Delivered clear it joins the receiver's `clearSet`, so **R5 to R7 follow
+content from cell to cell** along the workflow.
+
+**Routing rule** [P]: an edge whose target can reach an outward entry, or receives `restricted` input, is disabled when
+any attribute its guard reads is labelled `untrusted` (ADR-0054 §5; ADR-0047 A1).
+
+**Lineage alternation** [P]: the Thinkers at the two ends of every clear edge are independent under ADR-0035, checked
+at the tally. A handle edge carries no bytes and is not checked. In a mesh the clear edges must be 2-colourable. While
+ADR-0035 is Proposed, every deployment declares it instead (**D-0054-1**).
+
+**Coverage at the edge** [P]: an edge is enabled only once its source's cell Observer has read it to the seal, so a
+finding from that Observer lands before any successor runs. It does not close the race the re-check at apply closes.
+Waiving it is **D-0054-2**.
+
+**Mesh** · **budget** [P]: a workflow of kind `mesh` may have cycles, for a loop whose number of turns is decided at run
+time (ADR-0055). It loads only with an **activation budget**: a bound `N` on the leases the promotion may ever issue,
+the orchestrator's included, with an optional bound per node. A grant the budget cannot pay is refused, and running
+out fails the workflow. **A budgeted mesh is a DAG unrolled to depth `N`**, which is what lets ADR-0054's argument
+apply to it. Not the timing budget `W + L + D < T_irrev` (§8; §13).
+
+**Activation** (of a node) [P]: a pair (node, *k*), one round of one cell in a mesh, the unit of attributes, routes and
+findings. One live activation per node. Not an emergency seating's activation (§5; §13).
+
+**Trigger** · **causal history** [P]: an activation's trigger is the activation it was entered from, or the fan-out it
+belongs to; its causal history is itself and its trigger's history, recorded by the log. **A finding against any
+activation in a history closes every edge downstream of it.**
+
+**Track** [P]: what the mechanism delivers to an orchestrator's round in a mesh: the activation history that bears on
+the event, as typed facts with labels and handles, written as the round's opening record. **The mechanism tracks; the
+orchestrator holds no state**, because a long-lived one would need successor grants, would be persistent agent memory,
+and would route onto the wrong activation.
+
+**Completion** [P]: every sink of a DAG ended or skipped, or an activation of a mesh's sink ended. It says the graph was
+traversed, **not that the work is right**. A timeout, an exhausted budget or a quiescent mesh is a failure.
+
+**Choreography** [P/D]: cells reacting to each other's events with no one deciding what runs next. **Not supported.**
+"Event-driven" in TOPAK means the mechanism is the bus: the events are log entries, and Kafka orders nothing (ADR-0055
+§7).
+
 ---
 
 ## 3. The lease
@@ -330,9 +422,10 @@ against it, and a decidable comparison of two policy sets. Cedar meets it and Re
 into the mechanism as a library**, with no process, socket or fetch.
 
 **Schema S** [A·CR / P]: the typed lift's type, enforced on every request. The analyses quantify over it. The
-genesis `genesis.cedarschema` is DRAFT; the schema the reference links is the `emergency` stage's
+genesis `genesis.cedarschema` is DRAFT. The floor in force's schema is the `emergency` stage's
 (`floor/proposed/emergency.cedarschema`), which adds the label attributes (ADR-0030 A2), the six control actions and
-the two seat kinds.
+the two seat kinds. The schema the reference links since 2026.10.08 is the `workflow` stage's, which adds `Route`,
+the `orchestrator` kind and the lease's decision point [P].
 
 **Nothing translates** [A·CR]: there is no Rego → Cedar transpiler, in either direction, in the archetype.
 
@@ -354,12 +447,21 @@ ratified when the bootstrap reviewer establishes that it is fit (ADR-0029 §5, s
 five times, last on 2026.09.30. It is **DRAFT**, and since 2026.10.05 it is no longer the text the reference
 links: it is what the stages are built from.
 
-**Floor stages** [P / R]: three texts built from the genesis floor, each validated, tested and gated on 2026.10.04:
-`labels` (20 policies, 74 cases), `control` (29, 106) and `emergency` (28, 107). **The `emergency` stage,
-`floor/proposed/emergency-floor.cedar`, is the floor in question**: the text whose entries the records in force
-name, the one the reference compiles in, refusing any other bytes, and the one that is genesis-provisional. It
-sits under `floor/proposed/` and opens with a comment that is wrong, "not what the reference follows"; the bytes are
-kept as gated so the digests the records cite are the ones the reference pins (item 91).
+**Floor stages** [P / R]: four texts built from the genesis floor, each validated, tested and gated: `labels` (20
+policies, 74 cases), `control` (29, 106) and `emergency` (28, 107) on 2026.10.04, and `workflow` (30, 123) on
+2026.10.08. **The `emergency` stage, `floor/proposed/emergency-floor.cedar`, is the floor in force**: the text whose
+entries the records in force name, and the one that is genesis-provisional. **The `workflow` stage is what the
+reference links since 2026.10.08**, at the custodian's direction: `Route`, `R8-route-own-decision`,
+`R9-only-orchestrators-route` and `R3` widened to the `orchestrator` kind, Proposed with ADR-0054 (ADR-0041 A4,
+pending). Each stage opens with a comment that is wrong, "not what the reference follows", false of whichever stage
+the reference links; the bytes are kept as gated so the digests the records cite are the ones the reference pins
+(item 91).
+
+**The floor stated in Lean** [A·CR]: `floor/lean/`, the genesis floor, the floor in force and the linked stage in
+cedar-spec's abstract syntax, generated from their files, with their gates proved in Lean under the model: each
+validates against S, so by cedar-spec's proved soundness never errors on a conforming request; neither always allows
+nor always denies; and every test case is decided as it says (ADR-0053 §1; ADR-0030 B36). The totality claim then rests
+on the model's validator and T-0045-3, not on cedar's folding. **It ratifies nothing**, and it is not floor fitness.
 
 **Values file** [P]: `floor/genesis-values.json`, the third file of the floor bundle: the numbers the typed lift
 reads that Cedar text cannot hold, `K`, `T_obs`, `T_persona` and ADR-0035's unset θ (ADR-0039 §1; ADR-0031 A2). Relaxing a value is an
@@ -601,7 +703,8 @@ is why the floor needs no exception, and the label forbids apply under it. Prepa
 **Activation** [A·Pv]: the break-glass roster's quorum activating an emergency seating: **one lease, for one named
 person and one round**, with the round's task (ADR-0052 §2, §3). It ends with its round, with no successor and no
 renewal; another round is another quorum. The activation is a forensic-floor record (F5): who approved, whom, which
-seating, which round, what task. **The reason is not recorded**: it is a claim about the world.
+seating, which round, what task. **The reason is not recorded**: it is a claim about the world. Not a mesh's
+activation of a node (§2; §13).
 
 **Drill** [A·Pv]: a real activation, by the real roster, of a seating whose envelope holds one inert tool
 (ADR-0052 §6). An obligation with evidence; it gates nothing, and nothing at the reference counts it (item 92).
@@ -732,7 +835,9 @@ promotion-roster slot (ADR-0024); the kind separates them.
 
 **Seat kind** [A·CR]: `thinker`, `observer` or `grant` (ADR-0037 §2), and since Batch 34, provisionally,
 **`emergency`** and **`operator`** (ADR-0037 A3, A4; §5). Fixed at declaration; bounds the alphabet a grant may
-issue (§2); carried into schema S. The last two are held only by a person.
+issue (§2); carried into schema S. The last two are held only by a person. A sixth, **`orchestrator`**, is pending
+with ADR-0054 [P] (ADR-0037 A5). ADR-0053 finding 8: an issuance may change a seat's kind at the reference, which
+`rules::validate_issuance` does not refuse, and whether it should is ADR-0037's question (item 106).
 
 **Stage** [A·CR]: a position in the cell that holds no Persona and no lease: the **Listener**, which delivers the task
 and the admitted `Read`s and makes no choice, and the **Reader**.
@@ -806,7 +911,26 @@ and **detection fails open against a colluding Observer** belongs on the residua
 
 **Break-glass under a dead Observer** [A·Pv]: **decided: an emergency seat is not coupled** (ADR-0039 A2; ADR-0052
 §4; item 49). R3 is a Thinker's rule. What goes uncoupled is a person, seated by a quorum, for one round, whose
-topic the domain's operators read and any of whom can stop. Until Batch 34, R3 coupled break-glass too.
+topic the domain's operators read and any of whom can stop. Until Batch 34, R3 coupled break-glass too. Since
+2026.10.07 it is a property and not only a witness: `Emergency_live.tla`'s two invariants over `ENABLED`, that while an
+emergency lease is live every tool in its envelope can be admitted and that with no live Observer some call can be,
+are proved, and proved in Lean of the encoding.
+
+**Liveness extension** [C]: a module that extends a frozen one without editing it and adds what the frozen one
+cannot state: fairness, leads-to properties and invariants over `ENABLED` (`Coupling_live.tla`,
+`Emergency_live.tla`, 2026.10.07). Under every mutation of the base its next-state relation is the base's, so the
+safety results carry over, and its proof module proves `SpecL ⇒ Spec`. Not a successor (`_A1`), which changes the
+base.
+
+**Leads-to** · **fairness** [D]: `P ~> Q`, whenever `P` holds `Q` eventually does; true only of behaviours that keep
+taking the steps they can, which is what a fairness condition says (weak: a step enabled continuously is eventually
+taken; strong: one enabled infinitely often is). **The stall coupling causes ends** is four leads-to properties of
+`Coupling_live.tla`, under A12 and A18 (ToO §13): **checked by TLC at small constants, proved by nothing** (item 105).
+Only a leads-to property sees `M_HBLIVE`, a mutation that passes every safety check and every witness.
+
+**Liveness plan** [D]: `derived/topak-liveness-2026.10.07.md`, answering CR-37: what is already safety, invariants
+over `ENABLED` (Tier 0), leads-to properties to model and prove (Tier 1), what to declare and not prove (Tier 2). Of
+Tier 1 only the coupling stall is stated.
 
 **Monoculture** [A]: an Observer should come from a different model family than the agents it watches. The predicate
 now has one pair per cell to cover.
@@ -1002,9 +1126,9 @@ theorems.**
 
 **Confirmation-required** [A]: a ratified record carrying a proof obligation over privileged paths (**C1**), an
 exhaustiveness or confinement claim (**C2**), a reversal in effect (**C3**), or the resolution of such a debt
-(**C4**). The count at G10 is **twenty-eight**: twenty-six, and the two provisional records. **A marking may be
-scoped to an amendment** (ADR-0003 A2; ADR-0029's own is in its status note, for A2 and A4 only), and one marking,
-ADR-0035 R2's, is by custodian instruction outside C1–C4.
+(**C4**). The count at G11 is **twenty-nine**: twenty-seven, and the two provisional records. **A marking may be
+scoped to an amendment** (ADR-0003 A2; ADR-0029's own is in its status note, for A2 and A4 only) **or to one route**
+(ADR-0053, C4 for `refines(Seats)` only), and one marking, ADR-0035 R2's, is by custodian instruction outside C1–C4.
 
 **Provisional** [A·CR]: a status since Batch 34 (ADR-0029 A4): **Accepted (genesis) · provisional**. The record is in
 force and **subject to redesign**; it was ratified without meeting its own ratification condition, and it states its
@@ -1020,12 +1144,13 @@ attestation, which must name them as provisional (ADR-0029 A4).
 **Bootstrap reviewer** [A·CR]: the reader independent of the author whose review of the whole corpus at one manifest
 digest is half the trigger (ADR-0029 A2). Two duties since A4: to establish that the policy floor is fit, with which
 the floor is ratified; and to attest to rules that include the three provisional amendments, named as such. **None
-is engaged and no pass has been run** (G10 §4).
+is engaged and no pass has been run** (G11 §4).
 
 **Bootstrap trigger** [A]: (a) a drafted TLA+ bootstrap specification of five modules (`Genesis`, `Anchor`,
 `RulesFloor`, `Promotion`, `BreakGlass`), of which two exist, `Anchor` and `BreakGlass`, both checked and since
-2026.10.02 proved (ADR-0029 B25), with `BreakGlass_A1` succeeding the second where it models X1, **and** (b) an **independent review of the entire
-corpus** at one manifest digest (ADR-0029 A2). **The trigger is permission, not obligation.**
+2026.10.02 proved (ADR-0029 B25), and both proved in Lean too, of their re-encodings (ADR-0053), with `BreakGlass_A1`
+succeeding the second where it models X1, **and** (b) an **independent review of the entire corpus** at one manifest
+digest (ADR-0029 A2). **The trigger is permission, not obligation.**
 
 **Genesis bundle** [A]: the corpus manifest, the specification digest (checked or drafted-only), the review
 attestation and the genesis rules. Every key-holder signs it, and that is issuance epoch 0. **It is the only artifact
@@ -1043,13 +1168,13 @@ is visible, not bounded.
 **Debts on the face** [A]: obligations an accepted record carries openly in its status note. Examples are ADR-0030's
 six, ADR-0031's five, and ADR-0033's Kafka row.
 
-**G checkpoint** [C]: the state of record. G10 (2026.10.05) is current. A cut is immutable, and corrections go to the
+**G checkpoint** [C]: the state of record. G11 (2026.10.09) is current. A cut is immutable, and corrections go to the
 next one.
 
-**Theory of Operation** [C]: the narrative. **It is not the state of record.** Revision 14 is current, cut from G10.
+**Theory of Operation** [C]: the narrative. **It is not the state of record.** Revision 15 is current, cut from G11.
 
-**Batch** [C]: a ratification group. There are thirty-five; Batches 27 to 31 were ratified on 10.04 and 32 to 35 on
-10.05, and the records tag them ⟨B27⟩ … ⟨B35⟩.
+**Batch** [C]: a ratification group. There are thirty-seven; Batches 27 to 31 were ratified on 10.04, 32 to 35 on
+10.05, 36 on 10.06 and 37 on 10.08, and the records tag them ⟨B27⟩ … ⟨B37⟩.
 
 **Withdrawal** [C]: a History row of kind *W*: a drafted amendment withdrawn by the custodian and never ratified.
 ADR-0026 W1, which withdrew R8, is the first.
@@ -1068,7 +1193,13 @@ text disagrees with is applied before ratification** · **placeholders say so th
 **provisional is said wherever it applies** · **a record is ratified provisional only with its exit stated** · **an
 addendum is split** so that what is evidence for text in force can be accepted alone · **a proof is certified or its
 results file says why not** · **a model is checked to discriminate** · **a dependent amendment is applied as
-marked**, beside the text it changes · **BOOTSTRAP marks the unsigned operator path**.
+marked**, beside the text it changes · **BOOTSTRAP marks the unsigned operator path** · and from G11: **a second
+method proves again and certifies nothing the first did not** · **a Lean result counts with its replay** · **every
+Lean results file names the digests of what it transcribes**, and `tools/lean-sync.sh` holds it to the tree · **an
+encoding is checked against TLC's state graph, and a model of code against recorded traces** · **liveness is stated
+in an extension, `_live`** · **a proof is written to the prover's known defects**, and the scan is run on every new
+proof module · **a remainder with no bound is checked under a stated cap** · **what the custodian settled in a design
+discussion is marked where it is used** (⟨K1⟩–⟨K9⟩, ⟨M1⟩–⟨M5⟩).
 
 **Havoc semantics** [A]: modeling an agent as capable of anything its alphabet allows.
 
@@ -1084,10 +1215,11 @@ threshold property means anything.
 constants: every mutation fails the property it targets, every reachability witness is violated, and the property
 holds over every reachable state at those constants. It is a discrimination test, and the method for anything
 existential. **Proved** is the TLA+ Proof System: an invariant holds of every behaviour of its module, for every
-constant the module's named assumptions admit, under the hypothesis that the mutations which break it are absent;
-the hypotheses are part of the claim and are stated with it. There are twenty-two proof modules and 5,225
-obligations, every one proved; `Mechanism.tla` is checked only. **Neither word is used of the running reference** (T-0045-28). From G3 to G7 the
-corpus said "no theorem is proved", and that was true until G8.
+constant the module's named assumptions admit, under the hypothesis that the mutations which break it are absent; the
+hypotheses are part of the claim and are stated with it. There are twenty-four proof modules and 5,416 obligations,
+every one proved; `Mechanism.tla`, `Workflow.tla` and `Mesh.tla` are checked only. A third word, *proved in Lean*, is
+ADR-0053's (below), and is never shortened to *proved*. **Neither word is used of the running reference**
+(T-0045-28). From G3 to G7 the corpus said "no theorem is proved", and that was true until G8.
 
 **Proof module** [A·CR]: `spec/<Module>_proof.tla`, which extends a frozen module without editing it and proves the
 invariants it states, each theorem taking as hypothesis only the mutations that break it, with `Safe` under
@@ -1100,9 +1232,11 @@ with a successor proof (`spec/proof-method.md`).
 or by an SMT proof the `ethos` checker accepted, or by a Zenon proof Isabelle checked, or is a temporal step
 discharged by LS4, which no checker confirms (ADR-0046 A1; `spec/proof-cert.sh`, `spec/proof-certification.md`).
 The certified configuration puts cvc5 behind `spec/smt-checked` in place of Z3; `tlapm -C` checks Zenon's proofs
-and nothing else (E2). **Nineteen of the twenty-two modules certify**; `RulesFloorNV_rev5`, `Confinement` and
-`Confinement_A1` do not, and restructuring them is deferred (item 74). **A certified proof is not a verified one**:
-the prover's translation of an obligation into a query, its normalization, LS4 and the checker are trusted.
+and nothing else (E2). **Twenty-one of the twenty-four modules certify**; `RulesFloorNV_rev5`, `Confinement` and
+`Confinement_A1` do not, and restructuring them is deferred (item 74); their theorems are proved in Lean too. **A
+certified proof is not a verified one**: the prover's translation of an obligation into a query, its normalization,
+LS4 and the checker are trusted, and the translation is **known to be unsound in two ways** (*unsound case*, below).
+A certified proof is checked against the query, and the query can say something other than the obligation.
 
 **Mutated proof** [C]: a scratch copy of a proof module with one hypothesis flipped to the mutation it excludes. The
 prover must reject it, at the guard the mutation removes. It is the proof's own non-vacuity check, and is never an
@@ -1110,8 +1244,10 @@ artefact.
 
 **Refinement** [D]: two senses. By composition (policy), which the corpus has. Specification-to-implementation
 (formal methods), which it **does not have**: the gap is a trusted-base row (T-0045-28) and a debt ADR-0033 owns
-(ADR-0045 R2). Stage 1 of the chain, trace validation, exists; stages 2 and 3, a Lean model with differential
-testing and then its compilation, are the chain proper and are not begun.
+(ADR-0045 R2). Stage 1 of the chain, trace validation, exists and is behind the tree since the workflow build; stages
+2 and 3, a Lean model with differential testing and then its compilation, are the chain proper and are not begun.
+ADR-0053's code-level proofs in Lean are **evidence toward** the row and not a stage, and no addendum may cite a stage
+discharged through Lean until the binding table can say "either proof" (ADR-0053 §5).
 
 **Operational model** [R / P]: `spec/Mechanism.tla`, the state machine `State::apply` and `check_live` written once,
 operationally, as a function from a projected state and a log entry to the next state and the result. What the
@@ -1132,7 +1268,9 @@ every one matching (ADR-0033 A7, A8). **On 2026.10.05, 82 traces and 1,007 steps
 more taken from the trace: whether a request's signature is its seat's, whether a sign-on assertion verifies, which
 roster keys approved an activation. The run found a race no proof had: a lease just granted could be ended as
 expired (A13). The model was then broken on purpose six ways: five produced a mismatch and the sixth an evaluation
-error. The floor's decision on an operator's request is not modelled.
+error. The floor's decision on an operator's request is not modelled. **Not rerun since**: `Mechanism.tla` does not
+model workflows, and a traced run that loads one would not match it (ADR-0033 A16). Not the Lean *trace replay*
+(below), which runs the same traces through a Lean model's own `apply`.
 
 **Refinement check** [R]: `spec/ConfinementRefinement.tla`, which reads every state trace validation replays against
 `Confinement_A1.tla`'s invariants: no silent downgrade (per seat), *Contested* stopped, a fresh appraisal under every
@@ -1140,15 +1278,17 @@ live lease, and `contained` only where its premises hold. A check on tested path
 `ContainedMeansConfined`, which is about the image the host ran.
 
 **Reference implementation** [R]: `mechanism/`, the admit path end to end. It is **evidence, not the verified
-object** (ADR-0033 §1). It is cited by manifest and commit (last `SHA256SUMS-REF-2026.10.05f` at `075b2e7`), it has
+object** (ADR-0033 §1). It is cited by manifest and commit (last `SHA256SUMS-REF-2026.10.09` at `749d54f`), it has
 never been promoted, and its own trusted-base declaration is ADR-0045 Annex B. No guest it launches passes P3, so
-it fails A1. **Forty-six assumptions and eighteen gaps** are tagged in the code (`GAPS-AND-ASSUMPTIONS.md`). Since
+it fails A1. **Forty-seven assumptions and eighteen gaps** are tagged in the code (`GAPS-AND-ASSUMPTIONS.md`). Since
 09.29 it has seat kinds, cells, a correlator, heartbeats, marks, seals, coupling, coverage, Run's three actions, the
 effect counter and the `Actuate` record; since 09.30 the trace recorder; since 10.01 signed bundles, the `ttl` bound
 and the issued key fields; since 10.02 the launcher and the Wasm tool host. **On 2026.10.05 it was rebuilt in five
 stages** (ADR-0033 A9 to A12): the allowlist entry and its load checks, the tool list and the opening record,
 labels and handles, operators, and the emergency seating; and it was **switched outright to the `emergency` floor
-stage**. 133 tests. Its fifteen addenda are all ratified.
+stage**. 133 tests. **On 2026.10.08 it was built to ADR-0054 and ADR-0055, both Proposed**, and linked the `workflow`
+floor stage, which is not in force, at the custodian's direction (A16, pending): 155 tests. On 2026.10.09 it dropped
+`denials` (A17, pending). Fifteen addenda are ratified and two are pending.
 
 **Reference findings 1–11** [R]: routed to records in ToO §15. Three needed running code to find (1, 4 and 9). Only
 finding 9, proposer retry in the drafted `Paxos` module, is still open (item 24). Three more on 09.29: one live lease
@@ -1156,7 +1296,9 @@ had been enforced per seat, not per principal; a coupling rule refused the heart
 be re-checked at apply. Three more from the Run build (12 to 14): ADR-0041 named the wrong gate for a control; the
 module and the reference counted different things; the bundle tier cannot hold a tool to its channel. Four on
 10.02 and six on 10.05 (ToO §15), among the last a load check that could not be failed, a lease that cannot be
-narrowed to a tool, and the lease-expiry race.
+narrowed to a tool, and the lease-expiry race. Three on 10.08 (`mechanism/` findings 21 to 23): a round ending on its
+own admit sealed before that admit's record; a denial count with no replicated source, dropped; and a clear input
+that needs a read path the reference lacks (item 108).
 
 **Host-run occupant** [R / P]: `serve.py` on the host with no container, the reference's first declared profile
 (`slm/serve/profile-host-rung0.json`), a rung-0 principal whose `Mediated` verdict is derived rather than empty.
@@ -1166,7 +1308,7 @@ trusted-base row **T-0045-1**: a trust root whose residual is the forged admit, 
 delegated mitigation, unbuilt (item 23). BFT is not required.
 
 **Trusted-base record** [A·CR]: ADR-0045, drafted 2026.09.30, revised six times, ratified 2026.10.01 (Batch 22, C2 and
-C4). The rule for entering the trusted base, the archetype's table of **thirty-six rows** (Annex A), and the
+C4). The rule for entering the trusted base, the archetype's table of **thirty-seven rows** (Annex A), and the
 reference's own declaration (Annex B). Five rows came with Batch 34 (ADR-0045 A1, A2): T-0045-32 to T-0045-34, the
 label computation and delivery, the declarations (excluded), and handle resolution with the list's rendering; and
 T-0045-35 and T-0045-36, an operator's identity provider and its custody of its key. T-0045-24 is delegated at the
@@ -1174,14 +1316,16 @@ archetype since Batch 30, and Annex B still shows it excluded at the reference f
 A9 (item 89). Six records owed it rows and it carries all of them. Two Annex B rows changed class after
 ratification, by dependent entry: the bundle signer, excluded to trust root under a dev key (B23), and the solver's,
 refused to trust root for the proof checker (B24). A third dependent entry added a row: T-0045-31, the prover (B25).
+A fourth added T-0045-37, the Lean toolchain (B36), and Batch 37 put the prover's two unsound cases into T-0045-31's
+residual (A3).
 
 **Binding table** [P]: `spec/theorem-premise-binding.md` (ADR-0045 R6), one row per checked property, with the proof
 module named in each proved row, naming the trusted-base rows, the degeneracy parameters and the declared gaps it rests on; forty-two rows, DRAFT, revised with
 the records it binds. Its last column computes the reference's inventory: a property holds when every row it names
 is delegated or a trust root, and is void on an excluded, undeclared or refused one. Writing the proofs found five
-errors in it, four in the "Breaks under" column and the `K < R` premise, corrected at Batch 25 (ADR-0046 §5). **It
-has no rows for the modules added since G9**: `Labels`, `ToolList`, `Operators`, `Emergency` and the two successors
-(item 90).
+errors in it, four in the "Breaks under" column and the `K < R` premise, corrected at Batch 25 (ADR-0046 §5). Since
+Batch 36 it carries **derived premises** (below). **It has no rows for ten modules**: `Labels`, `ToolList`,
+`Operators`, `Emergency`, the two successors, the two liveness extensions, `Workflow` and `Mesh` (item 90).
 
 **Row** [A·CR]: one entry of the trusted base, `T-0045-n`, with a fixed schema: component, layer, *trusted for* (the
 row's premise), rungs, class, what its failure can produce, what fixes its identity, residual (ADR-0045 §1).
@@ -1206,8 +1350,73 @@ the checker binary, its rule signature and the wrapper, pinned by the three dige
 root beside TLC's T-0045-29 since Batch 25 (ADR-0046 §3). Trusted for: "all N obligations proved" means each is a
 theorem under the module's assumptions. Pinned by `tools/TLAPS-PIN`, and the wrapper refuses another binary; the
 install is not tracked. Since ADR-0046 A1 the row has a **certified configuration** (see *Certified*). Residual: its
-soundness and its backends' are unexamined; the SMT proofs are checked by `ethos`, not by Isabelle, for nineteen
-modules of twenty-two (item 74).
+soundness and its backends' are unexamined; the SMT proofs are checked by `ethos`, not by Isabelle, for twenty-one
+modules of twenty-four (item 74); and since Batch 37 it names **two known unsound cases** in the translation, which no
+result a record cites rests on, by a scan and a reading (ADR-0045 A3; ADR-0046 A2).
+
+**Unsound case** [A·CR]: one of the two known ways `tlapm` 7824dab's translation lets a false statement prove and
+certify (ADR-0046 A2, Batch 37). **A term under a binder**: an `ENABLED` or `\cdot` not expanded, or a temporal formula,
+abstracted as a constant that drops any variable bound around it. **Two terms with one name**: every abstracted term,
+and every atom handed to LS4, named by 20 bits of a hash the prover does not check, of a print that does not tell a
+bound variable from a constant of its name, so two terms can be one by a **collision** of the hash or by a **capture**,
+where expansion makes them print alike. A rule for writing proofs keeps a proof from them
+(`spec/proof-certification.md` §10). **No check detects the first** (item 104). Not reported upstream, by the
+custodian's decision.
+
+**Proof scan** [C]: `spec/proof-scan.sh`, run on every new proof module: the sources' untranslated terms, the certified
+runs with Isabelle's trace, a second run with every identifier renamed, and every obligation read as the prover forms
+it for a capture. On 2026.10.08, 24 modules and 1,853 obligations sent to a backend, no capture. **The renamed run is a
+second naming, not a proof.**
+
+**The Lean toolchain** [A·CR]: **T-0045-37** (ADR-0053 §3, B36), a toolchain trust root beside the prover: the kernel,
+the elaborator and Lake that build the terms it checks, `leanchecker` that replays them, and the compiler where
+`native_decide` evaluates, with the encodings, transcriptions and statements, read against what they state. Lean
+4.33.1, pinned by `tools/LEAN-PIN`, installed through elan and not tracked.
+
+**Proved in Lean** [A·CR]: a claim the Lean kernel discharged, of the re-encoding, transcription, model or statement it
+names (ADR-0053 §1). **Never written "proved" alone.** A second derivation with different premises: bounded by neither
+constants nor a solver, and a claim about none of the TLA+ text, the Rust or the Cedar text. It changes no claim of a
+TLAPS proof, and T-0045-31's residual does not move.
+
+**Re-encoding** [A·CR]: a TLA+ module written as a Lean transition system, each definition beside the TLA+ it
+transcribes; its theorems are the proof module's, by induction on reachable states, the step TLAPS hands to LS4.
+Sixteen modules in `spec/lean/`, among them the three that do not certify. Frozen with its base module.
+
+**Transcription** [A·CR]: a function of the reference written in Lean beside the Rust: `admit.rs`'s `compose` with the
+floor wrapper, proved a `Decide` step of `FloorComposition`, and `clock.rs`'s interval. Read against the Rust; no
+translator was run. Pinned, not frozen.
+
+**Model** (of `apply`) [A·CR]: a transcription of `State::apply` that keeps the checks and effects a module is about and
+makes every other check one oracle that can only refuse, so its steps include every step the code takes. The
+Seats-shaped model refines `Seats` at its constants; the Coupling-shaped one keeps `Coupling`'s properties at any size.
+**Stale at G11**: they transcribe the action and seat kinds, which gained `Route` and `orchestrator`, and the custodian
+left them so (item 103). Not the operational model, `Mechanism.tla` (§13).
+
+**Statement in the model** [A·CR]: a floor and its schema in cedar-spec's abstract syntax, generated from the floor's
+files by `floor/lean/gen.py`; its theorems are gate claims under the model (*the floor stated in Lean*, §4).
+
+**Replay** [A·CR]: `leanchecker --fresh`, which replays every constant a package reaches through the kernel in a fresh
+environment. **`#print axioms` alone was deceived** by a declaration added with the kernel check off, and the replay
+refused it, so every results file carries one. The same kernel in another process, not an independent checker.
+
+**Trace replay** [A·CR / R]: the reference's recorded traces run through a Lean model's own `apply`, each step compared:
+82 traces, 1,014 and 1,015 steps, every one matching (`seats-replay.sh`, `coupling-replay.sh`, 2026.10.06). A check
+over the traces the suites record, not a proof. **Not trace validation**, which replays the same traces through
+`Mechanism.tla` in TLC.
+
+**Graph check** [A·CR]: an encoding's mirror evaluated on TLC's state graph of its module under every mutation, for
+`Seats`, `FloorComposition` and `Emergency`. It sees an encoding that is too lax or too strict, which no invariant can:
+a `Grant` that drops a check keeps both of `Seats`' invariants and adds 3,552 edges.
+
+**Derived premise** · **`refines(Seats)`** [A·CR]: a premise of the binding table that is a disjunction of premise
+sets, so a theorem with two derivations can be carried by either (ADR-0053 R7): `invariant(M)` for a proved row,
+which rests on the prover in place of TLC, and `refines(Seats)`, the route by which `Seats`' two theorems reach the code
+through the Lean model, around T-0045-28. **ADR-0053 is confirmation-required for that route alone (C4)**, and no
+ADR-0033 addendum cites it as a stage.
+
+**Lean sync** [C]: `tools/lean-sync.sh`, the Lean packages' `proof-sync.sh`: it compares every digest a newest results
+file names with the tree, and every kernel and dependency with the pin, and checks that the floor the reference links
+is stated in Lean. **It exits 1 at G11**, for the stale models, where Batch 36's condition had it exit 0.
 
 **What runs is a row** [A·CR]: the implementation as a refinement of the specification, the model checker at the
 constants run, the prover for the invariants it proves (T-0045-31), and the build toolchain are trust roots for every deployment until a refinement exists
@@ -1218,7 +1427,9 @@ Varshney caught it (finding 7).
 assistant at the custodian's request, every choice the custodian did not settle marked *(drafter's choice)*;
 ratification settles them, and all four are ratified (Batches 17, 22, 24, 25). **Nearly every text ratified since
 G9 is the drafter's**: ADR-0047 to ADR-0050 and ADR-0052, the dependent amendments, the modules, the proofs and the
-rebuilt reference, and each ratification row says it was not reviewed by a reader other than the drafter. ADR-0046's condition that the
+rebuilt reference, and since G10 ADR-0053 and its three Lean packages, Batch 37's amendments and the review runs that
+found the prover's cases, and the two Proposed workflow records with their modules, floor stage and reference; each
+ratification row says it was not reviewed by a reader other than the drafter. ADR-0046's condition that the
 custodian regenerate its evidence was run by the drafter at the custodian's direction. One step further from review
 than author-ratification, and ADR-0029 has no criterion for it (item 66).
 
@@ -1229,9 +1440,9 @@ effect ratifies without C3, and its row names the reading under which C3 would a
 
 ## 10. Proposed records
 
-Three records and one section are Proposed at G10, and no amendment is pending. **None is in force.** ADR-0005
-left this list in Batch 27 and ADR-0042 §6 in Batch 30. ADR-0047 to ADR-0050 and ADR-0052 were drafted and ratified
-between G9 and G10 and never stood here at a checkpoint.
+Five records and one section are Proposed at G11, and twelve amendments are pending on them. **None is in force.**
+ADR-0005 left this list in Batch 27 and ADR-0042 §6 in Batch 30. ADR-0053 was drafted and ratified between G10 and
+G11 and never stood here at a checkpoint.
 
 **ADR-0022 §6** [P, 1]: Build's confinement obligation (§2), the one Proposed section, left out of Batch 2.
 
@@ -1258,13 +1469,22 @@ launcher in the node**, its §6 step, is built, and its addendum was ratified ah
 launched lease. Four of the reference's choices under it are in ADR-0034 A3, and a fifth in ADR-0023 A1; the sixth,
 a profile promoted as a one-file workspace, is ADR-0036's own.
 
-**Pending amendments**: none. ADR-0026 A1 (R8) was withdrawn, not ratified (W1).
+**Workflow records** [P, 101]: ADR-0054, a workflow as a promoted DAG, and ADR-0055, a workflow that may be a mesh,
+both drafted 2026.10.07 and built at the reference on 2026.10.08. Their terms are under §2. `Workflow.tla` and
+`Mesh.tla` are checked and have no proof. ADR-0055's dependent entries are not drafted.
+
+**Pending amendments** [P]: twelve. Ten are ADR-0054's, drafted into accepted records and marked inline: ADR-0015 A1
+(`Route` an emission), ADR-0024 A4 (a workflow is seatings and a graph; the bootstrap set), ADR-0031 A4 (a third
+grant path), ADR-0037 A5 (`orchestrator`), ADR-0039 A3 (coverage at the edge; the orchestrator coupled), ADR-0040
+A2 (`Route`), ADR-0041 A4 (`Route`'s envelope; R3's scope), ADR-0042 A3 (two more ends of a round), ADR-0043 A3
+(`input`) and ADR-0047 A1 (the attributes and the routing rule). Two are ADR-0033's addenda for the reference, A16 and
+A17. ADR-0035, itself Proposed, was revised in place (R8). ADR-0026 A1 (R8) was withdrawn, not ratified (W1).
 
 ---
 
 ## 11. Outstanding
 
-These terms name a hole. Each one points to the G10 §7 open list.
+These terms name a hole. Each one points to the G11 §7 open list.
 
 | Term | Item |
 |---|---|
@@ -1308,19 +1528,18 @@ These terms name a hole. Each one points to the G10 §7 open list.
 | The checker carried in a release | 68 |
 | What `holds°` rests on: cedar's folding of the totality gate | 69 |
 | The register's header | 71 |
-| Three proof modules that do not certify | 74 |
+| Three proof modules that do not certify (their theorems proved in Lean too) | 74 |
 | Model checking at practical constants · simulation at large bounds | 75 |
-| The diagrams, unmeasured, and behind the tree | 76 |
+| The diagrams, unmeasured, and behind the tree; the Lean route's omits `Emergency`'s graph check | 76 |
 | One driver per TLC results file | 78 |
 | A measurement cannot cover its profile's digest (ADR-0034 §2 against P7) | 82 |
 | Build's P4 at the reference | 83 |
 | The component tool interface · the protocol on a declared target | 84 |
 | The sixth reference choice, in ADR-0036 | 85 |
-| The narrative against G10 (discharged by revision 14 and this cut) · tags owed | 86 |
 | **The exit from provisional for ADR-0050**: a first lease from a completed tally; a promoted seating; a review | 88 |
 | ADR-0045 Annex B, T-0045-24 at the reference | 89 |
-| `spec/` behind the records: `RulesFloorBase.tla`; binding-table rows for six modules | 90 |
-| The floor stages' opening comment | 91 |
+| `spec/` behind the records: `RulesFloorBase.tla`; binding-table rows for ten modules | 90 |
+| The floor stages' opening comment, false of the stage the reference links | 91 |
 | **The exit from provisional for ADR-0052**: ADR-0050's; a seating prepared by promotion; two open questions; a drill counter | 92 |
 | What the label machinery trusts: the deciding replica's facts; unlabelled error text; scalar handles | 93 |
 | What the reference does not follow in records in force: the entry's digest; a task at a first seating; the two lists re-read | 94 |
@@ -1328,10 +1547,20 @@ These terms name a hole. Each one points to the G10 §7 open list.
 | Whether anything else a replica keeps is recorded after the lock is released | 96 |
 | Two policy comments that call ADR-0049 Proposed | 98 |
 | The reviewer's guide, excluded from the manifest and kept current | 99 |
+| The narrative against G11 (discharged by revision 15 and this revision) · tags owed | 100 |
+| **What the workflow records owe**: proofs, binding rows, values, parallel branches, joins and pools, ADR-0055's dependent entries | 101 |
+| **The reference links a floor that is not in force** | 102 |
+| **`mechanism/lean` stale**; `lean-sync.sh` exits 1 | 103 |
+| **The prover's two unsound cases**: no check for the first; unreported upstream | 104 |
+| **Liveness checked and not proved**; the plan's other Tier 1 items | 105 |
+| Questions ADR-0053 put to records: a seat's kind changed by issuance; several Observers in a cell; `apply`'s index | 106 |
+| ADR-0053's open obligations: an independent kernel, the premise table's disjunction, more graph checks, nine modules unencoded, a second platform | 107 |
+| What the reference found for the corpus: the seal after an ending admit; a clear input's read path | 108 |
 
-**Closed since G9**: ADR-0005 (5) · R8, by withdrawal (8) · the Run profile and ADR-0042 §6 (26, 58, 80) · the
-launcher in the node (35) · break-glass under a dead Observer, decided (49) · the allowlist entry's schema (59) · the
-prover pinned (73) · a Run tool's channel declared twice (84) · five of the six reference choices (85).
+**Closed since G10**: the narrative against G10, and its tags (86). **Closed between G9 and G10**: ADR-0005 (5) · R8,
+by withdrawal (8) · the Run profile and ADR-0042 §6 (26, 58, 80) · the launcher in the node (35) · break-glass under
+a dead Observer, decided (49) · the allowlist entry's schema (59) · the prover pinned (73) · a Run tool's channel
+declared twice (84) · five of the six reference choices (85).
 
 Unowned and not numbered: **`Invoke` hermeticity** for native tools (an excluded row, T-0045-23) · **channel
 fidelity** for native Run tools (T-0045-24; D-0034-6; G19) · **flow** (CR-6), which labels bound per round and trace
@@ -1342,9 +1571,13 @@ declaration.
 
 ## 12. Adjacent vocabulary
 
-These are carried from the 09.17 glossary §12 unchanged, with three additions: **Cedar** and its Lean-verified
+These are carried from the 09.17 glossary §12 unchanged, with these additions: **Cedar** and its Lean-verified
 semantics and **SymCC** analyses (now the floor instrument) · **MCP** (the reference's agent interface) ·
-**confidential VM** and **RATS verdicts** (ADR-0034).
+**confidential VM** and **RATS verdicts** (ADR-0034) · since G11, **Lean 4**, **cedar-spec** (Cedar's semantics,
+validator and symbolic compiler formalized and proved in Lean by its authors) and **`leanchecker`** (ADR-0053) ·
+**CaMeL**'s privileged planner and quarantined model, the split ADR-0054 keeps with the planner's trust removed ·
+**orchestration** and **choreography** in the multi-agent sense (ADR-0055 §7) · **weak and strong fairness** and
+**`~>`** in TLA+'s temporal logic (§7).
 
 ---
 
@@ -1363,16 +1596,16 @@ These collisions are live. Several are new since 09.17.
    revision. "R3" alone is a withdrawn rules entry, and `R3-observer-live` is a floor forbid. **R5, R6 and R7 are
    each a rules-floor entry and a label forbid**: rules-floor R6 bounds the exception count, and floor `R6` refuses a
    steered destination. Give the forbid its full name. The readiness key's **R** is another use.
-5. **"G" and a number: checkpoints, conventions and gaps.** G1–G10 are checkpoints, **G-C1** is a convention, and
+5. **"G" and a number: checkpoints, conventions and gaps.** G1–G11 are checkpoints, **G-C1** is a convention, and
    **G1–G19** in `mechanism/` are code gaps: *G5* is both a checkpoint and a gap. Name the three floor gates;
    don't letter them.
 6. **"Rung": now three orderings.** ADR-0023 degeneracy rungs (per axis), confinement attestation rungs 0–3
    (ADR-0034, Accepted), and provenance rungs on ADR-0017's axis. `slm/` says "every round runs at rung 0", meaning
    **attestation** rung. Always qualify.
-7. **"Floor": now six things.** The policy floor, the rules floor, the forensic floor, floor fitness, **the
-   genesis floor** (a DRAFT text, as distinct from the machinery that checks one), and **the floor stages**, the last
-   of which is the text the reference links. There is also "floor minimum", a seat count, and "the floor's minimum
-   over labels", three forbids.
+7. **"Floor": now six things.** The policy floor, the rules floor, the forensic floor, floor fitness, **the genesis
+   floor** (a DRAFT text, as distinct from the machinery that checks one), and **the floor stages**, of which
+   `emergency` is the floor in force and `workflow`, not in force, is the text the reference links. There is also
+   "floor minimum", a seat count, and "the floor's minimum over labels", three forbids.
 8. **"Declared": two opposed senses.** A **declaration** degeneracy reopens nothing (ADR-0023). A **declared**
    lineage record is the *weakest* strength (ADR-0035 D-0035-1). Declared custody is a third use.
 9. **"Revocation" vs "fence".** A targeted revocation ends matching leases. An epoch fence ends every round. Earlier
@@ -1385,11 +1618,12 @@ These collisions are live. Several are new since 09.17.
     (ADR-0033 §3), which is now declared.
 14. **"Proved": restored, with one meaning** (ADR-0046 §1). Retired at rev 7 (CR-25) because nothing was; since
     G8 it names what the prover discharged, with its hypotheses. *Checked* is TLC's; *must hold* is a requirement.
-    None of the three is said of the running reference.
+    **Since G11, *proved in Lean* is a fourth phrase**, for what the Lean kernel discharged, and is never shortened to
+    *proved*. None of them is said of the running reference.
 15. **"Degenerate"** collides with TLA+'s "degenerate behavior" (the ADR-0023 obligation) and reads as pejorative.
     Use *reduced* in operational prose.
-16. **"Confirmation-required" count.** G10 says **twenty-eight**: twenty-six and the two provisional records. G8 and
-    G9 said twenty-two; G5 and rev 9 said fourteen, and the 09.26 glossary's *nine* was G3's.
+16. **"Confirmation-required" count.** G11 says **twenty-nine**: twenty-seven and the two provisional records. G10
+    said twenty-eight; G8 and G9 said twenty-two; G5 and rev 9 said fourteen, and the 09.26 glossary's *nine* was G3's.
 17. **"Seat": two senses, one word.** The LTRO position (ADR-0016, ADR-0037) and the promotion-roster slot
     (ADR-0024). The **kind** field separates them; an Observer holds both at once.
 18. **"R": four uses.** Rules-floor entries, record revisions, the readiness key, and now the **round bound** `R`
@@ -1410,7 +1644,8 @@ These collisions are live. Several are new since 09.17.
 25. **"Operator": a principal, and a word.** Since ADR-0050 an operator is a seat kind held by a person. Older text
     uses it for whoever runs a deployment, and "the operator's assertion" there names nobody in particular.
 26. **"Seating" and "grant".** A seating puts a principal on a seat and is a quorum's; a successor grant is one
-    operator's; an activation is a roster's quorum, for one round. All three put a lease on the log.
+    operator's; an activation is a roster's quorum, for one round. All three put a lease on the log. A workflow's node
+    grant, pending with ADR-0054, would be a fourth: the mechanism's, under a promotion's authority.
 27. **"Lift": two senses.** The typed lift of a request into schema S, and lifting a revocation, which adds
     authority and has no owner.
 28. **"Envelope": three things.** An action's envelope in the alphabet, a record's envelope of facts beside its
@@ -1419,6 +1654,23 @@ These collisions are live. Several are new since 09.17.
 30. **"Clear": a delivery mode, and a verb.** An item delivered clear enters `clearSet`; nothing ever clears it.
 31. **"Break-glass" still names the roster, the quorum and F5.** It no longer names a floor entry, a flag in a
     record or an approval scoped to an epoch.
+32. **"Activation": two meanings, in two statuses.** An emergency seating's **activation** (ADR-0052, provisional) is a
+    roster's quorum granting one round to one person. A mesh's **activation** of a node (ADR-0055, Proposed) is one
+    run of that node. Say which.
+33. **"Orchestrator": a retired group and a proposed seat.** ADR-0008's "orchestrator-level Observer group" is
+    superseded. ADR-0054's `orchestrator` is a seat kind that only narrows. Text older than 2026.10.07 means the first.
+34. **"Model": five senses.** A TLA+ module checked by TLC; the operational model `Mechanism.tla`; a Lean **model** of
+    `apply` (ADR-0053); Cedar's Lean model (cedar-spec, T-0045-3's "the Lean model"); and the language model inside a
+    seat. *Model checking* is the first.
+35. **"Replay": three things.** Trace validation replays recorded traces through `Mechanism.tla`; a Lean **trace
+    replay** runs them through a Lean model's `apply`; the Lean **replay** is `leanchecker --fresh` re-checking a
+    package's terms. Forensic replay (ADR-0020) is a fourth, of the record.
+36. **"Stage": three things.** The floor stages; the cell's stages (the Listener and the Reader); and the stages of the
+    refinement chain. A Lean result is not a stage of the chain.
+37. **"Budget": two.** The timing budget `W + L + D < T_irrev` (ADR-0032 §4) and a mesh's activation budget `N`
+    (ADR-0055 §2).
+38. **"Unsound": the prover's, not the design's.** The two unsound cases are of `tlapm`'s translation (T-0045-31); a
+    proof is kept from them by a rule and a scan. Nothing in the term is a claim that a TLA+ module is wrong.
 
 ---
 
@@ -1515,17 +1767,29 @@ crypto-shredding as mechanism, Kafka as system of record, "strictly stronger tha
 | The trusted base's "thirty-one rows" | Thirty-six | ADR-0045 A1, A2 |
 | Monotonicity "at fourteen layers" | Sixteen: ingress and operation | ToO rev 14 §7.8 |
 | Accepted or Proposed, and nothing between | *Accepted (genesis) · provisional*: in force and subject to redesign | ADR-0029 A4 |
+| "Twenty-two proof modules, 5,225 obligations; nineteen certified" | Twenty-four, 5,416; twenty-one certified | ADR-0046; G11 §2.9 |
+| The trusted base's "thirty-six rows" | Thirty-seven: T-0045-37, the Lean toolchain | ADR-0045 B36 |
+| The prover's translation as merely unexamined | Known to be unsound in two ways; a rule and a scan keep a proof from them; no check for the first | ADR-0046 A2; ADR-0045 A3 |
+| "Isabelle refuses one of `RulesFloorNV_rev5`'s Zenon proofs" | All five; tlapm reports the first | ADR-0046 E4; ADR-0053 E1 |
+| "No module states liveness" | Two liveness extensions; coupling's leads-to properties checked by TLC and not proved | G11 §3 |
+| "The `emergency` stage is the text the reference compiles in" | The floor in force; the reference links the `workflow` stage, which is not | ADR-0033 A16 |
+| "No amendment is pending" | Twelve, every one on a Proposed record | G11 §1.1 |
+| "Cells communicate through the record", unspecified | Along a promoted workflow's edges, Proposed; between cells no workflow joins, not at all | ADR-0054 |
+| The refinement chain's Lean stage "not begun", with no Lean in the corpus | Still not begun; code-level proofs in Lean are evidence toward T-0045-28, not a stage | ADR-0053 §5 |
+| A workflow node's `denials` attribute | Dropped: a denial is never ordered | ADR-0054 R6; ADR-0033 A17 |
+| Monotonicity "at sixteen layers" | Eighteen: workflow (Proposed) and evidence of proof | ToO rev 15 §7.8 |
 
 ---
 
 ## Sources
 
-**Basis.** `checkpoints/topak-genesis-checkpoint-G10-2026.10.05.md` · `narrative/theory-of-operation.md` at tag
-`ToO-rev14` · the records they cite, at their G10 digests.
+**Basis.** `checkpoints/topak-genesis-checkpoint-G11-2026.10.09.md` · `narrative/theory-of-operation.md` at tag
+`ToO-rev15` · the records they cite, at their G11 digests.
 
-**Superseded.** This file's previous revision (tag `glossary-2026.10.02b`, the head `manifests/SHA256SUMS-G10`
-measured), before it the first 2026.10.02 revision (tag `glossary-2026.10.02`, measured by `manifests/SHA256SUMS-G9`
-at its commit), the 2026.10.01 revision (tag `glossary-2026.10.01`, measured by `manifests/SHA256SUMS-G8`), the
-2026.09.30 revision (tag `glossary-2026.09.30`, measured by `manifests/SHA256SUMS-G7`), the
-2026.09.29 glossary (`derived/topak-glossary-2026.09.29.md` before the reorganization, measured
-by `manifests/SHA256SUMS-G6`), and through it the 09.26 and 09.17 glossaries whose §12 is carried by reference.
+**Superseded.** This file's previous revision (tag `glossary-2026.10.05`, the head `manifests/SHA256SUMS-G11`
+measured), before it the second 2026.10.02 revision (tag `glossary-2026.10.02b`, measured by `manifests/SHA256SUMS-G10`),
+the first 2026.10.02 revision (tag `glossary-2026.10.02`, measured by `manifests/SHA256SUMS-G9` at its commit), the
+2026.10.01 revision (tag `glossary-2026.10.01`, measured by `manifests/SHA256SUMS-G8`), the 2026.09.30 revision (tag
+`glossary-2026.09.30`, measured by `manifests/SHA256SUMS-G7`), the 2026.09.29 glossary
+(`derived/topak-glossary-2026.09.29.md` before the reorganization, measured by `manifests/SHA256SUMS-G6`), and through
+it the 09.26 and 09.17 glossaries whose §12 is carried by reference.

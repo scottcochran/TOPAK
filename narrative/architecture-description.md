@@ -1,7 +1,7 @@
 # TOPAK — Architecture Description
 
-**2026.10.05** · revision 2 · **DRAFT** · **an index, not an authority** · drawn against
-Genesis Checkpoint G10 (2026.10.05) and Theory of Operation revision 14 · arc42 structure · written to conform to
+**2026.10.09** · revision 3 · **DRAFT** · **an index, not an authority** · drawn against
+Genesis Checkpoint G11 (2026.10.09) and Theory of Operation revision 15 · arc42 structure · written to conform to
 ISO/IEC/IEEE 42010 (§0.6) · diagrams at C4 levels
 
 **Drafted by the assistant** at the custodian's request, from the 2026.10.03 session that recommended this document
@@ -22,11 +22,11 @@ are the only sections with new prose. Every other section is a pointer table.
 
 | Layer | Where | Role |
 |---|---|---|
-| State of record | [`checkpoints/`](../checkpoints/README.md), G10 | What is ratified, owed and open |
+| State of record | [`checkpoints/`](../checkpoints/README.md), G11 | What is ratified, owed and open |
 | Decisions | [`decisions/`](../decisions/README.md), ADR-0001 onward | What was decided, and why |
-| Argument | [Theory of Operation](theory-of-operation.md), revision 14 | How it fits together and why it is safe |
+| Argument | [Theory of Operation](theory-of-operation.md), revision 15 | How it fits together and why it is safe |
 | Vocabulary | [Glossary](glossary.md) | What the words mean |
-| Depiction | [`diagrams/`](../diagrams/README.md), A1 to H5 | Thirty-one drawings of the records |
+| Depiction | [`diagrams/`](../diagrams/README.md), A1 to H7 | Thirty-nine drawings of the records, drawn at G10 and amended since; none draws workflows |
 | **Index** | **this document** | **The parts, the scenarios, the traceability** |
 
 ### 0.2 What is described
@@ -77,7 +77,7 @@ host and carry no generator; they are sketches at C4 levels and do not join the 
 | Concept | K3, K4 | Pointer table | Cites the ToO section and records; restates nothing | §8 |
 | Decision | all | Pointer table | Cites ADRs by id | §9 |
 | Assurance | K6, K7 | Traceability matrix; trusted-base pointer | One row per guarantee group; status words are the binding table's | §10 |
-| Risk | K7, K8 | Pointer table | Cites the residual-risk statement and G10 | §11 |
+| Risk | K7, K8 | Pointer table | Cites the residual-risk statement and G11 | §11 |
 
 ### 0.5 Correspondences and correspondence rules
 
@@ -90,20 +90,24 @@ ask for while the corpus has no second reader.
 | CR-1 | Every record and module the reference follows is pinned by digest | `mechanism/corpus-pins.sha256`; `cargo test -p topak-core --test drift` |
 | CR-2 | Every checked property names its record, its module and its premises | [`spec/theorem-premise-binding.md`](../spec/theorem-premise-binding.md) and `.json`; `spec/inventory.py --check` |
 | CR-3 | Every proved module is frozen by digest, and a successor carries its own proof | `spec/proof-sync.sh`; ADR-0046 |
-| CR-4 | The floor the code enforces is the floor the gates checked | `topak-floor` includes the `emergency` stage under `floor/proposed/` by path, refuses to load on a digest mismatch, and replays the stage's 107 cases |
-| CR-5 | Every behaviour a test exercises matches the operational model, step for step | `spec/mechanism-trace-run.sh` over `spec/Mechanism.tla` (drift detection, not refinement) |
+| CR-4 | The floor the code enforces is the floor the gates checked, and is stated in Lean | `topak-floor` includes the `workflow` stage under `floor/proposed/` by path, refuses to load on a digest mismatch, and replays the stage's 123 cases; `tools/lean-sync.sh` fails if no Lean results file states it |
+| CR-5 | Every behaviour a test exercises matches the operational model, step for step | `spec/mechanism-trace-run.sh` over `spec/Mechanism.tla` (drift detection, not refinement). **Not rerun since 2026.10.05**: the model does not cover workflows |
 | CR-6 | Every TLA+ property the reference restates has a named Rust test | [`mechanism/GAPS-AND-ASSUMPTIONS.md`](../mechanism/GAPS-AND-ASSUMPTIONS.md) §6 |
 | CR-7 | Every trusted-base row is a premise of the theorems that rest on it | ADR-0045 §3; the binding table's row premises |
 | CR-8 | Every cut is measured, and every cited path resolves | `tools/verify-manifest.sh --all`; `tools/check-refs.py` |
 | CR-9 | A diagram of the binding table is built from the table | `diagrams/gen-topak-family.py` (G3 fails if the table moved) |
 | CR-10 | Every building block in §5 names its records, modules and code | §5.2 and §5.3 of this document; **no check enforces it** |
+| CR-11 | Every Lean result names the digests of what it transcribes, and is in step with the tree and the pin | `tools/lean-sync.sh`; ADR-0053 §4 |
+| CR-12 | No proof rests on the prover's two known unsound cases | `spec/proof-cert.sh` with the rule of `spec/proof-certification.md` §10; `spec/proof-scan.sh` on every new proof module; ADR-0046 A2. **No check detects the first case** |
 
 **Known inconsistencies.** They are recorded where they were found, not repeated here: the thirty findings of the
 [format and schema inventory](../derived/topak-format-and-schema-inventory-2026.10.03.md) §11, which predates the
 2026.10.05 rebuild; ADR-0045 Annex B behind the code (ToO §7.9); `spec/` behind the records, and what the reference
-does not follow in records now in force (G10 items 90 and 94); and the errata in
-[`checkpoints/README.md`](../checkpoints/README.md). CR-2 does not hold for the six modules added since G9: the
-binding table has no rows for them.
+does not follow in records now in force (G11 items 90 and 94); a reference that follows two Proposed records on a
+floor stage that is not in force (item 102); and the errata in [`checkpoints/README.md`](../checkpoints/README.md).
+**Three rules do not hold at G11.** CR-2 fails for ten modules added since G9: the binding table has no rows for
+them. CR-5 is behind the tree since the workflow build. CR-11 fails for `mechanism/lean`, left stale by the
+custodian's decision (item 103).
 
 ### 0.6 Conformance to ISO/IEC/IEEE 42010
 
@@ -130,10 +134,12 @@ agent as Byzantine, keeps models out of the trusted computing base, and states e
 agent's action alphabet allows (ADR-0007). The letters name roles, not products ([README](../README.md); ToO §1;
 diagram A1).
 
-**Status.** A design corpus in its genesis phase with a reference implementation of the admit path. Forty-six
-records are Accepted (genesis), twenty-eight of them awaiting independent confirmation and two of those
-**provisional**: in force and subject to redesign (ADR-0050, the operator; ADR-0052, emergency seating). The policy
-floor is genesis-provisional. No reviewer other than the author has read any of it (G10; `checkpoints/README.md`).
+**Status.** A design corpus in its genesis phase with a reference implementation of the admit path. Forty-seven
+records are Accepted (genesis), twenty-nine of them awaiting independent confirmation and two of those
+**provisional**: in force and subject to redesign (ADR-0050, the operator; ADR-0052, emergency seating). Two more,
+ADR-0054 and ADR-0055 on workflows, are **Proposed and already built** at the reference, on a floor stage that is
+not in force. The policy floor in force is genesis-provisional. No reviewer other than the author has read any of
+it (G11; `checkpoints/README.md`).
 
 **Quality goals**, in priority order. §10 traces each to evidence.
 
@@ -152,7 +158,7 @@ floor is genesis-provisional. No reviewer other than the author has read any of 
 
 | Kind | Constraint | Source |
 |---|---|---|
-| Assumptions of use | Seventeen, A1 to A17. A deployment that does not meet them does not inherit the theorems. The reference fails A1 | ToO §13 |
+| Assumptions of use | Eighteen, A1 to A18. A deployment that does not meet them does not inherit the theorems. The reference fails A1 | ToO §13 |
 | Technical | Models are outside the trusted base; only syntactic lift enters the admit path | ADR-0007 |
 | Technical | The floor evaluator needs a mechanized semantics and decidable policy comparison (Cedar at the reference; no Rego to Cedar translation) | ADR-0030 |
 | Technical | Clocks buy liveness, never safety; an interval whose failure preserves authority needs trusted time | ADR-0032 |
@@ -160,7 +166,8 @@ floor is genesis-provisional. No reviewer other than the author has read any of 
 | Technical | A component enters the trusted base only if its failure can only subtract, or its identity is issued | ADR-0045 |
 | Organisational | Genesis: one custodian ratifies unilaterally; bootstrap needs a drafted specification and an independent review of the whole corpus | ADR-0029, A2 |
 | Organisational | Archetype bootstrap needs no fewer than five humans | ToO §9 |
-| Convention | Records change only by typed History rows; checkpoints, derived documents and results files are dated and frozen; everything is cited by digest | `decisions/README.md`; G10 §5 |
+| Convention | Records change only by typed History rows; checkpoints, derived documents and results files are dated and frozen; everything is cited by digest | `decisions/README.md`; G11 §5 |
+| Convention | *Proved* is what the TLA+ Proof System discharged; *proved in Lean* is what the Lean kernel discharged, of the encoding, transcription or statement it names, and is never shortened | ADR-0046 §1; ADR-0053 §1 |
 | Convention | The narrative is revised after each checkpoint, against it | [`narrative/README.md`](README.md) |
 | Convention | A provisional record is cited as provisional, and nothing is built on it that could not be rebuilt | ADR-0029 A4; ToO §13, A17 |
 
@@ -185,6 +192,7 @@ flowchart TB
   subgraph agents [Principals, Byzantine by premise]
     thinker["Thinker seats<br/>a Persona in a confined guest"]
     observer["Observer seats and correlators<br/>deny-only"]
+    orch["Orchestrator seats (Proposed)<br/>choose among enabled edges"]
   end
   topak["TOPAK deployment<br/>Build(Contain) → Run(Contain)<br/>decides, orders and performs every effect"]
   verifier["Independent verifier<br/>rung 3 appraisal"]
@@ -200,6 +208,8 @@ flowchart TB
   topak -- "replay, forensic classes F1–F6" --> audit
   thinker -- "typed actions under a lease" --> topak
   observer -- "heartbeats, findings, Vote(deny)" --> topak
+  orch -- "Route(edge), checked again at apply" --> topak
+  topak -- "the track: typed facts and handles, never bytes" --> orch
   topak -- "round topics (read ACL W(p))" --> observer
   topak -- "evidence, nonce" --> verifier
   verifier -- "signed verdict" --> topak
@@ -210,7 +220,8 @@ flowchart TB
 
 | External interface | What crosses | Record | At the reference |
 |---|---|---|---|
-| Agent to mechanism | One action of nine variants (six Build, three Run), with epoch and lease | ADR-0022, ADR-0040 | MCP tools over stdio, proxied to the agent socket; inventory §4.1, §4.2 |
+| Agent to mechanism | One action of nine variants (six Build, three Run), with epoch and lease; a tenth, `Route(edge)`, for an `orchestrator` seat, Proposed | ADR-0022, ADR-0040; ADR-0040 A2 (pending) | MCP tools over stdio, proxied to the agent socket, `route` among them; inventory §4.1, §4.2 |
+| Build to Run: a promoted workflow | A promoted graph of seatings, with guards, delivery modes and, for a mesh, a budget; the mechanism grants each node's lease under the promotion's authority | ADR-0054, ADR-0055 (Proposed); ADR-0024 A4, ADR-0031 A4 (pending) | `WorkflowLoad` from a promoted single-file workspace; slots granted by `WorkflowGrant`; cells scripted by the tests |
 | Operator to mechanism | Six control actions, each signed with the operator's Persona key: `Regrant`, `Renew`, `AttestGates`, `EndRound`, `Revoke`, `FenceEpoch` | ADR-0050 (provisional), ADR-0031 A3 | Signed requests on the operator socket, decided by floor entries `C1` to `C9`. **The unsigned socket is kept as the BOOTSTRAP path**: a grant or a launch there makes a first seating, a profile is registered and an emergency seating prepared there, and every other unsigned request is refused when applied. Issuances carry the anchor's signatures |
 | Identity provider to mechanism | A sign-on assertion naming the operator's key and a fence | ADR-0050 §3 | Verified under an issued key; test providers |
 | Roster to mechanism | An activation: one person, one seating, one round, with the task | ADR-0052 (provisional) | Roster keys' signatures on the operator socket |
@@ -240,6 +251,9 @@ flowchart TB
 | Q4 | Every effect has an ordered, signed admit before it; denials are recorded; six forensic classes survive erasure | ADR-0015, ADR-0020, ADR-0028 | §4 |
 | Q5 | Resident floor and rules; consensus for grants and local for denials; Observer liveness coupled to admission | ADR-0012, ADR-0027, ADR-0039 | §3.1, §5.4, §7.4 |
 | Q6 | Degeneracy from a unique maximum; a trusted base declared row by row; theorems computed void, never weakened | ADR-0023, ADR-0045 | §7.9, §8 |
+| Q1, Q2 | A workflow as a promoted graph: the promotion grants every lease, the mechanism evaluates guards over settled attributes, an orchestrator only narrows, and a route is checked again at apply; a mesh under a budget (Proposed) | ADR-0054, ADR-0055 | §2.11 |
+| Q5 | Stalls must end: liveness stated in extensions of the frozen modules, checked by TLC; an emergency call that no Observer can block | ADR-0039; the liveness plan | §5.5 |
+| All | A second deductive method beside the first: re-encodings, transcriptions and models of the code proved in Lean, each with a premise read and not checked | ADR-0053 | §7.11 |
 | All | Semantic judgment only as an Observer finding, which may subtract and never add | ADR-0007, ADR-0038 | §5 |
 
 ---
@@ -265,6 +279,7 @@ flowchart LR
     rules["Rules and rules floor<br/>rosters, seats, keys, lists, R1–R9"]
     control["Operator control<br/>six signed actions, C1–C9"]
     tally["Promotion tally<br/>votes, recusal, coverage"]
+    wf["Workflow engine (Proposed)<br/>grants slots, guards, re-checks routes"]
     log["Consensus log<br/>orders admits and subtractions"]
     effects["Effect executor<br/>read, draft, tool, emit"]
   end
@@ -287,6 +302,8 @@ flowchart LR
   rules --> admit
   rules --> tally
   log --> tally
+  tally --> wf
+  wf --> log
   effects --> toolhost
   effects --> transport --> archive
   archive --- payload
@@ -303,19 +320,21 @@ Status words: **built** (runs in the reference's tests), **partial**, **simulate
 | Block | Obligation | Records | Specification | Reference | Status |
 |---|---|---|---|---|---|
 | Front door | Expose the alphabet and nothing else | ADR-0022, ADR-0040, ADR-0033 §2 | `Seats`, `RunSeats` | `topak-mcp`; `topak-node` agent socket | Built. The protocol, not the channel, unless launched |
-| Admit path | Fence, lease and alphabet checks; one frozen input; compose floor and bundle; check again at apply | ADR-0015, ADR-0030 §1, ADR-0033 §4 | `FloorComposition`, `Lease_A1`, `Mechanism` | `topak-core` (`lift`, `admit`, `state`); `topak-node` | Built |
+| Admit path | Fence, lease and alphabet checks; one frozen input; compose floor and bundle; check again at apply | ADR-0015, ADR-0030 §1, ADR-0033 §4 | `FloorComposition`, `Lease_A1`, `Mechanism`; in Lean, `compose` transcribed and proved a `Decide` step of `FloorComposition` | `topak-core` (`lift`, `admit`, `state`); `topak-node` | Built |
 | Lease | One composite credential, twelve fields; grant, renew, expire, revoke | ADR-0031, ADR-0032 | `Lease`, `Lease_A1` | `topak-core` (`lease`, `clock`) | Built |
-| Policy floor | Permit only what twenty-eight policies allow, over schema S; any error is a deny | ADR-0010, ADR-0012, ADR-0030, ADR-0041 A1 to A3 | `FloorComposition`, `FloorRouting`; the gates in `floor/` | `topak-floor` over the `emergency` stage in [`floor/proposed/`](../floor/README.md) | Built, of a gated floor that is **genesis-provisional** |
+| Policy floor | Permit only what the floor allows, over schema S; any error is a deny. In force: the `emergency` stage, twenty-eight policies | ADR-0010, ADR-0012, ADR-0030, ADR-0041 A1 to A3; A4 (pending) | `FloorComposition`, `FloorRouting`; the gates in `floor/`; `floor/lean/`, the gates proved in Lean under cedar-spec's model | `topak-floor` over the `workflow` stage in [`floor/proposed/`](../floor/README.md), thirty policies | Built, of a gated stage that is **not in force**; the floor in force is **genesis-provisional** |
 | Bundle engine | Refuse unless the lease's signed revision affirmatively allows; load only a well-formed allowlist | ADR-0030, ADR-0044, ADR-0049 §6 | `FloorComposition` | `topak-bundle` (`allowlist`); [`policies/`](../policies/) | Built; dev key, custody (1, 0) |
 | Listener | Label each item of Run's ingress by its source; deliver it clear or as a handle; deliver the tool list and write it as the round's opening record | ADR-0043 A1, ADR-0047, ADR-0048 | `Labels`, `ToolList` | `topak-core` (`labels`); `topak-node` (`mechanism`) | Built for results, consulted content and the list. No task at a first seating; handles resolve to scalars only |
 | Operator control | Decide six signed control actions against the floor; re-check at apply; require a live peer for an add and a sign-on for a deny with no lease | ADR-0050 (provisional), ADR-0031 A3 | `Operators` | `topak-core` (`control`); `topak-node` (`ops`); floor entries `C1` to `C9` | Built. **A first lease from a quorum is not**: the BOOTSTRAP path seats |
-| Emergency seating | Activate one lease for one person and one round on the roster's quorum; no successor, no renewal; reject X1's approval | ADR-0052 (provisional), ADR-0009 A1, ADR-0013 A1 | `Emergency`, `BreakGlass_A1`, `NonComposition_A1` | `topak-core` (`control`, `state`) | Built. A seating prepared by promotion is not; nothing counts the drill |
-| Rules and rules floor | Hold rosters, seat declarations, quorum, keys and the two lists the load checks read; reject an issuance outside R1 to R9 | ADR-0025 (A2, A3), ADR-0026 (A2, W1), ADR-0027 | `RulesFloorNV_rev5`, `Anchor` | `topak-core` (`rules`, `authentic`) | Built; dev rules, no genesis rules. `RulesFloorBase.tla` is behind ADR-0026 A2 |
+| Emergency seating | Activate one lease for one person and one round on the roster's quorum; no successor, no renewal; reject X1's approval | ADR-0052 (provisional), ADR-0009 A1, ADR-0013 A1 | `Emergency`, `Emergency_live` (its call never blocked by an Observer, proved), `BreakGlass_A1`, `NonComposition_A1` | `topak-core` (`control`, `state`) | Built. A seating prepared by promotion is not; nothing counts the drill |
+| Rules and rules floor | Hold rosters, seat declarations, quorum, keys and the two lists the load checks read; reject an issuance outside R1 to R9 | ADR-0025 (A2, A3), ADR-0026 (A2, W1), ADR-0027 | `RulesFloorNV_rev5`, `Anchor`. ADR-0053's model of `apply` found that an issuance may change a seat's kind, which `validate_issuance` does not refuse (its finding 8) | `topak-core` (`rules`, `authentic`) | Built; dev rules, no genesis rules. `RulesFloorBase.tla` is behind ADR-0026 A2 |
 | Promotion tally | Count votes bound to (artifact, evidence, rules epoch); recuse the author; require coverage | ADR-0024, ADR-0039 §3 | `RulesFloorNV_rev5`, `Observers`, `Coupling`; `Promotion` unwritten | `topak-core` (`promotion`) | Partial. No pipeline; gate evidence is an operator's assertion |
+| Workflow engine | Load a workflow only from a promoted artifact, and only if well formed; grant each slot under the promotion's authority, in log order; lift a node's attributes once; evaluate guards over settled attributes; check a route at decide and at apply; for a mesh, activations, causal histories and a budget that charges the orchestrator | ADR-0054, ADR-0055 (Proposed); ADR-0024 A4, ADR-0031 A4, ADR-0042 A3, ADR-0047 A1 (pending); ADR-0033 A16, A17 (pending) | `Workflow`, `Mesh` (checked, not proved) | `topak-core` (`workflow`, `state`); `topak-node` (`mechanism`) | Built for each record's listed behaviours at the replicated state; one workflow end to end. Lineage a declared tag; a clear input only from the replica that served its predecessor; handle inputs unresolvable; rung 0 only; no `all` join in a mesh; no `T_wf` or step bound |
+| Orchestrator | Choose one enabled edge at a decision point with `Route`; coupled; given handles and never bytes; hold nothing between rounds | ADR-0054 §3; ADR-0037 A5, ADR-0039 A3, ADR-0040 A2, ADR-0041 A4 (pending) | `Workflow`, `Mesh` | `topak-core` (`workflow`); `topak-mcp` `route`; floor `R8`, `R9`, `R3` | Built; driven by the tests' scripted cells |
 | Consensus log | Order every admit and every subtraction that changes replicated state | ADR-0033 §3, §4 | `Voting` as a ghost; `Paxos` unwritten | `topak-paxos`; `topak-node` (`driver`, `wal`, `net`) | Built; replicas unauthenticated |
 | Effect executor | Perform an effect only after its admit commits; record every `Actuate`, with its label fields and seat kind | ADR-0015, ADR-0042 (A1, A2) | `RunCoupling` | `topak-node` (`mechanism`) | Built |
-| Observer coupling | Keep `heard`, `mark`, `live(o)`; refuse a Thinker's effect without a live cell Observer; an emergency seat is not coupled | ADR-0038, ADR-0039 (A2) | `Observers`, `Coupling`, `RunCoupling` | `topak-core` (`observer`); floor entry `R3-observer-live` | Built. No detector behind the seat; `W(p)` not enforced |
-| Correlator | Compute five named correlations as folds over facts | ADR-0038, ADR-0051 (Proposed) | `Correlator` | The seat only | Absent as a detector |
+| Observer coupling | Keep `heard`, `mark`, `live(o)`; refuse a Thinker's effect without a live cell Observer; an emergency seat is not coupled | ADR-0038, ADR-0039 (A2) | `Observers`, `Coupling`, `RunCoupling`; `Coupling_live` (leads-to, checked only); in Lean, a model of `apply` keeping `Coupling`'s properties | `topak-core` (`observer`); floor entry `R3-observer-live` | Built. No detector behind the seat; `W(p)` not enforced |
+| Correlator | Compute five named correlations as folds over facts; the workflow records owe it two more | ADR-0038, ADR-0051 (Proposed) | `Correlator` | The seat only | Absent as a detector |
 | Launcher | Start a guest from a promoted profile, appraise, grant, bridge | ADR-0034 (A3), ADR-0036 (Proposed), ADR-0033 A7 | `Confinement`, `Confinement_A1` | `topak-contain`; `topak-node` (`mechanism::launch`) | Rung 1 built; rung 3 simulated; rung 2 a seam |
 | Tool host | Give a tool its workspace or its one declared channel, and nothing else; resolve a handle among the inputs | ADR-0034 P4, A2; ADR-0047 §3; ADR-0049 §5 | `RunConfinement` | `topak-contain` (`wasmtool`); `topak-mcp` (`toolhost`) | Wasm built (provisional ABI), target read from the entry; native tools unchecked |
 | Transport | One topic per principal per round, opened by the mechanism's record and sealed; denials unordered; an `after` companion | ADR-0003, ADR-0005, ADR-0020, ADR-0042 A1 | none | `topak-transport` | Built |
@@ -350,6 +369,7 @@ flowchart TB
     lease["lease, clock"]
     labels["labels<br/>label facts, clearSet, handles"]
     controlc["control<br/>control actions, seatings, activation"]
+    wfc["workflow<br/>load, slots, attributes, guards, routes"]
     rulesc["rules, authentic<br/>rules floor, signatures"]
     promo["promotion<br/>tally"]
     obs["observer<br/>heard, mark, live"]
@@ -361,7 +381,7 @@ flowchart TB
   floorc["topak-floor<br/>Cedar, floor compiled in"]
   bundlec["topak-bundle<br/>OPA sidecar, WASM fallback, allowlist load checks"]
   transportc["topak-transport<br/>Kafka or in memory"]
-  mcp["topak-mcp<br/>server, toolhost"]
+  mcp["topak-mcp<br/>server, toolhost, route"]
   contain["topak-contain<br/>backend, guest, appraise, bridge, sim, wasmtool"]
 
   mcp --> api --> mech
@@ -376,6 +396,7 @@ flowchart TB
   state --> lease
   state --> labels
   state --> controlc
+  state --> wfc
   state --> rulesc
   state --> promo
   state --> obs
@@ -388,35 +409,39 @@ flowchart TB
 
 | Crate | Does | I/O | Tests that restate the specification |
 |---|---|---|---|
-| `topak-core` | Types, lease, rules floor, tally, lift, composition, labels, control, replicated state | none | `mutations.rs`, `confinement.rs`, `operators.rs`, `emergency.rs`, `drift.rs` |
+| `topak-core` | Types, lease, rules floor, tally, lift, composition, labels, control, workflows, replicated state | none | `mutations.rs`, `confinement.rs`, `operators.rs`, `emergency.rs`, `workflow.rs`, `drift.rs` |
 | `topak-paxos` | Sans-IO crash-fault Multi-Paxos with a `Voting` ghost | none | `sim.rs` |
-| `topak-floor` | Cedar engine with the gated `emergency` stage and its schema compiled in, pinned by digest | none | `floor.rs` (the stage's 107 cases replayed) |
+| `topak-floor` | Cedar engine with the gated `workflow` stage and its schema compiled in, pinned by digest | none | `floor.rs` (the stage's 123 cases replayed), `workflow.rs` |
 | `topak-bundle` | OPA sidecar client; local WASM fallback bound to the lease's revision; the allowlist entry and its load checks | HTTP | `fallback.rs`, `allowlist.rs` |
 | `topak-transport` | Round topics | Kafka | none |
-| `topak-mcp` | The alphabet as MCP tools; the downstream native tool host | stdio | none |
+| `topak-mcp` | The alphabet as MCP tools, `route` among them; the downstream native tool host | stdio | none |
 | `topak-contain` | Launcher backends, guest channel, appraisers, bridge; the Wasm Run tool host | processes, docker, the declared target | `launch.rs`, `wasmtool.rs` |
 | `topak-node` | Replica: Paxos driver, WAL, admit pipeline, effects, sockets, CLI | all | `e2e.rs`, `contain.rs` |
 
-The replicated log has fourteen entry kinds (`Grant`, `Renew`, `Admit`, `EndRound`, `Revoke`, `EpochIncrement`,
-`Contested`, `ProfileRegister`, `Issue`, `GatesPassed`, `Control`, `EmergencySeating`, `Activate`,
-`BreakGlassApprove`); the last is X1's and is rejected at apply. State is rebuilt by replaying the log, and there
-are no snapshots. 133 tests across thirteen binaries. Diagram H4 and inventory §5 draw the components as they stood
-on 2026.10.03, before the rebuild.
+The replicated log has sixteen entry kinds (`Grant`, `Renew`, `Admit`, `EndRound`, `Revoke`, `EpochIncrement`,
+`Contested`, `ProfileRegister`, `Issue`, `GatesPassed`, `Control`, `EmergencySeating`, `Activate`, `WorkflowLoad`,
+`WorkflowGrant`, `BreakGlassApprove`); the last is X1's and is rejected at apply. State is rebuilt by replaying the
+log, and there are no snapshots. 155 tests across fifteen binaries. Beside the crates, `mechanism/lean/` holds the
+Lean transcriptions and models of the code (ADR-0053), stale since the workflow build. Diagram H4 draws the
+components as rebuilt on 2026.10.05, before the workflow build, and inventory §5 as they stood on 2026.10.03.
 
 ### 5.4 What is not a block yet
 
 The Observer as a detector, the correlator's folds (ADR-0051, Proposed), the topic read ACL, the archive, erasure,
 masking, Persona attestation, bootstrap, a promotion pipeline, a seating made by a promotion or an issuance, replica
-authentication, and a refinement from the specification to the code. Operator authentication left this list on
-2026.10.05, except for a first seating. Each is named in ToO §15 ("What it does not show"),
-[`GAPS-AND-ASSUMPTIONS.md`](../mechanism/GAPS-AND-ASSUMPTIONS.md) §3 or the
+authentication, and a refinement from the specification to the code; for workflows, a workflow's time and step
+bounds, pools and parity seatings, joins scoped to a fan-out, the gate's evidence for a mesh's vote, and a read path
+for a clear input. Operator authentication left this list on 2026.10.05, except for a first seating. Each is named in
+ToO §15 ("What it does not show"), [`GAPS-AND-ASSUMPTIONS.md`](../mechanism/GAPS-AND-ASSUMPTIONS.md) §3 or the
 [design-gap assessment](../derived/topak-design-gap-assessment-2026.10.03.md).
 
 ---
 
 ## 6. Runtime view
 
-Nine scenarios. Each says which entity it shows. The generated diagrams predate the 2026.10.05 rebuild. Diagrams D1, C5, B5, E2 and D4 draw the same paths in full.
+Ten scenarios. Each says which entity it shows. The generated family was redrawn on 2026.10.05 and amended since for
+the Lean route and Batch 37; it draws no workflow. Diagrams D1, C5, B5, E2, D5, C8 and C6 draw most of the first
+nine paths in full.
 
 ### 6.1 An action is admitted, or denied (reference)
 
@@ -521,7 +546,8 @@ sequenceDiagram
 - A timeout never grants. A missing independent veto seat or missing coverage stalls (ADR-0024 A2).
 - At the reference "gates passed" is an operator's signed `AttestGates`, attributed and still an assertion; the veto
   seat's independence is unchecked (G18); there is no pipeline that signs or deploys what was promoted; and **a
-  promotion does not seat**, which ADR-0024 A3 (provisional) says it should.
+  promotion does not seat**, which ADR-0024 A3 (provisional) says it should. A workflow's promotion is the one
+  exception there: the mechanism grants each of its slots under the tally's authority (§6.10; Proposed).
 
 ### 6.4 A Run effect, coupled to a live Observer (reference)
 
@@ -590,7 +616,8 @@ five conditions:
 
 ### 6.6 Break-glass, as an emergency seating (reference; ADR-0052, provisional)
 
-Break-glass is no longer a floor exception (ADR-0052; ADR-0013 A1; ToO §3.3). Diagram D4 draws the retired X1.
+Break-glass is no longer a floor exception (ADR-0052; ADR-0013 A1; ToO §3.3). Diagram D5 draws the seating, and D4
+the retired X1 against what replaced it.
 
 ```mermaid
 sequenceDiagram
@@ -614,10 +641,11 @@ sequenceDiagram
 ```
 
 - The envelope is by default the domain's: every Run allowlist entry of every revision a seating in force names,
-  computed at activation. An operator's seating names a revision too, and feeds it (G10 item 92).
+  computed at activation. An operator's seating names a revision too, and feeds it (G11 item 92).
 - The time box is the round, on the clock a lease already uses. R8 was withdrawn (ADR-0026 W1).
 - The seat is not coupled to an Observer (ADR-0039 A2); the domain's operators read its topic, and any can stop it.
 - X1's approval, `BreakGlassApprove`, is still a log entry kind and is rejected at apply.
+- No Observer can block the call: `Emergency_live`'s two invariants over `ENABLED` are proved (ToO §5.5).
 - **Provisional.** If ADR-0052 is redesigned, break-glass has no settled form until the redesign is ratified.
 
 ### 6.7 Erasure, issuance and floor change (archetype; not built)
@@ -658,7 +686,7 @@ sequenceDiagram
 
 - Three requests add (`Regrant`, `Renew`, `AttestGates`) and three deny (`EndRound`, `Revoke`, `FenceEpoch`).
 - **What the record says and the reference does not show**: a first lease from a completed tally or an issuance.
-  Whoever reaches the socket can seat. That is the debt the record's provisional status carries (G10 item 88).
+  Whoever reaches the socket can seat. That is the debt the record's provisional status carries (G11 item 88).
 - With no operator holding a live lease in a domain, nothing in it can be regranted, and it stalls.
 
 ### 6.9 Labelled ingress and a handle (reference)
@@ -694,6 +722,46 @@ sequenceDiagram
 - Delivering more in the clear buys a narrower round: the forbids are monotone in `clearSet`.
 - A bundle whose allowlist fails a load check does not load (ADR-0049 §6).
 - The Observer reads everything: the record holds inputs and result in full, and the envelope the labels.
+
+### 6.10 A workflow runs (reference; ADR-0054 and ADR-0055, Proposed)
+
+A DAG with one computed edge and one decision point, as the reference's end-to-end test runs it with scripted cells
+(ADR-0033 A16; ToO §2.11).
+
+```mermaid
+sequenceDiagram
+  participant P as Promotion tally
+  participant M as Mechanism (workflow engine)
+  participant W as Worker cell (node u)
+  participant Ob as u's cell Observer
+  participant Or as Orchestrator cell
+  participant L as Consensus log
+  P->>M: WorkflowLoad: the promoted text, refused unless well formed
+  M->>L: WorkflowGrant: u's lease, under the promotion's authority
+  W->>M: Report with outcome: the round ends on it
+  M->>M: lift u's attributes once: end, actuates, label, outcome, output
+  Ob->>M: Heartbeat to the seal: u is covered
+  M->>M: computed edges out of u: guard over settled attributes, routing rule
+  M->>L: WorkflowGrant: the orchestrator's round for the decision point
+  M-->>Or: enabled chosen edges, attributes with labels, handles; never bytes
+  Or->>M: Route(edge), with its basis
+  M->>M: decide: lease, event not consumed, edge enabled
+  M->>L: Admit(Route)
+  L->>M: apply: the same checks again
+  alt still enabled
+    M->>L: the event consumed; the target's slot granted, u's output as its input
+  else a finding, revocation or fence landed between
+    M-->>Or: void: ordered, recorded, no effect; the event stays open
+  end
+```
+
+- No principal grants another. The orchestrator chooses among edges whose guards already hold, so it can stall a
+  workflow and cannot misroute it; a lapsed one takes no default edge.
+- A clear input joins the receiver's `clearSet`, so `R5` to `R7` follow content across cells.
+- A mesh adds a budget charged for every lease, the orchestrator's included, and guards over an activation's causal
+  history. Running out fails the workflow.
+- At the reference the cells are the tests', lineage is a declared tag, and a clear input arrives only from the
+  replica that served its predecessor (`mechanism/` I49).
 
 ---
 
@@ -738,7 +806,7 @@ the in-process WASM bundle as the default. Diagram H4 is the full drawing.
 ### 7.2 The archetype against the reference, axis by axis
 
 A deployment is a tuple of per-axis values, each below the archetype by a declared degeneracy (ADR-0023; diagram
-G2). **No deployment declaration has been written**, for the reference or anything else (G10 §8); this table
+G2). **No deployment declaration has been written**, for the reference or anything else (G11 §8); this table
 is a reading of ToO §8.2 and §15, not a declaration.
 
 | Axis | Archetype | Reference today | Declared degeneracy that names it |
@@ -747,7 +815,7 @@ is a reading of ToO §8.2 and §15, not a declaration.
 | Persona provenance | In-house, two independent lineages | No attested Persona | D-0035-1 (Proposed) |
 | Anchor custody | Unanimity, n ≥ 3: (n, 0) | Single custodian: (1, 0) | D-0025-1, D-0025-2 |
 | Approver fault tolerance | `quorum = "all"`, at least two counted seats | Dev rules | D-0024-1, D-0024-2 |
-| Floor verification | Proven floor on a verified evaluator, routing checked | The `emergency` stage, gated, genesis-provisional; checker in place since 2026.10.01 | D-0030-1, D-0030-2 |
+| Floor verification | Proven floor on a verified evaluator, routing checked | Links the `workflow` stage, gated and not in force; the floor in force is the `emergency` stage, genesis-provisional; checker in place since 2026.10.01; both stated in Lean | D-0030-1, D-0030-2 |
 | Observer scoping | One per cell plus a correlator | Seats exist; no detector | D-0037-1, D-0038-1, D-0038-2 |
 | Observer coupling | Coupled in Run; gate coupled in Build | Coupled | D-0039-1 |
 | Emission retention | Raw emission retained | Not retained | D-0037-2 |
@@ -757,7 +825,9 @@ is a reading of ToO §8.2 and §15, not a declaration.
 | Tool list | Delivered and recorded at the start of a round | Built | D-0048-1 |
 | Operator path | Signed requests; first leases from a quorum; three operators a domain, independent providers | Signed requests; first seating by the BOOTSTRAP path; test providers | D-0050-1 to D-0050-3 (provisional) |
 | Emergency path | An emergency seating, prepared by promotion | Built; prepared by the BOOTSTRAP path | D-0052-1 (provisional) |
-| Trusted base | Thirty-six declared rows | Annex B, behind the code | D-0045-1 |
+| Workflow lineage alternation | Enforced at the tally on every clear edge | A declared tag compared at load | D-0054-1 (Proposed; every deployment today) |
+| Coverage at a workflow's edge | Required | Required | D-0054-2 (Proposed) |
+| Trusted base | Thirty-seven declared rows | Annex B, behind the code | D-0045-1 |
 
 `spec/inventory.py` computes, from a trusted-base declaration, which theorems a deployment keeps. That computation
 is the deployment view's real content; the table above is only its input, read informally.
@@ -772,20 +842,23 @@ Each is argued in the ToO and decided in the records. Nothing is restated.
 |---|---|---|---|
 | The membrane: `Contain`, `Contained` and `Mediated` | §2.1 to §2.3 | ADR-0002, ADR-0007, ADR-0034 | A2 |
 | Typed alphabets, bounded by seat kind | §2.4, §2.9 | ADR-0022, ADR-0037, ADR-0040 | C2 |
-| Labels, handles, the tool list, the allowlist entry | §2.10 | ADR-0047, ADR-0048, ADR-0049 | none yet |
+| Labels, handles, the tool list, the allowlist entry | §2.10 | ADR-0047, ADR-0048, ADR-0049 | C6, C7 |
+| Workflows and meshes: a promoted graph of cells | §2.11 | ADR-0054, ADR-0055 (Proposed) | none yet |
 | The lease as the credential | §2.5 | ADR-0031 | C3 |
 | Confinement rungs and profiles | §2.6, §2.7 | ADR-0034, ADR-0036 | C4, C5 |
 | Principals, seats and cells | §2.8 | ADR-0037 | C1 |
 | Composition of floor and bundle | §3.1 | ADR-0030, ADR-0044 | D2 |
-| Floor change routing; the one exception; break-glass as a seating | §3.2, §3.3 | ADR-0013, ADR-0030, ADR-0052 | B3; D4 draws X1 |
+| Floor change routing; the floor stages; the one exception; break-glass as a seating | §3.1 to §3.3 | ADR-0013, ADR-0030, ADR-0052 | B3, B8, D5; D4 draws X1 retired |
 | Effects and authority changes are enumerated | §4.1 | ADR-0015, ADR-0033 §4 | B1, D1 |
 | Topics, payloads, erasure, the forensic floor | §4.2 to §4.4 | ADR-0003 to ADR-0006, ADR-0020, ADR-0028 | D3, D4 |
-| Observers: any-of, deny-only, coupled by progress | §5 | ADR-0021, ADR-0038, ADR-0039 | E1, E2 |
+| Observers: any-of, deny-only, coupled by progress; the correlator's folds | §5.1 to §5.4 | ADR-0021, ADR-0038, ADR-0039, ADR-0051 | E1, E2, E3 |
+| Stalls that end: liveness | §5.5 | ADR-0039; the liveness plan | none yet |
 | The Persona and lineage | §6 | ADR-0016 to ADR-0020, ADR-0035 | F1 |
 | Promotion, the anchor, the rules floor | §7.1 to §7.6 | ADR-0024 to ADR-0027 | B5, B6, B4 |
-| Monotonicity, layer by layer | §7.8 | (sixteen layers) | A4 |
-| The trusted base | §7.9 | ADR-0045, ADR-0046 | G1 |
-| The operator as a principal | §7.10 | ADR-0050 | none yet |
+| Monotonicity, layer by layer | §7.8 | (eighteen layers) | A4 |
+| The trusted base; the prover's two unsound cases | §7.9 | ADR-0045, ADR-0046 | G1, H6 |
+| The operator as a principal | §7.10 | ADR-0050 | C8 |
+| A second method of proof | §7.11 | ADR-0053 | H7, H3 |
 | Degeneracy | §8 | ADR-0023 | G2 |
 | The clock model and the timing budget | §10 | ADR-0032 | E2 |
 | Genesis and bootstrap; provisional and genesis-provisional | §9 | ADR-0029 (A3, A4), ADR-0030 A3 | B7, H1 |
@@ -795,9 +868,10 @@ Each is argued in the ToO and decided in the records. Nothing is restated.
 ## 9. Architecture decisions
 
 The decisions are the records, indexed in [`decisions/README.md`](../decisions/README.md) and drawn in diagram H2.
-At G10: forty-six Accepted (genesis), two of them in part (ADR-0018, and ADR-0022 without its §6); twenty-eight
+At G11: forty-seven Accepted (genesis), two of them in part (ADR-0018, and ADR-0022 without its §6); twenty-nine
 carrying a confirmation-required marker, two of those provisional (ADR-0050, ADR-0052); one superseded (ADR-0008);
-three Proposed (ADR-0035, ADR-0036, ADR-0051); no amendment pending. ADR-0026 A1 was withdrawn.
+five Proposed (ADR-0035, ADR-0036, ADR-0051, ADR-0054, ADR-0055); twelve amendments pending, all on Proposed records.
+ADR-0026 A1 was withdrawn.
 
 | Area | Records |
 |---|---|
@@ -809,7 +883,8 @@ three Proposed (ADR-0035, ADR-0036, ADR-0051); no amendment pending. ADR-0026 A1
 | Detection | 0021, 0038, 0039, 0051 (0008 superseded) |
 | Model | 0016 to 0019, 0035 |
 | Authority | 0009, 0024 to 0027, 0050, 0052 |
-| Variation and trust | 0023, 0045, 0046 |
+| Workflows | 0054, 0055 (Proposed) |
+| Variation and trust | 0023, 0045, 0046, 0053 |
 | Process and reference | 0029, 0033 |
 
 ---
@@ -832,7 +907,7 @@ goal under a characteristic is the drafter's.
 | *Does it keep doing the correct thing as conditions change?* | | | |
 | Reliable | The model is pinned as a Persona, so a silent substitution is an identity mismatch; bundles and rules are versioned and fenced | Q2, Q3 | §10.2 rows 1, 2, 5; Persona attestation absent |
 | Robust | Every guarantee is stated for an agent that does anything its alphabet allows; stale bundles are monotone-safe | Q1, Q2 | §10.2 rows 2, 3 |
-| Resilient | Fail-closed: resident floor and rules, local denials, a stalled Thinker in place of an unwatched one; the cost is availability | Q5 | §10.2 rows 1, 8; ToO §5.4 |
+| Resilient | Fail-closed: resident floor and rules, local denials, a stalled Thinker in place of an unwatched one; the cost is availability, and that the coupling stall ends is checked, not proved | Q5 | §10.2 rows 1, 8, 15; ToO §5.4, §5.5 |
 | *Does it avoid unintentional or deliberate harm?* | | | |
 | Safe | Effects are exactly the admitted actions, if effect exclusivity holds; an effect irreversible on emission must not be in the alphabet | Q1 | §10.2 rows 3, 4, 6; **void at the reference** for confinement |
 | Secure | Byzantine agents at every position; authority only by promotion or issuance; two floors bound both; privileged paths do not compose; a successful injection is bounded by what the round has read | Q1, Q3 | §10.2 rows 2, 5, 6, 7, 12, 13 |
@@ -850,10 +925,12 @@ One row per group of guarantees. The full table, one row per property with its p
 [`spec/theorem-premise-binding.md`](../spec/theorem-premise-binding.md), and it governs; the test names are in
 `GAPS-AND-ASSUMPTIONS.md` §6. *Proved* means the invariant is proved of the TLA+ module by TLAPS under named
 hypotheses; it is not a claim about the running code. Every row also rests on the shared premises in §10.3. **Rows
-12 to 14 are not in the binding table yet** (G10 item 90) and are read from the records and the modules' results
-files.
+12 to 16 are not in the binding table yet** (G11 item 90) and are read from the records and the modules' results
+files. **Proved in Lean, beside**: the modules of rows 1 to 5, 7 and 14, and of row 8 in part, have their theorems
+proved in Lean too, of re-encodings; row 2's composition and the seat rules of row 7 are also proved in Lean of a
+transcription or a model of the code, replayed against the recorded traces (ADR-0053; ToO §7.11).
 
-| # | Guarantee | Record | Module (all proved) | Floor or mechanism | Reference tests | At the reference |
+| # | Guarantee | Record | Module (proved unless marked) | Floor or mechanism | Reference tests | At the reference |
 |---|---|---|---|---|---|---|
 | 1 | **Lease**: renewal only narrows; no action under a fenced epoch; rung 0 is never `Contained`; revoked stays stopped | ADR-0031, A1 | `Lease_A1` | Mechanism checks, at decide and apply | `mutations.rs` | Holds |
 | 2 | **Composition**: an admit implies a floor permit; a floor error is a deny; a bundle refusal is honored; a bundle cannot write a floor input | ADR-0030 §1, §4 | `FloorComposition` | The linked evaluator and schema S | `floor.rs`, `fallback.rs`, e2e | Holds, of a genesis-provisional floor |
@@ -866,9 +943,11 @@ files.
 | 9 | **Record**: every effect has an ordered, authorizing admit; denials are recorded; an `Actuate` leaves a record | ADR-0015, ADR-0020, ADR-0042 §3 | **None.** Not modeled in TLA+ | The admit path and executor | e2e | Tested, not proved |
 | 10 | **Run channel fidelity**: every effect under a contained Run lease reaches its tool's declared target | ADR-0034 A2, ADR-0049 §5 | `RunConfinement` | The Wasm tool host, the target read from the entry | `wasmtool.rs`, `contain.rs` | Holds for Wasm tools; **void** for `Contained`, which no real principal is |
 | 11 | **Consensus**: one value per ballot; the chosen value is unique | ADR-0033 §2 | **None.** `Voting` as a ghost in simulation; `Paxos` unwritten | `topak-paxos` | `sim.rs` | Holds of the simulation |
-| 12 | **Labels**: tainted bytes do not steer or reach an outward destination, and restricted bytes do not leave, by the three paths the forbids name; a suppressed item's bytes do not enter the guest; the tool list is fixed for the round | ADR-0047, ADR-0048, ADR-0049 | `Labels`, `ToolList` | Floor forbids `R5` to `R7`; the load checks; delivery | `e2e.rs`, `allowlist.rs`, `floor.rs` | Holds modulo the declarations (A15) and what the deciding replica computes (G10 item 93) |
+| 12 | **Labels**: tainted bytes do not steer or reach an outward destination, and restricted bytes do not leave, by the three paths the forbids name; a suppressed item's bytes do not enter the guest; the tool list is fixed for the round | ADR-0047, ADR-0048, ADR-0049 | `Labels`, `ToolList` | Floor forbids `R5` to `R7`; the load checks; delivery | `e2e.rs`, `allowlist.rs`, `floor.rs` | Holds modulo the declarations (A15) and what the deciding replica computes (G11 item 93) |
 | 13 | **Operators**: every lease on the log comes from a quorum or from an operator inside a quorum's grant; an add needs a live peer; a deny by key alone is refused | ADR-0050 (provisional) | `Operators` | Floor entries `C1` to `C9`; facts re-checked at apply | `operators.rs`, e2e | **The first clause is not shown**: the BOOTSTRAP path seats. The rest holds |
-| 14 | **Emergency seating**: one person, one round, no successor; the activation is recorded and outlives its round | ADR-0052 (provisional) | `Emergency`, `NonComposition_A1` | The activation path; the allowlist permit | `emergency.rs` | Holds; seating prepared by the BOOTSTRAP path |
+| 14 | **Emergency seating**: one person, one round, no successor; the activation is recorded and outlives its round; no Observer can block its call | ADR-0052 (provisional), ADR-0039 A2 | `Emergency`, `Emergency_live`, `NonComposition_A1` | The activation path; the allowlist permit | `emergency.rs` | Holds; seating prepared by the BOOTSTRAP path |
+| 15 | **Liveness**: a Thinker refused for its backlog is admitted again, and a sealed round is followed by the next round's grant, under fairness (A12, A18) | ADR-0039 §2 | `Coupling_live`: **checked, not proved**; its proof covers safety only | Coupling, as row 8 | none as liveness | Not shown at the reference |
+| 16 | **Workflows**: an applied route's edge was enabled; one route per decision point; a finding precedes no route; tainted attributes never route outward; every grant under the promotion; completion only by a sink; for a mesh, the budget bounds every lease | ADR-0054, ADR-0055 (Proposed) | `Workflow`, `Mesh`: **checked, not proved** | Floor `R8`, `R9`, `R3`; the re-check at apply | `topak-core` `workflow.rs` (18), `topak-floor` `workflow.rs` (3), e2e | Seen at the replicated state; one workflow end to end; lineage declared (D-0054-1) |
 
 **What a quality scenario would add, and does not yet.** arc42 asks for scenarios with a stimulus, a response and a
 measure. Every measure here is missing: `W`, `L`, `D`, `T_irrev`, `T_obs`, `K`, `R`, `T_persona` and the lineage
@@ -880,8 +959,10 @@ not how fast or how often.
 Five trusted-base rows are premises of every guarantee (the binding table's BASE): the replicas apply the log as
 crash-fault machines (T-0045-1); the records are the ones ratified (T-0045-11); **the running code refines the
 checked specification (T-0045-28), for which no refinement exists**; the model checker or the prover (T-0045-29,
-T-0045-31, certified for nineteen of twenty-two proof modules); and the build toolchain (T-0045-30). The thirty-six
-rows are ADR-0045 Annex A; diagram G1 draws thirty-one. What
+T-0045-31, certified for twenty-one of twenty-four proof modules, and known to be unsound in two ways that a rule and
+a scan keep proofs from); and the build toolchain (T-0045-30). A result proved in Lean rests on T-0045-37, the Lean
+toolchain, in place of the prover, and on its encoding's faithfulness, which is read and not checked. The
+thirty-seven rows are ADR-0045 Annex A; diagram G1 draws thirty-six, with T-0045-37 apart as proposed. What
 stands when each fails is the [residual-risk statement](../derived/topak-residual-risk-statement-2026.10.03.md) §2.
 
 ---
@@ -891,25 +972,29 @@ stands when each fails is the [residual-risk statement](../derived/topak-residua
 | What | Where it is kept |
 |---|---|
 | The residual risks, in order: anchor capture first, then assumed effect exclusivity, collusion, the operator at rung 1, no independent review, the gap between what runs and what is proved | [Residual-risk statement](../derived/topak-residual-risk-statement-2026.10.03.md) §1 |
-| The eighteen places the argument is thin | ToO §12 |
-| The genesis debt ledger and the open list | G10 §4, §7 |
-| What provisional carries: two records in force without their central behaviour built, and the exits | G10 §1.2, items 88 and 92 |
-| Whether a bootstrap reviewer is engaged (none), and the last review pass (none) | G10 §4; `checkpoints/README.md` |
+| The twenty-one places the argument is thin | ToO §12 |
+| The genesis debt ledger and the open list | G11 §4, §7 |
+| What provisional carries: two records in force without their central behaviour built, and the exits | G11 §1.2, items 88 and 92 |
+| The prover's two unsound cases, and the check for the first that is owed | G11 item 104; ADR-0046 A2 |
+| What the workflow records owe before ratification, and a reference that already follows them | G11 items 101 and 102 |
+| Liveness checked and not proved | G11 item 105; ToO §5.5 |
+| Whether a bootstrap reviewer is engaged (none), and the last review pass (none) | G11 §4; `checkpoints/README.md` |
 | Design gaps, apart from build gaps | [Design-gap assessment](../derived/topak-design-gap-assessment-2026.10.03.md) |
-| The reference's forty-six assumptions and eighteen gaps | [`GAPS-AND-ASSUMPTIONS.md`](../mechanism/GAPS-AND-ASSUMPTIONS.md) |
+| The reference's forty-seven assumptions and eighteen gaps | [`GAPS-AND-ASSUMPTIONS.md`](../mechanism/GAPS-AND-ASSUMPTIONS.md) |
 | Where the layers disagree | Format and schema inventory §11 |
 | Gaps against the NIST Playbook | [Playbook delta inventory](../derived/topak-playbook-delta-inventory-2026.10.03.md) |
 | Findings of the current review | [Critical review 2026.10.02](../derived/topak-critical-review-2026.10.02.md) |
 
 The derived documents in this table are dated 2026.10.02 and 2026.10.03 and are frozen: they describe the corpus
-before Batches 27 to 35, and where they disagree with G10, G10 wins.
+before Batches 27 to 37, and where they disagree with G11, G11 wins.
 
 **Risks this document adds.**
 
 - **A fourth authority.** A document that restates the records will drift from them. The mitigation is §0.1 and
   keeping new prose to §5, §6 and §10; nothing checks it.
 - **Unverified component detail.** §5.3 was not written from a code review. Revision 2's changes to it were made
-  by the hand that rebuilt the reference on 2026.10.05, which is a different weakness, not a review.
+  by the hand that rebuilt the reference on 2026.10.05, and revision 3's by the hand that built the workflow
+  engine, which is a different weakness, not a review.
 - **Unchecked diagrams.** The Mermaid sketches are outside the generated family and its overlap and table checks.
 - **No assurance case.** The session that proposed this document rated a structured assurance case (claim, argument,
   evidence) as co-equal with it for what the Playbook and TACIP ask. §10.2 is the evidence base one would be built
@@ -935,6 +1020,15 @@ The vocabulary is [`glossary.md`](glossary.md). Terms this document adds, none o
 
 ## Appendix A. Changes
 
+**Revision 3 (2026.10.09).** Against G11 and Theory of Operation revision 15. Orchestrator seats and a promoted
+workflow in the context view (§3); three strategy rows, for workflows, liveness and the second method (§4); a
+workflow engine in the container view and two blocks, the workflow engine and the orchestrator, with Lean and
+liveness evidence named where it exists (§5.1, §5.2); `workflow` and `route` in the component view, sixteen log entry
+kinds and 155 tests (§5.3); §6.10, a workflow runs; two axes (§7.2); diagrams named where the family now draws a
+concept, and three concepts added (§8); rows 15 and 16 of the traceability table, and the Lean route beside the
+rows (§10.2, §10.3); CR-4 and CR-5 brought to the tree, CR-11 and CR-12 added, and the three rules that do not hold
+at G11 named (§0.5); counts and statuses throughout.
+
 **Revision 2 (2026.10.05).** Against G10 and Theory of Operation revision 14. The operator as a principal, the
 identity provider, the break-glass roster and the emergency seat in the context view (§3); four blocks added, the
 Listener, operator control, emergency seating and the correlator (§5.2); `labels` and `control` in the component
@@ -947,8 +1041,8 @@ statuses throughout.
 
 ## Appendix B. Open for the custodian
 
-1. Whether this document joins the living layer, and so is tagged with the ToO, or stays a draft. G10's manifest
-   measures it; nothing else has been decided.
+1. Whether this document joins the living layer, and so is tagged with the ToO, or stays a draft. G10's and G11's
+   manifests measure it; nothing else has been decided.
 2. Whether it takes a line in the precedence order (§0.1), which today names only the checkpoint and the narrative.
 3. Whether §5 and §6 should instead be generated diagrams in the `diagrams/` family, with this document citing them.
 4. Whether §10.1's placement of goals under TACIP's characteristics is the mapping GOVERN 1.2 wants, and whether it
