@@ -137,6 +137,8 @@ pub fn spawn_sweeper(mech: Arc<Mechanism>) {
         loop {
             t.tick().await;
             mech.sweep_expired().await;
+            // ADR-0054 §2: the mechanism grants each workflow slot when it becomes ready.
+            mech.drive_workflows().await;
         }
     });
 }

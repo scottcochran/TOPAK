@@ -8,6 +8,8 @@
 //! Output shapes follow Cedar's JSON formats for `genesis.cedarschema`, so the floor crate can
 //! hand them to the engine unchanged and the schema validator enforces S on every request.
 
+use std::collections::BTreeSet;
+
 use serde::{Deserialize, Serialize};
 use serde_json::{Value, json};
 
@@ -16,6 +18,7 @@ use crate::control::{ControlAction, ControlFacts, ControlRequest};
 use crate::labels::{Handle, LabelFacts};
 use crate::state::{LeaseRecord, MechanismDeny, Params, State};
 use crate::types::*;
+use crate::workflow::{EdgeKind, Slot, edge_uid, node_uid};
 
 pub const NS: &str = "Topak";
 
@@ -137,6 +140,22 @@ pub fn lift(
         ent("ToolSet", "run-allow", json!({}), vec![]),
     ];
 
+    // ADR-0054 §3 (Proposed): the decision point an orchestrator's round was granted for, as a set
+    // of at most one node, empty for every other lease (the `workflow` floor stage's RunCtx). The
+    // workflow nodes the request names enter the slice once each.
+    let binding = state.wf_bindings.get(&lease.fence);
+    let mut wf_nodes: BTreeSet<String> = BTreeSet::new();
+    let decision_point: Vec<Value> = match binding {
+        Some(b) => match (b.slot.clone(), state.workflows.get(&b.workflow)) {
+            (Slot::Decision(ev), Some(run)) => {
+                let id = node_uid(&b.workflow, &run.acts[ev].node);
+                wf_nodes.insert(id.clone());
+                vec![eref("WorkflowNode", &id)]
+            }
+            _ => vec![],
+        },
+        None => vec![],
+    };
     let alphabet: Vec<&str> = lease.alphabet.iter().map(|k| k.as_str()).collect();
     let lease_ctx = json!({ "alphabet": alphabet, "rulesEpoch": long(lease.rules_epoch)? });
     let build_ctx = |inputs_ok: bool| -> Result<Value, MechanismDeny> {
@@ -167,6 +186,7 @@ pub fn lift(
             "inputLabels": facts.map(|f| f.input_labels.clone()).unwrap_or_default(),
             "destLiteral": facts.is_some_and(|f| f.dest_literal),
             "destLabels": facts.map(|f| f.dest_labels.clone()).unwrap_or_default(),
+            "decisionPoint": decision_point,
         }))
     };
     let topic = |d: Domain| -> Result<(Value, String), MechanismDeny> {
@@ -245,6 +265,20 @@ pub fn lift(
             let ctx = if kind == ActionKind::Emit { build_ctx(true)? } else { run_ctx()? };
             (uid("Topic", &name), ctx, json!({ "topic": name }))
         }
+        Action::Route { edge } => {
+            // ADR-0054 §3: the edge's source and kind are read from the promoted workflow the lease
+            // names. Whether it is enabled is a mechanism check, made before the lift and at apply.
+            let (id, source, chosen) = match binding.and_then(|b| Some((b, state.workflows.get(&b.workflow)?))) {
+                Some((b, run)) => match run.def.edges.get(edge) {
+                    Some(e) => (edge_uid(&b.workflow, edge), node_uid(&b.workflow, &e.from), e.kind == EdgeKind::Chosen),
+                    None => (edge_uid(&b.workflow, edge), "-".to_string(), false),
+                },
+                None => (format!("-/{edge}"), "-".to_string(), false),
+            };
+            wf_nodes.insert(source.clone());
+            entities.push(ent("Edge", &id, json!({ "source": eref("WorkflowNode", &source), "chosen": chosen }), vec![]));
+            (uid("Edge", &id), run_ctx()?, json!({ "edge": edge }))
+        }
         Action::Submit { artifact } => {
             // The submitter is the author: a syntactic fact of who performed `Submit`.
             entities.push(ent("Artifact", &artifact.0, json!({ "author": eref("Seat", seat) }), vec![]));
@@ -268,6 +302,10 @@ pub fn lift(
             (uid("Artifact", &artifact.0), ctx, json!({ "artifact": artifact, "evidence": evidence }))
         }
     };
+
+    for n in &wf_nodes {
+        entities.push(ent("WorkflowNode", n, json!({}), vec![]));
+    }
 
     let inputs = match &req.action {
         Action::Invoke { inputs, .. } | Action::Actuate { inputs, .. } => Value::Object(inputs.clone()),

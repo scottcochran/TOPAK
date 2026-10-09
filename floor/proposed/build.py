@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build the proposed floors from the genesis floor, in three cumulative stages, with their tests.
+"""Build the proposed floors from the genesis floor, in four cumulative stages, with their tests.
 
 The genesis floor (../genesis-floor.cedar, ../genesis.cedarschema) is what the reference follows and is
 not edited here. Each stage is the floor as it would stand if the records it names were in force:
@@ -7,6 +7,7 @@ not edited here. Each stage is the floor as it would stand if the records it nam
   labels     ADR-0047 with ADR-0048 and ADR-0049 (ADR-0041 A1; ADR-0030 A2): R5, R6, R7
   control    + ADR-0050 (ADR-0041 A3): C1 to C9, the operator's requests
   emergency  + ADR-0052 (ADR-0041 A2): X1 retired, B10 admits the `emergency` kind for Actuate
+  workflow   + ADR-0054 (ADR-0041 A4): Route, R8 and R9, R3 couples the `orchestrator` kind
 
 Every edit to the genesis text is a replacement of a string asserted to occur exactly once, so a change
 to the genesis floor that this file does not expect stops the build instead of producing a wrong floor.
@@ -20,7 +21,7 @@ import os
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 GEN = os.path.dirname(HERE)
-STAGES = ["labels", "control", "emergency"]
+STAGES = ["labels", "control", "emergency", "workflow"]
 
 
 def once(text, old, new):
@@ -94,6 +95,32 @@ def schema_emergency(s):
                 "    },\n",
              "    // ADR-0052 §2: no break-glass fields. An emergency seat's envelope is its `toolAllowlist`,\n"
              "    // computed at activation; the roster's quorum is what granted its lease and is not a request property.\n")
+    return s
+
+
+def schema_workflow(s):
+    s = once(s, "| \"emergency\" (ADR-0052 §1)", "| \"emergency\" (ADR-0052 §1) | \"orchestrator\" (ADR-0054 §3)")
+    s = once(s, "  entity ArchiveRecord {",
+             "  // ADR-0054 §1. A node and an edge of a promoted workflow. Both are read from the promoted text\n"
+             "  // by the mechanism; nothing a guard reads is here, and whether an edge is enabled is not policy.\n"
+             "  entity WorkflowNode;\n"
+             "  entity Edge {\n"
+             "    source: WorkflowNode,\n"
+             "    chosen: Bool,                         // a chosen edge, which only a Route takes; else computed\n"
+             "  };\n\n"
+             "  entity ArchiveRecord {")
+    s = once(s, "    destLabels: Set<String>,              // join of the labels of destination inputs that are handles\n  };",
+             "    destLabels: Set<String>,              // join of the labels of destination inputs that are handles\n"
+             "    // ADR-0054 §3. The decision point this lease was granted for: one node for an orchestrator's round,\n"
+             "    // empty for every other seat. A set and not an optional attribute, so that the gates' proofs need\n"
+             "    // no scoped assumption, which the checked solver's wrapper does not accept (ADR-0030 §5 A1).\n"
+             "    decisionPoint: Set<WorkflowNode>,\n"
+             "  };")
+    s = once(s, "  action Report   appliesTo { principal: [Seat], resource: [Topic],           context: RunCtx };\n",
+             "  action Report   appliesTo { principal: [Seat], resource: [Topic],           context: RunCtx };\n"
+             "  // ADR-0054 §3 (Proposed): an `orchestrator` seat's choice of one edge. A principal emission\n"
+             "  // (ADR-0015 A1); the grant it leads to is the workflow's promotion's.\n"
+             "  action Route    appliesTo { principal: [Seat], resource: [Edge],            context: RunCtx };\n")
     return s
 
 
@@ -211,6 +238,28 @@ when { resource.domain != principal.domain };
 '''
 
 
+WORKFLOW = '''// ---- the workflow's route — ADR-0054 §3, named by ADR-0041 A4 --------------------------------
+// An orchestrator only narrows: it selects one chosen edge out of the decision point its round was
+// granted for. The edge's source and kind come from the promoted workflow, and the decision point
+// from the lease, by the lift. Whether the edge is enabled (its source ended and covered, its guard true, the
+// routing rule, no finding) is a mechanism check, re-run at apply (ADR-0054 §4, §8). It is not policy.
+@id("R8-route-own-decision")
+permit (principal, action == Topak::Action::"Route", resource)
+when {
+  principal.domain == "run" &&
+  context.lease.alphabet.contains("Route") &&
+  resource.chosen &&
+  context.decisionPoint.contains(resource.source)
+};
+
+// Only an `orchestrator` seat routes. B10 already refuses it every authoring variant.
+@id("R9-only-orchestrators-route")
+forbid (principal, action == Topak::Action::"Route", resource)
+when { principal.kind != "orchestrator" };
+
+'''
+
+
 def floor_labels(f):
     return once(f, "// ============================================================================================\n"
                    "// Floor exceptions — ADR-0013 §2. Count: 2, bounded by ADR-0026 R6.",
@@ -239,6 +288,26 @@ def floor_emergency(f):
              '  !(principal.kind == "emergency" && action == Topak::Action::"Actuate")\n'
              '};')
     return f
+
+
+def floor_workflow(f):
+    f = once(f, '@id("R3-observer-live")\n'
+                'forbid (principal, action in [Topak::Action::"Actuate", Topak::Action::"Report"], resource)\n'
+                'when { principal.kind == "thinker" && !context.observerLive };',
+             '// ADR-0054 §3 (ADR-0039 A3): an `orchestrator` seat is a cell like any other and is coupled the\n'
+             '// same way, and a `Route` is one of its effects.\n'
+             '@id("R3-observer-live")\n'
+             'forbid (\n'
+             '  principal,\n'
+             '  action in [Topak::Action::"Actuate", Topak::Action::"Report", Topak::Action::"Route"],\n'
+             '  resource\n'
+             ')\n'
+             'when { (principal.kind == "thinker" || principal.kind == "orchestrator") && !context.observerLive };')
+    return once(f, "// ============================================================================================\n"
+                   "// Floor exceptions — ADR-0013 §2. Count: 1, bounded by ADR-0026 R6.",
+                WORKFLOW +
+                "// ============================================================================================\n"
+                "// Floor exceptions — ADR-0013 §2. Count: 1, bounded by ADR-0026 R6.")
 
 
 # ---- tests ---------------------------------------------------------------------------------------
@@ -386,6 +455,50 @@ def tests_emergency(cases):
     return cases
 
 
+def tests_workflow(cases):
+    ents = cases[0]["entities"]
+    for c in cases:
+        if is_run_ctx(c["request"]["context"]):
+            c["request"]["context"]["decisionPoint"] = []
+    edge = lambda i, src, chosen: ent("Edge", i, {"source": ref("WorkflowNode", src), "chosen": chosen})
+    ents += [ent("Seat", "or1", {"domain": "run", "kind": "orchestrator"}),
+             ent("Seat", "orb1", {"domain": "build", "kind": "orchestrator"}),
+             ent("WorkflowNode", "n1"), ent("WorkflowNode", "n2"),
+             edge("n1-n3", "n1", True), edge("n1-n4", "n1", False), edge("n2-n5", "n2", True),
+             ent("Topic", "or1-r7", {"owner": ref("Seat", "or1"), "epoch": 3, "round": 7, "sealed": False})]
+
+    def run_ctx(dp="n1", alphabet=("Route", "Report"), live=True, clear=()):
+        return {"lease": {"alphabet": list(alphabet), "rulesEpoch": 5}, "epoch": 3, "round": 7,
+                "runRoot": ref("CorpusRoot", "run-pinned"), "toolAllowlist": ref("ToolSet", "run-allow"),
+                "observerLive": live, "clearSet": list(clear), "inputLabels": [], "destLiteral": False, "destLabels": [],
+                "decisionPoint": [ref("WorkflowNode", dp)] if dp else []}
+    build = next(c["request"]["context"] for c in cases if c["name"] == "B2 draft in own workspace")
+    k = lambda *a, **kw: case(ents, *a, **kw)
+    chosen, R3, R8, R9, B10 = (("Edge", "n1-n3"), "R3-observer-live", "R8-route-own-decision",
+                               "R9-only-orchestrators-route", "B10-only-thinkers-author")
+    cases += [
+        k("R8 an orchestrator routes a chosen edge out of its decision point", "or1", "Route", chosen, run_ctx(), "allow", [R8]),
+        k("R8 a computed edge is not routed", "or1", "Route", ("Edge", "n1-n4"), run_ctx(), "deny"),
+        k("R8 an edge out of another decision point", "or1", "Route", ("Edge", "n2-n5"), run_ctx(), "deny"),
+        k("R8 a lease granted for no decision point", "or1", "Route", chosen, run_ctx(dp=None), "deny"),
+        k("R8 a lease without Route in its alphabet", "or1", "Route", chosen, run_ctx(alphabet=["Report"]), "deny"),
+        k("R8 an orchestrator seat in Build does not route", "orb1", "Route", chosen, run_ctx(), "deny"),
+        k("R8 the routing rule is not policy: an untrusted task label does not refuse a route", "or1", "Route", chosen,
+          run_ctx(clear=[U]), "allow", [R8]),
+        k("R9 a Thinker cannot route, whatever its lease holds", "r1", "Route", chosen, run_ctx(), "deny", [R9]),
+        k("R9 an Observer cannot route", "ro1", "Route", chosen, run_ctx(), "deny", [R9]),
+        k("R9 an operator cannot route", "op1", "Route", chosen, run_ctx(), "deny", [R9]),
+        k("R3 an orchestrator routes with no live Observer", "or1", "Route", chosen, run_ctx(live=False), "deny", [R3]),
+        k("R3 an orchestrator reports with no live Observer", "or1", "Report", ("Topic", "or1-r7"), run_ctx(live=False), "deny", [R3]),
+        k("R2 an orchestrator reports to its own topic", "or1", "Report", ("Topic", "or1-r7"), run_ctx(), "allow", ["R2-report-own-topic"]),
+        k("B10 an orchestrator cannot actuate, whatever its lease holds", "or1", "Actuate", ("Tool", "search@d3"),
+          run_ctx(alphabet=["Route", "Report", "Actuate"]), "deny", [B10]),
+        k("B10 an orchestrator cannot draft", "or1", "Draft", ("WorkspaceTarget", "ws-a1-r7/spec.tla"), build, "deny", [B10]),
+        k("B10 an orchestrator cannot submit", "or1", "Submit", ("Artifact", "art-a1"), build, "deny", [B10]),
+    ]
+    return cases
+
+
 def main():
     schema = open(os.path.join(GEN, "genesis.cedarschema")).read()
     floor = open(os.path.join(GEN, "genesis-floor.cedar")).read()
@@ -394,7 +507,8 @@ def main():
         c["entities"] = cases[0]["entities"]            # one shared list, as the generator made it
     steps = {"labels": (schema_labels, floor_labels, tests_labels),
              "control": (schema_control, floor_control, tests_control),
-             "emergency": (schema_emergency, floor_emergency, tests_emergency)}
+             "emergency": (schema_emergency, floor_emergency, tests_emergency),
+             "workflow": (schema_workflow, floor_workflow, tests_workflow)}
     banner = ("// PROPOSED · built by floor/proposed/build.py from the genesis floor · stage: {} · not ratified,\n"
               "// and not what the reference follows. Edit build.py, not this file.\n")
     for stage in STAGES:

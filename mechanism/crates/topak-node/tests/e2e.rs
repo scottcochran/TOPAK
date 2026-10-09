@@ -1883,3 +1883,187 @@ async fn break_glass_is_an_emergency_seating() {
     let archive = std::fs::read_to_string(f.dir.join("n2/archive.jsonl")).unwrap();
     assert!(archive.contains("\"emergency\":true"), "F5: a call under an activation is on every replica's record");
 }
+
+// ---- a workflow run by its promotion (ADR-0054, ADR-0055; Proposed) -----------------------------
+
+/// The session a replica's driver opened for `seat`'s live workflow lease, and that replica. The
+/// mechanism granted the lease; a scripted occupant is handed its session here (BOOTSTRAP).
+async fn wf_session<'a>(c: &'a Cluster, wf: &Digest, seat: &str) -> (&'a Mechanism, String, LogIndex) {
+    for _ in 0..250 {
+        for m in &c.nodes {
+            let s = m.operate(OperatorOp::WorkflowStatus { workflow: wf.clone() }).await;
+            if let (Some(t), Some(f)) = (s["sessions"][seat]["token"].as_str(), s["sessions"][seat]["fence"].as_u64()) {
+                return (m.as_ref(), t.to_string(), f);
+            }
+        }
+        tokio::time::sleep(Duration::from_millis(20)).await;
+    }
+    panic!("timed out waiting for a session for {seat}");
+}
+
+fn wf_seating(f: &Fixture, seat: &str, lineage: &str, alphabet: &[ActionKind]) -> Value {
+    json!({
+        "seat": seat, "principal": format!("principal-{seat}"), "persona": Digest::of(seat.as_bytes()),
+        "bundle": f.bundle_rev, "confinement": { "digest": Digest::of(b"none"), "rung": 0 },
+        "alphabet": alphabet, "ttl_ms": 60_000, "lineage": lineage,
+        "task": Digest::of(format!("task for {seat}").as_bytes()), "task_label": ["internal"],
+    })
+}
+
+/// ADR-0054 §12's workflow, run by scripted cells across three replicas: four nodes, one decision
+/// point, one join. Promoted by a Build round, loaded, and every lease granted by the mechanism.
+#[tokio::test(flavor = "multi_thread", worker_threads = 4)]
+async fn a_workflow_is_run_by_its_promotion() {
+    let mut f = fixture("workflow").await;
+    let seat = |d: Domain, k: topak_core::SeatKind, cell: Option<&str>| SeatDecl {
+        domain: d,
+        kind: k,
+        cell: cell.map(String::from),
+        key: pubhex(&key()),
+        rung: 0,
+    };
+    for w in ["ws", "wb", "wc", "wj"] {
+        f.rules.seats.insert(w.into(), seat(Domain::Run, topak_core::SeatKind::Thinker, None));
+        f.rules.seats.insert(format!("o{w}"), seat(Domain::Run, topak_core::SeatKind::Observer, Some(w)));
+    }
+    f.rules.seats.insert("orc".into(), seat(Domain::Run, topak_core::SeatKind::Orchestrator, None));
+    f.rules.seats.insert("oorc".into(), seat(Domain::Run, topak_core::SeatKind::Observer, Some("orc")));
+    let worker = |seat: &str, lineage: &str, outcomes: &[&str]| {
+        let mut v = wf_seating(&f, seat, lineage, RUN);
+        v["outcomes"] = json!(outcomes);
+        v
+    };
+    let mut outward_c = worker("wc", "B", &["done"]);
+    outward_c["outward"] = json!(true);
+    let def = json!({
+        "kind": "dag", "root": "s", "sinks": ["j"],
+        "nodes": {
+            "s": worker("ws", "A", &["ok", "bad"]),
+            "b": worker("wb", "B", &["done", "retry"]),
+            "c": outward_c,
+            "j": worker("wj", "A", &["done"]),
+        },
+        "edges": {
+            "e1": { "from": "s", "to": "b", "kind": "chosen", "delivery": "clear",
+                    "guard": { "outcome": { "node": "s", "any_of": ["ok"] } } },
+            "e2": { "from": "s", "to": "c", "kind": "chosen", "delivery": "handle" },
+            "e3": { "from": "b", "to": "j", "kind": "computed", "delivery": "clear",
+                    "guard": { "outcome": { "node": "b", "any_of": ["done"] } } },
+            "e4": { "from": "c", "to": "j", "kind": "computed", "delivery": "handle" },
+        },
+        "orchestrator": wf_seating(&f, "orc", "A", &[ActionKind::Route, ActionKind::Report]),
+    });
+    let text = serde_json::to_string_pretty(&def).unwrap();
+    let c = cluster(&f, true).await;
+    let n1 = &c.nodes[0];
+
+    // 1. The workflow is a Build artifact: a1 drafts it as the one file of its workspace and offers
+    //    it; the gates are attested; the grant seats vote; the author's cell Observer covers it.
+    let a1 = grant(n1, &f, "a1", 1, RoundRole::Author, AUTHOR, 60_000).await;
+    let r = act(n1, &a1, Action::Draft { target: topak_core::workflow::WORKFLOW_FILE.into(), content: text.clone() }).await;
+    assert!(r.admitted, "{}", r.detail);
+    let r = n1.act(AgentRequest { token: a1.clone(), op: AgentOp::SubmitWorkspace }).await;
+    assert!(r.admitted, "{}", r.detail);
+    let artifact = Digest(r.detail["result"]["submitted"].as_str().unwrap().into());
+    assert_eq!(artifact, topak_core::workflow::workflow_artifact(text.as_bytes()), "the workspace is the workflow's one file");
+    // Before the promotion, the workflow does not load.
+    let r = n1.operate(OperatorOp::LoadWorkflow { text: text.clone() }).await;
+    assert!(r["applied"].to_string().contains("not promoted"), "{r}");
+    let evidence = Digest::of(b"gate evidence");
+    let r = control(n1, &f, "op1", ControlAction::AttestGates { artifact: artifact.clone(), evidence: evidence.clone() }).await;
+    assert_eq!(r["ok"], true, "{r}");
+    for g in ["g1", "g2", "g3"] {
+        let t = grant(n1, &f, g, 1, RoundRole::Voter, VOTER, 60_000).await;
+        let vote = Action::Vote { verdict: Verdict::Grant, artifact: artifact.clone(), evidence: evidence.clone(), rules_epoch: 0 };
+        assert!(act(n1, &t, vote).await.admitted);
+    }
+    let o1 = grant(n1, &f, "o1", 1, RoundRole::Voter, VOTER, 60_000).await;
+    let seal = n1.state.read().unwrap().seals["a1"].clone();
+    assert!(act(n1, &o1, Action::Emit { record: heartbeat(&seal.topic, seal.seq) }).await.admitted);
+    settle(&c).await;
+    assert!(n1.state.read().unwrap().candidates[&artifact].promoted_at.is_some(), "promoted");
+
+    // 2. The cell Observers are seated, and the workflow loads.
+    let mut obs = BTreeMap::new();
+    for o in ["ows", "owb", "owc", "owj", "oorc"] {
+        obs.insert(o, grant(n1, &f, o, 1, RoundRole::Author, RUN_OBS, 60_000).await);
+    }
+    let r = n1.operate(OperatorOp::LoadWorkflow { text: text.clone() }).await;
+    assert_eq!(r["ok"], true, "{r}");
+    let wf = Digest(r["applied"]["WorkflowLoaded"]["workflow"].as_str().unwrap().into());
+
+    // 3. s's lease is granted by the mechanism: no operator asked for it. Its round opens with its
+    //    task, by template digest and label, and its outcomes.
+    let (ms, s_tok, s_fence) = wf_session(&c, &wf, "ws").await;
+    let chain = n1.state.read().unwrap().chain.clone();
+    let s_topic = topak_core::lift::topic_name(&chain, Domain::Run, "ws", 0, 1);
+    let open = memory(ms).topics.lock().await[&s_topic][0].clone();
+    assert_eq!(open.kind, RecordKind::Open);
+    assert_eq!(open.payload["task"]["node"], "s");
+    assert_eq!(open.payload["task"]["outcomes"], json!(["bad", "ok"]));
+    // ADR-0039 §2: nothing is admitted until s's cell Observer is live. ows reads from the start.
+    assert!(act(n1, &obs["ows"], Action::Report { record: heartbeat(&s_topic, 0) }).await.admitted);
+    // An outcome outside the node's enum is refused by the mechanism.
+    let r = act(ms, &s_tok, Action::Report { record: json!({ "outcome": "shipped" }) }).await;
+    assert!(deny_reason(&r).contains("not in the node's enum"), "{}", r.detail);
+    let r = act(ms, &s_tok, Action::Report { record: json!({ "outcome": "ok", "summary": "the valve schedule" }) }).await;
+    assert!(r.admitted, "{}", r.detail);
+    settle(&c).await;
+    assert_eq!(n1.state.read().unwrap().leases[&s_fence].ended, Some(EndReason::Outcome), "the outcome ends the round");
+
+    // 4. Coverage at the edge: s's Observer reads it to the seal, and only then is the decision
+    //    event served. The orchestrator is told the track: never bytes.
+    let seq = n1.state.read().unwrap().leases[&s_fence].seq;
+    assert!(act(n1, &obs["ows"], Action::Report { record: heartbeat(&s_topic, seq) }).await.admitted);
+    let (mo, o_tok, o_fence) = wf_session(&c, &wf, "orc").await;
+    let o_topic = topak_core::lift::topic_name(&chain, Domain::Run, "orc", 0, 1);
+    let track = memory(mo).topics.lock().await[&o_topic][0].payload["task"].clone();
+    assert_eq!(track["node"], "s");
+    assert_eq!(track["edges"].as_array().unwrap().len(), 2, "both chosen edges, each with its target's interface");
+    assert!(track["history"][0]["attributes"]["outcome"] == "ok" && track.to_string().find("the valve schedule").is_none(), "{track}");
+    assert!(act(n1, &obs["oorc"], Action::Report { record: heartbeat(&o_topic, 0) }).await.admitted);
+
+    // 5. The orchestrator routes. A computed edge is not its to take; e1 is, and the floor's R8
+    //    admits it. The route consumes the event, ends the round and enters b.
+    let r = act(mo, &o_tok, Action::Route { edge: "e3".into() }).await;
+    assert!(deny_reason(&r).contains("route not enabled"), "{}", r.detail);
+    let r = act(mo, &o_tok, Action::Route { edge: "e1".into() }).await;
+    assert!(r.admitted, "{}", r.detail);
+    assert_eq!(r.detail["floor"], json!(["R8-route-own-decision"]));
+    let r = act(mo, &o_tok, Action::Route { edge: "e2".into() }).await;
+    assert!(deny_reason(&r).contains("LeaseEnded"), "one route per decision point: {}", r.detail);
+    settle(&c).await;
+    assert_eq!(n1.state.read().unwrap().leases[&o_fence].ended, Some(EndReason::Routed));
+
+    // 6. b is granted; its round opens with s's report delivered clear, and its clearSet starts
+    //    from its task's label joined with s's.
+    let (mb, b_tok, b_fence) = wf_session(&c, &wf, "wb").await;
+    let b_topic = topak_core::lift::topic_name(&chain, Domain::Run, "wb", 0, 1);
+    let opening = memory(mb).topics.lock().await[&b_topic][0].payload["task"].clone();
+    assert_eq!(opening["inputs"][0]["delivery"], "clear");
+    // A replica delivers the reports it holds (PROVISIONAL workflow-inputs): the one that served s.
+    if mb.id == ms.id {
+        assert!(opening["inputs"][0]["reports"].to_string().contains("the valve schedule"), "{opening}");
+    } else {
+        assert!(opening["inputs"][0]["reports"].is_null(), "{opening}");
+    }
+    assert!(n1.state.read().unwrap().leases[&b_fence].labels.clear_set.contains("internal"));
+    assert!(act(n1, &obs["owb"], Action::Report { record: heartbeat(&b_topic, 0) }).await.admitted);
+    assert!(act(mb, &b_tok, Action::Report { record: json!({ "outcome": "done" }) }).await.admitted);
+    settle(&c).await;
+    let seq = n1.state.read().unwrap().leases[&b_fence].seq;
+    assert!(act(n1, &obs["owb"], Action::Report { record: heartbeat(&b_topic, seq) }).await.admitted);
+
+    // 7. e3 fires on b's typed outcome; j runs and the workflow completes by its sink. c, behind the
+    //    consumed decision point, is skipped. Every replica agrees on the run.
+    let (mj, j_tok, _) = wf_session(&c, &wf, "wj").await;
+    let j_topic = topak_core::lift::topic_name(&chain, Domain::Run, "wj", 0, 1);
+    assert!(act(n1, &obs["owj"], Action::Report { record: heartbeat(&j_topic, 0) }).await.admitted);
+    assert!(act(mj, &j_tok, Action::Report { record: json!({ "outcome": "done" }) }).await.admitted);
+    settle(&c).await;
+    let runs: Vec<Value> = c.nodes.iter().map(|m| serde_json::to_value(&m.state.read().unwrap().workflows[&wf]).unwrap()).collect();
+    assert!(runs.iter().all(|r| *r == runs[0]), "every replica holds the same run");
+    assert_eq!(runs[0]["status"]["status"], "completed", "{}", runs[0]["status"]);
+    let c_act = runs[0]["acts"].as_array().unwrap().iter().find(|a| a["node"] == "c").unwrap().clone();
+    assert_eq!(c_act["status"]["status"], "skipped");
+}

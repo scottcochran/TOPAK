@@ -187,6 +187,13 @@ pub struct Mechanism {
     contain: Option<Contain>,
     /// Guests this replica launched, by seat. Local: a guest is one host's process (P6).
     launched: Mutex<HashMap<SeatId, GuestCtl>>,
+    /// ADR-0054 (Proposed): the session token of each workflow lease this replica granted and
+    /// opened, by fence. BOOTSTRAP (PROVISIONAL workflow-occupant): handed out by `WorkflowStatus`.
+    wf_sessions: Mutex<BTreeMap<LogIndex, String>>,
+    /// The payload of every report a workflow worker made through this replica, by fence and
+    /// sequence number: what a clear edge delivers to the next node. Per replica and not
+    /// replicated, as `results` is (PROVISIONAL workflow-inputs).
+    wf_reports: Mutex<BTreeMap<LogIndex, BTreeMap<u64, Value>>>,
     me: Weak<Mechanism>,
 }
 
@@ -252,6 +259,8 @@ impl Mechanism {
             archive: Mutex::new(Some(archive)),
             contain: p.contain,
             launched: Mutex::new(HashMap::new()),
+            wf_sessions: Mutex::new(BTreeMap::new()),
+            wf_reports: Mutex::new(BTreeMap::new()),
             me: me.clone(),
         }))
     }
@@ -336,17 +345,12 @@ impl Mechanism {
             if !local.contains(&fence) {
                 continue;
             }
-            let mut in_flight = self.in_flight.lock().await;
-            for (seq, call) in in_flight.remove(&topic).unwrap_or_default() {
-                let rec = call.record(&topic, seq, Outcome::Unknown, None);
-                if let Err(e) = self.transport.emit(&rec).await {
-                    tracing::warn!(topic, seq, error = %e, "unknown Actuate record not written");
-                }
+            // ADR-0042 A3 (pending): a round that ends on its own admit, a worker's outcome or an
+            // orchestrator's route, seals after that admit's record, which its effect writes.
+            if reason == format!("{:?}", EndReason::Outcome) || reason == format!("{:?}", EndReason::Routed) {
+                continue;
             }
-            self.results.lock().await.remove(&topic);
-            if let Err(e) = self.transport.seal(&topic, &reason).await {
-                tracing::warn!(topic, error = %e, "seal marker not written");
-            }
+            self.seal_round(&topic, &reason).await;
         }
         // P6: a launched guest is destroyed when its round ends, whatever ended it. A renewal is
         // not an end; the launcher moves the guest to the new fence itself.
@@ -355,6 +359,24 @@ impl Mechanism {
         }
         if let Some(tx) = self.waiters.lock().unwrap().remove(entry.id()) {
             let _ = tx.send((slot, applied));
+        }
+    }
+
+    /// Seal a round's topic: a call still in flight is written as `unknown` ahead of the seal
+    /// marker (ADR-0042 §3), in sequence order, so the sealed topic has a record at every sequence
+    /// number.
+    async fn seal_round(&self, topic: &str, reason: &str) {
+        let mut in_flight = self.in_flight.lock().await;
+        for (seq, call) in in_flight.remove(topic).unwrap_or_default() {
+            let rec = call.record(topic, seq, Outcome::Unknown, None);
+            if let Err(e) = self.transport.emit(&rec).await {
+                tracing::warn!(topic, seq, error = %e, "unknown Actuate record not written");
+            }
+        }
+        drop(in_flight);
+        self.results.lock().await.remove(topic);
+        if let Err(e) = self.transport.seal(topic, reason).await {
+            tracing::warn!(topic, error = %e, "seal marker not written");
         }
     }
 
@@ -728,10 +750,14 @@ impl Mechanism {
                     .map_err(MechanismDeny::Other)?;
                 let frozen = lift(&req, &st, &self.params, rec, live, facts.as_ref())?;
                 let domain = st.rules.seat_domain(&req.seat).expect("lifted");
-                Ok((frozen, call_rev, rec.lease.epoch, rec.lease.round, domain, facts, kind))
+                // ADR-0052 §5: a call under an activation is forensic class F5. ADR-0054 §4, §8: a
+                // route is stamped with its workflow, event and basis, and a worker's report with
+                // its outcome, from this snapshot, the one the mechanism checks were made against.
+                let admitted = st.admitted(&req, kind == SeatKind::Emergency.as_str());
+                Ok((frozen, call_rev, rec.lease.epoch, rec.lease.round, domain, facts, kind, admitted))
             })
         };
-        let (frozen, lease_bundle, lease_epoch, round, domain, labels, seat_kind) = match prepared {
+        let (frozen, lease_bundle, lease_epoch, round, domain, labels, seat_kind, admitted) = match prepared {
             Ok(p) => p,
             Err(MechanismDeny::LeaseExpired) => {
                 let e = Entry::EndRound {
@@ -774,12 +800,11 @@ impl Mechanism {
         // 7: order the admit.
         // ADR-0052 §5: a call under an activation is forensic class F5, as a break-glass
         // invocation was. It is admitted by the ordinary permit and not by an exception.
-        let emergency = seat_kind == SeatKind::Emergency.as_str();
         let rec = AdmitRecord {
             seat: req.seat.clone(),
             lease: req.lease,
             epoch: req.epoch,
-            action: Admitted::from_request(&req, emergency),
+            action: admitted.clone(),
             input: frozen.digest(),
             floor: self.floor.floor_digest().clone(),
             schema: self.floor.schema_digest().clone(),
@@ -801,7 +826,7 @@ impl Mechanism {
         };
 
         // 8: the effect.
-        let ctx = EffectCtx { sess, slot, lease_epoch, round, domain, seq, promoted, seat_kind, labels, lease_bundle };
+        let ctx = EffectCtx { sess, slot, lease_epoch, round, domain, seq, promoted, seat_kind, labels, lease_bundle, admitted };
         let result = self.effect(&req, &ctx).await;
         let (ok, result) = match result {
             Ok(v) => (true, v),
@@ -971,6 +996,12 @@ impl Mechanism {
                 })
             }
             Action::Emit { record } | Action::Report { record } => {
+                if matches!(cx.admitted, Admitted::Report { .. })
+                    && self.state.read().unwrap().wf_bindings.contains_key(&cx.sess.fence)
+                {
+                    let seq = cx.seq.unwrap_or(0);
+                    self.wf_reports.lock().unwrap().entry(cx.sess.fence).or_default().insert(seq, record.clone());
+                }
                 let rec = EmitRecord {
                     topic: topic_name(&chain, cx.domain, seat, cx.lease_epoch, cx.round),
                     seat: seat.clone(),
@@ -982,7 +1013,36 @@ impl Mechanism {
                     payload: record.clone(),
                 };
                 let offset = self.transport.emit(&rec).await?;
+                // ADR-0042 A3: the outcome ended the round; its record is the last before the seal.
+                let ended = self.state.read().unwrap().leases.get(&cx.sess.fence).and_then(|r| r.ended);
+                if ended == Some(EndReason::Outcome) {
+                    self.seal_round(&rec.topic, &format!("{:?}", EndReason::Outcome)).await;
+                }
                 Ok(json!({ "topic": rec.topic, "offset": offset, "seq": rec.seq }))
+            }
+            // ADR-0040 A2, ADR-0015 A1 (pending): a route is a principal emission, a typed record on
+            // the orchestrator's round topic. The lease it leads to was granted at apply, under the
+            // workflow's promotion; its Observer reads what the orchestrator chose, and on what basis.
+            Action::Route { edge } => {
+                let stamp = match &cx.admitted {
+                    Admitted::Route { stamp: Some(s), .. } => json!(s),
+                    _ => Value::Null,
+                };
+                let payload = json!({ "route": { "edge": edge, "stamp": stamp } });
+                let rec = EmitRecord {
+                    topic: topic_name(&chain, cx.domain, seat, cx.lease_epoch, cx.round),
+                    seat: seat.clone(),
+                    fence: cx.sess.fence,
+                    kind: RecordKind::Emit,
+                    admit: Some(cx.slot),
+                    seq: Some(cx.seq.unwrap_or(0)),
+                    digest: Digest::of_json(&payload),
+                    payload,
+                };
+                let offset = self.transport.emit(&rec).await?;
+                // ADR-0042 A3: the route ended the round; its record is the last before the seal.
+                self.seal_round(&rec.topic, &format!("{:?}", EndReason::Routed)).await;
+                Ok(json!({ "topic": rec.topic, "offset": offset, "seq": rec.seq, "routed": edge }))
             }
             Action::Submit { artifact } => Ok(json!({ "submitted": artifact })),
             Action::Vote { artifact, .. } => {
@@ -1003,6 +1063,22 @@ impl Mechanism {
                 return Box::pin(self.launch(req)).await;
             }
             OperatorOp::RegisterProfile { profile } => Entry::ProfileRegister { id, profile },
+            OperatorOp::LoadWorkflow { text } => {
+                // ADR-0044 §3: a seating naming a revision with no verified signature is refused at
+                // decide, as a grant naming one is.
+                if let Ok(def) = topak_core::workflow::Definition::parse(&text) {
+                    let seatings = def.nodes.values().map(|n| &n.seating).chain(def.orchestrator.iter());
+                    if let Some(s) = seatings.into_iter().find(|s| !self.bundle.verified(&s.bundle)) {
+                        return json!({
+                            "ok": false,
+                            "error": format!("{}'s bundle {} has no verified signature (ADR-0044 §3)", s.seat, s.bundle.short()),
+                        });
+                    }
+                }
+                let outward = self.workflow_outward(&text);
+                Entry::WorkflowLoad { id, text, outward }
+            }
+            OperatorOp::WorkflowStatus { workflow } => return self.workflow_status(&workflow),
             OperatorOp::Grant {
                 principal,
                 seat,
@@ -1419,6 +1495,8 @@ struct EffectCtx<'a> {
     /// The labels the admit carried (ADR-0047): how the Listener delivers what this effect returns.
     labels: Option<LabelFacts>,
     lease_bundle: Digest,
+    /// The admit as it was ordered: a route's stamp is what its record names.
+    admitted: Admitted,
 }
 
 /// How an `Actuate` call ended, as its record says it (ADR-0042 §3).
@@ -1514,3 +1592,128 @@ fn walk(root: &Path, dir: &Path, out: &mut Vec<String>) -> std::io::Result<()> {
 
 // Re-exported so tests can build frozen inputs the way the node does.
 pub use lift::FrozenInput;
+
+// ---- workflows (ADR-0054, ADR-0055; Proposed) ----------------------------------------------------
+
+impl Mechanism {
+    /// What the bundle says of a workflow's nodes when it is loaded: a node whose lease reaches an
+    /// outward entry (ADR-0049 §5) is outward, whatever the text declares. The text can only add.
+    fn workflow_outward(&self, text: &str) -> std::collections::BTreeSet<String> {
+        let Ok(def) = topak_core::workflow::Definition::parse(text) else { return Default::default() };
+        def.nodes
+            .iter()
+            .filter(|(_, n)| n.seating.alphabet.contains(&ActionKind::Actuate))
+            .filter(|(_, n)| {
+                let list = self.bundle.tool_list(&n.seating.bundle, Domain::Run, &self.params.run_tools);
+                list["tools"].as_array().is_some_and(|ts| ts.iter().any(|t| t["channel"]["outward"] == json!(true)))
+            })
+            .map(|(id, _)| id.clone())
+            .collect()
+    }
+
+    /// Propose the mechanism's grant for every slot that is ready (ADR-0054 §2), and open each round
+    /// this replica's proposal was the one that granted. Any replica may propose; the log orders
+    /// them, and a proposal for a slot no longer ready is refused at apply and changes nothing.
+    pub async fn drive_workflows(&self) {
+        let ready: Vec<(Digest, topak_core::workflow::Slot, GrantRequest)> = {
+            let st = self.state.read().unwrap();
+            st.workflow_ready()
+                .into_iter()
+                .filter_map(|(wf, slot)| st.workflow_grant_request(&wf, &slot).ok().map(|r| (wf, slot, r)))
+                .collect()
+        };
+        for (workflow, slot, req) in ready {
+            let seat = req.seat.clone();
+            let e = Entry::WorkflowGrant { id: self.fresh_id(), workflow: workflow.clone(), slot: slot.clone(), req, appraisal: None };
+            let Ok((_, Applied::LeaseGranted { fence })) = self.propose(e).await else { continue };
+            let task = self.workflow_opening(&workflow, &slot);
+            if self.open_round(fence, &seat, Some(task)).await.is_err() {
+                continue;
+            }
+            let epoch = self.state.read().unwrap().leases[&fence].lease.epoch;
+            let token = hex::encode(rand::random::<[u8; 32]>());
+            self.sessions.lock().unwrap().insert(token.clone(), Session { seat, fence, epoch });
+            self.wf_sessions.lock().unwrap().insert(fence, token);
+        }
+    }
+
+    /// What the round is told at its opening (ADR-0043 A3, ADR-0048 §2). A worker: its task, by
+    /// template digest and label, and its inputs, each in its edge's delivery mode; a clear input
+    /// is the predecessor's reports, where this replica holds them. An orchestrator: the track
+    /// (ADR-0055 §6), the event's enabled chosen edges with each target's interface, the attributes
+    /// of the event's causal history with their labels, handles for every output, and the basis.
+    /// Never bytes to an orchestrator: its delivery table is a mechanism constant.
+    fn workflow_opening(&self, wf: &Digest, slot: &topak_core::workflow::Slot) -> Value {
+        use topak_core::workflow::Slot;
+        let st = self.state.read().unwrap();
+        let Some(run) = st.workflows.get(wf) else { return Value::Null };
+        let output_of = |i: usize| -> Value {
+            let a = &run.acts[i];
+            json!({
+                "activation": i, "node": a.node,
+                "attributes": a.attrs, "found": a.found, "covered": a.covered,
+                "outputs": a.attrs.as_ref().map(|x| x.output.clone()).unwrap_or_default(),
+            })
+        };
+        match slot {
+            Slot::Node(i) => {
+                let a = &run.acts[*i];
+                let n = &run.def.nodes[&a.node];
+                let reports = self.wf_reports.lock().unwrap();
+                let inputs: Vec<Value> = run.def.in_edges(&a.node)
+                    .filter(|(id, _)| a.fired.contains(*id))
+                    .map(|(id, e)| {
+                        let src = a.trig.filter(|t| run.acts[*t].node == e.from)
+                            .or_else(|| a.hist.iter().rev().copied().find(|j| run.acts[*j].node == e.from));
+                        let label = src.and_then(|j| run.acts[j].attrs.as_ref()).map(|x| x.label.clone()).unwrap_or_default();
+                        let fence = src.and_then(|j| st.wf_bindings.iter().find(|(_, b)| b.workflow == *wf && b.slot == Slot::Node(j)).map(|(f, _)| *f));
+                        match e.delivery {
+                            topak_core::labels::Delivery::Clear => json!({
+                                "edge": id, "from": src, "delivery": "clear", "label": label,
+                                "reports": fence.and_then(|f| reports.get(&f).cloned()),
+                            }),
+                            topak_core::labels::Delivery::Handle => json!({
+                                "edge": id, "from": src, "delivery": "handle", "label": label,
+                                "handle": { "input": { "activation": src, "edge": id } },
+                            }),
+                        }
+                    })
+                    .collect();
+                json!({
+                    "workflow": wf, "activation": i, "node": a.node,
+                    "task": { "template": n.seating.task, "label": n.seating.task_label },
+                    "outcomes": n.outcomes, "inputs": inputs,
+                })
+            }
+            Slot::Decision(ev) => {
+                let node = &run.acts[*ev].node;
+                let edges: Vec<Value> = run.def.out_edges(node)
+                    .filter(|(_, e)| e.kind == topak_core::workflow::EdgeKind::Chosen)
+                    .map(|(id, e)| json!({
+                        "edge": id, "to": e.to, "delivery": e.delivery,
+                        "interface": { "task": run.def.nodes[&e.to].seating.task, "outcomes": run.def.nodes[&e.to].outcomes },
+                        "enabled": run.disabled(*ev, id).is_none(),
+                    }))
+                    .collect();
+                json!({
+                    "workflow": wf, "event": ev, "node": node, "basis": st.last_applied,
+                    "edges": edges,
+                    "history": run.acts[*ev].hist.iter().map(|j| output_of(*j)).collect::<Vec<_>>(),
+                })
+            }
+        }
+    }
+
+    fn workflow_status(&self, wf: &Digest) -> Value {
+        let st = self.state.read().unwrap();
+        let Some(run) = st.workflows.get(wf) else { return json!({ "ok": false, "error": "no such workflow" }) };
+        let sessions: BTreeMap<String, Value> = self.wf_sessions.lock().unwrap().iter()
+            .filter_map(|(f, t)| {
+                let b = st.wf_bindings.get(f)?;
+                let live = st.leases.get(f).is_some_and(|r| r.live());
+                (b.workflow == *wf && live).then(|| (st.leases[f].lease.seat.clone(), json!({ "fence": f, "token": t, "slot": b.slot })))
+            })
+            .collect();
+        json!({ "ok": true, "run": run, "sessions": sessions })
+    }
+}

@@ -26,7 +26,7 @@ affirmative bundle `true`, from the bundle revision the lease names, is a deny.
 |---|---|---|
 | `topak-core` | Types, lease (ADR-0031), rules floor (ADR-0026), tally (ADR-0024), lift, composition, replicated state | none |
 | `topak-paxos` | Sans-IO crash-fault Multi-Paxos plus a `Voting` ghost | none |
-| `topak-floor` | Cedar engine with the proposed floor's `emergency` stage compiled in (`floor/proposed/emergency-floor.cedar`, `emergency.cedarschema`; since 2026.10.05 a proposed stage is linked in place of the genesis floor), pinned by digest | none |
+| `topak-floor` | Cedar engine with the proposed floor's `workflow` stage compiled in (`floor/proposed/workflow-floor.cedar`, `workflow.cedarschema`; since 2026.10.05 a proposed stage is linked in place of the genesis floor, and since 2026.10.08 this one, which is not in force), pinned by digest | none |
 | `topak-bundle` | OPA sidecar client; local OPA WASM fallback bound to the lease's bundle | HTTP |
 | `topak-transport` | Round topics over `rskafka` (or in memory) | Kafka |
 | `topak-mcp` | The alphabet as MCP tools (`rmcp` server); downstream tool host (`rmcp` client) | stdio |
@@ -36,7 +36,7 @@ affirmative bundle `true`, from the bundle revision the lease names, is a deny.
 ## Run it
 
 ```sh
-cargo test --workspace --release           # 133 tests (2026.10.05); needs a built bundle (next line); builds topak-demo-guest
+cargo test --workspace --release           # 155 tests (2026.10.08); needs a built bundle (next line); builds topak-demo-guest
 TOPAK_DOCKER_IMAGE=<image with python3> cargo test --release -p topak-contain --test launch   # + a real container round (skipped without it)
 scripts/build-bundle.sh                    # policies/ → bundles/<revision>.tar.gz (docker, OPA); TOPAK_BUNDLE_SECRET=<hex> also writes <revision>.sig
 
@@ -67,8 +67,9 @@ topak mcp --socket dev/run/n1/agent.sock --token <token> --domain build
 Operator requests are `grant`, `renew`, `end_round`, `revoke` (targeted; names a principal, Persona or
 confinement digest), `fence_epoch` (the fleet fence), `issue`, `gates_passed`,
 `register_profile`, `launch` and `status`, with `control` for an operator's signed request and
-`prepare_emergency` and `activate` for an emergency seating; `break_glass_approve` is retired and
-refused (ADR-0052). See `crates/topak-node/src/ops.rs`.
+`prepare_emergency` and `activate` for an emergency seating, `load_workflow` and `workflow_status`
+for a workflow; `break_glass_approve` is retired and refused (ADR-0052). See
+`crates/topak-node/src/ops.rs`.
 `topak keygen`, `topak sign`, `topak tool-digest`, `topak check-rules` and `topak profile-digest`
 are the helpers.
 
@@ -96,7 +97,7 @@ anchor issuance puts the simulator's key in `verifier_keys`. What they reach is 
 
 ## Where the corpus is in the code
 
-- The floor text is **not copied**. `topak-floor` includes `../floor/proposed/emergency-*` and `../floor/genesis-values.json` by path and refuses to load
+- The floor text is **not copied**. `topak-floor` includes `../floor/proposed/workflow-*` and `../floor/genesis-values.json` by path and refuses to load
   unless the bytes match the digests the gate run recorded. Changing the floor means re-running
   the gates and changing the pin, which is a mechanism release.
 - **A bundle loads only under a signature** over its revision that verifies under a key in the rules' `bundle_keys`
@@ -150,6 +151,27 @@ only by an `activate` request carrying a quorum of the break-glass roster's sign
 person's key, one round and the task. The person then signs each action with that key; there is no
 bearer token to the lease. The seat may call what its seating's envelope holds: by default every
 Run allowlist entry in force in the domain. An operator may stop it and nobody may regrant it.
+
+## Workflows and meshes (ADR-0054, ADR-0055; Proposed)
+
+A workflow is promoted like any other Build artifact: one file, `workflow.json`, in an author's workspace,
+submitted, gated and voted on. `load_workflow` loads it only once that artifact is promoted, and from then on the
+mechanism grants every lease it issues, each node's when the node becomes ready and an orchestrator's for each
+decision event, under the promotion's authority and with nothing wider than the seating:
+
+```json
+{ "kind": "dag", "root": "s", "sinks": ["j"],
+  "nodes": { "s": { "seat": "ws", "outcomes": ["ok", "bad"], "lineage": "A", ... }, ... },
+  "edges": { "e1": { "from": "s", "to": "b", "kind": "chosen", "delivery": "clear",
+                     "guard": { "outcome": { "node": "s", "any_of": ["ok"] } } }, ... },
+  "orchestrator": { "seat": "orc", "alphabet": ["Route", "Report"], ... } }
+```
+
+A worker ends its round by reporting `{"outcome": ...}` from its node's enum. A computed edge fires once its
+source's cell Observer has read the round to the seal. An orchestrator chooses with the `route` tool among the
+chosen edges the mechanism has enabled, and the route is checked again where it is applied. A `mesh` may have
+cycles and does not load without a `budget`. `workflow_status` shows a run and, as a bootstrap, hands out the
+sessions this replica opened for its leases (`GAPS-AND-ASSUMPTIONS.md` I49).
 
 ## Run tools held to their channel (ADR-0034 A2)
 

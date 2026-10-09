@@ -65,3 +65,27 @@ impl Heartbeat {
         serde_json::json!({ "heartbeat": self })
     }
 }
+
+/// `{"finding": {"topic": "<round topic>"}}`, and nothing else: an Observer's finding against one
+/// round (ADR-0007; ADR-0054 §4's `found`). PROVISIONAL (finding-record): no record fixes a finding's
+/// form, and the reference had no producer of one (G12). It is a fact the mechanism reads by shape,
+/// as it reads a heartbeat, and it only subtracts: a workflow edge out of that round, or out of any
+/// activation whose causal history holds it, is no longer enabled.
+#[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
+pub struct Finding {
+    pub topic: String,
+}
+
+impl Finding {
+    pub fn parse(record: &Value) -> Option<Finding> {
+        let obj = record.as_object()?;
+        if obj.len() != 1 {
+            return None;
+        }
+        serde_json::from_value(obj.get("finding")?.clone()).ok()
+    }
+
+    pub fn record(&self) -> Value {
+        serde_json::json!({ "finding": self })
+    }
+}

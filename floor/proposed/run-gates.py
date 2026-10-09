@@ -10,7 +10,7 @@ The evidence (every solver query, its proof and the checker's verdict) is left i
 and not copied; the results file carries its tree digest.
 
 Requires what ../run-gates.py requires: cedar with `--features analyze`, CVC5, and the ethos checker.
-Usage: run-gates.py <labels|control|emergency> [results-file]
+Usage: run-gates.py <labels|control|emergency|workflow> [results-file]
 """
 import importlib.util
 import os
@@ -24,6 +24,8 @@ spec.loader.exec_module(g)
 
 CONTROL_SIGS = {"Regrant": "Seat", "Renew": "Seat", "AttestGates": "Artifact",
                 "EndRound": "Seat", "Revoke": "Seat", "FenceEpoch": "Fleet"}
+WORKFLOW_SIGS = {"Route": "Edge"}
+STAGES = ("labels", "control", "emergency", "workflow")
 
 
 def once(text, old, new):
@@ -44,7 +46,7 @@ def candidates(stage, text):
          once(text, '  context.clearSet.contains("untrusted") &&\n  context.destLiteral\n', '  context.destLiteral\n'), "tightening"),
         ("relax: R7 removed", "Actuate", drop("R7-no-replayed-destination"), "relaxation"),
     ]
-    if stage in ("control", "emergency"):
+    if stage in ("control", "emergency", "workflow"):
         c += [
             ("relax: C5 without the peer condition", "Regrant",
              once(text, "when { !context.hasLease || !context.peerLive };", "when { !context.hasLease };"), "relaxation"),
@@ -55,7 +57,7 @@ def candidates(stage, text):
              once(text, "  context.nextRound &&\n  context.lastAlphabet.containsAll(context.newAlphabet)\n", "  context.nextRound\n"), "relaxation"),
             ("relax: C8 removed, an unlabelled task", "Regrant", drop("C8-task-label-in-bounds"), "relaxation"),
         ]
-    if stage == "emergency":
+    if stage in ("emergency", "workflow"):
         b10 = ('when {\n  principal.kind != "thinker" &&\n'
                '  !(principal.kind == "emergency" && action == Topak::Action::"Actuate")\n};')
         c += [
@@ -64,18 +66,39 @@ def candidates(stage, text):
             ("relax: B10 admits every kind for Actuate", "Actuate",
              once(text, b10, 'when { principal.kind != "thinker" && action != Topak::Action::"Actuate" };'), "relaxation"),
         ]
+    if stage == "workflow":
+        r3 = 'when { (principal.kind == "thinker" || principal.kind == "orchestrator") && !context.observerLive };'
+        c += [
+            ("relax: R9 removed, any seat with Route may route", "Route", drop("R9-only-orchestrators-route"), "relaxation"),
+            ("relax: R8 without the decision-point condition", "Route",
+             once(text, "  resource.chosen &&\n  context.decisionPoint.contains(resource.source)\n",
+                  "  resource.chosen\n"), "relaxation"),
+            ("relax: R8 admits a computed edge", "Route",
+             once(text, "  resource.chosen &&\n  context.decisionPoint", "  context.decisionPoint"), "relaxation"),
+            ("relax: R3 couples Thinkers only, as before", "Route",
+             once(text, r3, 'when { principal.kind == "thinker" && !context.observerLive };'), "relaxation"),
+            ("tighten: no Route after reading untrusted", "Route",
+             text + '\n@id("T-no-route-untrusted")\nforbid (principal, action == Topak::Action::"Route", resource)\n'
+                    'when { context.clearSet.contains("untrusted") };\n', "tightening"),
+            ("equivalent: the kind test moved into R8", "Route",
+             once(text, '  principal.domain == "run" &&\n  context.lease.alphabet.contains("Route") &&',
+                  '  principal.domain == "run" &&\n  principal.kind == "orchestrator" &&\n  context.lease.alphabet.contains("Route") &&'),
+             "equivalent"),
+        ]
     return c
 
 
 def main():
-    if len(sys.argv) < 2 or sys.argv[1] not in ("labels", "control", "emergency"):
+    if len(sys.argv) < 2 or sys.argv[1] not in STAGES:
         sys.exit(__doc__)
     stage = sys.argv[1]
     results = sys.argv[2] if len(sys.argv) > 2 else None
     g.SCHEMA = os.path.join(HERE, f"{stage}.cedarschema")
     g.FLOOR = os.path.join(HERE, f"{stage}-floor.cedar")
-    if stage in ("control", "emergency"):
+    if stage in ("control", "emergency", "workflow"):
         g.SIGS.update(CONTROL_SIGS)
+    if stage == "workflow":
+        g.SIGS.update(WORKFLOW_SIGS)
     g.out(f"TOPAK — PROPOSED policy floor, stage `{stage}`: the genesis gates (below), then routing controls for the new entries")
     g.out("Built by floor/proposed/build.py from the genesis floor. Not ratified, and not what the reference follows.")
     g.out()

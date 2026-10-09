@@ -3,7 +3,9 @@
 
   genesis    Genesis.lean, Tests.lean            from genesis.cedarschema, genesis-floor.cedar, genesis-tests.json
   emergency  Emergency.lean, EmergencyTests.lean from proposed/emergency.*: the floor in force, which the reference
-             links and pins (mechanism/crates/topak-floor; since 2026.10.05)
+             linked and pinned from 2026.10.05 to 2026.10.08
+  workflow   Workflow.lean, WorkflowTests.lean   from proposed/workflow.*: the floor the reference links and pins
+             since 2026.10.08 (mechanism/crates/topak-floor; ADR-0033 A16), not in force: ADR-0054 is Proposed
 
   <Floor>.lean  schema -> Schema, floor -> Policies, in cedar-spec's abstract syntax
   <Tests>.lean  cases  -> one Request per case over the shared entity store, and one theorem per case that the
@@ -27,6 +29,10 @@ STAGES = {
                   "Emergency", "EmergencyTests", "emergency", "emCase", 3,
                   "The floor in force, the `emergency` stage of the proposed floor, and its schema S",
                   "(`proposed/build.py`)"),
+    "workflow": ("proposed/workflow-floor.cedar", "proposed/workflow.cedarschema", "proposed/workflow-tests.json",
+                 "Workflow", "WorkflowTests", "workflow", "wfCase", 3,
+                 "The floor the reference links, the `workflow` stage of the proposed floor, and its schema S",
+                 "(`proposed/build.py`)"),
 }
 
 def d16(p):

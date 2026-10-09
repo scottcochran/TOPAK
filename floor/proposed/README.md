@@ -1,11 +1,11 @@
 # Proposed policy floor
 
-**2026.10.04**, revised 2026.10.05 · DRAFT · not ratified · **the reference links the `emergency` stage** (since 2026.10.05)
+**2026.10.04**, revised 2026.10.05 and 2026.10.08 · DRAFT · not ratified · **the reference links the `workflow` stage** (since 2026.10.08; `emergency` from 2026.10.05)
 
 This directory holds the floor as it would read if the records drafted on 2026.10.03 and 2026.10.04 were in force.
 **Since 2026.10.05 the reference links, pins and replays a stage from here** (`mechanism/crates/topak-floor`), switched
 outright from the genesis floor in `floor/` at the custodian's direction: `labels` at commit `c15026d`, `control` at
-`c7de2ba`, and `emergency`, the last, after it. The stage files open with a comment that says they are not what the
+`c7de2ba`, `emergency` at `9c57221`, and `workflow`, drafted with ADR-0054 and not in force, on 2026.10.08. The stage files open with a comment that says they are not what the
 reference follows; that is no longer true of any of them. The bytes are left as they were gated, so that the digests the gate results and
 ADR-0047 cite are the digests the reference pins, and the comment is corrected at the stage's next gate run.
 It exists so that those records' floor text is real Cedar that has been validated, tested and put through the
@@ -21,6 +21,7 @@ the ones after it.
 | `labels` | ADR-0047, with ADR-0048 and ADR-0049 (ADR-0041 A1; ADR-0030 A2) | Three forbids on `Actuate`: `R5`, `R6`, `R7` | 20 | 74 |
 | `control` | + ADR-0050 (ADR-0041 A3) | Six actions and nine entries for an `operator` seat: `C1` to `C9` | 29 | 106 |
 | `emergency` | + ADR-0052 (ADR-0041 A2) | `X1-break-glass` removed; `B10` admits the `emergency` kind for `Actuate` | 28 | 107 |
+| `workflow` | + ADR-0054 (ADR-0041 A4; Proposed) | The action `Route`; `R8` and `R9`; `R3` couples the `orchestrator` kind and covers `Route` | 30 | 123 |
 
 The genesis floor has 17 policies and 62 cases.
 
@@ -30,9 +31,10 @@ The genesis floor has 17 policies and 62 cases.
 |---|---|
 | `build.py` | Builds every stage from `../genesis.cedarschema`, `../genesis-floor.cedar` and `../genesis-tests.json`. Each edit to the genesis text replaces a string asserted to occur exactly once, so a change to the genesis floor that this file does not expect stops the build |
 | `<stage>.cedarschema`, `<stage>-floor.cedar` | The stage's schema S and floor. Generated; edit `build.py` |
-| `<stage>-tests.json` | The stage's behavioural cases. Generated. `emergency-tests.json` is tracked, because the reference's floor tests replay it; the other two are not (about 2 MB) |
+| `<stage>-tests.json` | The stage's behavioural cases. Generated. `workflow-tests.json` is tracked, because the reference's floor tests replay it, and `emergency-tests.json`, because `floor/lean` states the floor in force from it; the other two are not (about 2 MB) |
 | `run-gates.py` | Drives `../run-gates.py`, the genesis gate runner, unchanged, on a stage, then adds routing controls for the new entries |
-| `<stage>-gates-results-2026.10.04.txt` | The gate run for each stage. All gates pass in all three |
+| `<stage>-gates-results-2026.10.04.txt` | The gate run for each of the first three stages. All gates pass in all three |
+| `workflow-gates-results-2026.10.08.txt` | The gate run for `workflow`. Added 2026.10.08 with the stage; the driver's other stages are unchanged, and `emergency`'s run reproduces its 2026.10.04 file byte for byte |
 
 ## Running
 
@@ -40,7 +42,7 @@ The genesis floor has 17 policies and 62 cases.
 export PATH="$HOME/.cargo/bin:$PATH"                      # cedar, built with --features analyze
 export CVC5=/path/to/cvc5                                 # cvc5 1.4.0, as for the genesis gates
 python3 build.py
-for s in labels control emergency; do
+for s in labels control emergency workflow; do
   cedar validate  --schema $s.cedarschema --policies $s-floor.cedar
   cedar run-tests --schema $s.cedarschema --policies $s-floor.cedar --tests $s-tests.json
   python3 run-gates.py $s $s-gates-results-<date>.txt
@@ -75,6 +77,25 @@ computed. They deny whatever permit is satisfied.
 | `C8-task-label-in-bounds` | forbid | No regrant whose task is unlabelled or labelled outside its seating's bounds |
 | `C9-stop-in-own-domain` | forbid | No ending of a round or revocation outside the operator's domain |
 
+**Workflow** (ADR-0054 §3, Proposed; ADR-0041 A4, pending). One permit and one forbid over a new action, and `R3`
+widened. Nothing here is in force. **The reference links this stage since 2026.10.08** (ADR-0033 A16), at the
+custodian's direction, and every Run request it lifts carries `decisionPoint`.
+
+| Id | Kind | Says |
+|---|---|---|
+| `R8-route-own-decision` | permit | A Run seat whose lease holds `Route` takes a chosen edge out of the decision point its lease was granted for |
+| `R9-only-orchestrators-route` | forbid | Only an `orchestrator` seat routes |
+| `R3-observer-live` | forbid, widened | Refuses `Actuate`, `Report` and `Route` under a `thinker` **or `orchestrator`** seat with no live cell Observer |
+
+`B10` is unchanged and already refuses an `orchestrator` seat `Actuate` and every authoring variant. **Whether an edge
+is enabled is not here**: its source ended and covered, its guard, the routing rule and the absence of a finding are
+mechanism checks, re-run at apply (ADR-0054 §4, §8). The floor sees only that the edge is the lease's to choose. R8
+compares the edge's source with the lease's decision point in Cedar, as C1 compares alphabets, rather than reading a
+Boolean the lift computed *(drafter's choice)*. The decision point is a set, empty for every seat but an orchestrator,
+and not an optional attribute: with `has`, cvc5 proves R8 total only by a scoped assumption (`assume-push`), which
+`../cvc5-checked` does not accept, and the run reports `unknown`. A routing control shows R9 equivalent to the same kind test placed
+inside R8; the forbid is kept so that the kind rule reads as B10's does.
+
 **Emergency** (ADR-0052). No new entry. `X1-break-glass` is deleted and the `breakGlass` fields leave the schema. An
 `emergency` seat's calls are admitted by `R1-actuate-allowlisted` over the envelope it was given. `R3-observer-live`
 is unchanged and does not reach the seat, because R3 names `thinker` seats. `B10-only-thinkers-author` gains one
@@ -87,6 +108,7 @@ exception: an `emergency` seat, for `Actuate`.
 | `labels` | `Tool.outward`; in `RunCtx`: `clearSet`, `inputLabels`, `destLiteral`, `destLabels` | The lift, from the record and the entry of the granted bundle revision. `outward` is derived from the issued rules' list of inside targets and is never declared |
 | `control` | The kind `operator`; the entity `Fleet`; `ControlCtx`, thirteen facts about the operator, the target and the request; six actions | The mechanism. An operator supplies none of them |
 | `emergency` | The kind `emergency`; `RunCtx` loses `breakGlass` | — |
+| `workflow` | The kind `orchestrator`; the entities `WorkflowNode` and `Edge` (`source`, `chosen`); in `RunCtx`, `decisionPoint`, a set of at most one node; the action `Route` over a `Seat` and an `Edge`, with `RunCtx` | The mechanism, from the promoted workflow and the lease. Nothing a guard reads is in S |
 
 ## What the gates show, and what they do not
 
@@ -94,7 +116,7 @@ Each stage passes the genesis gates as they stand: totality for every policy on 
 non-vacuity and discrimination on every action; every entry matters; the four genesis routing candidates; the
 negative controls; the three checker controls. Added per stage: a candidate that drops or weakens a new entry is
 classed a relaxation, and one that strengthens it a tightening (four candidates for `labels`, nine by `control`,
-eleven by `emergency`). No `holds` in any run is without a checked proof.
+eleven by `emergency`, seventeen by `workflow`). No `holds` in any run is without a checked proof.
 
 - **This is the admit-time half.** ADR-0047's F4 to F6 are checks on bundle data at load (ADR-0049 §6, W7 to W9), made
   by the mechanism. They are not Cedar and are not here.
