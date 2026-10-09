@@ -1,5 +1,6 @@
-"""B8 — The policy floor in force: three gated stages from the genesis draft."""
-from lib import Canvas
+"""B8 — The policy floor in force: three gated stages from the genesis draft; and a fourth, `workflow`, Proposed and
+not in force, which the reference links since 2026.10.08."""
+from lib import AMENDED_G11, Canvas
 
 ID, SLUG = "B8", "floor-stages"
 
@@ -91,14 +92,20 @@ POLICIES = [
 
 
 def build():
-    c = Canvas(ID, "The policy floor in force: three gated stages from the genesis draft",
+    c = Canvas(ID, "The policy floor in force, three gated stages from the genesis draft; and a fourth the reference links",
                "`floor/proposed/build.py` builds the floor that the entries in force describe from "
                "`floor/genesis-floor.cedar`, in three cumulative stages, each validated, tested and gated: `labels` "
-               "(ADR-0041 A1), `control` (A3) and `emergency` (A2). The reference links the last. The floor is "
+               "(ADR-0041 A1), `control` (A3) and `emergency` (A2). The last is the floor in force. It is "
                "genesis-provisional (ADR-0030 A3): gated, pinned and enforced, ratified by no batch, and ratified when "
-               "the bootstrap reviewer establishes that it is fit, for which no test exists (G10 item 87).",
-               W, "G10 §1 (Batch 34), §1.2, §2.1, §2.2, §2.3, §2.9, §3, §4, §7 items 2, 25, 87, 90, 91, 92, 93, §8; "
-               "ToO rev 14 §2.10, §3.1, §3.3, §7.10; ADR-0041 §1–§4, A1, A2, A3, R2; ADR-0030 §5, A1, A2, A3; "
+               "the bootstrap reviewer establishes that it is fit, for which no test exists (G11 item 87). **A fourth "
+               "stage, `workflow`** (ADR-0041 A4, pending), is drafted with ADR-0054, which is **Proposed**: it is not in "
+               "force, and since 2026.10.08 it is the stage the reference links, at the custodian's direction (G11 "
+               "§2.2, item 102).",
+               W, "G10 §1 (Batch 34), §1.2, §2.1, §2.3, §2.9, §3, §4, §7 items 2, 25, 90, 92, 93, §8; G11 §2.2, §3, §7 "
+               "items 87, 91, 102; ToO rev 15 §2.10, §2.11, §3.1, §3.3, §7.10; ADR-0041 §1–§4, A1, A2, A3, A4, R2, R3; "
+               "ADR-0054 §3, §12, R4 (Proposed); ADR-0033 A16 (pending); floor/proposed/workflow-floor.cedar, "
+               "workflow.cedarschema, workflow-gates-results-2026.10.08.txt; floor/lean/TopakFloor/Linked.lean and "
+               "floor/lean/TopakFloor-results-2026.10.08.txt; ADR-0030 §5, A1, A2, A3; "
                "ADR-0029 §5 step 6, A4; ADR-0047 §7, §8, R16; ADR-0050 §2, §4–§6, R8, R9; ADR-0052 §1, §2, R4; "
                "ADR-0033 A9–A12, A15; ADR-0013 A1; ADR-0026 A2; ADR-0039 A2; ADR-0045 T-0045-3; "
                "floor/proposed/README.md, build.py, run-gates.py, labels-, control-, emergency-floor.cedar and "
@@ -106,11 +113,13 @@ def build():
                "genesis.cedarschema, genesis-values.json, genesis-tests.json, run-gates.py, "
                "genesis-gates-results-2026.10.01.txt; mechanism/crates/topak-floor/src/lib.rs (the pins); ADR-0053 R3 "
                "(B36); floor/lean/TopakFloor/InForce.lean and floor/lean/TopakFloor-results-2026.10.06.txt")
+    c.note = AMENDED_G11
     X0, X1 = c.x0, c.x1
     y = c.y
     y += c.legend(X0, y, [
         ("box", "violet", "draft or genesis-provisional: not ratified"), ("box", "teal", "labels stage"),
-        ("box", "blue", "control stage; ratified records"), ("box", "green", "emergency stage, linked"),
+        ("box", "blue", "control stage; ratified records"), ("box", "green", "emergency stage, in force"),
+        ("box", "amber", "workflow stage: Proposed, linked"),
         ("box", "red", "carve-out, gap, what the gates do not show"), ("box", "grey", "removed"),
         ("arrow", "ink", "build step: one stage is the previous plus one batch of records"),
     ], title="Read as") + 30
@@ -123,18 +132,19 @@ def build():
         "**Gated, pinned by digest and enforced, and ratified by no batch.** It is ratified when **the bootstrap "
         "reviewer establishes that it is fit**, and says so in the review attestation the genesis bundle carries "
         "(ADR-0029 §5 step 6, A4). That gives floor fitness an owner and a time.",
-        "**It does not give it a test** (G10 item 2; item 87, new). The gates show a floor is consistent, total, "
+        "**It does not give it a test** (G10 item 2; item 87). The gates show a floor is consistent, total, "
         "non-vacuous and minimal; whether it is the right floor is the reviewer's judgment, and no record says how a "
-        "reviewer tests that. **No bootstrap reviewer is engaged** and no review pass has run (G10 §4).",
+        "reviewer tests that. **No bootstrap reviewer is engaged** and no review pass has run (G11 §4).",
         "**The floor in question is the one the entries in force describe** (ADR-0030 A3): since Batch 34 that is "
         "`emergency-floor.cedar` and its schema. ADR-0041 ratified what the floor must contain, entry by entry, not a "
         "text. The control entries and the emergency change rest on records ratified **provisional** (ADR-0050, "
         "ADR-0052; ADR-0029 A4).",
     ])
-    wc = ("The stage files open with a comment that is wrong (G10 item 91)", [
+    wc = ("The stage files open with a comment that is wrong (G11 item 91)", [
         "Every stage's floor and schema open: `// PROPOSED · built by floor/proposed/build.py from the genesis floor "
         "· stage: emergency · not ratified, // and not what the reference follows.` The reference has linked a "
-        "stage since `c15026d`, and links `emergency` now.",
+        "stage since `c15026d`: `emergency` from `9c57221`, and **`workflow` since `11aaf6a`**, of which the comment "
+        "is now false.",
         "**The bytes are kept as gated**, so the digests the gate results and the records cite are the digests the "
         "reference pins. Correcting the comment is a gate rerun and **new digests in ADR-0047, ADR-0050 and "
         "ADR-0052** (and the pins of ADR-0033 A10 to A12).",
@@ -180,15 +190,15 @@ def build():
             "Cited by ADR-0050 R8 and ADR-0033 A11 (126 tests).",
             "At the reference the floor alone decides a control request: there is no bundle tier (A11).",
         ]),
-        ("Stage `emergency`: the floor in force", "green", "genprov", "linked by the reference",
-         "Gated 2026.10.04 · linked since `9c57221` (ADR-0033 A12)", [
+        ("Stage `emergency`: the floor in force", "green", "genprov", "the floor in force",
+         "Gated 2026.10.04 · linked from `9c57221` (ADR-0033 A12) to `11aaf6a`", [
             "**Records:** + ADR-0052 (**provisional**); **ADR-0041 A2**; ADR-0013 A1; ADR-0026 A2.",
             "**Removes** `X1-break-glass`; `B10` **now** lets a seat of kind `emergency` `Actuate`. No new entry.",
             "**28 policies · 107 cases.** The floor's exceptions are one.",
             "Floor `15c941b9a56a09f7` · schema `d3c8145c6af2d9a3`.",
-            "Cited by ADR-0052 R4, ADR-0033 A12 and G10 §2.2; pinned in `topak-floor` (`PINNED_FLOOR_SHA256`); the "
-            "replica refuses to start on other bytes.",
-            "The 107 cases replay through the linked engine; 131 tests at A12, 133 at `075b2e7` (A15).",
+            "Cited by ADR-0052 R4, ADR-0033 A12, G10 §2.2 and G11 §2.2; stated in Lean (`InForce.lean`; ADR-0053 R3).",
+            "Linked by the reference from A12 to A15, 131 to 133 tests; since `11aaf6a` the reference links "
+            "`workflow`, below.",
         ]),
     ]
     hs = max(c.card(0, 0, cw, t, b, size=14, status=s, status_extra=e, sub=sub, draw=False)
@@ -208,7 +218,58 @@ def build():
         "checks it first (ADR-0039 §1). Each step **replaces a string asserted to occur exactly once** in the genesis "
         "text, so a change to the genesis floor the build does not expect stops it instead of producing a wrong floor."
     ], accent="grey", size=14, bullets=False, tint=False)
-    y += vb + 50
+    y += vb + 30
+
+    # ---------------------------------------------------------------- the fourth stage, Proposed
+    c.text(X0, y + 22, "And a fourth stage: `emergency` → `workflow`, drafted with ADR-0054, **Proposed**, and "
+           "linked by the reference", 22, "amber", bold=True)
+    y += 44
+    fw = (X1 - X0 - g) * 0.36
+    fw2 = X1 - X0 - g - fw
+    fcard = ("Stage `workflow`: not in force", [
+        "**Records:** + ADR-0054 (**Proposed**); **ADR-0041 A4** (pending); ADR-0015 A1, ADR-0037 A5, ADR-0040 A2 "
+        "(pending).",
+        "**Adds** the action `Route`, a permit `R8` and a forbid `R9`; **amends** `R3` to couple the `orchestrator` "
+        "kind and cover `Route`.",
+        "**30 policies · 123 cases.** Every gate passes, 2026.10.08: totality 44 `holds°`, 17 actions non-vacuous "
+        "and discriminating, every entry matters, 17 new-entry routing controls, 22 `unsat` with a checked proof, "
+        "none without one; evidence tree `4ffc4fade540ab64`, not copied. A rerun reproduces it byte for byte.",
+        "Floor `10ea6818af9b4efe` · schema `fd394bb8c074eec2` · results `878d9a431fec9eb9`.",
+        "Cited by ADR-0054 R4 and ADR-0033 A16. **Linked by the reference since `11aaf6a`**, at the custodian's "
+        "direction: pinned in `topak-floor`, its 123 cases replayed through the linked engine; stated in Lean "
+        "(`Linked.lean`; `TopakFloor-results-2026.10.08.txt`). Every Run request lifts `decisionPoint`, empty for "
+        "every lease but an orchestrator's.",
+        "**The floor the reference follows is therefore not the floor in force** (G11 §2.2, item 102). The "
+        "`emergency` stage's bytes are unchanged.",
+    ])
+    hf1 = c.card(0, 0, fw, fcard[0], fcard[1], size=14, status="proposed", draw=False)
+    mono2 = {"mono": True}
+    tf = [
+        {"cells": ["R8-route-own-decision", "permit `Route`", "`principal.domain == \"run\"` ∧ "
+                   "`context.lease.alphabet.contains(\"Route\")` ∧ `resource.chosen` ∧ "
+                   "`context.decisionPoint.contains(resource.source)`: a chosen edge out of the decision point the "
+                   "lease was granted for", "ADR-0054 §3; ADR-0041 A4"], "accent": "amber"},
+        {"cells": ["R9-only-orchestrators-route", "forbid `Route`", "`principal.kind != \"orchestrator\"`",
+                   "ADR-0054 §3; ADR-0041 A4"], "accent": "amber"},
+        {"cells": ["R3-observer-live", "forbid, amended", "`Actuate` `Report` **`Route`** · `(principal.kind == "
+                   "\"thinker\" || principal.kind == \"orchestrator\") && !context.observerLive`: the orchestrator is "
+                   "coupled as a Thinker is", "ADR-0039 A3; ADR-0041 A4, R3"], "accent": "amber"},
+        {"group": "Schema S gains", "accent": "amber"},
+        ["Seat.kind", "+ `\"orchestrator\"`", "a sixth kind, Run only (ADR-0037 A5)", "ADR-0054 §3"],
+        ["WorkflowNode, Edge", "entities", "`Edge { source: WorkflowNode, chosen: Bool }`, read from the promoted "
+         "text; **nothing a guard reads is here**: whether an edge is enabled is not policy", "ADR-0054 §1, §4"],
+        ["RunCtx.decisionPoint", "`Set<WorkflowNode>`", "one node for an orchestrator's round, empty for every other "
+         "seat; a set, so that the gates' proofs need no scoped assumption", "ADR-0041 R3"],
+        ["action Route", "`Seat` → `Edge`", "context `RunCtx`; a principal emission (ADR-0015 A1)", "ADR-0040 A2"],
+    ]
+    hf2 = c.table(0, 0, [("Entry", fw2 * 0.17, mono2), ("Kind", fw2 * 0.11), ("Condition, as written", fw2 * 0.55),
+                         ("From the record (pending)", fw2 * 0.17)], tf, size=13.5, accent="amber", draw=False)
+    c.card(X0, y, fw, fcard[0], fcard[1], accent="amber", size=14, status="proposed",
+           status_extra="ADR-0054 · ADR-0041 A4 pending", h=max(hf1, hf2))
+    ht = c.table(X0 + fw + g, y, [("Entry", fw2 * 0.17, mono2), ("Kind", fw2 * 0.11),
+                                  ("Condition, as written", fw2 * 0.55), ("From the record (pending)", fw2 * 0.17)],
+                 tf, size=13.5, accent="amber")
+    y += max(hf1, ht) + 50
 
     # ---------------------------------------------------------------- what each stage changes
     c.text(X0, y + 22, "What each stage adds, removes and asks of the lift", 22, "ink", bold=True)
@@ -350,56 +411,59 @@ def build():
     y = max(b0, b1, b2, b3) + 56
 
     # ---------------------------------------------------------------- the gates
-    c.text(X0, y + 22, "The gates, stage by stage (ADR-0030 §5 with A1): every gate passes in all three", 22, "ink",
+    c.text(X0, y + 22, "The gates, stage by stage (ADR-0030 §5 with A1): every gate passes in all four", 22, "ink",
            bold=True)
     y += 46
-    gw = 1880
-    gc = [("Gate (ADR-0030 §5)", gw * 0.30), ("Genesis, 2026.10.01", gw * 0.16), ("`labels`", gw * 0.18),
-          ("`control`", gw * 0.18), ("`emergency`", gw * 0.18)]
+    gw = 2160
+    gc = [("Gate (ADR-0030 §5)", gw * 0.27), ("Genesis, 2026.10.01", gw * 0.14), ("`labels`", gw * 0.145),
+          ("`control`", gw * 0.145), ("`emergency` (in force)", gw * 0.15), ("`workflow`, 10.08 (Proposed)", gw * 0.15)]
     grows = [
         ["Floor · schema", "`28ec0e45…` · `0ec2fa21…`", "`9aab481d…` · `9beda963…`", "`4341ede9…` · `4e24033b…`",
-         "`15c941b9…` · `d3c8145c…`"],
-        ["Policies · cases", "17 · 62", "20 · 74", "29 · 106", "28 · 107"],
-        ["Values: `K`, `T_obs` read and placeholders named", "pass", "pass", "pass", "pass"],
+         "`15c941b9…` · `d3c8145c…`", "`10ea6818…` · `fd394bb8…`"],
+        ["Policies · cases", "17 · 62", "20 · 74", "29 · 106", "28 · 107", "30 · 123"],
+        ["Values: `K`, `T_obs` read and placeholders named", "pass", "pass", "pass", "pass", "pass"],
         ["**Totality**: never-errors, per policy per action it applies to", "23 rows", "26 rows", "41 rows",
-         "41 rows"],
+         "41 rows", "44 rows"],
         ["**Non-vacuity** and **discrimination**: always-allows and always-denies both refuted, per action", "10 actions",
-         "10 actions", "16 actions", "16 actions"],
-        ["**Every entry matters**: the floor minus one policy is not equivalent", "17", "20", "29", "28"],
+         "10 actions", "16 actions", "16 actions", "17 actions"],
+        ["**Every entry matters**: the floor minus one policy is not equivalent", "17", "20", "29", "28", "30"],
         ["**Routing**: the four genesis candidates, classed by implies both ways", "4 pass", "4 pass", "4 pass",
-         "4 pass"],
+         "4 pass", "4 pass"],
         ["**Routing, new entries**: weakened is a relaxation, strengthened a tightening", "—", "4 pass", "9 pass",
-         "11 pass"],
-        ["**Negative controls**: each gate catches a defective floor", "4 caught", "4 caught", "4 caught", "4 caught"],
+         "11 pass", "17 pass"],
+        ["**Negative controls**: each gate catches a defective floor", "4 caught", "4 caught", "4 caught", "4 caught",
+         "4 caught"],
         ["**Checker controls**: a solver that lies yields no `holds` (A1)", "3 caught", "3 caught", "3 caught",
-         "3 caught"],
-        ["`holds` without a checked proof, whole run", "0", "0", "0", "0"],
-        ["cedar calls · solver queries", "81 · 56", "95 · 67", "147 · 104", "151 · 108"],
+         "3 caught", "3 caught"],
+        ["`holds` without a checked proof, whole run", "0", "0", "0", "0", "0"],
+        ["cedar calls · solver queries", "81 · 56", "95 · 67", "147 · 104", "151 · 108", "171 · 125"],
         ["unsat with a checked proof · sat · unknown (the three checker controls)", "4 · 49 · 3", "8 · 56 · 3",
-         "13 · 88 · 3", "15 · 90 · 3"],
+         "13 · 88 · 3", "15 · 90 · 3", "22 · 100 · 3"],
         ["Evidence tree", "`f8b1196a427a35ed`, copied", "`ede6f4546ae6db48`, not copied", "`d1e617defade056b`, not copied",
-         "`974f339662a5289d`, not copied"],
+         "`974f339662a5289d`, not copied", "`4ffc4fade540ab64`, not copied"],
         ["Results file (sha256)", "`genesis-gates-results-2026.10.01.txt`", "`labels-…-2026.10.04.txt` "
          "`3579b95a42573958`", "`control-…-2026.10.04.txt` `aa96c96916a87c05`",
-         "`emergency-…-2026.10.04.txt` `7deaf26c1dc49422`"],
-        {"cells": ["RESULT", "all gates pass", "all gates pass", "all gates pass", "all gates pass"], "accent": "green"},
+         "`emergency-…-2026.10.04.txt` `7deaf26c1dc49422`", "`workflow-…-2026.10.08.txt` `878d9a431fec9eb9`"],
+        {"cells": ["RESULT", "all gates pass", "all gates pass", "all gates pass", "all gates pass", "all gates pass"],
+         "accent": "green"},
     ]
     gh = c.table(X0, y, gc, grows, size=13.5, accent="ink")
     gy = y + gh + 12
     c.para(X0, gy, gw, "**Checked, not proved** (ADR-0046 §1). A `holds✓` rests on the solver's proof, which the "
            "pinned `ethos` checker accepted against cvc5's rule signature (ADR-0030 A1); a `holds°` is one cedar decided "
            "without a solver query, by folding the authorizer term, and rests on the engine's faithfulness (T-0045-3). "
-           "Every totality row in every stage is `holds°`; the `emergency` stage's are also proved in Lean under "
-           "cedar-spec's model ([[blue|ADR-0053 R3, B36]]; H7). A `refuted` needs no proof: it can only subtract. Toolchain: "
+           "Every totality row in every stage is `holds°`; the `emergency` and `workflow` stages' are also proved in Lean "
+           "under cedar-spec's model ([[blue|ADR-0053 R3, B36]]; H7). A `refuted` needs no proof: it can only subtract. Toolchain: "
            "cedar-policy-cli 4.13.0, cvc5 1.4.0, `ethos` 8dc85c4.", 13.5, "muted")
     rx = X0 + gw + 40
     rw = X1 - rx
-    c.text(rx, y - 8, "The eleven new-entry routing controls, as the `emergency` run reports them", 16, "ink",
+    c.text(rx, y - 8, "The seventeen new-entry routing controls, as the `workflow` run reports them", 16, "ink",
            bold=True)
     rc = [("Candidate F′ (from the stage that adds it)", rw * 0.42), ("F′⇒F", rw * 0.11), ("F⇒F′", rw * 0.11),
           ("Classed · routed", rw * 0.36)]
     REL = "[[red|relaxation]] · anchor issuance + promotion"
     TIG = "[[green|tightening]] · ordinary promotion"
+    EQV = "[[green|equivalent]] · ordinary promotion"
     rr = [
         {"group": "`labels` (four)", "accent": "teal"},
         ["`R6` removed", "refuted", "holds✓", REL],
@@ -415,10 +479,17 @@ def build():
         {"group": "`emergency` (two more)", "accent": "green"},
         ["`B10` as at genesis: no emergency seat", "holds✓", "refuted", TIG],
         ["`B10` admits every kind for `Actuate`", "refuted", "holds✓", REL],
+        {"group": "`workflow` (six more; [[amber|Proposed]])", "accent": "amber"},
+        ["`R9` removed: any seat with `Route` may route", "refuted", "holds✓", REL],
+        ["`R8` without the decision-point condition", "refuted", "holds✓", REL],
+        ["`R8` admits a computed edge", "refuted", "holds✓", REL],
+        ["`R3` couples Thinkers only, as before", "refuted", "holds✓", REL],
+        ["No `Route` after reading untrusted", "holds✓", "refuted", TIG],
+        ["The kind test moved into `R8`", "holds✓", "holds✓", EQV],
     ]
     rh = c.table(rx, y + 8, rc, rr, size=13.5, accent="ink")
     c.para(rx, y + 8 + rh + 12, rw, "Every one passes: the class computed is the class expected. A Byzantine author "
-           "cannot relabel a relaxation as a tightening to take the cheaper path (ToO rev 14 §3.2).", 13.5, "muted")
+           "cannot relabel a relaxation as a tightening to take the cheaper path (ToO rev 15 §3.2).", 13.5, "muted")
     y = c.ymax + 56
 
     # ---------------------------------------------------------------- what the gates show, and what they do not
@@ -438,6 +509,8 @@ def build():
         "**The floor trusts its inputs.** `clearSet`, `destLiteral`, `peerLive` and the rest are facts the lift "
         "supplies; `Labels.tla` and `Operators.tla` model how they are computed. At the reference they are the "
         "deciding replica's, and `apply` re-checks only `clearSet` (G10 item 93).",
+        "**That the stage the reference links is in force.** `workflow` passes every gate and is Proposed; the "
+        "reference follows it at the custodian's direction (G11 item 102).",
         "**An operator's request is decided twice over**: the envelope is stated in Cedar and in Rust, and only the "
         "tests hold them together (ADR-0033 A11). The floor's decision on one is not modelled by trace validation "
         "(G10 §3).",
@@ -467,6 +540,7 @@ def build():
            "Counts: six Build envelopes, four Build carve-outs, three Run envelopes, four Run carve-outs, one exception, "
            "the forensic floor, four control permits and five control forbids: **28**. The genesis draft's 17, plus three "
            "at `labels`, plus nine at `control`, less one at `emergency`. One policy set serves both domains, scoped by "
-           "`principal.domain` and `principal.kind`, because the per-class floor question is open (ToO rev 14 §3.4).",
+           "`principal.domain` and `principal.kind`, because the per-class floor question is open (ToO rev 15 §3.4). The "
+           "`workflow` stage's three changes are in the band above.",
            14.5, "muted")
     return c

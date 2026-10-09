@@ -2,7 +2,7 @@
 import re
 
 import lib
-from lib import Canvas
+from lib import AMENDED_G11, Canvas
 
 ID, SLUG = "G2", "deployment-lattice"
 
@@ -220,7 +220,7 @@ TIER3 = [
          "**Voided**: none in force. §9's properties are lost.",
          "**The reference before 10.05** (ToO §8.2; ADR-0033 A12)."]),
       ]),
-    ("Correlations computed", "ADR-0051 §9 · Proposed, not built (G10 §7 item 97)",
+    ("Correlations computed", "ADR-0051 §9 · Proposed, not built (G11 §7 item 97)",
      ("A correlator computes the correlations of its table", [
          "ADR-0051 (Proposed) states the correlator's detection function; the deployed value below is \"the five → "
          "none\". A table that turns a correlation `off` is declared in the bundle and is not a degeneracy."]),
@@ -229,6 +229,25 @@ TIER3 = [
          "**Premise falsified**: a correlator computes the correlations of its table.",
          "**Voided**: none; §10's properties are lost. D-0038-2 with a seat filled.",
          "**The reference today** (the record's words)."], accent="amber"),
+      ]),
+    ("Workflows", "ADR-0054 §10 · Proposed (with ADR-0055, which adds no degeneracy of its own) · parameters not on "
+     "ToO §8.2's axis list",
+     ("A promoted workflow: lineages alternate on clear edges; an edge waits for coverage", [
+         "Every worker's lease is the promotion's grant; the Thinkers at the ends of a clear edge are independent "
+         "under ADR-0035, checked at the tally; an edge is enabled only once its source is covered (ADR-0054 §6, "
+         "§7). Proposed, and built at the reference (ADR-0033 A16, pending)."]),
+     [N("D-0054-1", "Lineage alternation declared, not enforced", "proposed", "declaration",
+        ["**Deployed**: lineage alternation on clear edges, enforced at the tally → declared.",
+         "**Premise falsified**: a clear edge joins independent lineages.",
+         "**Voided**: `PromotedAlternates`. Alternation is not a conjunct of `Contained`, so no type changes.",
+         "**Every deployment today**, since ADR-0035 is Proposed; the reference compares a declared tag at load "
+         "(I49 (b))."], accent="amber"),
+      N("D-0054-2", "Coverage at the edge waived", "proposed", "Deployment (the record's word)",
+        ["**Deployed**: coverage at the edge, required → waived, where a Run budget cannot wait for a node's Observer "
+         "to reach the seal.",
+         "**Premise falsified**: an edge is enabled only after its source is covered.",
+         "**Voided**: `EdgeAfterCoverage`. A route is still void on a finding (§8); a finding that lands after the "
+         "successor starts stops only what follows."], parent="arch", accent="amber"),
       ]),
 ]
 
@@ -352,6 +371,7 @@ def _build():
                "derived/topak-rungs-axes-degeneracies-accounting-2026.09.26.md; "
                "mechanism/GAPS-AND-ASSUMPTIONS.md G19; G10 §1.1, §1.2, §2.2, §2.3, §2.5, §8, §7 items 5, 6, 7, 11, 38, "
                "40, 64, 67, 80, 83, 85, 97")
+    c.note = AMENDED_G11
     X0, X1 = c.x0, c.x1
     W = X1 - X0
     y = c.y

@@ -5,7 +5,7 @@ import hashlib
 import pathlib
 import re
 
-from lib import Canvas, strip_external
+from lib import AMENDED_G11, Canvas, strip_external
 
 ID, SLUG = "H6", "proof-certification"
 
@@ -15,8 +15,9 @@ ROOT = next((p for p in [*_HERE.parents, pathlib.Path.cwd(), *pathlib.Path.cwd()
 SPEC = ROOT / "spec"
 ADR45 = ROOT / "decisions" / "ADR-0045.md"
 
-# Which record each proof module answers to, and its status at G10 (G10 §1.1, §3; spec/README.md). Grouped as
-# ADR-0046 A1 groups them: its thirteen; the three its note names; and the six certified after it was drafted.
+# Which record each proof module answers to, and its status at G11 (G11 §1.1, §3; spec/README.md). Grouped as
+# ADR-0046 A1 groups them: its thirteen; the three its note names; the six certified after it was drafted; and the
+# two liveness extensions of 2026.10.07 (G11 §2.9).
 GROUPS = [
     ("ADR-0046 §4's thirteen, each cited by digest; A1 lists eleven as certified and two as not (Batch 28, "
      "2026.10.04)", "blue", [
@@ -47,6 +48,11 @@ GROUPS = [
         ("Correlator", "ADR-0051 §10 · [[amber|Proposed]]; not among G10 §3's frozen six"),
         ("BreakGlass_A1", "ADR-0052 R5; ADR-0026 A2; ADR-0029 §5"),
         ("NonComposition_A1", "ADR-0052 R5; ADR-0013 A1"),
+    ]),
+    ("The liveness extensions, certified on 2026.10.07 and 2026.10.08: each extends a frozen module and proves "
+     "`SpecL ⇒ Spec` (spec/README.md; G11 §2.9, §3; ToO rev 15 §5.5)", "pink", [
+        ("Emergency_live", "ADR-0039 A2; ADR-0052 §9 · [[blue|provisional]] · two invariants over `ENABLED`, through Isabelle"),
+        ("Coupling_live", "ADR-0039 §2 · safety only: its four leads-to properties are [[red|checked, not proved]]"),
     ]),
 ]
 
@@ -124,23 +130,27 @@ def build():
                "run (ADR-0046 A1, Batch 28) takes the same proof again and does not take that word: Z3 is not run, cvc5 "
                "stands behind `spec/smt-checked` and an SMT obligation counts only with a proof of false that the `ethos` "
                "checker accepted; every Zenon proof is re-checked by Isabelle; and `spec/proof-cert.sh` puts every "
-               "obligation on exactly one route. **Nineteen of the twenty-two proof modules certify; three do not** "
-               "(G10 §2.9). Three words, kept apart (ADR-0046 §1, A1): TLC **checks** mutations and witnesses; the prover "
+               "obligation on exactly one route. **Twenty-one of the twenty-four proof modules certify; three do not** "
+               "(G11 §2.9). Three words, kept apart (ADR-0046 §1, A1): TLC **checks** mutations and witnesses; the prover "
                "**proves** invariants under named hypotheses; a proof is **certified** when every obligation is closed "
                "by the prover's normalization, by a checked proof, or by LS4. **A certified proof is not a verified one** "
-               "(G10 §8), and none of it is a claim about the running reference (T-0045-28). **Beside it, proposed**: twelve of "
-               "these modules' theorems proved again in Lean, of re-encodings, with the temporal step a kernel-checked "
-               "induction and no SMT solver; the three that do not certify among them (ADR-0053; H7).",
+               "(G11 §8): the prover's translation is **known to be unsound in two ways**, and a certified proof is "
+               "checked against the query, not the obligation (ADR-0046 A2, Batch 37). None of it is a claim about the "
+               "running reference (T-0045-28). **Beside it, since Batch 36**: fifteen of these modules' theorems proved "
+               "again in Lean, of re-encodings, with the temporal step a kernel-checked induction and no SMT solver; the "
+               "three that do not certify among them (ADR-0053; H7).",
                3200,
                "spec/proof-certification.md §1–§12 (DRAFT, 2026.10.04; 61346a4237a85c94); spec/proof-cert.sh "
-               "(315fa3d07b7a42de); spec/smt-checked (bb86642633822ae5); spec/smt-checked-selftest.sh; the twenty-two "
-               "spec/*-proof-cert-results-2026.10.04.txt and -2026.10.05.txt files, read at build time; "
+               "(315fa3d07b7a42de); spec/smt-checked (bb86642633822ae5); spec/smt-checked-selftest.sh; the twenty-four "
+               "spec/*-proof-cert-results-*.txt files (2026.10.04 to 2026.10.08), read at build time; "
                "spec/proof-method.md §5a; spec/README.md (TLAPS proofs, certified runs); ADR-0046 §1, §3 with A1, "
                "open obligations, E2, A1, B28, A2, E3, E4, B37; ADR-0045 Annex A and Annex B rows T-0045-14 and T-0045-31 "
                "(read at build time), B24, B25, B28, A3, E1, B37; the newest spec/proof-scan-results file (read at "
                "build time, for Isabelle's refusals); ADR-0053 (B36) §2, §5 and spec/lean/TopakSpec-results-2026.10.05.txt; "
-               "proof-certification.md §8, §12 as amended 2026.10.05; ADR-0030 §5 A1 and floor/cvc5-checked; G10 §1 (Batch 28), §2.6, §2.9, "
-               "§3 (results 9; \"What these checks are\"), §5, §7 items 73, 74, §8; ToO rev 14 §7.9, §11.3")
+               "proof-certification.md §8, §10, §12 as amended to 2026.10.08; ADR-0030 §5 A1 and floor/cvc5-checked; G10 §1 (Batch 28), "
+               "§3 (results 9; \"What these checks are\"), §5, §7 item 73; G11 §2.9, §3, §7 items 74, 104, §8; "
+               "ToO rev 15 §5.5, §7.9, §11.3")
+    c.note = AMENDED_G11
     X0, X1 = c.x0, c.x1
     W = X1 - X0
     y = c.y
@@ -194,7 +204,7 @@ def build():
                 "`tlapm -C --cleanfp --strict --toolbox 0 0 --solver '<smt-checked> \"$file\"'`, then reads the "
                 "prover's per-obligation messages, which name the backend that discharged each one, and the wrapper's "
                 "verdicts. **A module is certified when every obligation is on one of the first five rows.** The counts "
-                "are the sums over the twenty-two certified results files (§3 below).", 15, "muted") + 18
+                "are the sums over the twenty-four certified results files (§3 below).", 15, "muted") + 18
 
     cert = {m: read_cert(m) for _, _, mods in GROUPS for m, _ in mods}
     tot = {k: sum(r[k] for r in cert.values()) for k in ("n", "triv", "smt", "zen", "isa", "ls4", "fail")}
@@ -295,7 +305,7 @@ def build():
         c.arrow([(xs[3] + CNc + 2, mid), (xs[4] - 4, mid)], cna, dash="7 5" if cna == "red" else None)
         ry += rh + gap
     for x_, lab in [(xs[1], "Route (§2)"), (xs[2], "Checked by"), (xs[3], "Counts toward certification · "
-                                                                         "obligations, all 22")]:
+                                                                         "obligations, all 24")]:
         c.text(x_, y - 10, lab, 13, "faint", bold=True)
     y += total_h + 50
 
@@ -383,7 +393,7 @@ def build():
                 "with the self-test (B28). The digest column is each results file's SHA-256 (16), as A1 cites them. "
                 "**Obligation counts equal the uncertified runs'** (`<M>-proof-results-*.txt`), every one of which ends "
                 "\"All N obligations proved\"; certification adds no obligation and removes none.", 15, "muted") + 14
-    cols = [("Proof module", 270), ("Over the record · status at G10", 490), ("Obligations", 120),
+    cols = [("Proof module", 270), ("Over the record · status at G11", 490), ("Obligations", 120),
             ("Trivial", 100), ("SMT, accepted by `ethos`", 150), ("Zenon, checked by Isabelle", 230),
             ("Isabelle", 100), ("LS4, not certified", 120), ("Failed", 90), ("Time-outs", 100),
             ("Evidence digest", 170), ("Results file (SHA-256, 16)", 410), ("Result", W - 2350)]
@@ -409,11 +419,12 @@ def build():
             rows.append({"cells": cells, "accent": "red"} if not r["certified"] else cells)
     cc = [r for r in cert.values() if r["certified"]]
     sub = {k: sum(r[k] for r in cc) for k in ("n", "triv", "smt", "zen", "isa", "ls4", "fail")}
-    rows.append({"cells": ["**All twenty-two**", "5,225 obligations, every one proved (G10 §2.9)",
+    rows.append({"cells": [f"**All {len(cert)}**", f"{tot['n']:,} obligations, every one proved (G11 §2.9)",
                            f"**{tot['n']:,}**", f"{tot['triv']:,}", f"{tot['smt']:,}",
                            f"{tot['zen']} ({zen_refused} refused)", str(tot["isa"]), str(tot["ls4"]),
-                           f"[[red|{tot['fail']}]]", "", "", "", "19 certified, 3 not"], "accent": "blue"})
-    rows.append({"cells": ["**The nineteen certified**", "the certified configuration of T-0045-31",
+                           f"[[red|{tot['fail']}]]", "", "", "", f"{len(cc)} certified, {len(cert) - len(cc)} not"],
+                 "accent": "blue"})
+    rows.append({"cells": [f"**The {len(cc)} certified**", "the certified configuration of T-0045-31",
                            f"**{sub['n']:,}**", f"{sub['triv']:,}", f"{sub['smt']:,}", str(sub["zen"]),
                            str(sub["isa"]), str(sub["ls4"]), "0", "", "", "",
                            f"{sub['n'] - sub['ls4']:,} rest on normalization or a checked proof; {sub['ls4']} on LS4"],
@@ -422,7 +433,8 @@ def build():
     y += c.para(X0, y, W, "proof-certification.md §9 reports twenty modules and 5,084 obligations on 2026.10.04 (trivial "
                 "3,330; SMT 1,621; Zenon 10, five accepted and five refused, of which tlapm reported one (ADR-0046 E4, B37); "
                 "Isabelle 2; LS4 115; failed 6); the two "
-                "successors certified on 2026.10.05 add 141 and make the totals above. Time-outs ×10 is `STRETCH=10`: "
+                "successors certified on 2026.10.05 add 141, and the two liveness extensions of 2026.10.07 and 2026.10.08 add "
+                "191, which make the totals above. Time-outs ×10 is `STRETCH=10`: "
                 "it recovered one obligation in `Confinement` and none elsewhere (§10).", 14, "muted") + 50
 
     # ================================================================ 4 · the three
@@ -453,11 +465,11 @@ def build():
     ]
     deferred = [
         "All three are cited by digest in accepted records, so restructuring means **successor modules**; the "
-        "custodian deferred that on 2026.10.04 (ADR-0046 A1; G10 §7 item 74).",
+        "custodian deferred that on 2026.10.04 (ADR-0046 A1; G11 §7 item 74).",
         "**A refused script and an unproved obligation are missing checks, not counterexamples.** The uncertified "
         "results stand as they did: every obligation proved under the prover as first configured, on the residual "
         "of T-0045-31 as first written, the SMT solver's soundness included.",
-        "Item 74, \"the SMT backends' proofs checked\", is discharged for nineteen of twenty-two, **by cvc5 and the "
+        "Item 74, \"the SMT backends' proofs checked\", is discharged for twenty-one of twenty-four, **by cvc5 and the "
         "`ethos` checker and not by Isabelle**, the checker it named.",
         "**A second route, since Batch 36** (ADR-0053; H7): all three are also proved in Lean, every step kernel-checked, of "
         "a re-encoding (`RulesFloorNV_rev5.lean`, `Confinement.lean` under a flag). That does not certify them; it "
@@ -516,21 +528,23 @@ def build():
     qw = (rw5 - 30) / 2
     q1 = [
         "\"A certified proof still trusts the prover's translation of an obligation into a query, its normalization, "
-        "LS4, and the checker\" (G10 §3, what these checks are).",
-        "\"Twenty-two modules' invariants are proved, nineteen with checked proofs, and nothing about the running "
-        "reference is. A matching trace is drift detection on tested paths; T-0045-28 stands\" (G10 §8).",
+        "LS4, and the checker\" (G10 §3, carried by G11 §3).",
+        "\"The invariants are proved, under named hypotheses, by the prover T-0045-31, and the mutations and witnesses "
+        "are checked by TLC. Neither is a claim about the running reference\" (T-0045-28; G11 §8).",
     ]
     q2 = [
-        "\"**A certified proof is not a verified one.** The prover's translation, its normalization, LS4 and the "
-        "checker are trusted as written\" (G10 §8).",
-        "\"Nothing here is independently reviewed\" (G10 §8): the method document, the wrapper, the driver and the "
-        "results are the drafter's; B28 was not reviewed by a reader other than the drafter (ADR-0029 A2.5).",
+        "\"**The pinned prover can prove false statements.** Two ways are known. A scan and a reading say that no "
+        "result a record cites rests on either, and no check detects the first. A certified proof is not a verified "
+        "one\" (G11 §8; ADR-0046 A2).",
+        "\"Nothing here is independently reviewed\" (G11 §8): the method document, the wrapper, the driver, the scan "
+        "and the results are the drafter's; B28 and B37 were not reviewed by a reader other than the drafter (ADR-0029 "
+        "A2.5).",
     ]
     hq = max(c.card(0, 0, qw, "What these checks are", q1, accent="red", size=14, draw=False),
-             c.card(0, 0, qw, "What G10 does not claim", q2, accent="red", size=14, draw=False))
+             c.card(0, 0, qw, "What G11 does not claim", q2, accent="red", size=14, draw=False))
     c.card(X0 + lw5 + 40, y + tA1, qw, "What these checks are", q1, accent="red", size=14, h=hq, tint=False,
            dash="6 4")
-    c.card(X0 + lw5 + 40 + qw + 30, y + tA1, qw, "What G10 does not claim", q2, accent="red", size=14, h=hq,
+    c.card(X0 + lw5 + 40 + qw + 30, y + tA1, qw, "What G11 does not claim", q2, accent="red", size=14, h=hq,
            tint=False, dash="6 4")
     y += max(t8, tA1 + hq) + 44
 
@@ -561,14 +575,20 @@ def build():
         "**An `ENABLED` goal may go to Zenon**, whose script may not reconstruct. A lemma that cannot be certified "
         "should not sit in a certified module: `Emergency_proof`'s was removed and its fact left to a TLC witness.",
         "**A longer timeout rarely helps**; **run `proof-results.sh` first**, then `proof-cert.sh`.",
-        "G10 §5 makes it a convention: **a proof is certified or its results file says why not.**",
+        "G10 §5 made it a convention: **a proof is certified or its results file says why not.**",
+        "**Write to the prover's known defects** (§10, 2026.10.07 and 2026.10.08): an untranslated term behind a hidden "
+        "definition; no definition expanded at an argument that names one of its bound variables; and the scan, "
+        "`spec/proof-scan.sh`, run on every new proof module (ADR-0046 A2; G11 §5).",
     ]
     p12 = [
         "**LS4.** No route checks a temporal step. The steps are few and of one shape; a small fixed lemma library "
         "proved once in Isabelle could replace them. Since 2026.10.05 the Lean re-encodings are a route beside this "
         "one in which the step is an induction the Lean kernel checks, at the price of the encoding (ADR-0053, "
-        "Proposed).",
-        "**The translation.** Nothing here examines how the prover turns an obligation into a query.",
+        "B36).",
+        "**The translation.** Nothing here examines how the prover turns an obligation into a query in general. "
+        "**Two cases are known to be unsound** (ADR-0046 A2, B37): a term under a binder, and two terms with one "
+        "name. No check detects the first, and one is owed; the scan's renamed run checks the second by a second "
+        "naming, not a proof (G11 item 104).",
         "**One solver, one version.** cvc5 1.4.0 is pinned by digest because the floor pins it. A newer cvc5 may prove "
         "the six obligations that fail, and would be a different certification.",
         "**The three modules that do not certify** (section 4). Still uncertified here; also proved in Lean of a "

@@ -15,7 +15,7 @@ import pathlib
 import re
 
 import lib
-from lib import strip_external, Canvas, render_line, parse, wrap, text_width, fill, sonly, fs
+from lib import AMENDED_G11, strip_external, Canvas, render_line, parse, wrap, text_width, fill, sonly, fs
 
 ID, SLUG = "G3", "theorem-premise-dag"
 
@@ -213,7 +213,7 @@ MODULES = [
     ("RunCoupling", "ADR-0041, ADR-0042", 469, True),
     ("RunSeats", "ADR-0040, ADR-0043", 147, True),
 ]
-# The six G10 §2.6 and item 90 name: (module, record, TLC rows, properties, obligations). G10 §3.
+# The proof modules G11 §2.6 and item 90 name: (module, record, TLC rows, properties, obligations). G10 §3; G11 §3.
 UNBOUND = [
     ("Labels", "ADR-0047 §11", 37, "ten properties", 651),
     ("ToolList", "ADR-0048 §8", 27, "five properties", 215),
@@ -221,7 +221,14 @@ UNBOUND = [
     ("Emergency", "ADR-0052 §9 (provisional)", 51, "six properties", 373),
     ("BreakGlass_A1", "ADR-0052 R5; ADR-0026 A2 (successor to BreakGlass)", 8, "`EmergencyNeverChangesAuthority`", 45),
     ("NonComposition_A1", "ADR-0052 R5; ADR-0013 A1 (successor to NonComposition)", 14, "NC-1, NC-2", 96),
+    ("Emergency_live", "ADR-0039 A2; ADR-0052 §9 (provisional; extends Emergency)", 32,
+     "two invariants over `ENABLED`", 160),
+    ("Coupling_live", "ADR-0039 §2 (extends Coupling); leads-to checked, not proved", 69,
+     "`SpecL ⇒ Spec` and safety", 31),
 ]
+# The modules G11 item 90 names that have no proof at all: their records are Proposed (G11 §2.9, item 101).
+UNPROVED = [("Workflow", "ADR-0054 §12 (Proposed)", 33, "ten properties"),
+            ("Mesh", "ADR-0055 §11 (Proposed)", 23, "seven properties")]
 CORRELATOR = ("Correlator", "ADR-0051 §10 (Proposed)", 22, "the properties of §10", 455)
 TGROUPS = [
     ("Mechanism constants (all rungs)", list(range(1, 13)) + [35, 36]),
@@ -343,8 +350,8 @@ def model():
     bound = {m for r in out for m in r["pmods"]}
     assert bound == {m[0] for m in MODULES}, sorted(bound)
     assert sum(m[2] for m in MODULES) == 3036
-    assert sum(m[2] for m in MODULES) + sum(u[4] for u in UNBOUND) + CORRELATOR[4] == 5225
-    assert len(MODULES) + len(UNBOUND) + 1 == 22
+    assert sum(m[2] for m in MODULES) + sum(u[4] for u in UNBOUND) + CORRELATOR[4] == 5416
+    assert len(MODULES) + len(UNBOUND) + 1 == 24
     return out
 
 
@@ -400,22 +407,23 @@ def build():
     rows = model()
     c = Canvas(ID, "Theorem to premise: what every checked or proved property rests on, and what is void at the "
                "reference",
-               "`spec/theorem-premise-binding.md` (2026.09.30, revised 2026.10.01, 2026.10.02 with ADR-0046, and "
-               "2026.10.02 for the launcher, \"pending\" ADR-0033 A7; **DRAFT**, revised with the records it binds, "
-               "and **not revised since**) is the table ADR-0045 §3 owes and ADR-0023 §2 assumes: "
+               "`spec/theorem-premise-binding.md` (2026.09.30, revised 2026.10.01, 2026.10.02 with ADR-0046, "
+               "2026.10.02 for the launcher, \"pending\" ADR-0033 A7, and 2026.10.06 with ADR-0053's derived premises; "
+               "**DRAFT**, revised with the records it binds) is the table ADR-0045 §3 owes and ADR-0023 §2 assumes: "
                "one row per checked property, naming the trusted-base rows (ADR-0045 Annex A), the degeneracy "
                "parameters (ADR-0023 §6a) and the declared gaps it rests on. A property holds for a deployment when "
                "every row it names is declared delegated or trust root, every parameter holds and no gap premise is "
-               "false; otherwise it is void. 38 of its 43 rows name a proof module, 15 modules in all; at G10 "
-               "**twelve of those certify and three do not**, and **seven of the twenty-two proof modules have no row**: "
-               "the six G10 names behind the records (§2.6, item 90, open) and `Correlator`, whose record is Proposed. "
+               "false; otherwise it is void. 38 of its 43 rows name a proof module, 15 modules in all; at G11 "
+               "**twelve of those certify and three do not**, and **nine of the twenty-four proof modules have no row**: "
+               "the eight G11 names behind the records (§2.6, item 90, open) and `Correlator`, whose record is Proposed; "
+               "nor do `Workflow` and `Mesh`, which have no proof (item 101). "
                "Where a record moved and the table did not (A7, B29; ADR-0034 A2 and ADR-0042 §6, B30), the verdict is "
                "drawn as the table states it and marked. Drawn four ways: the gap, the key chains as a DAG, the full "
                "incidence matrix, and the table itself, all 43 rows. `spec/theorem-premise-binding.json` carries the "
                "same table as a Boolean matrix and `spec/inventory.py --check` fails when the two disagree; this "
                "diagram reads the Markdown.",
                3600,
-               "spec/theorem-premise-binding.md (all 43 rows, read at build time; unchanged since 7075169); "
+               "spec/theorem-premise-binding.md (all 43 rows, read at build time; revised 2026.10.06, B36); "
                "spec/theorem-premise-binding.json (2026.10.03); ADR-0045 §3, §5, Annex A, Annex B "
                "(B23, B24, B25, B28, B29, B30, A1, A2, B34); ADR-0046 §1–§5 (Batch 25), A1 (Batch 28); "
                "spec/proof-certification.md §9; spec/*-proof-cert-results-2026.10.04.txt and -2026.10.05.txt; "
@@ -424,8 +432,10 @@ def build():
                "spec/NonComposition_A1.tla (headers); ADR-0023 §2, §6a, A1 §6c; ADR-0026 A2 (provisional); ADR-0033 "
                "A5 to A9, A14; ADR-0034 A2 (B30); ADR-0042 §6 (B30); ADR-0030 §5 A1, A3; ADR-0047 §11; ADR-0048 §8; "
                "ADR-0050 §10; ADR-0051 (Proposed); ADR-0052 §9, R5; G8 §2.2, §3; "
-               "G10 §2.1, §2.3, §2.6, §2.9, §3, §7 items 7, 74, 80, 89, 90, §8; "
+               "G10 §2.1, §2.3, §3, §7 items 80, 89; G11 §2.6, §2.9, §3, §7 items 7, 74, 90, 101, §8; "
+               "spec/Emergency_live.tla, spec/Coupling_live.tla, spec/Workflow.tla, spec/Mesh.tla (headers and results); "
                "spec/Mechanism-trace-results-2026.10.02.txt, spec/Mechanism-trace-results-2026.10.05.txt")
+    c.note = AMENDED_G11
     X0, X1 = c.x0, c.x1
     W = X1 - X0
     y = c.y
@@ -461,9 +471,10 @@ def build():
             "ADR-0045 is **Accepted (genesis)**, confirmation required C2, C4 (Batch 22, R6 added the table). "
             "**ADR-0046** revised it in place (Batch 25, 2026.10.02; C2, C4): the proof column and five corrections.",
             "The table itself is a **DRAFT**, revised with the records it binds; its versioning belongs to the "
-            "archetype-evolution record, still unwritten (G10 item 7). Last revised 2026.10.02, \"pending\" "
-            "ADR-0033 A7; **A7 and ADR-0034 A2 have been ratified since** (B29, B30) and the table was not revised "
-            "(G10 §2.6, item 90). `Never…` witnesses are not theorems and are omitted.",
+            "archetype-evolution record, still unwritten (G11 item 7). Its rows were last revised 2026.10.02, "
+            "\"pending\" ADR-0033 A7; **A7 and ADR-0034 A2 have been ratified since** (B29, B30) and the rows were "
+            "not revised; Batch 36 added derived premises and changed no row's verdict (G11 §2.6, item 90). `Never…` "
+            "witnesses are not theorems and are omitted.",
         ], "violet"),
     ]
     hh = max(c.card(0, 0, w4, t, b, accent=a, draw=False, size=14.5) for t, b, a in intro)
@@ -473,13 +484,13 @@ def build():
     y += hh + 54
 
     # ---------------------------------------------------------------- the gap at G10 (item 90) and certification
-    hx = X0 + c.pill(X0, y + 2, "Open · G10 §7 item 90", "red", 13, dash="6 4") + 14
-    c.text(hx, y + 18, "**0 · What the table covers at G10, and what it does not: twenty-two proof modules, fifteen "
-                       "bound, twelve of those certified; seven with no row**", 22, "ink")
+    hx = X0 + c.pill(X0, y + 2, "Open · G11 §7 item 90", "red", 13, dash="6 4") + 14
+    c.text(hx, y + 18, "**0 · What the table covers at G11, and what it does not: twenty-four proof modules, fifteen "
+                       "bound, twelve of those certified; nine with no row; two modules with no proof**", 22, "ink")
     y += 44
-    y += c.para(X0, y, W, "G10 §2.6: \"The binding table has no rows for `Labels`, `ToolList`, `Operators`, "
-                "`Emergency` or the two successor modules.\" Item 90, `spec/` behind the records, also names "
-                "`RulesFloorBase.tla`. Certification is ADR-0046 A1's (Batch 28): every obligation closed by the "
+    y += c.para(X0, y, W, "G11 item 90: \"The binding table has no rows for `Labels`, `ToolList`, `Operators`, "
+                "`Emergency`, `BreakGlass_A1` or `NonComposition_A1`, nor now for `Emergency_live`, `Coupling_live`, "
+                "`Workflow` or `Mesh`.\" It also names `RulesFloorBase.tla`. Certification is ADR-0046 A1's (Batch 28): every obligation closed by the "
                 "prover's normalization, an SMT proof the `ethos` checker accepted, a Zenon proof Isabelle checked, or "
                 "an LS4 temporal step no checker confirms (`spec/proof-certification.md` §2, §9; G10 §2.9). Obligation "
                 "counts are each module's certified results file.", 15, "muted") + 16
@@ -494,16 +505,17 @@ def build():
               "accent": "teal"}]
     for mod, rec, n, _ in MODULES:
         if mod in UNCERT:
-            cert = f"[[red|not certified]]: {why[mod]}. Restructuring deferred by the custodian (G10 item 74)"
+            cert = f"[[red|not certified]]: {why[mod]}. Restructuring deferred by the custodian (G11 item 74)"
             acc = "red"
         else:
             cert = "[[teal|certified]]"
             acc = "teal"
         mrows.append({"cells": [f"`{mod}`", rec, "—", f"{n:,}", cert, f"{nrow[mod]} row" + ("s" if nrow[mod] != 1 else "")],
                       "accent": acc})
-    mrows.append({"group": f"No row: G10 §2.6, item 90, open · {len(UNBOUND)} modules, "
+    mrows.append({"group": f"No row: G11 item 90, open · {len(UNBOUND)} modules, "
                            f"{sum(u[4] for u in UNBOUND):,} obligations · every one certified · their records in "
-                           "force since Batch 34, two provisional", "accent": "red"})
+                           "force since Batch 34, two provisional; two liveness extensions since 2026.10.07",
+                  "accent": "red"})
     for mod, rec, tlc, props, n in UNBOUND:
         mrows.append({"cells": [f"`{mod}`", rec, f"{tlc} TLC rows; {props}", f"{n:,}", "[[teal|certified]]",
                                 "[[red|no row]]"], "accent": "red"})
@@ -513,18 +525,26 @@ def build():
                             "[[amber|no row; record Proposed]]"], "accent": "amber"})
     tot = sum(m[2] for m in MODULES) + sum(u[4] for u in UNBOUND) + n
     ncert = sum(1 for m in MODULES if m[0] not in UNCERT) + len(UNBOUND) + 1
-    mrows.append({"cells": ["**All**", "**22 modules** (G10 §2.9)", "", f"**{tot:,}**",
-                            f"**{ncert} of 22 certify**", f"**15 bound, 7 not**"]})
-    mth = c.table(X0, y, [("Proof module", 300), ("Record it is owed by", 620), ("TLC rows; properties (G10 §3; for the modules with no row)", 400),
+    nall = len(MODULES) + len(UNBOUND) + 1
+    mrows.append({"cells": ["**All**", f"**{nall} proof modules** (G11 §2.9)", "", f"**{tot:,}**",
+                            f"**{ncert} of {nall} certify**", f"**{len(MODULES)} bound, {nall - len(MODULES)} not**"]})
+    mrows.append({"group": "No row and no proof: TLC-checked modules of Proposed records (G11 items 90, 101)",
+                  "accent": "amber"})
+    for mod, rec, tlc, props in UNPROVED:
+        mrows.append({"cells": [f"`{mod}`", rec, f"{tlc} TLC rows; {props}", "—", "[[red|no proof]]",
+                                "[[amber|no row; record Proposed]]"], "accent": "amber"})
+    mth = c.table(X0, y, [("Proof module", 300), ("Record it is owed by", 620), ("TLC rows; properties (G10 §3, G11 §3; for the modules with no row)", 400),
                           ("Obligations", 150), ("Certified (ADR-0046 A1)", 470), ("In the binding table", 200)],
                   mrows, size=13.5, accent="teal")
     gx = X0 + TW + 40
     gw = X1 - gx
     gcards = [
-        ("Six modules, 1,734 obligations, no premise rows", [
-            "Every property `Labels`, `ToolList`, `Operators`, `Emergency`, `BreakGlass_A1` and `NonComposition_A1` "
-            "prove is **outside the inventory**: no row names what it rests on, so the last column computes nothing "
-            "for it, at the reference or for any deployment.",
+        ("Eight modules, 1,925 obligations, no premise rows; and two unproved", [
+            "Every property `Labels`, `ToolList`, `Operators`, `Emergency`, `BreakGlass_A1`, `NonComposition_A1`, "
+            "`Emergency_live` and `Coupling_live` prove is **outside the inventory**: no row names what it rests on, "
+            "so the last column computes nothing for it, at the reference or for any deployment. `Coupling_live`'s "
+            "four leads-to properties are checked, not proved, and are not rows either.",
+            "`Workflow` and `Mesh` have neither a proof nor a row; their records are Proposed (G11 item 101).",
             "So **T-0045-32 to 36**, the five trusted-base rows Batch 34 added for the same records, are premises of "
             "no row (the matrix below draws their columns empty).",
             "The record behind each is in force; two are **provisional** (ADR-0050, ADR-0052), so their properties "
@@ -535,10 +555,10 @@ def build():
             "`\"R7\" -> r.bgScope \\cap AuthActs = {}`.",
             "**ADR-0026 A2** (Batch 34, provisional with ADR-0052): R6's count is **one**, X1 being retired; R7 is read "
             "as \"no activation of an emergency seating grants a lease whose alphabet holds an authority act\" "
-            "(G10 §2.1).",
+            "(G11 §2.1).",
             "`Anchor.tla` and `BreakGlass.tla` extend it, so the rows `FloorPreserved` and "
             "`BreakGlassNeverChangesAuthority` rest on the old rule space. `BreakGlass_A1` extends it too and reads "
-            "`bgScope` for nothing (its header). The ADR-0026 §6 rerun is still owed (G10 §2.1).",
+            "`bgScope` for nothing (its header). The ADR-0026 §6 rerun is still owed (G11 §2.1).",
         ], "red", "open"),
         ("Two rows proved of modules that model X1, and one on R7 as first written", [
             "`NC1`, `NC2` (`NonComposition.tla`) and `BreakGlassNeverChangesAuthority` (`BreakGlass.tla`) are proved of "
@@ -548,7 +568,8 @@ def build():
         ], "amber", None),
         ("What certifying does not change", [
             "**Certified is not verified.** It removes the SMT solver's soundness as a premise; the prover's translation, "
-            "its normalization, LS4 and the checker stay trusted (G10 §3, §8; T-0045-31).",
+            "its normalization, LS4 and the checker stay trusted, and the translation is known to be unsound in two "
+            "ways (G11 §2.9, §8; ADR-0046 A2; T-0045-31).",
             "It changes **no verdict** in the last column: a proof is of the module, not of what runs (T-0045-28). "
             "`Operators.tla` and `Emergency.tla` are tied to the reference by tests and no refinement (item 90).",
         ], "teal", None),

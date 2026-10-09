@@ -1,7 +1,7 @@
-"""H2 — The decision record map: ADR-0001 to ADR-0053 by area, with status, markers and edges."""
+"""H2 — The decision record map: ADR-0001 to ADR-0055 by area, with status, markers and edges."""
 import math
 
-from lib import Canvas
+from lib import AMENDED_G11, Canvas
 
 ID, SLUG = "H2", "adr-map"
 
@@ -29,7 +29,7 @@ R = {
           "0010, 0025, 0026, 0028", "A1 (B34): the exception count is 1"),
     14: ("— (the per-class floor question)", "reserved", "", "", "Reserved, no file; narrowed by 0024"),
     15: ("Effects are boundary crossings; every crossing authorized, ordered, auditable", "accepted", "C2", "",
-         "Revised by 0025"),
+         "Revised by 0025; [[amber|A1 pending]] (0054): `Route` an emission"),
     16: ("The model enters the system as a Persona", "accepted", "", "0002, 0007, 0010",
          "A1, A2 (B34): a person's Persona; the binding `emergency`"),
     17: ("Archetype admits only in-house pre-trained Personas", "accepted", "", "0008, 0016",
@@ -44,7 +44,7 @@ R = {
     23: ("Degeneracy as the deployment-variation relation; archetype as unique maximum", "accepted", "C3", "",
          "§5 reverses 0008 scoping and 0017 ordering-primacy in effect; A1 (B29): the rung per seat"),
     24: ("Promotion requires a unanimous quorum", "accepted", "bootstrap set", "0007, 0010, 0022, 0025, 0026",
-         "Amends 0002; A2 in force; [[blue|A3 provisional]] (B34): a promotion seats"),
+         "Amends 0002; A2 in force; [[blue|A3 provisional]] (B34): a promotion seats; [[amber|A4 pending]] (0054)"),
     25: ("The trust anchor is a havoc issuer; intent is the sole axiom", "accepted", "bootstrap set", "",
          "Revises 0015; A2 (B34): the two issued lists; [[blue|A3 provisional]]: the provider's key"),
     26: ("The rules floor bounds every anchor issuance", "accepted", "bootstrap set", "0007, 0010, 0025",
@@ -59,41 +59,49 @@ R = {
          "0007, 0010, 0012, 0018, 0023", "A2 (B34): labels in S, a well-formed allowlist; A3: the floor is "
          "genesis-provisional"),
     31: ("The lease is the composite credential, and its grant is the instant", "accepted", "C1; C2 for A1",
-         "0003, 0007, 0016, 0022, 0026, 0032", "A3 (B34): who grants and who denies"),
+         "0003, 0007, 0016, 0022, 0026, 0032", "A3 (B34): who grants and who denies; [[amber|A4 pending]] (0054): a "
+         "third grant path"),
     32: ("The clock model: intervals trusted by failure direction", "accepted", "", "0007, 0022, 0031", ""),
     33: ("The mechanism has a reference implementation: evidence, not the verified object", "accepted", "",
-         "0010, 0015, 0022, 0024, 0026, 0029, 0032", "A1–A15; A7–A15 in B29, B31–B35; none pending; K-row debt "
-         "discharged"),
+         "0010, 0015, 0022, 0024, 0026, 0029, 0032", "A1–A17; A7–A15 in B29, B31–B35; [[amber|A16, A17 pending]] "
+         "(workflows, on Proposed records)"),
     34: ("Confinement is attested at lease grant; the archetype rung is a confidential VM", "accepted", "C2, C4",
          "0016, 0017, 0022, 0023, 0024, 0031, 0032, 0033, 0035", "Discharges 0022 §6 for Build; A2, the Run profile "
          "(B30); A3 (B29)"),
     35: ("Persona lineage is a projection of the Build log; independence is an exclusion rule", "proposed", "",
-         "0015, 0016, 0017, 0022, 0024, 0034", "R4–R7 added, three for the new records (G10 §2.4)"),
+         "0015, 0016, 0017, 0022, 0024, 0034", "R4–R8: R8 a workflow's tally (G11 §2.4)"),
     36: ("At rung 1 the launcher is the channel: a principal `Mediated` by declaration", "proposed", "",
          "0017, 0022, 0031, 0033, 0034", "§6's launcher built; 0033 A7 ratified ahead of it (B29)"),
     37: ("The LTRO decomposes into principals: Thinker and Observer are seats", "accepted", "C3, C4",
-         "0002, 0007, 0016, 0018, 0019, 0022, 0024, 0031", "A2–A4 (B34): labels; kinds `emergency`, `operator`"),
+         "0002, 0007, 0016, 0018, 0019, 0022, 0024, 0031", "A2–A4 (B34): labels; kinds `emergency`, `operator`; "
+         "[[amber|A5 pending]]: `orchestrator`"),
     38: ("Observers are per cell; the shared group becomes the correlator", "accepted", "C3, C4",
          "0003, 0004, 0007, 0023, 0031, 0037", "Supersedes 0008"),
     39: ("Observer liveness is progress, not presence", "accepted", "C4",
-         "0007, 0022, 0024, 0031, 0032, 0037, 0038", "A2 (B34): an emergency seat is not coupled"),
+         "0007, 0022, 0024, 0031, 0032, 0037, 0038", "A2 (B34): an emergency seat is not coupled; [[amber|A3 "
+         "pending]]: coverage at an edge"),
     40: ("Run has its own alphabet: `Consult`, `Actuate`, `Report`", "accepted", "C3, C4",
-         "0007, 0010, 0015, 0018, 0022, 0031", "Reverses in effect 0022 §5's shared `Read`/`Emit`; A1 (B34): the root's label"),
+         "0007, 0010, 0015, 0018, 0022, 0031", "Reverses in effect 0022 §5's shared `Read`/`Emit`; A1 (B34): the root's "
+         "label; [[amber|A2 pending]]: `Route`"),
     41: ("Policy obligations for Run: one envelope per variant; coupling on effects only", "accepted", "C1, C4",
-         "0009, 0013, 0026, 0030, 0037, 0039, 0040", "A1–A3 (B34): `R5`–`R7`; X1 retired; `C1`–`C9`"),
+         "0009, 0013, 0026, 0030, 0037, 0039, 0040", "A1–A3 (B34): `R5`–`R7`; X1 retired; `C1`–`C9`; [[amber|A4 "
+         "pending]]: `R8`, `R9`"),
     42: ("Mechanism obligations for Run: effects counted, every `Actuate` recorded", "accepted",
          "C4; C2 for §6", "0003, 0004, 0015, 0018, 0031, 0033, 0039, 0040",
-         "Whole: §6 in B30; A1, A2 (B34): labels, opening record, `seatKind`"),
+         "Whole: §6 in B30; A1, A2 (B34): labels, opening record, `seatKind`; [[amber|A3 pending]]"),
     43: ("Cell obligations for Run: Listener, seats, what the Observer must read", "accepted", "C4",
-         "0018, 0037, 0038, 0039, 0040, 0042", "A1, A2 (B34): four labelled items; the task"),
+         "0018, 0037, 0038, 0039, 0040, 0042", "A1, A2 (B34): four labelled items; the task; [[amber|A3 pending]]: "
+         "`input`"),
     44: ("A bundle is trusted by its signature, not its file name", "accepted", "C1", "0025, 0030, 0031, 0033",
          "Drafted by the assistant"),
     45: ("The trusted base is declared row by row", "accepted", "C2, C4", "0015, 0023, 0025, 0029, 0031, 0034",
-         "A1, A2 (B34): thirty-six rows; T-0045-31 certified (0046 A1)"),
+         "A1, A2 (B34); B36: thirty-seven rows; A3, E1 (B37): T-0045-31's two unsound cases"),
     46: ("The formal layer's method is declared: TLC checks, TLAPS proves, the prover is a trusted-base row",
-         "accepted", "C2, C4", "0023, 0026, 0029, 0045", "E1 (B26); E2, A1 (B28): the certified configuration"),
+         "accepted", "C2, C4", "0023, 0026, 0029, 0045", "E2, A1 (B28): certified configuration; A2, E3, E4 (B37): "
+         "two unsound cases"),
     47: ("The Listener labels what it delivers: a label on every item, a handle for what is suppressed", "accepted",
-         "C4; C2 for §3", "0007, 0030, 0037, 0040, 0041, 0042, 0043, 0044", "Batch 34; drafted by the assistant"),
+         "C4; C2 for §3", "0007, 0030, 0037, 0040, 0041, 0042, 0043, 0044", "Batch 34; [[amber|A1 pending]] (0054): "
+         "the workflow's attributes"),
     48: ("A Thinker learns its tools from the mechanism: the entry carries its interface", "accepted", "C4, C3",
          "0007, 0022, 0031, 0037, 0040, 0043, 0044", "Batch 34; drafted by the assistant"),
     49: ("The allowlist entry has one schema, each field marked checked or claimed", "accepted", "C4; C2 for §5",
@@ -107,7 +115,14 @@ R = {
          "C1, C3, C4", "0013, 0028, 0031, 0037, 0050", "Batch 34; rests on 0050; X1 retired on this basis"),
     53: ("A second deductive method: Lean re-encodings, code transcriptions, the floor in Cedar's model; the Lean "
          "kernel a trusted-base row", "accepted", "C4 (refines(Seats))", "0030, 0033, 0045, 0046",
-         "Batch 36, 10.06; T-0045-37 in Annex A; dependent entries on 0030, 0032, 0033, 0037, 0039, 0045, 0046"),
+         "Batch 36, 10.06; T-0045-37 in Annex A; E1 (B37); dependent entries on 0030, 0032, 0033, 0037, 0039, 0045, "
+         "0046"),
+    54: ("A workflow is a promoted DAG: the promotion seats every cell; an orchestrator only narrows", "proposed", "",
+         "0007, 0024, 0031, 0033, 0037, 0039, 0040–0043, 0047", "Drafted 10.07; ten dependent amendments pending; built "
+         "at the reference (0033 A16, A17)"),
+    55: ("A workflow may be a mesh: a budget, the activation as the unit, the mechanism as the bus", "proposed", "",
+         "0005, 0031, 0047, 0054", "Drafted 10.07; widens 0054; built at the reference (0033 A16); dependent entries "
+         "not drafted"),
 }
 
 # rows of regions: (label, accent, ncols, [ids in grid order, None for an empty slot])
@@ -123,7 +138,8 @@ ROWS = [
     [("Seats, cells and detection", "pink", 3, [8, 38, 39, 11, 37, 51]),
      ("Persona and model", "violet", 3, [16, 17, 19, 18, 35, None])],
     [("Ingress: labels, the tool list, the entry", "teal", 3, [47, 48, 49]),
-     ("People in seats: operators and break-glass", "brown", 2, [50, 52])],
+     ("People in seats: operators and break-glass", "brown", 2, [50, 52]),
+     ("Workflows (Proposed)", "amber", 2, [54, 55])],
 ]
 
 # edges drawn under a tile row: (src, dst, kind) — kind: dep | sup | rev
@@ -140,22 +156,25 @@ UNDER = [
     (37, 18, "rev"),
     (51, 37, "dep"),
     (52, 50, "dep"),
+    (55, 54, "dep"),
 ]
 EDGE = {"dep": ("blue", None, 1.6), "sup": ("grey", None, 3.0), "rev": ("red", "7 5", 2.4)}
 
 
 def build():
-    c = Canvas(ID, "The decision records, ADR-0001 to ADR-0053, by area",
-               "Every record with its status and confirmation markers at G10, and its amendments since G9. Solid blue "
+    c = Canvas(ID, "The decision records, ADR-0001 to ADR-0055, by area",
+               "Every record with its status and confirmation markers at G11, and its amendments since G9, pending ones "
+               "in amber. Solid blue "
                "edges are dependencies taken "
                "from each record's \"Depends on\" line, drawn where both records sit in the same row of tiles (every "
                "tile lists its full line); the grey edge is the one supersession; red dashed edges are the reversals "
                "in effect (ToO §8.3) and ADR-0040's.",
-               3600, "decisions/README.md; G10 §1, §1.1, §1.2, §2.4, §4, §5, §6, §7 items 6, 34, 43, 88, 92, 97; ToO rev 14 "
-               "§0, §8.3, §9; ADR-0029 A4 (the provisional status); ADR-0026 W1; the History tables of every record "
-               "amended since G9 (G10 §6); the Status, Status note, Pending, Depends on, Supersedes, Amends, Revises, "
-               "Narrows and Split from lines of ADR-0001 to ADR-0053; ADR-0018 Status note on 0037 §3; ADR-0023 Status "
+               3600, "decisions/README.md; G10 §1, §1.2, §5, §6; G11 §1, §1.1, §1.2, §2.4, §4, §6, §7 items 6, 34, 43, 88, "
+               "92, 97, 101; ToO rev 15 §0, §8.3, §9; ADR-0029 A4 (the provisional status); ADR-0026 W1; the History "
+               "tables of every record amended since G9 (G10 §6, G11 §6); the Status, Status note, Pending, Depends on, "
+               "Supersedes, Amends, Revises, Narrows and Split from lines of ADR-0001 to ADR-0055; ADR-0018 Status note on 0037 §3; ADR-0023 Status "
                "note; ADR-0038 Supersedes; ADR-0040 Status note")
+    c.note = AMENDED_G11
     X0 = c.x0
     tw, ig, rp = 330, 20, 22       # tile width, inner gap, region padding
     rgap, band_gap = 60, 110
@@ -292,24 +311,23 @@ def build():
         "(C1–C4, ADR-0029 §4), [[blue|dashed blue]] Accepted · **provisional** (ADR-0029 A4: in force, subject to "
         "redesign, confirmation required), [[amber|amber]] Proposed, [[grey|grey]] superseded, tombstone or reserved.",
         "\"bootstrap set\": ADR-0024 to 0027, which cannot carry a marker (ADR-0029 §4); three of them hold a "
-        "provisional amendment, which the genesis attestation must name (G10 §1.2).",
+        "provisional amendment, which the genesis attestation must name (G11 §1.2); ADR-0024 A4 is pending.",
         "\"§1–§5, §7, §8\": ratified in part; ADR-0022 §6 stays Proposed. ADR-0042 is whole since Batch 30.",
-        "A note names amendments since G9 with their batch (G10 §6).",
+        "A note names amendments since G9 with their batch (G10 §6, G11 §6); [[amber|pending]] ones are ADR-0054's "
+        "dependent amendments and ADR-0033 A16, A17, none in force (G11 §1.1).",
     ], accent="grey", size=13.5, bullets=True)
     c.legend(lx, ly + h1 + 18, [("arrow", "blue", "depends on"), ("arrow", "grey", "supersedes"),
                                 ("arrow", "red", "reverses in effect", "7 5")], title="Edges", maxw=gw)
     lx, gw = right_of(3)
-    c.card(lx, band_tops[3], gw, "Counts at G10 (§1.1)", [
-        "**46 Accepted**: 18, 26 confirmation-required and **2 provisional** (0050, 0052); 2 in part · **3 Proposed** "
-        "(0035, 0036, 0051; and ADR-0022 §6) · **1 superseded** · **1 tombstone** · **1 reserved**: **51 files**, "
-        "numbered to 0052, six added since G9.",
-        "**Batches 27 to 35** since G9: ADR-0005 ratified (B27); ADR-0047 to 0050 and 0052 and twenty-six dependent "
-        "amendments in seventeen records (B34). **No amendment pending**, down from four; ADR-0026 A1 (R8) "
-        "**withdrawn** (W1).",
+    c.card(lx, band_tops[3], gw, "Counts at G11 (§1.1)", [
+        "**47 Accepted**: 18, 27 confirmation-required and **2 provisional** (0050, 0052); 2 in part · **5 Proposed** "
+        "(0035, 0036, 0051, 0054, 0055; and ADR-0022 §6) · **1 superseded** · **1 tombstone** · **1 reserved**: "
+        "**54 files**, numbered to 0055, three added since G10.",
+        "**Batches 27 to 37** since G9: ADR-0005 (B27); ADR-0047 to 0050 and 0052 and twenty-six dependent amendments "
+        "in seventeen records (B34); ADR-0053 (B36); the prover's two unsound cases (B37). **Twelve amendments "
+        "pending**, all on Proposed records; ADR-0026 A1 (R8) **withdrawn** (W1).",
         "**Reversals in effect** (ToO §8.3), all by the author alone in genesis: 0008 by 0038 (superseded); 0017's "
         "ordering-primacy clause (supersession unwritten, open item 6, as at G9); 0018's Reader scope by 0037 §3 (not "
         "superseded).",
-        "**Since G10**: [[blue|ADR-0053]], drafted 2026.10.05, a second deductive method in Lean, ratified "
-        "2026.10.06 in Batch 36; the counts above are G10's and do not include it.",
     ], accent="grey", size=13.5)
     return c

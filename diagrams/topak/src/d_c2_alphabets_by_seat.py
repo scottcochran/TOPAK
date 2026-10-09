@@ -1,6 +1,6 @@
 """C2 — Alphabets by seat: Build's six variants, Run's three and the control alphabet's six against the five seat
 kinds that may hold them."""
-from lib import Canvas
+from lib import AMENDED_G11, Canvas
 
 ID, SLUG = "C2", "alphabets-by-seat"
 
@@ -9,14 +9,17 @@ N = "[[red|✗]]"
 
 
 def build():
-    c = Canvas(ID, "Alphabets by seat: nine variants and a control alphabet of six, two domains, five seat kinds",
+    c = Canvas(ID, "Alphabets by seat: nine variants and a control alphabet of six, two domains, five seat kinds (a "
+               "sixth Proposed)",
                "Each domain has its own typed alphabet and **no variant name is shared**; only the carrier, epoch and "
                "lease on every action, is common. Which seat kind may express which variant is bounded twice: by the "
                "grant path, which refuses an alphabet outside the kind's row, and by the policy floor at admit "
                "(ADR-0037 §4, ADR-0043 §2). Since Batch 34 an `operator` seat holds **no variant at all** and speaks a "
                "control alphabet of six, and an `emergency` seat speaks Run's three; both kinds are **provisional** "
-               "(ADR-0037 A3, A4). The floor cited is the proposed floor's `emergency` stage, **genesis-provisional**, "
-               "not ratified (G10 §2.2).",
+               "(ADR-0037 A3, A4). The floor cited is the proposed floor's `emergency` stage, the floor in force, "
+               "**genesis-provisional**, not ratified (G11 §2.2). **Proposed with ADR-0054**: a tenth variant, "
+               "`Route(edge)`, and a sixth kind, `orchestrator`, which alone holds it; the reference links the "
+               "`workflow` stage that states them, which is not in force (G11 item 102; C9).",
                3400, "ADR-0022 §1–§7 (A1, A2); ADR-0040 §1–§6; ADR-0041 §1–§3, A1, A2, A3; ADR-0042 §5, §6 (B30); "
                      "ADR-0043 §1, §2, §4, A1; ADR-0037 §4, §7, A3, A4; ADR-0024 §2, §5; ADR-0038 §6; ADR-0039 A2; "
                      "ADR-0031 §4, A3; ADR-0034 P4, D-0034-3, A2 (B30: the Run profile, D-0034-5, D-0034-6); ADR-0033 A7 "
@@ -29,8 +32,10 @@ def build():
                      "spec/RunSeats_proof.tla, their 2026.10.02 proof results and 2026.10.04 certified results; "
                      "ADR-0037 B25; ADR-0043 B25; ADR-0046 §4, §5, A1; mechanism topak-core types.rs (`SeatKind`), "
                      "control.rs (`ControlAction`, `ControlFacts`); mechanism/GAPS-AND-ASSUMPTIONS.md I14, I33, I43, "
-                     "I44, G19; ToO rev 14 §2.4, §2.9, §2.10, §3.3, §4.1, §7.10; G10 §2.2, §2.3, §2.5, §3, §7 items 57, "
-                     "80, 83, 84, 91, 95")
+                     "I44, G19; ToO rev 15 §2.4, §2.9, §2.10, §2.11, §3.3, §4.1, §7.10; G10 §2.3, §2.5, §3, §7 items 57, "
+                     "80, 83, 84, 91, 95; G11 §2.2, §2.5, item 102; ADR-0054 §3 (Proposed); ADR-0040 A2, ADR-0037 A5, "
+                     "ADR-0041 A4, ADR-0015 A1 (pending); floor/proposed/workflow-floor.cedar")
+    c.note = AMENDED_G11
     X0, X1 = c.x0, c.x1
     y = c.y
 
@@ -253,6 +258,12 @@ def build():
                                                                                        "Observer is live (R3)",
          Y + " heartbeats and findings; **not coupled**", N + " no Run row", NV,
          Y + " not coupled; a rationale is content and no admit turns on it (ADR-0052 §5)", "—"],
+        {"cells": ["`Route(edge)` · [[amber|Proposed]]", "**Emission** (ADR-0015 A1, pending); the grant it leads to is "
+                   "the workflow's promotion's", "A chosen edge out of the decision point the lease was granted for, "
+                   "its guard already true; checked again at apply (ADR-0054 §3, §8)",
+                   "In the `workflow` stage only, **not in force**: permit **R8-route-own-decision**; forbid "
+                   "**R9-only-orchestrators-route**; **R3** covers it (ADR-0041 A4, pending)", N + " R9", N + " R9",
+                   N + " no Run row", NV, N + " R9", "—"], "accent": "amber"},
         {"group": "Control · ADR-0050 §4 · either domain · signed requests, not action variants; every permit, `C1` to "
                   "`C4`, requires `principal.kind == \"operator\"` (ADR-0041 A3)", "accent": "brown"},
         ["`Regrant`", "**Add**: a successor grant (ADR-0031 A3)",
@@ -284,12 +295,15 @@ def build():
                 "holds the control alphabet (A4). A Reader with `Draft` authority, the failure ADR-0022's follow-up "
                 "named, cannot arise: the Reader is not a principal. A narrower lease is always allowed (ADR-0031 §4), "
                 "so an `observer` seat without `Consult` needs no declaration (ADR-0043 §7); **a lease cannot be "
-                "narrowed to a tool**, since its schema carries no tool set (ADR-0048 R6; G10 item 95).",
+                "narrowed to a tool**, since its schema carries no tool set (ADR-0048 R6; G10 item 95). **Pending with "
+                "ADR-0054** (ADR-0037 A5): a sixth kind, `orchestrator`, Run only, issued `Route` and `Report` and "
+                "nothing else; coupled to an Observer as a Thinker is (ADR-0039 A3); delivered handles and never bytes; "
+                "seated only when a workflow has a chosen edge. Not in the matrix's columns because it is not in force.",
                 14.5) + 46
 
     # ------------------------------------------------------------------ the floor, verbatim policy by policy
-    c.heading(X0, y, "floor/proposed/emergency-floor.cedar: all 28 policies, the floor the reference links", size=21)
-    c.status(X1, y + 3, "genprov", "G10 §2.2 · 107 cases, every gate passing 2026.10.04", anchor="end")
+    c.heading(X0, y, "floor/proposed/emergency-floor.cedar: all 28 policies, the floor in force", size=21)
+    c.status(X1, y + 3, "genprov", "G11 §2.2 · 107 cases, every gate passing 2026.10.04", anchor="end")
     y += 44
     cols = [("Policy id", TW * 0.14, {"mono": True}), ("Effect", TW * 0.05, {"bold": True}),
             ("Action", TW * 0.13), ("Condition (paraphrased from the Cedar text)", TW * 0.43),

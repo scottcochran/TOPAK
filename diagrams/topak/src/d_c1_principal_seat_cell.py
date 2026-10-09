@@ -1,5 +1,5 @@
 """C1 — Principal, seat, cell: the containment hierarchy from deployment down to the lease."""
-from lib import Canvas
+from lib import AMENDED_G11, Canvas
 
 ID, SLUG = "C1", "principal-seat-cell"
 
@@ -11,15 +11,18 @@ def build():
                "and **a principal holds exactly one seat** (ADR-0037 §1). Who is a principal is decided by one test: "
                "evictability by an authority other than itself (ADR-0002 A2). Since Batch 34 there are **five seat kinds**: "
                "`operator` and `emergency` are held only by people, and both rest on records ratified **provisional** "
-               "(ADR-0037 A3, A4; ADR-0050; ADR-0052).",
-               3000, "ToO rev 14 §1, §2.4, §2.5, §2.8, §2.9, §2.10, §3.3, §5.1, §7.5, §7.10; ADR-0002 A2; ADR-0037 §1–§8 "
+               "(ADR-0037 A3, A4; ADR-0050; ADR-0052). A sixth, `orchestrator`, is **Proposed** with ADR-0054 (ADR-0037 A5, "
+               "pending): the one cell that chooses among a workflow's enabled edges (C9).",
+               3000, "ToO rev 15 §1, §2.4, §2.5, §2.8, §2.9, §2.10, §2.11, §3.3, §5.1, §7.5, §7.10; ADR-0054 §3, §6 "
+               "(Proposed); ADR-0037 A5, ADR-0039 A3 (pending); ADR-0053 R4; ADR-0002 A2; ADR-0037 §1–§8 "
                "(R1–R5, A1, A2, A3, A4, B12, B20, B22, B34); ADR-0038 §1–§7; ADR-0043 §1, §2, §5, A1; ADR-0031 §1, §2, §5, "
                "A3; ADR-0035 §5; ADR-0016 A1, A2; ADR-0018; ADR-0019; ADR-0023 A1 (§6c); ADR-0029 A3; ADR-0039 A2; "
                "ADR-0045 T-0045-26, T-0045-32, A1; ADR-0048 §2; ADR-0050 §1–§3, §6, §9; ADR-0051 (Proposed); ADR-0052 §1–§4; "
                "spec/Seats.tla and spec/Seats-results-2026.09.29.txt; spec/Seats_proof.tla, "
                "Seats-proof-results-2026.10.02.txt and Seats-proof-cert-results-2026.10.04.txt; ADR-0037 B25; ADR-0046 A1; "
                "ADR-0033 A7 (B29), A11, A12; mechanism topak-core rules.rs (`SeatDecl`), types.rs (`SeatKind`), "
-               "control.rs (`Seating`); G10 §1.1, §1.2, §2.3, §3, §7 items 40, 41, 43, 64, 85, 97")
+               "control.rs (`Seating`); G10 §1.2, §3, §7 items 40, 43, 64, 85; G11 §1.1, §2.3, §7 items 41, 97, 101, 106")
+    c.note = AMENDED_G11
     X0, X1 = c.x0, c.x1
     y = c.y
 
@@ -310,6 +313,8 @@ def build():
             "ADR-0017's two lineages cover them; CR-10 closes without a third.",
             "Enforced where refusal stalls: the promotion tally and the deployment declaration (ADR-0035 §5).",
             "Correlation across cells from shared Personas is the correlator's concern (ADR-0023 §5).",
+            "**Across cells, Proposed**: along a workflow's clear edges the two Thinkers must be independent, checked "
+            "at the tally; every deployment declares it instead today (ADR-0054 §6; ADR-0035 R8; D-0054-1).",
         ]),
         ("Checked (ADR-0037 R5, 2026.09.29), proved (B25), certified", "blue", [
             "`spec/Seats.tla`: `OnlyThinkersAuthor` and `OneSeatPerPrincipal` hold (6,656 states); `M_KIND` breaks "
@@ -323,6 +328,9 @@ def build():
             "checked proof, 3 LS4 steps no checker confirms (ADR-0046 A1).",
             "The two new kinds have modules of their own, proved and certified: `Operators.tla`, `Emergency.tla` "
             "(G10 §3).",
+            "**Proved in Lean** too, of its re-encoding, and a model of `State::apply`'s seat and lease arms is proved "
+            "to refine it at its constants, the recorded traces replayed through it (ADR-0053 R4). That model found an "
+            "issuance may change a seat's kind, which `validate_issuance` does not refuse (G11 item 106).",
         ]),
     ]
     hh = max(c.card(0, 0, w4, t, b, size=14, draw=False) for t, _, b in cards)
@@ -366,6 +374,11 @@ def build():
                    "A person's, seat binding `emergency`: attested by the roster's quorum (ADR-0016 A2)", "Yes",
                    "Build none; Run `Consult`, `Actuate`, `Report`",
                    "Not an LTRO position; `Mediated`; not coupled to an Observer (ADR-0039 A2)"], "accent": "brown"},
+        {"cells": ["(`orchestrator`) · [[amber|Proposed]]", "A sixth kind, Run only, pending with ADR-0054 (ADR-0037 "
+                   "A5): a cell seated only when a workflow has a chosen edge", "A model's, as a Thinker's; delivered "
+                   "handles and never bytes (ADR-0054 §3)", "Yes", "Run `Route(edge)` and `Report` only (ADR-0040 A2)",
+                   "A cell with its own Observer, coupled as a Thinker is (ADR-0039 A3); one round per decision point; "
+                   "may only narrow among enabled edges"], "accent": "amber"},
     ]
     y += c.table(X0, y, cols, rows, size=14, accent="blue") + 44
 
