@@ -8,8 +8,9 @@ use topak_core::admit::FloorOutcome;
 use topak_floor::*;
 
 /// The linked stage's cases: the genesis suite's 62, lifted to the stage's schema, 12 for `R5` to
-/// `R7`, 32 for `C1` to `C9`, and the emergency stage's, which replace X1's (`floor/proposed/build.py`).
-const TESTS: &str = include_str!("../../../../floor/proposed/emergency-tests.json");
+/// `R7`, 32 for `C1` to `C9`, the emergency stage's, which replace X1's, and 16 for the workflow
+/// stage's `R8`, `R9` and `R3` over `Route` (`floor/proposed/build.py`).
+const TESTS: &str = include_str!("../../../../floor/proposed/workflow-tests.json");
 
 /// Every behavioral case the `cedar run-tests` gate ran must decide identically through the
 /// engine the mechanism links, with the same reasons. This is the differential check between
@@ -22,7 +23,7 @@ const TESTS: &str = include_str!("../../../../floor/proposed/emergency-tests.jso
 fn replays_the_gate_suite() {
     let floor = Floor::load().expect("pinned floor loads");
     let cases: Vec<Value> = serde_json::from_str(TESTS).unwrap();
-    assert_eq!(cases.len(), 107);
+    assert_eq!(cases.len(), 123);
     for c in &cases {
         let name = c["name"].as_str().unwrap();
         let r = &c["request"];
@@ -129,7 +130,7 @@ fn a_retired_run_action_is_an_error_not_a_decision() {
             "runRoot": { "__entity": root() },
             "toolAllowlist": { "__entity": set("run-allow") },
             "observerLive": true,
-            "clearSet": [], "inputLabels": [], "destLiteral": false, "destLabels": [],
+            "clearSet": [], "inputLabels": [], "destLiteral": false, "destLabels": [], "decisionPoint": [],
         })
     };
     let ask = |action: &str, resource: &str, alphabet: Value| {

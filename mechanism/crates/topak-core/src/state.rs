@@ -21,7 +21,7 @@ use crate::action::{ActionRequest, tool_id};
 use crate::authentic::{self, KeyHex, Signed};
 use crate::confine::*;
 use crate::lease::{Confinement, Lease, MAX_RUNG};
-use crate::observer::{Heartbeat, ObserverValues, PersonaValues};
+use crate::observer::{Finding, Heartbeat, ObserverValues, PersonaValues};
 use crate::promotion::{Candidate, Tally, VoteRecord, tally_with_coverage};
 use crate::rules::{self, Issuance, Rules, Violation};
 use crate::types::*;
@@ -104,6 +104,11 @@ pub enum EndReason {
     Operator,
     /// Replaced by a narrower renewal at a new fence.
     Renewed,
+    /// At a workflow node, the admit of the worker's `Report` carrying its typed `outcome`
+    /// (ADR-0042 A3, ADR-0054 §4; pending and Proposed).
+    Outcome,
+    /// An orchestrator's `Route` applied: its decision event is consumed (ADR-0042 A3).
+    Routed,
 }
 
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -239,6 +244,22 @@ pub enum Admitted {
     },
     Report {
         record: Digest,
+        /// At a workflow node, the typed `outcome` the record carries, stamped by the deciding
+        /// replica (ADR-0054 §4). Its admit ends the worker's round.
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        outcome: Option<String>,
+    },
+    /// An orchestrator's route (ADR-0040 A2, ADR-0054 §3). The stamp names the workflow, the decision
+    /// event and the basis; the round is the lease's fence (ADR-0055 §6).
+    Route {
+        edge: String,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        stamp: Option<crate::workflow::RouteStamp>,
+    },
+    /// An observer seat's finding against one round, carried verbatim as a heartbeat is.
+    Finding {
+        via: ActionKind,
+        topic: String,
     },
     /// An observer seat's heartbeat (ADR-0039 §1), carried verbatim: it is a fact, and every
     /// replica applies the mark from the log. `via` is the emission variant it arrived as.
@@ -260,9 +281,10 @@ impl Admitted {
             A::Invoke { tool, digest, inputs } => {
                 Admitted::Invoke { tool: tool_id(tool, digest), inputs: Digest::of_json(inputs) }
             }
-            A::Emit { record } => match Heartbeat::parse(record) {
-                Some(h) => Admitted::Heartbeat { via: ActionKind::Emit, topic: h.topic, watermark: h.watermark },
-                None => Admitted::Emit { record: Digest::of_json(record) },
+            A::Emit { record } => match (Heartbeat::parse(record), Finding::parse(record)) {
+                (Some(h), _) => Admitted::Heartbeat { via: ActionKind::Emit, topic: h.topic, watermark: h.watermark },
+                (None, Some(f)) => Admitted::Finding { via: ActionKind::Emit, topic: f.topic },
+                (None, None) => Admitted::Emit { record: Digest::of_json(record) },
             },
             A::Submit { artifact } => Admitted::Submit { artifact: artifact.clone() },
             A::Vote { verdict, artifact, evidence, rules_epoch } => Admitted::Vote {
@@ -275,10 +297,13 @@ impl Admitted {
             A::Actuate { tool, digest, inputs } => {
                 Admitted::Actuate { tool: tool_id(tool, digest), inputs: Digest::of_json(inputs), emergency }
             }
-            A::Report { record } => match Heartbeat::parse(record) {
-                Some(h) => Admitted::Heartbeat { via: ActionKind::Report, topic: h.topic, watermark: h.watermark },
-                None => Admitted::Report { record: Digest::of_json(record) },
+            A::Report { record } => match (Heartbeat::parse(record), Finding::parse(record)) {
+                (Some(h), _) => Admitted::Heartbeat { via: ActionKind::Report, topic: h.topic, watermark: h.watermark },
+                (None, Some(f)) => Admitted::Finding { via: ActionKind::Report, topic: f.topic },
+                (None, None) => Admitted::Report { record: Digest::of_json(record), outcome: None },
             },
+            // The stamp is the lease's: `State::admitted` adds it.
+            A::Route { edge } => Admitted::Route { edge: edge.clone(), stamp: None },
         }
     }
 
@@ -293,7 +318,8 @@ impl Admitted {
             Admitted::Consult { .. } => ActionKind::Consult,
             Admitted::Actuate { .. } => ActionKind::Actuate,
             Admitted::Report { .. } => ActionKind::Report,
-            Admitted::Heartbeat { via, .. } => *via,
+            Admitted::Route { .. } => ActionKind::Route,
+            Admitted::Heartbeat { via, .. } | Admitted::Finding { via, .. } => *via,
         }
     }
 }
@@ -438,6 +464,26 @@ pub enum Entry {
         approvals: Vec<Signed>,
         envelope: BTreeMap<String, Digest>,
     },
+    /// Loads a workflow (ADR-0054 §1, ADR-0055 §1; Proposed) from the bytes of its promoted
+    /// single-file workspace. `outward` is what the deciding replica read from the bundle about the
+    /// nodes' leases (ADR-0049 §5): it can only add to the declared set.
+    WorkflowLoad {
+        id: String,
+        text: String,
+        #[serde(default, skip_serializing_if = "BTreeSet::is_empty")]
+        outward: BTreeSet<String>,
+    },
+    /// The mechanism's grant of a workflow slot under the promotion (ADR-0054 §2; ADR-0031 A4): a
+    /// node's activation, or an orchestrator's decision event. Proposed by any replica that sees the
+    /// slot ready; the request is rebuilt at apply and must be the seating's.
+    WorkflowGrant {
+        id: String,
+        workflow: Digest,
+        slot: crate::workflow::Slot,
+        req: GrantRequest,
+        #[serde(default, skip_serializing_if = "Option::is_none")]
+        appraisal: Option<Appraisal>,
+    },
     /// RETIRED (ADR-0052 §2): a break-glass approval scoped to (seat, epoch), for the floor's X1.
     /// X1 is gone from the floor, and this entry is refused when applied.
     BreakGlassApprove {
@@ -464,6 +510,8 @@ impl Entry {
             | Entry::Control { id, .. }
             | Entry::EmergencySeating { id, .. }
             | Entry::Activate { id, .. }
+            | Entry::WorkflowLoad { id, .. }
+            | Entry::WorkflowGrant { id, .. }
             | Entry::BreakGlassApprove { id, .. } => id,
         }
     }
@@ -541,6 +589,15 @@ pub enum Applied {
     },
     GatesRecorded,
     EmergencyPrepared,
+    /// A workflow loaded (ADR-0054 §1).
+    WorkflowLoaded {
+        workflow: Digest,
+    },
+    /// A workflow slot's grant was refused, by the budget or by a grant check: the slot fails and
+    /// nothing stands in (ADR-0054 §2). Ordered, and a subtraction.
+    WorkflowFailed {
+        reason: String,
+    },
     BreakGlassApproved {
         approvals: usize,
     },
@@ -611,6 +668,12 @@ pub struct State {
     /// drills per epoch (§6) is read from.
     #[serde(default)]
     pub activations: Vec<ActivationRecord>,
+    /// ADR-0054, ADR-0055 (Proposed): the workflows loaded, by the digest of their text.
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub workflows: BTreeMap<Digest, crate::workflow::Run>,
+    /// Each lease a workflow granted, by fence: which workflow and slot it is for.
+    #[serde(default, skip_serializing_if = "BTreeMap::is_empty")]
+    pub wf_bindings: BTreeMap<LogIndex, crate::workflow::Binding>,
     /// A trace name, set by a test or an operator: with `TOPAK_TRACE_DIR`, every `apply` is
     /// recorded for checking against `spec/Mechanism.tla` (`trace.rs`). Never replicated state.
     #[serde(skip)]
@@ -680,16 +743,18 @@ impl State {
             control_ctr: BTreeMap::new(),
             emergency_seatings: BTreeMap::new(),
             activations: Vec::new(),
+            workflows: BTreeMap::new(),
+            wf_bindings: BTreeMap::new(),
             trace: None,
         })
     }
 
-    fn topic_of(&self, rec: &LeaseRecord) -> Option<String> {
+    pub(crate) fn topic_of(&self, rec: &LeaseRecord) -> Option<String> {
         let d = self.rules.seat_domain(&rec.lease.seat)?;
         Some(crate::lift::topic_name(&self.chain, d, &rec.lease.seat, rec.lease.epoch, rec.lease.round))
     }
 
-    fn mark(&self, observer: &str, topic: &str) -> u64 {
+    pub(crate) fn mark(&self, observer: &str, topic: &str) -> u64 {
         self.marks.get(observer).and_then(|m| m.get(topic)).copied().unwrap_or(0)
     }
 
@@ -723,7 +788,7 @@ impl State {
         }
         let mut found = None;
         for (t, d) in &self.rules.seats {
-            if d.kind != SeatKind::Thinker {
+            if !d.kind.is_coupled() {
                 continue;
             }
             if let Some(rec) = self.live_lease(t)
@@ -808,15 +873,17 @@ impl State {
                     Some(_) => Ok(()),
                 }
             }
-            A::Emit { record } | A::Report { record } => match Heartbeat::parse(record) {
-                Some(h) => self.check_heartbeat(&req.seat, &h),
-                None => Ok(()),
+            A::Emit { record } | A::Report { record } => match (Heartbeat::parse(record), Finding::parse(record)) {
+                (Some(h), _) => self.check_heartbeat(&req.seat, &h),
+                (None, Some(f)) => self.check_finding(&req.seat, &f),
+                (None, None) => self.workflow_preconditions(req),
             },
+            A::Route { .. } => self.workflow_preconditions(req),
             _ => Ok(()),
         }
     }
 
-    fn end_lease(&mut self, fence: LogIndex, reason: EndReason) {
+    pub(crate) fn end_lease(&mut self, fence: LogIndex, reason: EndReason) {
         let Some(rec) = self.leases.get(&fence) else { return };
         if rec.ended.is_some() {
             return;
@@ -824,7 +891,7 @@ impl State {
         // ADR-0039 §2, §3: a Thinker's round seals at its final sequence number. In Run that
         // number counts invocations as well as reports, so coverage to the seal covers both
         // (ADR-0042 §5). A renewal does not come through here: the round continues.
-        let seal = (self.rules.seat_kind(&rec.lease.seat) == Some(SeatKind::Thinker))
+        let seal = self.rules.seat_kind(&rec.lease.seat).is_some_and(SeatKind::is_coupled)
             .then(|| self.topic_of(rec).map(|topic| (rec.lease.seat.clone(), Seal { topic, seq: rec.seq })))
             .flatten();
         let rec = self.leases.get_mut(&fence).expect("present");
@@ -858,6 +925,16 @@ impl State {
     }
 
     fn apply_inner(&mut self, index: LogIndex, entry: &Entry, params: &Params) -> Applied {
+        let applied = self.apply_entry(index, entry, params);
+        // ADR-0054, ADR-0055: whatever the entry changed, each running workflow moves as far as it
+        // can, in the same apply. A duplicate changed nothing.
+        if !self.workflows.is_empty() && applied != Applied::Duplicate {
+            self.workflow_advance(index);
+        }
+        applied
+    }
+
+    fn apply_entry(&mut self, index: LogIndex, entry: &Entry, params: &Params) -> Applied {
         self.last_applied = index;
         if !self.applied_ids.insert(entry.id().to_string()) {
             return Applied::Duplicate;
@@ -960,13 +1037,17 @@ impl State {
                 self.gates.insert(artifact.clone(), evidence.clone());
                 Applied::GatesRecorded
             }
+            Entry::WorkflowLoad { text, outward, .. } => self.apply_workflow_load(index, text, outward),
+            Entry::WorkflowGrant { workflow, slot, req, appraisal, .. } => {
+                self.apply_workflow_grant(index, workflow, slot, req, appraisal.as_ref())
+            }
             Entry::BreakGlassApprove { .. } => Applied::Rejected(
                 "X1 break-glass is retired: the roster activates an emergency seating (ADR-0052 §2)".into(),
             ),
         }
     }
 
-    fn apply_grant(&mut self, index: LogIndex, req: &GrantRequest, appraisal: Option<&Appraisal>) -> Applied {
+    pub(crate) fn apply_grant(&mut self, index: LogIndex, req: &GrantRequest, appraisal: Option<&Appraisal>) -> Applied {
         let Some(domain) = self.rules.seat_domain(&req.seat) else {
             return Applied::Rejected(format!("seat {} is not declared in the rules", req.seat));
         };
@@ -1058,7 +1139,7 @@ impl State {
         // ADR-0039 §2: in Run, a Thinker's next round is granted only once a cell Observer has
         // read its last round to the seal. Build needs no cross-round rule (§3).
         if domain == Domain::Run
-            && kind == SeatKind::Thinker
+            && kind.is_coupled()
             && let Some(seal) = self.seals.get(&req.seat)
             && !self.rules.cell_observers(&req.seat).iter().any(|o| self.mark(o, &seal.topic) >= seal.seq)
         {
@@ -1513,6 +1594,11 @@ impl State {
         if rec.params != params.digest() {
             return Applied::Rejected("admit was decided under different mechanism parameters".into());
         }
+        // ADR-0054 §8: a route is checked again where it is applied, and is void if it fails. Named
+        // first, so the void says why; the generic checks below run the same check again.
+        if let Err(why) = self.workflow_admit_check(rec.lease, &rec.action) {
+            return Applied::Rejected(why);
+        }
         // Re-run the state-dependent checks against the state at this log position.
         let probe = ActionRequest {
             seat: rec.seat.clone(),
@@ -1525,8 +1611,8 @@ impl State {
         }
         // ADR-0039 §2, re-checked at apply (ADR-0033 §4): the deterministic half of live(o).
         // Effects only: `Consult` is not coupled (ADR-0041 §2).
-        if matches!(rec.action, Admitted::Actuate { .. } | Admitted::Report { .. })
-            && self.rules.seat_kind(&rec.seat) == Some(SeatKind::Thinker)
+        if matches!(rec.action, Admitted::Actuate { .. } | Admitted::Report { .. } | Admitted::Route { .. })
+            && self.rules.seat_kind(&rec.seat).is_some_and(SeatKind::is_coupled)
             && !self.observer_covers(&rec.seat, &|_| true)
         {
             return Applied::Rejected("no cell Observer covers this seat at commit (ADR-0039 §2)".into());
@@ -1582,7 +1668,7 @@ impl State {
         match &rec.action {
             // ADR-0042 §2: in Run the sequence counts every effect-bearing admit, so an
             // invocation advances it as a report does. `Consult` advances `actions` only.
-            Admitted::Emit { .. } | Admitted::Report { .. } | Admitted::Actuate { .. } => {
+            Admitted::Emit { .. } | Admitted::Report { .. } | Admitted::Actuate { .. } | Admitted::Route { .. } => {
                 lr.seq += 1;
                 seq = Some(lr.seq);
                 // ADR-0047 §2, §4: the result is named by this sequence number, and what is
@@ -1604,6 +1690,11 @@ impl State {
                         lr.labels.clear_set.extend(f.result_label.iter().cloned());
                     }
                 }
+            }
+            Admitted::Finding { topic, .. } => {
+                lr.seq += 1;
+                seq = Some(lr.seq);
+                self.workflow_finding(&Finding { topic: topic.clone() });
             }
             Admitted::Heartbeat { topic, watermark, .. } => {
                 lr.seq += 1;
@@ -1651,6 +1742,9 @@ impl State {
                 self.end_lease(fence, EndReason::Voted);
             }
             _ => {}
+        }
+        if self.wf_bindings.contains_key(&fence) {
+            self.workflow_admitted(index, fence, &rec.action, seq);
         }
         Applied::Admitted { seq, promoted }
     }
@@ -1872,6 +1966,11 @@ fn probe_action(a: &Admitted) -> crate::action::Action {
         Admitted::Consult { object } => A::Consult { object: object.clone() },
         Admitted::Actuate { .. } => A::Actuate { tool: String::new(), digest: Digest(String::new()), inputs: none() },
         Admitted::Report { .. } => A::Report { record: serde_json::Value::Null },
+        Admitted::Route { edge, .. } => A::Route { edge: edge.clone() },
+        Admitted::Finding { via, topic } => {
+            let record = Finding { topic: topic.clone() }.record();
+            if *via == ActionKind::Emit { A::Emit { record } } else { A::Report { record } }
+        }
         Admitted::Heartbeat { via, topic, watermark } => {
             let record = Heartbeat { topic: topic.clone(), watermark: *watermark }.record();
             if *via == ActionKind::Emit { A::Emit { record } } else { A::Report { record } }

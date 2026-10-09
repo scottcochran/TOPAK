@@ -50,6 +50,18 @@ pub enum OperatorOp {
         #[serde(default)]
         sign_on: Option<Signed>,
     },
+    /// ADR-0054 §1, ADR-0055 §1 (Proposed): load a workflow from the bytes of its promoted
+    /// single-file workspace. The tally is its authority, so the request carries no signature;
+    /// the replica adds what the bundle says about which nodes reach outward.
+    LoadWorkflow {
+        text: String,
+    },
+    /// A workflow's state, and the sessions of its live leases that this replica opened.
+    /// BOOTSTRAP (PROVISIONAL workflow-occupant): this is how a scripted occupant is handed the
+    /// session of a lease the mechanism granted, standing in for a launch per slot.
+    WorkflowStatus {
+        workflow: Digest,
+    },
     Renew {
         token: String,
         alphabet: BTreeSet<ActionKind>,

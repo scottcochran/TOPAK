@@ -30,4 +30,5 @@ pub mod types;
 
 pub use types::*;
 pub mod observer;
-pub use observer::{Heartbeat, ObserverValues, PersonaValues};
+pub use observer::{Finding, Heartbeat, ObserverValues, PersonaValues};
+pub mod workflow;

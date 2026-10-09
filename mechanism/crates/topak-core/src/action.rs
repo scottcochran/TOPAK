@@ -31,6 +31,10 @@ pub enum Action {
     Actuate { tool: String, digest: Digest, inputs: Map<String, Value> },
     /// Run: append to the principal's round topic.
     Report { record: Value },
+    /// Run: an orchestrator's choice of one chosen edge out of the decision point its round was
+    /// granted for (ADR-0040 A2, ADR-0054 §3; both pending or Proposed). No other argument: the
+    /// workflow and the decision event are the lease's, and the mechanism stamps them.
+    Route { edge: String },
 }
 
 impl Action {
@@ -45,6 +49,7 @@ impl Action {
             Action::Consult { .. } => ActionKind::Consult,
             Action::Actuate { .. } => ActionKind::Actuate,
             Action::Report { .. } => ActionKind::Report,
+            Action::Route { .. } => ActionKind::Route,
         }
     }
 

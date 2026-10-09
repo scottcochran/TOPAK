@@ -483,6 +483,10 @@ pub fn project_entry(e: &Entry, oracle: Value) -> Value {
         Entry::BreakGlassApprove { id, seat, epoch, approval } => json!({
             "kind": "BreakGlassApprove", "id": id, "seat": seat, "epoch": epoch, "key": approval.key,
         }),
+        // ADR-0054, ADR-0055 (Proposed): `spec/Mechanism.tla` does not model workflows. Projected by
+        // name only, so a traced run that orders one does not match the module (ADR-0033 A16).
+        Entry::WorkflowLoad { id, .. } => json!({ "kind": "WorkflowLoad", "id": id }),
+        Entry::WorkflowGrant { id, .. } => json!({ "kind": "WorkflowGrant", "id": id }),
     };
     if let (Some(obj), Some(o)) = (v.as_object_mut(), oracle.as_object()) {
         for (k, val) in o {
@@ -495,6 +499,8 @@ pub fn project_entry(e: &Entry, oracle: Value) -> Value {
 pub fn project_applied(a: &Applied) -> Value {
     match a {
         Applied::EmergencyPrepared => json!({ "kind": "EmergencyPrepared" }),
+        Applied::WorkflowLoaded { workflow } => json!({ "kind": "WorkflowLoaded", "workflow": workflow.0 }),
+        Applied::WorkflowFailed { .. } => json!({ "kind": "WorkflowFailed" }),
         Applied::LeaseGranted { fence } => json!({ "kind": "LeaseGranted", "fence": fence }),
         Applied::Renewed { fence } => json!({ "kind": "Renewed", "fence": fence }),
         Applied::Admitted { seq, promoted } => json!({

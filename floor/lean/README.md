@@ -1,10 +1,12 @@
-# The genesis floor and the floor in force under Cedar's verified semantics
+# The genesis floor, the floor in force and the linked floor under Cedar's verified semantics
 
 `genesis-floor.cedar` and `genesis.cedarschema` stated in the abstract syntax of cedar-spec, the Lean model of
 Cedar that AWS maintains and proves properties of, with ADR-0030 §5's totality gate proved as a theorem of that
 model and the 62 behavioral cases of `genesis-tests.json` checked under its authorizer. **And since 2026.10.06 the
 floor in force**: `proposed/emergency-floor.cedar` and `emergency.cedarschema`, the stage the reference links and
 pins (`mechanism/crates/topak-floor`), with the same theorems and its 107 cases (`InForce.lean`; ADR-0053 R3).
+**And since 2026.10.08 the floor the reference links**, which is not the floor in force: `proposed/workflow-floor.cedar`
+and `workflow.cedarschema`, with the same theorems and its 123 cases (`Linked.lean`; ADR-0033 A16).
 
 ## Why
 
@@ -47,6 +49,15 @@ genesis files come out byte for byte as before.
 
 `tools/lean-sync.sh` reads the floor and schema `topak-floor` links and fails if the newest results file does not state
 them, so a move of the reference to another stage cannot leave the floor that runs without a Lean statement.
+
+## The floor the reference links (`TopakFloor/Linked.lean`, 2026.10.08)
+
+On 2026.10.08 the reference moved to the `workflow` stage (ADR-0041 A4, pending, with ADR-0054, Proposed), which is
+not in force. `gen.py workflow` states it into `Workflow.lean` and `WorkflowTests.lean` (30 policies; schema S with
+`Route`, `WorkflowNode`, `Edge` and `RunCtx.decisionPoint`), and `Linked.lean` proves of it what `InForce.lean` proves
+of the floor in force: `linked_schema_wf`, `linked_validates`, `linked_never_errors`, `linked_no_ext_no_arith`,
+`linked_cases_conform`, and non-vacuity and discrimination on all seventeen actions, `Route` among them. `wfCase001` to
+`wfCase123` hold under `isAuthorized`. The results file's `Floor:` line names the linked files after `linked:`.
 
 What stays with `run-gates.py` and the checker: the every-entry-matters gate and routing, which are solver
 queries about pairs of floors (`implies`, `equivalent`), and the negative controls.
@@ -94,7 +105,7 @@ denied case of an action with no forbid.
 ```sh
 cd floor/lean
 export PATH="$HOME/.cargo/bin:$PATH"               # cedar-policy-cli 4.13.0
-python3 gen.py                                     # regenerate both statements: genesis, and the emergency stage in force
+python3 gen.py                                     # regenerate every statement: genesis, emergency (in force), workflow (linked)
 lake build                                         # first run fetches cedar-spec and batteries and builds the model: minutes, ~GB
 ./results.sh > TopakFloor-results-<date>.txt       # regenerate, clean build, digests, axioms, replay (~2 min); byte for byte
 ../../tools/lean-sync.sh                           # STALE when a floor, schema or tests moved; checks cedar-spec and the linked floor

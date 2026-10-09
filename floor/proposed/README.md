@@ -1,11 +1,11 @@
 # Proposed policy floor
 
-**2026.10.04**, revised 2026.10.05 · DRAFT · not ratified · **the reference links the `emergency` stage** (since 2026.10.05)
+**2026.10.04**, revised 2026.10.05 and 2026.10.08 · DRAFT · not ratified · **the reference links the `workflow` stage** (since 2026.10.08; `emergency` from 2026.10.05)
 
 This directory holds the floor as it would read if the records drafted on 2026.10.03 and 2026.10.04 were in force.
 **Since 2026.10.05 the reference links, pins and replays a stage from here** (`mechanism/crates/topak-floor`), switched
 outright from the genesis floor in `floor/` at the custodian's direction: `labels` at commit `c15026d`, `control` at
-`c7de2ba`, and `emergency`, the last, after it. The stage files open with a comment that says they are not what the
+`c7de2ba`, `emergency` at `9c57221`, and `workflow`, drafted with ADR-0054 and not in force, on 2026.10.08. The stage files open with a comment that says they are not what the
 reference follows; that is no longer true of any of them. The bytes are left as they were gated, so that the digests the gate results and
 ADR-0047 cite are the digests the reference pins, and the comment is corrected at the stage's next gate run.
 It exists so that those records' floor text is real Cedar that has been validated, tested and put through the
@@ -31,7 +31,7 @@ The genesis floor has 17 policies and 62 cases.
 |---|---|
 | `build.py` | Builds every stage from `../genesis.cedarschema`, `../genesis-floor.cedar` and `../genesis-tests.json`. Each edit to the genesis text replaces a string asserted to occur exactly once, so a change to the genesis floor that this file does not expect stops the build |
 | `<stage>.cedarschema`, `<stage>-floor.cedar` | The stage's schema S and floor. Generated; edit `build.py` |
-| `<stage>-tests.json` | The stage's behavioural cases. Generated. `emergency-tests.json` is tracked, because the reference's floor tests replay it; the other two are not (about 2 MB) |
+| `<stage>-tests.json` | The stage's behavioural cases. Generated. `workflow-tests.json` is tracked, because the reference's floor tests replay it, and `emergency-tests.json`, because `floor/lean` states the floor in force from it; the other two are not (about 2 MB) |
 | `run-gates.py` | Drives `../run-gates.py`, the genesis gate runner, unchanged, on a stage, then adds routing controls for the new entries |
 | `<stage>-gates-results-2026.10.04.txt` | The gate run for each of the first three stages. All gates pass in all three |
 | `workflow-gates-results-2026.10.08.txt` | The gate run for `workflow`. Added 2026.10.08 with the stage; the driver's other stages are unchanged, and `emergency`'s run reproduces its 2026.10.04 file byte for byte |
@@ -78,7 +78,8 @@ computed. They deny whatever permit is satisfied.
 | `C9-stop-in-own-domain` | forbid | No ending of a round or revocation outside the operator's domain |
 
 **Workflow** (ADR-0054 §3, Proposed; ADR-0041 A4, pending). One permit and one forbid over a new action, and `R3`
-widened. Nothing here is in force, and the reference does not link this stage.
+widened. Nothing here is in force. **The reference links this stage since 2026.10.08** (ADR-0033 A16), at the
+custodian's direction, and every Run request it lifts carries `decisionPoint`.
 
 | Id | Kind | Says |
 |---|---|---|

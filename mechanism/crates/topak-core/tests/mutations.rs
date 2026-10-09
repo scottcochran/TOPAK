@@ -601,15 +601,16 @@ fn a_correlator_on_the_veto_roster_vetoes_and_its_silence_does_not() {
 }
 
 /// ADR-0038 §1: a cell names a declared thinker seat in the observer's domain, and only an
-/// observer seat has one. The rules are refused otherwise.
+/// observer seat has one. The rules are refused otherwise. ADR-0039 A3 (pending) adds an
+/// orchestrator seat as a cell's other kind.
 #[test]
 fn a_cell_names_a_thinker_seat_in_its_domain_and_only_observers_have_one() {
     let mut r = rules();
     r.seats.insert("ox".into(), cell_observer(Domain::Build, "r1", "kox")); // r1 is a Run seat
-    assert!(check_well_formed(&r).iter().any(|v| v.detail.contains("not a thinker seat in its domain")));
+    assert!(check_well_formed(&r).iter().any(|v| v.detail.contains("not a thinker or orchestrator seat in its domain")));
     let mut r = rules();
     r.seats.insert("ox".into(), cell_observer(Domain::Build, "g1", "kox")); // g1 is a grant seat
-    assert!(check_well_formed(&r).iter().any(|v| v.detail.contains("not a thinker seat")));
+    assert!(check_well_formed(&r).iter().any(|v| v.detail.contains("not a thinker or orchestrator seat")));
     let mut r = rules();
     r.seats.insert("ox".into(), cell_observer(Domain::Build, "nobody", "kox"));
     assert!(check_well_formed(&r).iter().any(|v| v.detail.contains("not declared")));
@@ -694,7 +695,7 @@ fn the_sequence_counts_effects_and_m_emitseq_is_refused() {
     for _ in 0..2 {
         assert_eq!(step(&mut s, consult()), Applied::Admitted { seq: None, promoted: None });
     }
-    let report = Admitted::Report { record: Digest::of(b"r") };
+    let report = Admitted::Report { record: Digest::of(b"r"), outcome: None };
     assert_eq!(step(&mut s, report), Applied::Admitted { seq: Some(4), promoted: None });
     assert_eq!((s.leases[&1].seq, s.leases[&1].actions), (4, 6));
 
@@ -973,6 +974,6 @@ fn the_rounds_labels_are_folded_and_a_stale_clear_set_is_refused() {
     assert_eq!(labels.results[&2].label, set(&["restricted"]));
     assert_eq!(labels.clear_set, set(&["internal", "restricted", "untrusted"]), "it only grows");
     // A Report delivers nothing and carries no label.
-    let report = Admitted::Report { record: Digest::of(b"r") };
+    let report = Admitted::Report { record: Digest::of(b"r"), outcome: None };
     assert_eq!(step(&mut s, report, None), Applied::Admitted { seq: Some(3), promoted: None });
 }

@@ -148,7 +148,8 @@ impl Rules {
         self.seats.values().any(|s| s.kind == SeatKind::Operator)
     }
 
-    /// The observer seats in a Thinker's cell (ADR-0038 §1): those declaring `cell = thinker`.
+    /// The observer seats in a Thinker's cell (ADR-0038 §1): those declaring `cell = thinker`. An
+    /// orchestrator seat has a cell as a Thinker does (ADR-0039 A3, pending).
     pub fn cell_observers(&self, thinker: &str) -> Vec<SeatId> {
         self.seats
             .iter()
@@ -161,7 +162,7 @@ impl Rules {
     /// in the same domain. The reference has no topic read ACL, so this is the declared reach.
     pub fn watches(&self, observer: &str, thinker: &str) -> bool {
         match (self.seats.get(observer), self.seats.get(thinker)) {
-            (Some(o), Some(t)) if o.kind == SeatKind::Observer && t.kind == SeatKind::Thinker => match &o.cell {
+            (Some(o), Some(t)) if o.kind == SeatKind::Observer && t.kind.is_coupled() => match &o.cell {
                 Some(c) => c == thinker,
                 None => o.domain == t.domain,
             },
@@ -250,14 +251,18 @@ pub fn check_well_formed(r: &Rules) -> Vec<Violation> {
         }
     }
     // ADR-0038 §1: a cell names a declared thinker seat in the same domain; only observers have one.
+    // ADR-0039 A3 (pending): or an orchestrator seat, which is a cell like any other.
     for (id, d) in &r.seats {
         match (&d.cell, d.kind) {
             (Some(_), k) if k != SeatKind::Observer => {
                 out.push(v("WF", format!("seat {id} is a {k} and cannot have a cell")))
             }
             (Some(t), _) => match r.seats.get(t) {
-                Some(td) if td.kind == SeatKind::Thinker && td.domain == d.domain => {}
-                Some(_) => out.push(v("WF", format!("observer {id}'s cell {t} is not a thinker seat in its domain"))),
+                Some(td) if td.kind.is_coupled() && td.domain == d.domain => {}
+                Some(_) => out.push(v(
+                    "WF",
+                    format!("observer {id}'s cell {t} is not a thinker or orchestrator seat in its domain"),
+                )),
                 None => out.push(v("WF", format!("observer {id}'s cell {t} is not declared"))),
             },
             (None, _) => {}
@@ -284,9 +289,13 @@ pub fn check_well_formed(r: &Rules) -> Vec<Violation> {
         out.push(v("WF", "an inside target is empty".to_string()));
     }
     // ADR-0052 §1: an emergency seat is a Run seat. Build's way to add authority is a promotion.
+    // ADR-0037 A5 (pending): so is an orchestrator seat.
     for (id, d) in &r.seats {
         if d.kind == SeatKind::Emergency && d.domain != Domain::Run {
             out.push(v("WF", format!("emergency seat {id} is not a Run seat (ADR-0052 §1)")));
+        }
+        if d.kind == SeatKind::Orchestrator && d.domain != Domain::Run {
+            out.push(v("WF", format!("orchestrator seat {id} is not a Run seat (ADR-0037 A5)")));
         }
     }
     // ADR-0034 §2: a declared rung exists, and rung 3 has an issued verifier to appraise it.

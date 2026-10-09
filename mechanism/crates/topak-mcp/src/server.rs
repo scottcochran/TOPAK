@@ -111,6 +111,12 @@ pub fn tools_for(domain: Domain) -> Vec<Tool> {
                 "Report(record): append to this principal's round topic.",
                 obj(json!({ "record": {} }), &["record"]),
             ),
+            // ADR-0040 A2 (pending, with ADR-0054): held only by an `orchestrator` seat.
+            Tool::new(
+                "route",
+                "Route(edge): an orchestrator's choice of one chosen edge out of the decision point its round was granted for. The mechanism checks that the edge is enabled, and checks it again where the route is applied.",
+                obj(json!({ "edge": { "type": "string" } }), &["edge"]),
+            ),
         ],
     }
 }
@@ -128,6 +134,7 @@ pub fn to_op(domain: Domain, name: &str, args: &JsonObject) -> Result<AgentOp, S
         (Domain::Run, "consult") => "Consult",
         (Domain::Run, "actuate") => "Actuate",
         (Domain::Run, "report") => "Report",
+        (Domain::Run, "route") => "Route",
         (Domain::Build, "abstain") => return Ok(AgentOp::Abstain),
         (Domain::Build, "submit") => match args.get("artifact") {
             None => return Ok(AgentOp::SubmitWorkspace),

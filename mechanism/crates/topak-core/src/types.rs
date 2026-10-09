@@ -112,7 +112,8 @@ impl Verdict {
 ///
 /// Build's six are ADR-0022 §1. Run's three are ADR-0040 §1 (Proposed): `Consult` is ingress over
 /// the pinned Run root, and `Actuate` and `Report` are ADR-0015's two effect classes. No name is
-/// shared between the domains (ADR-0040 §2).
+/// shared between the domains (ADR-0040 §2). `Route` is ADR-0040 A2's fourth Run variant (pending,
+/// with ADR-0054, Proposed): an `orchestrator` seat's choice of one edge of a workflow.
 #[derive(Clone, Copy, Debug, PartialEq, Eq, Hash, PartialOrd, Ord, Serialize, Deserialize)]
 pub enum ActionKind {
     Read,
@@ -124,6 +125,7 @@ pub enum ActionKind {
     Consult,
     Actuate,
     Report,
+    Route,
 }
 
 impl ActionKind {
@@ -135,7 +137,7 @@ impl ActionKind {
         ActionKind::Submit,
         ActionKind::Vote,
     ];
-    pub const RUN: [ActionKind; 3] = [ActionKind::Consult, ActionKind::Actuate, ActionKind::Report];
+    pub const RUN: [ActionKind; 4] = [ActionKind::Consult, ActionKind::Actuate, ActionKind::Report, ActionKind::Route];
 
     pub fn as_str(self) -> &'static str {
         match self {
@@ -148,21 +150,23 @@ impl ActionKind {
             ActionKind::Consult => "Consult",
             ActionKind::Actuate => "Actuate",
             ActionKind::Report => "Report",
+            ActionKind::Route => "Route",
         }
     }
 
     pub fn domain(self) -> Domain {
         match self {
-            ActionKind::Consult | ActionKind::Actuate | ActionKind::Report => Domain::Run,
+            ActionKind::Consult | ActionKind::Actuate | ActionKind::Report | ActionKind::Route => Domain::Run,
             _ => Domain::Build,
         }
     }
 
     /// ADR-0042 §2: the Run variants that bear an effect. These advance the sequence an Observer's
     /// watermark is over, and these are what `R3-observer-live` couples (ADR-0041 §2). `Consult`
-    /// is ingress and does neither.
+    /// is ingress and does neither. `Route` is a principal emission (ADR-0015 A1, pending), so it
+    /// is an effect as `Report` is, and R3 names it (ADR-0041 A4).
     pub fn is_run_effect(self) -> bool {
-        matches!(self, ActionKind::Actuate | ActionKind::Report)
+        matches!(self, ActionKind::Actuate | ActionKind::Report | ActionKind::Route)
     }
 }
 
@@ -186,6 +190,10 @@ pub enum SeatKind {
     Operator,
     /// ADR-0052 §1 (provisional): a person seated by the break-glass roster's quorum, for one round.
     Emergency,
+    /// ADR-0037 A5 (pending, with ADR-0054, Proposed): a workflow's orchestrator. Run only, `Route`
+    /// and `Report`. Seated by a workflow's promotion, one round per decision point, and coupled to
+    /// its cell Observer as a `thinker` seat is (ADR-0039 A3).
+    Orchestrator,
 }
 
 impl SeatKind {
@@ -196,6 +204,7 @@ impl SeatKind {
             SeatKind::Grant => "grant",
             SeatKind::Operator => "operator",
             SeatKind::Emergency => "emergency",
+            SeatKind::Orchestrator => "orchestrator",
         }
     }
 
@@ -212,7 +221,15 @@ impl SeatKind {
             SeatKind::Grant => matches!(k, Read | Emit | Vote),
             SeatKind::Operator => false,
             SeatKind::Emergency => matches!(k, Consult | Actuate | Report),
+            SeatKind::Orchestrator => matches!(k, Route | Report),
         }
+    }
+
+    /// A kind whose effect-bearing admits need a live cell Observer (ADR-0039 §2): a `thinker`
+    /// seat, and an `orchestrator` seat by ADR-0039 A3 (pending). Such a seat has a cell, its rounds
+    /// seal, and its next round waits for the last to be read to the seal.
+    pub fn is_coupled(self) -> bool {
+        matches!(self, SeatKind::Thinker | SeatKind::Orchestrator)
     }
 }
 

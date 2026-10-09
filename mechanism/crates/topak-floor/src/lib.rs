@@ -21,29 +21,33 @@ use topak_core::{Digest, ObserverValues, PersonaValues};
 
 /// The gated floor text. Since 2026.10.05 it is a stage of the proposed floor (`floor/proposed/`,
 /// DRAFT, not ratified), and no longer `floor/genesis-floor.cedar`: the reference was switched
-/// outright, at the custodian's direction. The stage linked is `emergency`, the last of the three:
-/// the genesis floor with ADR-0047's `R5` to `R7`, ADR-0050's `C1` to `C9`, and ADR-0052's change,
-/// which removes `X1-break-glass` and lets a seat of kind `emergency` `Actuate` under `B10`.
-pub const FLOOR_SRC: &str = include_str!("../../../../floor/proposed/emergency-floor.cedar");
-/// Schema S for that stage (`floor/proposed/emergency.cedarschema`): the `control` stage's, with
-/// the break-glass fields gone from Run's context.
-pub const SCHEMA_SRC: &str = include_str!("../../../../floor/proposed/emergency.cedarschema");
+/// outright, at the custodian's direction. Since 2026.10.08 the stage linked is `workflow`, the
+/// fourth: the genesis floor with ADR-0047's `R5` to `R7`, ADR-0050's `C1` to `C9`, ADR-0052's
+/// change, which removes `X1-break-glass` and lets a seat of kind `emergency` `Actuate` under
+/// `B10`, and ADR-0054's (ADR-0041 A4, pending): the action `Route`, `R8-route-own-decision`,
+/// `R9-only-orchestrators-route`, and `R3` over `Route` and the `orchestrator` kind. The floor in
+/// force is still the `emergency` stage: ADR-0054 is Proposed (ADR-0033 A16).
+pub const FLOOR_SRC: &str = include_str!("../../../../floor/proposed/workflow-floor.cedar");
+/// Schema S for that stage (`floor/proposed/workflow.cedarschema`): the `emergency` stage's, with
+/// the kind `orchestrator`, the entities `WorkflowNode` and `Edge`, `RunCtx.decisionPoint` and
+/// the action `Route`.
+pub const SCHEMA_SRC: &str = include_str!("../../../../floor/proposed/workflow.cedarschema");
 /// The policy-floor values (`floor/genesis-values.json`, ADR-0039 §1): the third file of the
 /// floor bundle. Placeholders, not measured. No stage changes them.
 pub const VALUES_SRC: &str = include_str!("../../../../floor/genesis-values.json");
 
-/// Digests recorded in `floor/proposed/emergency-gates-results-2026.10.04.txt`, the gate run for
-/// the `emergency` stage: 28 policies, 107 cases, every gate passing. Changing any of the three
+/// Digests recorded in `floor/proposed/workflow-gates-results-2026.10.08.txt`, the gate run for
+/// the `workflow` stage: 30 policies, 123 cases, every gate passing. Changing any of the three
 /// means re-running the gates and changing these: a mechanism release. Pinned before: the
-/// `control` stage's 4341ede9… and 4e24033b… (`c7de2ba`), the `labels` stage's 9aab481d… and
+/// `emergency` stage's 15c941b9… and d3c8145c… (`9c57221`), the `control` stage's 4341ede9… and 4e24033b… (`c7de2ba`), the `labels` stage's 9aab481d… and
 /// 9beda963… (`c15026d`), and the genesis floor's 28ec0e45… and 0ec2fa21…. The values digest is
 /// that of `genesis-gates-results-2026.09.30.txt`, unchanged.
 ///
 /// The stage files open with a comment saying they are "not what the reference follows". That
 /// was true when they were gated and is not now. The bytes are kept as gated, so that what is
 /// enforced is what was proven; the comment is corrected at the stage's next gate run.
-pub const PINNED_FLOOR_SHA256: &str = "15c941b9a56a09f7afa5ce3f2993c0d0a894ce53d06a95ab27a00b1a79a6f6ad";
-pub const PINNED_SCHEMA_SHA256: &str = "d3c8145c6af2d9a36bc876174a5c9b7f16f2afd65bab139cb29aace9751703f0";
+pub const PINNED_FLOOR_SHA256: &str = "10ea6818af9b4efeda0a50afaa342c3fcdcbeeac91e9312bc055a795e12def8a";
+pub const PINNED_SCHEMA_SHA256: &str = "fd394bb8c074eec27351aa7c430c40750d49ce4d4bea12b8398c33f24dac2afa";
 pub const PINNED_VALUES_SHA256: &str = "85ab6fefb66f031636bd7527722cd9241be101a00088fa2add4fe003cb25d760";
 
 /// The Cedar engine version this mechanism links. The gates ran with cedar-policy-cli 4.13.0.
