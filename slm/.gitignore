@@ -13,7 +13,8 @@ data/
 
 # Tokenizers, token files, checkpoints, metrics, manifests, lineage records, overlap reports,
 # overlap cache, benchmark results, logs
-runs/
+runs
+runs.local/
 
 # Rehearsal clusters: replica WALs and archives, workspaces, generated tool wrapper, bundles,
 # and DEV keys in the clear (rehearsal/run/*/secrets/). Never commit these.
