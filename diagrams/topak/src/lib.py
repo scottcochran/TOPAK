@@ -23,6 +23,10 @@ MONO_SCALE = 0.92        # code runs are set slightly smaller than the surroundi
 
 DATE = "2026.10.05"
 STATE = "State of record: Genesis Checkpoint G10 (2026.10.05) · narrative: Theory of Operation rev 14"
+# A diagram amended after a cut says so in its footer (Canvas note=), beside the state it was drawn against; a diagram
+# drawn new against a later cut states that cut (Canvas state=). Unamended diagrams regenerate byte for byte.
+AMENDED_G11 = "amended 2026.10.09 against Genesis Checkpoint G11 (2026.10.09) and Theory of Operation rev 15"
+STATE_G11 = "State of record: Genesis Checkpoint G11 (2026.10.09) · narrative: Theory of Operation rev 15 · drawn 2026.10.09"
 
 # ---------------------------------------------------------------------------------------------
 # Theme tokens: name -> (light, dark)
@@ -235,9 +239,10 @@ def render_line(x, y, line, size, color="ink", anchor="start", bold=False):
 class Canvas:
     """One diagram. Primitives append SVG and track the lowest y used so height is computed."""
 
-    def __init__(self, ident, title, subtitle, width, sources, pad=56):
+    def __init__(self, ident, title, subtitle, width, sources, pad=56, note=None, state=None):
         self.ident, self.title, self.subtitle, self.W = ident, title, subtitle, width
         self.sources = sources
+        self.note, self.state = note, state
         self.pad = pad
         self.out = []
         self.ymax = 0
@@ -561,7 +566,8 @@ class Canvas:
         for ln in wrap(src, self.W - 2 * p, 13):
             self.add(render_line(p, y, ln, 13, "faint"))
             y += 19
-        foot = (f"{STATE} · generated {DATE} by diagrams/gen-topak-family.py · "
+        foot = (f"{self.state or STATE}{' · ' + self.note if self.note else ''} · generated {DATE} by "
+                f"diagrams/gen-topak-family.py · "
                 f"documentation licence CC BY 4.0 (LICENSE-DOCS)")
         for ln in wrap(foot, self.W - 2 * p, 13):
             self.add(render_line(p, y, ln, 13, "faint"))

@@ -2,7 +2,7 @@
 import re
 
 import lib
-from lib import STATUS, Canvas, text_width
+from lib import AMENDED_G11, STATUS, Canvas, text_width
 
 ID, SLUG = "D1", "admit-pipeline"
 
@@ -67,9 +67,11 @@ STEPS = [
       "`Other`: a handle that names nothing in this round for this principal (ADR-0049 §3); an `Actuate` with no "
       "label facts, which is refused and not lifted as inside (ADR-0047 §4)."], None),
     ("5", "Floor: Cedar, linked · **can permit**", "blue",
-     ["`floor/proposed/emergency-floor.cedar` (28 policies, 107 cases), its schema and `floor/genesis-values.json`, "
+     ["`floor/proposed/workflow-floor.cedar` (30 policies, 123 cases), its schema and `floor/genesis-values.json`, "
       "compiled in **by path**; the replica refuses to start unless their bytes match the gated digests (ADR-0033 §2). "
-      "**Since 2026.10.05 the reference links the proposed floor's last stage, not the genesis draft** (G10 §2.2).",
+      "**Since 2026.10.08 the reference links the `workflow` stage, which is [[amber|Proposed]] and not in force**; "
+      "the floor in force is the `emergency` stage, 28 policies (G11 §2.2, item 102). `workflow` adds `Route`, `R8`, "
+      "`R9`, and `R3` over the `orchestrator` kind (ADR-0041 A4, pending).",
       "New entries: `R5` to `R7` forbid an outward `Actuate` over labels (read then send, steered destination, "
       "replayed content); `B10` lets an `emergency` seat `Actuate`, admitted by `R1` over its envelope. "
       "**`X1-break-glass` is retired**: one exception, `X2` (ADR-0041 A1 to A3; ADR-0052).",
@@ -131,8 +133,10 @@ def _build():
                "(`check_live`, `apply_admit`, `apply_grant`, `apply_activate`, `control_facts`, `not_a_first_seating`, "
                "`channel_fidelity`, `Entry`, `Applied`, `AdmitRecord`, `MechanismDeny`, `State`), control.rs "
                "(`ControlFacts::permitted`), labels.rs, lift.rs (`lift`, `lift_control`), types.rs (`SeatKind`); "
-               "git diff 7075169..HEAD of those files; mechanism/launch.rs; floor/proposed/emergency-floor.cedar; "
-               "ToO rev 14 §2.10, §3.3, §4.1, §4.2, §7.10, §15; ADR-0005 (B27); ADR-0015 (with E1); ADR-0020; "
+               "git diff 7075169..HEAD of those files; mechanism/launch.rs; floor/proposed/emergency-floor.cedar, "
+               "workflow-floor.cedar; state.rs `WorkflowLoad`, `WorkflowGrant`, `WorkflowLoaded`, `WorkflowFailed`; "
+               "ADR-0054 §1, §2, §8 and ADR-0055 §1, §2 (Proposed); ADR-0033 A16, A17 (pending); ADR-0041 A4; I49; "
+               "G11 §2.2, item 102; ToO rev 15 §2.10, §2.11, §3.3, §4.1, §4.2, §7.10, §15; ADR-0005 (B27); ADR-0015 (with E1); ADR-0020; "
                "ADR-0003 A1, A2; ADR-0022 §2; ADR-0030 §1, §4, A3; ADR-0031 §5, E1; ADR-0032 §2; ADR-0033 §1–§4, A6, "
                "A7, A8, A9, A10–A15; ADR-0034 §1, §3, A2; ADR-0039 §1, §2, A2; ADR-0041 §2, A1–A3; ADR-0042 §2, §3, §5, "
                "A1, A2; ADR-0044; ADR-0045 T-0045-1, T-0045-28; ADR-0047 §1–§5; ADR-0048 §2; ADR-0049 §3–§5; "
@@ -140,6 +144,7 @@ def _build():
                "GAPS-AND-ASSUMPTIONS G4, G5, G8, G14, G19, I14, I23, I33, I41, I44–I48, finding 19; G10 §2.2, §2.5, "
                "§3 (results 2, 8), §7 items 46, 92, 93; derived/topak-format-and-schema-inventory-2026.10.03.md §5.1, "
                "§5.2, findings 12, 29")
+    c.note = AMENDED_G11
     y0 = c.y
     # columns
     AX, AW = c.x0, 1180               # phase regions
@@ -442,7 +447,7 @@ def _build():
     cy += 30
     cy += c.para(CX, cy, CW, "Subtractions need no quorum, but if they change replicated state they must be ordered, or "
                  "replicas disagree about what is live (ADR-0033 §4; finding 3). Every `Entry` kind in "
-                 "`topak-core/src/state.rs`, **fourteen, one of them retired**. Where the rules declare an operator, "
+                 "`topak-core/src/state.rs`, **sixteen, one of them retired and two for records that are Proposed**. Where the rules declare an operator, "
                  "the unsigned operator requests marked † are refused at apply and the operator's signed `Control` "
                  "carries them (ADR-0050 §4):", 14, "muted") + 8
     cols = [("`Entry`", CW * 0.17), ("Proposed by", CW * 0.27), ("What authorizes it", CW * 0.40),
@@ -466,6 +471,10 @@ def _build():
         {"cells": ["`Activate`", "operator socket `activate`, with the roster's signatures",
                    "A quorum of distinct break-glass roster keys over one person, one round and the task, on a prepared "
                    "seating (ADR-0052 §2)", "F5: the activation record"], "accent": "brown"},
+        {"cells": ["`WorkflowGrant`", "a replica's driver, for each ready slot of a loaded workflow, in log order",
+                   "The workflow's promotion: the request is rebuilt at apply and must be the seating's, with the "
+                   "task's label joined with the clear inputs'; the budget charges it ([[amber|Proposed]], ADR-0054 §2; "
+                   "ADR-0055 §2; I49)", "—"], "accent": "amber"},
         {"group": "Subtractions: ordered, approved by nobody", "accent": "green"},
         {"cells": ["`EndRound`", "any replica (expiry); the seat (abstain, Build only); operator `end_round` †",
                    "None needed: it removes authority", "F2 (expiry eviction, e-stop)"], "accent": "green"},
@@ -486,6 +495,9 @@ def _build():
          "§1); a Run profile registers under A2 (Batch 30)", "—"],
         {"cells": ["`EmergencySeating`", "operator socket `prepare_emergency`", "**BOOTSTRAP**: unsigned, standing in "
                    "for the promotion that prepares a seating (ADR-0052 §2)", "—"], "accent": "red"},
+        {"cells": ["`WorkflowLoad`", "operator socket `load_workflow`", "Unsigned; loaded only if the workflow's "
+                   "single-file workspace was promoted by tally and the text is well formed ([[amber|Proposed]], "
+                   "ADR-0054 §1; ADR-0055 §1)", "—"], "accent": "amber"},
         {"cells": ["`BreakGlassApprove`", "nobody, since 2026.10.05", "**Retired: refused at apply.** It was a roster "
                    "approval for X1, which the floor no longer has (ADR-0052 §2)", "—"], "accent": "grey"},
     ]
@@ -494,8 +506,10 @@ def _build():
                  "promotion happens inside `apply` when a `Vote` or `Heartbeat` admit completes the tally "
                  "(`Applied::Admitted { promoted }`), and `Candidate.promoted_at` in state is derived from that admit. "
                  "F3 retains the vote; the promotion itself is a derived fact the archive would have to recompute "
-                 "(inventory finding 29). **`Applied` has fourteen results**; the rebuild added `EmergencyPrepared`, "
-                 "and `BreakGlassApproved` is no longer reachable.", 13.5, "muted") + 26
+                 "(inventory finding 29). **`Applied` has sixteen results**; the rebuild added `EmergencyPrepared`, the "
+                 "workflow build `WorkflowLoaded` and `WorkflowFailed`, and `BreakGlassApproved` is no longer reachable. "
+                 "`Route`, an orchestrator's choice, is an `Admit` like any other, checked again at apply (ADR-0054 §8; "
+                 "C9).", 13.5, "muted") + 26
 
     hh = c.card(CX, cy, CW, "Observer coupling: `live(o)` at decide and at apply (ADR-0039 §1, §2, A2; ADR-0041 §2)", [
         "**At decide**, the lift computes `live(o)` for the seat's cell Observers: a live Observer lease, a heartbeat "

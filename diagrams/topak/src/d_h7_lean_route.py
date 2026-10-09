@@ -6,7 +6,7 @@ import hashlib
 import pathlib
 import re
 
-from lib import Canvas
+from lib import AMENDED_G11, Canvas
 from d_h6_proof_certification import read_cert, _clean
 
 ID, SLUG = "H7", "lean-route"
@@ -20,12 +20,12 @@ PIN = ROOT / "tools" / "LEAN-PIN"
 PKGS = [
     # (dir, results glob, use, accent, what it states, premise it adds) — ADR-0053 §1, §2
     ("spec/lean", "TopakSpec-results-*.txt", "Re-encoding", "blue",
-     "Thirteen TLA+ modules written as Lean transition systems, each definition beside the TLA+ it transcribes. "
-     "Their twelve `*_proof.tla` modules' theorems, proved by induction on the reachable states "
+     "Sixteen TLA+ modules written as Lean transition systems, each definition beside the TLA+ it transcribes. "
+     "Their fifteen `*_proof.tla` modules' theorems, proved by induction on the reachable states "
      "(`Prelude.invariant`): the step TLAPS hands to LS4. Same inductive invariants, same hypotheses on `Mut`.",
      "The Lean transition system is the TLA+ module. Read, beside the frozen text; `Prelude.lean` states the "
-     "conventions and each file the places a reading was chosen. For `Seats` and `FloorComposition`, also "
-     "**checked** against TLC's state graphs through a proved mirror (R6)."),
+     "conventions and each file the places a reading was chosen. For `Seats`, `FloorComposition` and `Emergency`, "
+     "also **checked** against TLC's state graphs through a proved mirror (R6)."),
     ("mechanism/lean", "Admit-results-*.txt", "Transcription", "teal",
      "`admit.rs`'s `floor_gate` and `compose`, their call site in `topak-node`, and `clock.rs`'s "
      "`subtracting_interval_elapsed`, and the `topak-floor` wrapper, transcribed. `FloorComposition`'s three "
@@ -39,10 +39,11 @@ PKGS = [
      "run. For the model, that every Rust step is a model step: **checked** on the recorded traces by the replay, "
      "not only read. Pinned, not frozen: the Rust moves."),
     ("floor/lean", "TopakFloor-results-*.txt", "Statement in Cedar's model", "violet",
-     "The genesis floor and, since R3, **the floor in force**, the `emergency` stage the reference links, each with its "
-     "schema S, in cedar-spec's abstract syntax (tag `v4.13.0`), generated through the cedar CLI's parser by `gen.py`. "
-     "Each validates, so by cedar-spec's proved `validation_is_sound` it never errors on a conforming input but by a "
-     "missing entity; the 62 and 107 cases under the model's authorizer; per-action witnesses.",
+     "The genesis floor; since R3 **the floor in force**, the `emergency` stage; and since 2026.10.08 **the stage the "
+     "reference links**, `workflow`, which is Proposed and not in force; each with its schema S, in cedar-spec's "
+     "abstract syntax (tag `v4.13.0`), generated through the cedar CLI's parser by `gen.py`. Each validates, so by "
+     "cedar-spec's proved `validation_is_sound` it never errors on a conforming input but by a missing entity; the "
+     "62, 107 and 123 cases under the model's authorizer; per-action witnesses.",
      "The CLI's parse and `gen.py`'s walk are the policies and schema. The model's fidelity to the engine is "
      "T-0045-3's own premise, not a new one. Closed evaluations by `native_decide`, which trusts the compiler."),
 ]
@@ -52,7 +53,8 @@ ENC = [("Seats", "Seats"), ("Observers", "Observers"), ("RunSeats", "RunSeats"),
        ("FloorComposition", "FloorComposition"),
        ("NonComposition", "NonComposition"), ("Anchor", "Anchor"), ("BreakGlass", "BreakGlass"),
        ("Coupling", "Coupling"), ("Lease_A1", "Lease_A1"), ("RulesFloorNV_rev5", "RulesFloorNV_rev5"),
-       ("Confinement", "Confinement"), ("Confinement_A1", "Confinement")]
+       ("Confinement", "Confinement"), ("Confinement_A1", "Confinement"),
+       ("Emergency", "Emergency"), ("Emergency_live", "Emergency")]
 
 
 def read_results(pkg, glob):
@@ -113,16 +115,35 @@ def read_creplay():
 
 
 def read_graphs():
-    """-> (file, digest, {module: (graphs, matching)}) of the newest check against TLC's state graphs (R6)."""
-    f = sorted((ROOT / "spec/lean").glob("GraphCheck-results-*.txt"))[-1]
-    raw = f.read_bytes()
-    out = {}
-    for ln in raw.decode("utf-8").splitlines():
-        m = re.match(r"(\w+) Mut=\S+ \| .* \| (MATCH|MISMATCH)$", ln)
-        if m:
-            n, k = out.get(m.group(1), (0, 0))
-            out[m.group(1)] = (n + 1, k + (m.group(2) == "MATCH"))
-    return f"spec/lean/{f.name}", hashlib.sha256(raw).hexdigest()[:16], out
+    """-> (files, digests, {module: (graphs, matching)}) of the newest check against TLC's state graphs in each series
+    (R6): `GraphCheck-results-*` for `Seats` and `FloorComposition`, `GraphCheckEmergency-results-*` for `Emergency`
+    and `Emergency_live` (2026.10.07, a series of its own)."""
+    names, digs, out = [], [], {}
+    for glob in ("GraphCheck-results-*.txt", "GraphCheckEmergency-results-*.txt"):
+        fs = sorted((ROOT / "spec/lean").glob(glob))
+        if not fs:
+            continue
+        f = fs[-1]
+        raw = f.read_bytes()
+        names.append(f"spec/lean/{f.name}")
+        digs.append(hashlib.sha256(raw).hexdigest()[:16])
+        for ln in raw.decode("utf-8").splitlines():
+            m = re.match(r"(\w+) Mut=\S+ \| .* \| (MATCH|MISMATCH)$", ln)
+            if m:
+                n, k = out.get(m.group(1), (0, 0))
+                out[m.group(1)] = (n + 1, k + (m.group(2) == "MATCH"))
+    return ", ".join(names), ", ".join(digs), out
+
+
+def stale_files(r):
+    """The files a results file names (transcribed and Lean sources) whose digest no longer matches the tree: what
+    `tools/lean-sync.sh` reports as STALE."""
+    out = []
+    for path, dig in r["files"]:
+        f = ROOT / path
+        if not f.exists() or hashlib.sha256(f.read_bytes()).hexdigest()[:16] != dig:
+            out.append(path)
+    return out
 
 
 def read_pin():
@@ -183,6 +204,7 @@ def build():
                "spec/*-proof-cert-results-*.txt (read at build time, as H6 reads them); ADR-0045 Annex A T-0045-3, "
                "T-0045-28, T-0045-31; ADR-0046 §1, §4, A1; ADR-0030 §3, §5 A1; ADR-0032 §2; "
                "derived/topak-lean-formalization-options-2026.10.05.md")
+    c.note = AMENDED_G11
     X0, X1 = c.x0, c.x1
     W = X1 - X0
     y = c.y
@@ -192,7 +214,8 @@ def build():
     sx += c.status(sx, y, "accepted", "ADR-0053 · Batch 36, 2026.10.06 · C4 for refines(Seats)") + 14
     c.text(sx, y + 16, "Ratified 2026.10.06 at R8. The kernel and toolchain are trusted-base row **T-0045-37**, in ADR-0045's "
                        "Annex A (§6 below); a Lean result is cited by the results files §4 names. The packages, the "
-                       "results and the tooling are the drafter's.", 14.5, "muted")
+                       "results and the tooling are the drafter's. At G11 the code-level package is stale (§1).",
+           14.5, "muted")
     y += 52
 
     # ================================================================ 1 · three uses
@@ -208,6 +231,13 @@ def build():
                 f"**Results.** `{r['file']}` (`{r['digest']}`): {len(r['files'])} files by repository path and "
                 f"digest; {r['built'].rstrip('.')}.",
                 _replay(r["replay"])]
+        st = stale_files(r)
+        body.append("**In step with the tree** (`tools/lean-sync.sh`): [[teal|IN SYNC]], every file it names unchanged."
+                    if not st else
+                    f"**In step with the tree** (`tools/lean-sync.sh`): [[red|STALE]], {len(st)} of {len(r['files'])} "
+                    f"files moved since the results were made: {', '.join(f'`{x}`' for x in st)}. The models "
+                    "transcribe `ActionKind` and `SeatKind`, which gained `Route` and `orchestrator` for the workflow "
+                    "records; left stale by the custodian's decision of 2026.10.08 (ADR-0033 A16; G11 item 103).")
         if pkg == "spec/lean":
             parts = ", ".join(f"`{m}` {k} of {n}" for m, (n, k) in gr.items())
             allok = all(n == k for n, k in gr.values())
@@ -378,9 +408,10 @@ def build():
                  f"the model, checked by the trace replay ({cp_summ.split(' · ')[0]}, all matching); the kernel; the "
                  "log's increasing indices; freshness, a clock read at decide"])
     rows.append(["The floor's totality gate", "23 and 41 `holds°`", "—", "not a proof: cedar's term folding, on "
-                 "T-0045-3", "`floor/lean/TopakFloor/` `Gates.lean`, `InForce.lean`", "`floor_never_errors` of the "
-                 "genesis floor, `inForce_never_errors` of the floor in force (R3), by cedar-spec's proved "
-                 "`validation_is_sound`", "the parse, read; the kernel; `native_decide`; T-0045-3"])
+                 "T-0045-3", "`floor/lean/TopakFloor/` `Gates.lean`, `InForce.lean`, `Linked.lean`",
+                 "`floor_never_errors` of the genesis floor, `inForce_never_errors` of the floor in force (R3), "
+                 "`linked_never_errors` of the `workflow` stage the reference links (2026.10.08), by cedar-spec's "
+                 "proved `validation_is_sound`", "the parse, read; the kernel; `native_decide`; T-0045-3"])
     y += c.table(X0, y, cols, rows, size=13.5, accent="blue") + 56
 
     # ================================================================ 5 · what each trusts
@@ -404,10 +435,10 @@ def build():
         "The two routes fail in different places: TLAPS on LS4 and its front end, Lean on the encoding. A theorem "
         "proved by both is wrong only if both fail.",
         "**The premise table cannot say so yet** (ADR-0053 §5, finding 2). It computes holds = ¬(B·¬d), a conjunction "
-        "of premises; two proofs give \"T-0045-31, or T-0045-37 and the encoding\". **R7 proposes derived premises**: "
-        "`invariant(M)`, an OR of the two routes, in place of each proved row's T-0045-29, merged at ratification "
-        "(`spec/theorem-premise-binding-ADR-0053.json`). Until then the table keeps T-0045-31 and names the Lean file "
-        "in its *Checked in* column, as evidence.",
+        "of premises; two proofs give \"T-0045-31, or T-0045-37 and the encoding\". **Derived premises** (R7, merged "
+        "in Batch 36): `invariant(M)`, an OR of the two routes, in place of each proved row's T-0045-29, and "
+        "`refines(Seats)`, the one route that bears on the code, for which ADR-0053 is confirmation-required under C4. "
+        "No ADR-0033 addendum cites a stage discharged through Lean until the table can say \"either proof\" (§5).",
         "**The floor's totality is the exception that changes what it rests on**: from cedar's folding code to the "
         "model's proved validator and T-0045-3, which already reads \"the Cedar engine, as faithful to the Lean "
         "model\".",

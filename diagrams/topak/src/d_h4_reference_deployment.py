@@ -1,5 +1,5 @@
 """H4 — The reference implementation as deployed in development."""
-from lib import Canvas, text_width
+from lib import AMENDED_G11, Canvas, text_width
 
 ID, SLUG = "H4", "reference-deployment"
 
@@ -9,18 +9,20 @@ CRATES = [
     ("topak-node", "Replica: Paxos driver, WAL, admit pipeline, effects, the two sockets, the `topak` CLI", "all"),
     ("topak-core", "Types, lease (ADR-0031), rules floor (ADR-0026), tally (ADR-0024), lift, composition, replicated "
                    "state, trace recorder; since 10.05 labels and their fold (`labels.rs`), the control alphabet, "
-                   "seatings and activations (`control.rs`)", "none"),
+                   "seatings and activations (`control.rs`); since 10.08 workflows and meshes, Proposed "
+                   "(`workflow.rs`)", "none"),
     ("topak-paxos", "Sans-IO crash-fault Multi-Paxos plus a `Voting` ghost", "none"),
-    ("topak-floor", "Cedar engine with `floor/proposed/emergency-floor.cedar`, `emergency.cedarschema` and "
-                    "`genesis-values.json` compiled in by path, pinned by digest (since 10.05; the genesis floor before)",
+    ("topak-floor", "Cedar engine with `floor/proposed/workflow-floor.cedar`, `workflow.cedarschema` and "
+                    "`genesis-values.json` compiled in by path, pinned by digest (since 10.08, a stage not in force; "
+                    "the `emergency` stage 10.05 to 10.08; the genesis floor before)",
      "none"),
     ("topak-bundle", "OPA sidecar client; local OPA WASM fallback bound to the lease's bundle; signature check "
                      "(ADR-0044); the allowlist's load checks W1 to W9, label facts and the tool list (`allowlist.rs`)",
      "HTTP"),
     ("topak-transport", "Round topics over `rskafka`, or in memory; record kinds `open`, `emit`, `actuate`, `control`, "
                         "`deny`", "Kafka"),
-    ("topak-mcp", "The alphabet as MCP tools (`rmcp` server), with the tool list in its instructions; downstream "
-                  "tool host (`rmcp` client)", "stdio"),
+    ("topak-mcp", "The alphabet as MCP tools (`rmcp` server), `route` among them since 10.08, with the tool list in "
+                  "its instructions; downstream tool host (`rmcp` client)", "stdio"),
     ("topak-contain", "The launcher's backends (host process, Docker, SIMULATED rung 3), appraisal, bridge; the Run "
                       "tool host for Wasm modules; `topak-demo-guest`", "stdio"),
 ]
@@ -29,11 +31,12 @@ CRATES = [
 def build():
     c = Canvas(ID, "The reference implementation, as deployed in development",
                "`mechanism/` runs the admit path end to end for Build's six actions and Run's three, an operator's six "
-               "signed control actions and an emergency seating's activation: three replicas of one Rust binary, an MCP "
-               "front door on stdio, an operator socket, a linked Cedar floor (since 2026.10.05 the proposed floor's "
-               "`emergency` stage), an OPA sidecar with a WASM fallback, and Kafka or an in-memory transport. It was "
-               "rebuilt on 2026.10.05 in five stages, to labels and handles, the tool list, the operator as a principal "
-               "and the emergency seating. It carries a launcher, a Run tool host and the operator path that the dev "
+               "signed control actions, an emergency seating's activation and, since 2026.10.08, workflows and meshes "
+               "run by the mechanism: three replicas of one Rust binary, an MCP front door on stdio, an operator socket, "
+               "a linked Cedar floor (since 2026.10.08 the proposed floor's `workflow` stage, which is **not in force**), "
+               "an OPA sidecar with a WASM fallback, and Kafka or an in-memory transport. It was rebuilt on 2026.10.05 "
+               "in five stages, to labels and handles, the tool list, the operator as a principal and the emergency "
+               "seating, and built on 2026.10.08 to two records that are **Proposed**, ADR-0054 and ADR-0055. It carries a launcher, a Run tool host and the operator path that the dev "
                "configuration does not turn on. It is evidence, not the verified object.",
                W, "mechanism/README.md (2026.10.05); mechanism/docker-compose.yml; mechanism/scripts/dev-init.sh, "
                "build-bundle.sh, smoke.py; mechanism/crates/*/src (topak-node main.rs, lib.rs, api.rs, ops.rs, net.rs, "
@@ -41,12 +44,15 @@ def build():
                "topak-bundle lib.rs, allowlist.rs; topak-transport lib.rs; topak-floor lib.rs; topak-core lib.rs, "
                "control.rs, labels.rs, rules.rs, types.rs, confine.rs, trace.rs, authentic.rs, state.rs (`Applied`); "
                "topak-contain lib.rs, wasmtool.rs, guest.rs; topak-paxos/src/replica.rs); mechanism/crates/*/tests "
-               "(thirteen binaries); mechanism/corpus-pins.sha256 (57); GAPS-AND-ASSUMPTIONS G1–G19, I8, I13, I33, "
-               "I40–I48, findings 19, 20; ADR-0033 §1–§6, A5–A15 (A9 to A15 ratified in Batches 32 to 35); ADR-0044; "
+               "(fifteen binaries); mechanism/corpus-pins.sha256 (61); GAPS-AND-ASSUMPTIONS G1–G19, I8, I13, I33, "
+               "I40–I49, findings 19–23; ADR-0033 §1–§6, A5–A17 (A9 to A15 ratified in Batches 32 to 35; A16, A17 "
+               "pending); ADR-0054, ADR-0055 (Proposed); topak-core workflow.rs, topak-node ops.rs (`load_workflow`, "
+               "`workflow_status`); ADR-0044; "
                "ADR-0047, ADR-0048, ADR-0049, ADR-0050 and ADR-0052 (both provisional); ADR-0030 A3; floor/proposed/README.md "
-               "and the three stage gate results; ToO rev 14 §15; G10 §2.2, §2.3, §2.5, §3, §7 items 34–36, 41, 46, 52, "
-               "67, 84, 88, 91–98, §8; spec/Mechanism-trace-results-2026.10.05.txt; "
+               "and the four stage gate results; ToO rev 15 §2.11, §15; G10 §2.3, §2.5, §3; G11 §2.2, §3, §7 items "
+               "34–36, 41, 46, 52, 56, 67, 84, 88, 91–98, 101–103, 108, §8, §9; spec/Mechanism-trace-results-2026.10.05.txt; "
                "derived/topak-format-and-schema-inventory-2026.10.03.md §0, §4, §5, findings 8, 11, 12, 13, 19, 22")
+    c.note = AMENDED_G11
     X0, X1 = c.x0, c.x1
     y = c.y
 
@@ -60,16 +66,17 @@ def build():
         "A1, and no containment theorem describes it. **Never promoted**: no promotion pipeline exists, "
         "and nothing in it is in any TCB. **Dev rules are not genesis rules**: `dev-init.sh` generates keys and writes "
         "their secrets to `dev/secrets/` in the clear (G6).",
-        "Cited like a TLA+ check, by manifest and commit: `SHA256SUMS-REF-2026.10.05f`, digest `41342e08e14b519c`, 90 "
-        "entries, at `075b2e7` (ADR-0033 A15, Batch 35; the five stages below). It fails two entries at today's tree, "
-        "and should: the pin file and the register moved after it (G10 §9). **A running program invites being "
+        "Cited like a TLA+ check, by manifest and commit: `SHA256SUMS-REF-2026.10.09`, digest `809c66beda3cdc6a`, 116 "
+        "entries, at `749d54f` (ADR-0033 A17, **pending**; the trees below). It fails two entries at today's tree, and "
+        "should: the pin file and the register moved after it (G11 §9). The last tree under a ratified addendum is "
+        "`075b2e7` (A15, Batch 35). **A running program invites being "
         "mistaken for the mechanism** (ToO §15).",
     ], accent="red", size=14.5, status="built", status_extra="evidence · rung 0 as deployed", tint=False, dash="6 4")
     y += bh + 40
 
     # ---- the rebuild of 2026.10.05
     c.text(X0, y + 21, "Rebuilt on 2026.10.05 in five stages, each its own commit and addendum (ADR-0033 A9 to A15; "
-                       "G10 §3)", 21, "teal", bold=True)
+                       "G10 §3); built to two Proposed records on 2026.10.08 (A16, A17; G11 §3)", 21, "teal", bold=True)
     y += 42
     sw_ = X1 - X0
     y += c.table(X0, y, [("Tree", sw_ * 0.07, {"mono": True}), ("Manifest · digest · entries", sw_ * 0.17),
@@ -100,12 +107,24 @@ def build():
         ["075b2e7", "`-05f` · `41342e08e14b519c` · 90", "A15 · B35", "`emergency`",
          "The rules' well-formedness reads the two issued lists; a test freed of the clock (finding 20); comments no "
          "longer call five ratified records Proposed", "**133** across thirteen binaries · 38 Rego"],
+        {"cells": ["11aaf6a", "`SHA256SUMS-REF-2026.10.08` · `9357abd49333459a` · 116", "A16 · [[amber|pending]]",
+                   "**`workflow` stage (30)**, not in force", "(6) ADR-0054 and ADR-0055 ([[amber|Proposed]]): a workflow "
+                   "loaded only from a promoted artifact; the mechanism grants every slot; `Route` checked at decide "
+                   "and again at apply; attributes; coverage at the edge; activations, causal histories, a budget that "
+                   "charges the orchestrator; the `orchestrator` kind; a typed finding. Trace validation not rerun; "
+                   "`mechanism/lean` left stale; twenty-one of the 116 are `mechanism/lean/`", "155 across fifteen "
+                   "binaries · 38 Rego"], "accent": "amber"},
+        {"cells": ["749d54f", "`SHA256SUMS-REF-2026.10.09` · `809c66beda3cdc6a` · 116", "A17 · [[amber|pending]]",
+                   "`workflow`", "`denials` dropped from a workflow's attributes, as ADR-0054 R6 decided (finding 22)",
+                   "**155** · 38 Rego"], "accent": "amber"},
     ], size=13.5, accent="teal") + 12
     y += c.para(X0, y, sw_, "**For two days the reference followed records that were not in force and did not follow one "
                 "that was**, ADR-0013's X1; Batch 34 ended that by ratifying the records, two of them provisional (ToO "
                 "§15; G10 §4). Each stage's floor was gated on 2026.10.04 (`floor/proposed/<stage>-gates-results-"
                 "2026.10.04.txt`, every gate passing); the stage is **genesis-provisional** (ADR-0030 A3), and its files "
-                "open with a comment, \"not what the reference follows\", that is wrong and kept as gated (item 91).",
+                "open with a comment, \"not what the reference follows\", that is wrong and kept as gated (item 91). "
+                "**Since 2026.10.08 it follows Proposed records again**, at the custodian's direction, and links a "
+                "stage that is not the floor in force (G11 item 102).",
                 14, "muted") + 40
 
     # ---- columns
@@ -170,6 +189,13 @@ def build():
         ["activate", "Activate", "**Signed** by the break-glass roster's quorum over one person's key, one round and "
                                  "the task; grants one lease, returns the tool list"],
         ["break_glass_approve", "BreakGlassApprove", "[[red|Retired]]: refused at apply; X1 is gone (ADR-0052)"],
+        ["load_workflow", "WorkflowLoad", "Unsigned; the text of a single-file workspace, loaded only if that "
+                                         "workspace's artifact was promoted by tally and the text is well formed "
+                                         "([[amber|Proposed]], ADR-0054 §1)"],
+        ["(none)", "WorkflowGrant", "Proposed by a replica's driver for each ready slot, in log order; the request is "
+                                    "rebuilt at apply and must be the seating's (I49)"],
+        ["workflow_status", "—", "Read-only; a workflow's state and the sessions of its live leases this replica "
+                                 "opened. **BOOTSTRAP**: how a scripted occupant is handed a session (I49 (g))"],
         ["register_profile", "ProfileRegister", "Unsigned; refused unless the profile is a promoted artifact"],
         ["launch", "Grant · Contested", "Unsigned; the node launches, appraises, and orders the grant with the "
                                         "appraisal in it (A7; needs `contain`). Seats, where operators are declared"],
@@ -185,9 +211,10 @@ def build():
                          "mints none"),
         ("operator socket", "`run/n1/operator.sock`, mode 0600"),
         ("admit pipeline", "the eight steps of D1, in `topak-node` over `topak-core`"),
-        ("floor", "`topak-floor`: Cedar **linked**, the `emergency` stage (`15c941b9a56a09f7`, schema "
-                  "`d3c8145c6af2d9a3`); refuses to start unless the floor, schema and values bytes match the gated "
-                  "digests. Its 107 cases replay through it. Genesis-provisional"),
+        ("floor", "`topak-floor`: Cedar **linked**, the `workflow` stage (`10ea6818af9b4efe`, schema "
+                  "`fd394bb8c074eec2`), **not in force**; refuses to start unless the floor, schema and values bytes "
+                  "match the gated digests. Its 123 cases replay through it. The floor in force is the `emergency` "
+                  "stage, genesis-provisional"),
         ("bundle tier", "`topak-bundle`: loads `bundles_dir` **only under signatures** verifying against "
                         "`bundle_keys`, and **only with a well-formed allowlist** (W1 to W9, reading the two issued "
                         "lists once, from the genesis rules); **one file that fails stops the node**; sidecar client, "
@@ -202,6 +229,10 @@ def build():
                          "round topic, kind `control` (I47)"),
         ("activation", "Distinct roster keys counted against the issued quorum on every replica; the envelope computed "
                        "by the ordering replica; the person signs each action, no bearer token (I48)"),
+        ("workflow engine", "`drive_workflows` proposes each ready slot's grant; a route is checked again at apply; a "
+                            "node's attributes are lifted once when its round ends on its outcome; a clear input is "
+                            "the predecessor's reports from **this replica's own cache** (finding 23). Proposed records "
+                            "(I49)"),
         ("Paxos", "`topak-paxos` driven by `driver.rs`: persists fsynced before any send"),
         ("WAL", "`run/n1/wal.jsonl`: promises and accepted votes, durable before replies"),
         ("expiry sweeper", "every 250 ms, proposes `EndRound(Expired)` for leases this replica saw expire; since "
@@ -452,8 +483,9 @@ def build():
                            "**not the values file's** (inventory finding 12)"],
         ["`Applied`", "`LeaseGranted{fence}`, `Renewed{fence}`, `Admitted{seq, promoted}`, `RoundEnded`, "
                       "`Revoked{ended}`, `EpochIncremented{epoch}`, `Contested{ended}`, `ProfileRegistered{digest}`, "
-                      "`Issued{rules_epoch}`, `GatesRecorded`, `EmergencyPrepared`, `BreakGlassApproved{approvals}` "
-                      "(which no entry can now produce), `Rejected(String)`, `Duplicate`"],
+                      "`Issued{rules_epoch}`, `GatesRecorded`, `EmergencyPrepared`, `WorkflowLoaded{workflow}`, "
+                      "`WorkflowFailed{reason}`, `BreakGlassApproved{approvals}` (which no entry can now produce), "
+                      "`Rejected(String)`, `Duplicate`"],
         ["Replica to replica", "A big-endian `u32` length, then the JSON of `[from_node_id, <Msg<Entry>>]`: `Prepare`, "
                                "`Promise`, `Nack`, `Accept`, `Accepted`, `Commit`, `Heartbeat`, `CatchUp`, `Forward` "
                                "(`topak-paxos`). Unauthenticated, best-effort"],
@@ -490,13 +522,13 @@ def build():
     y += 42
     w4 = (X1 - X0 - 3 * 36) / 4
     hs = [
-        ("Tests: 133 across thirteen binaries; 38 Rego", "violet", [
-            "`mutations.rs` (36), `confinement.rs` (19), `operators.rs` (6), `emergency.rs` (5), `drift.rs` (2) "
-            "(core); `sim.rs` (4, Paxos with `Voting` invariants); `floor.rs` (5, the stage's 107 cases); "
-            "`allowlist.rs` (13, W1 to W10), `fallback.rs` (10) (bundle tier); `e2e.rs` (9), `contain.rs` (14) (node); "
-            "`launch.rs` (6), `wasmtool.rs` (4) (`topak-contain`).",
-            "TLA+ properties restated as Rust tests with the same mutations; run twelve times and once on a copy of "
-            "the tree at `075b2e7` (A15).",
+        ("Tests: 155 across fifteen binaries; 38 Rego", "violet", [
+            "`mutations.rs` (36), `confinement.rs` (19), `operators.rs` (6), `emergency.rs` (5), `workflow.rs` (18), "
+            "`drift.rs` (2) (core); `sim.rs` (4, Paxos with `Voting` invariants); `floor.rs` (5, the stage's cases), "
+            "`workflow.rs` (3) (floor); `allowlist.rs` (13, W1 to W10), `fallback.rs` (10) (bundle tier); `e2e.rs` (10), "
+            "`contain.rs` (14) (node); `launch.rs` (6), `wasmtool.rs` (4) (`topak-contain`).",
+            "TLA+ properties restated as Rust tests with the same mutations; run on a copy of the tree at `11aaf6a` "
+            "(A16) and at `749d54f` (A17), 155 passing.",
         ]),
         ("Trace recorder → `spec/Mechanism.tla`", "violet", [
             "`TOPAK_TRACE_DIR` makes every `apply` write a step: index, entry, result and a projected state "
@@ -504,10 +536,11 @@ def build():
             "2026.10.05 (A14): **82 traces, 1,007 steps, every step matching**, each state also read against "
             "`Confinement_A1`'s invariants; the model broken on purpose five ways, each caught, and a sixth as an "
             "evaluation error. It found the race in lease expiry. A mechanized link, **not a refinement**; T-0045-28 "
-            "stays a trust root.",
+            "stays a trust root. **Not rerun since**: the model does not cover workflows (A16). The Lean models of "
+            "`apply` replay the same traces, and are stale since the workflow build (G11 item 103).",
         ]),
         ("Corpus pins and the drift test", "blue", [
-            "`corpus-pins.sha256`: **57 pins**, 40 records and 17 TLA+ modules the reference follows.",
+            "`corpus-pins.sha256`: **61 pins**, 42 records and 19 TLA+ modules the reference follows.",
             "`cargo test -p topak-core --test drift` fails when a pinned file changes, or when the code cites a record "
             "that is not pinned. `PROVISIONAL (<tag>)` is meant to mark every gap in the code, and the register says it "
             "does; two items carry no tag (I40 evidence retention, I41 session proof) and two sites a bare "
@@ -526,9 +559,9 @@ def build():
     y += hh + 60
 
     # ---- not built panel
-    c.text(X0, y + 21, "What it does not show (ToO rev 14 §15; ADR-0033 §6, A11, A12; the register at G10)", 21, "red",
+    c.text(X0, y + 21, "What it does not show (ToO rev 15 §15; ADR-0033 §6, A11, A12, A16; the register at G11)", 21, "red",
            bold=True)
-    c.status(X0 + text_width("What it does not show (ToO rev 14 §15; ADR-0033 §6, A11, A12; the register at G10)",
+    c.status(X0 + text_width("What it does not show (ToO rev 15 §15; ADR-0033 §6, A11, A12, A16; the register at G11)",
                              21, True) + 20, y + 3, "notbuilt")
     y += 42
     nb = [
@@ -544,7 +577,7 @@ def build():
          "would produce a finding is an e2e fixture with nothing behind it", "G12"],
         ["**A first lease from a quorum**", "The centre of ADR-0050, which is why it is [[blue|provisional]]. The "
          "BOOTSTRAP path stands in: whoever reaches the socket can seat. The first operators from an anchor issuance "
-         "are not built either (G10 §8)", "I47; item 88"],
+         "are not built either (G11 §8)", "I47; item 88"],
         ["A seating prepared by promotion", "`prepare_emergency` is the BOOTSTRAP path, unsigned, standing in for it; "
          "ADR-0052 stays provisional on it and on two questions the reference raised: whether operators' seatings feed "
          "the emergency envelope, and whether a delivery table needs an `emergency` row", "I48; item 92"],
@@ -561,6 +594,11 @@ def build():
          "I13, I46; item 94"],
         ["The correlator's folds", "ADR-0051 is [[amber|Proposed]], `Correlator.tla` proved and certified; nothing "
          "at the reference", "item 97"],
+        ["Workflows as an occupant would run them", "The cells are the tests', handed sessions by `workflow_status`; a "
+         "finding's form is the reference's; lineage is a declared tag; a clear input arrives only from the replica "
+         "that served its predecessor, and a handle input cannot be resolved; a seating above rung 0 and an `all` join "
+         "in a mesh do not load; no `T_wf` or step bound; no pools, parity seatings or fan-out-scoped joins. The "
+         "records are [[amber|Proposed]], and the floor stage is not in force", "I49; items 101, 102, 108"],
         ["`W(p)` as an ACL", "Cells are declared, not enforced. Operators and emergency seats add readers that "
          "nothing gates: the mechanism has no read path for topics", "I8; item 46"],
         ["The archive and the plaintext store", "`archive.jsonl` per replica is a projection of the log; no governed "
@@ -587,6 +625,8 @@ def build():
                    "and the emergency seating, under A9 to A15 (Batches 32 to 35), two on [[blue|provisional]] records, "
                    "on a genesis-provisional floor", "G10 §3"],
          "accent": "teal"},
+        {"cells": ["(built since G10)", "Workflows and meshes, under A16 and A17, both pending, to records that are "
+                   "[[amber|Proposed]], on a floor stage that is not in force", "G11 §3"], "accent": "amber"},
     ]
     c.table(X0, y, [("Not built", (X1 - X0) * 0.2, {"bold": True}), ("What stands in, and what that leaves",
                                                                       (X1 - X0) * 0.68),

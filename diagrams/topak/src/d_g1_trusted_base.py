@@ -2,7 +2,7 @@
 import pathlib
 import re
 
-from lib import strip_external, Canvas
+from lib import strip_external, Canvas, AMENDED_G11
 
 ID, SLUG = "G1", "trusted-base"
 
@@ -119,8 +119,10 @@ def build():
                "ADR-0036 §5, §6 (Proposed); ADR-0047; ADR-0048; ADR-0049; ADR-0050 (provisional); ADR-0052 "
                "(provisional); G8 §2.6; "
                "G10 §1.1, §2.3, §2.6, §2.7, §2.9, §3, §7 items 35, 56, 57, 64, 69, 73, 74, 80, 89, 90, §8; "
+               "G11 §2.9, §7 items 74, 90, 103, 104, §8; "
                "ToO rev 14 §7.9, §7.10; spec/proof-certification.md §9; spec/*-proof-cert-results; "
                "spec/theorem-premise-binding.md (BASE paragraph; 43 rows, revised 2026.10.06); ADR-0053 §3 (Batch 36)")
+    c.note = AMENDED_G11
     X0, X1 = c.x0, c.x1
     y = c.y
 
@@ -128,7 +130,7 @@ def build():
     sx = X0
     sx += c.status(sx, y, "accepted", "C2, C4 · Batch 22, 2026.10.01") + 12
     c.text(sx, y + 16, "Annexes A and B are **declaration records** under ADR-0023, ratified with the record as "
-                       "record-level entries; **no deployment declaration has been written** (G10 §8). Drafted by the "
+                       "record-level entries; **no deployment declaration has been written** (G11 §8). Drafted by the "
                        "assistant at the custodian's request; every drafter's choice settled by ratification.", 14.5, "muted")
     y += 48
 
@@ -250,8 +252,9 @@ def build():
             "\"pending\" A7, which is ratified since (B29). At R6, three rows no theorem cited: T-0045-7, 21, 26. "
             "Since B25 the rows with a proof module (38) rest on **T-0045-31** for the invariant, in place of "
             "T-0045-29 (ADR-0046 §5).",
-            "[[red|Behind the records]] (G10 §2.6, item 90): **no rows** for `Labels`, `ToolList`, `Operators`, "
-            "`Emergency`, `BreakGlass_A1` or `NonComposition_A1`, so T-0045-32 to 36 are premises of no row yet.",
+            "[[red|Behind the records]] (G11 item 90): **no rows** for `Labels`, `ToolList`, `Operators`, "
+            "`Emergency`, `BreakGlass_A1` or `NonComposition_A1`, nor now for `Emergency_live`, `Coupling_live`, "
+            "`Workflow` or `Mesh`, so T-0045-32 to 36 are premises of no row yet.",
         ], "teal", None),
         ("§4 · Changing the table has a direction", [
             "**Removing** a row, or trust root → delegated: a tightening; an ordinary promotion (archetype version at "
@@ -266,18 +269,20 @@ def build():
             "Admit path, linked floor, `Authentic`, tally, rules floor, log: **checked as specified** (TLA+ with "
             "mutations at small constants, floor gates, tests) and not trusted.",
             "**Since B25 (ADR-0046)** the modules' invariants are **proved** with TLAPS, for every constant their "
-            "assumptions admit: **twenty-two proof modules, 5,225 obligations** (G10 §2.9). The prover is trust root "
+            "assumptions admit: **twenty-four proof modules, 5,416 obligations** (G11 §2.9). The prover is trust root "
             "**T-0045-31**, and TLC (T-0045-29) keeps the mutations and witnesses.",
-            "**Since B28 (ADR-0046 A1)** a module may be **certified**: **nineteen of twenty-two** are, every SMT "
+            "**Since B28 (ADR-0046 A1)** a module may be **certified**: **twenty-one of twenty-four** are, every SMT "
             "obligation backed by a proof the checker of T-0045-14 accepted; `RulesFloorNV_rev5`, `Confinement` and "
-            "`Confinement_A1` are not (G10 §2.9, item 74). A certified proof is not a verified one: the translation, "
-            "normalization, LS4 and the checker stay trusted.",
+            "`Confinement_A1` are not (G11 §2.9, item 74). A certified proof is not a verified one: the translation, "
+            "normalization, LS4 and the checker stay trusted, and the translation has two known unsound cases "
+            "(B37; G11 item 104).",
             "**What runs is not the specification** (R1): no refinement from TLA+ to Rust, an asserted build. Hence "
             "trust roots **T-0045-28 to 30** for every deployment; a proof is of the module, not of what runs.",
             "**A debt, owned by ADR-0033** (R2): the rows leave when a machine-checked chain is cited. Stage 1, trace "
             "validation, exists (R4), and is current with the tree: **82 traces, 1,007 steps**, every step matching "
             "and every state keeping `ConfinementRefinement.tla`'s invariants (ADR-0033 A14; G10 §3). It found a race "
-            "in lease expiry, fixed (A13). Stages 2–3 open (G10 item 56).",
+            "in lease expiry, fixed (A13). [[red|At G11 stage 1 is behind the tree]]: `Mechanism.tla` does not model "
+            "workflows and trace validation was not rerun (G11 item 56). Stages 2–3 open.",
         ], "teal", None),
         ("§8 · D-0045-1: no declaration at all", [
             "**Kind**: declaration (ADR-0023 §6a). **Parameter**: the trusted-base declaration, published → absent.",
@@ -436,7 +441,7 @@ def build():
         "behind the certified proofs, through `spec/smt-checked`. Still on the face: what `holds°` rests on (item 69).",
         "**T-0045-31, the TLA+ Proof System, added** (B25, ADR-0046 §3), and **given a certified configuration** "
         "(B28, ADR-0046 A1): cvc5 behind `spec/smt-checked` and the checker of T-0045-14 in place of Z3, Zenon's "
-        "proofs checked by Isabelle. At G10 **nineteen of twenty-two modules certify** (G10 §2.9); the row's own "
+        "proofs checked by Isabelle. At G11 **twenty-one of twenty-four modules certify** (G11 §2.9); the row's own "
         "residual still reads eleven of thirteen, as written at B28. The prover is pinned by `tools/TLAPS-PIN` and "
         "its wrapper refuses another binary (G10 item 73, discharged). **Since B37** (ADR-0046 A2, ADR-0045 A3) its "
         "residual names two known unsound cases in the prover's translation, and Annex B notes that build 7824dab "

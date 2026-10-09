@@ -2,7 +2,7 @@
 import re
 
 import lib
-from lib import Canvas, fill, fs, sonly
+from lib import Canvas, fill, fs, sonly, AMENDED_G11
 
 ID, SLUG = "E2", "liveness-coupling"
 
@@ -48,7 +48,10 @@ def _build():
                "2026.10.04 certified results; spec/premise-corrections-results-2026.10.02.txt; mechanism/"
                "GAPS-AND-ASSUMPTIONS.md findings 19, 20; ToO rev 14 §3.3, §5.4, §10, §15; G10 §2.2, §2.5, §3 results 2 "
                "and 8, §7 items 8, 45–49, 60, §8; ADR-0053 (B36) §1, §4; mechanism/lean/Topak/Clock.lean over "
-               "mechanism/crates/topak-core/src/clock.rs; spec/lean/TopakSpec/Coupling.lean; the two Lean results files")
+               "mechanism/crates/topak-core/src/clock.rs; spec/lean/TopakSpec/Coupling.lean; the two Lean results files; "
+               "spec/Coupling_live.tla, its 2026.10.07 results and 2026.10.08 proof and certified results; G11 §2.9, "
+               "§7 item 105; ToO rev 15 §5.5")
+    c.note = AMENDED_G11
     X0, X1 = c.x0, c.x1
     W = X1 - X0
     y = c.y
@@ -534,6 +537,16 @@ def _build():
                 "every K, R and `MaxRound`, with the TLAPS proof's strengthening; neither `K < R` nor `MaxRound = 2` is "
                 "assumed, and the arithmetic the TLAPS proof hands to SMT is `omega`. The temporal step is a "
                 "kernel-checked induction, not LS4. `RunCoupling.tla` is not yet encoded.", 14, "amber") + 12
+    y += c.para(X0, y, W, "**Since G10: that a stall ends, checked and not proved** (ADR-0039 §2; G11 §2.9; E4). "
+                "`Coupling_live.tla` extends `Coupling` and checks with TLC, at small constants, four leads-to "
+                "properties: `AdmitStallEnds`, `GrantStallEnds`, `AdmitsResume` and `NextRoundGranted`. They hold "
+                "under fairness on the Observer's grant and on its keeping up (A12: weak on `GrantO`, strong on "
+                "`KeepUp`), on the Thinker's `Admit` and on the grants, and each fails where its fairness is dropped. "
+                "Two liveness mutations: `M_HBLIVE`, a heartbeat only while the Thinker is live, is caught only by "
+                "`GrantStallEnds`; `M_HBCOUPLED`, the Observer's own heartbeat coupled, by `AdmitStallEnds`. "
+                "Safety holds under both. `Coupling_live_proof.tla` proves `SpecL => Spec` and the safety it "
+                "carries, 31 obligations, certified. [[red|The leads-to properties are not proved]], and fairness "
+                "is an assumption about the deployment, not something the mechanism enforces (item 105).", 14, "pink") + 12
     y += c.para(X0, y, W, "At the reference (R4): every refusal seen to fire: no Observer lease, no heartbeat, a "
                 "dishonest heartbeat, a backlog of `K`, presence without progress, staleness after `T_obs`, a round-2 "
                 "grant while round 1 is unread; one Build promotion stalled for coverage and completed by a heartbeat "
