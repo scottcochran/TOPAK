@@ -37,7 +37,7 @@ manifest excludes the TLAPS wrapper with the TLC wrappers and measures every pro
 lease above rung 0: a rung-1 launcher in the node, and rung 3 SIMULATED, under addenda still pending. **G10
 (2026.10.05)** is the first cut that records a provisional record (ADR-0029 A4) and a genesis-provisional floor
 (ADR-0030 A3), and the first at which the reference links a floor other than the genesis draft; from this cut
-`manifests/EXCLUDE` lists `REVIEWERS_GUIDE_README.md`, a convenience at the root that is kept current and not measured.
+`manifests/EXCLUDE` lists `REVIEWERS_GUIDE_README.md` and `ADOPTERS_GUIDE_README.md`, conveniences at the root that are kept current and not measured.
 **G11 (2026.10.09)** is the first cut whose trusted base names two deductive methods (ADR-0053, T-0045-37), and the
 first that records known unsound cases in a trust root kept in use (ADR-0046 A2); from this cut `manifests/EXCLUDE`
 also lists `tools/lean-report.sh` and `tools/lean-sync.sh` (ADR-0053 §6).

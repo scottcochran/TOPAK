@@ -45,7 +45,7 @@ Read this before forming a view of how finished anything is.
 | Nearly every text ratified since 2026.10.02 was drafted by the assistant: six records, some forty amendments and errata, ten specification modules, eight of them with proofs, three Lean packages, and the reference rebuilt twice | ToO §0; G11 §4 |
 | No reviewer is engaged and no review pass has been completed | G11 §4; [checkpoints/README.md](checkpoints/README.md) |
 | No floor is ratified. The floor in question is gated and genesis-provisional: ratified when the bootstrap reviewer finds it fit | G11 §2.2; ADR-0030 A3 |
-| Every numeric parameter is a placeholder; nothing has been measured | [Residual-risk statement](derived/topak-residual-risk-statement-2026.10.03.md) §4 |
+| Every numeric parameter is a placeholder; nothing has been measured | [Residual-risk statement](derived/topak-residual-risk-statement-2026.10.09.md) §4 |
 | The proofs are of the TLA+ modules, not of the running code. No refinement exists. Twenty-one of twenty-four proof modules have machine-checked proofs; three do not. Fifteen modules' theorems are proved again in Lean, of re-encodings | G11 §2.9, §8; ADR-0045 T-0045-28 |
 | **The prover is known to be unsound in two ways.** A rule and a scan keep a proof from them, and no check detects the first | G11 §2.9, item 104; ADR-0046 A2 |
 | No liveness property is proved. Coupling's are checked by TLC at small constants | G11 §3, item 105; ToO §5.5 |
@@ -84,7 +84,7 @@ About a day for the first pass; the records and specifications are the weeks.
 1. **[README.md](README.md)**. The five roles and the layout.
 2. **[Theory of Operation](narrative/theory-of-operation.md) §0, §1, §13, §12**, in that order: how to read it,
    the pattern, the assumptions of use, and where the author thinks the argument is thin. Then the rest.
-3. **[Residual-risk statement](derived/topak-residual-risk-statement-2026.10.03.md)**. What is not guaranteed,
+3. **[Residual-risk statement](derived/topak-residual-risk-statement-2026.10.09.md)**. What is not guaranteed,
    in order of severity.
 4. **[G11](checkpoints/topak-genesis-checkpoint-G11-2026.10.09.md)**. Status of every record, the debt ledger (§4),
    the open list (§7), the non-claims (§8).
