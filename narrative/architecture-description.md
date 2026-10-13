@@ -129,7 +129,7 @@ and the 2022 edition's terms (entity of interest, aspects) are not mapped.
 
 ## 1. Introduction and goals
 
-TOPAK is an architecture pattern for autonomous multi-agent collaboration that is safe by design. It treats every
+TOPAK is a safe-by-design architecture pattern for agentic AI collaboration. It treats every
 agent as Byzantine, keeps models out of the trusted computing base, and states every guarantee against what an
 agent's action alphabet allows (ADR-0007). The letters name roles, not products ([README](../README.md); ToO §1;
 diagram A1).

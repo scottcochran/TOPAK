@@ -50,7 +50,7 @@ Record status is G11 §1 and is not restated here except where the status change
 
 ## 1. The pattern
 
-**TOPAK** [A/D]: an architecture pattern for autonomous multi-agent collaboration that is safe by design. The
+**TOPAK** [A/D]: a safe-by-design architecture pattern for agentic AI collaboration. The
 letters name **roles, not products** (ADR-0030 §2, ADR-0033 §2). Each role carries a stated obligation, and any
 instrument that meets it may be substituted.
 

@@ -1,6 +1,6 @@
 # TOPAK
 
-TOPAK is an architecture pattern for autonomous multi-agent collaboration guided by "safe by design" principles. It treats every
+TOPAK is a safe-by-design architecture pattern for agentic AI collaboration. It treats every
 agent as Byzantine, keeps models out of the trusted computing base, and states every guarantee against what an
 agent's action alphabet allows. The letters name roles, not products:
 
