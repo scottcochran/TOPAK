@@ -42,24 +42,104 @@ deployable system.
 
 ## Running things
 
-- **Model checking:** `tools/tlc` and `tools/tlc-workers` wrap TLC over the tracked `tools/tla2tools.jar`; each
-  module has a `*-run.sh` in `spec/` ([README](spec/README.md)).
-- **Proofs:** `tools/tlapm` wraps the TLA+ Proof System, which `tools/install-tlaps.sh` installs beside it (1.9 GB,
-  not tracked); `spec/proof-results.sh` checks a `spec/*_proof.tla` module and prints its results file. The build
-  pinned has two known unsound cases, recorded against its trusted-base row in Batch 37 (ADR-0046 A2): write proofs
-  by `spec/proof-certification.md` §10, and run `spec/proof-scan.sh` on every new proof module.
-- **Lean:** `tools/install-lean.sh` installs the toolchain `tools/LEAN-PIN` names, through elan (not tracked).
-  Three packages prove in Lean what the TLAPS proofs and the gates claim, by a second route (ADR-0053, ratified in Batch 36).
-  `spec/lean/` re-encodes sixteen modules, and checks the `Seats`, `FloorComposition` and `Emergency` encodings
-  against TLC's state graphs. `mechanism/lean/` transcribes `admit.rs`, `clock.rs` and the floor wrapper and proves the admit
-  decision a step of `FloorComposition`. It also models `State::apply`'s seat and lease arms and proves that model
-  refines `Seats`. It proves `Coupling`'s properties of a second model built on the first, and replays the
-  reference's recorded traces through both. `floor/lean/` states the floor in Cedar's verified model. Each has a `results.sh`;
-  `tools/lean-sync.sh` checks every Lean results file against the tree and the pin, as `spec/proof-sync.sh` does for
-  the proofs.
-- **Verifying a cut:** `tools/verify-manifest.sh --all` checks every manifest at the commit it measured;
-  `tools/check-refs.py` checks every path a document cites.
-- **Floor, mechanism, SLM:** see the README in each directory.
+### Model checking
+
+`tools/tlc` and `tools/tlc-workers` wrap TLC over the tracked `tools/tla2tools.jar`; each module has a `*-run.sh` in
+`spec/` ([README](spec/README.md)).
+
+Run TLC on `Coupling` under a config you write, here `Coupling.cfg` with
+`SPECIFICATION Spec`, `INVARIANT Safe` and `CONSTANTS Mut = "none"  K = 1  R = 3  MaxRound = 2` (from `spec/`):
+```sh
+../tools/tlc -config Coupling.cfg -deadlock Coupling.tla
+```
+
+Run the same check with a worker per CPU core (from `spec/`):
+```sh
+../tools/tlc-workers -config Coupling.cfg -deadlock Coupling.tla
+```
+
+Run a module's checks through its run script, which writes the config itself: here `Coupling`'s `Safe` invariant
+with no mutation, under a run named `c-none-safe` (from `spec/`; each script's header gives its arguments):
+```sh
+./coupling-run.sh c-none-safe none Safe
+```
+
+### Proofs
+
+`tools/tlapm` wraps the TLA+ Proof System. The build pinned has two known unsound cases, recorded against its
+trusted-base row in Batch 37 (ADR-0046 A2): write proofs by `spec/proof-certification.md` §10, and run
+`spec/proof-scan.sh` on every new proof module.
+
+Install the pinned prover beside the wrapper (1.9 GB, not tracked):
+```sh
+tools/install-tlaps.sh
+```
+
+Check a proof module, here `Coupling_proof`, and write its results file (from `spec/`):
+```sh
+./proof-results.sh Coupling_proof > Coupling-proof-results-2026.10.13.txt
+```
+
+Scan a proof module, here `Coupling_proof`, for the known unsound cases (from `spec/`; with no module named it scans
+every `*_proof.tla`, about 16 minutes):
+```sh
+./proof-scan.sh Coupling_proof > proof-scan-results-2026.10.13.txt
+```
+
+Check every proof results file against the tree and the pin:
+```sh
+spec/proof-sync.sh
+```
+
+### Lean
+
+Three packages prove in Lean what the TLAPS proofs and the gates claim, by a second route (ADR-0053, ratified in
+Batch 36). `spec/lean/` re-encodes sixteen modules, and checks the `Seats`, `FloorComposition` and `Emergency`
+encodings against TLC's state graphs. `mechanism/lean/` transcribes `admit.rs`, `clock.rs` and the floor wrapper and
+proves the admit decision a step of `FloorComposition`. It also models `State::apply`'s seat and lease arms and proves
+that model refines `Seats`. It proves `Coupling`'s properties of a second model built on the first, and replays the
+reference's recorded traces through both. `floor/lean/` states the floor in Cedar's verified model.
+
+Install the toolchain `tools/LEAN-PIN` names, through elan (not tracked):
+```sh
+tools/install-lean.sh
+```
+
+Build and check the specification package (from `spec/lean/`):
+```sh
+./results.sh > TopakSpec-results-2026.10.13.txt
+```
+
+Build and check the mechanism package (from `mechanism/lean/`):
+```sh
+./results.sh > Admit-results-2026.10.13.txt
+```
+
+Build and check the floor package (from `floor/lean/`; needs `cedar` on `PATH`):
+```sh
+./results.sh > TopakFloor-results-2026.10.13.txt
+```
+
+Check every Lean results file against the tree and the pin:
+```sh
+tools/lean-sync.sh
+```
+
+### Verifying a cut
+
+Check every manifest at the commit it measured:
+```sh
+tools/verify-manifest.sh --all
+```
+
+Check every path a document cites:
+```sh
+tools/check-refs.py
+```
+
+### Floor, mechanism, SLM
+
+See the README in each directory.
 
 ## License
 
