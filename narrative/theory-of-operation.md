@@ -60,7 +60,7 @@ narrative log that are open, not to corpus contradictions.
 
 ## 1. The pattern
 
-TOPAK is an architecture pattern for autonomous multi-agent collaboration that is safe by design. The letters
+TOPAK is a safe-by-design architecture pattern for agentic AI collaboration. The letters
 name its five components:
 - **T**, TLA+ (Temporal Logic of Actions): the formal specification, model checking and proof, with Lean 4 as a
   second deductive method beside it (ADR-0053);
@@ -2502,6 +2502,14 @@ overlap. The last is why ADR-0035 R2 is marked for review before ratification (�
 - **§15:** the T and O rows; the workflow build and the `denials` drop; three findings; what workflows do not show;
   trace validation not rerun, and the Lean replays; sixty-one pins.
 - **Appendices A to J retained.**
+
+**Edit after the `ToO-rev15` tag (2026.10.12).** §1's descriptor is now "a safe-by-design architecture pattern for
+agentic AI collaboration", replacing "an architecture pattern for autonomous multi-agent collaboration that is safe
+by design". "Autonomous" is dropped: no principal seats, delegates to or addresses another, and the only cell that
+chooses what runs next may only narrow (§2.8, §2.11). "Safe by design" keeps its meaning (glossary §1): containment
+checked about the mechanism, never safe outputs. The same sentence changed in the README, the glossary and the
+architecture description; the archived revisions and the dated derived files keep the old wording. Nothing else
+in this revision changed.
 
 ---
 
