@@ -1,0 +1,58 @@
+# The frozen-files status check ruleset 03 requires. In its own workflow because it reruns when a label changes,
+# and the other checks need not.
+#
+# .github/scripts/frozen-files.py states the rules. The custodian lifts them for one pull request by adding the
+# label `frozen-override` (a layout move, a record-authorized revision in place): violations are then reported as
+# warnings. The label counts only when a code owner added it, since anyone with triage access can add a label.
+name: frozen-files
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, labeled, unlabeled]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: read
+  issues: read
+
+jobs:
+  frozen-files:
+    name: frozen-files
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Did a code owner add frozen-override?
+        id: override
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR: ${{ github.event.pull_request.number }}
+          LABELS: ${{ toJSON(github.event.pull_request.labels.*.name) }}
+        run: |
+          flag=""
+          if echo "$LABELS" | grep -q '"frozen-override"'; then
+            owners="$(grep -oE '@[A-Za-z0-9-]+' CODEOWNERS | tr -d @ | sort -u)"
+            who="$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR/events" --paginate \
+              --jq '[.[] | select(.event == "labeled" and .label.name == "frozen-override")] | last | .actor.login')"
+            if echo "$owners" | grep -qx "$who"; then
+              flag="--override"
+              echo "::warning title=frozen-files::frozen-override added by $who; violations are reported, not enforced"
+            else
+              echo "::error title=frozen-files::frozen-override was added by $who, who is not a code owner; it is ignored"
+            fi
+          fi
+          echo "flag=$flag" >> "$GITHUB_OUTPUT"
+      - name: Nothing frozen is modified, deleted or renamed
+        env:
+          BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+          # The pull request's own head, not the merge commit GitHub builds, so the same-day rule reads its date.
+          HEAD: ${{ github.event.pull_request.head.sha || github.sha }}
+        run: |
+          if [ -z "$BASE" ] || [ "$BASE" = "0000000000000000000000000000000000000000" ]; then
+            echo "no base to compare against"; exit 0
+          fi
+          python3 -I .github/scripts/frozen-files.py "$BASE" "$HEAD" ${{ steps.override.outputs.flag }}

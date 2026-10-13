@@ -41,12 +41,22 @@ contributors for a `Signed-off-by` line.
 
 | Context | What it runs |
 |---|---|
-| `check-refs` | `tools/check-refs.py` |
-| `frozen-files` | A guard that diffs the pull request against its base and fails on any modification or deletion of a frozen file: `checkpoints/*.md` other than the README, `derived/*.md`, `manifests/SHA256SUMS-*`, every `*-results-*.txt`, the floor's gate results, and any `.tla` module an accepted record cites by digest; and on any `.pdf` or `.zip`, or any file over 5 MB. Push rulesets would do the last two natively, but they are not offered on user-owned public repositories |
-| `verify-manifests` | `tools/verify-manifest.sh --all`; needs `fetch-depth: 0`, since it extracts the tree at every cited commit |
-| `proof-sync` | `spec/proof-sync.sh`; exits 1 today because `Workflow.tla` has no proof and no recorded reason (G11 §7, item 101). Enable `03` once that is written, or drop the context until then |
-| `lean-sync` | `tools/lean-sync.sh`; a digest and pin comparison, no Lean toolchain needed |
-| `mechanism-tests` | `cargo test --workspace --release` in `mechanism/`, after `scripts/build-bundle.sh` (Docker and OPA on the runner). The container round skips without `TOPAK_DOCKER_IMAGE` |
+| `check-refs` | `tools/check-refs.py`, through the ratchet |
+| `frozen-files` | `.github/scripts/frozen-files.py`, in its own workflow (`frozen-files.yml`) so it reruns when a label changes. Its rules F1 to F9 are in the script's header. The custodian's `frozen-override` label turns violations into warnings, and counts only when a code owner added it. It also refuses `.pdf`, `.zip` and files over 5 MB, which push rulesets would do natively but are not offered on user-owned public repositories |
+| `verify-manifests` | `tools/verify-manifest.sh --all`, failing on any `EXPECTED` row, failing file, or unknown commit; needs `fetch-depth: 0` |
+| `proof-sync` | `spec/proof-sync.sh`, through the ratchet |
+| `lean-sync` | `tools/lean-sync.sh`, through the ratchet |
+| `mechanism-tests` | checks that the tracked bundle's name is the digest of the current policies, then `opa test`, then `cargo test --workspace --release --locked`. No Docker: the tests use the tracked bundle |
+
+**The ratchet** (`.github/scripts/ratchet.py`) is why `03` can be enabled while `main` carries debts.
+`check-refs`, `proof-sync` and `lean-sync` all exit 1 on `main` today, for debts G11 lists: thirteen stale
+citations, most inside frozen files; `Workflow.tla` and `Mesh.tla` without a proof or a reason (item 101); and
+the three `mechanism/lean` series stale since the reference rebuild (A16, A17). The ratchet runs each checker on
+the base and on the pull request, and fails only on a failure key the base did not have. Carried debts are shown
+as notices.
+
+**Enable `03` once both workflows have run on a pull request**, so GitHub has seen the seven contexts. The DCO app
+must be installed first, or the `DCO` context never reports and every merge waits on it.
 
 `strict_required_status_checks_policy` is on, so a pull request must contain the current `main` before it merges.
 That costs a merge of `main` into the branch when `main` has moved, and buys a green result that was computed

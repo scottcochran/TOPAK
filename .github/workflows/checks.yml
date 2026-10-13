@@ -1,0 +1,97 @@
+# The status checks ruleset 03 requires (.github/rulesets/README.md). Each job's name is its status-check context,
+# so a job renamed here must be renamed in .github/rulesets/03-main-required-checks.json too.
+# Nothing here runs TLC, the prover, Lean or the floor's solver gates: the results files are the evidence, and
+# proof-sync and lean-sync check that they are current. frozen-files is in its own workflow, because it reruns on
+# labels.
+name: checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: checks-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  # The commit the ratchet compares against: the pull request's base, or the commit before the push.
+  RATCHET_BASE: ${{ github.event.pull_request.base.sha || github.event.before }}
+
+jobs:
+  check-refs:
+    name: check-refs
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Every cited path exists; no new stale citation
+        run: python3 -I .github/scripts/ratchet.py "$RATCHET_BASE" check-refs
+
+  verify-manifests:
+    name: verify-manifests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }  # the script extracts the tree at every commit manifests/index.tsv names
+      - name: Every manifest verifies at the commit it measured
+        run: |
+          tools/verify-manifest.sh --all | tee verify.txt
+          # The script prints and does not fail: a row below its expected count says EXPECTED, a row with no
+          # expected count indents each failing file, and an unknown commit makes git say fatal.
+          if grep -qE '  EXPECTED |^    |^fatal:' verify.txt; then
+            echo "::error title=verify-manifests::a manifest no longer verifies at its commit"
+            exit 1
+          fi
+
+  proof-sync:
+    name: proof-sync
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Every proof's results file is current; no new stale proof
+        run: python3 -I .github/scripts/ratchet.py "$RATCHET_BASE" proof-sync
+
+  lean-sync:
+    name: lean-sync
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - name: Every Lean results file is current and on the pin; no new stale package
+        run: python3 -I .github/scripts/ratchet.py "$RATCHET_BASE" lean-sync
+
+  mechanism-tests:
+    name: mechanism-tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: mechanism
+    steps:
+      - uses: actions/checkout@v4
+      - name: The tracked bundle is built from the policies as they stand
+        # scripts/build-bundle.sh names a bundle by this digest. The tests load whichever bundle they find in
+        # bundles/, so a policy change without a rebuilt bundle would test the old policies.
+        run: |
+          rev="$(cd ../policies && find . -type f \( -name '*.rego' ! -name '*_test.rego' -o -name 'data.json' \) | LC_ALL=C sort |
+            while read -r f; do printf '%s\0' "$f"; cat "$f"; printf '\0'; done | sha256sum | cut -d' ' -f1)"
+          have="$(ls bundles/*.tar.gz)"
+          if [ "$have" != "bundles/$rev.tar.gz" ]; then
+            echo "::error title=mechanism-tests::bundles/ holds $have; the policies digest to $rev. Run scripts/build-bundle.sh, remove the old bundle, and commit."
+            exit 1
+          fi
+      - uses: open-policy-agent/setup-opa@v2
+        with: { version: latest }
+      - name: Rego tests
+        run: opa test ../policies -v
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with: { workspaces: mechanism }
+      - name: Reference tests
+        # The container round in topak-contain's launch test skips without TOPAK_DOCKER_IMAGE.
+        run: cargo test --workspace --release --locked
