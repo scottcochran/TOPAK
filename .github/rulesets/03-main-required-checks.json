@@ -1,0 +1,32 @@
+{
+  "name": "main: required checks",
+  "target": "branch",
+  "source_type": "Repository",
+  "source": "scottcochran/TOPAK",
+  "enforcement": "disabled",
+  "conditions": {
+    "ref_name": {
+      "include": ["~DEFAULT_BRANCH"],
+      "exclude": []
+    }
+  },
+  "rules": [
+    {
+      "type": "required_status_checks",
+      "parameters": {
+        "strict_required_status_checks_policy": true,
+        "do_not_enforce_on_create": false,
+        "required_status_checks": [
+          { "context": "check-refs" },
+          { "context": "frozen-files" },
+          { "context": "verify-manifests" },
+          { "context": "proof-sync" },
+          { "context": "lean-sync" },
+          { "context": "mechanism-tests" },
+          { "context": "DCO" }
+        ]
+      }
+    }
+  ],
+  "bypass_actors": []
+}

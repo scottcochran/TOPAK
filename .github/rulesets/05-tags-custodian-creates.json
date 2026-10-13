@@ -1,0 +1,23 @@
+{
+  "name": "tags: custodian creates",
+  "target": "tag",
+  "source_type": "Repository",
+  "source": "scottcochran/TOPAK",
+  "enforcement": "active",
+  "conditions": {
+    "ref_name": {
+      "include": ["~ALL"],
+      "exclude": []
+    }
+  },
+  "rules": [
+    { "type": "creation" }
+  ],
+  "bypass_actors": [
+    {
+      "actor_id": 5,
+      "actor_type": "RepositoryRole",
+      "bypass_mode": "always"
+    }
+  ]
+}
