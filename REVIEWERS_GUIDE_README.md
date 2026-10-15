@@ -4,8 +4,7 @@
 not a record: where this guide and the checkpoint disagree, the checkpoint wins. It is kept current and is not
 measured by any manifest (`manifests/EXCLUDE`)
 
-**Drafted by the assistant** at the custodian's request. Like most of this corpus, it has not been read by anyone
-independent of its author. If it steers you away from something, treat that as a finding.
+**Drafted by the assistant** at the custodian's request. Like most of this corpus, it has not been read by anyone independent of its author. If it steers you away from something, treat that as a finding.
 
 ---
 
@@ -15,9 +14,8 @@ TOPAK is an architecture pattern for multi-agent systems that treats every agent
 of the trusted computing base. This repository is its design corpus, plus a Rust reference implementation of one
 path through it. Nothing here is deployable ([SECURITY.md](SECURITY.md)).
 
-**You would be its first independent reader.** Every record, specification, proof, policy, test and line of code
-was written or ratified by one person, working with an AI assistant. The corpus says so repeatedly, and its own
-rules make your review a precondition for the next phase:
+Every record, specification, proof, policy, test and line of code
+was written or ratified by one person, working with an AI assistant. The corpus says so repeatedly, and its own rules make your review a precondition for the next phase:
 
 - ADR-0029 A2 requires an **independent review of the entire corpus, at one named manifest digest, by at least one
   reviewer who is not the author**, before the system's trust anchor may bootstrap.
