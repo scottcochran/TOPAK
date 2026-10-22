@@ -357,14 +357,18 @@ failed to rename, on which section 4 relies.
 The two are recorded against T-0045-31 (ADR-0046 A2, with ADR-0045 A3, ratified 2026.10.08 in Batch 37), and are not
 reported upstream yet (the custodian's decision, 2026.10.07). §10 has the rules that avoid the first and a capture;
 nothing a proof writes avoids a collision of the hash, and the scan's renamed run is what checks a module for it. To
-reproduce them, put these in a copy of `spec/` with `tools/` beside it and run `../tools/tlapm --toolbox 0 0` on
-each prover module, which reports the backend that closed each obligation, and `./proof-cert.sh`, which certifies
-`EnabledUnderBinder`, `TemporalUnderBinder`, `CdotUnderBinder`, `CombineUnderBinder`, `BoxNorm`, `ConjBox`,
-`NameCollision`, `EnabledCollision`, `CaptureName` and `CapturePTL`, and, as it should, not `HiddenDef` or
-`HiddenBox`, each of which holds a statement that must fail. Run TLC on the model module with `SPECIFICATION SpecL`,
+reproduce them, the listings below are files in `spec/defects/` (2026.10.22), one level down from the modules they
+extend, so the prover needs the parent on its search path and TLC runs from `spec/`: from `spec/defects/`, run
+`../../tools/tlapm -I .. --toolbox 0 0` on each prover module, which reports the backend that closed each
+obligation; from `spec/`, run `./proof-cert.sh defects/<Module>`, which certifies `EnabledUnderBinder`,
+`TemporalUnderBinder`, `CdotUnderBinder`, `CombineUnderBinder`, `BoxNorm`, `ConjBox`, `NameCollision`,
+`EnabledCollision`, `CaptureName` and `CapturePTL`, and, as it should, not `HiddenDef` or `HiddenBox`, each of
+which holds a statement that must fail; and run TLC on `defects/BinderDefectTLC.tla` with `SPECIFICATION SpecL`,
 `Mut = "none"` and `MaxRound = 2`, once each with `INVARIANT BadInv`, `PROPERTY BadEventually`,
 `PROPERTY BadLeadsTo`, `PROPERTY AllTools`, `INVARIANT InvBig`, `INVARIANT ConjBig`, `PROPERTY SmallE` and
-`PROPERTY AllHas`. `HiddenDef` shows the rule's form: `Closure` and `Literal` prove, and the two false statements,
+`PROPERTY AllHas`. `defects/defects-run.sh > defects/defects-results-<date>.txt`, from `spec/`, does all three and
+compares each outcome with this section (`defects/defects-results-2026.10.22.txt`: every outcome as stated). The
+ratification run of 2026.10.08 (ADR-0046 A2) took the listings from this document, in a copy of `spec/`. `HiddenDef` shows the rule's form: `Closure` and `Literal` prove, and the two false statements,
 `SuperBad` and `OutsideBad`, do not. `HiddenBox` is the ninth row: `BigBad` proves, and `BigPTL`, the same statement
 by `PTL`, does not. `ConjBox` is the tenth and eleventh: `BigI` and `SmallE` prove.
 
