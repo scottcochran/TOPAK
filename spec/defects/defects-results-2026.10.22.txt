@@ -1,0 +1,75 @@
+TOPAK — the prover's two unsound cases reproduced from spec/defects/: each listing of proof-certification.md §8 as a file, under tlapm, under the certified run, and under TLC
+Runner: defects-run.sh (sha256 76a60927940df503) · tlapm 7824dab (binary sha256 e150fb793fb28592) · zenon version 0.8.4 [a268] 2017-11-14 · Isabelle2025 · LS4 for PTL · proof-cert.sh (sha256 315fa3d07b7a42de) · TLC Version 2.19 of 08 August 2024 (jar sha256 936a262061c91469) · openjdk version "25.0.1" 2025-10-21
+Modules: Emergency.tla (sha256 1abae9beb82b00fa) · Emergency_live.tla (sha256 9685c67b42910b85) · Emergency_live_proof.tla (sha256 63c8ec703e6097d9) · defects/EnabledUnderBinder.tla (sha256 ed3b15722954621b) · defects/TemporalUnderBinder.tla (sha256 5a232e0938d4fdd1) · defects/CdotUnderBinder.tla (sha256 a4c750c3d0852f04) · defects/CombineUnderBinder.tla (sha256 342c39a65468dc4b) · defects/BoxNorm.tla (sha256 fdb728174f0f32d1) · defects/HiddenDef.tla (sha256 42d38a818337a883) · defects/HiddenBox.tla (sha256 fe24c9c5b1c4d9b5) · defects/ConjBox.tla (sha256 f992bbf8fe262ee4) · defects/NameCollision.tla (sha256 d89d7a5d54a082e4) · defects/EnabledCollision.tla (sha256 89cd735321f0a35e) · defects/CaptureName.tla (sha256 0361824f57d8ba21) · defects/CapturePTL.tla (sha256 3d0f0d3a18146a22) · defects/BinderDefectTLC.tla (sha256 487ae44c86c35402)
+The modules EXTEND Emergency_live and Emergency_live_proof in spec/, so tlapm runs with -I .. and TLC runs from spec/. Section 1 is each lemma's outcome under tlapm --toolbox 0 0, with the backend that closed its last obligation, against what §8 says: a false statement that proves is the case, and HiddenDef's SuperBad and OutsideBad and HiddenBox's BigPTL must fail (§10's rule). Section 2 is proof-cert.sh on each prover module, which must certify ten and not those two. Section 3 is TLC on BinderDefectTLC at SpecL, Mut = "none", MaxRound = 2, one worker, -fp 0: each statement must be violated.
+
+1. Under tlapm
+  EnabledUnderBinder · All 1 obligation proved.
+    Bad            proved by SMT · 1 obligations: 0 trivial, 1 proved, 0 failed · expected proved by SMT · as §8 says
+  TemporalUnderBinder · All 2 obligations proved.
+    BadEventually  proved by SMT · 1 obligations: 0 trivial, 1 proved, 0 failed · expected proved by SMT · as §8 says
+    BadLeadsTo     proved by SMT · 1 obligations: 0 trivial, 1 proved, 0 failed · expected proved by SMT · as §8 says
+  CdotUnderBinder · All 1 obligation proved.
+    BadCdot        proved by SMT · 1 obligations: 0 trivial, 1 proved, 0 failed · expected proved by SMT · as §8 says
+  CombineUnderBinder · All 11 obligations proved.
+    OneInst        proved by LS4 · 9 obligations: 5 trivial, 4 proved, 0 failed · expected proved · as §8 says
+    AllFromOne     proved by SMT · 2 obligations: 1 trivial, 1 proved, 0 failed · expected proved by SMT · as §8 says
+  BoxNorm · All 9 obligations proved.
+    InvSmallAlways proved by LS4 · 7 obligations: 4 trivial, 3 proved, 0 failed · expected proved · as §8 says
+    InvBigAlways   proved by SMT · 2 obligations: 1 trivial, 1 proved, 0 failed · expected proved by SMT · as §8 says
+  HiddenDef · 2/17 obligations failed.
+    InstTe         proved by LS4 · 9 obligations: 5 trivial, 4 proved, 0 failed · expected proved · as §8 says
+    Closure        proved by SMT · 2 obligations: 1 trivial, 1 proved, 0 failed · expected proved · as §8 says
+    Literal        proved by SMT · 2 obligations: 1 trivial, 1 proved, 0 failed · expected proved · as §8 says
+    SuperBad       failed last backend tried ISABELLE · 2 obligations: 1 trivial, 0 proved, 1 failed · expected failed · as §8 says
+    OutsideBad     failed last backend tried ISABELLE · 2 obligations: 1 trivial, 0 proved, 1 failed · expected failed · as §8 says
+  HiddenBox · 1/12 obligations failed.
+    Small          proved by LS4 · 7 obligations: 4 trivial, 3 proved, 0 failed · expected proved · as §8 says
+    BigBad         proved by SMT · 2 obligations: 1 trivial, 1 proved, 0 failed · expected proved by SMT · as §8 says
+    BigPTL         failed last backend tried LS4 · 3 obligations: 2 trivial, 0 proved, 1 failed · expected failed · as §8 says
+  ConjBox · All 18 obligations proved.
+    SmallI         proved by LS4 · 10 obligations: 6 trivial, 4 proved, 0 failed · expected proved · as §8 says
+    BigI           proved by SMT · 2 obligations: 1 trivial, 1 proved, 0 failed · expected proved by SMT · as §8 says
+    BigE           proved by LS4 · 4 obligations: 2 trivial, 2 proved, 0 failed · expected proved · as §8 says
+    SmallE         proved by SMT · 2 obligations: 1 trivial, 1 proved, 0 failed · expected proved by SMT · as §8 says
+  NameCollision · All 17 obligations proved.
+    BoxD33         proved by LS4 · 4 obligations: 2 trivial, 2 proved, 0 failed · expected proved · as §8 says
+    NotBoxE280     proved by LS4 · 4 obligations: 2 trivial, 2 proved, 0 failed · expected proved · as §8 says
+    FalseBySMT     proved by SMT · 3 obligations: 2 trivial, 1 proved, 0 failed · expected proved by SMT · as §8 says
+    In             proved by SMT · 1 obligations: 0 trivial, 1 proved, 0 failed · expected proved · as §8 says
+    Out            proved by SMT · 1 obligations: 0 trivial, 1 proved, 0 failed · expected proved · as §8 says
+    FalseByPTL     proved by LS4 · 4 obligations: 3 trivial, 1 proved, 0 failed · expected proved by LS4 · as §8 says
+  EnabledCollision · All 1 obligation proved.
+    TwoNew         proved by SMT · 1 obligations: 0 trivial, 1 proved, 0 failed · expected proved by SMT · as §8 says
+  CaptureName · All 1 obligation proved.
+    Capture        proved by SMT · 1 obligations: 0 trivial, 1 proved, 0 failed · expected proved by SMT · as §8 says
+  CapturePTL · All 12 obligations proved.
+    DiagAlways     proved by LS4 · 7 obligations: 4 trivial, 3 proved, 0 failed · expected proved · as §8 says
+    LHInst         proved by LS4 · 3 obligations: 2 trivial, 1 proved, 0 failed · expected proved by LS4 · as §8 says
+    LHAll          proved by SMT · 2 obligations: 1 trivial, 1 proved, 0 failed · expected proved by SMT · as §8 says
+
+2. Under the certified run (proof-cert.sh)
+  EnabledUnderBinder · certified · 1 obligations: 0 trivial, 1 SMT (ethos), 0 Zenon (Isabelle), 0 Isabelle, 0 LS4 · All 1 obligations proved. 1 of them rest on tlapm's own normalization or on a checked proof; 0 rest on LS4, whose answer no checker confirms. · expected certified · as §8 says
+  TemporalUnderBinder · certified · 2 obligations: 0 trivial, 2 SMT (ethos), 0 Zenon (Isabelle), 0 Isabelle, 0 LS4 · All 2 obligations proved. 2 of them rest on tlapm's own normalization or on a checked proof; 0 rest on LS4, whose answer no checker confirms. · expected certified · as §8 says
+  CdotUnderBinder · certified · 1 obligations: 0 trivial, 1 SMT (ethos), 0 Zenon (Isabelle), 0 Isabelle, 0 LS4 · All 1 obligations proved. 1 of them rest on tlapm's own normalization or on a checked proof; 0 rest on LS4, whose answer no checker confirms. · expected certified · as §8 says
+  CombineUnderBinder · certified · 11 obligations: 6 trivial, 4 SMT (ethos), 0 Zenon (Isabelle), 0 Isabelle, 1 LS4 · All 11 obligations proved. 10 of them rest on tlapm's own normalization or on a checked proof; 1 rest on LS4, whose answer no checker confirms. · expected certified · as §8 says
+  BoxNorm · certified · 9 obligations: 5 trivial, 3 SMT (ethos), 0 Zenon (Isabelle), 0 Isabelle, 1 LS4 · All 9 obligations proved. 8 of them rest on tlapm's own normalization or on a checked proof; 1 rest on LS4, whose answer no checker confirms. · expected certified · as §8 says
+  HiddenDef · not certified · 17 obligations: 9 trivial, 5 SMT (ethos), 0 Zenon (Isabelle), 0 Isabelle, 1 LS4 · NOT CERTIFIED: 2 obligation(s) failed (last backend tried: isabelle). · expected not certified · as §8 says
+  HiddenBox · not certified · 12 obligations: 7 trivial, 3 SMT (ethos), 0 Zenon (Isabelle), 0 Isabelle, 1 LS4 · NOT CERTIFIED: 1 obligation(s) failed (last backend tried: ls4). · expected not certified · as §8 says
+  ConjBox · certified · 18 obligations: 10 trivial, 6 SMT (ethos), 0 Zenon (Isabelle), 0 Isabelle, 2 LS4 · All 18 obligations proved. 16 of them rest on tlapm's own normalization or on a checked proof; 2 rest on LS4, whose answer no checker confirms. · expected certified · as §8 says
+  NameCollision · certified · 17 obligations: 9 trivial, 5 SMT (ethos), 0 Zenon (Isabelle), 0 Isabelle, 3 LS4 · All 17 obligations proved. 14 of them rest on tlapm's own normalization or on a checked proof; 3 rest on LS4, whose answer no checker confirms. · expected certified · as §8 says
+  EnabledCollision · certified · 1 obligations: 0 trivial, 1 SMT (ethos), 0 Zenon (Isabelle), 0 Isabelle, 0 LS4 · All 1 obligations proved. 1 of them rest on tlapm's own normalization or on a checked proof; 0 rest on LS4, whose answer no checker confirms. · expected certified · as §8 says
+  CaptureName · certified · 1 obligations: 0 trivial, 1 SMT (ethos), 0 Zenon (Isabelle), 0 Isabelle, 0 LS4 · All 1 obligations proved. 1 of them rest on tlapm's own normalization or on a checked proof; 0 rest on LS4, whose answer no checker confirms. · expected certified · as §8 says
+  CapturePTL · certified · 12 obligations: 7 trivial, 3 SMT (ethos), 0 Zenon (Isabelle), 0 Isabelle, 2 LS4 · All 12 obligations proved. 10 of them rest on tlapm's own normalization or on a checked proof; 2 rest on LS4, whose answer no checker confirms. · expected certified · as §8 says
+
+3. Under TLC (BinderDefectTLC, SpecL, Mut = "none", MaxRound = 2)
+  BadInv (INVARIANT) · violated · 46 distinct states found · expected violated · as §8 says
+  BadEventually (PROPERTY) · violated · 25728 distinct states found · expected violated · as §8 says
+  BadLeadsTo (PROPERTY) · violated · 12390 distinct states found · expected violated · as §8 says
+  AllTools (PROPERTY) · violated · 25728 distinct states found · expected violated · as §8 says
+  InvBig (INVARIANT) · violated · 46 distinct states found · expected violated · as §8 says
+  ConjBig (INVARIANT) · violated · 46 distinct states found · expected violated · as §8 says
+  SmallE (PROPERTY) · violated · 25728 distinct states found · expected violated · as §8 says
+  AllHas (PROPERTY) · violated · 25728 distinct states found · expected violated · as §8 says
+
+Verdict: every outcome as §8 says. Both cases reproduce under tlapm 7824dab: a false statement under a binder proves and certifies by SMT, and two terms with one name prove FALSE by SMT and by PTL.
