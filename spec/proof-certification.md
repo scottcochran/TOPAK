@@ -354,8 +354,10 @@ No result in the 24 proof modules rests on the case. Not seen: a collision both 
 collision between terms that hold no renamed identifier, of which there is none; and a capture the display printer
 failed to rename, on which section 4 relies.
 
-The two are recorded against T-0045-31 (ADR-0046 A2, with ADR-0045 A3, ratified 2026.10.08 in Batch 37), and are not
-reported upstream yet (the custodian's decision, 2026.10.07). §10 has the rules that avoid the first and a capture;
+The two are recorded against T-0045-31 (ADR-0046 A2, with ADR-0045 A3, ratified 2026.10.08 in Batch 37), and were
+reported upstream on 2026.10.18 as tlaplus/tlapm#309 (the first case) and #310 (the second), with their reproducers
+(ADR-0046 A3, with ADR-0045 A4, Batch 39): both are labelled soundness there, a maintainer's reproducer PRs #314 and
+#315 are open and tests for both are merged (#318), and neither is fixed as of 2026.11.03. §10 has the rules that avoid the first and a capture;
 nothing a proof writes avoids a collision of the hash, and the scan's renamed run is what checks a module for it. To
 reproduce them, the listings below are files in `spec/defects/` (2026.10.22), one level down from the modules they
 extend, so the prover needs the parent on its search path and TLC runs from `spec/`: from `spec/defects/`, run
@@ -677,7 +679,9 @@ What the first twenty modules taught.
   the certified run does not make it; for a capture, the scan's reading of the obligations as tlapm's display
   printer shows them is, as far as that printer renames what it must. A prover that named each term by the whole
   term in a form that tells a bound variable from a constant (bound variables by position), or checked that two
-  terms with one name are one term, would close both; the whole term as it prints would not.
+  terms with one name are one term, would close both; the whole term as it prints would not. *2026.11.03:* both cases
+  are reported upstream (tlaplus/tlapm#309 and #310; ADR-0046 A3) and a maintainer has taken them up; a release that
+  fixes either is a new instance of T-0045-31, by its digest, and the check this bullet owes is unchanged.
 - **One solver, one version.** cvc5 1.4.0 is pinned by digest because the floor pins it. A newer cvc5 may prove the
   six obligations that fail, and would be a different certification.
 - **The three modules that do not certify** (§9). Still uncertified here. Their theorems are also proved in Lean,
