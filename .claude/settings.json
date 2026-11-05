@@ -1,7 +1,9 @@
 {
   "permissions": {
     "deny": [
-      "NotebookEdit"
+      "NotebookEdit",
+      "Bash(git commit *)",
+      "Bash(git push *)"
     ],
     "defaultMode": "plan"
   }
