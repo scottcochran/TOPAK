@@ -1,0 +1,70 @@
+# Layer: policy · API specification · TOPAK source: floor/genesis-floor.cedar as the mechanism consults it (ADR-0030 §1)
+# An API spec has no slot for policy text. What it can specify is the *decision interface*, and
+# there is a standard shape for it: the OpenID AuthZEN evaluation API. This is the floor as a PDP
+# endpoint. The policy is behind it; the spec says only what a request and a decision look like.
+# Note what is lost: evaluation order (forbid wins), error-is-deny, and the gates are prose here.
+openapi: 3.1.0
+info:
+  title: TOPAK floor as an AuthZEN policy decision point
+  version: 2026.11.06
+  description: |
+    `POST /access/v1/evaluation` evaluates one lifted request against the floor (and, if the lease names a
+    bundle, the bundle). Semantics (ADR-0030 §1): any satisfied forbid denies; else any satisfied permit
+    allows; else deny. **Any evaluation error is a deny.** The decision is `true` only on an affirmative
+    permit with no error and no bundle refusal. The request is the typed lift's output; nothing here is
+    interpreted.
+paths:
+  /access/v1/evaluation:
+    post:
+      operationId: evaluate
+      x-floor-entries: [B4-emit-own-topic]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/EvaluationRequest' }
+            examples:
+              b4-allow:
+                summary: B4 allows an emit to the seat's own unsealed topic at the current epoch and round
+                value:
+                  subject: { type: Topak::Seat, id: a1, properties: { domain: build, kind: thinker } }
+                  action: { name: Emit }
+                  resource: { type: Topak::Topic, id: a1-r7, properties: { owner: a1, epoch: 3, round: 7, sealed: false } }
+                  context: { lease: { alphabet: [Read, Draft, Invoke, Emit, Submit], rulesEpoch: 5 }, epoch: 3, round: 7, roundRole: author }
+              b4-deny-sealed:
+                summary: a sealed topic matches no permit
+                value:
+                  subject: { type: Topak::Seat, id: a1, properties: { domain: build, kind: thinker } }
+                  action: { name: Emit }
+                  resource: { type: Topak::Topic, id: a1-r7-sealed, properties: { owner: a1, epoch: 3, round: 7, sealed: true } }
+                  context: { lease: { alphabet: [Read, Draft, Invoke, Emit, Submit], rulesEpoch: 5 }, epoch: 3, round: 7, roundRole: author }
+      responses:
+        '200':
+          description: "The decision. Never an error status for a policy error; an error is `decision: false` with a reason."
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/EvaluationResponse' }
+              examples:
+                allow: { value: { decision: true, context: { reasons: [B4-emit-own-topic] } } }
+                deny:  { value: { decision: false, context: { reasons: [], error: null } } }
+components:
+  schemas:
+    EvaluationRequest:
+      type: object
+      required: [subject, action, resource, context]
+      additionalProperties: false
+      properties:
+        subject:  { type: object, required: [type, id], properties: { type: { const: Topak::Seat }, id: { type: string }, properties: { type: object } } }
+        action:   { type: object, required: [name], properties: { name: { enum: [Read, Draft, Invoke, Emit, Submit, Vote, Consult, Actuate, Report, Erase] } } }
+        resource: { type: object, required: [type, id], properties: { type: { type: string }, id: { type: string }, properties: { type: object } } }
+        context:  { type: object, description: One of schema S's BuildCtx, VoteCtx, RunCtx or EraseCtx, as the typed lift wrote it. }
+    EvaluationResponse:
+      type: object
+      required: [decision]
+      properties:
+        decision: { type: boolean }
+        context:
+          type: object
+          properties:
+            reasons: { type: array, items: { type: string }, description: Permitting or forbidding policy ids. }
+            error: { type: [string, 'null'], description: An evaluation error, which decided false. }

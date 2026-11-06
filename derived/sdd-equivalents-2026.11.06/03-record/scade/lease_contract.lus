@@ -1,0 +1,40 @@
+-- Layer: record · SCADE Suite / Lustre with a Kind 2 contract · TOPAK source: ADR-0031 §4
+-- Model-based design states a record's guarantee as an assume/guarantee contract on the node
+-- that implements it. SCADE Design Verifier or Kind 2 then proves the guarantees for every input
+-- the assumptions admit; this is the paper's "verified" rather than "generated" alignment.
+include "../../02-vocabulary/scade/lease_types.lus"
+
+-- The renewal decision, as lease.rs::check_renewal states it.
+node check_renewal(live, next: Lease) returns (ok: bool)
+(*@contract
+   -- Givens (ADR-0031 §2 ⟨C1⟩): the lease being renewed is live and is the only live one for its
+   -- principal. The contract cannot say "only live one"; the model in 05-model can.
+   assume live.epoch >= 0;
+
+   -- §4.1 A renewal never adds authority.
+   guarantee "4.1 alphabet never widens" ok => subset(next.alphabet, live.alphabet);
+   guarantee "4.1 ttl never lengthens"   ok => next.ttl_ms <= live.ttl_ms;
+   -- §4.2 Fixed fields.
+   guarantee "4.2 round fixed"   ok => next.round = live.round;
+   guarantee "4.2 role fixed"    ok => next.role = live.role;
+   guarantee "4.2 bundle fixed"  ok => next.bundle = live.bundle;
+   guarantee "4.2 rung fixed"    ok => next.confinement.rung = live.confinement.rung;
+   guarantee "4.2 digest fixed"  ok => next.confinement.digest = live.confinement.digest;
+   -- §4.4 T_persona.
+   guarantee "4.4 ttl bounded"   ok => next.ttl_ms <= T_PERSONA_MS;
+   -- Non-vacuity: a narrowing is accepted (the witness, as TLC's NeverRenewed is).
+   guarantee "narrowing accepted"
+     (subset(next.alphabet, live.alphabet) and next.ttl_ms <= live.ttl_ms and next.ttl_ms <= T_PERSONA_MS
+      and next.round = live.round and next.role = live.role and next.bundle = live.bundle
+      and next.confinement = live.confinement and next.principal = live.principal and next.seat = live.seat
+      and next.persona = live.persona and next.epoch = live.epoch and next.rulesEpoch = live.rulesEpoch) => ok;
+*)
+let
+  ok = next.principal = live.principal and next.seat = live.seat and next.persona = live.persona
+       and next.epoch = live.epoch and next.rulesEpoch = live.rulesEpoch and next.bundle = live.bundle
+       and next.confinement.digest = live.confinement.digest
+       and next.round = live.round and next.role = live.role
+       and subset(next.alphabet, live.alphabet)
+       and next.confinement.rung = live.confinement.rung
+       and next.ttl_ms <= live.ttl_ms and next.ttl_ms <= T_PERSONA_MS;
+tel

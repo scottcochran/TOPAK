@@ -1,0 +1,14 @@
+{
+  "_comment": "Layer: runtime · Amazon Kiro agent hook (`.kiro/hooks/*.kiro.hook`) · TOPAK source: the obligation that trace validation is rerun when State::apply moves (G11 item 56). None of the AI-assisted tools has a runtime layer; the nearest is a hook that reruns the replay when the code it replays changes, so that the edge cannot go stale silently. The hook is the trigger; the replay is 09-runtime/tdd. Spec Kit and Tessl have no hook mechanism.",
+  "name": "Replay traces when apply changes",
+  "version": "1",
+  "description": "ADR-0057 §3: a replayed edge is stale when either end moves. Rerun the Mechanism.tla replay and lean-sync when State::apply or the trace recorder changes.",
+  "when": {
+    "type": "fileEdited",
+    "patterns": ["mechanism/crates/topak-core/src/state.rs", "mechanism/crates/topak-core/src/trace.rs", "spec/Mechanism.tla", "spec/trace2tla.py"]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A file on the replayed edge State::apply → Mechanism.tla changed. Run `TOPAK_TRACE_DIR=/tmp/t cargo test --release -p topak-core --test mutations` then `../spec/mechanism-trace-run.sh /tmp/t/*.jsonl` and `../tools/lean-sync.sh`. If any trace reports MISMATCH or lean-sync prints STALE, do not fix the model or the code; report the step that differs and stop. Never edit a results file."
+  }
+}
