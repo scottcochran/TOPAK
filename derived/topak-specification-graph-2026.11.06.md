@@ -2,8 +2,8 @@
 
 **2026.11.06** · derived · a summary of a discussion between the custodian and the assistant, which read D. B.
 Piskala, *Spec-Driven Development: From Code to Contract in the Age of AI Coding Assistants* (arXiv:2602.00180v1,
-2026.01.30) against the corpus at G11 and the tree at `fc25c9f`, and ended in two Proposed records, ADR-0056 and
-ADR-0057 · prepared by Claude at the custodian's request
+2026.01.30) against the corpus at G11 and the tree at `fc25c9f`, and ended in two Proposed records, ADR-0057 and
+ADR-0058 · prepared by Claude at the custodian's request
 
 > How would you categorize TOPAK on Piskala's spec spectrum? … Hierarchical spec layers (DAG?); ADR as intent: goals,
 > gates, guarantees; domain-appropriate spec frameworks; implementation-adjacent spec: spec as code, spec-code-spec.
@@ -14,7 +14,7 @@ ADR-0057 · prepared by Claude at the custodian's request
 **spec-as-source** (the floor) and one slice **spec-first for now** (workflows). But the line is the wrong shape for
 it. The paper's levels are properties of the **relation between two artifacts**, and the corpus has many relations at
 different strengths. Arranged as a graph of specification layers with typed edges, the levels become edge types, and
-a theorem can be said to reach the code at a **grade**. ADR-0056 states that for the corpus; ADR-0057 states how a
+a theorem can be said to reach the code at a **grade**. ADR-0057 states that for the corpus; ADR-0058 states how a
 deployment and a supplier declare their own graph against it.
 
 ---
@@ -76,7 +76,7 @@ the same nodes**, what implements what (`corpus-pins.sha256`) and what rests on 
 **ADRs as intent: goals, gates, guarantees.** Right home, with two additions: **givens**, the premises a guarantee
 rests on, which the corpus keeps in the binding table and not in the record, and which make each clause an
 assume-guarantee contract (Benveniste et al., *Contracts for System Design*); and **stable ids**, so that lower layers
-bind to a guarantee and not a file. "Gates" collides twice in the corpus (floor gates; promotion gates), so ADR-0056
+bind to a guarantee and not a file. "Gates" collides twice in the corpus (floor gates; promotion gates), so ADR-0057
 names the fourth part **discharge**, as a drafter's choice the custodian can reverse.
 
 **Domain-appropriate frameworks.** Yes, chosen by **kind of property** rather than business domain, and with a named
@@ -144,7 +144,7 @@ A **vocabulary** layer (the glossary; DDD's ubiquitous language) belongs on the 
 
 ## 8. What the two records carry
 
-**ADR-0056, the corpus.** Artifacts are nodes with open layers. A new clause has a goal, givens, guarantees and a
+**ADR-0057, the corpus.** Artifacts are nodes with open layers. A new clause has a goal, givens, guarantees and a
 discharge. Eight edge types, ordered by what each leaves to a person: *executed*, *generated*, *proved*, *proved of a
 reading*, *replayed*, *tested*, *read*, *trusted*. Each edge contributes a `check` premise, false when stale or absent;
 ADR-0053's derived premises are instances, and T-0045-28 becomes a derived premise. **A grade is a threshold, and the
@@ -153,7 +153,7 @@ inventory at *trusted* is the one computed today. Theorems are graded downward, 
 reading of its record is graded once, and is *read*, by the drafter, everywhere. Twice-stated guarantees are listed;
 pins move to clauses; one graph is checked against the four lists before it replaces them.
 
-**ADR-0057, adopters and suppliers.** The archetype publishes its graph by version; a deployment's graph is an overlay
+**ADR-0058, adopters and suppliers.** The archetype publishes its graph by version; a deployment's graph is an overlay
 of keep, replace, add and omit. A replaced node re-establishes each edge at a declared type or declares it absent. The
 method is the deployment's, and the type follows from what the edge leaves; a prover with no row is a D-row and an
 upstream report. The declaration publishes its inventory at every grade, with each node's standing. A deployment can
@@ -164,8 +164,8 @@ generalized. The reference is the first overlay.
 ## 9. Open questions for review
 
 - **Is the order of edge types total?** *Executed* against *generated*, and *proved of a reading* against *replayed*,
-  are the doubtful pairs (ADR-0056 finding 4).
-- **Does a grade read as partial credit** to a C3 reviewer of ADR-0023 §2 (ADR-0056 finding 3)?
+  are the doubtful pairs (ADR-0057 finding 4).
+- **Does a grade read as partial credit** to a C3 reviewer of ADR-0023 §2 (ADR-0057 finding 3)?
 - **Who reads the edges up**, from records to modules, when every reading so far is the drafter's (ADR-0029 A2)?
-- **Where does the generic prover row live**: Annex A by its own record, or the archetype-evolution record (ADR-0057
+- **Where does the generic prover row live**: Annex A by its own record, or the archetype-evolution record (ADR-0058
   finding 2)?
