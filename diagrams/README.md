@@ -63,6 +63,14 @@ proved, and `mechanism/lean` as stale (G11 item 103). The words stay distinct: *
 says so in its footer and names its state of record. The three new diagrams name G11 as theirs. The other
 twenty-two regenerate byte for byte.
 
+**Drawn 2026.11.06** for ADR-0056 (**Proposed**, drafted 2026.11.06, after G11 and Batches 38 and 39): one new
+diagram, **C10**, a call's user scope. It draws the record whole: §1's four questions and four owners, a round that
+acts for a user from the subject's provider to the downstream system, the three points that close the confused
+deputy and the degeneracy that reopens each, the entry's `credential` part with W11–W13, `R10` and `R11`, the
+trusted base's three rows (T-0045-38 and T-0045-39 new, T-0045-25 widened), the options, the findings and the
+ratification condition. Nothing on it is in force or built. No other diagram is amended: C7, D1, B8 and G1 take
+ADR-0056's entries when it is ratified, and H2 adds the record at the next amendment of the map.
+
 | Id | Diagram | What it shows |
 |---|---|---|
 | **A · Orientation** | | |
@@ -89,6 +97,7 @@ twenty-two regenerate byte for byte.
 | C7 | [Tool list and allowlist entry](topak/C7-tool-list-and-entry-2026.10.05.svg) | ADR-0049's entry, its load checks W1–W10 and the two issued lists; the tool host reading the target from the entry; the tool list rendered and opening the round; no per-tool lease narrowing; what the reference does not follow |
 | C8 | [The operator is a principal](topak/C8-operator-principal-2026.10.05.svg) | ADR-0050 (provisional): the operator seat and its six signed control actions mapped to `C1`–`C9` over thirteen facts; identity provider and key custody; the quorum path (not built) beside the BOOTSTRAP socket; `Operators.tla`; the exit from provisional |
 | C9 | [A workflow is a promoted DAG](topak/C9-workflow-dag-2026.10.05.svg) | ADR-0054 (Proposed): a workflow as a promoted graph of seatings; the promotion seats every cell; the mechanism routes on typed attributes; an orchestrator cell may only choose among enabled edges; a route is checked again where it is applied; `Workflow.tla` (checked, not proved); the `workflow` floor stage at the reference (A16, pending, not in force) |
+| C10 | [A call's user scope is downstream](topak/C10-user-scope-2026.10.05.svg) | ADR-0056 (Proposed): which user a round acts for is bound by the mechanism from a provider-signed assertion carried with the grant, beside the lease; the policy decides whether a call may use it (`R10`, `R11`; the bundle only narrows); the tool host injects the one credential; the downstream system decides what it permits; the tool decides nothing. The confused deputy closed at three points, D-0056-1 to 3, T-0045-38 and 39, and what ratification needs |
 | **D · Admit path and the record** | | |
 | D1 | [Admit pipeline](topak/D1-admit-pipeline-2026.10.05.svg) | Decide, then order, then effect, with a denial lane; an operator's signed request and an emergency activation; the sixteen log-entry kinds (`WorkflowLoad`, `WorkflowGrant` added) and sixteen `Applied` results; what `Mechanism.tla` checks against it |
 | D2 | [Policy composition](topak/D2-policy-composition-2026.10.05.svg) | `admit ⟺ floor_permit ∧ ¬bundle_deny`, tier by tier, with the floor in force, the bundle's load checks, the label minimum no bundle can loosen, control requests decided by the floor alone, and schema S as of the `emergency` stage; the composition's truth table proved of `admit.rs`'s transcription in Lean (ADR-0053, B36) |

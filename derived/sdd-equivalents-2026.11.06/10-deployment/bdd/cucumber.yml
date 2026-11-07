@@ -1,0 +1,17 @@
+# Layer: deployment · Cucumber profiles · TOPAK source: ADR-0058's overlay; ADR-0023 §6's declaration
+# BDD's only deployment construct is the profile: a named tag expression that selects which
+# scenarios a deployment runs. "Omit" and "void" both become "not selected". There is no overlay,
+# no grade, and nothing says why a scenario is excluded beyond the tag that excluded it.
+default: --tags "not @wip"
+
+# The reference (10-deployment/topak-overlay.reference.yaml): rung 0 everywhere, T-0045-16/17 SIMULATED.
+reference: >
+  --tags "not @premise:T-0045-16 and not @premise:T-0045-17 and not @premise:T-0045-20 and not @premise:T-0045-22"
+  --tags "not @stage:workflow or @standing:Proposed"
+  --format json --out reports/reference.json
+
+# A hypothetical rung-3 deployment that declares every confinement row.
+rung3: --tags "not @wip" --format json --out reports/rung3.json
+
+# An adopter that replaced the transport (ADR-0058 §9): the e2e suite reruns, nothing else changes.
+other-transport: --tags "not @premise:T-0045-16 and not @premise:T-0045-17" --tags "@transport or not @layer:runtime"

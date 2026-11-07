@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://topak.example/schemas/lease.json",
+  "title": "Lease",
+  "description": "Layer: interface · JSON Schema · TOPAK source: ADR-0031 §1 (twelve fields, closed), topak-core/src/lease.rs. This is what ADR-0057 §9 asks for when a record next touches the lease: a machine-readable schema node whose edges run to ADR-0031 §1 and from lease.rs. Closed: additionalProperties is false, and every field is required.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["principal", "seat", "persona", "epoch", "fence", "rulesEpoch", "bundle", "confinement", "alphabet", "round", "role", "ttl_ms"],
+  "properties": {
+    "principal":  { "type": "string", "description": "The principal's identity (ADR-0002 A2)." },
+    "seat":       { "type": "string", "description": "The seat held this round (ADR-0037 §1)." },
+    "persona":    { "$ref": "#/$defs/digest", "description": "Persona digest, attested at grant and renewal (ADR-0016 §6)." },
+    "epoch":      { "type": "integer", "minimum": 0, "description": "Valid at this epoch; any increment fences it (ADR-0022 §2)." },
+    "fence":      { "type": "integer", "minimum": 1, "description": "The Paxos log index at grant. The lease's identity (ADR-0031 §2)." },
+    "rulesEpoch": { "type": "integer", "minimum": 0, "description": "Rules epoch in force at grant." },
+    "bundle":     { "$ref": "#/$defs/digest", "description": "Bundle revision admitted against; fixed across renewal (R2)." },
+    "confinement": {
+      "type": "object", "additionalProperties": false, "required": ["digest", "rung"],
+      "properties": {
+        "digest": { "$ref": "#/$defs/digest" },
+        "rung":   { "type": "integer", "minimum": 0, "maximum": 3, "description": "0 none declared (Mediated, always) · 1 launcher · 2 measured boot · 3 confidential VM. Fixed across renewal (A1)." }
+      }
+    },
+    "alphabet": {
+      "type": "array", "uniqueItems": true,
+      "items": { "enum": ["Read", "Draft", "Invoke", "Emit", "Submit", "Vote", "Consult", "Actuate", "Report"] },
+      "description": "Variants this seat may express. Renewal may only narrow it (§4)."
+    },
+    "round":  { "type": "integer", "minimum": 0, "description": "Never reused per seat (ADR-0003). Fixed across renewal (R1)." },
+    "role":   { "enum": ["author", "voter"], "description": "Not ordered: a change is a grant (R1)." },
+    "ttl_ms": { "type": "integer", "minimum": 0, "description": "Duration on the local monotonic clock; at most T_persona (A2)." }
+  },
+  "$defs": {
+    "digest": { "type": "string", "pattern": "^[0-9a-f]{64}$", "description": "Lowercase hex SHA-256." }
+  },
+  "x-topak": {
+    "record": "ADR-0031 §1",
+    "implementation": "mechanism/crates/topak-core/src/lease.rs::Lease",
+    "edge-types": { "to ADR-0031 §1": "read", "from lease.rs": "tested (serde round-trip; no generator)" }
+  }
+}

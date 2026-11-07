@@ -1,0 +1,48 @@
+# Layer: vocabulary · TOPAK source: narrative/glossary.md §4
+# Of the paper's three API languages, GraphQL SDL is the best glossary carrier: every type and
+# field takes a """description""" that tooling renders, and enums name the vocabulary's closed sets.
+# (OpenAPI puts the same text in `description:`; protobuf only in comments.)
+
+"""
+Lease: one composite credential, granted for one round, with a closed schema of twelve fields.
+A capability that is not a field is not carried (ADR-0031 §1).
+"""
+type Lease {
+  "The principal's identity (ADR-0002 A2)."
+  principal: ID!
+  "The seat held for this round (ADR-0037 §1). A principal holds exactly one seat."
+  seat: ID!
+  "The Persona digest, attested at grant and renewal (ADR-0016 §6)."
+  persona: Digest!
+  "The epoch this lease is valid at. Any increment fences it (ADR-0022 §2)."
+  epoch: Int!
+  "Fence: the Paxos log index at grant. Leases, admits and issuances are ordered by one log (ADR-0031 §2)."
+  fence: Int!
+  "The rules epoch in force at grant (ADR-0025, ADR-0026)."
+  rulesEpoch: Int!
+  "The bundle revision this principal is admitted against; a decision counts only from it (ADR-0033 §5)."
+  bundle: Digest!
+  "Confinement: the profile digest and the attestation rung it was established at (ADR-0031 §3)."
+  confinement: Confinement!
+  "Alphabet: the action variants this seat may express (ADR-0022 §1)."
+  alphabet: [ActionKind!]!
+  "The round this lease is granted for. Never reused per seat (ADR-0003)."
+  round: Int!
+  "Round role: author or voter. Not ordered, so a change of role is a grant, not a renewal (ADR-0022 §7)."
+  role: RoundRole!
+  "Expiry as a duration on the local monotonic clock, at most T_persona (ADR-0031 §7, A2)."
+  ttlMs: Int!
+}
+
+"Rung: how belief in the confinement profile was established. Rung 0 is Mediated, always (ADR-0031 §3)."
+enum Rung { NONE_DECLARED LAUNCHER_ASSERTED MEASURED_BOOT CONFIDENTIAL_VM }
+
+type Confinement { digest: Digest!, rung: Rung! }
+
+"Build's alphabet (ADR-0022 §1) and Run's (ADR-0040 §1). No name is shared between the domains."
+enum ActionKind { Read Draft Invoke Emit Submit Vote Consult Actuate Report }
+
+enum RoundRole { author voter }
+
+"Lowercase hex SHA-256."
+scalar Digest
