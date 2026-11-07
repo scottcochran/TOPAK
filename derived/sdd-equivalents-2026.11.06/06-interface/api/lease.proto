@@ -1,0 +1,43 @@
+// Layer: interface · Protocol Buffers · TOPAK source: ADR-0031 §1, ADR-0050 (the operator channel)
+// The lease and the operator's lease operations as a gRPC service. protoc generates the Rust
+// (prost/tonic) and every client, which is the paper's spec-as-source for interfaces.
+syntax = "proto3";
+package topak.lease.v1;
+
+message Confinement { string digest = 1; uint32 rung = 2; }   // rung 0..3
+
+enum ActionKind {
+  ACTION_KIND_UNSPECIFIED = 0; READ = 1; DRAFT = 2; INVOKE = 3; EMIT = 4; SUBMIT = 5; VOTE = 6;
+  CONSULT = 7; ACTUATE = 8; REPORT = 9;
+}
+enum RoundRole { ROUND_ROLE_UNSPECIFIED = 0; AUTHOR = 1; VOTER = 2; }
+
+// ADR-0031 §1: twelve fields, closed. proto3 has no "closed": unknown fields are preserved, not
+// refused, so the closed-schema rule is a load check on the mechanism, not on the wire format.
+message Lease {
+  string principal = 1;
+  string seat = 2;
+  string persona = 3;            // hex SHA-256
+  uint64 epoch = 4;
+  uint64 fence = 5;              // the Paxos log index at grant; the lease's identity
+  uint64 rules_epoch = 6;
+  string bundle = 7;
+  Confinement confinement = 8;
+  repeated ActionKind alphabet = 9;
+  uint64 round = 10;
+  RoundRole role = 11;
+  uint64 ttl_ms = 12;
+}
+
+message RenewRequest { string seat = 1; uint64 fence = 2; repeated ActionKind alphabet = 3; uint32 rung = 4; uint64 ttl_ms = 5; }
+message RenewResponse { oneof outcome { Lease lease = 1; string refused = 2; } }
+message FenceEpochRequest {}
+message FenceEpochResponse { uint64 epoch = 1; }
+message RevokeRequest { enum Kind { KIND_UNSPECIFIED = 0; PRINCIPAL = 1; PERSONA = 2; CONFINEMENT = 3; } Kind kind = 1; string id = 2; }
+message RevokeResponse { uint64 applied_at = 1; }
+
+service Operator {
+  rpc Renew(RenewRequest) returns (RenewResponse);
+  rpc FenceEpoch(FenceEpochRequest) returns (FenceEpochResponse);
+  rpc Revoke(RevokeRequest) returns (RevokeResponse);
+}
