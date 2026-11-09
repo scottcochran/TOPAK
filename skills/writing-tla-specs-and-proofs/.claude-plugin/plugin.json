@@ -1,0 +1,9 @@
+{
+  "name": "writing-tla-specs-and-proofs",
+  "version": "0.1.0",
+  "description": "Structured TLA+ specification, TLC model checking and TLAPS proof development: specs written for mutation testing, checked at small constants, proved deductively, with dated regenerable evidence",
+  "author": {
+    "name": "Scott Cochran",
+    "url": "https://github.com/scottcochran/TOPAK"
+  }
+}
