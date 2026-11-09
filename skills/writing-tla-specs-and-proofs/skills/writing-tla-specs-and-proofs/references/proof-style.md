@@ -292,51 +292,105 @@ In the order to try them:
 ## Liveness: a measure, WF1 and induction
 
 An **unquantified** leads-to property can be proved in TLAPS under the
-rules in [prover-habits.md](prover-habits.md), and the shape is fixed:
+rules in [prover-habits.md](prover-habits.md). The shape below is a real
+proof (`TicTacToe_proof.tla`, 135 obligations, `Liveness == Spec =>
+<>GameOver`), trimmed to the steps that carry the argument.
 
 1. **A measure** that is a state function in `Nat`, zero exactly when the
-   goal holds: `Remaining == Cardinality({c \in Cells : board[c] = Empty})`.
-2. **Three state lemmas**: the measure's initial value (`StartRemaining`,
-   with the `FiniteSets` facts it needs: a product of literal sets is
-   finite and has the product's size); every step lowers it by one or is
-   the goal (`MoveRemaining`, which here needs `turn # Empty` from
-   `Distinct`); the measure at zero implies the goal (`NoneRemaining`).
-3. **Enabledness as a step property.** WF1 needs `ENABLED <<Next>>_vars`,
-   not `ENABLED Next`: prove that while the goal does not hold some move
-   is possible *and changes the state* (`NextEnabled`, `BY ExpandENABLED
-   DEF Move, vars`). A move that could stutter would not count.
-4. **One WF1 step** (`Progress`): with the measure at `n + 1` and the goal
-   false, fairness forces a step that leaves it at `n`.
-5. **Induction over `Nat`** on a hidden definition
-   `G(n) == Spec => (Remaining = n ~> GameOver)`:
+   goal holds:
 
-```tla
-G(n) == Spec => (Remaining = n ~> GameOver)
+   ```tla
+   EmptyCells == {pos \in Rows \X Cols : board[pos] = Empty}
+   Remaining  == Cardinality(EmptyCells)
+   ```
 
-LEMMA Progress ==
-    ASSUME NEW n \in Nat
-    PROVE  Spec => ((Remaining = n + 1 /\ ~GameOver) ~> Remaining = n)
-    \* WF1 over Inv: [Next]_vars keeps the premise or reaches Remaining = n;
-    \* <<Next>>_vars reaches Remaining = n; ENABLED <<Next>>_vars by NextEnabled.
+2. **The finiteness facts, once.** `CellsFinite` (`IsFiniteSet(Rows \X
+   Cols)` and its size, `BY FS_Interval` then `FS_Product`) and
+   `EmptyCellsFinite` (`BY CellsFinite, FS_Subset`). Every later use of
+   `Cardinality` cites these.
+3. **Three state lemmas**: the measure's initial value (`StartRemaining`,
+   from `EmptyCells = Rows \X Cols` at `Start`); every move lowers it by
+   one (`MoveRemaining`: the cell was in `EmptyCells`, the new set is the
+   old one minus it, `BY ... FS_RemoveElement`; needs `turn # Empty`, which
+   is the module's named `ASSUME Distinct`); the measure at zero implies
+   the goal (`NoneRemaining`, `BY EmptyCellsFinite, FS_EmptySet`).
+4. **Enabledness as a step property.** WF1 needs `ENABLED <<Next>>_vars`,
+   not `ENABLED Next`: while the goal is false, some move is possible
+   *and changes the state*. Proved in one step where it is stated:
 
-THEOREM Liveness == Spec => <>GameOver
-<1>1. G(0)
-    BY Invariant, NoneRemaining, PTL DEF G
-<1>2. ASSUME NEW n \in Nat, G(n) PROVE G(n + 1)
-    BY <1>2, Progress, PTL DEF G
-<1>3. \A n \in Nat : G(n)
-    BY <1>1, <1>2, NatInduction
-<1> QED
-    BY <1>3, StartRemaining, PTL DEF G, Spec
-```
+   ```tla
+   LEMMA NextEnabled == Inv /\ ~GameOver => ENABLED <<Next>>_vars
+   <1> SUFFICES ASSUME Inv, ~GameOver PROVE ENABLED <<Next>>_vars OBVIOUS
+   <1>1. PICK r \in Rows, c \in Cols : board[<<r, c>>] = Empty
+       BY DEF GameOver, BoardFull
+   <1>2. winner = Empty
+       BY DEF GameOver
+   <1> QED
+       BY <1>1, <1>2, Distinct, ExpandENABLED
+          DEF Next, Move, vars, Inv, ValidStates, Players, Opponent
+   ```
 
-Why this is safe under the translation rules: `G` is expanded only in the
-`PTL` steps (`<1>1`, `<1>2`, QED); in `<1>3`, which SMT or Zenon
-discharges, `G` is a hidden definition, an uninterpreted function of `n`,
-and quantifying over `n` is sound; `n` is a `NEW` constant that `G`'s body
-does not bind, so no capture. The measure is a single state function and
-the leads-to body has no quantifier of its own, which is the condition
-under which this works.
+5. **One WF1 step** (`Progress`). The inductive invariant is folded into
+   the WF1 premise `P`, and `Spec => []Inv` is cited so `PTL` may use it;
+   the four premises are the step lowers the measure, stuttering keeps
+   `P`, `P` enables a real step, and the invariant holds always:
+
+   ```tla
+   LEMMA Progress ==
+       ASSUME NEW n \in Nat
+       PROVE  Spec => ((Remaining = n + 1 /\ ~GameOver) ~> Remaining = n)
+   <1> DEFINE P == Inv /\ Remaining = n + 1 /\ ~GameOver
+              Q == Remaining = n
+   <1>1. P /\ Next => Q'
+       BY MoveRemaining DEF Next, Inv
+   <1>2. P /\ UNCHANGED vars => P'
+       BY NextInv DEF vars, Remaining, EmptyCells, GameOver, BoardFull
+   <1>3. P => ENABLED <<Next>>_vars
+       BY NextEnabled
+   <1>4. Spec => []Inv
+       BY Invariant
+   <1> QED
+       BY <1>1, <1>2, <1>3, <1>4, PTL DEF Spec
+   ```
+
+6. **Induction over `Nat`** on a local definition `G(n)`, visible in the
+   `PTL` steps and hidden by `HIDE DEF G` in the steps another backend
+   discharges:
+
+   ```tla
+   THEOREM Liveness == Spec => GameEnds
+   <1> DEFINE G(n) == Spec => (Remaining = n ~> GameOver)
+   <1>1. G(0)
+       BY NoneRemaining, PTL
+   <1>2. \A n \in Nat : G(n) => G(n + 1)
+       <2> TAKE n \in Nat
+       <2>1. Spec => ((Remaining = n + 1 /\ ~GameOver) ~> Remaining = n)
+           BY Progress
+       <2> QED
+           BY <2>1, PTL
+   <1>3. \A n \in Nat : G(n)
+       <2> HIDE DEF G
+       <2> QED
+           BY <1>1, <1>2, NatInduction, Isa
+   <1>4. G(9)
+       <2> HIDE DEF G
+       <2> QED
+           BY <1>3
+   <1> QED
+       BY <1>4, StartRemaining, PTL DEF Spec, GameEnds
+   ```
+
+   `NaturalsInduction` supplies `NatInduction`; the induction step `<1>3`
+   is discharged by Isabelle (`Isa`), with `G` hidden.
+
+Why this is safe under the translation rules: `G` is expanded only where
+`PTL` discharges the step (`<1>1`, `<1>2`, QED); in `<1>3` and `<1>4`,
+which Isabelle and SMT discharge, `HIDE DEF G` makes it an uninterpreted
+function of `n`, and quantifying over `n` or instantiating at `9` is
+sound; `TAKE n` in `<1>2` is safe because nothing `G`'s body expands to
+binds a name `n`. The measure is a single state function and the leads-to
+body has no quantifier of its own, which is the condition under which this
+works.
 
 What does **not** fit this shape, and is where the source corpus stopped:
 a leads-to quantified over a parameter inside the temporal body
@@ -357,6 +411,16 @@ restate them one instance at a time.
 - A `WITNESS` step takes no `DEF`, so it cannot show a record is in a
   record set. `DEFINE w == ...`, prove `w \in S` and the property as two
   steps, and let QED find the witness.
+- **`DEFINE` a compound term, prove what you need of it, then `HIDE DEF`
+  it.** `HasWonMonotone` names `marked == [b EXCEPT ![pos] = q]`, proves
+  the one fact the cases need (`marked[<<r, c>>] = p => b[<<r, c>>] = p`)
+  and the index arithmetic (`4 - i \in 1..3`) as separate steps, then
+  hides `marked` so each of the four line-shape cases is a propositional
+  step over an opaque function instead of a fresh expansion of `EXCEPT`.
+  The QED unhides it. Same move for a local `G(n)` in an induction.
+- **State the arithmetic a case needs as its own step.** The anti-diagonal
+  case fails without `\A i \in 1..3 : 4 - i \in 1..3` in scope; proved
+  `OBVIOUS`, cited by name.
 - Keep each `BY` list honest: cite the facts the step uses and the
   definitions it must see, no more. A step that cites every lemma in the
   module proves slowly and tells the next reader nothing about why it

@@ -49,7 +49,8 @@ primary sources are TOPAK's `spec/README.md`, `spec/proof-method.md`,
 the `Coupling` and `Seats` modules and their proofs as the worked examples.
 The liveness proof shape and the named-`ASSUME` rule come from a
 tic-tac-toe spec and TLAPS proof outside TOPAK (`TicTacToe.tla`,
-`TicTacToe_proof.tla`), the one WF1 proof in hand.
+`TicTacToe_proof.tla`, 135 obligations), the one WF1 proof in hand; the
+liveness section quotes its steps.
 The skill generalizes those choices; where a TOPAK-specific record or tool
 name would have appeared, the skill says what the thing is for instead.
 

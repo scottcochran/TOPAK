@@ -79,8 +79,10 @@ tlapm --cleanfp --strict <Module>_proof.tla
   `ENABLED` fact in the step that states it; do not carry it by name across
   a quantifier (see the unsound cases).
 - **A `PTL` step may be discharged by LS4 and by nothing else.** It is the
-  one route no checker confirms; keep it to the fixed shape "holds
-  initially, every step keeps it, so always".
+  one route no checker confirms; keep it to the fixed shapes "holds
+  initially, every step keeps it, so always" and WF1 from its four
+  premises. A `NatInduction` step over a hidden `G(n)` goes to Isabelle
+  (`BY ..., NatInduction, Isa`), not to `PTL`.
 
 ## What the SMT backend handles alone
 
@@ -97,9 +99,11 @@ only `FiniteSetTheorems` use in a module about voting thresholds.
 Not well: sequences, recursion, `Cardinality` in an invariant. Design the
 module to avoid them (see [spec-design.md](spec-design.md)). A
 `Cardinality` used as a **liveness measure** is the exception that earns
-its keep: it needs the finiteness facts stated once (`FS_Product` or
-`FS_Subset` from a literal set, `FS_CardinalityType`), and from then on the
-measure is a term in `Nat` the backend handles.
+its keep: it needs the finiteness facts stated once (`FS_Interval` for
+`1..3`, `FS_Product` for the cell set, `FS_Subset` for the empty cells),
+and the step facts by name where they are used (`FS_RemoveElement` for
+"one move lowers it by one", `FS_EmptySet` for "zero means full"). From
+then on the measure is a term in `Nat` the backend handles.
 
 ## Steps that certify under checked backends
 
