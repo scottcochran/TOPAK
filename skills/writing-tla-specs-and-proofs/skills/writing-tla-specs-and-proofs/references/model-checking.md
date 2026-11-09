@@ -160,6 +160,14 @@ A stall in a module with always-enabled actions is a **livelock**, which
 no deadlock check sees. If the design claims the stall ends, that is a
 leads-to property (below).
 
+**Terminating systems** are the one case where turning the check off is
+the design and not a convenience. A game of tic-tac-toe ends; its spec
+has `WF_vars(Next)` and the config says `CHECK_DEADLOCK FALSE`. Name the
+terminal predicate (`GameOver`) in the module, make it the audit's
+`AtBound`, and check the liveness property `<>GameOver` under the fairness.
+Then "no deadlock" and "the game ends" are two rows that say different
+things, and neither is a flag that hides a stall.
+
 ## Practical constants and simulation
 
 Three distinct kinds of run, three distinct words:

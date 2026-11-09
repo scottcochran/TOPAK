@@ -70,6 +70,19 @@ only cuts the state space becomes a premise the theorem does not need.
 Caught by: a theorem that holds for every `K` and `R` where the premise
 table listed `K < R`. Fix: constants unconstrained; bounds in the run
 script; named assumptions in the proof for what the proof actually uses.
+The exception is a well-formedness condition on the constants themselves
+(`ASSUME Distinct == X # O /\ ...`): that one is a *named* `ASSUME` in the
+module, so TLC checks the config and the proof cites it, and it narrows
+nothing.
+
+### Terminal states hidden by the deadlock flag
+
+A terminating system run with `-deadlock` and no named terminal predicate.
+Harmful because "the game ends" and "no stray stuck state" become one
+unchecked thing. Caught by: the deadlock audit, if it has an `AtBound` to
+check against. Fix: name the terminal predicate (`GameOver`), make it the
+audit's bound, and check `<>GameOver` under the fairness as a liveness
+row.
 
 ### Deep actions
 

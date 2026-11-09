@@ -95,7 +95,11 @@ set is finite `BY FS_EmptySet, FS_AddElement DEF` its name). That was the
 only `FiniteSetTheorems` use in a module about voting thresholds.
 
 Not well: sequences, recursion, `Cardinality` in an invariant. Design the
-module to avoid them (see [spec-design.md](spec-design.md)).
+module to avoid them (see [spec-design.md](spec-design.md)). A
+`Cardinality` used as a **liveness measure** is the exception that earns
+its keep: it needs the finiteness facts stated once (`FS_Product` or
+`FS_Subset` from a literal set, `FS_CardinalityType`), and from then on the
+measure is a term in `Nat` the backend handles.
 
 ## Steps that certify under checked backends
 
@@ -199,12 +203,17 @@ Rules:
   with a driver that reruns them and compares each outcome with the
   record; exclude that directory from the sync and the scan.
 
-What these cases cost a method: of four leads-to properties stated in one
-liveness module, two are quantified and all four have `ENABLED` premises,
-and a `WF1` or `SF1` argument over a measure needs a quantified leads-to
-hypothesis inside the proof, which `PTL` cannot combine from instances. In
-the pinned prover no route for that step under the rules is known; a
-second derivation in a kernel-checked prover is the route taken.
+What these cases cost a method: an **unquantified** leads-to still proves
+under the rules, by a measure, one WF1 step and `Nat` induction over a
+hidden `G(n)`, expanded only in `PTL` steps (the shape is in
+[proof-style.md](proof-style.md)). What does not: a leads-to quantified
+over a parameter inside the temporal body with an `ENABLED` premise over
+that parameter. Of four such properties stated in one liveness module, two
+were quantified and all four had `ENABLED` premises, and a `WF1` or `SF1`
+argument over a measure there needs a quantified leads-to hypothesis
+inside the proof, which `PTL` cannot combine from instances. In the pinned
+prover no route for that step under the rules is known; a second
+derivation in a kernel-checked prover is the route taken.
 
 ## Cost model
 

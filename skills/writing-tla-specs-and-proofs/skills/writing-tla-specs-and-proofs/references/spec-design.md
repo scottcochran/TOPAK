@@ -188,9 +188,20 @@ because arithmetic steps need to know their terms are naturals.
   proof.** `K < R` is what lets the bound refuse at all; the invariant holds
   for every `K` and `R`. The ordering is TLC's business, as a witness.
 - **A module-level `ASSUME` is evaluated by TLC and ignored by the prover
-  unless named.** Where a module states a fact as an unnamed `ASSUME` (that
-  genesis satisfies the floor), the proof module proves it as a named lemma
-  with explicit witnesses.
+  unless named.** So name it. A well-formedness condition on the constants
+  is the case that belongs in the module:
+
+  ```tla
+  CONSTANTS X, O, Empty
+  ASSUME Distinct == X # O /\ X # Empty /\ O # Empty
+  ```
+
+  TLC checks the config against `Distinct`; the proof module cites
+  `Distinct` by name wherever a step needs `turn # Empty`. Nothing is
+  restated. This is not a bound: it says what the constants are, not how
+  many of them to run. Where a module states a *fact about the model* as an
+  unnamed `ASSUME` (that genesis satisfies the floor), the proof module
+  proves it as a named lemma with explicit witnesses instead.
 
 ## The header is the contract
 
@@ -234,6 +245,15 @@ State no liveness unless the design claims progress, and then:
   the base `Next` under every base mutation and a restriction of it only
   under the liveness module's own mutations, so the safety proofs carry
   over by one lemma, `SpecL => Spec`.
+- **A terminating system names its end.** When the mechanism is meant to
+  stop (a game ends; a round closes for good), define the terminal
+  predicate (`GameOver == ThreeInRow(X) \/ ThreeInRow(O) \/ BoardFull`),
+  put `WF_vars(Next)` in `Spec` so a move happens while one is possible,
+  and state the liveness property as its complement, `<>GameOver`. Then
+  the deadlock check is off for a stated reason, and the audit in
+  [model-checking.md](model-checking.md) checks `Terminal => GameOver`
+  instead of guessing the bound. A measure for the proof falls out of the
+  same predicate: the count of cells still empty.
 
 ## A worked module
 

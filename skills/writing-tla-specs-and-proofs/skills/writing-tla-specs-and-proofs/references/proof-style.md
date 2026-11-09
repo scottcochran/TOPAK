@@ -15,14 +15,16 @@ hypothesis that the mutations which break `P` are absent.
 - [SafeAlways](#safealways)
 - [Mutation lemmas](#mutation-lemmas)
 - [The inductive-invariant patterns](#the-inductive-invariant-patterns)
+- [Liveness: a measure, WF1 and induction](#liveness-a-measure-wf1-and-induction)
 - [Step hygiene](#step-hygiene)
 
 ## What a proof module claims
 
 - **It extends a frozen module and never edits it.** `EXTENDS Coupling,
-  TLAPS`. Nothing from the base is restated. If the base states a fact as
-  an unnamed `ASSUME`, the proof proves it as a named lemma, because the
-  prover does not use an unnamed module assumption.
+  TLAPS`. Nothing from the base is restated. A named `ASSUME` in the base
+  (`Distinct`, that the constants differ) is cited by name. If the base
+  states a fact as an unnamed `ASSUME`, the proof proves it as a named
+  lemma, because the prover does not use an unnamed module assumption.
 - **It proves `Spec => []P` for each invariant** the base states, under
   named constant assumptions (`ASSUME KNat == K \in Nat`) that are the
   constraints the run scripts supplied per row, and no more. A bound that
@@ -230,6 +232,22 @@ In the order to try them:
 - **Flag invariants.** `~admittedUnlive`. The action sets the flag to
   `flag \/ cond`; show `cond` is false under the hypothesis at that one
   action. No auxiliary invariant.
+- **A recorded value agrees with the derived truth.** `AtMostOneWinner ==
+  ~(ThreeInRow(X) /\ ThreeInRow(O))` is not inductive: a board with no
+  winner can be one move from a line, and nothing in the property says
+  whose. Strengthen to `\A p : ThreeInRow(p) => winner = p`; since
+  `winner` holds one value, two winners are excluded at once, and the
+  property is a one-line consequence. The step case needs the frame lemma
+  below.
+- **A frame lemma per predicate.** One party's action cannot make a
+  predicate about another party true: placing `q`'s mark completes no line
+  for `p # q` (`HasWonMonotone`: if `p` has three in a row after the move,
+  `p` had it before). Prove it once, case by case over the line shapes,
+  and the `Move` step of the strengthened invariant is: the mover's line
+  sets `winner' = turn`; the other player's line was already there, so the
+  old invariant forces `winner = p`, which contradicts the guard
+  `winner = Empty`. This is `QuietActions` for a predicate rather than for
+  a variable.
 - **Append-only record sets.** The property quantifies over the set; the
   auxiliary says what the appending action can append, as a state fact
   that is the guard's precondition ("a live lease's alphabet is within its
@@ -270,6 +288,64 @@ In the order to try them:
   revives a lease the stated property is silent about, prove the stronger
   invariant over every lease the seat has had, and derive the stated
   property from it.
+
+## Liveness: a measure, WF1 and induction
+
+An **unquantified** leads-to property can be proved in TLAPS under the
+rules in [prover-habits.md](prover-habits.md), and the shape is fixed:
+
+1. **A measure** that is a state function in `Nat`, zero exactly when the
+   goal holds: `Remaining == Cardinality({c \in Cells : board[c] = Empty})`.
+2. **Three state lemmas**: the measure's initial value (`StartRemaining`,
+   with the `FiniteSets` facts it needs: a product of literal sets is
+   finite and has the product's size); every step lowers it by one or is
+   the goal (`MoveRemaining`, which here needs `turn # Empty` from
+   `Distinct`); the measure at zero implies the goal (`NoneRemaining`).
+3. **Enabledness as a step property.** WF1 needs `ENABLED <<Next>>_vars`,
+   not `ENABLED Next`: prove that while the goal does not hold some move
+   is possible *and changes the state* (`NextEnabled`, `BY ExpandENABLED
+   DEF Move, vars`). A move that could stutter would not count.
+4. **One WF1 step** (`Progress`): with the measure at `n + 1` and the goal
+   false, fairness forces a step that leaves it at `n`.
+5. **Induction over `Nat`** on a hidden definition
+   `G(n) == Spec => (Remaining = n ~> GameOver)`:
+
+```tla
+G(n) == Spec => (Remaining = n ~> GameOver)
+
+LEMMA Progress ==
+    ASSUME NEW n \in Nat
+    PROVE  Spec => ((Remaining = n + 1 /\ ~GameOver) ~> Remaining = n)
+    \* WF1 over Inv: [Next]_vars keeps the premise or reaches Remaining = n;
+    \* <<Next>>_vars reaches Remaining = n; ENABLED <<Next>>_vars by NextEnabled.
+
+THEOREM Liveness == Spec => <>GameOver
+<1>1. G(0)
+    BY Invariant, NoneRemaining, PTL DEF G
+<1>2. ASSUME NEW n \in Nat, G(n) PROVE G(n + 1)
+    BY <1>2, Progress, PTL DEF G
+<1>3. \A n \in Nat : G(n)
+    BY <1>1, <1>2, NatInduction
+<1> QED
+    BY <1>3, StartRemaining, PTL DEF G, Spec
+```
+
+Why this is safe under the translation rules: `G` is expanded only in the
+`PTL` steps (`<1>1`, `<1>2`, QED); in `<1>3`, which SMT or Zenon
+discharges, `G` is a hidden definition, an uninterpreted function of `n`,
+and quantifying over `n` is sound; `n` is a `NEW` constant that `G`'s body
+does not bind, so no capture. The measure is a single state function and
+the leads-to body has no quantifier of its own, which is the condition
+under which this works.
+
+What does **not** fit this shape, and is where the source corpus stopped:
+a leads-to quantified over a parameter inside the temporal body
+(`\A t \in Tools : P(t) ~> Q(t)`) whose WF1 step has an `ENABLED` premise
+over `t`. There the induction needs a quantified leads-to hypothesis
+inside the proof, which `PTL` cannot combine from instances, and the
+hidden-definition rule forbids expanding it where a backend other than LS4
+would see the bound variable. Prove such properties in a second prover, or
+restate them one instance at a time.
 
 ## Step hygiene
 

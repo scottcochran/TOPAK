@@ -29,9 +29,10 @@ spec-first, check-then-prove workflow:
    hypothesis and watch it fail; a results file with every digest in the
    `EXTENDS` chain and the prover's; a sync script that reports `STALE`.
 
-Plus: the ladder for finding an inductive invariant (flag, append-only
-set, valid state predicate, established-and-frozen, arithmetic in layers,
-generation binding); the prover's habits that cost time and the fix for
+Plus: the ladder for finding an inductive invariant (flag, a record that
+agrees with the derived truth, append-only set, valid state predicate,
+established-and-frozen, arithmetic in layers, generation binding); the
+liveness proof shape for an unquantified leads-to; the prover's habits that cost time and the fix for
 each; the rules for steps that certify under checked backends; the two
 known unsound cases in the prover's translation and the writing rules that
 avoid them; the vocabulary of claims (checked, proved, certified, sampled)
@@ -46,6 +47,9 @@ method notes record what made the proofs cheap and where that stopped. The
 primary sources are TOPAK's `spec/README.md`, `spec/proof-method.md`,
 `spec/proof-certification.md` and `spec/theorem-premise-binding.md`, with
 the `Coupling` and `Seats` modules and their proofs as the worked examples.
+The liveness proof shape and the named-`ASSUME` rule come from a
+tic-tac-toe spec and TLAPS proof outside TOPAK (`TicTacToe.tla`,
+`TicTacToe_proof.tla`), the one WF1 proof in hand.
 The skill generalizes those choices; where a TOPAK-specific record or tool
 name would have appeared, the skill says what the thing is for instead.
 
@@ -67,7 +71,8 @@ All paths below are relative to `skills/writing-tla-specs-and-proofs/`:
   counterexample
 - `references/proof-style.md` — the proof module's layout, the type
   invariant lemma, the `Next` lemma, the theorem, `SafeAlways`, mutation
-  lemmas, the inductive-invariant patterns in full, step hygiene
+  lemmas, the inductive-invariant patterns in full, the liveness proof
+  shape (measure, WF1, `Nat` induction over a hidden `G(n)`), step hygiene
 - `references/prover-habits.md` — running tlapm; parse, scope and
   temporal habits; what the SMT backend handles alone; steps that certify
   under checked backends; the two unsound translation cases and the rules

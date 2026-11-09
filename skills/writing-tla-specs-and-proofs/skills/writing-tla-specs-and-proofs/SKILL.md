@@ -103,7 +103,13 @@ Then the shape of the module:
   literals. The SMT backend settles these by enumeration.
 - **Constants unconstrained in the module, bounded in the run script.** A
   bound that only cuts the state space (`MaxRound`, `MaxEpoch`) needs no
-  assumption in the proof, which then holds for every value of it.
+  assumption in the proof, which then holds for every value of it. A
+  well-formedness condition on the constants themselves (three markers are
+  distinct) is different: state it in the module as a **named** `ASSUME`,
+  so TLC checks the config against it and the proof cites it by name.
+- **A terminating system names its terminal predicate** (`GameOver`), so
+  the deadlock check can be turned off for that reason alone and the
+  liveness property is its complement, `<>GameOver`.
 - **A header that is the contract**: each property with the section of the
   design document it states; each mutation with the property it must break;
   what time, identity or failure is abstracted and how.
@@ -221,27 +227,34 @@ up this ladder and stop at the first rung that fits.
 1. **Flag invariant**: inductive by itself. The proof is that the flag's
    condition is false at the one action that sets it, under the hypothesis,
    against that action's guard. No auxiliary invariant.
-2. **Append-only set**: one state fact about what the appending action can
+2. **A recorded value agrees with the derived truth**: the property is
+   over a derived predicate (`ThreeInRow(p)`) and is not inductive because
+   a state can break nothing yet lead to a violation. Strengthen to "the
+   derived truth is what the recorded variable says" (`ThreeInRow(p) =>
+   winner = p`); the property follows because the record holds one value.
+   The step case needs a frame lemma: one party's action cannot make the
+   predicate true for another (see [proof-style.md](references/proof-style.md)).
+3. **Append-only set**: one state fact about what the appending action can
    append (an alphabet, a floor entry, a bound), written as the guard's
    precondition over the state. Prove it with `TypeOK`, under every
    mutation if it holds there, and let each property split on top.
-3. **Valid state predicate**: the property is true of every state under
+4. **Valid state predicate**: the property is true of every state under
    its hypothesis, by definition, not by induction. Prove it as a state
    lemma and let `PTL` lift it to `[]`. An invariant over `ENABLED`
    (`tLive => ENABLED Consult`) is usually here, proved
    `BY ExpandENABLED DEF Consult`.
-4. **Established and frozen**: when every action after a commit point needs
+5. **Established and frozen**: when every action after a commit point needs
    the commit flag false, prove the property once at the commit action and
    carry it with a lemma that every step either is the commit or leaves the
    committed values alone.
-5. **Arithmetic in layers**: ask, action by action, what each needs of the
+6. **Arithmetic in layers**: ask, action by action, what each needs of the
    state to keep the bound. A grant needs future rounds untouched; a
    heartbeat needs the mark below the sequence; the next grant needs the
    idle seal equal to the sequence and past marks equal to seals. Prove the
    clauses that hold under every mutation (`Shape`) once; the clauses that
    need the mechanism (`Past`, `Bound`) sit on top, each under its own
    hypothesis.
-6. **Generation binding**: when the record an action appends depends on
+7. **Generation binding**: when the record an action appends depends on
    state set several actions earlier, carry that history forward
    conditionally on "same generation", and make every relaunch strictly
    raise the generation so each clause is preserved. This is the rung where
@@ -272,6 +285,8 @@ documentation, not as prover weakness.
 | `tlapm --cleanfp --strict`; read only the final count and exit status | fingerprints hide stale results; a backend's failure line is noise when another closed it | run script exit status |
 | Flip one hypothesis and watch the proof fail before generating results | a proof that survives proves the wrong thing | scratch run, not committed |
 | Fairness as `WF`/`SF` on actions of `Next`, named for whose obligation it is, a row that drops each, a `NoBehaviour` row that is violated | a state condition is not machine-closed and can leave an empty spec under which everything holds | liveness rows |
+| A well-formedness assumption on constants is a named `ASSUME` in the module; a space-cutting bound stays in the run script | TLC checks the first against the config and the proof cites it; the second would narrow the theorem for nothing | theorem statement; the prover ignores an unnamed `ASSUME` |
+| Prove an unquantified leads-to by a measure, one WF1 step that lowers it, and `Nat` induction over a hidden `G(n)` | the measure step needs `ENABLED <<A>>_vars`, and `G` must stay hidden outside `PTL` steps | the proof shape in [proof-style.md](references/proof-style.md) |
 | `-deadlock` on by default; audit it separately | most modules have always-enabled actions, so a stall is a livelock and only a leads-to sees it | a deadlock audit over every `-deadlock` script |
 | Pin the checker and the prover by digest; print them in every results file; refuse an unpinned binary without an explicit override | a different build is a different trusted-base item | wrapper script, sync script |
 | Keep untranslated terms (`ENABLED`, `\cdot`, temporal formulas) behind hidden definitions in SMT, Zenon and Isabelle steps; expand them only `BY ExpandENABLED` where proved or in `PTL` steps | the prover abstracts them to a constant that forgets bound variables | the scan described in [prover-habits.md](references/prover-habits.md) |
@@ -307,8 +322,9 @@ Each row's rationale, with the anti-pattern it prevents, in
   lists and results files; the mutation and witness matrix; `-deadlock`
   and its audit; simulation; fairness and liveness rows
 - [proof-style.md](references/proof-style.md) — the proof module's
-  structure, the lemma shapes, `SafeAlways`, mutation lemmas, and the
-  inductive-invariant patterns in full
+  structure, the lemma shapes, `SafeAlways`, mutation lemmas, the
+  inductive-invariant patterns in full, and the liveness proof shape:
+  measure, WF1, induction
 - [prover-habits.md](references/prover-habits.md) — tlapm and backend
   habits that cost time, with the fix for each; steps that certify under
   checked backends; the two known unsound translation cases and the
