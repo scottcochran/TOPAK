@@ -224,5 +224,16 @@ which names no `Emergency` file, since `Emergency`'s graph check has its own ser
 the digest its A3 and E1 gave it as drafted, and `-2026.10.08b.txt` is the same again at their ratification in Batch
 37).
 
+**`specification-graph.json`** is the specification graph ADR-0057 proposes (Proposed): the records' clauses, the
+modules, proof modules and Lean encodings, the floor and its stages, and the reference's crates as nodes, with typed
+and pinned edges between them, ADR-0053's derived premises re-expressed over the edges' premises, and T-0045-28 as a
+derived premise of every theorem. `specification-graph.py build` builds it from the tree and the results files above
+and keeps an edge's pins until `--repin` names it, which is the review. `specification-graph.py check` reports the
+stale edges, the clauses no model reads, the guarantees stated twice, and the four lists (`corpus-pins.sha256`, the
+binding's `check` columns, `manifests/index.tsv`, the sync scripts) read against the graph. It also computes, through
+`inventory.py`, the inventory at every grade, and compares it at grade *trusted* with `inventory.py`'s and with
+`premise-routes.sh`'s (`specification-graph-results-2026.11.07.txt`). `clauses.py` splits a record into the clauses
+that are pinned (ADR-0057 §7).
+
 Every `*-run.sh` and `simulate-run.sh` finds the jar at `../tools/tla2tools.jar` or `$TLA_JAR`; from `spec/` no
 export is needed. TLC writes its metadata under `/tmp/tlc_<name>`.
