@@ -6,13 +6,16 @@
 > checked.
 >
 > Assume 0055 ratified too, add the mesh to §1. Also, assume any pending lineage ADRs are ratified.
+>
+> Don't the lineage, mesh edge alternation, and consensus rules limit capture impact?
 
-(The custodian's three prompts of 2026.11.10, the third with its line break closed. "Layered c2 cp" is the
+(The custodian's four prompts of 2026.11.10, the third with its line break closed. "Layered c2 cp" is the
 command-chain proposal's tree of control planes.)
 
 **2026.11.10** · derived · **a draft, not sent, and not true of the tree it is committed to** · prepared by Claude at
-the custodian's request · **revised once, on the day it was written and before anything cited it**, to take in the
-third prompt; the first draft is commit `1f78b7f`, and the last paragraph before the response lists what changed ·
+the custodian's request · **revised twice, on the day it was written and before anything cited it**, to take in the
+third prompt and then the fourth; the first draft is commit `1f78b7f` and the second `d1043e1`, and the last
+paragraphs before the response list what changed ·
 read against the tree at `e79ae6d`, Genesis Checkpoint G11
 (`checkpoints/topak-genesis-checkpoint-G11-2026.10.09.md`), Theory of Operation revision 15
 (`narrative/theory-of-operation.md`, cited below as ToO), the command-chain proposal
@@ -52,8 +55,9 @@ change could make false.
 | In the response | It rests on | Check |
 |---|---|---|
 | §1 (i), first paragraph, the design as described | Assumption 5 | The record's number and status. That the record as written still has a charter with a closed schema, an intent boundary, an autonomous plane, a governor and three states |
-| §1 (i), second paragraph; §1 (iv), *Free* and *Where diversity stops*; §1 (v), third row; §2.3, *Many agents*; §2.4, "meshes" | Assumption 3 | The status of ADR-0055. Its seven properties hold today at one mesh of three nodes and a budget of six (`spec/Mesh-results-2026.10.07.txt`); fan-out, scoped joins, pools and proofs are not met (ADR-0055 §11) |
+| §1 (i), second paragraph; §1 (iv), *Free* and the labels of *How far a capture spreads*; §1 (v), third row; §2.3, *Many agents*; §2.4, "meshes" | Assumption 3 | The status of ADR-0055. Its seven properties hold today at one mesh of three nodes and a budget of six (`spec/Mesh-results-2026.10.07.txt`); fan-out, scoped joins, pools and proofs are not met (ADR-0055 §11) |
 | §1 (i), "the vote that admits a mesh at the intent boundary" and "goes on running the mesh"; §1 (ii), the partitioned plane | Assumption 5, from the proposal's §8, §4.1 and TM6 | That the record still promotes the mesh at the intent boundary, and still asks Byzantine agreement of an autonomous plane's replicas |
+| §1 (ii), the captured vehicle, "one replica, which Byzantine agreement tolerates" and "the vehicle whose Observer it hosts"; §1 (iv), "one vote in its plane" | Assumption 5, with the proposal's questions 7 and 9 answered as recommended | That an autonomous plane's replicas run Byzantine agreement on the vehicles, and that a cell's Observer is seated on another vehicle. One vote holds below a third: a vehicle found captured goes on voting until the link returns, and capture and attrition draw on the same *f* (the swarm reading's Z2; the NATO reading's N3) |
 | §1 (iv), *Required*, "a mesh is admitted only if those edges can be two-coloured" | Assumptions 1, 3 and 4 | That ADR-0035 §5 carries the check. It is the gate's and is static: `spec/Mesh.tla` checks its runtime consequence, `ClearHopsAlternate`, and not the check |
 | §1 (v), every other invariant row; §2.4, the second row; §3, "checked at small constants" | Assumption 5 | That each row names a property the cut results file shows holding, with a mutation that breaks it. The modules' names and the results file's date |
 | §1 (v), "a revocation takes hold within" | Assumption 5, and the NATO reading's F1 | That the record gives every interval an origin the link adversary cannot move. Until it does, a withheld intent delivered late defeats this row |
@@ -72,15 +76,21 @@ and phone number, the date, the record's number, the results file's date and the
 not sourced; the corpus names the second only in passing. §1 (iii) is the drafter's general account of current
 practice, not a survey. §1 (iv)'s three positions (free, priced, required) and its paragraph on dynamic
 heterogeneity are this draft's reading of the records for the notice's question: no record says a variant is issued
-with an intent. *Where diversity stops* is the draft's heading over ADR-0055 §5's argument. §2.1's fourth measure
+with an intent. *How far a capture spreads* gathers the proposal's TM3, ADR-0035's stated purpose and ADR-0055 §5. It
+says lineage "is there to keep" and not "keeps", because ADR-0035 says structural independence does not imply
+uncorrelated failures. Its last clause is the drafter's inference: ADR-0054 §6 speaks of a trigger that works on one
+lineage, and no record says what alternation does against an adversary who writes for the other. So is "every stack
+of one lineage" in §1 (ii): with two lineages, one that is poisoned is half the stacks, and ADR-0054 did not take
+diversity among all workers. §2.1's fourth measure
 and its suggested definition of equivalence are proposals made here, and the text says so. The account of Moon and
 Varshney is ToO §1's and §11.1's.
 
 **What it leaves out.** ADR-0057 and ADR-0058 (the specification graph), Proposed. The proposal's release seat by
 name, its floor stage, and five of its eleven adversaries as rows of the table, three of which are named under
 *Limitations*. The NATO reading's N1 to N3 and F2 to F4, except that F3, a captured vehicle discloses the rules, is
-used as an argument for variation. The swarm reading's Z1, Z2 and Z4: the log between vehicles has no stated rate,
-a vehicle found captured goes on voting in its plane, and an Observer on another vehicle can accuse or vanish.
+used as an argument for variation. The swarm reading's Z1 and Z2: the log between vehicles has no stated rate, and
+a vehicle found captured goes on voting in its plane. Z4, an Observer on another vehicle can accuse or vanish, is
+used in §1 (ii).
 
 **Status words.** ToO A8 requires a publication to cite confirmation-required records as author-ratified, and ToO §0
 requires "author-ratified, provisional" of anything resting on ADR-0050 or ADR-0052. §3 of the response says both
@@ -90,6 +100,16 @@ once, for everything in it.
 and LibreOffice at 12-point Times-metric type, 10 point in tables, on letter paper with 1-inch margins, it is five
 pages with about six lines to spare on the fifth. It has no header or footer, so nothing sits in a margin. The Word
 and PDF renderings are not tracked (`.gitignore` excludes PDFs); the placeholders are highlighted in both.
+
+**Changes from the second draft** (`d1043e1`), for the fourth prompt, a question. The answer is yes, each of the
+three by a different channel, and the second draft's table said less than the proposal's TM3 does.
+
+- **§1 (ii):** the captured vehicle's row gains consensus as a bound and its own actuators and its Observer seat as
+  what is left; the supply chain's row states the lineage rule and what one poisoned lineage still holds.
+- **§1 (iv):** *Where diversity stops* becomes *How far a capture spreads*, which says what each rule bounds and
+  what none does.
+- **Cut, to keep the fifth page's spare lines:** words only, in the source row, §1 (iv), §1 (v), §2.1, §2.2,
+  §2.3 and §3. No claim went.
 
 **Changes from the first draft** (`1f78b7f`), all for the third prompt.
 
@@ -119,7 +139,7 @@ and PDF renderings are not tracked (`.gitignore` excludes PDFs); the placeholder
 | **Respondent** | **[William Scott Cochran, an individual respondent, or an organization's name]** |
 | **Technical contact** | William Scott Cochran · **[email address]** · **[phone number]** |
 | **Marking** | UNCLASSIFIED. No proprietary information. **[2026.11.30]** |
-| **Source material** | github.com/scottcochran/TOPAK: Apache-2.0 code and specifications, CC BY 4.0 documents |
+| **Source material** | github.com/scottcochran/TOPAK: Apache-2.0 code, CC BY 4.0 documents |
 
 **Summary.** TOPAK is an open design corpus for a control plane that governs AI agents: nearly sixty decision
 records (ADRs), a TLA+ layer that is model-checked and in part proved, a draft policy *floor* in Cedar (the standing
@@ -160,10 +180,10 @@ irreversible effects (DoD Directive 3000.09), including while the link is jammed
 |---|---|---|
 | The stack: Byzantine, may request anything | The governor, the alphabet and the lease's bounds | Whatever the bounds allow, which a quorum voted acceptable |
 | The link: jams, delays, replays, injects | Quorum certificates stop forgery, epoch numbers stop replay, and two declared time bounds cap delay | It can always deny, and denial blocks every irreversible effect |
-| A captured vehicle | Its lease's bounds and remaining life | It discloses the rules and routes the vehicle holds |
+| A captured vehicle | Its lease's bounds and remaining life. In its plane it is one replica, which Byzantine agreement tolerates | Its own actuators, and the rules and routes it holds. It can stall the vehicle whose Observer it hosts |
 | A captured plane | Its charter, checked by every governor, and its expiry | Everything inside the current intent, until that expires |
 | A partitioned plane | Agreement needs more than two thirds of its replicas, so at most one part goes on running the mesh | The vehicles of every other part are alone |
-| The supply chain: weights, tools, rules | Admission by vote on a digest; lineage independence (§2.1) | What the rule cannot see: unlabelled model text, shared annotators |
+| The supply chain: weights, tools, rules | Admission by vote on a digest. No stack shares a lineage with its Observer, or with a stack whose output it reads in the clear | Every stack of one lineage, each inside its lease's bounds. What the rule cannot see: unlabelled model text, shared annotators |
 
 **(iii) State of the art and its limits.** Current practice hardens one instance: signed mission loads,
 authenticated links, geofences, and run-time assurance in which a verified monitor overrides an unverified
@@ -177,13 +197,13 @@ question (Ron, Baudry and Monperrus, arXiv:2606.20158).
 **(iv) What heterogeneity and the FLASH thrusts add.** The design puts every part of the system in one of three
 positions with respect to variation.
 
-- *Free.* No theorem rests on the stack, so any generated planner, perception chain or model may be admitted to any
+- *Free.* No theorem rests on the stack, so any generated planner or model may be admitted to any
   vehicle, by a vote on its digest, and no proof reopens. A mission's rules are a bundle that can only refuse. Its
   mesh may differ in graph, loops, seatings and budget, and its orchestrator chooses only among steps the mechanism
-  has already enabled and keeps no state between rounds (ADR-0054, ADR-0055). Within what a quorum voted, one
+  has enabled and keeps no state between rounds (ADR-0054, ADR-0055). Within what a quorum voted, one
   commander varies an intent's area, budget and expiry by one signed act.
 - *Priced.* The governor, the consensus protocol, the policy evaluator and the clocks are trust roots. Changing one
-  is a declared variation, and a tool computes which theorems the instance keeps (§2.1).
+  is a declared variation, and a tool computes the theorems kept (§2.1).
 - *Required.* Each stack is coupled to an Observer, a second agent that reads its record and may deny and never
   admit. The two must be of independent lineage. So must any two stacks where one reads the other's output in the
   clear: a mesh is admitted only if those edges can be two-coloured by the deployment's two lineages (ADR-0035,
@@ -194,9 +214,11 @@ vehicle alone acts for at most `T_alone`, so a variant issued with an intent is 
 captured vehicle discloses its own plane's rules. Where each plane runs a different variant under the same charter,
 it discloses one instance.
 
-*Where diversity stops.* Alternation keeps a trigger from crossing one hop into its own lineage, and a loop offers
-the second hop on every turn. Labels bound what alternation cannot: once a round on a loop reads untrusted content
-in the clear, every later round on that loop is labelled untrusted and its outward steps stay closed.
+*How far a capture spreads.* Consensus holds a captured vehicle to one vote in its plane. Lineage is there to keep
+one trigger from taking a stack and its Observer together, and alternation to keep it from the next stack. Where a
+loop offers a second hop, labels close the loop's outward steps once untrusted content is read. None bounds
+what a captured vehicle itself does or discloses, and a captor who writes for the other lineage is held only
+by the receiving stack's lease.
 
 *Assumptions.* The governor is the only path to the actuators. Each clock runs slow by at most a declared fraction.
 Fewer than a third of an exposed plane's replicas are captured. Effects are declared reversible or irreversible as
@@ -213,7 +235,7 @@ deployment.
 |---|---|---|
 | Authority only narrows down the tree, and a captured plane issues nothing the root did not vote | Security | The stack on each vehicle: models, planner, perception |
 | Every effect has an authorizing act ordered beforehand at a plane where a person commands | Functional | A mission's rules, and an intent's values inside what was voted |
-| A mesh grants at most the rounds its admission voted, and a finding against one round closes every step downstream of it | Functional | A mesh's graph, loops, seatings and budget |
+| A mesh grants at most the rounds its admission voted, and a finding against one round closes every step downstream | Functional | A mesh's graph, loops, seatings and budget |
 | An irreversible effect is one person's signed act, used once, and no agent's alphabet reaches it | Safety | The tree: planes, replicas per plane, quorum rule |
 | No effect after a lease's life, and a revocation takes hold within `T_intent`, or `T_alone` for a vehicle alone | Timing | The product in each role (consensus, policy evaluator, transport), against a stated obligation |
 | When authority expires a vehicle does only the terminal behaviour fixed when it was seated | Safety | Terminal behaviour per vehicle class, among those voted |
@@ -236,7 +258,7 @@ FLASH will meet.
 - A variant with a capability the maximum lacks is not a variant. It shows that the specification is incomplete.
 
 The suggestion to FLASH is to call two generated instances equivalent when they hold the same inventory on the same
-trusted base, and otherwise to require the generator to state what each instance loses.
+trusted base, and otherwise to have the generator state what each loses.
 
 *Collateral.* An instance's assurance artifact is its declaration: the parameters it moved, the premises those
 moves falsify, the theorems voided and the trust roots it stands on. One binding computes it for every instance.
@@ -276,12 +298,11 @@ decides. Four lessons:
   unsound, reported upstream as tlaplus/tlapm issues 309 and 310. A second method re-proves sixteen modules in Lean,
   and three of those encodings are compared with the model checker's state graphs.
 - *Evidence is regenerated, never edited.* Each results file names the digests of module, checker and prover, a
-  script reports what is stale, and claims use fixed words: *checked*, *proved*, *certified*.
+  script reports what is stale, and a claim is *checked*, *proved* or *certified*.
 - *Structure makes induction tractable.* Properties are local: a flag the violating action would set, shallow
   actions over finite domains, one constant that selects a mutation. The method is packaged as an agent skill.
 
-**2.3 Agent architectures (iii).** A generated design entering service is a grant of authority, and the architecture
-treats it as one. The Byzantine threat sits at design time, because design agents write the specifications and
+**2.3 Agent architectures (iii).** A generated design entering service is a grant of authority. The Byzantine threat sits at design time, because design agents write the specifications and
 policies the running system is later judged against.
 
 - *One agent.* A design agent has six typed actions (read from a pinned corpus, draft, invoke an allowlisted tool,
@@ -305,9 +326,8 @@ policies the running system is later judged against.
 
 ## 3. Standing of these claims
 
-Everything above, this response included, is the work of one person with an AI assistant, and no reader independent
-of the author has reviewed any of it. Each decision record is ratified by its author alone and should be read as
-*author-ratified*; two that §1 leans on are also provisional. The theorems are of the design. No refinement to the
+Everything above, this response included, is one person's work with an AI assistant, and no reader independent of
+the author has reviewed it. Each decision record is ratified by its author alone and reads as *author-ratified*; two that §1 leans on are also provisional. The theorems are of the design. No refinement to the
 running code exists: the reference is tied to the model by replayed traces and by two functions proved in Lean. At
 the reference no agent is yet confined, and one that can reach a shell is outside every guarantee. A lineage record
 there is computed from the log, but training runs outside confinement, so it counts as declared. The layered-plane
