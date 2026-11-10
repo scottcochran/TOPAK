@@ -40,7 +40,7 @@ deployable system.
 | [`process/`](process/) | The genesis cleanup's process logs ([README](process/README.md)) |
 | [`tools/`](tools/) | The TLC jar and wrappers, the TLAPS wrapper and pin, the Lean pin, report and sync, the installers, and the manifest and reference checkers |
 | [`diagrams/`](diagrams/) | Diagrams and their generators |
-| [`skills/`](skills/) | Agent skills drafted from the corpus's methods: `writing-tla-specs-and-proofs`, the spec, model-checking and proof method as a reusable skill ([README](skills/writing-tla-specs-and-proofs/README.md)) |
+| [`skills/`](skills/) | Agent skills drafted from the corpus's methods: `writing-tla-specs-and-proofs`, the spec, model-checking and proof method as a reusable skill ([README](skills/writing-tla-specs-and-proofs/README.md)); `generating-corpus-diagrams`, the diagram family's method, its rationale and its scripts ([README](skills/generating-corpus-diagrams/README.md)) |
 
 ## Running things
 
