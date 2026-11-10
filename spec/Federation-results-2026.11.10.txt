@@ -1,0 +1,1079 @@
+TOPAK — Federation.tla (ADR-0059 §9), TLC results 2026.11.10
+Module: Federation.tla (sha256 03e0bbb28b5e9a1d) · TLC Version 2.19 of 08 August 2024 (jar sha256 936a262061c91469) · openjdk version "25.0.1" 2025-10-21
+Runner: live-gen-results.sh (sha256 b4d8857ad6fb6081) · rows: Federation-rows.txt (sha256 075c04ba822f4467) · MaxEpoch = 0 · RootBudget = 2 · Captured = {"a"} · Verifiers = {"g"} unless the row says otherwise · TLC -workers 1 -fp 0, with -deadlock except on a DEADLOCK row
+expected: none: every property HOLDS, at each capture, and every witness is VIOLATED; M_WIDEN breaks CharterNarrows only; M_LASTLINK and M_TRUSTPLANE break LeaseWithinChain and HavocPlaneBounded only; M_NODEBIT breaks BudgetConserved only; M_STALEEPOCH breaks AnyPlaneFences only.
+
+=== s-none-safe · Mut=none · MaxEpoch=0 RootBudget=2 Captured={"a"} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.7E-11
+59229 states generated, 5724 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 9.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 27 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:20:31)
+→ HOLDS (expected HOLDS: as expected)
+
+=== s-none-safe-b · Mut=none · MaxEpoch=0 RootBudget=2 Captured={"b"} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 3.5E-13
+8439 states generated, 862 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 15 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:20:36)
+→ HOLDS (expected HOLDS: as expected)
+
+=== s-none-safe-ab · Mut=none · MaxEpoch=0 RootBudget=2 Captured={"a","b"} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 4.2E-12
+29745 states generated, 2916 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 27 and the 95th percentile is 3).
+Finished in 05s at (2026-11-10 06:20:42)
+→ HOLDS (expected HOLDS: as expected)
+
+=== s-none-safe-honest · Mut=none · MaxEpoch=0 RootBudget=2 Captured={} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 6.3E-13
+11291 states generated, 1138 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 15 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:20:48)
+→ HOLDS (expected HOLDS: as expected)
+
+=== s-none-safe-fence · Mut=none · MaxEpoch=1 RootBudget=1 Captured={"a"} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.2E-8
+  based on the actual fingerprints:  val = 6.3E-10
+5736577 states generated, 276786 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 14.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 31 and the 95th percentile is 4).
+Finished in 24s at (2026-11-10 06:21:13)
+→ HOLDS (expected HOLDS: as expected)
+
+=== s-none-safe-fence2 · Mut=none · MaxEpoch=1 RootBudget=0 Captured={"a"} Verifiers={"g","p"} · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.2E-8
+  based on the actual fingerprints:  val = 1.6E-8
+7757081 states generated, 199250 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 15.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 24 and the 95th percentile is 5).
+Finished in 30s at (2026-11-10 06:21:43)
+→ HOLDS (expected HOLDS: as expected)
+
+=== w-permit · Mut=none · MaxEpoch=0 RootBudget=2 Captured={"a"} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT NeverPermitted
+Error: Invariant NeverPermitted is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 2]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 2: <Permit line 163, col 3 to line 171, col 54 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {"permit"}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 2]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+15 states generated, 15 distinct states found, 13 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 05s at (2026-11-10 06:21:49)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-deep · Mut=none · MaxEpoch=0 RootBudget=2 Captured={"a"} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT NeverDeepPermit
+Error: Invariant NeverDeepPermit is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 2]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 2: <SeatHonest line 121, col 3 to line 129, col 80 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> TRUE, alphabet |-> {"e1"}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 2]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 3: <SeatCaptured line 133, col 3 to line 138, col 80 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> TRUE, alphabet |-> {"e1"}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> TRUE, alphabet |-> {"e1"}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 2]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 4: <Permit line 163, col 3 to line 171, col 54 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {"permit", "deep"}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> TRUE, alphabet |-> {"e1"}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> TRUE, alphabet |-> {"e1"}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 2]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+1453 states generated, 602 distinct states found, 501 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 6 (minimum is 0, the maximum 27 and the 95th percentile is 27).
+Finished in 05s at (2026-11-10 06:21:55)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-afterfence · Mut=none · MaxEpoch=1 RootBudget=1 Captured={"a"} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT NeverPermitAfterFence
+Error: Invariant NeverPermitAfterFence is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 1, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 1]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 2: <MoveEpoch line 151, col 3 to line 153, col 88 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 1]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 1, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 1]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 3: <Hear line 157, col 3 to line 159, col 88 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 1]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 1]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 1, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 1]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 4: <Permit line 163, col 3 to line 171, col 54 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 1]]
+/\ seen = {"permit", "afterFence"}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 1]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 1, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 1]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+8842 states generated, 2448 distinct states found, 2109 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 7 (minimum is 0, the maximum 31 and the 95th percentile is 14).
+Finished in 05s at (2026-11-10 06:22:00)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-refchain · Mut=none · MaxEpoch=0 RootBudget=2 Captured={"a"} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT NeverRefusedByChain
+Error: Invariant NeverRefusedByChain is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 2]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 2: <Refuse line 175, col 3 to line 179, col 89 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {"refChain"}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 2]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+17 states generated, 16 distinct states found, 14 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 05s at (2026-11-10 06:22:06)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-reffence · Mut=none · MaxEpoch=1 RootBudget=1 Captured={"a"} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT NeverRefusedByFence
+Error: Invariant NeverRefusedByFence is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 1, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 1]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 2: <MoveEpoch line 151, col 3 to line 153, col 88 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 1]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 1, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 1]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 3: <Hear line 157, col 3 to line 159, col 88 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 1]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 1]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 1, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 1]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 4: <Refuse line 175, col 3 to line 179, col 89 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 1]]
+/\ seen = {"refFence"}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 1]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 1, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 1]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+8839 states generated, 2446 distinct states found, 2107 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 7 (minimum is 0, the maximum 31 and the 95th percentile is 14).
+Finished in 05s at (2026-11-10 06:22:12)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-havocwide · Mut=none · MaxEpoch=0 RootBudget=2 Captured={"a"} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT NeverHavocWideCharter
+Error: Invariant NeverHavocWideCharter is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 2]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 2: <SeatHonest line 121, col 3 to line 129, col 80 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> TRUE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 2]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 3: <SeatCaptured line 133, col 3 to line 138, col 80 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> TRUE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> TRUE, alphabet |-> {"e1"}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 2]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+21 states generated, 20 distinct states found, 17 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 15 (minimum is 15, the maximum 15 and the 95th percentile is 15).
+Finished in 05s at (2026-11-10 06:22:17)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-debited · Mut=none · MaxEpoch=0 RootBudget=2 Captured={"a"} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT NeverChildDebited
+Error: Invariant NeverChildDebited is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 2]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 2: <SeatHonest line 121, col 3 to line 129, col 80 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> TRUE, alphabet |-> {}, budget |-> 1, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 1, b |-> 0, r |-> 1]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+3 states generated, 3 distinct states found, 1 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 05s at (2026-11-10 06:22:23)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-spent · Mut=none · MaxEpoch=0 RootBudget=2 Captured={} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT NeverBudgetSpent
+Error: Invariant NeverBudgetSpent is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 2]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 2: <SeatHonest line 121, col 3 to line 129, col 80 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> TRUE, alphabet |-> {}, budget |-> 1, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 1, b |-> 0, r |-> 1]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 3: <Issue line 142, col 3 to line 147, col 81 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> TRUE, alphabet |-> {}, budget |-> 1, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 1]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 1, b |-> 0, r |-> 0]
+28 states generated, 23 distinct states found, 19 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 10 (minimum is 4, the maximum 15 and the 95th percentile is 15).
+Finished in 05s at (2026-11-10 06:22:28)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-widen-narrows · Mut=M_WIDEN · MaxEpoch=0 RootBudget=2 Captured={"a"} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT CharterNarrows
+Error: Invariant CharterNarrows is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 2]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 2: <SeatHonest line 121, col 3 to line 129, col 80 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> TRUE, alphabet |-> {"e3"}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 2]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+20 states generated, 11 distinct states found, 9 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 05s at (2026-11-10 06:22:34)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-widen-chain · Mut=M_WIDEN · MaxEpoch=0 RootBudget=2 Captured={"a"} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT LeaseWithinChain
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 6.6E-11
+118509 states generated, 11436 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 9.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 27 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:22:40)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-widen-root · Mut=M_WIDEN · MaxEpoch=0 RootBudget=2 Captured={"a"} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT HavocPlaneBounded
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 6.6E-11
+118509 states generated, 11436 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 9.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 27 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:22:46)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-widen-budget · Mut=M_WIDEN · MaxEpoch=0 RootBudget=2 Captured={} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT BudgetConserved
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.5E-11
+72553 states generated, 6884 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 27 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:22:52)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-widen-fence · Mut=M_WIDEN · MaxEpoch=1 RootBudget=1 Captured={"a"} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT AnyPlaneFences
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 3.3E-7
+  based on the actual fingerprints:  val = 1.2E-8
+11472349 states generated, 553212 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 14.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 31 and the 95th percentile is 4).
+Finished in 43s at (2026-11-10 06:23:36)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-last-chain · Mut=M_LASTLINK · MaxEpoch=0 RootBudget=2 Captured={"a"} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT LeaseWithinChain
+Error: Invariant LeaseWithinChain is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 2]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 2: <SeatHonest line 121, col 3 to line 129, col 80 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> TRUE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 2]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 3: <SeatCaptured line 133, col 3 to line 138, col 80 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> TRUE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> TRUE, alphabet |-> {"e1"}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 2]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 4: <Permit line 163, col 3 to line 171, col 54 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {"permit", "deep"}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> TRUE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> TRUE, alphabet |-> {"e1"}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 2]
+/\ outsideChain = TRUE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+464 states generated, 354 distinct states found, 333 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 18 (minimum is 0, the maximum 27 and the 95th percentile is 27).
+Finished in 05s at (2026-11-10 06:23:42)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-last-root · Mut=M_LASTLINK · MaxEpoch=0 RootBudget=2 Captured={"a"} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT HavocPlaneBounded
+Error: Invariant HavocPlaneBounded is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 2]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 2: <SeatHonest line 121, col 3 to line 129, col 80 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> TRUE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 2]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 3: <SeatCaptured line 133, col 3 to line 138, col 80 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> TRUE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> TRUE, alphabet |-> {"e3"}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 2]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 4: <Permit line 163, col 3 to line 171, col 54 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {"permit", "deep"}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = TRUE
+/\ charter = [ a |-> [seated |-> TRUE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> TRUE, alphabet |-> {"e3"}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 2]
+/\ outsideChain = TRUE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+534 states generated, 383 distinct states found, 356 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 15 (minimum is 0, the maximum 27 and the 95th percentile is 27).
+Finished in 05s at (2026-11-10 06:23:48)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-last-narrows · Mut=M_LASTLINK · MaxEpoch=0 RootBudget=2 Captured={"a"} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT CharterNarrows
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 3.1E-11
+80829 states generated, 7884 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 9.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 27 and the 95th percentile is 5).
+Finished in 05s at (2026-11-10 06:23:54)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-last-budget · Mut=M_LASTLINK · MaxEpoch=0 RootBudget=2 Captured={} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT BudgetConserved
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 6.3E-13
+11291 states generated, 1138 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 15 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:23:59)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-last-fence · Mut=M_LASTLINK · MaxEpoch=1 RootBudget=1 Captured={"a"} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT AnyPlaneFences
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.7E-7
+  based on the actual fingerprints:  val = 6.3E-10
+8317525 states generated, 403902 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 14.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 31 and the 95th percentile is 4).
+Finished in 31s at (2026-11-10 06:24:31)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-last-honest · Mut=M_LASTLINK · MaxEpoch=0 RootBudget=2 Captured={} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT LeaseWithinChain
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 6.3E-13
+11291 states generated, 1138 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 15 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:24:37)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-trust-chain · Mut=M_TRUSTPLANE · MaxEpoch=0 RootBudget=2 Captured={"a"} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT LeaseWithinChain
+Error: Invariant LeaseWithinChain is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 2]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 2: <SeatHonest line 121, col 3 to line 129, col 80 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> TRUE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 2]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 3: <Permit line 163, col 3 to line 171, col 54 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {"permit"}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> TRUE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 2]
+/\ outsideChain = TRUE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+43 states generated, 42 distinct states found, 39 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 15 (minimum is 15, the maximum 15 and the 95th percentile is 15).
+Finished in 05s at (2026-11-10 06:24:42)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-trust-root · Mut=M_TRUSTPLANE · MaxEpoch=0 RootBudget=2 Captured={"a"} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT HavocPlaneBounded
+Error: Invariant HavocPlaneBounded is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 2]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 2: <SeatHonest line 121, col 3 to line 129, col 80 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> TRUE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 2]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 3: <Permit line 163, col 3 to line 171, col 54 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {"permit"}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = TRUE
+/\ charter = [ a |-> [seated |-> TRUE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 2]
+/\ outsideChain = TRUE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+47 states generated, 44 distinct states found, 41 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 15 (minimum is 15, the maximum 15 and the 95th percentile is 15).
+Finished in 05s at (2026-11-10 06:24:48)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-trust-narrows · Mut=M_TRUSTPLANE · MaxEpoch=0 RootBudget=2 Captured={"a"} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT CharterNarrows
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 7.3E-11
+129639 states generated, 11424 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 10.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 29 and the 95th percentile is 5).
+Finished in 05s at (2026-11-10 06:24:54)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-trust-budget · Mut=M_TRUSTPLANE · MaxEpoch=0 RootBudget=2 Captured={} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT BudgetConserved
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 6.3E-13
+11291 states generated, 1138 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 15 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:25:00)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-trust-fence · Mut=M_TRUSTPLANE · MaxEpoch=1 RootBudget=1 Captured={"a"} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT AnyPlaneFences
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 4.1E-7
+  based on the actual fingerprints:  val = 1.0E-9
+13112545 states generated, 600408 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 15.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 31 and the 95th percentile is 4).
+Finished in 55s at (2026-11-10 06:25:56)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-trust-honest · Mut=M_TRUSTPLANE · MaxEpoch=0 RootBudget=2 Captured={} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT LeaseWithinChain
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 6.3E-13
+11291 states generated, 1138 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 15 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:26:02)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-nodebit-budget · Mut=M_NODEBIT · MaxEpoch=0 RootBudget=2 Captured={} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT BudgetConserved
+Error: Invariant BudgetConserved is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 2]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 2: <SeatHonest line 121, col 3 to line 129, col 80 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> TRUE, alphabet |-> {}, budget |-> 1, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 1, b |-> 0, r |-> 2]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 3: <SeatHonest line 121, col 3 to line 129, col 80 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> TRUE, alphabet |-> {}, budget |-> 1, fence |-> 0],
+  b |-> [seated |-> TRUE, alphabet |-> {}, budget |-> 1, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 1, b |-> 1, r |-> 2]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 4: <Issue line 142, col 3 to line 147, col 81 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> TRUE, alphabet |-> {}, budget |-> 1, fence |-> 0],
+  b |-> [seated |-> TRUE, alphabet |-> {}, budget |-> 1, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 1, r |-> 2]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 1, b |-> 0, r |-> 0]
+State 5: <Issue line 142, col 3 to line 147, col 81 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> TRUE, alphabet |-> {}, budget |-> 1, fence |-> 0],
+  b |-> [seated |-> TRUE, alphabet |-> {}, budget |-> 1, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 2, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 2]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 1, b |-> 1, r |-> 0]
+1496 states generated, 476 distinct states found, 345 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 4 (minimum is 0, the maximum 16 and the 95th percentile is 8).
+Finished in 05s at (2026-11-10 06:26:07)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-nodebit-narrows · Mut=M_NODEBIT · MaxEpoch=0 RootBudget=2 Captured={"a"} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT CharterNarrows
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 3.8E-11
+90201 states generated, 8580 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 9.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 27 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:26:13)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-nodebit-chain · Mut=M_NODEBIT · MaxEpoch=0 RootBudget=2 Captured={"a"} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT LeaseWithinChain
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 3.8E-11
+90201 states generated, 8580 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 9.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 27 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:26:20)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-nodebit-root · Mut=M_NODEBIT · MaxEpoch=0 RootBudget=2 Captured={"a"} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT HavocPlaneBounded
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 3.8E-11
+90201 states generated, 8580 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 9.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 27 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:26:26)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-nodebit-fence · Mut=M_NODEBIT · MaxEpoch=1 RootBudget=1 Captured={"a"} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT AnyPlaneFences
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.5E-7
+  based on the actual fingerprints:  val = 6.3E-10
+7708489 states generated, 368928 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 14.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 31 and the 95th percentile is 4).
+Finished in 30s at (2026-11-10 06:26:56)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-stale-fence · Mut=M_STALEEPOCH · MaxEpoch=1 RootBudget=1 Captured={"a"} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT AnyPlaneFences
+Error: Invariant AnyPlaneFences is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 1, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 1]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 2: <SeatHonest line 121, col 3 to line 129, col 80 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 0]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> TRUE, alphabet |-> {"e1"}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 1, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 1]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 3: <MoveEpoch line 151, col 3 to line 153, col 88 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 0]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 1]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> TRUE, alphabet |-> {"e1"}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 1, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 1]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 4: <Hear line 157, col 3 to line 159, col 88 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 1]]
+/\ seen = {}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 1]
+/\ fenced = FALSE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> TRUE, alphabet |-> {"e1"}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 1, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 1]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+State 5: <Permit line 163, col 3 to line 171, col 54 of module Federation>
+/\ heard = [g |-> [a |-> 0, b |-> 0, r |-> 1]]
+/\ seen = {"permit", "afterFence"}
+/\ epoch = [a |-> 0, b |-> 0, r |-> 1]
+/\ fenced = TRUE
+/\ outsideRoot = FALSE
+/\ charter = [ a |-> [seated |-> TRUE, alphabet |-> {"e1"}, budget |-> 0, fence |-> 0],
+  b |-> [seated |-> FALSE, alphabet |-> {}, budget |-> 0, fence |-> 0],
+  r |->
+      [seated |-> TRUE, alphabet |-> {"e1", "e2"}, budget |-> 1, fence |-> 0] ]
+/\ left = [a |-> 0, b |-> 0, r |-> 1]
+/\ outsideChain = FALSE
+/\ issued = [a |-> 0, b |-> 0, r |-> 0]
+24479 states generated, 4479 distinct states found, 3483 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 4 (minimum is 0, the maximum 31 and the 95th percentile is 8).
+Finished in 05s at (2026-11-10 06:27:02)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-stale-narrows · Mut=M_STALEEPOCH · MaxEpoch=0 RootBudget=2 Captured={"a"} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT CharterNarrows
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.7E-11
+59229 states generated, 5724 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 9.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 27 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:27:08)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-stale-chain · Mut=M_STALEEPOCH · MaxEpoch=0 RootBudget=2 Captured={"a"} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT LeaseWithinChain
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.7E-11
+59229 states generated, 5724 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 9.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 27 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:27:14)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-stale-root · Mut=M_STALEEPOCH · MaxEpoch=0 RootBudget=2 Captured={"a"} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT HavocPlaneBounded
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.7E-11
+59229 states generated, 5724 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 9.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 27 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:27:19)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-stale-budget · Mut=M_STALEEPOCH · MaxEpoch=0 RootBudget=2 Captured={} Verifiers={"g"} · SPECIFICATION Spec · INVARIANT BudgetConserved
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 6.3E-13
+11291 states generated, 1138 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 15 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:27:25)
+→ HOLDS (expected HOLDS: as expected)
+
+Rows: 41 · as expected: 41 · not as expected: none · ERROR: none

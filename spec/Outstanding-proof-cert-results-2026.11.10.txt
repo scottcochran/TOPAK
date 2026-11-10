@@ -1,0 +1,14 @@
+TOPAK — TLAPS certified proof results for Outstanding.tla: every obligation of Outstanding_proof.tla, by the route that discharged it
+Modules: Outstanding.tla (sha256 8ecb0b147c7748ac) · Outstanding_proof.tla (sha256 f118d16087ce08d2)
+Prover: tlapm 7824dab (binary sha256 e150fb793fb28592) · zenon version 0.8.4 [a268] 2017-11-14 · Isabelle2025 · LS4 for PTL · driver: proof-cert.sh
+Checked SMT route: smt-checked (sha256 bb86642633822ae5) · cvc5 1.4.0 [git b432cd7 on branch HEAD] (sha256 a4ce24a176532209) · ethos (sha256 4eb41c1f1f9fce88) · CPC signature (sha256 633f74115700ad32 over its .eo files)
+An obligation proved by SMT counts only with a proof of false, from the query's own declarations and assertions, that ethos accepted. Z3 is not run. Backend timeouts x1.
+
+Obligations: 1871
+  trivial, closed by tlapm with no backend            1257
+  SMT, proof accepted by ethos                        608   (488 calls forwarded on an accepted proof; 120 obligations identical to one already proved in this run; evidence digest 8b35c2eaf7a805c1)
+  Zenon, proof checked by Isabelle                    0
+  Isabelle                                            0
+  LS4, temporal step, NOT certified                   6
+
+All 1871 obligations proved. 1865 of them rest on tlapm's own normalization or on a checked proof; 6 rest on LS4, whose answer no checker confirms.

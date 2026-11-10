@@ -1,0 +1,678 @@
+TOPAK — Membership.tla (ADR-0061 §7), TLC results 2026.11.10
+Module: Membership.tla (sha256 bcf3c5d151488133) · TLC Version 2.19 of 08 August 2024 (jar sha256 936a262061c91469) · openjdk version "25.0.1" 2025-10-21
+Runner: live-gen-results.sh (sha256 b4d8857ad6fb6081) · rows: Membership-rows.txt (sha256 d377dff886659f81) · Floor = 1 · Schedule = {5,4} · Captured = {"r1"} · MaxBallots = 30 unless the row says otherwise · TLC -workers 1 -fp 0, with -deadlock except on a DEADLOCK row
+expected: none: Safe HOLDS at each schedule and capture, and every witness is VIOLATED; M_MINORITYSTEP breaks StepByQuorum and AtMostOneSuccessor; M_BELOWFLOOR breaks StepAtFloor when the schedule passes the floor and AtMostOneSuccessor when it passes it by two, and nothing at the archetype schedule; M_OFFSCHEDULE breaks StepInSchedule when the charter voted no step; M_TWOVOTES breaks AtMostOneSuccessor only.
+
+=== s-none-safe · Mut=none · Floor=1 Schedule={5,4} Captured={"r1"} MaxBallots=30 · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 7.9E-12
+26939 states generated, 7537 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 10.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 16 and the 95th percentile is 5).
+Finished in 06s at (2026-11-10 06:39:23)
+→ HOLDS (expected HOLDS: as expected)
+
+=== s-none-past · Mut=none · Floor=1 Schedule={5,4,3} Captured={"r1"} MaxBallots=30 · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 7.9E-12
+26939 states generated, 7537 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 10.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 16 and the 95th percentile is 5).
+Finished in 06s at (2026-11-10 06:39:30)
+→ HOLDS (expected HOLDS: as expected)
+
+=== s-none-past2 · Mut=none · Floor=1 Schedule={5,4,3,2} Captured={"r1"} MaxBallots=30 · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 7.9E-12
+26939 states generated, 7537 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 10.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 16 and the 95th percentile is 5).
+Finished in 06s at (2026-11-10 06:39:37)
+→ HOLDS (expected HOLDS: as expected)
+
+=== s-none-honest · Mut=none · Floor=1 Schedule={5,4} Captured={} MaxBallots=30 · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.4E-11
+36846 states generated, 9525 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 11.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 20 and the 95th percentile is 4).
+Finished in 06s at (2026-11-10 06:39:44)
+→ HOLDS (expected HOLDS: as expected)
+
+=== s-none-floor0 · Mut=none · Floor=0 Schedule={5,4,3,2} Captured={} MaxBallots=30 · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.7E-10
+  based on the actual fingerprints:  val = 6.5E-10
+125506 states generated, 34725 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 18.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 20 and the 95th percentile is 5).
+Finished in 13s at (2026-11-10 06:39:57)
+→ HOLDS (expected HOLDS: as expected)
+
+=== w-stepped · Mut=none · Floor=1 Schedule={5,4} Captured={"r1"} MaxBallots=30 · SPECIFICATION Spec · INVARIANT NeverStepped
+Error: Invariant NeverStepped is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ steps = {}
+/\ votes = {}
+State 2: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = {}
+/\ votes = {[from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"]}
+State 3: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = {}
+/\ votes = { [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r3"] }
+State 4: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = {}
+/\ votes = { [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r4"] }
+State 5: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = { [ from |-> {"r1", "r2", "r3", "r4", "r5"},
+    drop |-> "r1",
+    signers |-> {"r1", "r2", "r3", "r4"} ] }
+/\ votes = { [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r4"] }
+979 states generated, 371 distinct states found, 256 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 16 and the 95th percentile is 9).
+Finished in 05s at (2026-11-10 06:40:03)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-atfour · Mut=none · Floor=1 Schedule={5,4} Captured={"r1"} MaxBallots=30 · SPECIFICATION Spec · INVARIANT NeverAtFourReplicas
+Error: Invariant NeverAtFourReplicas is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ steps = {}
+/\ votes = {}
+State 2: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = {}
+/\ votes = {[from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"]}
+State 3: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = {}
+/\ votes = { [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r3"] }
+State 4: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = {}
+/\ votes = { [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r4"] }
+State 5: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = { [ from |-> {"r1", "r2", "r3", "r4", "r5"},
+    drop |-> "r1",
+    signers |-> {"r1", "r2", "r3", "r4"} ] }
+/\ votes = { [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r4"] }
+979 states generated, 371 distinct states found, 256 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 16 and the 95th percentile is 9).
+Finished in 05s at (2026-11-10 06:40:08)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-splitvote · Mut=none · Floor=1 Schedule={5,4} Captured={"r1"} MaxBallots=30 · SPECIFICATION Spec · INVARIANT NeverSplitVote
+Error: Invariant NeverSplitVote is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ steps = {}
+/\ votes = {}
+State 2: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = {}
+/\ votes = {[from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"]}
+State 3: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = {}
+/\ votes = { [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r3"] }
+21 states generated, 21 distinct states found, 18 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 16 (minimum is 16, the maximum 16 and the 95th percentile is 16).
+Finished in 05s at (2026-11-10 06:40:14)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-capturedsigner · Mut=none · Floor=1 Schedule={5,4} Captured={"r1"} MaxBallots=30 · SPECIFICATION Spec · INVARIANT NeverCapturedSigner
+Error: Invariant NeverCapturedSigner is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ steps = {}
+/\ votes = {}
+State 2: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = {}
+/\ votes = {[from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"]}
+State 3: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = {}
+/\ votes = { [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r3"] }
+State 4: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = {}
+/\ votes = { [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r4"] }
+State 5: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = { [ from |-> {"r1", "r2", "r3", "r4", "r5"},
+    drop |-> "r1",
+    signers |-> {"r1", "r2", "r3", "r4"} ] }
+/\ votes = { [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r4"] }
+979 states generated, 371 distinct states found, 256 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 16 and the 95th percentile is 9).
+Finished in 05s at (2026-11-10 06:40:20)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-minority-quorum · Mut=M_MINORITYSTEP · Floor=1 Schedule={5,4} Captured={"r1"} MaxBallots=30 · SPECIFICATION Spec · INVARIANT StepByQuorum
+Error: Invariant StepByQuorum is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ steps = {}
+/\ votes = {}
+State 2: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = {}
+/\ votes = {[from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"]}
+State 3: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = {}
+/\ votes = { [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r3"] }
+State 4: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = { [ from |-> {"r1", "r2", "r3", "r4", "r5"},
+    drop |-> "r1",
+    signers |-> {"r1", "r2", "r3"} ] }
+/\ votes = { [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r3"] }
+212 states generated, 116 distinct states found, 97 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 7 (minimum is 0, the maximum 16 and the 95th percentile is 16).
+Finished in 05s at (2026-11-10 06:40:26)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-minority-amo · Mut=M_MINORITYSTEP · Floor=1 Schedule={5,4} Captured={"r1"} MaxBallots=30 · SPECIFICATION Spec · INVARIANT AtMostOneSuccessor
+Error: Invariant AtMostOneSuccessor is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ steps = {}
+/\ votes = {}
+State 2: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = {}
+/\ votes = {[from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"]}
+State 3: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = {}
+/\ votes = { [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r3"] }
+State 4: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = { [ from |-> {"r1", "r2", "r3", "r4", "r5"},
+    drop |-> "r1",
+    signers |-> {"r1", "r2", "r3"} ] }
+/\ votes = { [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r3"] }
+State 5: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = { [ from |-> {"r1", "r2", "r3", "r4", "r5"},
+    drop |-> "r1",
+    signers |-> {"r1", "r2", "r3"} ] }
+/\ votes = { [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r4"] }
+State 6: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = { [ from |-> {"r1", "r2", "r3", "r4", "r5"},
+    drop |-> "r1",
+    signers |-> {"r1", "r2", "r3"} ] }
+/\ votes = { [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r4"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r5"] }
+State 7: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = { [ from |-> {"r1", "r2", "r3", "r4", "r5"},
+    drop |-> "r1",
+    signers |-> {"r1", "r2", "r3"} ],
+  [ from |-> {"r1", "r2", "r3", "r4", "r5"},
+    drop |-> "r2",
+    signers |-> {"r1", "r4", "r5"} ] }
+/\ votes = { [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r4"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r5"] }
+11658 states generated, 5226 distinct states found, 3949 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 4 (minimum is 0, the maximum 18 and the 95th percentile is 12).
+Finished in 05s at (2026-11-10 06:40:32)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-minority-sched · Mut=M_MINORITYSTEP · Floor=1 Schedule={5,4} Captured={"r1"} MaxBallots=30 · SPECIFICATION Spec · INVARIANT StepInSchedule
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.1E-8
+  based on the actual fingerprints:  val = 3.1E-8
+1560101 states generated, 317297 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 14.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 18 and the 95th percentile is 4).
+Finished in 01min 04s at (2026-11-10 06:41:36)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-minority-floor · Mut=M_MINORITYSTEP · Floor=1 Schedule={5,4} Captured={"r1"} MaxBallots=30 · SPECIFICATION Spec · INVARIANT StepAtFloor
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.1E-8
+  based on the actual fingerprints:  val = 3.1E-8
+1560101 states generated, 317297 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 14.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 18 and the 95th percentile is 4).
+Finished in 01min 00s at (2026-11-10 06:42:38)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-below-archetype · Mut=M_BELOWFLOOR · Floor=1 Schedule={5,4} Captured={"r1"} MaxBallots=30 · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 7.9E-12
+26981 states generated, 7537 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 10.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 16 and the 95th percentile is 5).
+Finished in 06s at (2026-11-10 06:42:45)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-below-floor · Mut=M_BELOWFLOOR · Floor=1 Schedule={5,4,3} Captured={"r1"} MaxBallots=30 · SPECIFICATION Spec · INVARIANT StepAtFloor
+Error: Invariant StepAtFloor is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ steps = {}
+/\ votes = {}
+State 2: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = {}
+/\ votes = {[from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r3"]}
+State 3: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = {}
+/\ votes = { [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r4"] }
+State 4: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = {}
+/\ votes = { [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r4"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r5"] }
+State 5: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = { [ from |-> {"r1", "r2", "r3", "r4", "r5"},
+    drop |-> "r2",
+    signers |-> {"r1", "r3", "r4", "r5"} ] }
+/\ votes = { [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r4"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r5"] }
+State 6: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = { [ from |-> {"r1", "r2", "r3", "r4", "r5"},
+    drop |-> "r2",
+    signers |-> {"r1", "r3", "r4", "r5"} ] }
+/\ votes = { [from |-> {"r1", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r4"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r5"] }
+State 7: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = { [ from |-> {"r1", "r2", "r3", "r4", "r5"},
+    drop |-> "r2",
+    signers |-> {"r1", "r3", "r4", "r5"} ] }
+/\ votes = { [from |-> {"r1", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r3"],
+  [from |-> {"r1", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r4"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r4"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r5"] }
+State 8: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = { [ from |-> {"r1", "r3", "r4", "r5"},
+    drop |-> "r1",
+    signers |-> {"r1", "r3", "r4"} ],
+  [ from |-> {"r1", "r2", "r3", "r4", "r5"},
+    drop |-> "r2",
+    signers |-> {"r1", "r3", "r4", "r5"} ] }
+/\ votes = { [from |-> {"r1", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r3"],
+  [from |-> {"r1", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r4"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r4"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r5"] }
+7867 states generated, 2949 distinct states found, 1728 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 16 and the 95th percentile is 9).
+Finished in 05s at (2026-11-10 06:42:50)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-below-sched · Mut=M_BELOWFLOOR · Floor=1 Schedule={5,4,3} Captured={"r1"} MaxBallots=30 · SPECIFICATION Spec · INVARIANT StepInSchedule
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 9.6E-11
+93157 states generated, 26761 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 14.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 16 and the 95th percentile is 5).
+Finished in 11s at (2026-11-10 06:43:02)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-below-quorum · Mut=M_BELOWFLOOR · Floor=1 Schedule={5,4,3} Captured={"r1"} MaxBallots=30 · SPECIFICATION Spec · INVARIANT StepByQuorum
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 9.6E-11
+93157 states generated, 26761 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 14.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 16 and the 95th percentile is 5).
+Finished in 11s at (2026-11-10 06:43:13)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-below-amo1 · Mut=M_BELOWFLOOR · Floor=1 Schedule={5,4,3} Captured={"r1"} MaxBallots=30 · SPECIFICATION Spec · INVARIANT AtMostOneSuccessor
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 9.6E-11
+93157 states generated, 26761 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 14.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 16 and the 95th percentile is 5).
+Finished in 11s at (2026-11-10 06:43:25)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-below-amo2 · Mut=M_BELOWFLOOR · Floor=1 Schedule={5,4,3,2} Captured={"r1"} MaxBallots=30 · SPECIFICATION Spec · INVARIANT AtMostOneSuccessor
+Error: Invariant AtMostOneSuccessor is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ steps = {}
+/\ votes = {}
+State 2: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = {}
+/\ votes = {[from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r3"]}
+State 3: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = {}
+/\ votes = { [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r4"] }
+State 4: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = {}
+/\ votes = { [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r4"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r5"] }
+State 5: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = { [ from |-> {"r1", "r2", "r3", "r4", "r5"},
+    drop |-> "r2",
+    signers |-> {"r1", "r3", "r4", "r5"} ] }
+/\ votes = { [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r4"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r5"] }
+State 6: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = { [ from |-> {"r1", "r2", "r3", "r4", "r5"},
+    drop |-> "r2",
+    signers |-> {"r1", "r3", "r4", "r5"} ] }
+/\ votes = { [from |-> {"r1", "r3", "r4", "r5"}, drop |-> "r3", voter |-> "r4"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r4"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r5"] }
+State 7: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = { [ from |-> {"r1", "r2", "r3", "r4", "r5"},
+    drop |-> "r2",
+    signers |-> {"r1", "r3", "r4", "r5"} ] }
+/\ votes = { [from |-> {"r1", "r3", "r4", "r5"}, drop |-> "r3", voter |-> "r4"],
+  [from |-> {"r1", "r3", "r4", "r5"}, drop |-> "r3", voter |-> "r5"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r4"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r5"] }
+State 8: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = { [ from |-> {"r1", "r3", "r4", "r5"},
+    drop |-> "r3",
+    signers |-> {"r1", "r4", "r5"} ],
+  [ from |-> {"r1", "r2", "r3", "r4", "r5"},
+    drop |-> "r2",
+    signers |-> {"r1", "r3", "r4", "r5"} ] }
+/\ votes = { [from |-> {"r1", "r3", "r4", "r5"}, drop |-> "r3", voter |-> "r4"],
+  [from |-> {"r1", "r3", "r4", "r5"}, drop |-> "r3", voter |-> "r5"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r4"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r5"] }
+State 9: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = { [ from |-> {"r1", "r3", "r4", "r5"},
+    drop |-> "r3",
+    signers |-> {"r1", "r4", "r5"} ],
+  [ from |-> {"r1", "r2", "r3", "r4", "r5"},
+    drop |-> "r2",
+    signers |-> {"r1", "r3", "r4", "r5"} ] }
+/\ votes = { [from |-> {"r1", "r4", "r5"}, drop |-> "r1", voter |-> "r4"],
+  [from |-> {"r1", "r3", "r4", "r5"}, drop |-> "r3", voter |-> "r4"],
+  [from |-> {"r1", "r3", "r4", "r5"}, drop |-> "r3", voter |-> "r5"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r4"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r5"] }
+State 10: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = { [from |-> {"r1", "r4", "r5"}, drop |-> "r1", signers |-> {"r1", "r4"}],
+  [ from |-> {"r1", "r3", "r4", "r5"},
+    drop |-> "r3",
+    signers |-> {"r1", "r4", "r5"} ],
+  [ from |-> {"r1", "r2", "r3", "r4", "r5"},
+    drop |-> "r2",
+    signers |-> {"r1", "r3", "r4", "r5"} ] }
+/\ votes = { [from |-> {"r1", "r4", "r5"}, drop |-> "r1", voter |-> "r4"],
+  [from |-> {"r1", "r3", "r4", "r5"}, drop |-> "r3", voter |-> "r4"],
+  [from |-> {"r1", "r3", "r4", "r5"}, drop |-> "r3", voter |-> "r5"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r4"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r5"] }
+State 11: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = { [from |-> {"r1", "r4", "r5"}, drop |-> "r1", signers |-> {"r1", "r4"}],
+  [ from |-> {"r1", "r3", "r4", "r5"},
+    drop |-> "r3",
+    signers |-> {"r1", "r4", "r5"} ],
+  [ from |-> {"r1", "r2", "r3", "r4", "r5"},
+    drop |-> "r2",
+    signers |-> {"r1", "r3", "r4", "r5"} ] }
+/\ votes = { [from |-> {"r1", "r4", "r5"}, drop |-> "r1", voter |-> "r4"],
+  [from |-> {"r1", "r4", "r5"}, drop |-> "r4", voter |-> "r5"],
+  [from |-> {"r1", "r3", "r4", "r5"}, drop |-> "r3", voter |-> "r4"],
+  [from |-> {"r1", "r3", "r4", "r5"}, drop |-> "r3", voter |-> "r5"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r4"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r5"] }
+State 12: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = { [from |-> {"r1", "r4", "r5"}, drop |-> "r1", signers |-> {"r1", "r4"}],
+  [from |-> {"r1", "r4", "r5"}, drop |-> "r4", signers |-> {"r1", "r5"}],
+  [ from |-> {"r1", "r3", "r4", "r5"},
+    drop |-> "r3",
+    signers |-> {"r1", "r4", "r5"} ],
+  [ from |-> {"r1", "r2", "r3", "r4", "r5"},
+    drop |-> "r2",
+    signers |-> {"r1", "r3", "r4", "r5"} ] }
+/\ votes = { [from |-> {"r1", "r4", "r5"}, drop |-> "r1", voter |-> "r4"],
+  [from |-> {"r1", "r4", "r5"}, drop |-> "r4", voter |-> "r5"],
+  [from |-> {"r1", "r3", "r4", "r5"}, drop |-> "r3", voter |-> "r4"],
+  [from |-> {"r1", "r3", "r4", "r5"}, drop |-> "r3", voter |-> "r5"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r4"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r5"] }
+57574 states generated, 19269 distinct states found, 7412 states left on queue.
+The depth of the complete state graph search is 12.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 16 and the 95th percentile is 6).
+Finished in 08s at (2026-11-10 06:43:34)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-off-sched · Mut=M_OFFSCHEDULE · Floor=1 Schedule={5} Captured={"r1"} MaxBallots=30 · SPECIFICATION Spec · INVARIANT StepInSchedule
+Error: Invariant StepInSchedule is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ steps = {}
+/\ votes = {}
+State 2: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = {}
+/\ votes = {[from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"]}
+State 3: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = {}
+/\ votes = { [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r3"] }
+State 4: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = {}
+/\ votes = { [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r4"] }
+State 5: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = { [ from |-> {"r1", "r2", "r3", "r4", "r5"},
+    drop |-> "r1",
+    signers |-> {"r1", "r2", "r3", "r4"} ] }
+/\ votes = { [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r4"] }
+979 states generated, 371 distinct states found, 256 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 16 and the 95th percentile is 9).
+Finished in 05s at (2026-11-10 06:43:39)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-off-floor · Mut=M_OFFSCHEDULE · Floor=1 Schedule={5} Captured={"r1"} MaxBallots=30 · SPECIFICATION Spec · INVARIANT StepAtFloor
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 7.9E-12
+26939 states generated, 7537 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 10.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 16 and the 95th percentile is 5).
+Finished in 06s at (2026-11-10 06:43:46)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-off-quorum · Mut=M_OFFSCHEDULE · Floor=1 Schedule={5} Captured={"r1"} MaxBallots=30 · SPECIFICATION Spec · INVARIANT StepByQuorum
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 7.9E-12
+26939 states generated, 7537 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 10.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 16 and the 95th percentile is 5).
+Finished in 06s at (2026-11-10 06:43:53)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-off-amo · Mut=M_OFFSCHEDULE · Floor=1 Schedule={5} Captured={"r1"} MaxBallots=30 · SPECIFICATION Spec · INVARIANT AtMostOneSuccessor
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 7.9E-12
+26939 states generated, 7537 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 10.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 16 and the 95th percentile is 5).
+Finished in 06s at (2026-11-10 06:44:00)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-off-archetype · Mut=M_OFFSCHEDULE · Floor=1 Schedule={5,4} Captured={"r1"} MaxBallots=30 · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 7.9E-12
+26981 states generated, 7537 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 10.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 16 and the 95th percentile is 5).
+Finished in 06s at (2026-11-10 06:44:07)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-twovotes-amo · Mut=M_TWOVOTES · Floor=1 Schedule={5,4} Captured={"r1"} MaxBallots=6 · SPECIFICATION Spec · INVARIANT AtMostOneSuccessor
+Error: Invariant AtMostOneSuccessor is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ steps = {}
+/\ votes = {}
+State 2: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = {}
+/\ votes = {[from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"]}
+State 3: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = {}
+/\ votes = { [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r3"] }
+State 4: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = {}
+/\ votes = { [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r4"] }
+State 5: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = { [ from |-> {"r1", "r2", "r3", "r4", "r5"},
+    drop |-> "r1",
+    signers |-> {"r1", "r2", "r3", "r4"} ] }
+/\ votes = { [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r4"] }
+State 6: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = { [ from |-> {"r1", "r2", "r3", "r4", "r5"},
+    drop |-> "r1",
+    signers |-> {"r1", "r2", "r3", "r4"} ] }
+/\ votes = { [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r4"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r3"] }
+State 7: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = { [ from |-> {"r1", "r2", "r3", "r4", "r5"},
+    drop |-> "r1",
+    signers |-> {"r1", "r2", "r3", "r4"} ] }
+/\ votes = { [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r4"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r4"] }
+State 8: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = { [ from |-> {"r1", "r2", "r3", "r4", "r5"},
+    drop |-> "r1",
+    signers |-> {"r1", "r2", "r3", "r4"} ] }
+/\ votes = { [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r4"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r4"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r5"] }
+State 9: <Next line 121, col 3 to line 124, col 43 of module Membership>
+/\ steps = { [ from |-> {"r1", "r2", "r3", "r4", "r5"},
+    drop |-> "r1",
+    signers |-> {"r1", "r2", "r3", "r4"} ],
+  [ from |-> {"r1", "r2", "r3", "r4", "r5"},
+    drop |-> "r2",
+    signers |-> {"r1", "r3", "r4", "r5"} ] }
+/\ votes = { [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r2"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r1", voter |-> "r4"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r3"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r4"],
+  [from |-> {"r1", "r2", "r3", "r4", "r5"}, drop |-> "r2", voter |-> "r5"] }
+228092 states generated, 33176 distinct states found, 12451 states left on queue.
+The depth of the complete state graph search is 9.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 24 and the 95th percentile is 9).
+Finished in 08s at (2026-11-10 06:44:15)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-twovotes-sched · Mut=M_TWOVOTES · Floor=1 Schedule={5,4} Captured={"r1"} MaxBallots=6 · SPECIFICATION Spec · INVARIANT StepInSchedule
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 3.5E-10
+  based on the actual fingerprints:  val = 4.2E-10
+228135 states generated, 33197 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 9.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 24 and the 95th percentile is 6).
+Finished in 09s at (2026-11-10 06:44:26)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-twovotes-floor · Mut=M_TWOVOTES · Floor=1 Schedule={5,4} Captured={"r1"} MaxBallots=6 · SPECIFICATION Spec · INVARIANT StepAtFloor
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 3.5E-10
+  based on the actual fingerprints:  val = 4.2E-10
+228135 states generated, 33197 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 9.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 24 and the 95th percentile is 6).
+Finished in 09s at (2026-11-10 06:44:36)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-twovotes-quorum · Mut=M_TWOVOTES · Floor=1 Schedule={5,4} Captured={"r1"} MaxBallots=6 · SPECIFICATION Spec · INVARIANT StepByQuorum
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 3.5E-10
+  based on the actual fingerprints:  val = 4.2E-10
+228135 states generated, 33197 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 9.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 24 and the 95th percentile is 6).
+Finished in 09s at (2026-11-10 06:44:46)
+→ HOLDS (expected HOLDS: as expected)
+
+Rows: 28 · as expected: 28 · not as expected: none · ERROR: none

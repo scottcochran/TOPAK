@@ -1,0 +1,3025 @@
+TOPAK — Release.tla (ADR-0066 §7), TLC results 2026.11.10
+Module: Release.tla (sha256 7a8a212d3f07956b) · TLC Version 2.19 of 08 August 2024 (jar sha256 936a262061c91469) · openjdk version "25.0.1" 2025-10-21
+Runner: live-gen-results.sh (sha256 b4d8857ad6fb6081) · rows: Release-rows.txt (sha256 9be4b52f6ccd3de0) · MaxActs = 2 · MaxTick = 1 · FreshT = 0 unless the row says otherwise · TLC -workers 1 -fp 0, with -deadlock except on a DEADLOCK row
+expected: none: every property HOLDS and every witness is VIOLATED; M_AGENTRELEASE breaks SignedByPerson; M_LITERELEASE breaks OrderedAtCommand; M_REPLAY and M_ANYVEHICLE break UsedOnce; M_LATEFIRST breaks NoOlderThanDeclared; each of those four also breaks IrreversibleIsAPersons, their conjunction; M_VOID breaks ConflictIsAFinding; M_NOCONTACT breaks OrderedInContact; M_OBSCOUPLE and M_AGENTPROPOSES break ReleaseNeverCoupled; no mutation breaks a property it is not listed against.
+
+=== s-none-safe · Mut=none · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.7E-8
+  based on the actual fingerprints:  val = 3.8E-9
+2138129 states generated, 263936 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 15s at (2026-11-10 06:32:53)
+→ HOLDS (expected HOLDS: as expected)
+
+=== s-none-coupled · Mut=none · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT ReleaseNeverCoupled
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.7E-8
+  based on the actual fingerprints:  val = 3.8E-9
+2138129 states generated, 263936 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 11s at (2026-11-10 06:33:05)
+→ HOLDS (expected HOLDS: as expected)
+
+=== s-none-safe-3 · Mut=none · MaxActs=3 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 5.7E-5
+  based on the actual fingerprints:  val = 2.2E-6
+106317233 states generated, 10930048 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 23.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 15 and the 95th percentile is 4).
+Finished in 04min 47s at (2026-11-10 06:37:53)
+→ HOLDS (expected HOLDS: as expected)
+
+=== s-none-safe-fresh1 · Mut=none · MaxActs=2 MaxTick=2 FreshT=1 · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.3E-7
+  based on the actual fingerprints:  val = 1.8E-7
+4809575 states generated, 584880 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 20.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 14s at (2026-11-10 06:38:08)
+→ HOLDS (expected HOLDS: as expected)
+
+=== s-none-coup-fresh1 · Mut=none · MaxActs=2 MaxTick=2 FreshT=1 · SPECIFICATION Spec · INVARIANT ReleaseNeverCoupled
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.3E-7
+  based on the actual fingerprints:  val = 1.8E-7
+4809575 states generated, 584880 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 20.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 16s at (2026-11-10 06:38:24)
+→ HOLDS (expected HOLDS: as expected)
+
+=== w-fired · Mut=none · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT NeverFired
+Error: Invariant NeverFired is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 2: <Activate line 139, col 16 to line 142, col 89 of module Release>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 3: <AdmitRelease line 167, col 3 to line 176, col 65 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 4: <Relay line 201, col 3 to line 209, col 76 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 5: <Fire line 226, col 3 to line 237, col 38 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {1}, v2 |-> {}]
+/\ firedIds = {1}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {"fired"}
+/\ agentBusy = FALSE
+/\ standing = {1}
+1898 states generated, 1150 distinct states found, 993 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 7 (minimum is 0, the maximum 13 and the 95th percentile is 12).
+Finished in 05s at (2026-11-10 06:38:30)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-aftercut · Mut=none · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT NeverFiredAfterCut
+Error: Invariant NeverFiredAfterCut is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 2: <Activate line 139, col 16 to line 142, col 89 of module Release>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 3: <AdmitRelease line 167, col 3 to line 176, col 65 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 4: <Relay line 201, col 3 to line 209, col 76 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 5: <LinkToggle line 147, col 16 to line 150, col 89 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = FALSE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 6: <Fire line 226, col 3 to line 237, col 38 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = FALSE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {1}, v2 |-> {}]
+/\ firedIds = {1}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {"fired", "afterCut"}
+/\ agentBusy = FALSE
+/\ standing = {1}
+11875 states generated, 5338 distinct states found, 4188 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 5 (minimum is 0, the maximum 13 and the 95th percentile is 10).
+Finished in 05s at (2026-11-10 06:38:36)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-refkey · Mut=none · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT NeverRefusedKey
+Error: Invariant NeverRefusedKey is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 2: <LiteOriginate line 191, col 3 to line 197, col 76 of module Release>
+/\ acts = << [signer |-> "agent", plane |-> "lite", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 3: <RefuseAct line 241, col 3 to line 250, col 70 of module Release>
+/\ acts = << [signer |-> "agent", plane |-> "lite", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {"refKey", "refCert"}
+/\ agentBusy = FALSE
+/\ standing = {}
+132 states generated, 98 distinct states found, 86 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 9 (minimum is 6, the maximum 12 and the 95th percentile is 12).
+Finished in 05s at (2026-11-10 06:38:41)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-refcert · Mut=none · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT NeverRefusedCert
+Error: Invariant NeverRefusedCert is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 2: <LiteOriginate line 191, col 3 to line 197, col 76 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "lite", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 3: <RefuseAct line 241, col 3 to line 250, col 70 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "lite", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {"refCert"}
+/\ agentBusy = FALSE
+/\ standing = {}
+106 states generated, 80 distinct states found, 70 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 9 (minimum is 6, the maximum 12 and the 95th percentile is 12).
+Finished in 05s at (2026-11-10 06:38:47)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-refvehicle · Mut=none · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT NeverRefusedVehicle
+Error: Invariant NeverRefusedVehicle is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 2: <LiteOriginate line 191, col 3 to line 197, col 76 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "lite", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 3: <RefuseAct line 241, col 3 to line 250, col 70 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "lite", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {"refCert", "refVehicle"}
+/\ agentBusy = FALSE
+/\ standing = {}
+107 states generated, 81 distinct states found, 71 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 9 (minimum is 6, the maximum 12 and the 95th percentile is 12).
+Finished in 05s at (2026-11-10 06:38:52)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-refreplay · Mut=none · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT NeverRefusedReplay
+Error: Invariant NeverRefusedReplay is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 2: <Activate line 139, col 16 to line 142, col 89 of module Release>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 3: <AdmitRelease line 167, col 3 to line 176, col 65 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 4: <Relay line 201, col 3 to line 209, col 76 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 5: <Fire line 226, col 3 to line 237, col 38 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {1}, v2 |-> {}]
+/\ firedIds = {1}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {"fired"}
+/\ agentBusy = FALSE
+/\ standing = {1}
+State 6: <RefuseAct line 241, col 3 to line 250, col 70 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {1}, v2 |-> {}]
+/\ firedIds = {1}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {"fired", "refReplay"}
+/\ agentBusy = FALSE
+/\ standing = {1}
+11891 states generated, 5343 distinct states found, 4192 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 5 (minimum is 0, the maximum 13 and the 95th percentile is 10).
+Finished in 05s at (2026-11-10 06:38:58)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-refaged · Mut=none · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT NeverRefusedAged
+Error: Invariant NeverRefusedAged is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 2: <LiteOriginate line 191, col 3 to line 197, col 76 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "lite", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 3: <Advance line 159, col 16 to line 162, col 89 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "lite", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 1
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 4: <RefuseAct line 241, col 3 to line 250, col 70 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "lite", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 1
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {"refCert", "refAged"}
+/\ agentBusy = FALSE
+/\ standing = {}
+877 states generated, 573 distinct states found, 499 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 8 (minimum is 0, the maximum 13 and the 95th percentile is 11).
+Finished in 05s at (2026-11-10 06:39:04)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-relayrefuse · Mut=none · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT NeverRelayRefused
+Error: Invariant NeverRelayRefused is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 2: <AdmitAgent line 181, col 3 to line 186, col 76 of module Release>
+/\ acts = << [signer |-> "agent", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 3: <RelayRefuse line 213, col 3 to line 221, col 70 of module Release>
+/\ acts = << [signer |-> "agent", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {1}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {"relayRefuse"}
+/\ agentBusy = FALSE
+/\ standing = {}
+81 states generated, 63 distinct states found, 55 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 9 (minimum is 6, the maximum 12 and the 95th percentile is 12).
+Finished in 05s at (2026-11-10 06:39:10)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-finding · Mut=none · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT NeverFinding
+Error: Invariant NeverFinding is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 2: <Activate line 139, col 16 to line 142, col 89 of module Release>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 3: <AdmitRelease line 167, col 3 to line 176, col 65 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 4: <Relay line 201, col 3 to line 209, col 76 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 5: <Fire line 226, col 3 to line 237, col 38 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {1}, v2 |-> {}]
+/\ firedIds = {1}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {"fired"}
+/\ agentBusy = FALSE
+/\ standing = {1}
+State 6: <CheckFails line 255, col 3 to line 262, col 86 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {1}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {1}, v2 |-> {}]
+/\ firedIds = {1}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {"fired", "finding", "subtract"}
+/\ agentBusy = FALSE
+/\ standing = {1}
+11890 states generated, 5342 distinct states found, 4191 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 5 (minimum is 0, the maximum 13 and the 95th percentile is 10).
+Finished in 05s at (2026-11-10 06:39:15)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-subtract · Mut=none · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT NeverSubtraction
+Error: Invariant NeverSubtraction is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 2: <Activate line 139, col 16 to line 142, col 89 of module Release>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 3: <AdmitRelease line 167, col 3 to line 176, col 65 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 4: <Relay line 201, col 3 to line 209, col 76 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 5: <Fire line 226, col 3 to line 237, col 38 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {1}, v2 |-> {}]
+/\ firedIds = {1}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {"fired"}
+/\ agentBusy = FALSE
+/\ standing = {1}
+State 6: <CheckFails line 255, col 3 to line 262, col 86 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {1}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {1}, v2 |-> {}]
+/\ firedIds = {1}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {"fired", "finding", "subtract"}
+/\ agentBusy = FALSE
+/\ standing = {1}
+11890 states generated, 5342 distinct states found, 4191 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 5 (minimum is 0, the maximum 13 and the 95th percentile is 10).
+Finished in 05s at (2026-11-10 06:39:21)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-agent-person · Mut=M_AGENTRELEASE · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT SignedByPerson
+Error: Invariant SignedByPerson is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 2: <AdmitAgent line 181, col 3 to line 186, col 76 of module Release>
+/\ acts = << [signer |-> "agent", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 3: <Relay line 201, col 3 to line 209, col 76 of module Release>
+/\ acts = << [signer |-> "agent", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 4: <Fire line 226, col 3 to line 237, col 38 of module Release>
+/\ acts = << [signer |-> "agent", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = TRUE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {1}, v2 |-> {}]
+/\ firedIds = {1}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {"fired"}
+/\ agentBusy = FALSE
+/\ standing = {1}
+764 states generated, 524 distinct states found, 461 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 9 (minimum is 5, the maximum 13 and the 95th percentile is 11).
+Finished in 05s at (2026-11-10 06:39:26)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-agent-all · Mut=M_AGENTRELEASE · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT IrreversibleIsAPersons
+Error: Invariant IrreversibleIsAPersons is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 2: <AdmitAgent line 181, col 3 to line 186, col 76 of module Release>
+/\ acts = << [signer |-> "agent", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 3: <Relay line 201, col 3 to line 209, col 76 of module Release>
+/\ acts = << [signer |-> "agent", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 4: <Fire line 226, col 3 to line 237, col 38 of module Release>
+/\ acts = << [signer |-> "agent", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = TRUE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {1}, v2 |-> {}]
+/\ firedIds = {1}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {"fired"}
+/\ agentBusy = FALSE
+/\ standing = {1}
+764 states generated, 524 distinct states found, 461 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 9 (minimum is 5, the maximum 13 and the 95th percentile is 11).
+Finished in 05s at (2026-11-10 06:39:32)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-agent-cmd · Mut=M_AGENTRELEASE · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT OrderedAtCommand
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.7E-8
+  based on the actual fingerprints:  val = 2.3E-8
+3882669 states generated, 469216 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 12s at (2026-11-10 06:39:45)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-agent-once · Mut=M_AGENTRELEASE · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT UsedOnce
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.7E-8
+  based on the actual fingerprints:  val = 2.3E-8
+3882669 states generated, 469216 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 13s at (2026-11-10 06:40:00)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-agent-fresh · Mut=M_AGENTRELEASE · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT NoOlderThanDeclared
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.7E-8
+  based on the actual fingerprints:  val = 2.3E-8
+3882669 states generated, 469216 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 13s at (2026-11-10 06:40:13)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-agent-conflict · Mut=M_AGENTRELEASE · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT ConflictIsAFinding
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.7E-8
+  based on the actual fingerprints:  val = 2.3E-8
+3882669 states generated, 469216 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 13s at (2026-11-10 06:40:27)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-agent-contact · Mut=M_AGENTRELEASE · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT OrderedInContact
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.7E-8
+  based on the actual fingerprints:  val = 2.3E-8
+3882669 states generated, 469216 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 13s at (2026-11-10 06:40:41)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-agent-coupled · Mut=M_AGENTRELEASE · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT ReleaseNeverCoupled
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.7E-8
+  based on the actual fingerprints:  val = 2.3E-8
+3882669 states generated, 469216 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 13s at (2026-11-10 06:40:55)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-lite-cmd · Mut=M_LITERELEASE · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT OrderedAtCommand
+Error: Invariant OrderedAtCommand is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 2: <LiteOriginate line 191, col 3 to line 197, col 76 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "lite", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 3: <Fire line 226, col 3 to line 237, col 38 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "lite", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = TRUE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {1}, v2 |-> {}]
+/\ firedIds = {1}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {"fired"}
+/\ agentBusy = FALSE
+/\ standing = {1}
+106 states generated, 80 distinct states found, 70 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 9 (minimum is 6, the maximum 12 and the 95th percentile is 12).
+Finished in 05s at (2026-11-10 06:41:01)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-lite-all · Mut=M_LITERELEASE · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT IrreversibleIsAPersons
+Error: Invariant IrreversibleIsAPersons is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 2: <LiteOriginate line 191, col 3 to line 197, col 76 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "lite", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 3: <Fire line 226, col 3 to line 237, col 38 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "lite", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = TRUE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {1}, v2 |-> {}]
+/\ firedIds = {1}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {"fired"}
+/\ agentBusy = FALSE
+/\ standing = {1}
+106 states generated, 80 distinct states found, 70 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 9 (minimum is 6, the maximum 12 and the 95th percentile is 12).
+Finished in 05s at (2026-11-10 06:41:06)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-lite-person · Mut=M_LITERELEASE · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT SignedByPerson
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.7E-8
+  based on the actual fingerprints:  val = 9.7E-9
+3882669 states generated, 469216 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 17s at (2026-11-10 06:41:25)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-lite-once · Mut=M_LITERELEASE · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT UsedOnce
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.7E-8
+  based on the actual fingerprints:  val = 9.7E-9
+3882669 states generated, 469216 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 13s at (2026-11-10 06:41:39)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-lite-fresh · Mut=M_LITERELEASE · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT NoOlderThanDeclared
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.7E-8
+  based on the actual fingerprints:  val = 9.7E-9
+3882669 states generated, 469216 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 14s at (2026-11-10 06:41:53)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-lite-conflict · Mut=M_LITERELEASE · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT ConflictIsAFinding
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.7E-8
+  based on the actual fingerprints:  val = 9.7E-9
+3882669 states generated, 469216 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 14s at (2026-11-10 06:42:08)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-lite-contact · Mut=M_LITERELEASE · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT OrderedInContact
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.7E-8
+  based on the actual fingerprints:  val = 9.7E-9
+3882669 states generated, 469216 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 14s at (2026-11-10 06:42:23)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-lite-coupled · Mut=M_LITERELEASE · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT ReleaseNeverCoupled
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.7E-8
+  based on the actual fingerprints:  val = 9.7E-9
+3882669 states generated, 469216 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 12s at (2026-11-10 06:42:36)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-replay-once · Mut=M_REPLAY · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT UsedOnce
+Error: Invariant UsedOnce is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 2: <Activate line 139, col 16 to line 142, col 89 of module Release>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 3: <AdmitRelease line 167, col 3 to line 176, col 65 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 4: <Relay line 201, col 3 to line 209, col 76 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 5: <Fire line 226, col 3 to line 237, col 38 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {1}, v2 |-> {}]
+/\ firedIds = {1}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {"fired"}
+/\ agentBusy = FALSE
+/\ standing = {1}
+State 6: <Fire line 226, col 3 to line 237, col 38 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = TRUE
+/\ tick = 0
+/\ used = [v1 |-> {1}, v2 |-> {}]
+/\ firedIds = {1}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {"fired"}
+/\ agentBusy = FALSE
+/\ standing = {1}
+11911 states generated, 5343 distinct states found, 4192 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 5 (minimum is 0, the maximum 13 and the 95th percentile is 10).
+Finished in 05s at (2026-11-10 06:42:42)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-replay-all · Mut=M_REPLAY · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT IrreversibleIsAPersons
+Error: Invariant IrreversibleIsAPersons is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 2: <Activate line 139, col 16 to line 142, col 89 of module Release>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 3: <AdmitRelease line 167, col 3 to line 176, col 65 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 4: <Relay line 201, col 3 to line 209, col 76 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 5: <Fire line 226, col 3 to line 237, col 38 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {1}, v2 |-> {}]
+/\ firedIds = {1}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {"fired"}
+/\ agentBusy = FALSE
+/\ standing = {1}
+State 6: <Fire line 226, col 3 to line 237, col 38 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = TRUE
+/\ tick = 0
+/\ used = [v1 |-> {1}, v2 |-> {}]
+/\ firedIds = {1}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {"fired"}
+/\ agentBusy = FALSE
+/\ standing = {1}
+11911 states generated, 5343 distinct states found, 4192 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 5 (minimum is 0, the maximum 13 and the 95th percentile is 10).
+Finished in 05s at (2026-11-10 06:42:47)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-replay-person · Mut=M_REPLAY · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT SignedByPerson
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.9E-8
+  based on the actual fingerprints:  val = 3.8E-9
+2247721 states generated, 275520 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 09s at (2026-11-10 06:42:57)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-replay-cmd · Mut=M_REPLAY · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT OrderedAtCommand
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.9E-8
+  based on the actual fingerprints:  val = 3.8E-9
+2247721 states generated, 275520 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 09s at (2026-11-10 06:43:07)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-replay-fresh · Mut=M_REPLAY · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT NoOlderThanDeclared
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.9E-8
+  based on the actual fingerprints:  val = 3.8E-9
+2247721 states generated, 275520 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 09s at (2026-11-10 06:43:17)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-replay-conflict · Mut=M_REPLAY · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT ConflictIsAFinding
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.9E-8
+  based on the actual fingerprints:  val = 3.8E-9
+2247721 states generated, 275520 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 09s at (2026-11-10 06:43:27)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-replay-contact · Mut=M_REPLAY · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT OrderedInContact
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.9E-8
+  based on the actual fingerprints:  val = 3.8E-9
+2247721 states generated, 275520 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 09s at (2026-11-10 06:43:37)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-replay-coupled · Mut=M_REPLAY · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT ReleaseNeverCoupled
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.9E-8
+  based on the actual fingerprints:  val = 3.8E-9
+2247721 states generated, 275520 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 09s at (2026-11-10 06:43:47)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-vehicle-once · Mut=M_ANYVEHICLE · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT UsedOnce
+Error: Invariant UsedOnce is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 2: <Activate line 139, col 16 to line 142, col 89 of module Release>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 3: <AdmitRelease line 167, col 3 to line 176, col 65 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 4: <Relay line 201, col 3 to line 209, col 76 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 5: <Fire line 226, col 3 to line 237, col 38 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {1}, v2 |-> {}]
+/\ firedIds = {1}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {"fired"}
+/\ agentBusy = FALSE
+/\ standing = {1}
+State 6: <Fire line 226, col 3 to line 237, col 38 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = TRUE
+/\ tick = 0
+/\ used = [v1 |-> {1}, v2 |-> {1}]
+/\ firedIds = {1}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {"fired"}
+/\ agentBusy = FALSE
+/\ standing = {1}
+10834 states generated, 4475 distinct states found, 3418 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 4 (minimum is 0, the maximum 13 and the 95th percentile is 10).
+Finished in 05s at (2026-11-10 06:43:53)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-vehicle-all · Mut=M_ANYVEHICLE · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT IrreversibleIsAPersons
+Error: Invariant IrreversibleIsAPersons is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 2: <Activate line 139, col 16 to line 142, col 89 of module Release>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 3: <AdmitRelease line 167, col 3 to line 176, col 65 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 4: <Relay line 201, col 3 to line 209, col 76 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 5: <Fire line 226, col 3 to line 237, col 38 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {1}, v2 |-> {}]
+/\ firedIds = {1}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {"fired"}
+/\ agentBusy = FALSE
+/\ standing = {1}
+State 6: <Fire line 226, col 3 to line 237, col 38 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = TRUE
+/\ tick = 0
+/\ used = [v1 |-> {1}, v2 |-> {1}]
+/\ firedIds = {1}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {"fired"}
+/\ agentBusy = FALSE
+/\ standing = {1}
+10834 states generated, 4475 distinct states found, 3418 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 4 (minimum is 0, the maximum 13 and the 95th percentile is 10).
+Finished in 05s at (2026-11-10 06:43:58)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-vehicle-person · Mut=M_ANYVEHICLE · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT SignedByPerson
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 6.9E-8
+  based on the actual fingerprints:  val = 1.3E-8
+3516433 states generated, 412096 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 20.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 3).
+Finished in 12s at (2026-11-10 06:44:11)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-vehicle-cmd · Mut=M_ANYVEHICLE · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT OrderedAtCommand
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 6.9E-8
+  based on the actual fingerprints:  val = 1.3E-8
+3516433 states generated, 412096 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 20.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 3).
+Finished in 12s at (2026-11-10 06:44:24)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-vehicle-fresh · Mut=M_ANYVEHICLE · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT NoOlderThanDeclared
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 6.9E-8
+  based on the actual fingerprints:  val = 1.3E-8
+3516433 states generated, 412096 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 20.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 3).
+Finished in 12s at (2026-11-10 06:44:36)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-vehicle-conflict · Mut=M_ANYVEHICLE · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT ConflictIsAFinding
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 6.9E-8
+  based on the actual fingerprints:  val = 1.3E-8
+3516433 states generated, 412096 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 20.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 3).
+Finished in 12s at (2026-11-10 06:44:49)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-vehicle-contact · Mut=M_ANYVEHICLE · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT OrderedInContact
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 6.9E-8
+  based on the actual fingerprints:  val = 1.3E-8
+3516433 states generated, 412096 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 20.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 3).
+Finished in 12s at (2026-11-10 06:45:02)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-vehicle-coupled · Mut=M_ANYVEHICLE · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT ReleaseNeverCoupled
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 6.9E-8
+  based on the actual fingerprints:  val = 1.3E-8
+3516433 states generated, 412096 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 20.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 3).
+Finished in 12s at (2026-11-10 06:45:14)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-late-fresh · Mut=M_LATEFIRST · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT NoOlderThanDeclared
+Error: Invariant NoOlderThanDeclared is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 2: <Activate line 139, col 16 to line 142, col 89 of module Release>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 3: <AdmitRelease line 167, col 3 to line 176, col 65 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 4: <Advance line 159, col 16 to line 162, col 89 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 1
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 5: <Relay line 201, col 3 to line 209, col 76 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 1
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 6: <Fire line 226, col 3 to line 237, col 38 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 1
+/\ used = [v1 |-> {1}, v2 |-> {}]
+/\ firedIds = {1}
+/\ stale = TRUE
+/\ relLive = TRUE
+/\ seen = {"fired"}
+/\ agentBusy = FALSE
+/\ standing = {1}
+11403 states generated, 5014 distinct states found, 3918 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 5 (minimum is 0, the maximum 13 and the 95th percentile is 10).
+Finished in 05s at (2026-11-10 06:45:20)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-late-all · Mut=M_LATEFIRST · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT IrreversibleIsAPersons
+Error: Invariant IrreversibleIsAPersons is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 2: <Activate line 139, col 16 to line 142, col 89 of module Release>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 3: <AdmitRelease line 167, col 3 to line 176, col 65 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 4: <Advance line 159, col 16 to line 162, col 89 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 1
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 5: <Relay line 201, col 3 to line 209, col 76 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 1
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 6: <Fire line 226, col 3 to line 237, col 38 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 1
+/\ used = [v1 |-> {1}, v2 |-> {}]
+/\ firedIds = {1}
+/\ stale = TRUE
+/\ relLive = TRUE
+/\ seen = {"fired"}
+/\ agentBusy = FALSE
+/\ standing = {1}
+11403 states generated, 5014 distinct states found, 3918 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 5 (minimum is 0, the maximum 13 and the 95th percentile is 10).
+Finished in 05s at (2026-11-10 06:45:25)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-late-person · Mut=M_LATEFIRST · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT SignedByPerson
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.6E-8
+  based on the actual fingerprints:  val = 3.8E-9
+2096905 states generated, 256192 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 09s at (2026-11-10 06:45:35)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-late-cmd · Mut=M_LATEFIRST · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT OrderedAtCommand
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.6E-8
+  based on the actual fingerprints:  val = 3.8E-9
+2096905 states generated, 256192 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 09s at (2026-11-10 06:45:45)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-late-once · Mut=M_LATEFIRST · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT UsedOnce
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.6E-8
+  based on the actual fingerprints:  val = 3.8E-9
+2096905 states generated, 256192 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 09s at (2026-11-10 06:45:54)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-late-conflict · Mut=M_LATEFIRST · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT ConflictIsAFinding
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.6E-8
+  based on the actual fingerprints:  val = 3.8E-9
+2096905 states generated, 256192 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 09s at (2026-11-10 06:46:04)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-late-contact · Mut=M_LATEFIRST · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT OrderedInContact
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.6E-8
+  based on the actual fingerprints:  val = 3.8E-9
+2096905 states generated, 256192 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 09s at (2026-11-10 06:46:13)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-late-coupled · Mut=M_LATEFIRST · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT ReleaseNeverCoupled
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.6E-8
+  based on the actual fingerprints:  val = 3.8E-9
+2096905 states generated, 256192 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 09s at (2026-11-10 06:46:23)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-void-conflict · Mut=M_VOID · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT ConflictIsAFinding
+Error: Invariant ConflictIsAFinding is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 2: <Activate line 139, col 16 to line 142, col 89 of module Release>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 3: <AdmitRelease line 167, col 3 to line 176, col 65 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 4: <Relay line 201, col 3 to line 209, col 76 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 5: <Fire line 226, col 3 to line 237, col 38 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {1}, v2 |-> {}]
+/\ firedIds = {1}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {"fired"}
+/\ agentBusy = FALSE
+/\ standing = {1}
+State 6: <CheckFails line 255, col 3 to line 262, col 86 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {1}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {1}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {1}, v2 |-> {}]
+/\ firedIds = {1}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {"fired", "finding", "subtract"}
+/\ agentBusy = FALSE
+/\ standing = {}
+11890 states generated, 5342 distinct states found, 4191 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 5 (minimum is 0, the maximum 13 and the 95th percentile is 10).
+Finished in 05s at (2026-11-10 06:46:28)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-void-all · Mut=M_VOID · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT IrreversibleIsAPersons
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.7E-8
+  based on the actual fingerprints:  val = 3.8E-9
+2138129 states generated, 263936 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 09s at (2026-11-10 06:46:38)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-void-contact · Mut=M_VOID · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT OrderedInContact
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.7E-8
+  based on the actual fingerprints:  val = 3.8E-9
+2138129 states generated, 263936 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 09s at (2026-11-10 06:46:48)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-void-coupled · Mut=M_VOID · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT ReleaseNeverCoupled
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.7E-8
+  based on the actual fingerprints:  val = 3.8E-9
+2138129 states generated, 263936 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 09s at (2026-11-10 06:46:57)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-nolink-contact · Mut=M_NOCONTACT · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT OrderedInContact
+Error: Invariant OrderedInContact is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 2: <Activate line 139, col 16 to line 142, col 89 of module Release>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 3: <LinkToggle line 147, col 16 to line 150, col 89 of module Release>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = FALSE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 4: <AdmitRelease line 167, col 3 to line 176, col 65 of module Release>
+/\ acts = << [signer |-> "person", plane |-> "cmd", tick |-> 0, vehicle |-> "v1"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = FALSE
+/\ noContact = TRUE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 2
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+154 states generated, 112 distinct states found, 98 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 9 (minimum is 6, the maximum 12 and the 95th percentile is 12).
+Finished in 05s at (2026-11-10 06:47:03)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-nolink-all · Mut=M_NOCONTACT · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT IrreversibleIsAPersons
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 9.7E-8
+  based on the actual fingerprints:  val = 3.8E-9
+4069761 states generated, 499200 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 20.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 12s at (2026-11-10 06:47:16)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-nolink-conflict · Mut=M_NOCONTACT · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT ConflictIsAFinding
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 9.7E-8
+  based on the actual fingerprints:  val = 3.8E-9
+4069761 states generated, 499200 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 20.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 12s at (2026-11-10 06:47:30)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-nolink-coupled · Mut=M_NOCONTACT · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT ReleaseNeverCoupled
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 9.7E-8
+  based on the actual fingerprints:  val = 3.8E-9
+4069761 states generated, 499200 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 20.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 4).
+Finished in 12s at (2026-11-10 06:47:43)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-obs-coupled · Mut=M_OBSCOUPLE · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT ReleaseNeverCoupled
+Error: Invariant ReleaseNeverCoupled is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 2: <Activate line 139, col 16 to line 142, col 89 of module Release>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+2 states generated, 2 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 05s at (2026-11-10 06:47:48)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-obs-safe · Mut=M_OBSCOUPLE · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.7E-8
+  based on the actual fingerprints:  val = 3.8E-9
+2134673 states generated, 263936 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 20.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 14 and the 95th percentile is 4).
+Finished in 09s at (2026-11-10 06:47:58)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-agentp-coupled · Mut=M_AGENTPROPOSES · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT ReleaseNeverCoupled
+Error: Invariant ReleaseNeverCoupled is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = FALSE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+State 2: <Activate line 139, col 16 to line 142, col 89 of module Release>
+/\ acts = << [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"],
+   [signer |-> "none", plane |-> "none", tick |-> 0, vehicle |-> "none"] >>
+/\ contact = TRUE
+/\ noContact = FALSE
+/\ delivered = {}
+/\ notCommanded = FALSE
+/\ notPerson = FALSE
+/\ nextId = 1
+/\ findings = {}
+/\ relayRefused = {}
+/\ obsLive = FALSE
+/\ replayed = FALSE
+/\ tick = 0
+/\ used = [v1 |-> {}, v2 |-> {}]
+/\ firedIds = {}
+/\ stale = FALSE
+/\ relLive = TRUE
+/\ seen = {}
+/\ agentBusy = FALSE
+/\ standing = {}
+2 states generated, 2 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 05s at (2026-11-10 06:48:04)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-agentp-safe · Mut=M_AGENTPROPOSES · MaxActs=2 MaxTick=1 FreshT=0 · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.7E-8
+  based on the actual fingerprints:  val = 3.8E-9
+2134673 states generated, 263936 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 20.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 14 and the 95th percentile is 4).
+Finished in 09s at (2026-11-10 06:48:13)
+→ HOLDS (expected HOLDS: as expected)
+
+Rows: 67 · as expected: 67 · not as expected: none · ERROR: none

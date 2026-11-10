@@ -1,0 +1,54 @@
+# Rows for live-gen-results.sh Outstanding: name mut spec kind property expected [CONST=value ...] [states=N]
+# Run: DEFAULTS='KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=FALSE' ./live-gen-results.sh Outstanding Outstanding-rows.txt "<title>"
+# Rows with PlaneCaptured=TRUE set it; three-slot and KUp=3 rows are the larger constants.
+# expected: none: every property HOLDS at an honest and a captured plane and every witness VIOLATED; NeverGranted HOLDS at KUp=1, which is finding 4; M_NOCHARGE breaks EffectsAfterHonest only; M_ATMOST breaks the bound on effects and on unread effects; M_TRUSTMARK breaks both under a captured plane and neither under an honest one; M_EARLYRELEASE breaks SealedIsSpent and the effects bounds; M_NOSTOP breaks the two effects bounds and not HavocPlaneBoundedInEffects; M_ORDEREDFREE breaks the per-governor bounds under a captured plane and neither under an honest one.
+#
+# Mut = none.
+s-none-safe          none           Spec INVARIANT Safe                       HOLDS
+s-none-safe-c        none           Spec INVARIANT Safe                       HOLDS    PlaneCaptured=TRUE
+s-none-safe-k3       none           Spec INVARIANT Safe                       HOLDS    KUp=3 MaxCount=3
+s-none-safe-k3-c     none           Spec INVARIANT Safe                       HOLDS    KUp=3 MaxCount=3 PlaneCaptured=TRUE
+s-none-safe-3slot    none           Spec INVARIANT Safe                       HOLDS    Active={"l1","l2","l3"} MaxCount=1 KUp=3
+# Witnesses.
+w-granted            none           Spec INVARIANT NeverGranted               VIOLATED
+w-effect             none           Spec INVARIANT NeverEffect                VIOLATED
+w-after              none           Spec INVARIANT NeverEffectAfter           VIOLATED
+w-tight              none           Spec INVARIANT NeverTight                 VIOLATED KUp=3 MaxCount=3
+w-refbound           none           Spec INVARIANT NeverRefusedAtBound        VIOLATED
+w-refgov             none           Spec INVARIANT NeverGovernorRefused       VIOLATED PlaneCaptured=TRUE
+w-stopped            none           Spec INVARIANT NeverStopped               VIOLATED
+w-laterelease        none           Spec INVARIANT NeverLateRelease           VIOLATED
+w-recycled           none           Spec INVARIANT NeverRecycled              VIOLATED
+w-covered            none           Spec INVARIANT NeverCovered               VIOLATED
+# Finding 4: at KUp = 1 the strict form grants nothing.
+w-k1-nogrant         none           Spec INVARIANT NeverGranted               HOLDS    KUp=1 MaxCount=1
+# M_NOCHARGE.
+m-nocharge-honest    M_NOCHARGE     Spec INVARIANT EffectsAfterHonest         VIOLATED
+m-nocharge-pergov    M_NOCHARGE     Spec INVARIANT EffectsAfterPerGovernor    HOLDS
+m-nocharge-havoc     M_NOCHARGE     Spec INVARIANT HavocPlaneBoundedInEffects HOLDS
+m-nocharge-sealed    M_NOCHARGE     Spec INVARIANT SealedIsSpent              HOLDS
+# M_ATMOST.
+m-atmost-honest      M_ATMOST       Spec INVARIANT EffectsAfterHonest         VIOLATED
+m-atmost-pergov      M_ATMOST       Spec INVARIANT EffectsAfterPerGovernor    VIOLATED
+m-atmost-havoc       M_ATMOST       Spec INVARIANT HavocPlaneBoundedInEffects VIOLATED
+m-atmost-sealed      M_ATMOST       Spec INVARIANT SealedIsSpent              HOLDS
+# M_TRUSTMARK.
+m-trust-pergov       M_TRUSTMARK    Spec INVARIANT EffectsAfterPerGovernor    VIOLATED PlaneCaptured=TRUE
+m-trust-havoc        M_TRUSTMARK    Spec INVARIANT HavocPlaneBoundedInEffects VIOLATED PlaneCaptured=TRUE
+m-trust-sealed       M_TRUSTMARK    Spec INVARIANT SealedIsSpent              HOLDS    PlaneCaptured=TRUE
+m-trust-honest       M_TRUSTMARK    Spec INVARIANT Safe                       HOLDS
+# M_EARLYRELEASE.
+m-early-sealed       M_EARLYRELEASE Spec INVARIANT SealedIsSpent              VIOLATED
+m-early-honest       M_EARLYRELEASE Spec INVARIANT EffectsAfterHonest         VIOLATED
+m-early-pergov       M_EARLYRELEASE Spec INVARIANT EffectsAfterPerGovernor    VIOLATED
+m-early-havoc        M_EARLYRELEASE Spec INVARIANT HavocPlaneBoundedInEffects VIOLATED
+# M_NOSTOP.
+m-nostop-honest      M_NOSTOP       Spec INVARIANT EffectsAfterHonest         VIOLATED
+m-nostop-pergov      M_NOSTOP       Spec INVARIANT EffectsAfterPerGovernor    VIOLATED
+m-nostop-havoc       M_NOSTOP       Spec INVARIANT HavocPlaneBoundedInEffects HOLDS
+m-nostop-sealed      M_NOSTOP       Spec INVARIANT SealedIsSpent              HOLDS
+# M_ORDEREDFREE.
+m-ordfree-pergov     M_ORDEREDFREE  Spec INVARIANT EffectsAfterPerGovernor    VIOLATED PlaneCaptured=TRUE
+m-ordfree-havoc      M_ORDEREDFREE  Spec INVARIANT HavocPlaneBoundedInEffects VIOLATED PlaneCaptured=TRUE
+m-ordfree-sealed     M_ORDEREDFREE  Spec INVARIANT SealedIsSpent              HOLDS    PlaneCaptured=TRUE
+m-ordfree-honest     M_ORDEREDFREE  Spec INVARIANT Safe                       HOLDS
