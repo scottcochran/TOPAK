@@ -8,20 +8,23 @@
 > Assume 0055 ratified too, add the mesh to §1. Also, assume any pending lineage ADRs are ratified.
 >
 > Don't the lineage, mesh edge alternation, and consensus rules limit capture impact?
+>
+> Update the submission based on the current state of the repo: new specs, proofs, ADRs. Assume any relevant ADRs
+> will be approved as is.
 
-(The custodian's four prompts of 2026.11.10, the third with its line break closed. "Layered c2 cp" is the
-command-chain proposal's tree of control planes.)
+(The custodian's five prompts of 2026.11.10 that shaped this file, with line breaks closed and one spelling
+corrected. "Layered c2 cp" is the command-chain design's tree of control planes.)
 
 **2026.11.10** · derived · **a draft, not sent, and not true of the tree it is committed to** · prepared by Claude at
-the custodian's request · **revised twice, on the day it was written and before anything cited it**, to take in the
-third prompt and then the fourth; the first draft is commit `1f78b7f` and the second `d1043e1`, and the last
-paragraphs before the response list what changed ·
-read against the tree at `e79ae6d`, Genesis Checkpoint G11
+the custodian's request · **revised three times, on the day it was written and before anything cited it**; the
+earlier drafts are commits `1f78b7f`, `d1043e1` and `9800ca3`, and the last paragraph before the response says what
+this revision changed · read against main at `bbda621`, Genesis Checkpoint G11
 (`checkpoints/topak-genesis-checkpoint-G11-2026.10.09.md`), Theory of Operation revision 15
-(`narrative/theory-of-operation.md`, cited below as ToO), the command-chain proposal
-(`derived/topak-federated-c2-design-proposal-2026.11.10.md`) and its two readings, cited as the NATO reading
-(`derived/topak-federated-c2-proposal-assessment-2026.11.10.md`) and the swarm reading
-(`derived/topak-federated-c2-swarm-trust-assessment-2026.11.10.md`)
+(`narrative/theory-of-operation.md`, cited below as ToO), ADR-0059 to ADR-0068 with their eight modules and proofs,
+the second command-chain proposal (`derived/topak-federated-c2-design-proposal-2026.11.10b.md`), the readings of the
+first, cited as the NATO reading (`derived/topak-federated-c2-proposal-assessment-2026.11.10.md`) and the swarm
+reading (`derived/topak-federated-c2-swarm-trust-assessment-2026.11.10.md`), and the diagram findings
+(`derived/topak-command-chain-diagram-findings-2026.11.10.md`)
 
 **What this is.** The five-page narrative that DARPA Special Notice DARPA-SN-27-17 (Formal Learning and Abstractions
 for System Heterogeneity, issued 2026.11.03) encourages, written as of the day it would be sent. The notice is a
@@ -31,66 +34,62 @@ FLASH@darpa.mil, as an unprotected Word or PDF file on letter paper with 1-inch 
 point (8 or 10 point allowed in tables), with the respondent's organization and a technical contact's name, email
 address and phone number.
 
-**It is written on five assumptions the custodian set, and none holds at this commit.**
+**It is written on one assumption the custodian set, which does not hold at this commit: every Proposed record the
+response rests on is ratified as it is written.** Those are ADR-0035 (lineage), ADR-0054 and ADR-0055 (workflows and
+meshes), ADR-0057 and ADR-0058 (the specification graph, and an overlay declared against it) and ADR-0059 to
+ADR-0068 (the command chain), with the amendments that wait on them, ADR-0024 A2.2 among them. The response
+therefore reads every record as *author-ratified* and none as Proposed.
 
-1. **ADR-0035 is ratified.** It is Proposed. Its ratification condition (§8) includes a review of the bounded-share
-   construction by someone other than its author.
-2. **ADR-0054 is ratified**, and with it the ten dependent amendments G11 §1.1 lists as pending. It is Proposed.
-3. **ADR-0055 is ratified.** It is Proposed. Its condition (§11) asks that ADR-0054 be ratified first or with it and
-   that its dependent entries be drafted, and G11 §1.1 says they are not.
-4. **Every pending lineage text is ratified.** No record but ADR-0035 is pending on lineage, so this is read as
-   three things. ADR-0035 with its R8, which alternates lineages on a workflow's clear edges at its tally. The
-   two-colour check ADR-0055 §11 owes to ADR-0035 §5, which is not drafted. And ADR-0024 A2.2, an independent veto
-   seat must be seated, which was ratified in Batch 15 and waits on ADR-0035. With these D-0054-1 stops being every
-   deployment's declaration. It is not read as covering the supersession of ADR-0017's ordering-primacy clause,
-   which is unwritten, or ADR-0036, which is about confinement and whose launcher a projected lineage needs.
-5. **The tree of control planes has a decision record, is modelled, and is checked.** Today it is a proposal in
-   which "nothing here is a decision, and nothing here is modelled, checked, built or reviewed". The response
-   writes the record as **[ADR-0059]** and the modules as `Federation`, `Intent` and `Disconnected`, the names the
-   proposal's §10 gives. It claims *checked* and never *proved*, and it does not say the record is ratified.
+**What the third draft assumed and this tree now has.** The third draft assumed the tree of control planes would be
+a record, modelled and checked. It is ten records and eight modules, and each module is checked, proved and
+certified (`spec/README.md`). The design also moved under the proposal the earlier drafts were written against, so
+§1 is rewritten and not amended.
 
-**What to check before it is sent.** Each row is a sentence of the response that is false today, or that a later
-change could make false.
+**What "ratified as written" does not make true.** Each record's ratification condition says what is not met, and
+the response claims none of it:
+
+- **Nothing of the command chain is built**, and ADR-0067's floor stage has no entry written.
+- **ADR-0060 §5 leaves a choice among three options to the custodian**, on what ADR-0032 §4's budget means for a
+  plane nobody can reach. The response is silent on it.
+- **ADR-0062 §8's coupling at the grant is stated and not modelled.**
+- **ADR-0061's three statements about PBFT are recalled and not read**, and its number of replicas is a placeholder.
+- **ADR-0068 was not revised when the modules arrived** (the diagram findings' R-1). Its status note still says
+  nothing is modelled. The response follows the modules and the R1 rows of ADR-0059 to ADR-0066.
+- **No record has a reader who is not its drafter.**
+
+**What to check before it is sent.**
 
 | In the response | It rests on | Check |
 |---|---|---|
-| §1 (i), first paragraph, the design as described | Assumption 5 | The record's number and status. That the record as written still has a charter with a closed schema, an intent boundary, an autonomous plane, a governor and three states |
-| §1 (i), second paragraph; §1 (iv), *Free* and the labels of *How far a capture spreads*; §1 (v), third row; §2.3, *Many agents*; §2.4, "meshes" | Assumption 3 | The status of ADR-0055. Its seven properties hold today at one mesh of three nodes and a budget of six (`spec/Mesh-results-2026.10.07.txt`); fan-out, scoped joins, pools and proofs are not met (ADR-0055 §11) |
-| §1 (i), "the vote that admits a mesh at the intent boundary" and "goes on running the mesh"; §1 (ii), the partitioned plane | Assumption 5, from the proposal's §8, §4.1 and TM6 | That the record still promotes the mesh at the intent boundary, and still asks Byzantine agreement of an autonomous plane's replicas |
-| §1 (ii), the captured vehicle, "one replica, which Byzantine agreement tolerates" and "the vehicle whose Observer it hosts"; §1 (iv), "one vote in its plane" | Assumption 5, with the proposal's questions 7 and 9 answered as recommended | That an autonomous plane's replicas run Byzantine agreement on the vehicles, and that a cell's Observer is seated on another vehicle. One vote holds below a third: a vehicle found captured goes on voting until the link returns, and capture and attrition draw on the same *f* (the swarm reading's Z2; the NATO reading's N3) |
-| §1 (iv), *Required*, "a mesh is admitted only if those edges can be two-coloured" | Assumptions 1, 3 and 4 | That ADR-0035 §5 carries the check. It is the gate's and is static: `spec/Mesh.tla` checks its runtime consequence, `ClearHopsAlternate`, and not the check |
-| §1 (v), every other invariant row; §2.4, the second row; §3, "checked at small constants" | Assumption 5 | That each row names a property the cut results file shows holding, with a mutation that breaks it. The modules' names and the results file's date |
-| §1 (v), "a revocation takes hold within" | Assumption 5, and the NATO reading's F1 | That the record gives every interval an origin the link adversary cannot move. Until it does, a withheld intent delivered late defeats this row |
-| §1 (iv), "one commander varies an intent's area, budget and expiry" | The proposal's question 4, answered as recommended | That an intent is bounded by the promoted seating and not by the last intent |
-| §1 (iv), *Limitations*, "a false finding stops a vehicle and nobody restores it" | The swarm reading's Z3 | Whether the record now says what a finding does to a vehicle in flight, and whether its cell may be leased again under the same intent |
-| §2.1, measure 1; §2.3, "at least one veto seat is of lineage independent of the author's" | Assumptions 1 and 4 | The status of ADR-0035 and of ADR-0024 A2.2's condition, and whether the θ values are still placeholders |
-| §2.3, *Many agents*, the workflow | Assumption 2 | The status of ADR-0054 and of ADR-0041 A4 |
-| §2.1, **[43]** and **[34]**; §2.4, **[24]** and **[21]**; "sixteen modules"; the summary's "nearly sixty" | The tree at `e79ae6d` | Recount at the cut. `spec/theorem-premise-binding.json` gives the first pair; ToO §11.1 item 7 and §7.11 the others |
-| §3, "no agent is yet confined" | G11 §8. ADR-0035 in force supplies the fourth conjunct of `Contained`, and every real guest's profile still fails P3 | That this is still so |
-| §3, "it counts as declared" | ADR-0035 §2 and §8: the trainer runs in the node's toolhost, outside the guest | That no in-guest trainer image exists. If one does, strike the sentence |
+| §1 (i), the design | ADR-0059 to ADR-0066 as written | Each record's status. That none is revised on: seven replicas and the schedule 7, 6, 5, 4 (ADR-0061); a lease's exact count and an entry's extent (ADR-0062); `K_up` and the watermark (ADR-0063); ticks (ADR-0064); topics (ADR-0065); the release seat (ADR-0066) |
+| §1 (ii), the six rows | ADR-0068 §1: TM1 with TM13, TM2, TM3, TM5, TM6 with TM12, and TM10 | That the rows still say this |
+| §1 (iv), *Required*, "a fleet of one build is one lineage" | ADR-0065 §7, D-0065-1; the two-colour check of ADR-0055 §5 | That ADR-0035 §5 carries the check, which is the gate's and is not drafted |
+| §1 (iv), "superseded rules govern fewer than `K_up` effects" and the three counts | ADR-0063 §4 | Unchanged |
+| §1 (iv), *Limitations*, the false finding | ADR-0068's open obligations (the swarm reading's Z3) | Whether a record now closes it |
+| §1 (v), each row | A theorem its proof results file of 2026.11.10 shows proved: `Federation` (row 1); `Intent` (2); `Outstanding` (3); `Release` (4); `Alone` (5, 6); `Peer` (7); `PlaneClock`, under `ClockPremise` (8). No row is the mesh's: `spec/Mesh.tla` is checked and has no proof module | That each still proves. The modules are small, and §3 says so: `Federation` is a chain of three planes carrying four of the charter's fields, `Membership` has five replicas and not seven, `Intent`'s plane is honest, and `PlaneClock` is in discrete time with no clock rates |
+| §2.1, 43 and 34; 419 and 435; 19 of 43 | `spec/theorem-premise-binding.json` of 2026.10.06 and `spec/specification-graph-results-2026.11.07.txt` | Both predate the eight modules, and neither has a row or a node for them. Recount once they do |
+| §2.2, the three findings of the first lesson | ADR-0059 §1, ADR-0061 §3 (`M_TWOVOTES`) and ADR-0066 §4 (`M_ANYVEHICLE`), each marked R1 | Unchanged |
+| §2.4 and the summary: 67 records, 39 modules, 32 proof modules, 11,016 obligations, 29 that certify, 5,600 and 52 for the eight | A count of this tree: the files under `decisions/` and `spec/`, and each proof module's latest certified results file | Recount at the cut |
+| §2.1, measure 1; §2.3, "at least one veto seat is of lineage independent of the author's" | ADR-0035 and ADR-0024 A2.2 | Their status, and whether the θ values are still placeholders |
+| §3, "no agent is yet confined", "counts as declared" and "the code has since moved past" | G11 §8; ADR-0035 §2 and §8; G11 item 103, and the eight stale edges the graph reports | That each is still so |
+| §3, "four of its trust roots" and "its floor stage is unwritten" | ADR-0068 finding 1; ADR-0067 §7 | That each is still so |
 
 **Placeholders** are in bold square brackets: the respondent's name as an organization, the contact's email address
-and phone number, the date, the record's number, the results file's date and the four counts.
+and phone number, and the date. The record's number, the results' date and the four counts are now filled from the
+tree.
 
 **What in it is not from the corpus.** DoD Directive 3000.09 and Knight and Leveson's 1986 experiment are recalled,
 not sourced; the corpus names the second only in passing. §1 (iii) is the drafter's general account of current
 practice, not a survey. §1 (iv)'s three positions (free, priced, required) and its paragraph on dynamic
 heterogeneity are this draft's reading of the records for the notice's question: no record says a variant is issued
-with an intent. *How far a capture spreads* gathers the proposal's TM3, ADR-0035's stated purpose and ADR-0055 §5. It
-says lineage "is there to keep" and not "keeps", because ADR-0035 says structural independence does not imply
-uncorrelated failures. Its last clause is the drafter's inference: ADR-0054 §6 speaks of a trigger that works on one
-lineage, and no record says what alternation does against an adversary who writes for the other. So is "every stack
-of one lineage" in §1 (ii): with two lineages, one that is poisoned is half the stacks, and ADR-0054 did not take
-diversity among all workers. §2.1's fourth measure
-and its suggested definition of equivalence are proposals made here, and the text says so. The account of Moon and
-Varshney is ToO §1's and §11.1's.
+with an intent. §2.1's fourth measure and its suggested definition of equivalence are proposals made here, and the
+text says so. The account of Moon and Varshney is ToO §1's and §11.1's.
 
-**What it leaves out.** ADR-0057 and ADR-0058 (the specification graph), Proposed. The proposal's release seat by
-name, its floor stage, and five of its eleven adversaries as rows of the table, three of which are named under
-*Limitations*. The NATO reading's N1 to N3 and F2 to F4, except that F3, a captured vehicle discloses the rules, is
-used as an argument for variation. The swarm reading's Z1 and Z2: the log between vehicles has no stated rate, and
-a vehicle found captured goes on voting in its plane. Z4, an Observer on another vehicle can accuse or vanish, is
-used in §1 (ii).
+**What it leaves out.** ADR-0056. ADR-0067's fifteen floor entries and ADR-0064's two rules on a replica's vote. Six
+of ADR-0068's fourteen adversaries: TM4 and TM14 stand behind an assumption, TM8, TM9 and TM11 are named under
+*Limitations*, and TM7, an insider with a key, is not there at all. `Membership`'s theorem, which the attrition row
+rests on and no row of §1 (v) states. The NATO reading's N2, a second anchor, and the swarm reading's Z2 and Z4, which ADR-0068 keeps
+open.
 
 **Status words.** ToO A8 requires a publication to cite confirmation-required records as author-ratified, and ToO §0
 requires "author-ratified, provisional" of anything resting on ADR-0050 or ADR-0052. §3 of the response says both
@@ -98,33 +97,29 @@ once, for everything in it.
 
 **Format.** The response is everything between the two marker comments below. Rendered on 2026.11.10 through pandoc
 and LibreOffice at 12-point Times-metric type, 10 point in tables, on letter paper with 1-inch margins, it is five
-pages with about six lines to spare on the fifth. It has no header or footer, so nothing sits in a margin. The Word
+pages with about five lines to spare on the fifth. It has no header or footer, so nothing sits in a margin. The Word
 and PDF renderings are not tracked (`.gitignore` excludes PDFs); the placeholders are highlighted in both.
 
-**Changes from the second draft** (`d1043e1`), for the fourth prompt, a question. The answer is yes, each of the
-three by a different channel, and the second draft's table said less than the proposal's TM3 does.
+**Changes from the third draft** (`9800ca3`), for the fifth prompt.
 
-- **§1 (ii):** the captured vehicle's row gains consensus as a bound and its own actuators and its Observer seat as
-  what is left; the supply chain's row states the lineage rule and what one poisoned lineage still holds.
-- **§1 (iv):** *Where diversity stops* becomes *How far a capture spreads*, which says what each rule bounds and
-  what none does.
-- **Cut, to keep the fifth page's spare lines:** words only, in the source row, §1 (iv), §1 (v), §2.1, §2.2,
-  §2.3 and §3. No claim went.
-
-**Changes from the first draft** (`1f78b7f`), all for the third prompt.
-
-- **Assumptions 3 and 4 are new**, and the check table gains the rows that rest on them.
-- **§1 (i) gains its second paragraph**, the mesh. **§1 (ii) gains the partitioned plane**, and its supply-chain row
-  now states a residual where it pointed at a list §2.1 does not give.
-- **§1 (iv)** restates *Free* and *Required* for a mesh, and gains *Where diversity stops* and a limitation from the
-  swarm reading's Z3.
-- **§1 (v)** gains a row for the mesh, joins an intent's values to the mission's row, and adds terminal behaviour per
-  vehicle class as a degree of freedom.
-- **§2.3 and §2.4 name the mesh. §3 says a lineage record at the reference counts as declared.**
-- **Cut, to stay at five pages:** the notice's name from the title; from §2.1, the policy floor's three gates and "no
-  weaker version of a theorem"; from §2.4, the row for the method, which §2.2 names, and the trusted-base table;
-  from §3, "no vehicle exists" and the closing invitation; and words in the summary, §1 (iii), §2.2 and §2.3.
-- **This branch now holds main at `e79ae6d`**, merged for the swarm reading.
+- **§1 is rewritten against ADR-0059 to ADR-0068.** Revocation is bounded in effects and not in time; the lease
+  pre-authorizes and a governor counts; a vehicle that stops hearing its plane loses its lease; stacks report on
+  declared topics; membership shrinks along a voted schedule. "Linked, meshed, alone" and `T_alone` are gone with
+  the first proposal.
+- **§1 (ii)** follows ADR-0068. It gains attrition, joined to partition, and folds a stack that lies to its peers
+  into the first row.
+- **§1 (iv):** the paragraph on a capture drops the drafter's inference about a captor who writes for the other
+  lineage, which ADR-0065 now answers: a peer's report is untrusted and enables nothing. A fleet of one build is
+  named as one lineage.
+- **§1 (v)** names proved theorems, adds one of availability, and says which bound is declared and not a theorem.
+  The third draft's rows for the mesh and for interoperability are gone: the first was checked and not proved, and
+  the second is now a sentence.
+- **§2** gains the specification graph's inventory of the reference, the three findings modelling returned, and the
+  diagrams as a second pass. Its counts are the tree's. To stay at five pages it loses the six actions by name, the
+  routing sentence, the sentence on what variation elsewhere does to shared trust roots, and words in every part.
+- **§3** says what of the command chain is and is not established, and corrects an omission of every earlier
+  draft: the two functions proved in Lean are stale against the code (G11 item 103).
+- **This branch now holds main at `bbda621`.**
 
 ---
 
@@ -141,34 +136,35 @@ three by a different channel, and the second draft's table said less than the pr
 | **Marking** | UNCLASSIFIED. No proprietary information. **[2026.11.30]** |
 | **Source material** | github.com/scottcochran/TOPAK: Apache-2.0 code, CC BY 4.0 documents |
 
-**Summary.** TOPAK is an open design corpus for a control plane that governs AI agents: nearly sixty decision
-records (ADRs), a TLA+ layer that is model-checked and in part proved, a draft policy *floor* in Cedar (the standing
-rules that no later policy can weaken), and a Rust reference of the path that admits every effect an agent causes. Its premise is that an agent is Byzantine wherever
-it sits. No guarantee rests on what a model means or intends, and each is stated against the agent's *action
-alphabet*, the closed set of typed actions it can request. Three consequences are offered to FLASH. An invariant stated against an alphabet is untouched by variation behind it, so a new variant needs no new
-proof. Where variation does reach the trusted part, instances are related by a computed inventory of theorems kept
-and lost, in place of functional equivalence. And generated variants share their generator, so diversity is a
-premise to be checked, and there is a rule for checking it. Section 1 works them on one application. Section 3
-says how far each claim is checked: this is one person's design, not a fielded system.
+**Summary.** TOPAK is an open design corpus for a control plane that governs AI agents: sixty-seven decision records
+(ADRs), thirty-nine TLA+ modules that are model-checked, thirty-two of them with proofs, a draft policy *floor* in
+Cedar (the standing rules that no later policy can weaken), and a Rust reference of the path that admits every
+effect an agent causes. Its premise is that an agent is Byzantine wherever it sits. No guarantee rests on what a
+model means or intends, and each is stated against the agent's *action alphabet*, the closed set of typed actions it
+can request. Three consequences are offered to FLASH. An invariant stated against an alphabet is untouched by
+variation behind it, so a new variant needs no new proof. Where variation does reach the trusted part, instances are
+related by a computed inventory of theorems kept and lost, in place of functional equivalence. And generated
+variants share their generator, so diversity is a premise to be checked, by a stated rule.
+Section 1 works them on one application. Section 3 says how far each claim is established: this is one person's
+design, not a fielded system.
 
 ## 1. Application: authority over uncrewed vehicles on a contested link (RFI item 1)
 
 **(i) Domain.** The target is the authority layer of a fleet of uncrewed vehicles under a chain of command: who may
-cause which effect, for how long, under whose rules, and what record it leaves. It is not the design of a vehicle, a
-sensor or an effector. The design (**[ADR-0059]**) is a tree of control planes. A *plane* is one replicated log with
-one set of rules in force. Each plane is seated by a vote at the plane above it, under a *charter* with a closed
-schema, and can hand down only what it was handed, or less. The last plane where a person commands is the *intent
-boundary*. Its commander issues *intents*: a task, bounds, a budget and an expiry. Below it one *autonomous plane*
-runs among each group of vehicles, with no person seated at it and no path that adds authority. Each vehicle carries
-a small trusted *governor* between its autonomy software, the *stack*, and its actuators, and every action carries a
-*lease*, a credential for one round whose fields bound what its holder may request.
+cause which effect, for how long, under whose rules, and what record it leaves. It is not a design of a vehicle, a
+sensor or an effector. The design, ten records (ADR-0059 to ADR-0068), is a tree of control planes. A *plane* is
+one replicated log with one set of rules in force. Each is seated by a vote at the plane above, under a *charter*
+with a closed schema, and hands down only what it was handed, or less. The last plane where a person commands is
+the *intent boundary*. Its commander issues *intents*: a task, bounds, a budget and an expiry. Below it an
+*autonomous plane* runs among each group of vehicles: seven replicas under Byzantine agreement, hosted on the
+vehicles, with no person seated and no path that adds authority.
 
-What an autonomous plane runs is a *mesh* (ADR-0055): the mission's plan as a graph that may loop, each node one
-vehicle's stack, run a round at a time. The vote that admits a mesh at the intent boundary fixes an *activation budget*, the
-most rounds it may ever grant, so the number of turns is decided in the field and the end is still bounded. Vehicles
-never address each other. The plane's log is the bus, and one vehicle's output reaches another only as labelled
-input. A vehicle is *linked* when it reaches the intent boundary, *meshed* when it reaches only a quorum of its own
-plane, which goes on running the mesh, and *alone* when it reaches neither.
+Each vehicle carries a small trusted *governor* between its autonomy software, the *stack*, and its actuators and
+radio. The plane orders one thing for a vehicle, a *lease*: an alphabet, bounds and an exact count of entries. The
+governor then permits each entry under the lease with no further round, and every entry declares how far it runs.
+What the plane runs is a *mesh* (ADR-0055): the mission's plan as a graph that may loop, under an activation budget
+voted at the intent boundary. Stacks report to one another on topics admitted with the mesh, and nothing a peer
+originates enables anything. A vehicle that stops hearing its plane loses its lease at once.
 
 **(ii) Rationale and threat.** A fleet is bought as one design. Every vehicle runs the same stack under the same
 mission rules, so an exploit developed against one vehicle, a trigger planted in one model, or the rules read out of
@@ -178,18 +174,17 @@ irreversible effects (DoD Directive 3000.09), including while the link is jammed
 
 | Adversary | What bounds it | What is left |
 |---|---|---|
-| The stack: Byzantine, may request anything | The governor, the alphabet and the lease's bounds | Whatever the bounds allow, which a quorum voted acceptable |
-| The link: jams, delays, replays, injects | Quorum certificates stop forgery, epoch numbers stop replay, and two declared time bounds cap delay | It can always deny, and denial blocks every irreversible effect |
-| A captured vehicle | Its lease's bounds and remaining life. In its plane it is one replica, which Byzantine agreement tolerates | Its own actuators, and the rules and routes it holds. It can stall the vehicle whose Observer it hosts |
-| A captured plane | Its charter, checked by every governor, and its expiry | Everything inside the current intent, until that expires |
-| A partitioned plane | Agreement needs more than two thirds of its replicas, so at most one part goes on running the mesh | The vehicles of every other part are alone |
-| The supply chain: weights, tools, rules | Admission by vote on a digest. No stack shares a lineage with its Observer, or with a stack whose output it reads in the clear | Every stack of one lineage, each inside its lease's bounds. What the rule cannot see: unlabelled model text, shared annotators |
+| The stack: Byzantine, may request or report anything | The governor, the alphabet, and the lease's bounds and count. Nothing it reports to a peer enables anything | Whatever the bounds allow, which a quorum voted acceptable. A peer misled inside its own bounds |
+| The link: jams, delays, replays, injects | Certificates stop forgery. A plane cut off above stops granting before `K_up` effects are outstanding, and a withheld intent arrives aged | It can always deny, and denial blocks every irreversible effect |
+| A captured vehicle | The rest of its lease's count. It is one vote of seven, where two are tolerated | Its own actuators, and the rules and routes it holds |
+| A captured plane | Its charter, checked by every governor; each honest governor's own tally against `K_up` | Fewer than `K_up` effects from each honest vehicle, inside the intent |
+| Attrition and partition | Membership shrinks 7, 6, 5, 4 on a voted schedule, each step by a quorum of the membership it replaces, so at most one part is the plane | Silencing vehicles spends the plane down to tolerating one capture |
+| The supply chain: weights, tools, rules | Admission by vote on a digest. No stack shares a lineage with its Observer, or with a stack whose output it reads in the clear | Every stack of one lineage, inside its bounds. Model text and annotators the rule cannot see |
 
 **(iii) State of the art and its limits.** Current practice hardens one instance: signed mission loads,
-authenticated links, geofences, and run-time assurance in which a verified monitor overrides an unverified
-controller. Three limits remain. The fleet is a monoculture, so what an adversary learns is durable and transfers.
-Authority and its revocation ride a link the adversary can cut, and what a vehicle does without it is designed per
-platform, not derived from who authorized what. Assurance is argued per configuration, largely by test, so each
+authenticated links, geofences and run-time monitors. Three limits remain. The fleet
+is a monoculture, so what an adversary learns is durable and transfers. Authority rides a link the adversary can
+cut, and what a vehicle does without it is designed per platform. Assurance is argued per configuration, so each
 variant is a new certification. N-version programming assumed that independently developed versions fail
 independently. Knight and Leveson (1986) refuted it by experiment, and versions written by coding agents reopen the
 question (Ron, Baudry and Monperrus, arXiv:2606.20158).
@@ -197,49 +192,51 @@ question (Ron, Baudry and Monperrus, arXiv:2606.20158).
 **(iv) What heterogeneity and the FLASH thrusts add.** The design puts every part of the system in one of three
 positions with respect to variation.
 
-- *Free.* No theorem rests on the stack, so any generated planner or model may be admitted to any
-  vehicle, by a vote on its digest, and no proof reopens. A mission's rules are a bundle that can only refuse. Its
-  mesh may differ in graph, loops, seatings and budget, and its orchestrator chooses only among steps the mechanism
-  has enabled and keeps no state between rounds (ADR-0054, ADR-0055). Within what a quorum voted, one
-  commander varies an intent's area, budget and expiry by one signed act.
-- *Priced.* The governor, the consensus protocol, the policy evaluator and the clocks are trust roots. Changing one
-  is a declared variation, and a tool computes the theorems kept (§2.1).
+- *Free.* No theorem rests on the stack, so any generated planner or model may be admitted to any vehicle, by a vote
+  on its digest, and no proof reopens. A mission's rules are a bundle that can only refuse. Its mesh may differ in
+  graph, loops, topics and budget, and within what a quorum voted one commander varies an intent by one
+  signed act.
+- *Priced.* The governor, Byzantine agreement, the policy evaluator and the clocks are trust roots: the design adds
+  twelve rows to the trusted base (ADR-0068). Changing one is a declared variation, and a tool computes the theorems
+  kept (§2.1).
 - *Required.* Each stack is coupled to an Observer, a second agent that reads its record and may deny and never
-  admit. The two must be of independent lineage. So must any two stacks where one reads the other's output in the
-  clear: a mesh is admitted only if those edges can be two-coloured by the deployment's two lineages (ADR-0035,
-  ADR-0055).
+  admit. The two must be of independent lineage, as must any two stacks where one reads the other's output in the
+  clear, on a mesh edge or a peer topic. A fleet of one build is one lineage: it delivers peer reports unread, as
+  handles, or declares the loss (ADR-0035, ADR-0055, ADR-0065).
 
-*Dynamic* heterogeneity then bounds what adversary knowledge is worth. An intent lives at most `T_intent`, and a
-vehicle alone acts for at most `T_alone`, so a variant issued with an intent is exposed for a declared time. A
-captured vehicle discloses its own plane's rules. Where each plane runs a different variant under the same charter,
-it discloses one instance.
+*Dynamic* heterogeneity then bounds what adversary knowledge is worth in acts, not seconds. An intent grants
+at most its budget of leases, a lease permits at most its count of entries, and an entry runs no further than its
+declared extent. At a plane the commander cannot reach, superseded rules govern fewer than `K_up` effects. A
+captured vehicle discloses its own plane's rules, so where each plane runs a different variant under one charter it
+discloses one instance.
 
-*How far a capture spreads.* Consensus holds a captured vehicle to one vote in its plane. Lineage is there to keep
-one trigger from taking a stack and its Observer together, and alternation to keep it from the next stack. Where a
-loop offers a second hop, labels close the loop's outward steps once untrusted content is read. None bounds
-what a captured vehicle itself does or discloses, and a captor who writes for the other lineage is held only
-by the receiving stack's lease.
+*How far a capture spreads.* Consensus holds a captured vehicle to one vote of seven. Lineage is there to keep one
+trigger from taking a stack and its Observer together, and alternation to keep it from the next stack. A captured
+vehicle's reports arrive labelled untrusted, and reading one only narrows what the reader may do. None bounds
+what the captured vehicle itself does or discloses.
 
-*Assumptions.* The governor is the only path to the actuators. Each clock runs slow by at most a declared fraction.
-Fewer than a third of an exposed plane's replicas are captured. Effects are declared reversible or irreversible as
-they are. *Limitations.* Nothing here bounds a deceived navigation source, a deceived person or a colluding
-Observer. On a plane with no person a false finding stops a vehicle and nobody restores it, so the false-finding
-rate of whatever watches is an availability parameter, to be declared. The governor and the floor are the same on every vehicle by design: that common mode is declared and kept
-small, not removed. *Evaluation.* The experiments of §2.1, with exploit-developing agents seated as stacks.
+*Assumptions.* The governor is the only path to the actuators and the radio. No more replicas are captured than the
+membership tolerates. Effect classes and extents are declared as what they are. *Limitations.* Nothing here
+bounds a deceived navigation source, a deceived person or a colluding Observer. On a plane with no person a false
+finding stops a vehicle and nobody restores it. The governor and the floor are one design on every vehicle, a
+common mode declared and kept small, not removed. *Evaluation.* §2.1's experiments, with attacking agents
+seated as stacks.
 
-**(v) Invariants and degrees of freedom.** Each invariant is a property of the model, checked with a seeded break
-that must violate it (§2.1, §3). No performance property is invariant: time bounds and budgets are declared per
-deployment.
+**(v) Invariants and degrees of freedom.** Each invariant is a theorem of a TLA+ module, proved for every value of
+its constants, with a seeded break that must violate it. The last rests on a premise about clocks, so the
+records call it a declared bound: no bound in seconds is a theorem. Interoperability is by construction: one
+schema for charter and lease, one floor for the tree.
 
 | Invariant across every instance | Kind | Free to vary |
 |---|---|---|
-| Authority only narrows down the tree, and a captured plane issues nothing the root did not vote | Security | The stack on each vehicle: models, planner, perception |
-| Every effect has an authorizing act ordered beforehand at a plane where a person commands | Functional | A mission's rules, and an intent's values inside what was voted |
-| A mesh grants at most the rounds its admission voted, and a finding against one round closes every step downstream | Functional | A mesh's graph, loops, seatings and budget |
-| An irreversible effect is one person's signed act, used once, and no agent's alphabet reaches it | Safety | The tree: planes, replicas per plane, quorum rule |
-| No effect after a lease's life, and a revocation takes hold within `T_intent`, or `T_alone` for a vehicle alone | Timing | The product in each role (consensus, policy evaluator, transport), against a stated obligation |
-| When authority expires a vehicle does only the terminal behaviour fixed when it was seated | Safety | Terminal behaviour per vehicle class, among those voted |
-| One closed schema for charter and lease, one floor, and typed tool interfaces | Interoperability | Declared values: time bounds, budgets, custody of the root key |
+| Authority only narrows down the tree, and no governor accepts a lease outside what the root voted, whoever signs it | Security | The stack on each vehicle: models, planner, perception |
+| Every effect has an intent and a lease ordered before it, and an autonomous plane adds no authority | Functional | A mission's rules, and an intent's values inside what was voted |
+| Fewer than `K_up` effects follow a revocation, from an honest plane or each honest vehicle of a captured one | Safety | A mesh's graph, loops, seatings, topics and budget |
+| An irreversible effect is one person's signed act, for one vehicle, used once and fresh. No agent's alphabet reaches it | Safety | The tree: its planes, and each plane's shrink schedule |
+| A vehicle that stops hearing its plane permits no actuation, and an ended lease leaves only its voted terminal behaviour | Safety | Terminal behaviour per vehicle class, among those voted |
+| An entry within a live lease's count never waits on another vehicle, an Observer or a round of the plane | Availability | Where each Observer sits, declared with the mesh |
+| Nothing a peer originates enables a permit, and what is received is labelled untrusted | Security | The product in each role, against a stated obligation |
+| No grant more than one tick period past an intent's expiry, while captured and slow replicas are fewer than a certificate | Timing | Declared values: `K_up`, the tick period, counts and budgets |
 
 ## 2. Framework, architecture and evaluation (RFI item 2)
 
@@ -247,35 +244,36 @@ deployment.
 modes are not behaviourally equivalent, and are not meant to be. What must be equal is what is guaranteed. In the
 corpus a deployment is a tuple of positions on a lattice of named parameters, and the theorems are stated at its
 maximum, the *archetype* (ADR-0023). Moving a parameter falsifies named premises, and each theorem resting on one is
-absent for that instance. A table binds **[43]** theorems to **[34]**
-premises, and a tool computes an instance's inventory from its declaration. Building it produced three findings
-FLASH will meet.
+absent for that instance. A table binds 43 theorems to 34 premises, and a tool computes an instance's inventory from
+its declaration. Building it produced three findings FLASH will meet.
 
 - Composition is not monotone. Two variations can jointly void a theorem that neither voids alone, so an instance
   that moves two parameters declares the difference.
 - A variation can void no theorem and still change who is trusted. The declaration lists those changes beside the
   theorems.
-- A variant with a capability the maximum lacks is not a variant. It shows that the specification is incomplete.
+- A variant with a capability the maximum lacks is not a variant: it shows the specification is incomplete. The
+  command-chain design is the worked case, filed as an overlay that reports what the pattern lacks.
 
 The suggestion to FLASH is to call two generated instances equivalent when they hold the same inventory on the same
 trusted base, and otherwise to have the generator state what each loses.
 
 *Collateral.* An instance's assurance artifact is its declaration: the parameters it moved, the premises those
-moves falsify, the theorems voided and the trust roots it stands on. One binding computes it for every instance.
+moves falsify, the theorems voided and the trust roots it stands on. A graph of 419 nodes and 435 typed edges
+(ADR-0057) computes it and grades each theorem by its weakest edge. Of the reference it reports that 19 of the 43
+theorems hold, every one at the weakest grade, because nothing yet proves the code against the model.
 
 *Heterogeneity, measured against what an adversary can reuse.* Four measures, the cheapest first.
 
 1. *Lineage independence* (ADR-0035). A model's lineage record is computed from the build log, not written by
    whoever trained it. Two lineages are independent only if five exclusions hold: different weight roots, no shared
    generator of training content, corpus overlap under a threshold, different architecture family and tokenizer, and
-   no shared curator. Each share is an upper bound, so uncertainty can only fail a pair, and the relation is not
+   no shared curator. Shares are upper bounds, so uncertainty can only fail a pair, and the relation is not
    transitive, so every pair is checked. In a rehearsal on public corpora the overlap measure gave 1.0 for a
    filtered crawl inside its parent and 0 against public-domain books.
 2. *Shared trust roots.* The trusted base is a table of rows, each classed by whether its failure can add authority
-   (ADR-0045). The rows two instances share are their common-mode surface, and variation elsewhere does not shrink
-   it.
-3. *Correlated misses.* On planted defects held out from both lineages, a pair fails when its joint miss rate
-   exceeds a set multiple of the product of the two rates. A failure removes the pair. A pass grants nothing.
+   (ADR-0045). Rows two instances share are their common mode.
+3. *Correlated misses.* On planted defects held out from both, a pair fails when its joint miss rate exceeds a set
+   multiple of the product of the two. A pass grants nothing.
 4. *Transfer under adaptive attack* (proposed here, and not run). Seat exploit-developing agents as stacks, with the
    alphabet and the specification in hand. Count effects outside the lease's bounds: the design says there are none,
    and one counterexample refutes it. Of attacks that succeed inside the bounds on one instance, measure the share
@@ -288,50 +286,54 @@ reachable (ADR-0046).
 
 **2.2 Induction and deduction (ii).** The corpus was produced by the loop the notice describes. An AI assistant
 drafts a record, a module, its mutations and its proof. The oracles are the TLC model checker, the TLA+ Proof System
-(a solver's answer counts only with a certificate a proof checker accepts) and the Lean 4 kernel. One person
-decides. Four lessons:
+(a solver's answer counts only with a checked certificate) and the Lean 4 kernel. One person decides. Four lessons:
 
-- *Counterexamples change the design.* The first check of the credential model showed that renewal which only
-  narrows guarantees nothing while a holder may take a fresh grant. A soundness claim in the lineage rule was false,
-  and 2,000 random trials showed it.
+- *Counterexamples change the design.* The ten command-chain records were modelled and proved the day they were
+  drafted, and each took what its module found. A captured plane can sign more leases than its budget. A replica
+  could sign two removals, leaving two successors. One release act could fire on every vehicle.
 - *The oracle has a trusted base.* This work found two cases in which the prover's translation of an obligation is
   unsound, reported upstream as tlaplus/tlapm issues 309 and 310. A second method re-proves sixteen modules in Lean,
   and three of those encodings are compared with the model checker's state graphs.
-- *Evidence is regenerated, never edited.* Each results file names the digests of module, checker and prover, a
-  script reports what is stale, and a claim is *checked*, *proved* or *certified*.
-- *Structure makes induction tractable.* Properties are local: a flag the violating action would set, shallow
-  actions over finite domains, one constant that selects a mutation. The method is packaged as an agent skill.
+- *Evidence is regenerated, never edited.* Each results file names the digests of module, checker and prover,
+  stale ones are reported, and a claim is *checked*, *proved* or *certified*.
+- *A second instrument finds what the first left.* Drawing nine diagrams of the same records found inconsistencies
+  the modules could not see. Properties are kept local (a flag the violating action would set, one constant that
+  selects a mutation), so both stay cheap.
 
-**2.3 Agent architectures (iii).** A generated design entering service is a grant of authority. The Byzantine threat sits at design time, because design agents write the specifications and
-policies the running system is later judged against.
+**2.3 Agent architectures (iii).** A generated design entering service is a grant of authority. The Byzantine threat
+sits at design time, because design agents write the specifications and policies the running system is later judged
+against.
 
-- *One agent.* A design agent has six typed actions (read from a pinned corpus, draft, invoke an allowlisted tool,
-  emit, submit, vote), no shell and no network, and an Observer whose findings subtract authority and never add it.
+- *One agent.* A design agent has six typed actions, no shell and no network, and an Observer whose findings
+  subtract authority and never add it.
 - *Admission.* An artifact leaves design only by *promotion*: a vote on its digest in which the author cannot vote
   and at least one veto seat is of lineage independent of the author's.
 - *Many agents.* A workflow is a promoted graph (ADR-0054), and a mesh is one that may loop under a voted budget
-  (ADR-0055). Its promotion seats every agent in it, and no agent grants another. The mechanism routes on typed attributes. An orchestrating agent chooses only among steps whose
-  guards already hold, so it affects how good the work is and never whether it is safe.
+  (ADR-0055). Its promotion seats every agent in it, and no agent grants another. An orchestrating agent chooses only
+  among steps whose guards already hold, so it affects how good the work is and never whether it is safe.
 
 **2.4 Reusable libraries (iv).** All of it is public under the licences above.
 
 | Library | Form | Standing |
 |---|---|---|
-| Credential, seats, confinement attestation, Observer coupling, policy composition, emergency seating, workflows, meshes | TLA+ modules with mutations and witnesses; **[24]** proof modules, about 3,000 obligations | Checked. Proved where a proof module exists; **[21]** certify |
-| Layered planes: `Federation`, `Intent`, `Disconnected` | TLA+ modules, by the same method | Checked **[date]**. Not proved |
+| The pattern's mechanisms: credential, seats, confinement, coupling, policy, workflows, meshes, the command chain | 39 TLA+ modules with mutations and witnesses; 32 proof modules, 11,016 obligations | Checked. Proved where a proof module exists; 29 certify |
+| The command chain: `Federation`, `Membership`, `Intent`, `Alone`, `Outstanding`, `PlaneClock`, `Peer`, `Release` | Eight of those modules, each with its proof: 5,600 obligations | Checked, proved and certified 2026.11.10. Not in Lean |
 | A second route | Lean 4 encodings of sixteen modules and of the admit decision | Proved in Lean, of the encodings |
 | Policy floor | Cedar, with schema, tests and non-vacuity gates | Draft |
-| Theorem-to-premise binding | JSON, with the inventory tool | Kept by hand |
+| Theorem-to-premise binding; specification graph | JSON, with the tools that compute an inventory | Kept by hand |
 | Lineage gate | Log projector and exclusion-rule suite | Rehearsed |
 
 ## 3. Standing of these claims
 
 Everything above, this response included, is one person's work with an AI assistant, and no reader independent of
-the author has reviewed it. Each decision record is ratified by its author alone and reads as *author-ratified*; two that §1 leans on are also provisional. The theorems are of the design. No refinement to the
-running code exists: the reference is tied to the model by replayed traces and by two functions proved in Lean. At
-the reference no agent is yet confined, and one that can reach a shell is outside every guarantee. A lineage record
-there is computed from the log, but training runs outside confinement, so it counts as declared. The layered-plane
-design is checked at small constants, not proved and not built. Its time bounds are placeholders. The prover's two unsound cases are kept out of the proofs by a writing rule and a scan, not by a
-check.
+the author has reviewed it. Each decision record is ratified by its author alone and reads as *author-ratified*;
+some that §1 leans on are also provisional. The theorems are of the design. No refinement to the running code
+exists: the reference is tied to the model by replayed traces and by two functions proved in Lean, which the code
+has since moved past. At the reference no agent is yet confined, and one that can reach a shell is outside every
+guarantee. Lineage records there count as declared, since training runs outside confinement. Of the command chain nothing is built, and its floor stage is unwritten. Its modules are small: a chain of
+three planes, a membership of five where the record asks seven. Its numbers are placeholders, and four of its trust
+roots on a vehicle have identities nothing yet issues. In its eight proofs the temporal step, 52 obligations, rests
+on a backend no checker confirms. The prover's two unsound cases are kept out of every proof by a writing rule and a
+scan, not by a check.
 
 <!-- END RESPONSE -->
