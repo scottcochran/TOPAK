@@ -120,6 +120,17 @@ Coupling_live | EXTENDS SpecL | Mut = "none"; K = 0; R = 3; MaxRound = 2 | NextL
 Coupling_live | EXTENDS SpecL | Mut = "none"; K = 2; R = 4; MaxRound = 3 | NextL |
 Emergency_live | EXTENDS SpecL | Mut = "none"; MaxRound = 2 | NextL |
 Emergency_live | EXTENDS SpecL | Mut = "none"; MaxRound = 3 | NextL |
+# live-gen-results.sh, the command-chain overlay's eight modules (ADR-0059 to ADR-0066, Proposed), each at the defaults its row file names.
+Federation | EXTENDS Spec | Mut = "none"; MaxEpoch = 0; RootBudget = 2; Captured = {"a"}; Verifiers = {"g"} | Next |
+# The bound: every honest replica of every membership reached has spent its one vote (FirstVote). A split vote, with no certificate formed, ends here too: safe, and a stall the module has no ballot or view change to end.
+Membership | EXTENDS Spec | Mut = "none"; Floor = 1; Schedule = {5,4}; Captured = {"r1"}; MaxBallots = 30 | Next | \A m \in Reached : \A r \in m \ Captured : \E b \in votes : b.voter = r /\ b.from = m
+Intent | EXTENDS Spec | Mut = "none"; Vehicles = {"v1"}; SeatingBudget = 1; MaxRound = 2; MaxLease = 2; MaxCount = 1; MaxEffects = 2 | Next |
+Alone | EXTENDS Spec | Mut = "none"; Count = 1; MaxBeacon = 1; MaxGrant = 1; MaxFence = 0; Seated = "return" | Next |
+# The bound: the revocation is ordered, a watermark after it has stopped the plane, and no lease is still live.
+Outstanding | EXTENDS Spec | Mut = "none"; KUp = 2; MaxCount = 2; Active = {"l1","l2"}; PlaneCaptured = FALSE | Next | revoked /\ pStopped /\ \A x \in Slots : slot[x].st # "live"
+PlaneClock | EXTENDS Spec | Mut = "none"; Replicas = {"r1","r2","r3","r4"}; Cert = 3; Captured = {"r1"}; Slow = {"r2"}; Fast = {}; GovClass = "sound"; P = 2; Base = 0; D = 1; MaxExtent = 1; MaxNow = 7; MaxTick = 4 | Next |
+Peer | EXTENDS Spec | Mut = "none"; MaxDeliver = 2; MaxSend = 1 | Next |
+Release | EXTENDS Spec | Mut = "none"; MaxActs = 2; MaxTick = 1; FreshT = 0 | Next |
 # lean/graph-check.sh: its two unmutated rows, through the Dump module it writes.
 Seats | Dump lean/graph-check.sh OnlyThinkersAuthor OneSeatPerPrincipal | Mut = "none" | Next |
 FloorComposition | Dump lean/graph-check.sh AdmitImpliesFloorPermit FloorErrorIsDeny BundleRefusalHonored BundleCannotWriteFloorInputs EnvelopeHolds | Mut = "none" | Next |
@@ -153,7 +164,7 @@ toollist-run.sh, toollist-gen-results.sh | ToolList
 operators-run.sh, operators-gen-results.sh | Operators
 correlator-run.sh, correlator-gen-results.sh | Correlator
 labels-run.sh, labels-gen-results.sh | Labels
-live-gen-results.sh | Coupling_live Emergency_live
+live-gen-results.sh | Coupling_live Emergency_live Federation Membership Intent Alone Outstanding PlaneClock Peer Release
 lean/graph-check.sh | SeatsDump FloorCompositionDump
 lean/graph-check-emergency.sh | EmergencyDump Emergency_liveDump
 SCRIPTS

@@ -1,0 +1,34 @@
+# Rows for live-gen-results.sh Peer: name mut spec kind property expected [CONST=value ...] [states=N]
+# Run: DEFAULTS='MaxDeliver=2 MaxSend=1' ./live-gen-results.sh Peer Peer-rows.txt "<title>"
+# expected: none: every property HOLDS at both bounds and every witness is VIOLATED, including NeverPermitUnderRelayedLease, which is the module header's finding on §1; M_PEERENABLES breaks PeerAddsNothing and NarrowsInReceived only; M_SENDERLABEL breaks ReceivedIsUntrusted only; M_ANYTOPIC breaks SendWithinTopics only.
+#
+# Mut = none.
+s-none-safe          none           Spec INVARIANT Safe                         HOLDS
+s-none-safe-3        none           Spec INVARIANT Safe                         HOLDS    MaxDeliver=3
+# Witnesses.
+w-permit             none           Spec INVARIANT NeverPermitted               VIOLATED
+w-narrowed           none           Spec INVARIANT NeverNarrowedByClear         VIOLATED
+w-handle             none           Spec INVARIANT NeverPermitAfterHandle       VIOLATED
+w-measured           none           Spec INVARIANT NeverRefusedByMeasured       VIOLATED
+w-fence              none           Spec INVARIANT NeverStoppedByFence          VIOLATED
+w-dropped            none           Spec INVARIANT NeverDroppedOffTopic         VIOLATED
+w-refdecl            none           Spec INVARIANT NeverSendRefusedDeclared     VIOLATED
+w-refbundle          none           Spec INVARIANT NeverSendRefusedByBundle     VIOLATED
+w-sent               none           Spec INVARIANT NeverSent                    VIOLATED
+w-labellow           none           Spec INVARIANT NeverSenderLabelledLow       VIOLATED
+w-relayedlease       none           Spec INVARIANT NeverPermitUnderRelayedLease VIOLATED
+# M_PEERENABLES.
+m-enables-adds       M_PEERENABLES  Spec INVARIANT PeerAddsNothing              VIOLATED
+m-enables-narrows    M_PEERENABLES  Spec INVARIANT NarrowsInReceived            VIOLATED
+m-enables-untrusted  M_PEERENABLES  Spec INVARIANT ReceivedIsUntrusted          HOLDS
+m-enables-send       M_PEERENABLES  Spec INVARIANT SendWithinTopics             HOLDS
+# M_SENDERLABEL.
+m-label-untrusted    M_SENDERLABEL  Spec INVARIANT ReceivedIsUntrusted          VIOLATED
+m-label-adds         M_SENDERLABEL  Spec INVARIANT PeerAddsNothing              HOLDS
+m-label-narrows      M_SENDERLABEL  Spec INVARIANT NarrowsInReceived            HOLDS
+m-label-send         M_SENDERLABEL  Spec INVARIANT SendWithinTopics             HOLDS
+# M_ANYTOPIC.
+m-topic-send         M_ANYTOPIC     Spec INVARIANT SendWithinTopics             VIOLATED
+m-topic-adds         M_ANYTOPIC     Spec INVARIANT PeerAddsNothing              HOLDS
+m-topic-narrows      M_ANYTOPIC     Spec INVARIANT NarrowsInReceived            HOLDS
+m-topic-untrusted    M_ANYTOPIC     Spec INVARIANT ReceivedIsUntrusted          HOLDS

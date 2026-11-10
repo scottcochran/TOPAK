@@ -1,0 +1,5749 @@
+TOPAK — Outstanding.tla (ADR-0063 §8), TLC results 2026.11.10
+Module: Outstanding.tla (sha256 8ecb0b147c7748ac) · TLC Version 2.19 of 08 August 2024 (jar sha256 936a262061c91469) · openjdk version "25.0.1" 2025-10-21
+Runner: live-gen-results.sh (sha256 b4d8857ad6fb6081) · rows: Outstanding-rows.txt (sha256 e4b1ec2b6e445c19) · KUp = 2 · MaxCount = 2 · Active = {"l1","l2"} · PlaneCaptured = FALSE unless the row says otherwise · TLC -workers 1 -fp 0, with -deadlock except on a DEADLOCK row
+expected: none: every property HOLDS at an honest and a captured plane and every witness VIOLATED; NeverGranted HOLDS at KUp=1, which is finding 4; M_NOCHARGE breaks EffectsAfterHonest only; M_ATMOST breaks the bound on effects and on unread effects; M_TRUSTMARK breaks both under a captured plane and neither under an honest one; M_EARLYRELEASE breaks SealedIsSpent and the effects bounds; M_NOSTOP breaks the two effects bounds and not HavocPlaneBoundedInEffects; M_ORDEREDFREE breaks the per-governor bounds under a captured plane and neither under an honest one.
+
+=== s-none-safe · Mut=none · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=FALSE · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 5.7E-11
+69166 states generated, 22814 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 21.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 9 and the 95th percentile is 3).
+Finished in 05s at (2026-11-10 06:47:17)
+→ HOLDS (expected HOLDS: as expected)
+
+=== s-none-safe-c · Mut=none · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=TRUE · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 4.9E-10
+  based on the actual fingerprints:  val = 1.0E-10
+211254 states generated, 58718 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 21.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 9 and the 95th percentile is 3).
+Finished in 06s at (2026-11-10 06:47:24)
+→ HOLDS (expected HOLDS: as expected)
+
+=== s-none-safe-k3 · Mut=none · KUp=3 MaxCount=3 Active={"l1","l2"} PlaneCaptured=FALSE · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.5E-9
+  based on the actual fingerprints:  val = 7.7E-10
+474818 states generated, 132506 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 23.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 3).
+Finished in 07s at (2026-11-10 06:47:31)
+→ HOLDS (expected HOLDS: as expected)
+
+=== s-none-safe-k3-c · Mut=none · KUp=3 MaxCount=3 Active={"l1","l2"} PlaneCaptured=TRUE · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.3E-9
+  based on the actual fingerprints:  val = 2.1E-9
+914118 states generated, 222666 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 23.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 3).
+Finished in 08s at (2026-11-10 06:47:41)
+→ HOLDS (expected HOLDS: as expected)
+
+=== s-none-safe-3slot · Mut=none · KUp=3 MaxCount=1 Active={"l1","l2","l3"} PlaneCaptured=FALSE · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.0E-6
+  based on the actual fingerprints:  val = 1.5E-6
+13828306 states generated, 3603446 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 27.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 3).
+Finished in 50s at (2026-11-10 06:48:32)
+→ HOLDS (expected HOLDS: as expected)
+
+=== w-granted · Mut=none · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=FALSE · SPECIFICATION Spec · INVARIANT NeverGranted
+Error: Invariant NeverGranted is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ slot = [ l1 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {}
+State 2: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant"}
+2 states generated, 2 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 05s at (2026-11-10 06:48:37)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-effect · Mut=none · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=FALSE · SPECIFICATION Spec · INVARIANT NeverEffect
+Error: Invariant NeverEffect is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ slot = [ l1 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {}
+State 2: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant"}
+State 3: <Effect line 154, col 3 to line 160, col 46 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant", "effect"}
+15 states generated, 11 distinct states found, 8 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 9 (minimum is 9, the maximum 9 and the 95th percentile is 9).
+Finished in 05s at (2026-11-10 06:48:43)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-after · Mut=none · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=FALSE · SPECIFICATION Spec · INVARIANT NeverEffectAfter
+Error: Invariant NeverEffectAfter is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ slot = [ l1 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {}
+State 2: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant"}
+State 3: <Revoke line 170, col 3 to line 173, col 50 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"revoked", "grant"}
+State 4: <Effect line 154, col 3 to line 160, col 46 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"revoked", "grant", "effect"}
+65 states generated, 49 distinct states found, 35 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 4 (minimum is 0, the maximum 9 and the 95th percentile is 9).
+Finished in 05s at (2026-11-10 06:48:49)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-tight · Mut=none · KUp=3 MaxCount=3 Active={"l1","l2"} PlaneCaptured=FALSE · SPECIFICATION Spec · INVARIANT NeverTight
+Error: Invariant NeverTight is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ slot = [ l1 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {}
+State 2: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 2,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant"}
+State 3: <Revoke line 170, col 3 to line 173, col 50 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 2,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"revoked", "grant"}
+State 4: <Effect line 154, col 3 to line 160, col 46 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 2,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"revoked", "grant", "effect"}
+State 5: <Effect line 154, col 3 to line 160, col 46 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 2,
+        used |-> 2,
+        after |-> 2,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"revoked", "grant", "effect"}
+1368 states generated, 565 distinct states found, 374 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 13 and the 95th percentile is 6).
+Finished in 05s at (2026-11-10 06:48:54)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-refbound · Mut=none · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=FALSE · SPECIFICATION Spec · INVARIANT NeverRefusedAtBound
+Error: Invariant NeverRefusedAtBound is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ slot = [ l1 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {}
+State 2: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant"}
+State 3: <RefuseBound line 225, col 3 to line 229, col 59 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant", "refBound"}
+18 states generated, 14 distinct states found, 11 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 9 (minimum is 9, the maximum 9 and the 95th percentile is 9).
+Finished in 05s at (2026-11-10 06:49:00)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-refgov · Mut=none · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=TRUE · SPECIFICATION Spec · INVARIANT NeverGovernorRefused
+Error: Invariant NeverGovernorRefused is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ slot = [ l1 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {}
+State 2: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant"}
+State 3: <RefuseGov line 233, col 3 to line 237, col 59 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant", "refGov"}
+33 states generated, 16 distinct states found, 13 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 9 (minimum is 9, the maximum 9 and the 95th percentile is 9).
+Finished in 05s at (2026-11-10 06:49:05)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-stopped · Mut=none · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=FALSE · SPECIFICATION Spec · INVARIANT NeverStopped
+Error: Invariant NeverStopped is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ slot = [ l1 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {}
+State 2: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant"}
+State 3: <Seal line 164, col 3 to line 166, col 59 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "sealed",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant"}
+State 4: <Revoke line 170, col 3 to line 173, col 50 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "sealed",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"revoked", "grant"}
+State 5: <Mark line 177, col 3 to line 181, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "sealed",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "after",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"mark", "revoked", "grant"}
+State 6: <HearP line 186, col 3 to line 192, col 43 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "sealed",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "after",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = TRUE
+/\ spent = FALSE
+/\ seen = {"mark", "revoked", "grant", "release"}
+365 states generated, 218 distinct states found, 102 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 9 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:49:11)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-laterelease · Mut=none · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=FALSE · SPECIFICATION Spec · INVARIANT NeverLateRelease
+Error: Invariant NeverLateRelease is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ slot = [ l1 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {}
+State 2: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant"}
+State 3: <Seal line 164, col 3 to line 166, col 59 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "sealed",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant"}
+State 4: <Mark line 177, col 3 to line 181, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "sealed",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "before",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"mark", "grant"}
+State 5: <Revoke line 170, col 3 to line 173, col 50 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "sealed",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "before",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"mark", "revoked", "grant"}
+State 6: <HearP line 186, col 3 to line 192, col 43 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "sealed",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "before",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"mark", "revoked", "grant", "release", "lateRelease"}
+358 states generated, 215 distinct states found, 101 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 9 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:49:17)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-recycled · Mut=none · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=FALSE · SPECIFICATION Spec · INVARIANT NeverRecycled
+Error: Invariant NeverRecycled is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ slot = [ l1 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {}
+State 2: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant"}
+State 3: <Seal line 164, col 3 to line 166, col 59 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "sealed",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant"}
+State 4: <Mark line 177, col 3 to line 181, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "sealed",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "before",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"mark", "grant"}
+State 5: <HearP line 186, col 3 to line 192, col 43 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "sealed",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "before",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"mark", "grant", "release"}
+State 6: <HearG line 196, col 3 to line 201, col 43 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "sealed",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "before",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"mark", "grant", "release"}
+State 7: <Reclaim line 215, col 3 to line 221, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"mark", "grant", "release", "reclaim"}
+655 states generated, 387 distinct states found, 175 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 9 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:49:22)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-covered · Mut=none · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=FALSE · SPECIFICATION Spec · INVARIANT NeverCovered
+Error: Invariant NeverCovered is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ slot = [ l1 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {}
+State 2: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant"}
+State 3: <Seal line 164, col 3 to line 166, col 59 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "sealed",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant"}
+State 4: <Mark line 177, col 3 to line 181, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "sealed",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "before",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"mark", "grant"}
+62 states generated, 46 distinct states found, 33 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 4 (minimum is 0, the maximum 9 and the 95th percentile is 9).
+Finished in 05s at (2026-11-10 06:49:28)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-k1-nogrant · Mut=none · KUp=1 MaxCount=1 Active={"l1","l2"} PlaneCaptured=FALSE · SPECIFICATION Spec · INVARIANT NeverGranted
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 0.0
+2 states generated, 2 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 2.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 1 and the 95th percentile is 1).
+Finished in 05s at (2026-11-10 06:49:34)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-nocharge-honest · Mut=M_NOCHARGE · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=FALSE · SPECIFICATION Spec · INVARIANT EffectsAfterHonest
+Error: Invariant EffectsAfterHonest is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ slot = [ l1 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {}
+State 2: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant"}
+State 3: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "live",
+        gov |-> "g2",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> TRUE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant"}
+State 4: <Revoke line 170, col 3 to line 173, col 50 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "live",
+        gov |-> "g2",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> TRUE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"revoked", "grant"}
+State 5: <Effect line 154, col 3 to line 160, col 46 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "live",
+        gov |-> "g2",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> TRUE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"revoked", "grant", "effect"}
+State 6: <Effect line 154, col 3 to line 160, col 46 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "live",
+        gov |-> "g2",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> TRUE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"revoked", "grant", "effect"}
+612 states generated, 310 distinct states found, 174 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 9 and the 95th percentile is 5).
+Finished in 05s at (2026-11-10 06:49:39)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-nocharge-pergov · Mut=M_NOCHARGE · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=FALSE · SPECIFICATION Spec · INVARIANT EffectsAfterPerGovernor
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 4.0E-12
+17404 states generated, 7558 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 17.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 9 and the 95th percentile is 2).
+Finished in 05s at (2026-11-10 06:49:45)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-nocharge-havoc · Mut=M_NOCHARGE · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=FALSE · SPECIFICATION Spec · INVARIANT HavocPlaneBoundedInEffects
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 4.0E-12
+17404 states generated, 7558 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 17.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 9 and the 95th percentile is 2).
+Finished in 05s at (2026-11-10 06:49:51)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-nocharge-sealed · Mut=M_NOCHARGE · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=FALSE · SPECIFICATION Spec · INVARIANT SealedIsSpent
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 4.0E-12
+17404 states generated, 7558 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 17.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 9 and the 95th percentile is 2).
+Finished in 05s at (2026-11-10 06:49:56)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-atmost-honest · Mut=M_ATMOST · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=FALSE · SPECIFICATION Spec · INVARIANT EffectsAfterHonest
+Error: Invariant EffectsAfterHonest is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ slot = [ l1 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {}
+State 2: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 2,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant"}
+State 3: <Revoke line 170, col 3 to line 173, col 50 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 2,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"revoked", "grant"}
+State 4: <Effect line 154, col 3 to line 160, col 46 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 2,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"revoked", "grant", "effect"}
+State 5: <Effect line 154, col 3 to line 160, col 46 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 2,
+        used |-> 2,
+        after |-> 2,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"revoked", "grant", "effect"}
+1013 states generated, 513 distinct states found, 342 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 13 and the 95th percentile is 6).
+Finished in 05s at (2026-11-10 06:50:02)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-atmost-pergov · Mut=M_ATMOST · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=FALSE · SPECIFICATION Spec · INVARIANT EffectsAfterPerGovernor
+Error: Invariant EffectsAfterPerGovernor is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ slot = [ l1 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {}
+State 2: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 2,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant"}
+State 3: <Revoke line 170, col 3 to line 173, col 50 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 2,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"revoked", "grant"}
+State 4: <Effect line 154, col 3 to line 160, col 46 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 2,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"revoked", "grant", "effect"}
+State 5: <Effect line 154, col 3 to line 160, col 46 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 2,
+        used |-> 2,
+        after |-> 2,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"revoked", "grant", "effect"}
+1013 states generated, 513 distinct states found, 342 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 13 and the 95th percentile is 6).
+Finished in 05s at (2026-11-10 06:50:08)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-atmost-havoc · Mut=M_ATMOST · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=FALSE · SPECIFICATION Spec · INVARIANT HavocPlaneBoundedInEffects
+Error: Invariant HavocPlaneBoundedInEffects is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ slot = [ l1 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {}
+State 2: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 2,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant"}
+State 3: <Effect line 154, col 3 to line 160, col 46 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 2,
+        used |-> 1,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant", "effect"}
+State 4: <Effect line 154, col 3 to line 160, col 46 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 2,
+        used |-> 2,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant", "effect"}
+291 states generated, 163 distinct states found, 123 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 4 (minimum is 0, the maximum 13 and the 95th percentile is 7).
+Finished in 05s at (2026-11-10 06:50:13)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-atmost-sealed · Mut=M_ATMOST · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=FALSE · SPECIFICATION Spec · INVARIANT SealedIsSpent
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.7E-9
+  based on the actual fingerprints:  val = 7.7E-10
+370554 states generated, 132170 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 23.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 13 and the 95th percentile is 3).
+Finished in 06s at (2026-11-10 06:50:20)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-trust-pergov · Mut=M_TRUSTMARK · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=TRUE · SPECIFICATION Spec · INVARIANT EffectsAfterPerGovernor
+Error: Invariant EffectsAfterPerGovernor is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ slot = [ l1 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {}
+State 2: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant"}
+State 3: <Revoke line 170, col 3 to line 173, col 50 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"revoked", "grant"}
+State 4: <Effect line 154, col 3 to line 160, col 46 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"revoked", "grant", "effect"}
+State 5: <Seal line 164, col 3 to line 166, col 59 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "sealed",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"revoked", "grant", "effect"}
+State 6: <HearWord line 205, col 3 to line 211, col 59 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "sealed",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"revoked", "grant", "effect"}
+State 7: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "sealed",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"revoked", "grant", "effect"}
+State 8: <Effect line 154, col 3 to line 160, col 46 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "sealed",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"revoked", "grant", "effect"}
+9495 states generated, 3658 distinct states found, 2054 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 9 and the 95th percentile is 5).
+Finished in 05s at (2026-11-10 06:50:26)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-trust-havoc · Mut=M_TRUSTMARK · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=TRUE · SPECIFICATION Spec · INVARIANT HavocPlaneBoundedInEffects
+Error: Invariant HavocPlaneBoundedInEffects is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ slot = [ l1 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {}
+State 2: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant"}
+State 3: <Effect line 154, col 3 to line 160, col 46 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant", "effect"}
+State 4: <Seal line 164, col 3 to line 166, col 59 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "sealed",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant", "effect"}
+State 5: <HearWord line 205, col 3 to line 211, col 59 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "sealed",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant", "effect"}
+State 6: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "sealed",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant", "effect"}
+State 7: <Effect line 154, col 3 to line 160, col 46 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "sealed",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant", "effect"}
+3766 states generated, 1533 distinct states found, 931 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 9 and the 95th percentile is 6).
+Finished in 05s at (2026-11-10 06:50:32)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-trust-sealed · Mut=M_TRUSTMARK · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=TRUE · SPECIFICATION Spec · INVARIANT SealedIsSpent
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.7E-9
+  based on the actual fingerprints:  val = 4.2E-9
+376406 states generated, 118590 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 21.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 9 and the 95th percentile is 3).
+Finished in 06s at (2026-11-10 06:50:39)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-trust-honest · Mut=M_TRUSTMARK · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=FALSE · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 5.7E-11
+69166 states generated, 22814 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 21.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 9 and the 95th percentile is 3).
+Finished in 05s at (2026-11-10 06:50:45)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-early-sealed · Mut=M_EARLYRELEASE · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=FALSE · SPECIFICATION Spec · INVARIANT SealedIsSpent
+Error: Invariant SealedIsSpent is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ slot = [ l1 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {}
+State 2: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant"}
+State 3: <Mark line 177, col 3 to line 181, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "before",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"mark", "grant"}
+State 4: <Effect line 154, col 3 to line 160, col 46 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 0,
+        mark |-> "before",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = TRUE
+/\ seen = {"mark", "grant", "effect"}
+74 states generated, 58 distinct states found, 44 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 5 (minimum is 0, the maximum 9 and the 95th percentile is 9).
+Finished in 05s at (2026-11-10 06:50:50)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-early-honest · Mut=M_EARLYRELEASE · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=FALSE · SPECIFICATION Spec · INVARIANT EffectsAfterHonest
+Error: Invariant EffectsAfterHonest is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ slot = [ l1 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {}
+State 2: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant"}
+State 3: <Mark line 177, col 3 to line 181, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "before",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"mark", "grant"}
+State 4: <HearP line 186, col 3 to line 192, col 43 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "before",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"mark", "grant", "release"}
+State 5: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "before",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "live",
+        gov |-> "g2",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"mark", "grant", "release"}
+State 6: <Revoke line 170, col 3 to line 173, col 50 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "before",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "live",
+        gov |-> "g2",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"mark", "revoked", "grant", "release"}
+State 7: <Effect line 154, col 3 to line 160, col 46 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "before",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "live",
+        gov |-> "g2",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = TRUE
+/\ seen = {"mark", "revoked", "grant", "effect", "release"}
+State 8: <Effect line 154, col 3 to line 160, col 46 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "before",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "live",
+        gov |-> "g2",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = TRUE
+/\ seen = {"mark", "revoked", "grant", "effect", "release"}
+5878 states generated, 2882 distinct states found, 1647 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 9 and the 95th percentile is 6).
+Finished in 05s at (2026-11-10 06:50:56)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-early-pergov · Mut=M_EARLYRELEASE · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=FALSE · SPECIFICATION Spec · INVARIANT EffectsAfterPerGovernor
+Error: Invariant EffectsAfterPerGovernor is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ slot = [ l1 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {}
+State 2: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant"}
+State 3: <Mark line 177, col 3 to line 181, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "before",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"mark", "grant"}
+State 4: <HearP line 186, col 3 to line 192, col 43 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "before",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"mark", "grant", "release"}
+State 5: <HearG line 196, col 3 to line 201, col 43 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "before",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"mark", "grant", "release"}
+State 6: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "before",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"mark", "grant", "release"}
+State 7: <Revoke line 170, col 3 to line 173, col 50 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "before",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"mark", "revoked", "grant", "release"}
+State 8: <Effect line 154, col 3 to line 160, col 46 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "before",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = TRUE
+/\ seen = {"mark", "revoked", "grant", "effect", "release"}
+State 9: <Effect line 154, col 3 to line 160, col 46 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "before",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = TRUE
+/\ seen = {"mark", "revoked", "grant", "effect", "release"}
+15495 states generated, 7102 distinct states found, 4139 states left on queue.
+The depth of the complete state graph search is 9.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 9 and the 95th percentile is 5).
+Finished in 05s at (2026-11-10 06:51:02)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-early-havoc · Mut=M_EARLYRELEASE · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=FALSE · SPECIFICATION Spec · INVARIANT HavocPlaneBoundedInEffects
+Error: Invariant HavocPlaneBoundedInEffects is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ slot = [ l1 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {}
+State 2: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant"}
+State 3: <Mark line 177, col 3 to line 181, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "before",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"mark", "grant"}
+State 4: <Effect line 154, col 3 to line 160, col 46 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 0,
+        mark |-> "before",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = TRUE
+/\ seen = {"mark", "grant", "effect"}
+State 5: <HearP line 186, col 3 to line 192, col 43 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 0,
+        mark |-> "before",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = TRUE
+/\ seen = {"mark", "grant", "effect", "release"}
+State 6: <HearG line 196, col 3 to line 201, col 43 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 0,
+        mark |-> "before",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = TRUE
+/\ seen = {"mark", "grant", "effect", "release"}
+State 7: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 0,
+        mark |-> "before",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = TRUE
+/\ seen = {"mark", "grant", "effect", "release"}
+State 8: <Effect line 154, col 3 to line 160, col 46 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 0,
+        mark |-> "before",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = TRUE
+/\ seen = {"mark", "grant", "effect", "release"}
+5701 states generated, 2810 distinct states found, 1602 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 9 and the 95th percentile is 6).
+Finished in 05s at (2026-11-10 06:51:07)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-nostop-honest · Mut=M_NOSTOP · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=FALSE · SPECIFICATION Spec · INVARIANT EffectsAfterHonest
+Error: Invariant EffectsAfterHonest is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ slot = [ l1 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {}
+State 2: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant"}
+State 3: <Revoke line 170, col 3 to line 173, col 50 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"revoked", "grant"}
+State 4: <Effect line 154, col 3 to line 160, col 46 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"revoked", "grant", "effect"}
+State 5: <Seal line 164, col 3 to line 166, col 59 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "sealed",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"revoked", "grant", "effect"}
+State 6: <Mark line 177, col 3 to line 181, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "sealed",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "after",
+        read |-> 1,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"mark", "revoked", "grant", "effect"}
+State 7: <HearP line 186, col 3 to line 192, col 43 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "sealed",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "after",
+        read |-> 1,
+        pc |-> FALSE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"mark", "revoked", "grant", "effect", "release"}
+State 8: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "sealed",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "after",
+        read |-> 1,
+        pc |-> FALSE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "live",
+        gov |-> "g2",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"mark", "revoked", "grant", "effect", "release"}
+State 9: <Effect line 154, col 3 to line 160, col 46 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "sealed",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "after",
+        read |-> 1,
+        pc |-> FALSE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "live",
+        gov |-> "g2",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"mark", "revoked", "grant", "effect", "release"}
+2997 states generated, 1581 distinct states found, 804 states left on queue.
+The depth of the complete state graph search is 9.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 9 and the 95th percentile is 5).
+Finished in 05s at (2026-11-10 06:51:13)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-nostop-pergov · Mut=M_NOSTOP · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=FALSE · SPECIFICATION Spec · INVARIANT EffectsAfterPerGovernor
+Error: Invariant EffectsAfterPerGovernor is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ slot = [ l1 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {}
+State 2: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant"}
+State 3: <Revoke line 170, col 3 to line 173, col 50 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"revoked", "grant"}
+State 4: <Effect line 154, col 3 to line 160, col 46 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"revoked", "grant", "effect"}
+State 5: <Seal line 164, col 3 to line 166, col 59 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "sealed",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"revoked", "grant", "effect"}
+State 6: <Mark line 177, col 3 to line 181, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "sealed",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "after",
+        read |-> 1,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"mark", "revoked", "grant", "effect"}
+State 7: <HearP line 186, col 3 to line 192, col 43 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "sealed",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "after",
+        read |-> 1,
+        pc |-> FALSE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"mark", "revoked", "grant", "effect", "release"}
+State 8: <HearG line 196, col 3 to line 201, col 43 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "sealed",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "after",
+        read |-> 1,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"mark", "revoked", "grant", "effect", "release"}
+State 9: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "sealed",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "after",
+        read |-> 1,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"mark", "revoked", "grant", "effect", "release"}
+State 10: <Effect line 154, col 3 to line 160, col 46 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "sealed",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "after",
+        read |-> 1,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"mark", "revoked", "grant", "effect", "release"}
+6257 states generated, 3085 distinct states found, 1496 states left on queue.
+The depth of the complete state graph search is 10.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 9 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:51:19)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-nostop-havoc · Mut=M_NOSTOP · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=FALSE · SPECIFICATION Spec · INVARIANT HavocPlaneBoundedInEffects
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.0E-10
+  based on the actual fingerprints:  val = 3.4E-11
+91406 states generated, 32062 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 21.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 9 and the 95th percentile is 3).
+Finished in 05s at (2026-11-10 06:51:25)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-nostop-sealed · Mut=M_NOSTOP · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=FALSE · SPECIFICATION Spec · INVARIANT SealedIsSpent
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.0E-10
+  based on the actual fingerprints:  val = 3.4E-11
+91406 states generated, 32062 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 21.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 9 and the 95th percentile is 3).
+Finished in 05s at (2026-11-10 06:51:31)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-ordfree-pergov · Mut=M_ORDEREDFREE · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=TRUE · SPECIFICATION Spec · INVARIANT EffectsAfterPerGovernor
+Error: Invariant EffectsAfterPerGovernor is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ slot = [ l1 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {}
+State 2: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant"}
+State 3: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "ordered",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant"}
+State 4: <Revoke line 170, col 3 to line 173, col 50 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "ordered",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"revoked", "grant"}
+State 5: <Effect line 154, col 3 to line 160, col 46 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "ordered",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"revoked", "grant", "effect"}
+State 6: <Effect line 154, col 3 to line 160, col 46 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "ordered",
+        count |-> 1,
+        used |-> 1,
+        after |-> 1,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = TRUE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"revoked", "grant", "effect"}
+1499 states generated, 588 distinct states found, 367 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 9 and the 95th percentile is 6).
+Finished in 05s at (2026-11-10 06:51:36)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-ordfree-havoc · Mut=M_ORDEREDFREE · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=TRUE · SPECIFICATION Spec · INVARIANT HavocPlaneBoundedInEffects
+Error: Invariant HavocPlaneBoundedInEffects is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ slot = [ l1 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {}
+State 2: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant"}
+State 3: <Grant line 143, col 3 to line 150, col 53 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "ordered",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant"}
+State 4: <Effect line 154, col 3 to line 160, col 46 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "ordered",
+        count |-> 1,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant", "effect"}
+State 5: <Effect line 154, col 3 to line 160, col 46 of module Outstanding>
+/\ slot = [ l1 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "lease",
+        count |-> 1,
+        used |-> 1,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> TRUE ],
+  l2 |->
+      [ st |-> "live",
+        gov |-> "g1",
+        kind |-> "ordered",
+        count |-> 1,
+        used |-> 1,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> TRUE,
+        gc |-> FALSE ],
+  l3 |->
+      [ st |-> "free",
+        gov |-> "none",
+        kind |-> "lease",
+        count |-> 0,
+        used |-> 0,
+        after |-> 0,
+        mark |-> "none",
+        read |-> 0,
+        pc |-> FALSE,
+        gc |-> FALSE ] ]
+/\ gStopped = [g1 |-> FALSE, g2 |-> FALSE]
+/\ revoked = FALSE
+/\ pStopped = FALSE
+/\ spent = FALSE
+/\ seen = {"grant", "effect"}
+519 states generated, 205 distinct states found, 145 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 9 and the 95th percentile is 7).
+Finished in 05s at (2026-11-10 06:51:42)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-ordfree-sealed · Mut=M_ORDEREDFREE · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=TRUE · SPECIFICATION Spec · INVARIANT SealedIsSpent
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.7E-10
+  based on the actual fingerprints:  val = 2.9E-9
+151010 states generated, 48386 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 20.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 9 and the 95th percentile is 3).
+Finished in 05s at (2026-11-10 06:51:48)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-ordfree-honest · Mut=M_ORDEREDFREE · KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=FALSE · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 3.1E-11
+51162 states generated, 16802 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 20.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 9 and the 95th percentile is 3).
+Finished in 05s at (2026-11-10 06:51:54)
+→ HOLDS (expected HOLDS: as expected)
+
+Rows: 40 · as expected: 40 · not as expected: none · ERROR: none

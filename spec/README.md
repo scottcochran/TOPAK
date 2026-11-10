@@ -36,6 +36,14 @@ hand-assembled TLC output with a dated name and never change; the two generators
 | `defects/*.tla`: the thirteen listings of `proof-certification.md` §8 as files, twelve prover modules and the TLC model `BinderDefectTLC.tla` | ADR-0046 A2; ADR-0045 A3 (the prover's two unsound cases, Batch 37). The reproductions ADR-0046's ratification condition ran from the document, as files; reported upstream 2026.10.18 as tlaplus/tlapm#309 and #310 (ADR-0046 A3, ADR-0045 A4, Batch 39) | `defects/defects-run.sh`, from `spec/` | `defects/defects-results-2026.10.22.txt` | none; §8's text is the record |
 | `Workflow.tla` | ADR-0054 §12 (Proposed) | `workflow-run.sh`; `workflow-gen-results.sh` with `Workflow-rows.txt` | `Workflow-results-2026.10.08.txt` | ADR-0054 |
 | `Mesh.tla` | ADR-0055 §11 (Proposed) | `mesh-run.sh`; `mesh-gen-results.sh` with `Mesh-rows.txt` | `Mesh-results-2026.10.07.txt` | ADR-0055 |
+| `Federation.tla` | ADR-0059 §9 (Proposed) | `live-gen-results.sh` with `Federation-rows.txt` | `Federation-results-2026.11.10.txt` | none yet |
+| `Membership.tla` | ADR-0061 §7 (Proposed) | `live-gen-results.sh` with `Membership-rows.txt` | `Membership-results-2026.11.10.txt` | none yet |
+| `Intent.tla` | ADR-0060 §7, ADR-0062 §11 (Proposed) | `live-gen-results.sh` with `Intent-rows.txt` | `Intent-results-2026.11.10.txt` | none yet |
+| `Alone.tla` | ADR-0062 §11 (Proposed) | `live-gen-results.sh` with `Alone-rows.txt` | `Alone-results-2026.11.10.txt` | none yet |
+| `Outstanding.tla` | ADR-0063 §8 (Proposed) | `live-gen-results.sh` with `Outstanding-rows.txt` | `Outstanding-results-2026.11.10.txt` | none yet |
+| `PlaneClock.tla` | ADR-0064 §8, ADR-0062 §11 (Proposed) | `live-gen-results.sh` with `PlaneClock-rows.txt` | `PlaneClock-results-2026.11.10.txt` | none yet |
+| `Peer.tla` | ADR-0065 §9 (Proposed) | `live-gen-results.sh` with `Peer-rows.txt` | `Peer-results-2026.11.10.txt` | none yet |
+| `Release.tla` | ADR-0066 §7 (Proposed) | `live-gen-results.sh` with `Release-rows.txt` | `Release-results-2026.11.10.txt` | none yet |
 | `FloorComposition.tla`, `Coupling.tla`, `RunCoupling.tla` | ADR-0046 §5 (the premise-table corrections) | `premise-corrections-results.sh` | `premise-corrections-results-2026.10.02.txt` | ADR-0046 |
 | `Mechanism.tla` | ADR-0045 T-0045-28; ADR-0033 A5 | `mechanism-trace-run.sh` on traces the reference records; `mechanism-trace-results.sh` regenerates the file; `trace2tla.py` converts | `Mechanism-trace-results-2026.09.30.txt`, `-2026.10.01.txt`, `-2026.10.02.txt`, `-2026.10.02b.txt`, `-2026.10.05.txt` (labels, operators and the emergency seating, all Proposed; X1 retired) | Pinned, not frozen: the operational model moves with the code |
 
@@ -138,6 +146,16 @@ The `1.6.0-pre` release tag is rebuilt by its upstream: on 2026.10.03 both asset
 | `Confinement_proof.tla` | `Confinement.tla` | ADR-0034 §7, A1 | all four: `ContainedMeansConfined`, `NoSilentDowngrade`, `ContestedStopped`, `FreshAppraisal`, for every rung at once | `Declared ∈ 0..3` | `Confinement-proof-results-2026.10.02.txt` |
 | `Emergency_live_proof.tla` | `Emergency_live.tla`, extending `Emergency_proof.tla` | ADR-0039 A2; ADR-0052 (provisional, B34) | the two `ENABLED` invariants `EmergencyNeverCoupled` and `EmergencyCallsWithoutObserver`, under `Mut \notin {"M_EMCOUPLE", "M_EMCOUPLE2"}`; `SpecL => Spec` under every `Mut`, and with it `Emergency_proof`'s six for `SpecL`, each under its own hypothesis, and `SafeAlwaysL` under `Mut \in {"none", "M_EMCOUPLE", "M_EMCOUPLE2"}`; for every round bound | none | `Emergency_live-proof-results-2026.10.07.txt` |
 | `Coupling_live_proof.tla` | `Coupling_live.tla`, extending `Coupling_proof.tla` | ADR-0039 §2 | `SpecL => Spec` under every `Mut`, and with it `Coupling_proof`'s three for `SpecL`, each under its own hypothesis, and `SafeAlwaysL` under `Mut \in {"none", "M_HBLIVE", "M_HBCOUPLED"}`, for every K, R and MaxRound. Not the four leads-to properties: they are owed, and TLC checks them (`Coupling_live-results-2026.10.07.txt`) | `K, R, MaxRound ∈ Nat` (`Coupling_proof`'s, restated) | `Coupling_live-proof-results-2026.10.08.txt` |
+| `Federation_proof.tla` | `Federation.tla` | ADR-0059 §9 (Proposed) | all five: `CharterNarrows`, `LeaseWithinChain`, `HavocPlaneBounded`, `BudgetConserved` (an honest subtree), `AnyPlaneFences` | `RootBudget, MaxEpoch ∈ Nat` | `Federation-proof-results-2026.11.10.txt`, `Federation-proof-cert-results-2026.11.10.txt` |
+| `Membership_proof.tla` | `Membership.tla` | ADR-0061 §7 (Proposed) | `OneSuccessor`, as `StepInSchedule`, `StepAtFloor`, `StepByQuorum`, `AtMostOneSuccessor` | none | `Membership-proof-results-2026.11.10.txt`, `Membership-proof-cert-results-2026.11.10.txt` |
+| `Intent_proof.tla` | `Intent.tla` | ADR-0060 §7, ADR-0062 §11 (Proposed) | all four: `EveryEffectHasAnIntent`, `EveryEffectHasALease`, `IntentNarrows`, `AutonomousAddsNothing` | `SeatingBudget, MaxCount ∈ Nat` | `Intent-proof-results-2026.11.10.txt`, `Intent-proof-cert-results-2026.11.10.txt` |
+| `Alone_proof.tla` | `Alone.tla` | ADR-0062 §11 (Proposed) | `AlonePermitsNothing`, `ExpiryGrantsNothing`, and the `ENABLED` invariants `LocalNeverWaits` and `TerminalNeverWaits` | `MaxBeacon ∈ Nat` | `Alone-proof-results-2026.11.10.txt`, `Alone-proof-cert-results-2026.11.10.txt` |
+| `Outstanding_proof.tla` | `Outstanding.tla` | ADR-0063 §8 (Proposed) | `EffectsAfterHonest`, `EffectsAfterPerGovernor`, `HavocPlaneBoundedInEffects`, `SealedIsSpent`, `CountExact`, with no clock in the module | `MaxCount ∈ Nat` | `Outstanding-proof-results-2026.11.10.txt`, `Outstanding-proof-cert-results-2026.11.10.txt` |
+| `PlaneClock_proof.tla` | `PlaneClock.tla` | ADR-0064 §8, ADR-0062 §11 (Proposed) | `NoGrantPastExpiry` under the named `ClockPremise`, `EntryEndsAtExtent` by the governor's own clock, `NoStretchUnlessSlow` | the constants' types; `ClockPremise`, a premise about time, so a declared bound and not a safety theorem | `PlaneClock-proof-results-2026.11.10.txt`, `PlaneClock-proof-cert-results-2026.11.10.txt` |
+| `Peer_proof.tla` | `Peer.tla` | ADR-0065 §9 (Proposed) | `PeerAddsNothing`, `NarrowsInReceived`, `ReceivedIsUntrusted`, `SendWithinTopics` | none | `Peer-proof-results-2026.11.10.txt`, `Peer-proof-cert-results-2026.11.10.txt` |
+| `Release_proof.tla` | `Release.tla` | ADR-0066 §7 (Proposed) | `IrreversibleIsAPersons`, as four clauses, `ConflictIsAFinding`, `OrderedInContact`, and the `ENABLED` invariant `ReleaseNeverCoupled` | `MaxActs, MaxTick, FreshT ∈ Nat` | `Release-proof-results-2026.11.10.txt`, `Release-proof-cert-results-2026.11.10.txt` |
+
+**The command-chain overlay's eight modules** (2026.11.10, ADR-0059 to ADR-0066, Proposed) were written from the ratification conditions of those records and proposal §10 of `derived/topak-federated-c2-design-proposal-2026.11.10b.md`. Each is checked, proved and certified as a pair of results files above; `proof-scan-results-2026.11.10.txt` scans the eight proof modules and `deadlock-audit-results-2026.11.10.txt` audits their `-deadlock` runs. `OneSuccessor` is in `Membership.tla` where proposal §10 lists it under `Federation`, since it shares no state with the charter chain. Each module's header states what it found against its record, and the R1 row of each of ADR-0059 to ADR-0066 (2026.11.10) cites its modules and results files by digest and says how the record took the findings.
 
 The thirteen of 2026.10.02 are cited by digest in ADR-0046, and frozen. **`proof-method.md`** records how they were written, the patterns they
 share, the prover's habits, and a dated assessment of why they were cheap and where that stops.
@@ -223,6 +241,17 @@ the merge; `-2026.10.08.txt` is the same run, with the same verdicts, against `l
 which names no `Emergency` file, since `Emergency`'s graph check has its own series; it also names `ADR-0045.md` at
 the digest its A3 and E1 gave it as drafted, and `-2026.10.08b.txt` is the same again at their ratification in Batch
 37).
+
+**`specification-graph.json`** is the specification graph ADR-0057 proposes (Proposed): the records' clauses, the
+modules, proof modules and Lean encodings, the floor and its stages, and the reference's crates as nodes, with typed
+and pinned edges between them, ADR-0053's derived premises re-expressed over the edges' premises, and T-0045-28 as a
+derived premise of every theorem. `specification-graph.py build` builds it from the tree and the results files above
+and keeps an edge's pins until `--repin` names it, which is the review. `specification-graph.py check` reports the
+stale edges, the clauses no model reads, the guarantees stated twice, and the four lists (`corpus-pins.sha256`, the
+binding's `check` columns, `manifests/index.tsv`, the sync scripts) read against the graph. It also computes, through
+`inventory.py`, the inventory at every grade, and compares it at grade *trusted* with `inventory.py`'s and with
+`premise-routes.sh`'s (`specification-graph-results-2026.11.07.txt`). `clauses.py` splits a record into the clauses
+that are pinned (ADR-0057 §7).
 
 Every `*-run.sh` and `simulate-run.sh` finds the jar at `../tools/tla2tools.jar` or `$TLA_JAR`; from `spec/` no
 export is needed. TLC writes its metadata under `/tmp/tlc_<name>`.

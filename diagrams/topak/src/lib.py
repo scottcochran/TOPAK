@@ -27,6 +27,10 @@ STATE = "State of record: Genesis Checkpoint G10 (2026.10.05) · narrative: Theo
 # drawn new against a later cut states that cut (Canvas state=). Unamended diagrams regenerate byte for byte.
 AMENDED_G11 = "amended 2026.10.09 against Genesis Checkpoint G11 (2026.10.09) and Theory of Operation rev 15"
 STATE_G11 = "State of record: Genesis Checkpoint G11 (2026.10.09) · narrative: Theory of Operation rev 15 · drawn 2026.10.09"
+# The command-chain overlay (ADR-0059 to ADR-0068, Proposed), drawn after G11 and Batches 38 and 39.
+STATE_CC = ("State of record: Genesis Checkpoint G11 (2026.10.09), with Batches 38 and 39 · narrative: Theory of "
+            "Operation rev 15 · drawn 2026.11.10 for ADR-0059 to ADR-0068 (Proposed, 2026.11.10; ADR-0059 to ADR-0067 "
+            "revised R1 the same day)")
 
 # ---------------------------------------------------------------------------------------------
 # Theme tokens: name -> (light, dark)
