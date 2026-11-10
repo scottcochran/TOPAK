@@ -1,0 +1,51 @@
+# Rows for live-gen-results.sh PlaneClock: name mut spec kind property expected [CONST=value ...] [states=N]
+# Run: DEFAULTS='Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4' ./live-gen-results.sh PlaneClock PlaneClock-rows.txt "<title>"
+# Four replicas, one captured and one slow, a certificate of three: ADR-0061's table has 4 / 1 / 3 / tolerated 2 for the duration bound. M_TOOSLOW runs with two slow and one captured, which is a certificate: the premise fails, and the module's ClockPremise admits it only under that Mut.
+# expected: none: every property HOLDS at each set of classes, and every witness is VIOLATED; NeverStretched is VIOLATED only with a slow governor; M_ONECLOCK, M_RECEIPT, M_RELATIVETICK and M_TOOSLOW break NoGrantPastExpiry only; M_NOEXTENT breaks EntryEndsAtExtent only; M_NOWATCHDOG breaks EntryEndsAtExtent and NoStretchUnlessSlow, and not NoGrantPastExpiry.
+#
+# Mut = none.
+s-none-safe         none            Spec INVARIANT Safe                 HOLDS
+s-none-safe-fast    none            Spec INVARIANT Safe                 HOLDS    Fast={"r3"}
+s-none-safe-honest  none            Spec INVARIANT Safe                 HOLDS    Captured={} Slow={}
+s-none-safe-base    none            Spec INVARIANT Safe                 HOLDS    Base=1
+s-none-safe-govfast none            Spec INVARIANT Safe                 HOLDS    GovClass="fast"
+s-none-safe-govslow none            Spec INVARIANT Safe                 HOLDS    GovClass="slow"
+s-none-safe-ext2    none            Spec INVARIANT Safe                 HOLDS    MaxExtent=2 MaxNow=6 MaxTick=3
+# Witnesses.
+w-granted           none            Spec INVARIANT NeverGranted         VIOLATED
+w-slack             none            Spec INVARIANT NeverGrantInSlack    VIOLATED
+w-grantrefused      none            Spec INVARIANT NeverGrantRefused    VIOLATED
+w-tickrefused       none            Spec INVARIANT NeverTickRefused     VIOLATED
+w-withheld          none            Spec INVARIANT NeverWithheld        VIOLATED
+w-ran               none            Spec INVARIANT NeverEntryRan        VIOLATED
+w-extentended       none            Spec INVARIANT NeverExtentEnded     VIOLATED
+w-alone             none            Spec INVARIANT NeverAlone           VIOLATED
+w-stalled           none            Spec INVARIANT NeverStalled         VIOLATED
+w-stretched-slow    none            Spec INVARIANT NeverStretched       VIOLATED GovClass="slow"
+n-stretched-sound   none            Spec INVARIANT NeverStretched       HOLDS
+n-stretched-fast    none            Spec INVARIANT NeverStretched       HOLDS    GovClass="fast"
+# M_ONECLOCK.
+m-one-grant         M_ONECLOCK      Spec INVARIANT NoGrantPastExpiry    VIOLATED
+m-one-entry         M_ONECLOCK      Spec INVARIANT EntryEndsAtExtent    HOLDS
+m-one-stretch       M_ONECLOCK      Spec INVARIANT NoStretchUnlessSlow  HOLDS
+# M_RECEIPT.
+m-receipt-grant     M_RECEIPT       Spec INVARIANT NoGrantPastExpiry    VIOLATED
+m-receipt-entry     M_RECEIPT       Spec INVARIANT EntryEndsAtExtent    HOLDS
+m-receipt-stretch   M_RECEIPT       Spec INVARIANT NoStretchUnlessSlow  HOLDS
+# M_RELATIVETICK.
+m-relative-grant    M_RELATIVETICK  Spec INVARIANT NoGrantPastExpiry    VIOLATED
+m-relative-entry    M_RELATIVETICK  Spec INVARIANT EntryEndsAtExtent    HOLDS
+m-relative-stretch  M_RELATIVETICK  Spec INVARIANT NoStretchUnlessSlow  HOLDS
+# M_TOOSLOW: the premise fails.
+m-tooslow-grant     M_TOOSLOW       Spec INVARIANT NoGrantPastExpiry    VIOLATED Slow={"r2","r3"}
+m-tooslow-entry     M_TOOSLOW       Spec INVARIANT EntryEndsAtExtent    HOLDS    Slow={"r2","r3"}
+m-tooslow-stretch   M_TOOSLOW       Spec INVARIANT NoStretchUnlessSlow  HOLDS    Slow={"r2","r3"}
+m-tooslow-nofail    M_TOOSLOW       Spec INVARIANT NoGrantPastExpiry    HOLDS
+# M_NOEXTENT.
+m-noext-entry       M_NOEXTENT      Spec INVARIANT EntryEndsAtExtent    VIOLATED
+m-noext-grant       M_NOEXTENT      Spec INVARIANT NoGrantPastExpiry    HOLDS
+m-noext-stretch     M_NOEXTENT      Spec INVARIANT NoStretchUnlessSlow  HOLDS
+# M_NOWATCHDOG.
+m-nowatch-entry     M_NOWATCHDOG    Spec INVARIANT EntryEndsAtExtent    VIOLATED
+m-nowatch-stretch   M_NOWATCHDOG    Spec INVARIANT NoStretchUnlessSlow  VIOLATED
+m-nowatch-grant     M_NOWATCHDOG    Spec INVARIANT NoGrantPastExpiry    HOLDS

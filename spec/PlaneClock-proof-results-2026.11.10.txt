@@ -1,0 +1,10 @@
+TOPAK — TLAPS proof results for PlaneClock.tla: every obligation of PlaneClock_proof.tla, checked by the prover below
+Modules: PlaneClock.tla (sha256 7d7ced23419c1df2) · PlaneClock_proof.tla (sha256 bbfe21580db67b9d)
+Prover: tlapm 7824dab (binary sha256 e150fb793fb28592) · backends: Z3 version 4.8.9 - 64 bit · zenon version 0.8.4 [a268] 2017-11-14 · Isabelle2025 · LS4 for PTL · driver: proof-results.sh
+Assumptions: PNat == P \in Nat · BaseNat == Base \in Nat · DNat == D \in Nat · MaxExtentNat == MaxExtent \in Nat · MaxTickNat == MaxTick \in Nat · CertNat == Cert \in Nat · ReplicasFinite == IsFiniteSet(Replicas)
+Theorems: NoGrantPastExpiryAlways · WatchAlways · ExtAlways · EntryEndsAtExtentAlways · NoStretchUnlessSlowAlways · SafeAlways
+Lemmas: DeadlineType · DeadlineMono · TrueExpiryNat · ExtentsFacts · CertHasSound · InitShape · NextTypeOK · NextShape · GrantFrame · GrantInTime · InitGrant · NextGrant · InitExt · NextExt · InitWatch · NextWatch · EntryFromInvs · StretchFromWatch · MutOneClockAcceptsOneSigner · MutReceiptCountsFromDelivery · MutRelativeTickReadsLastAt · MutTooSlowWaivesThePremise · MutNoExtentLoadsNoExtent · MutNoWatchdogHoldsNothing
+A proved obligation is a theorem of the module under its assumptions and the hypotheses the statement names; the prover, not the constants, bounds the claim. Mutations and witnesses are behaviours and stay with TLC.
+
+File "./PlaneClock_proof.tla", line 1, character 1 to line 634, character 77:
+[INFO]: All 535 obligations proved.
