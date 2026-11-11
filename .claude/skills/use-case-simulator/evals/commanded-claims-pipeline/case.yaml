@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: commanded-claims-pipeline
+expected_outcome: |
+  A deployment and a simulation appear as sibling dated directories under derived/, the bundles and workflow are evaluated for real, the trace replays, and the report opens with what was modelled.

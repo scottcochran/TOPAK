@@ -1,0 +1,17 @@
+{
+ "name": "@NAME@",
+ "seed": 20261111,
+ "deployment": {
+  "config": "@CONFIG@",
+  "floor": "cedar",
+  "bundles": {
+   "standing": {"dir": "1-bundles/standing"}
+  },
+  "chains": {"plane1": ["standing"]},
+  "workflows": ["2-workflows/main.dag.json"],
+  "pins": []
+ },
+ "assumptions": {},
+ "environment": [],
+ "scripted_requests": []
+}

@@ -1,0 +1,17 @@
+# The real evaluators a use-case simulation calls: the bundle engine, the linked floor and the workflow
+# run, each the code the reference itself uses. new_usecase.py rewrites the two path dependencies when
+# it vendors this directory into a simulation.
+[package]
+name = "topak-sim-engine"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+topak-core = { path = "../../../../../mechanism/crates/topak-core" }
+topak-floor = { path = "../../../../../mechanism/crates/topak-floor" }
+opa-wasm = "0.3"
+tokio = { version = "1", features = ["full"] }
+anyhow = "1"
+serde_json = "1"
+
+[workspace]
