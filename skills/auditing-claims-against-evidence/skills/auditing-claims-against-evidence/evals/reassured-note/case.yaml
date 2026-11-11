@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: reassured-note
+expected_outcome: |
+  Seven claims, three false, under a request that says they are clean. The false ones are found, and the audit is not offered as the reader ADR-0029 A2 asks for.
