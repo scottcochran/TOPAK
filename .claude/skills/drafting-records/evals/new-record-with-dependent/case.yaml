@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: new-record-with-dependent
+expected_outcome: |
+  Run at bbda621. ADR-0069 is Proposed with the custodian's two decisions marked and the rest the drafter's, and ADR-0045 gets a pending dependent amendment under its next free tag, A6, with the pin moved and T-0045-31 unedited.

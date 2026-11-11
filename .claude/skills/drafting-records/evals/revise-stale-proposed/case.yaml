@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: revise-stale-proposed
+expected_outcome: |
+  Run at bbda621. ADR-0068 stays Proposed and takes an R1 in place, with its stale statements struck and every condition item marked; the unnamed defects are found or reported.
