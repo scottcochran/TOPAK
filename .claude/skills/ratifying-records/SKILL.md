@@ -50,6 +50,8 @@ checkout's `tools/...` for anything that needs them.
    - `grep -n 'Takes force only with\|dependent on ADR-<nnnn>' decisions/*.md`
    - the item's own dependent-entries section, and its **Depends on** line for anything still Proposed
    - other Proposed records its condition names ("ADR-0058 is ratified")
+   - circular conditions: a record whose condition needs another record, whose own condition needs this one, as
+     ADR-0059 §9 and ADR-0067 §7 do. Those can only be ratified in one batch, or after the custodian changes one
 
    A record without decision text cannot be ratified (ADR-0029 §2).
 
