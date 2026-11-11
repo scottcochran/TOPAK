@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: replay-batch-38-single-erratum
+expected_outcome: |
+  Run in a copy of the repository at commit ed3d98d (git archive ed3d98d).
+  The result matches commit d4eeb0d: only ADR-0024 and its pin change, E1 is applied inline, a B38 row is added, and A4 stays pending.

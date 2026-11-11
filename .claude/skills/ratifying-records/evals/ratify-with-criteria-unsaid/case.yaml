@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: ratify-with-criteria-unsaid
+expected_outcome: |
+  Run in a copy at 848aed5^, unattended. Saying "ratify A2" settles neither its confirmation criteria nor its condition that the custodian reads 67 steps, and ADR-0045 A3 has to travel with it. Nothing is applied, and the questions come back.
