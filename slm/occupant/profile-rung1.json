@@ -1,0 +1,78 @@
+{
+  "_what": "Confinement profile (ADR-0034 \u00a71, ADR-0036 \u00a71) for the compiled occupant: the trained SLM's Persona inside a static binary on an empty image, launched by the reference's launcher at rung 1. Written by slm/occupant/run_rung1.py with the measured digests. Not a corpus record.",
+  "_rung": 1,
+  "_verdicts_are": "ASSERTED by the launcher (ADR-0036 \u00a71 R1, ADR-0034 \u00a72): the launcher applies `launch`, appraises `image` and `persona`, and is trusted for the rest along with the host operator, the container runtime and Docker Desktop's VM (ADR-0036 \u00a75).",
+  "image": "cea3cbf87e9ff747d4342fa476788b35f5ce055bc4460aec62f510f3517dadf8",
+  "_image": "docker image inspect --format {{.Id}} topak-slm-occupant, built from slm/occupant/Dockerfile: FROM scratch, one statically linked binary at /occupant, USER 10001:10001.",
+  "launch": {
+    "kind": "docker",
+    "network": "none",
+    "read_only": true,
+    "tmpfs": [
+      "/tmp:noexec,nosuid,size=16m"
+    ],
+    "user": "10001:10001",
+    "cap_drop": [
+      "ALL"
+    ],
+    "security_opt": [
+      "no-new-privileges"
+    ],
+    "ipc": "none",
+    "pids_limit": 64,
+    "mounts": [
+      {
+        "dst": "/model/model.json",
+        "mode": "ro"
+      },
+      {
+        "dst": "/model/model.safetensors",
+        "mode": "ro"
+      },
+      {
+        "dst": "/model/tokenizer.json",
+        "mode": "ro"
+      }
+    ]
+  },
+  "_launch": "Every field is one topak-contain's DockerLaunch applies; the launcher adds --rm -i --network none --log-driver none. No memory or CPU limit is listed because the launcher cannot apply one.",
+  "channel": {
+    "kind": "stdio, line-delimited JSON: topak-contain's guest protocol (hello, attest/evidence, granted, op/response, shutdown)",
+    "token": "None crosses the channel: the bridge is the session and the guest never holds a token (ADR-0036 \u00a72)",
+    "stderr": "outward only, to the launcher's log; carries no protocol"
+  },
+  "persona": {
+    "model_json_sha256": "2a2e0945c22d0e6ef5f4b93b643a737fd70197b35aaf5a566dd024e99e33c6cc"
+  },
+  "clauses": {
+    "P1": {
+      "verdict": "pass",
+      "why": "--network none; stdio is the only I/O the launcher connects. Stderr is outward-only and listed"
+    },
+    "P2": {
+      "verdict": "pass",
+      "why": "Read-only root, a 16 MB non-executable tmpfs, and the three bundle files read-only. Nothing else is mounted, not even the workspace: the guest reaches it only through Draft and Read"
+    },
+    "P3": {
+      "verdict": "pass",
+      "why": "The image is FROM scratch with one statically linked binary, /occupant, which is the occupant itself: no shell, no interpreter, no package manager, no dynamic loader. Its host-only transport, chosen by the launcher's arguments and never by Persona output, could start a named program, and the image holds none but the occupant"
+    },
+    "P4": {
+      "verdict": "vacuous",
+      "why": "The occupant's alphabet has no Invoke"
+    },
+    "P5": {
+      "verdict": "pass",
+      "why": "Weights and tokenizer are in the guest and inference runs in the occupant process; both are digest-checked against model.json before the identity line, and model.json's digest is a reference value the launcher appraises"
+    },
+    "P6": {
+      "verdict": "pass",
+      "why": "--rm; one launch per grant; the guest is destroyed at round end"
+    },
+    "P7": {
+      "verdict": "pass",
+      "why": "The image digest and the model.json digest. Changing either is a new profile"
+    }
+  },
+  "subtractions": {}
+}
