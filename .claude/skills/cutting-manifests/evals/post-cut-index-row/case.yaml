@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: post-cut-index-row
+expected_outcome: |
+  Run from a clone at ce8f460. The index row matches the committed one in every field but its note, and the date is the cut's.
