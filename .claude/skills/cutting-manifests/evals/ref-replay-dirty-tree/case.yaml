@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: ref-replay-dirty-tree
+expected_outcome: |
+  Run from a clone at 11aaf6a with an uncommitted edit under mechanism/ and an untracked file there. The manifest is byte-identical to the committed SHA256SUMS-REF-2026.10.08.
