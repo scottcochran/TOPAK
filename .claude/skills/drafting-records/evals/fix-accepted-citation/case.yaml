@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: fix-accepted-citation
+expected_outcome: |
+  Run at 6f5915f. The accepted sentence is left as it stands and a pending erratum E1 is drafted beside it, with its row, its Pending line and the pin moved; nothing is applied.
