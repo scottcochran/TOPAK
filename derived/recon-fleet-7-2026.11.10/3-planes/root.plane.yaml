@@ -1,0 +1,92 @@
+# Plane root: the anchor's rules, the floor and the rosters. Seats ib1 and nothing else.
+# The shape of `rules` and `params` is the reference's (mechanism/scripts/dev-init.sh), with the
+# overlay's plane-level fields beside them. A root has no parent, so its limits are the genesis bound
+# that every charter below must narrow.
+plane: root
+kind: commanded
+replicas:
+  protocol: paxos               # Declared unexposed: two controlled sites (ADR-0059 §5, ⟨Q7⟩)
+  n: 5
+  members:
+    - { id: root-r1, key: "ed25519:c5c2ec7a9af9a1dcb4600c934776a3b0b8fb0e08e631ca7b07434992cedf56a0" }
+    - { id: root-r2, key: "ed25519:98893f28532184867739c933ae89600301724bbf897577cc5c5e875f3768c088" }
+    - { id: root-r3, key: "ed25519:791c4ec5ccde76623771de0e836817f00399b1eee0ea4f8aea764bd9a356b481" }
+    - { id: root-r4, key: "ed25519:020a67dad98ef28e6f40c6d840b0f357b9649e25368343de1a41617a47a130f9" }
+    - { id: root-r5, key: "ed25519:a74d2a880bfa86201ca34599e030cf5fc1bb698d4e8513c313834caf7577e04d" }
+limits:
+  floor: 35b4978b39cdc071cde2dfc0c9ba31629cee2d9c44defc2801b970719660b4ec          # Placeholder
+  bundles:
+    - { name: standing, revision: 4ef39c81a965bc414c4c0144f288a8a38b9d9b63217b131d1e33de4980c66e7b }
+  alphabet:
+    actions: [Read, Draft, Invoke, Emit, Submit, Vote, Consult, Actuate, Report, Route]
+    entries:
+      - staff.wx_airspace@b7ec878386956c9f3c3b535f5c7532d208f240968c2bffa2da297175962c82fb
+      - staff.fleet_status@c041df1b4035af1623ec5ceefb5f1258d82d3411f9086b4f18f73e09a3618901
+      - staff.package_submit@2938a0c10439c6efe4a02801034f362e10561cdf4447066012344e1d69a6bdd5
+      - staff.notify@00cfd9149e8bb4d1ed2d20ea1d30519b8673a0ae076e281e6a0ff96a96b3ad52
+      - gate.opa_test@4c992d4976a099c92703e2a570e6a91c0d045d425588f61e7c769a0078b21867
+      - gate.tlc@13bfedc24a701f57c5ec42234dc9991ae355e2f39fe4b1c8e2113b0d9653046b
+      - flight.transit@cd3d43373ce222108f47e27fdfe5fd9ac0923c7bb129010ef92082fe3c5bb188
+      - flight.orbit@b1fe6db5dea9dd12d53d2deb0cf77c194f5ba7c0cc4bec8d954e427deea45b48
+      - sensor.eoir_collect@8a726fce18a3f9270019afd5d948abdfc7fc364045013ab0abc1f896858d1bdb
+      - sensor.sar_strip@2a8aba8ec289ee88209b3e484d99bb52ae4c822e5551d7332ffc956b670b2582
+      - comms.downlink@8617f1b204186f0fddd7ccca8be5eb9897bb7e07fc8773d7f4075383a98c97cb
+      - comms.beacon@b4d7e3050dd8622c7669a60618766949c3e2f161e4203651de2fa1fb91c2fde6
+  labels: [untrusted, restricted, peer-tracks, peer-coverage]
+  ttlMax: { unit: ms, reversible: 3600000, irreversible: 0 }
+  countMax: { reversible: 8, irreversible: 0 }
+  budget: 1000
+  expiry: { unit: ms, after_genesis: 2592000000 }   # 30 days
+  release: false
+rules:
+  rules_epoch: 0
+  quorum: all
+  min_grant: 3
+  seats:
+    g1: { domain: build, kind: grant, role: deployment-authority, key: "ed25519:40c762d6e7700b9d5a5e45ef3018b2ffdfeed8cc79e65a16676d2fb8fb98d15c" }
+    g2: { domain: build, kind: grant, role: safety-officer, key: "ed25519:b46148cdeea833a883171876248fccc3e582b92508ac470367df05dccda46377" }
+    g3: { domain: build, kind: grant, role: legal-advisor, key: "ed25519:029166136f57359ce3188064546ef56218e05ca7b78dc84786151b84f4b498a1" }
+    rop1: { domain: run, kind: operator, idp: idp-a, key: "ed25519:f88e3f2b8dac8a67af35ab1c82f7c2d036e1743136522266f3dc3e6aa8bcf0da" }
+    rop2: { domain: run, kind: operator, idp: idp-b, key: "ed25519:e2f9a4db38fdcadb23ef6862c64160bf9d652be5437426e68256bb7d5a14e301" }
+    rop3: { domain: run, kind: operator, idp: idp-a, key: "ed25519:e68dcac99642c25918722c92df4b2485420e95dba0b59b7e7b378210a2d557db" }
+    corr: { domain: run, kind: observer, role: correlator, key: "ed25519:981a37bc90b0dcf79ff94ca0e9f6f8bb28da2586efb24e4291f288e826b3cbbb" }
+  grant_roster: [g1, g2, g3]
+  veto_roster: [corr]
+  anchor:
+    custody: { capture_threshold: 3, loss_tolerance: 2 }
+    keys:
+      - "ed25519:e38800feca4c0963c1ab0e8f5b155cfe9d521c12dcf34ca452e80d6f86643e36"
+      - "ed25519:31363477d554026917bf893286f4e6cf4876b7992fc86326e04aa09ffd179f8f"
+      - "ed25519:530412fb2ff7b3589b1a6034da9c3fec14c2a5337543baf0d227fa18fceb4598"
+      - "ed25519:32a2de0edfc7eefc26c8b0496af04df546ace74bbc91abab267480c57ef1a8f0"
+      - "ed25519:8add07290c23c97a863e248cbae3134113d76155f54822a25cb7eaf1fd697c2b"
+  emergency:
+    roster:
+      - "ed25519:c416ef58abd6b45baaf8fcb59be1ab2b698089d10e0041bc9d6992c83f5e8015"
+      - "ed25519:ad70f5ebb4ceee23fdace0dbe28d64e89f6cf49df74872f2cde1b66692f2a5a0"
+      - "ed25519:dbcd86c6196ba5006af410eb838942ee4ed70e366157ae84fe5c2363eee564aa"
+    quorum: 2
+  release_roster: []            # Empty by design: recon-7 has no irreversible entry
+  bundle_keys: ["ed25519:3677c1d1d3fb5365d6ec0fa9d71bb3f36fe27cd6d4e4a2b29fcaffb82906e6a4"]
+  inside_targets:
+    - gcs.ib1.local:7443
+    - gcs.ib1.local:7444
+    - promotion.ib1.local:443
+    - notices.ib1.local:443
+    - fcc.local:flight
+    - payload.local:eoir
+    - payload.local:sar
+    - mesh.local:beacon
+params:
+  round_bound: 200
+  run_round_bound: 64
+  lease_margin_ms: 500
+  after_topic_limit: 64
+floor_values:                   # Placeholders, as floor/genesis-values.json marks them
+  K: 8
+  T_obs_ms: 5000
+  T_persona_ms: 3600000
+runtime:
+  transport: kafka
+  policy: { sidecar: "http://127.0.0.1:18181", wasm_fallback: true }
+  archive: { store: s3-compatible, bucket: recon7-root-archive, retention_days: 365 }

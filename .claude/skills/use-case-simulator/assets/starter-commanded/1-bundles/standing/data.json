@@ -1,0 +1,32 @@
+{
+ "topak": {
+  "tools": {
+   "example.lookup@d4f5ec23d32d593d8e44f0ec755e1a86a772f9124c5c7988e27d3b75c67da397": {
+    "name": "example.lookup",
+    "digest": "d4f5ec23d32d593d8e44f0ec755e1a86a772f9124c5c7988e27d3b75c67da397",
+    "domain": "run",
+    "purpose": "Look an item up. Replace this entry.",
+    "inputs": {
+     "ref": {
+      "type": "string",
+      "required": true,
+      "note": "",
+      "destination": false,
+      "accepts": []
+     }
+    },
+    "destinations": "none",
+    "result": {
+     "label": [
+      "untrusted"
+     ],
+     "releases": []
+    },
+    "channel": {
+     "kind": "https",
+     "target": "lookup.internal:443"
+    }
+   }
+  }
+ }
+}

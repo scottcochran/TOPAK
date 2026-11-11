@@ -1,0 +1,16 @@
+# The mission tally at ib1: one vote on everything the mission needs (ADR-0060 §5).
+# "One tally votes a mission's bundle revision, its mesh, and the charters and seatings it needs, together."
+# Rule: every grant seat of ib1 (quorum: all, min_grant: 3). The first intent is this tally's grant ⟨Q13⟩.
+mission: MSN-0001
+plane: ib1
+voters: [g1, g2, g3]
+artifacts:
+  fleet_bundle: 97008eafb269b8820a9a4d602ce8b8d5a474da238bce3481a02ff23b1216abe3
+  mission_bundle: 8784a46caaaf0684a16ee033b39c4101c75236b9a39f9b9a19d623e29e91d51c
+  mesh: 0d1f5b87676dcbbfcb138df1a248c65612b480ad2488cf5893c0cdcd5a1233fd
+  ap1_charter: 547dd33ab3883a8374ea6c3930d3c7279e4be9738b3258d5e6664152a6708116
+  ap1_seating: d74a06d86c43f619e15221b32b8eea5ec6ffeabe0d8dfd174d24fe5b47941624
+gate_evidence:                     # What the gate computes for the voters (ADR-0055 §2). It refuses nothing
+  policy_tests: ["opa test 1-bundles/fleet", "opa test 4-mission"]
+  reachable_activations_within_budget: 112
+  edges_identically_true: []

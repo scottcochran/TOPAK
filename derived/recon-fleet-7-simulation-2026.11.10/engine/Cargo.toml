@@ -1,0 +1,13 @@
+# The policy engine for the simulation: the same opa-wasm the reference's topak-bundle uses.
+[package]
+name = "recon7-engine"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+opa-wasm = "0.3"
+tokio = { version = "1", features = ["full"] }
+anyhow = "1"
+serde_json = "1"
+
+[workspace]

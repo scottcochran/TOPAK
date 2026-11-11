@@ -1,0 +1,154 @@
+{
+ "kind": "dag",
+ "root": "work",
+ "sinks": [
+  "done",
+  "closed"
+ ],
+ "nodes": {
+  "work": {
+   "seat": "t1",
+   "principal": "agent-t1",
+   "persona": "7ee2f26765b51f40c47623bcd8cdcbacf7ca8347f069387e0bba31684b820d0f",
+   "bundle": "01054985999c3b8016a6f7d5d192f2da23d44f3317792222aa621a6ea6daba27",
+   "confinement": {
+    "digest": "eba4bfec00d14352e35223b99219104b22863cdaee10de1a1f81e475e82a4462",
+    "rung": 0
+   },
+   "alphabet": [
+    "Actuate",
+    "Consult",
+    "Report"
+   ],
+   "ttl_ms": 600000,
+   "lineage": "a",
+   "task": "e6a96e8f82b104eb5c63787bad17d973e92e1f38a8caccbe3e4bfde78c03fdfe",
+   "task_label": [],
+   "outcomes": [
+    "ok",
+    "failed"
+   ],
+   "outward": false,
+   "join": "any"
+  },
+  "decide": {
+   "seat": "t2",
+   "principal": "agent-t2",
+   "persona": "4293944150ad3710ce66d1764e87c26b4cf185b7f9e5a135c78240352bfd9419",
+   "bundle": "01054985999c3b8016a6f7d5d192f2da23d44f3317792222aa621a6ea6daba27",
+   "confinement": {
+    "digest": "eba4bfec00d14352e35223b99219104b22863cdaee10de1a1f81e475e82a4462",
+    "rung": 0
+   },
+   "alphabet": [
+    "Actuate",
+    "Consult",
+    "Report"
+   ],
+   "ttl_ms": 600000,
+   "lineage": "b",
+   "task": "669ea7d744982fdcb77b6c4358477596d1c665555fabf3d9fd6d73d7f8b5007b",
+   "task_label": [],
+   "outcomes": [
+    "ready"
+   ],
+   "outward": false,
+   "join": "any"
+  },
+  "done": {
+   "seat": "t3",
+   "principal": "agent-t3",
+   "persona": "10e2259c12904d5f7416c07328d4bc0c172edf794c724bf66a089962f6cee7e1",
+   "bundle": "01054985999c3b8016a6f7d5d192f2da23d44f3317792222aa621a6ea6daba27",
+   "confinement": {
+    "digest": "eba4bfec00d14352e35223b99219104b22863cdaee10de1a1f81e475e82a4462",
+    "rung": 0
+   },
+   "alphabet": [
+    "Actuate",
+    "Consult",
+    "Report"
+   ],
+   "ttl_ms": 600000,
+   "lineage": "a",
+   "task": "3ea47a88ea9c56f7f339fcb13f20aa95a6963da8891d78f5f73982299f010f7e",
+   "task_label": [],
+   "outcomes": [
+    "done"
+   ],
+   "outward": false,
+   "join": "any"
+  },
+  "closed": {
+   "seat": "t4",
+   "principal": "agent-t4",
+   "persona": "39747bae231c77c15d0b6c63a6302ee28222f276acfa6a6fb03382a35d6ed935",
+   "bundle": "01054985999c3b8016a6f7d5d192f2da23d44f3317792222aa621a6ea6daba27",
+   "confinement": {
+    "digest": "eba4bfec00d14352e35223b99219104b22863cdaee10de1a1f81e475e82a4462",
+    "rung": 0
+   },
+   "alphabet": [
+    "Actuate",
+    "Consult",
+    "Report"
+   ],
+   "ttl_ms": 600000,
+   "lineage": "a",
+   "task": "9ce8832c1c4f37ee64a684e67e83907a432cd1af851b13d0f0682e35d5debf0b",
+   "task_label": [],
+   "outcomes": [
+    "closed"
+   ],
+   "outward": false,
+   "join": "any"
+  }
+ },
+ "edges": {
+  "e-work-decide": {
+   "from": "work",
+   "to": "decide",
+   "kind": "computed",
+   "guard": {
+    "outcome": {
+     "node": "work",
+     "any_of": [
+      "ok"
+     ]
+    }
+   },
+   "delivery": "handle"
+  },
+  "e-approve": {
+   "from": "decide",
+   "to": "done",
+   "kind": "chosen",
+   "guard": "true",
+   "delivery": "handle"
+  },
+  "e-reject": {
+   "from": "decide",
+   "to": "closed",
+   "kind": "chosen",
+   "guard": "true",
+   "delivery": "handle"
+  }
+ },
+ "orchestrator": {
+  "seat": "orc1",
+  "principal": "agent-orc1",
+  "persona": "25c6032285eb583e92a2bc49e3354463ea77275d7ae2fe85232d508cc3882bc1",
+  "bundle": "01054985999c3b8016a6f7d5d192f2da23d44f3317792222aa621a6ea6daba27",
+  "confinement": {
+   "digest": "eba4bfec00d14352e35223b99219104b22863cdaee10de1a1f81e475e82a4462",
+   "rung": 0
+  },
+  "alphabet": [
+   "Route"
+  ],
+  "ttl_ms": 600000,
+  "lineage": "c",
+  "task": "e4494eb529e189e12cda8fa38c6b37a06e75dcb19ef909225f69aa5f29d689c1",
+  "task_label": []
+ }
+}
