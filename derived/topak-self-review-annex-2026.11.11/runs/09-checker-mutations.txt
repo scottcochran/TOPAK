@@ -1,0 +1,76 @@
+## baseline exits
+check-refs 1
+proof-sync 1
+lean-sync 1
+spec-graph 1
+inventory 0
+
+## M1 bad path in a tracked .md under spec/ (check-refs)
+1
+## M2 bad path under skills/ and diagrams/ (check-refs)
+0
+## M3 bad date token (check-refs)
+1
+## M4 one byte added to a proved, Lean-encoded module spec/Seats.tla
+1
+  ^ proof-sync lines not IN SYNC mentioning Seats
+5
+  ^ lean-sync STALE lines (baseline 3)
+1
+  ^ corpus-pins failures
+== Stale edges (§3, §8): 17 of 435
+## M5 one byte added to an overlay module spec/Federation.tla
+1
+  ^ proof-sync
+3
+  ^ lean-sync STALE (baseline 3)
+0
+  ^ corpus-pins failures
+== Stale edges (§3, §8): 10 of 435
+## M6 a proof module edited (spec/Seats_proof.tla)
+RunSeats_proof.tla | RunSeats-proof-results-2026.10.02.txt | RunSeats.tla ok; RunSeats_proof.tla ok; | IN SYNC
+Seats_proof.tla | Seats-proof-results-2026.10.02.txt | Seats.tla ok; Seats_proof.tla e5a0fa0b5e17b2c9 -> a1b5a212589f6f33; | STALE: Seats_proof.tla
+## M7 a clause of an overlay record edited after its module froze (ADR-0059 §1)
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+proof-sync exit 1 (baseline 1)
+0
+  ^ corpus-pins failures
+== Stale edges (§3, §8): 10 of 435
+MISSING paths (26):
+## M8 a clause of a pinned accepted record edited (ADR-0031 §4 one word)
+decisions/ADR-0031.md: FAILED
+== Stale edges (§3, §8): 10 of 435
+## M9 binding table and JSON made to disagree (inventory --check)
+replaced T-0045-14 at 76
+43 rows, 34 non-row premises: JSON and table agree at every rung
+18 derived premises: well formed
+inventory exit 0
+## M10 a manifest line altered (verify-manifest --all)
+SHA256SUMS-G11               @ce8f460  603/604 OK  EXPECTED 604
+exit 0
+## M11 a TLC results file's verdict line edited (does anything bind results to runs?)
+proof-sync exit 1 (baseline 1)
+spec-graph exit 1 (baseline 1)
+0
+
+## M8b a Decision clause of a pinned accepted record edited (ADR-0031 §4)
+edited line 152 under ### 4. Authority is monotone across renewal
+df5ab42b8bd94e7a  ADR-0031 §4  (4. Authority is monotone across renewal)
+b9714fbe50fbc1a8  /tmp/a31.md §4  (4. Authority is monotone across renewal)
+decisions/ADR-0031.md: FAILED
+== Stale edges (§3, §8): 27 of 435
+16:    read: mechanism/crates/topak-bundle → ADR-0031  [premise false]
+17:      ADR-0031 §4 b9714fbe50fbc1a8 -> df5ab42b8bd94e7a
+18:    read: mechanism/crates/topak-core → ADR-0031  [premise false]
+19:      ADR-0031 §4 b9714fbe50fbc1a8 -> df5ab42b8bd94e7a
+20:    read: mechanism/crates/topak-floor → ADR-0031  [premise false]
+## M9b a premise removed from one theorem row of the binding JSON (inventory --check)
+list 43
+{'names': ['LeaseAuthorityMonotone'], 'checked_in': 'Lease.tla, Lease_A1.tla; proved in Lease_A1_proof.tla', 'proved_in': ['Lease_A1_proof.tla'], 'rows': ['T-0045-10'], 'premises': [], 'replaces': {'T-0045-29': 'invariant(Lease_A1)'}}
+removed T-0045-10 from the first theorem row of the JSON
+MISMATCH LeaseAuthorityMonotone at rung 2: table ['T-0045-10'], JSON []
+MISMATCH LeaseAuthorityMonotone at rung 3: table ['T-0045-10'], JSON []
+43 rows, 34 non-row premises: 4 mismatches
+18 derived premises: well formed
+inventory exit 1
+0

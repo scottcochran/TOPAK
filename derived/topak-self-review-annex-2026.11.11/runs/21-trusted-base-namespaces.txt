@@ -1,0 +1,7 @@
+T-0045-*: rows 1..39 (39 distinct); defined in ADR-0045; cited from: ['ADR-0005.md', 'ADR-0013.md', 'ADR-0026.md', 'ADR-0029.md', 'ADR-0030.md', 'ADR-0031.md', 'ADR-0033.md', 'ADR-0034.md', 'ADR-0036.md', 'ADR-0037.md', 'ADR-0038.md', 'ADR-0039.md']
+T-0068-*: rows 1..12 (12 distinct); defined in ADR-0068; cited from: []
+{'D-0024': 13, 'D-0025': 17, 'D-0030': 17, 'D-0034': 45, 'D-0035': 5, 'D-0036': 4, 'D-0037': 23, 'D-0038': 25, 'D-0039': 26, 'D-0042': 5, 'D-0044': 3, 'D-0045': 3, 'D-0047': 6, 'D-0048': 5, 'D-0050': 15, 'D-0051': 2, 'D-0052': 3, 'D-0054': 13, 'D-0056': 6, 'D-0057': 1, 'D-0058': 1, 'D-0061': 1, 'D-0062': 1, 'D-0065': 1, 'A-0068': 10}
+modules in spec/: 39
+with a theorem row in the binding: 18
+WITHOUT a row: ['Alone', 'BreakGlass_A1', 'Correlator', 'Coupling_live', 'Emergency', 'Emergency_live', 'Federation', 'Intent', 'Labels', 'Membership', 'Mesh', 'NonComposition_A1', 'Operators', 'Outstanding', 'Peer', 'PlaneClock', 'Release', 'RulesFloorBase', 'RulesFloorNV', 'ToolList', 'Workflow']
+binding date 2026.10.06 theorem rows 43 derived 18

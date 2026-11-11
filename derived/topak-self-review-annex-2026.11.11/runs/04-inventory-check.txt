@@ -1,0 +1,2 @@
+43 rows, 34 non-row premises: JSON and table agree at every rung
+18 derived premises: well formed
