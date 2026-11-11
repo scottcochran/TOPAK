@@ -1,0 +1,20 @@
+Proposed: [35, 36, 51, 54, 55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68]
+provisional: [50, 52]
+ADR-0035: depends on not-in-force []; ratification items 29; 'Met' 0; 'Not met' 0; has 'reader who is not the drafter': False
+ADR-0036: depends on not-in-force []; ratification items 11; 'Met' 0; 'Not met' 0; has 'reader who is not the drafter': False
+ADR-0051: depends on not-in-force []; ratification items 49; 'Met' 1; 'Not met' 1; has 'reader who is not the drafter': True
+ADR-0054: depends on not-in-force []; ratification items 30; 'Met' 4; 'Not met' 2; has 'reader who is not the drafter': True
+ADR-0055: depends on not-in-force ['54(Prop)']; ratification items 24; 'Met' 2; 'Not met' 1; has 'reader who is not the drafter': True
+ADR-0056: depends on not-in-force ['50(prov)']; ratification items 36; 'Met' 0; 'Not met' 0; has 'reader who is not the drafter': True
+ADR-0057: depends on not-in-force []; ratification items 8; 'Met' 4; 'Not met' 0; has 'reader who is not the drafter': False
+ADR-0058: depends on not-in-force ['57(Prop)']; ratification items 4; 'Met' 0; 'Not met' 0; has 'reader who is not the drafter': False
+ADR-0059: depends on not-in-force ['58(Prop)']; ratification items 12; 'Met' 1; 'Not met' 1; has 'reader who is not the drafter': True
+ADR-0060: depends on not-in-force ['50(prov)', '54(Prop)', '55(Prop)', '58(Prop)', '59(Prop)']; ratification items 14; 'Met' 1; 'Not met' 1; has 'reader who is not the drafter': True
+ADR-0061: depends on not-in-force ['58(Prop)', '59(Prop)', '60(Prop)']; ratification items 13; 'Met' 1; 'Not met' 0; has 'reader who is not the drafter': True
+ADR-0062: depends on not-in-force ['58(Prop)', '59(Prop)', '60(Prop)', '61(Prop)', '64(Prop)']; ratification items 34; 'Met' 1; 'Not met' 1; has 'reader who is not the drafter': True
+ADR-0063: depends on not-in-force ['58(Prop)', '59(Prop)', '60(Prop)', '62(Prop)']; ratification items 9; 'Met' 1; 'Not met' 1; has 'reader who is not the drafter': True
+ADR-0064: depends on not-in-force ['58(Prop)', '59(Prop)', '60(Prop)', '61(Prop)']; ratification items 13; 'Met' 1; 'Not met' 2; has 'reader who is not the drafter': True
+ADR-0065: depends on not-in-force ['55(Prop)', '58(Prop)', '62(Prop)']; ratification items 11; 'Met' 1; 'Not met' 1; has 'reader who is not the drafter': True
+ADR-0066: depends on not-in-force ['52(prov)', '58(Prop)', '59(Prop)', '60(Prop)', '62(Prop)', '64(Prop)']; ratification items 14; 'Met' 1; 'Not met' 1; has 'reader who is not the drafter': True
+ADR-0067: depends on not-in-force ['58(Prop)', '59(Prop)', '60(Prop)', '61(Prop)', '62(Prop)', '63(Prop)', '64(Prop)', '65(Prop)', '66(Prop)']; ratification items 12; 'Met' 0; 'Not met' 1; has 'reader who is not the drafter': True
+ADR-0068: depends on not-in-force ['58(Prop)', '59(Prop)', '60(Prop)', '61(Prop)', '62(Prop)', '63(Prop)', '64(Prop)', '65(Prop)', '66(Prop)', '67(Prop)']; ratification items 4; 'Met' 0; 'Not met' 1; has 'reader who is not the drafter': True

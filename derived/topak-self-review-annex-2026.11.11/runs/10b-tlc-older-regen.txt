@@ -1,0 +1,3 @@
+Workflow: sections 33 committed, 33 regenerated; identical state counts 12; identical TLC outcome lines 33 of 33; tails: [Finished in 07s at (2026-10-08 17:10:24)] / [Finished in 06s at (2026-11-10 23:05:24)]
+  state counts differ in: [('w_routed', (193, 107), (161, 97)), ('w_completed', (6644, 3700), (6585, 3666)), ('w_voidfinding', (299, 170), (269, 152)), ('w_voidconsumed', (412, 234), (411, 231)), ('w_voidlease', (264, 159), (284, 164)), ('w_decisionfailed', (91, 60), (88, 58))]
+Coupling_live: sections 69 committed, 69 regenerated; identical state counts 69; identical TLC outcome lines 69 of 69; tails: [Rows: 69 · as expected: 69 · not as expected: none · ERROR: none] / [Rows: 69 · as expected: 69 · not as expected: none · ERROR: none]

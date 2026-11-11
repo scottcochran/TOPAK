@@ -1,0 +1,33 @@
+MISSING paths (26):
+  checkpoints/topak-genesis-checkpoint-G11-2026.10.09.md: derived/lean-refinement.md
+  decisions/ADR-0045.md: tools/tlaps-1.6.0-pre/
+  decisions/ADR-0046.md: tools/tlaps-1.6.0-pre/
+  decisions/ADR-0047.md: spec/theorem-premise-binding
+  decisions/ADR-0048.md: spec/theorem-premise-binding
+  decisions/ADR-0050.md: spec/theorem-premise-binding
+  decisions/ADR-0051.md: spec/theorem-premise-binding
+  decisions/ADR-0052.md: spec/theorem-premise-binding
+  derived/topak-assessment-2026.10.03.md: mechanism/crates/topak-node/tests/contain.rs:315
+  derived/topak-assessment-2026.10.03.md: narrative/theory-of-operation.md:945
+  derived/topak-assessment-2026.10.03.md: tools/call
+  derived/topak-competitive-design-assessment-2026.10.01.md: tools/call
+  derived/topak-critical-review-2026.10.02.md: tools/call
+  derived/topak-critical-review-2026.10.02.md: tools/cvc5-macOS-arm64-static/
+  derived/topak-critical-review-2026.10.02.md: tools/tlaps-1.6.0-pre/
+  derived/topak-format-and-schema-inventory-2026.10.03.md: slm/data/
+  derived/topak-format-and-schema-inventory-2026.10.03.md: slm/runs/
+  derived/topak-format-and-schema-inventory-2026.10.03.md: spec/.tlacache/
+  derived/topak-format-and-schema-inventory-2026.10.03.md: tools/cvc5-macOS-arm64-static
+  derived/topak-format-and-schema-inventory-2026.10.03.md: tools/ethos-8dc85c4/bin/ethos
+  derived/topak-liveness-2026.10.07.md: derived/topak-critical-review-2026.10.02.md:413
+  spec/proof-certification.md: tools/cvc5-macOS-arm64-static/
+  spec/proof-certification.md: tools/ethos-8dc85c4/
+  tools/cpc/README-TOPAK.md: tools/cvc5-macOS-arm64-static/
+date tokens not 20YY.MM.DD (7):
+  derived/sdd-equivalents-2026.11.06/01-intent/spec-kit/constitution.md: 2026-09-23
+  derived/sdd-equivalents-2026.11.06/01-intent/spec-kit/constitution.md: 2026-11-06
+  derived/sdd-equivalents-2026.11.06/03-record/spec-kit/spec.md: 2026-11-06
+  derived/topak-ai-use-cases-2026.11.05.md: 2026-04-28
+  derived/topak-ai-use-cases-2026.11.05.md: 2026-05-07
+  derived/topak-format-and-schema-inventory-2026.10.03.md: 2025-06-18
+moved by the 2026.09.30 cut and resolved by checkpoints/README.md: 109 citations (-v lists them)

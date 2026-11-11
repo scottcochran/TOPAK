@@ -1,0 +1,45 @@
+proof module | results file | modules as proved -> now | state
+Alone_proof.tla | Alone-proof-results-2026.11.10.txt | Alone.tla ok; Alone_proof.tla ok; | IN SYNC
+Anchor_proof.tla | Anchor-proof-results-2026.10.02.txt | RulesFloorBase.tla ok; Anchor.tla ok; Anchor_proof.tla ok; | IN SYNC
+BreakGlass_A1_proof.tla | BreakGlass_A1-proof-results-2026.10.05.txt | RulesFloorBase.tla ok; BreakGlass_A1.tla ok; BreakGlass_A1_proof.tla ok; | IN SYNC
+BreakGlass_proof.tla | BreakGlass-proof-results-2026.10.02.txt | RulesFloorBase.tla ok; BreakGlass.tla ok; BreakGlass_proof.tla ok; | IN SYNC
+Confinement_A1_proof.tla | Confinement_A1-proof-results-2026.10.02.txt | Confinement_A1.tla ok; Confinement_A1_proof.tla ok; | IN SYNC
+Confinement_proof.tla | Confinement-proof-results-2026.10.02.txt | Confinement.tla ok; Confinement_proof.tla ok; | IN SYNC
+Correlator_proof.tla | Correlator-proof-results-2026.10.04.txt | Correlator.tla ok; Correlator_proof.tla ok; | IN SYNC
+Coupling_live_proof.tla | Coupling_live-proof-results-2026.10.08.txt | Coupling.tla ok; Coupling_live.tla ok; Coupling_proof.tla ok; Coupling_live_proof.tla ok; | IN SYNC
+Coupling_proof.tla | Coupling-proof-results-2026.10.02.txt | Coupling.tla ok; Coupling_proof.tla ok; | IN SYNC
+Emergency_live_proof.tla | Emergency_live-proof-results-2026.10.07.txt | Emergency.tla ok; Emergency_live.tla ok; Emergency_proof.tla ok; Emergency_live_proof.tla ok; | IN SYNC
+Emergency_proof.tla | Emergency-proof-results-2026.10.04.txt | Emergency.tla ok; Emergency_proof.tla ok; | IN SYNC
+Federation_proof.tla | Federation-proof-results-2026.11.10.txt | Federation.tla ok; Federation_proof.tla ok; | IN SYNC
+FloorComposition_proof.tla | FloorComposition-proof-results-2026.10.02.txt | FloorComposition.tla ok; FloorComposition_proof.tla ok; | IN SYNC
+FloorRouting_proof.tla | FloorRouting-proof-results-2026.10.02.txt | FloorRouting.tla ok; FloorRouting_proof.tla ok; | IN SYNC
+Intent_proof.tla | Intent-proof-results-2026.11.10.txt | Intent.tla ok; Intent_proof.tla ok; | IN SYNC
+Labels_proof.tla | Labels-proof-results-2026.10.04.txt | Labels.tla ok; Labels_proof.tla ok; | IN SYNC
+Lease_A1_proof.tla | Lease_A1-proof-results-2026.10.02.txt | Lease_A1.tla ok; Lease_A1_proof.tla ok; | IN SYNC
+Membership_proof.tla | Membership-proof-results-2026.11.10.txt | Membership.tla ok; Membership_proof.tla ok; | IN SYNC
+NonComposition_A1_proof.tla | NonComposition_A1-proof-results-2026.10.05.txt | NonComposition_A1.tla ok; NonComposition_A1_proof.tla ok; | IN SYNC
+NonComposition_proof.tla | NonComposition-proof-results-2026.10.02.txt | NonComposition.tla ok; NonComposition_proof.tla ok; | IN SYNC
+Observers_proof.tla | Observers-proof-results-2026.10.02.txt | Observers.tla ok; Observers_proof.tla ok; | IN SYNC
+Operators_proof.tla | Operators-proof-results-2026.10.04.txt | Operators.tla ok; Operators_proof.tla ok; | IN SYNC
+Outstanding_proof.tla | Outstanding-proof-results-2026.11.10.txt | Outstanding.tla ok; Outstanding_proof.tla ok; | IN SYNC
+Peer_proof.tla | Peer-proof-results-2026.11.10.txt | Peer.tla ok; Peer_proof.tla ok; | IN SYNC
+PlaneClock_proof.tla | PlaneClock-proof-results-2026.11.10.txt | PlaneClock.tla ok; PlaneClock_proof.tla ok; | IN SYNC
+Release_proof.tla | Release-proof-results-2026.11.10.txt | Release.tla ok; Release_proof.tla ok; | IN SYNC
+RulesFloorNV_rev5_proof.tla | RulesFloorNV_rev5-proof-results-2026.10.02.txt | RulesFloorNV_rev5.tla ok; RulesFloorNV_rev5_proof.tla ok; | IN SYNC
+RunConfinement_proof.tla | RunConfinement-proof-results-2026.10.02.txt | RunConfinement.tla ok; RunConfinement_proof.tla ok; | IN SYNC
+RunCoupling_proof.tla | RunCoupling-proof-results-2026.10.02.txt | RunCoupling.tla ok; RunCoupling_proof.tla ok; | IN SYNC
+RunSeats_proof.tla | RunSeats-proof-results-2026.10.02.txt | RunSeats.tla ok; RunSeats_proof.tla ok; | IN SYNC
+Seats_proof.tla | Seats-proof-results-2026.10.02.txt | Seats.tla ok; Seats_proof.tla ok; | IN SYNC
+ToolList_proof.tla | ToolList-proof-results-2026.10.04.txt | ToolList.tla ok; ToolList_proof.tla ok; | IN SYNC
+
+prover (tools/TLAPS-PIN):
+  every results file cites the pinned prover (e150fb793fb28592, commit 7824dab)
+
+base modules without a proof:
+  ConfinementRefinement.tla: predicates over Mechanism's replayed trace states, checked on every trace; no Spec of its own (T-0045-28, stage one)
+  Lease.tla: frozen and superseded by Lease_A1, which is proved; its invariants are Lease_A1's at rungs 0..2
+  Mechanism.tla: a trace replay, not a transition system with invariants; its target is the refinement (T-0045-28)
+  Mesh.tla: NO REASON RECORDED: write the proof or add the reason here
+  RulesFloorBase.tla: shared definitions, no Spec; its genesis fact is proved as a lemma in Anchor_proof and BreakGlass_proof
+  RulesFloorNV.tla: frozen (G1) and superseded by RulesFloorNV_rev5, which is proved
+  Workflow.tla: NO REASON RECORDED: write the proof or add the reason here

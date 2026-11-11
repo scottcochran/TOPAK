@@ -1,0 +1,8 @@
+Federation: rows 41; Safe conjuncts 4 ['LeaseWithinChain', 'HavocPlaneBounded', 'BudgetConserved', 'AnyPlaneFences']; mutations 5; witnesses (none, VIOLATED) 8; conjuncts no mutation breaks: []; mutations that break nothing: []
+Membership: rows 28; Safe conjuncts 0 []; mutations 4; witnesses (none, VIOLATED) 4; conjuncts no mutation breaks: []; mutations that break nothing: []
+Intent: rows 35; Safe conjuncts 3 ['EveryEffectHasALease', 'IntentNarrows', 'AutonomousAddsNothing']; mutations 5; witnesses (none, VIOLATED) 14; conjuncts no mutation breaks: []; mutations that break nothing: ['M_LASTINTENT']
+Alone: rows 47; Safe conjuncts 3 ['ExpiryGrantsNothing', 'LocalNeverWaits', 'TerminalNeverWaits']; mutations 8; witnesses (none, VIOLATED) 9; conjuncts no mutation breaks: []; mutations that break nothing: []
+Outstanding: rows 40; Safe conjuncts 3 ['HavocPlaneBoundedInEffects', 'SealedIsSpent', 'CountExact']; mutations 6; witnesses (none, VIOLATED) 10; conjuncts no mutation breaks: ['CountExact']; mutations that break nothing: []
+PlaneClock: rows 38; Safe conjuncts 2 ['EntryEndsAtExtent', 'NoStretchUnlessSlow']; mutations 6; witnesses (none, VIOLATED) 10; conjuncts no mutation breaks: []; mutations that break nothing: []
+Peer: rows 25; Safe conjuncts 3 ['NarrowsInReceived', 'ReceivedIsUntrusted', 'SendWithinTopics']; mutations 3; witnesses (none, VIOLATED) 11; conjuncts no mutation breaks: []; mutations that break nothing: []
+Release: rows 67; Safe conjuncts 2 ['ConflictIsAFinding', 'OrderedInContact']; mutations 9; witnesses (none, VIOLATED) 10; conjuncts no mutation breaks: []; mutations that break nothing: []

@@ -1,0 +1,35 @@
+Alone | Alone-proof-results-2026.11.10.txt | 263 | certified | 6
+Anchor | Anchor-proof-results-2026.10.02.txt | 40 | certified | 2
+BreakGlass | BreakGlass-proof-results-2026.10.02.txt | 37 | certified | 1
+BreakGlass_A1 | BreakGlass_A1-proof-results-2026.10.05.txt | 45 | certified | 1
+Confinement | Confinement-proof-results-2026.10.02.txt | 502 | NOT CERTIFIED | 5
+Confinement_A1 | Confinement_A1-proof-results-2026.10.02.txt | 503 | NOT CERTIFIED | 5
+Correlator | Correlator-proof-results-2026.10.04.txt | 455 | certified | 10
+Coupling | Coupling-proof-results-2026.10.02.txt | 320 | certified | 4
+Coupling_live | Coupling_live-proof-results-2026.10.08.txt | 31 | certified | 2
+Emergency | Emergency-proof-results-2026.10.04.txt | 373 | certified | 9
+Emergency_live | Emergency_live-proof-results-2026.10.07.txt | 160 | certified | 5
+Federation | Federation-proof-results-2026.11.10.txt | 892 | certified | 7
+FloorComposition | FloorComposition-proof-results-2026.10.02.txt | 171 | certified | 6
+FloorRouting | FloorRouting-proof-results-2026.10.02.txt | 36 | certified | 3
+Intent | Intent-proof-results-2026.11.10.txt | 677 | certified | 5
+Labels | Labels-proof-results-2026.10.04.txt | 651 | certified | 14
+Lease_A1 | Lease_A1-proof-results-2026.10.02.txt | 200 | certified | 5
+Membership | Membership-proof-results-2026.11.10.txt | 495 | certified | 6
+NonComposition | NonComposition-proof-results-2026.10.02.txt | 58 | certified | 3
+NonComposition_A1 | NonComposition_A1-proof-results-2026.10.05.txt | 96 | certified | 3
+Observers | Observers-proof-results-2026.10.02.txt | 65 | certified | 3
+Operators | Operators-proof-results-2026.10.04.txt | 354 | certified | 15
+Outstanding | Outstanding-proof-results-2026.11.10.txt | 1871 | certified | 6
+Peer | Peer-proof-results-2026.11.10.txt | 254 | certified | 6
+PlaneClock | PlaneClock-proof-results-2026.11.10.txt | 535 | certified | 6
+Release | Release-proof-results-2026.11.10.txt | 613 | certified | 10
+RulesFloorNV_rev5 | RulesFloorNV_rev5-proof-results-2026.10.02.txt | 262 | NOT CERTIFIED | 7
+RunConfinement | RunConfinement-proof-results-2026.10.02.txt | 116 | certified | 3
+RunCoupling | RunCoupling-proof-results-2026.10.02.txt | 469 | certified | 6
+RunSeats | RunSeats-proof-results-2026.10.02.txt | 147 | certified | 4
+Seats | Seats-proof-results-2026.10.02.txt | 110 | certified | 3
+ToolList | ToolList-proof-results-2026.10.04.txt | 215 | certified | 7
+proof modules 32; obligations proved (sum of 'All N obligations proved') 11016; certify 29; do not certify ['Confinement', 'Confinement_A1', 'RulesFloorNV_rev5']; LS4 temporal steps not certified 178
+overlay eight: obligations 5600 LS4 52
+other 24: obligations 5416 LS4 126

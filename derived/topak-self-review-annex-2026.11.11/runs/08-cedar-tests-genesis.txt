@@ -1,0 +1,64 @@
+running 62 test(s)
+  test B1 read inside the corpus root ... ok
+  test B1 read outside the corpus root ... ok
+  test B1 read by a Run seat ... ok
+  test B1 read not in the lease alphabet ... ok
+  test B1 read of an object in Run's root only ... ok
+  test B2 draft in own workspace ... ok
+  test B2 draft outside own workspace ... ok
+  test B3 invoke allowlisted, inputs resident ... ok
+  test B3 invoke same name, other digest ... ok
+  test B3 invoke with inputs outside the workspace ... ok
+  test B4 emit to own current topic ... ok
+  test B4 emit to another principal's topic ... ok
+  test B4 emit to a sealed topic ... ok
+  test B4 emit to a topic at a fenced epoch ... ok
+  test B5 submit own artifact ... ok
+  test B5 submit another's artifact ... ok
+  test B6 grant vote from a grant seat ... ok
+  test B6 deny vote from a veto seat ... ok
+  test B6 vote bound to a superseded rules epoch ... ok
+  test B6 vote from an unseated principal ... ok
+  test B6 a thinker seat on the veto roster cannot vote ... ok
+  test B6 an observer seat on the grant roster cannot vote ... ok
+  test B1 an observer seat reads the corpus ... ok
+  test B4 an observer seat emits to its own topic ... ok
+  test B7 author's own grant vote is refused ... ok
+  test B8 veto seat cannot grant ... ok
+  test B9 a voter cannot draft ... ok
+  test B9 a voter cannot invoke ... ok
+  test B9 a voter cannot submit ... ok
+  test B10 an observer seat cannot draft ... ok
+  test B10 an observer seat cannot invoke ... ok
+  test B10 an observer seat cannot submit ... ok
+  test B10 a grant seat cannot draft ... ok
+  test B10 a Run observer seat cannot actuate ... ok
+  test R1 actuate, allowlisted ... ok
+  test R1 actuate by a Build seat ... ok
+  test R1 actuate not in the lease alphabet ... ok
+  test R2 report to own topic ... ok
+  test R2 report to another principal's topic ... ok
+  test X1 break-glass tool without a quorum ... ok
+  test X1 break-glass tool under a quorum ... ok
+  test X1 break-glass does not reach a tool outside its envelope ... ok
+  test R4 consult inside the Run root ... ok
+  test R4 consult outside the Run root ... ok
+  test R4 consult of an object in Build's root only ... ok
+  test R4 consult by a Build seat ... ok
+  test R4 consult not in the lease alphabet ... ok
+  test R4 a Run observer seat consults ... ok
+  test X1 break-glass does not reach Consult ... ok
+  test R3 actuate with no live cell Observer ... ok
+  test R3 report with no live cell Observer ... ok
+  test R3 break-glass under a quorum with no live cell Observer ... ok
+  test R3 does not couple a Run observer seat's own report ... ok
+  test R3 does not couple Consult ... ok
+  test X2 erase a payload at genesis (no erasure roster) ... ok
+  test X2 erase a payload under an erasure quorum ... ok
+  test F erase forensic class F1 under a quorum ... ok
+  test F erase forensic class F2 under a quorum ... ok
+  test F erase forensic class F3 under a quorum ... ok
+  test F erase forensic class F4 under a quorum ... ok
+  test F erase forensic class F5 under a quorum ... ok
+  test F erase forensic class F6 under a quorum ... ok
+results: 62 passed, 0 failed

@@ -1,0 +1,361 @@
+    Finished `release` profile [optimized] target(s) in 0.22s
+     Running unittests src/lib.rs (target/release/deps/topak_bundle-cf06f2b340625658)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/allowlist.rs (target/release/deps/allowlist-8a7f225416ead675)
+
+running 13 tests
+test the_root_is_labelled_and_the_delivery_table_is_total ... ok
+test w10_a_field_the_record_does_not_define_is_refused ... ok
+test w1_identity ... ok
+test w2_inputs ... ok
+test w4_a_run_entry_declares_its_channel ... ok
+test the_built_bundle_loads_and_its_entries_are_read ... ok
+test w3_interface ... ok
+test the_label_of_a_result_is_the_join_and_the_table_delivers_it ... ok
+test w5_a_build_entry_declares_none ... ok
+test w9_an_outward_entry_marks_a_destination_or_says_it_has_none ... ok
+test w8_a_reserved_name_is_released_only_by_an_entry_the_rules_name ... ok
+test w7_an_outward_result_is_untrusted ... ok
+test w6_labels_are_present_and_in_the_vocabulary ... ok
+
+test result: ok. 13 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.42s
+
+     Running tests/fallback.rs (target/release/deps/fallback-c288892647c498c0)
+
+running 10 tests
+test a_bundle_signed_under_a_key_the_rules_do_not_carry_does_not_load ... ok
+test a_sidecar_allow_counts_only_from_the_leases_revision ... ok
+test a_renamed_tarball_with_a_forged_manifest_is_refused ... ok
+test a_sidecar_allow_from_an_unverified_revision_is_refused ... ok
+test an_unsigned_bundle_does_not_load ... ok
+test a_reachable_sidecar_deny_is_authoritative ... ok
+test unreachable_sidecar_falls_back_to_the_matching_local_bundle ... ok
+test no_local_bundle_for_the_lease_is_a_refusal ... ok
+test undefined_is_not_allow ... ok
+test a_sidecar_allow_from_the_leases_revision_admits ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.36s
+
+     Running unittests src/lib.rs (target/release/deps/topak_contain-a451068a03842163)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/topak-demo-guest.rs (target/release/deps/topak_demo_guest-b76124a56e0e82ae)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/launch.rs (target/release/deps/launch-dd50b72e575ea46b)
+
+running 6 tests
+test a_container_guest_is_launched_appraised_and_bridged ... ok
+test the_docker_launch_part_is_applied_and_cannot_be_loosened ... ok
+test a_guest_that_cannot_verify_its_bundle_writes_no_identity ... ok
+test rung_1_attests_the_launched_image_and_persona_and_nothing_else ... ok
+test the_simulated_verifier_attests_contests_and_refuses ... ok
+test the_bridge_carries_the_round_and_re_attests_between_actions ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running tests/wasmtool.rs (target/release/deps/wasmtool-00597a1903b3fa51)
+
+running 4 tests
+test a_module_that_is_not_the_pinned_one_does_not_load ... ok
+test a_tool_that_asks_for_any_other_capability_does_not_run ... ok
+test a_run_tool_reaches_its_declared_target_and_nothing_else ... ok
+test a_runaway_tool_is_stopped ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running unittests src/lib.rs (target/release/deps/topak_core-76173e9bb331d2fb)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/confinement.rs (target/release/deps/confinement-a10d68ff6dbb69a3)
+
+running 19 tests
+test a_contained_lease_stops_being_contained_when_it_ends ... ok
+test a_contested_verdict_never_grants_and_revokes_the_principal ... ok
+test a_contested_verdict_ends_a_live_lease ... ok
+test a_rung_3_seat_needs_an_issued_verifier ... ok
+test a_rung_1_grant_is_the_launchers_assertion ... ok
+test a_run_seat_is_never_granted_on_a_build_profile ... ok
+test a_run_seat_on_a_run_profile_is_contained_with_p4_as_channel_fidelity ... ok
+test an_epoch_fence_invalidates_a_pending_appraisal ... ok
+test an_attested_rung_3_grant_binds_the_guest_and_is_contained ... ok
+test m_lower_and_m_renewlow_are_refused ... ok
+test channel_fidelity_is_checked_at_apply ... ok
+test contained_is_a_lookup_and_each_conjunct_matters ... ok
+test no_silent_downgrade_at_grant ... ok
+test only_a_promoted_well_formed_build_profile_is_a_reference_value ... ok
+test rules_without_the_new_fields_keep_their_bytes ... ok
+test renewal_re_attests_the_same_guest ... ok
+test rung_3_is_appraised_by_an_issued_verifier_against_the_profile ... ok
+test the_reference_profile_on_disk_parses_and_declares_its_failures ... ok
+test the_session_is_the_attested_guests_and_m_unbound_is_refused ... ok
+
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.01s
+
+     Running tests/drift.rs (target/release/deps/drift-bc46b53fc4d9101c)
+
+running 2 tests
+test pinned_records_have_not_drifted ... ok
+test every_cited_record_is_pinned ... ok
+
+test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/emergency.rs (target/release/deps/emergency-adeee1398ad44a26)
+
+running 5 tests
+test a_drill_is_a_real_activation_on_the_log ... ok
+test an_emergency_lease_is_one_round ... ok
+test the_actions_are_the_persons ... ok
+test an_operator_ends_it_and_x1_is_retired ... ok
+test an_emergency_lease_has_a_roster_quorum ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/mutations.rs (target/release/deps/mutations-1932f7767dd2c3b0)
+
+running 36 tests
+test a_cell_names_a_thinker_seat_in_its_domain_and_only_observers_have_one ... ok
+test a_correlator_on_the_veto_roster_vetoes_and_its_silence_does_not ... ok
+test a_revoked_principal_persona_or_profile_is_not_granted_again_and_m_revoke_is_refused ... ok
+test a_run_round_seals_with_its_lease_and_a_run_seat_cannot_abstain ... ok
+test a_timeout_is_never_a_grant ... ok
+test a_threshold_needs_three_counted_seats_to_differ_from_unanimity ... ok
+test a_targeted_revocation_ends_one_round_and_not_the_fleet ... ok
+test admit_implies_floor_permit_and_m_override_is_refused ... ok
+test a_ttl_over_t_persona_is_refused_at_grant_and_at_renewal ... ok
+test bundle_refusal_is_honored_and_m_failopen_is_refused ... ok
+test alphabets_are_bounded_by_seat_kind_and_m_kind_is_refused ... ok
+test every_floor_deny_names_a_reason ... ok
+test genesis_refuses_floor_violating_rules ... ok
+test every_rules_floor_entry_has_a_violation_it_catches ... ok
+test genesis_rules_satisfy_the_floor ... ok
+test no_gate_evidence_no_promotion ... ok
+test lease_renewal_is_monotone_and_m_renew_is_refused ... ok
+test no_action_under_a_fenced_epoch_and_m_fence_is_refused ... ok
+test one_live_lease_per_principal ... ok
+test quorum_any_is_withdrawn ... ok
+test one_seat_per_principal_and_m_seat_is_refused ... ok
+test renewal_cannot_change_round_or_role_and_m_role_is_refused ... ok
+test renewal_cannot_swap_the_bundle ... ok
+test run_alphabets_are_bounded_by_seat_kind_and_domain ... ok
+test rung_zero_is_never_contained_and_says_why ... ok
+test stale_votes_never_count ... ok
+test the_round_bound_counts_consult ... ok
+test the_round_bound_terminates_a_round ... ok
+test the_rounds_labels_are_folded_and_a_stale_clear_set_is_refused ... ok
+test the_sequence_counts_effects_and_m_emitseq_is_refused ... ok
+test the_two_issued_lists_are_admitted_by_the_rules_floor ... ok
+test unanimity_over_counted_seats_with_the_author_recused ... ok
+test veto_deny_denies_and_veto_silence_does_not ... ok
+test vouching_keys_are_issued_and_must_be_keys ... ok
+test without_r2_an_empty_roster_promotes_with_zero_votes ... ok
+test workspace_paths_are_syntactic_and_fail_closed ... ok
+
+test result: ok. 36 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/operators.rs (target/release/deps/operators-af1815dd72d940ac)
+
+running 6 tests
+test an_operators_lease_needs_a_sign_on_assertion ... ok
+test a_request_is_the_operators_and_is_not_replayed ... ok
+test a_successor_grant_keeps_the_seating_and_never_widens ... ok
+test three_operators_recover_a_lapse_and_two_cannot ... ok
+test the_unsigned_path_seats_and_does_nothing_else ... ok
+test a_lapsed_operator_stops_its_own_domain_and_nothing_else ... ok
+
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/workflow.rs (target/release/deps/workflow-b0049092d5660e5c)
+
+running 18 tests
+test a_finding_against_the_workers_round_voids_the_decision_nodes_next_route ... ok
+test a_clear_input_joins_the_receivers_clear_set ... ok
+test a_fence_fails_a_node_not_yet_granted ... ok
+test a_computed_edge_fires_on_a_typed_attribute ... ok
+test a_mesh_loads_only_with_a_budget_and_two_coloured_clear_edges ... ok
+test a_lapsed_orchestrator_fails_its_decision_point ... ok
+test a_route_decided_before_a_finding_and_applied_after_is_void ... ok
+test a_route_decided_in_one_round_and_committed_after_it_ends_is_void ... ok
+test a_route_applies_and_the_workflow_completes_by_its_sink ... ok
+test a_second_route_to_a_consumed_decision_point_is_void ... ok
+test an_untrusted_attribute_disables_the_edge_into_an_outward_node ... ok
+test an_edge_waits_for_its_sources_coverage ... ok
+test a_workflow_loads_only_promoted_and_well_formed ... ok
+test an_orchestrator_round_is_charged ... ok
+test only_the_orchestrator_routes_and_only_its_own_decision ... ok
+test the_budget_refuses_a_grant_and_the_workflow_fails ... ok
+test the_loop_turns_twice_and_exits ... ok
+test untrusted_content_read_on_the_loop_disables_the_exit ... ok
+
+test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/release/deps/topak_floor-6194fc0a6003772f)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/floor.rs (target/release/deps/floor-80718d82443d7578)
+
+running 5 tests
+test an_edited_floor_does_not_load ... ok
+test a_retired_run_action_is_an_error_not_a_decision ... ok
+test an_incomplete_slice_is_a_deny_not_a_skipped_forbid ... ok
+test exception_count_is_one_under_r6 ... ok
+test replays_the_gate_suite ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.11s
+
+     Running tests/workflow.rs (target/release/deps/workflow-d8486cb9954246fd)
+
+running 3 tests
+test every_run_request_carries_its_decision_point ... ok
+test a_clear_input_raises_the_receivers_clear_set_and_r5_then_refuses_its_outward_call ... ok
+test a_route_is_decided_by_r8_r9_and_r3 ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.03s
+
+     Running unittests src/lib.rs (target/release/deps/topak_mcp-c1628cece91bc41e)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/lib.rs (target/release/deps/topak_node-f5ccf8e89d464565)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/main.rs (target/release/deps/topak-dc5914eb6ea04401)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running unittests src/bin/topak-demo-tool.rs (target/release/deps/topak_demo_tool-0cd64c33b77fbbb1)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/contain.rs (target/release/deps/contain-dd754df2109ce52c)
+
+running 14 tests
+test a_guest_that_cannot_verify_its_bundle_is_never_granted ... ok
+test a_rogue_image_is_contested_and_the_principal_is_revoked ... ok
+test a_run_seat_launches_nothing ... ok
+test an_epoch_fence_voids_a_pending_appraisal ... ok
+test an_unreachable_verifier_grants_nothing ... ok
+test every_host_power_subtracts ... ok
+test a_run_round_actuates_only_its_declared_channel ... ok
+test rung_1_honest_round_and_its_refusals ... ok
+test simulated_rung_3_round_is_contained_and_rung_0_beside_it_is_not ... ok
+test the_session_is_the_attested_guests ... ok
+test withdrawing_a_profile_fences_its_leases ... ok
+test without_the_criterion_nothing_is_contained ... ok
+test a_hosted_tool_with_no_channel_in_the_leases_revision_is_not_run ... ok
+test renewal_re_attests_the_same_guest_and_lapses_when_it_cannot ... ok
+
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.05s
+
+     Running tests/e2e.rs (target/release/deps/e2e-2c5144a78f71bf5e)
+
+running 10 tests
+test an_operator_is_a_principal_and_its_requests_are_decided ... ok
+test a_workflow_is_run_by_its_promotion ... ok
+test break_glass_is_an_emergency_seating ... ok
+test an_expired_lease_is_ended_and_refused ... ok
+test build_round_promotion_and_fencing ... ok
+test actuate_is_counted_recorded_and_sealed ... ok
+test the_tool_list_is_delivered_and_opens_the_round ... ok
+test labels_bound_what_a_round_may_send_after_what_it_has_read ... ok
+test tools_break_glass_issuance_and_partition ... ok
+test observer_liveness_couples_run_admits ... ok
+
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 7.27s
+
+     Running unittests src/lib.rs (target/release/deps/topak_paxos-21784d37e0aa9885)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/sim.rs (target/release/deps/sim-d33ba17df241c585)
+
+running 4 tests
+test mutation_ignore_promised_values_is_caught ... ok
+test mutation_accept_below_promise_is_caught ... ok
+test a_leader_change_happens ... ok
+test safety_and_liveness_under_faults ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 2.68s
+
+     Running unittests src/lib.rs (target/release/deps/topak_transport-44d76468fa20af52)
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests topak_bundle
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests topak_contain
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests topak_core
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests topak_floor
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests topak_mcp
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests topak_node
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests topak_paxos
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+   Doc-tests topak_transport
+
+running 0 tests
+
+test result: ok. 0 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+test exit 0
