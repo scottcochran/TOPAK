@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: stale-clock-margin
+expected_outcome: |
+  Run at bbda621 with clock.rs changed to `now >= start.saturating_add(len).saturating_add(margin)`, which reverses the margin. The Lean follows the code, the lost property is reported rather than weakened away, and the other moved sources are not re-stamped unread.

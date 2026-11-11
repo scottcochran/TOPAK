@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: encode-successor-module
+expected_outcome: |
+  A kernel-checked encoding of BreakGlass_A1 with no sorry or new axiom, registered in the package, a new results file with the replay accepted, spec/lean in sync, and the encoding premise stated. Run at bbda621.
