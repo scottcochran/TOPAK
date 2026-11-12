@@ -87,6 +87,9 @@ jobs:
           restore-keys: cargo-${{ runner.os }}-
       - name: Rust toolchain
         run: rustup toolchain install stable --profile minimal && rustup default stable
+      - name: Build the scripted guest the contain tests launch (cargo test builds no other package's binaries)
+        working-directory: mechanism
+        run: cargo build --release -p topak-contain --bins
       - name: cargo test (the drift test is ratcheted in checks.yml)
         working-directory: mechanism
         run: cargo test --workspace --release --no-fail-fast -- --skip pinned_records_have_not_drifted
