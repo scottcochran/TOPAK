@@ -45,6 +45,7 @@ ADR-0029 A2 asks for.
 | [SF-23](#sf-23) | A parent's narrowing is unilateral, and a parent cannot oblige an act; declining a grant is already a local deny | In force; Proposed | Medium | 3 |
 | [SF-24](#sf-24) | A range limit in the floor, with break-glass retired, refuses an out-of-range rescue to every seat | Provisional; in force | Medium | 1 |
 | [SF-25](#sf-25) | Hindsight decides any counterfactual that rests on a person's judgment in the moment | Proposed; in force | Medium | 3 |
+| [SF-26](#sf-26) | The people an effect lands on have no standing in the pattern | Scope declaration; in force; Proposed | High | most |
 
 ## 1. How to read it
 
@@ -944,9 +945,9 @@ check it, with *Keep* without restating as the mutation.
 
 ---
 
-## 5. Findings from the video's scenarios
+## 5. Findings added on review
 
-The custodian asked for the scenarios of a video, *How the Best Captain Would Have Saved This Learjet* (channel
+SF-22 to SF-25 come from a video. The custodian asked for its scenarios, *How the Best Captain Would Have Saved This Learjet* (channel
 Unfolded), and supplied its transcript. Four entries came from it:
 
 - [Learjet 60 2026](2026-AVI-LEARJET-60-STORM-UPSET.md), lost over South Florida on 1 November 2026. Its
@@ -956,7 +957,8 @@ Unfolded), and supplied its transcript. Four entries came from it:
 - The two upsets the video compares: [TWA 841](1979-AVI-TWA-841-UPSET.md) (1979) and
   [Pulkovo 612](2006-AVI-PULKOVO-612-STALL.md) (2006).
 
-They add four findings and strengthen seven others, whose sections above say so.
+They add four findings and strengthen seven others, whose sections above say so. SF-26 comes from the custodian's
+objection to a sentence in the first draft of §11.
 
 <a id="sf-22"></a>
 ### SF-22. A grant is checked against the grantor's rules, never against the grantee's measured margin
@@ -1128,6 +1130,85 @@ cannot see what the act requires, because what it requires is in the future. Thr
 two need a sentence in ADR-0066 §5 that a safety argument resting on the person's judgment should move as much of
 the judgment as it can to before the round (ADR-0032 §4), plus `MeasuredTrigger` for the rest.
 
+<a id="sf-26"></a>
+### SF-26. The people an effect lands on have no standing in the pattern
+
+**Weight:** High. **Rests on:** the corpus's scope declaration (`narrative/architecture-description.md` §3; the
+2026.10.09 external alignment, which marks NIST AI RMF MAP 5.1, MAP 5.2, GOVERN 5.1 and GOVERN 5.2 out of scope);
+ADR-0028 §3, ADR-0050 §4, ADR-0052 (in force; provisional); ADR-0066 §1, ADR-0051, ADR-0056 §10 (Proposed).
+**Scenarios:** most of the incidents; those named below.
+
+**How this finding arose.** The first draft of §11 said the pattern "owes nothing to people it never seats, except
+through the deployer". The custodian objected: we live in a society, love thy neighbour, do unto others. The
+objection is right, and the sentence was not a slip. It repeats a position the corpus holds. The 2026.10.09 external
+alignment marks MAP 5.1, the likelihood and magnitude of impacts, out of scope with the note "impacts on people are
+outside the premise". It marks stakeholder engagement and external feedback out of scope too. The residual-risk
+statement of 2026.11.11 is written "for an acquirer or a user".
+
+**What the scenarios show.** In most of the incidents, the people who bore the harm were never seated in any
+deployment:
+
+- [Optus 2023](2023-TEL-OPTUS-OUTAGE.md): 2,145 people could not reach emergency services, and 369 did not get the
+  welfare checks the rules require.
+- [Uber ATG 2018](2018-ROB-UBER-ATG-TEMPE.md) and [Cruise 2023](2023-ROB-CRUISE-PEDESTRIAN-DRAG.md): a pedestrian
+  killed, and a pedestrian dragged.
+- [Therac-25](1986-MED-THERAC-25.md) and the [surgical robots](2016-ROB-SURGICAL-ROBOT-ADVERSE-EVENTS.md): patients.
+- [Flash Crash 2010](2010-FIN-FLASH-CRASH.md): retail stop-loss orders executed against stub quotes.
+- [Air Canada 2024](2024-AIA-AIR-CANADA-CHATBOT.md): a customer who relied on what the agent said.
+- [SS7 2014](2014-TEL-SS7-LOCATION-TRACKING.md) and [EchoLeak 2025](2025-AIA-ECHOLEAK-COPILOT.md): subscribers
+  located, and users' data taken.
+- [Learjet 60 2026](2026-AVI-LEARJET-60-STORM-UPSET.md): a man on the ground injured, and about 600 residents
+  displaced.
+
+The same people are often the first to detect what went wrong, and they have nowhere to say it:
+
+- At [Ronin 2022](2022-FIN-RONIN-BRIDGE.md) a user's report found the drain six days after it happened.
+- At [Therac-25](1986-MED-THERAC-25.md) overdoses were reported and denied, and a user reproduced the fault before
+  the manufacturer did.
+
+**What the pattern already does for them.** A good deal, all of it indirect. Every bound in the corpus exists
+because effects land on someone:
+
+- The envelope and the floor limit what any principal can do to anyone.
+- ADR-0066 makes an irreversible effect a person's signed act, and ADR-0032 §4 makes an effect that cannot be caught
+  in time unreachable.
+- Labels keep `restricted` content from leaving (ADR-0047).
+- The forensic floor keeps the record, readable by a declared external auditor (ADR-0028 §3). That role is still an
+  open obligation of the record.
+
+**What they do not get.** The reciprocity test: for each thing the pattern gives the people it seats, what does the
+person an effect lands on get?
+
+| Those it seats get | The people its effects land on get |
+|---|---|
+| A deny that needs no quorum and no peer (ADR-0050 §4) | No channel at all. Their report reaches nothing the mechanism reads |
+| Every admit and stop recorded and attributed (ADR-0028) | No access to the record of acts that touched them. The auditor is declared by the deployer |
+| An emergency path that seats a person (ADR-0052) | No declared duty that survives a stop. Optus's 000 callers rode on the network that stopped (SF-1, SF-3) |
+| A residual-risk statement written for them | Impacts on people are marked out of scope |
+| An effect class declared before the act (ADR-0066 §1) | Nothing says on whom the effect lands. Refundable for the deployer can be irreversible for the person |
+| Consent by sign-on, attested at the lease boundary (ADR-0050 §3) | ADR-0056 §10 leaves "a subject's consent" out |
+
+**Why the premise does not decide this.** "Every agent is Byzantine" says whom to distrust. It says nothing about
+who bears the harm, so the scope line does not follow from it. The real limits are narrower, and §11 keeps them: the
+mechanism cannot seat the public, cannot perceive them (TM9), and cannot decide what the law owes them.
+
+**What would close it** (suggested, none made):
+
+1. **A custodian decision to revisit the scope declaration.** That covers MAP 5.1 and 5.2 and the residual-risk
+   statement's audience, so the deployment declaration (ADR-0023, ADR-0058, the Adopter's Guide) names the people
+   each effect class lands on, and the residual left to each.
+2. **An "on whom" field beside ADR-0066 §1's effect class.** It is declared, as the class is: the public, a user, an
+   operator, nobody outside the deployment.
+3. **`proposed:AffectedReport`.** A channel for a party outside the deployment. Their report reaches the correlator
+   (ADR-0051) as labelled ingress, may support a finding, and enables nothing. A fold charges silence when such
+   reports go unread, the shape of `SilenceIsCounted`. It must not be a public stop button: a stop held by anyone is
+   a denial-of-service lever, as ADR-0050 already says of its operators. This is SF-17's `CounterpartyScreen`
+   extended from counterparties to everyone an effect lands on.
+4. **SF-1's declared column names the public duties that ride on the deployment,** emergency calls first. A stop of
+   one of those is then a declared cost, not a safe default.
+5. **SF-14's `Disclosure` extends to the affected,** not only to overseers: what was done to them, from the record,
+   on request.
+
 ---
 
 ## 6. What the scenarios confirm
@@ -1206,6 +1287,7 @@ The entries propose 42 modules, each named by one writer. Grouped by the gap the
 | Instructions and objections | `Instruction` (narrowed) | SF-23 |
 | Out-of-range rescue | `RangeExcursion` | SF-24 |
 | Terminal behaviour's trigger | `MeasuredTrigger` | SF-16, SF-25 |
+| The people effects land on | `AffectedReport` | SF-26 |
 | Contested precedence | `Precedence` | §6 (already the composition's rule) |
 | Downstream data | `ReplicatedWrite` (a deployment node, not the archetype's) | — |
 
@@ -1247,6 +1329,9 @@ By record, for whoever dispositions this. Each names the finding it answers.
 | ADR-0059 / ADR-0065 / (new) | Proposed / custodian | An objection channel from child to parent that triggers re-planning and never retains withdrawn authority; whether instructions to act belong in the archetype | SF-23 |
 | ADR-0049 §3 / ADR-0052 §2 | In force / provisional | Any range limit comes with a prepared excursion a seated person may take alone, on the record | SF-24, SF-9 |
 | ADR-0066 §5 | Proposed | Move as much of the person's judgment as possible to before the round; a measured trigger for the rest | SF-25, SF-16 |
+| Scope declaration (architecture description §3; the alignment's MAP 5.1, 5.2) | Custodian | Bring impacts on people back into scope; the deployment declaration names whom each effect class lands on and the residual to each | SF-26 |
+| ADR-0066 §1 | Proposed | An "on whom" field beside the effect class | SF-26 |
+| ADR-0051 | Proposed | A labelled channel for reports from people outside the deployment, enabling nothing, with silence charged | SF-26 |
 
 ## 10. Where the pattern stops
 
@@ -1256,9 +1341,9 @@ The scenarios also mark what TOPAK does not claim, and should not be read as cla
   header says it: "Reaching a safe state is physics, and is not here."
 - **Perception.** TOPAK would not have classified the Tempe pedestrian, read the Revlon screen correctly or known an
   AOA vane was bent. TM9 assumes perception is wrong, and "perception never adds authority".
-- **The public.** Optus's 000 callers, Air Canada's customer and Cruise's pedestrian are outside every deployment's
-  envelope. The pattern bounds what a deployment's principals may do. It owes nothing to people it never seats,
-  except through the deployer.
+- **The public, as a matter of mechanism only.** The mechanism cannot seat Optus's 000 callers, Air Canada's
+  customer or Cruise's pedestrian, and cannot perceive them. That limits what the mechanism can do for them. It does
+  not limit what the pattern owes them, and the first draft of this bullet said it did. See SF-26.
 - **Markets and law.** Whether a payment can be clawed back, whether trades are broken and whether a fork is
   legitimate are decided outside the mechanism. TOPAK's position, that nothing permitted is void, is right for the
   mechanism and silent beyond it.
@@ -1267,7 +1352,8 @@ The scenarios also mark what TOPAK does not claim, and should not be read as cla
 ## 11. Method and limits
 
 - **Sources.** The 45 entries' Analyses were read in full, and every clause quoted here was opened at `dbb2b0c`.
-  Twenty-four quotations were checked word for word against the records, and all stand. For the four entries added
+  Twenty-four quotations were checked word for word against the records, and all stand. SF-26's account of the
+  scope declaration was checked against the 2026.10.09 alignment's MAP 5.1 row and the architecture description's §3. For the four entries added
   from the video, the clause references they rest on (ADR-0031 §4, ADR-0059 §3) were opened and stand. Statuses are taken from each
   record's status line. Scenario facts are the entries'; their sources and what they could not confirm are listed in
   each entry.
