@@ -130,3 +130,79 @@ async fn a_runaway_tool_is_stopped() {
     let e = h.call("spin@x", &serde_json::Map::new(), None).await.unwrap_err();
     assert!(format!("{e:#}").to_lowercase().contains("fuel"), "{e:#}");
 }
+
+/// Grows its memory one page at a time until the host says no.
+const HOG: &str = r#"
+(module
+  (memory (export "memory") 1)
+  (func (export "run") (result i32)
+    (loop $l (br_if $l (i32.ge_s (memory.grow (i32.const 1)) (i32.const 0))))
+    (i32.const 0)))
+"#;
+
+/// Declares more memory at the start than the host allows.
+const BIG: &str = r#"
+(module
+  (memory (export "memory") 2048)
+  (func (export "run") (result i32) (i32.const 0)))
+"#;
+
+/// Hands the host an output length far past its own memory.
+const LIAR: &str = r#"
+(module
+  (import "topak" "output" (func $output (param i32 i32)))
+  (memory (export "memory") 1)
+  (func (export "run") (result i32) (call $output (i32.const 0) (i32.const 0x7fffffff)) (i32.const 0)))
+"#;
+
+/// Connects until refused; returns 0 iff the first refusal came after exactly MAX_CONNS (16).
+const GREEDY: &str = r#"
+(module
+  (import "topak" "connect" (func $connect (result i32)))
+  (memory (export "memory") 1)
+  (func (export "run") (result i32)
+    (local $n i32)
+    (block $done
+      (loop $l
+        (br_if $done (i32.lt_s (call $connect) (i32.const 0)))
+        (local.set $n (i32.add (local.get $n) (i32.const 1)))
+        (br_if $done (i32.ge_s (local.get $n) (i32.const 100)))
+        (br $l)))
+    (i32.sub (local.get $n) (i32.const 16))))
+"#;
+
+#[tokio::test]
+async fn a_tool_cannot_grow_its_memory_past_the_limit() {
+    assert_eq!(MEMORY_MAX, 64 << 20);
+    let (path, d) = module("hog", HOG);
+    let h = host(vec![("hog@x", path, d)]).unwrap();
+    let e = h.call("hog@x", &serde_json::Map::new(), None).await.unwrap_err();
+    assert!(format!("{e:#}").contains("growing memory"), "{e:#}");
+}
+
+#[tokio::test]
+async fn a_tool_that_starts_with_too_much_memory_does_not_run() {
+    let (path, d) = module("big", BIG);
+    let h = host(vec![("big@x", path, d)]).unwrap();
+    let e = h.call("big@x", &serde_json::Map::new(), None).await.unwrap_err();
+    assert!(format!("{e:#}").contains("memory"), "{e:#}");
+}
+
+#[tokio::test]
+async fn the_host_allocates_nothing_a_tool_sizes_past_its_own_memory() {
+    let (path, d) = module("liar", LIAR);
+    let h = host(vec![("liar@x", path, d)]).unwrap();
+    let e = h.call("liar@x", &serde_json::Map::new(), None).await.unwrap_err();
+    assert!(format!("{e:#}").contains("outside the module's memory"), "{e:#}");
+}
+
+#[tokio::test]
+async fn a_call_opens_at_most_max_conns_connections() {
+    assert_eq!(MAX_CONNS, 16);
+    let l = TcpListener::bind("127.0.0.1:0").unwrap();
+    let ch = Channel { kind: "tcp".into(), target: l.local_addr().unwrap().to_string() };
+    let (path, d) = module("greedy", GREEDY);
+    let h = host(vec![("greedy@x", path, d)]).unwrap();
+    let (_, used) = h.call("greedy@x", &serde_json::Map::new(), Some(ch)).await.unwrap();
+    assert_eq!(used.connects, MAX_CONNS as u32);
+}
