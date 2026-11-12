@@ -16,7 +16,7 @@ modules. It bears on them in one of three ways:
 
 The [index](INDEX.md) lists every scenario, grouped by sector, and lists the steps no module has yet and the
 modules proposed. [FINDINGS_TOPAK.md](FINDINGS_TOPAK.md) consolidates what the scenarios say against the records
-and modules: twenty-five findings (`SF-1` to `SF-25`), what the scenarios confirm, the existing `CR-` and `TM`
+and modules: twenty-six findings (`SF-1` to `SF-26`), what the scenarios confirm, the existing `CR-` and `TM`
 findings they bear on, the proposed modules grouped by gap, and the suggested entries by record, none made.
 
 ## What the inventory says so far
@@ -120,6 +120,14 @@ are best read by theme, as below, and not counted.
      Pulkovo 612 is the same climb into a narrowing envelope, with a valid stall warning wired to nothing.
    - TWA 841 was saved by an act far outside the normal envelope, which a range limit in the floor, with break-glass
      retired, would have refused to every seat.
+10. **The people effects land on have no standing.**
+   - In most of the incidents the harm fell on people no deployment seated: 000 callers, pedestrians, patients,
+     retail investors, subscribers, a neighbourhood under a falling jet.
+   - The pattern bounds what its principals may do to them, and gives them none of what it gives its own
+     operators: no channel, no access to the record, no declared duty that survives a stop. The corpus marks
+     impacts on people out of scope.
+   - The premise says whom to distrust, not who bears the harm. FINDINGS_TOPAK.md SF-26 asks the custodian to
+     bring them back in.
 
 **What these are not.**
 - Nine writers of the same lineage as the corpus's drafter wrote the entries in parallel from one brief. That is

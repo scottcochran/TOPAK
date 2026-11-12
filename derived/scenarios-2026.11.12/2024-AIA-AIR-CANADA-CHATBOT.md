@@ -31,7 +31,7 @@ analogue:
     note: a stack's report to a person is ingress to that person, labelled untrusted, and enables nothing; stated for a person inside the deployment at a release seat
   - record: ADR-0056
     clause: "§10"
-    note: how a user's request becomes a task, and what a deployment owes a user it serves, is not covered
+    note: how a user's request becomes a task, and a subject's consent, are not covered
 actors:
   - party: Jake Moffatt
     role: user
@@ -163,7 +163,7 @@ to that person, labelled `untrusted`, and enables nothing. That protection is fo
 release seat. A customer reading a website gets no label. TM9 (deception of a person's perception) says of a
 deceived person at a release seat that it "is a semantic failure. Nothing here sees it". Moffatt is the same case one
 step further out, where the corpus does not reach. ADR-0056 §10 likewise leaves out how a user's request becomes a
-task and what a deployment owes a user it serves.
+task, and a subject's consent; no record says what a deployment owes a person it serves (FINDINGS_TOPAK.md SF-26).
 
 **What would have made the statement checkable.** The contradiction was between two outputs of the same deployer, a
 page and a chatbot. If statements of the deployer's terms were delivered as quotations by handle of a pinned
