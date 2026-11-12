@@ -27,3 +27,6 @@ cloud.ai.exports/
 sessions/
 
 .DS_Store
+
+# Python bytecode caches (e.g. from running derived/scenarios-*/scenarios.py)
+__pycache__/

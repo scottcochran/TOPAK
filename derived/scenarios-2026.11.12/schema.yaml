@@ -1,0 +1,239 @@
+# JSON Schema (draft 2020-12, written in YAML) for the front matter of a scenario file, <id>.md.
+# Checked by scenarios.py.
+#
+# The schema is generic. It names no sector's regulator, no corpus's records and no specification's
+# modules. A field that points into a corpus (analogue, trace, counterfactual, model) is typed here only by
+# its shape. What it must resolve to is set by the BINDINGS block of scenarios.py, which is the one place
+# that knows this corpus is TOPAK. Another corpus reuses this file unchanged and rewrites that block.
+$schema: https://json-schema.org/draft/2020-12/schema
+title: Scenario record
+type: object
+additionalProperties: false
+required: [id, title, kind, date, sector, setting, concerns, rules_at_time, analogue, actors,
+           detection, trace, outcome, model, sources, verified]
+properties:
+  id:
+    description: >-
+      <year>-<sector code>-<topic>, upper case; the file is <id>.md. The sector code is the one
+      scenarios.py pairs with `sector` (TEL, NET, CLD, FIN, CTL, GAM, ICS, NRG, ROB, AVI, SPC, MED, AIA).
+    type: string
+    pattern: "^[0-9]{4}-[A-Z]{3}-[A-Z0-9-]+$"
+  title: {type: string, minLength: 5}
+  kind:
+    description: >-
+      incident: a real event, with an outcome on record.
+      disclosure: an attack or weakness shown by researchers or a vendor, not an event in service.
+      case-study: a real practice or mechanism examined over time rather than one event.
+      canonical: a named problem or result from the literature (its date is the publication).
+      thought-experiment: a constructed case with no claim that it happened.
+    enum: [incident, disclosure, case-study, canonical, thought-experiment]
+  date:
+    description: the day (YYYY-MM-DD), the month (YYYY-MM) or the year (YYYY) the scenario is dated by
+    type: string
+    pattern: "^[0-9]{4}(-[0-9]{2}(-[0-9]{2})?)?$"
+  sector:
+    enum: [telecom, networking, cloud, fintech, control, game-theory, industrial-control, energy,
+           robotics, aviation, space, medical, ai-agents]
+  setting:
+    description: the system, the organisation and the place, in one line
+    type: string
+    minLength: 5
+  concerns:
+    description: >-
+      what the scenario is about, in a vocabulary that holds across sectors. Pick the ones the
+      Analysis actually discusses, not every one that applies.
+    type: array
+    minItems: 1
+    uniqueItems: true
+    items:
+      enum:
+        - authority            # who may decide, and which of two instructions wins
+        - delegation           # authority handed down, narrowed or not
+        - human-in-the-loop    # a person's approval, sign-off or takeover as the control
+        - quorum               # several parties must agree; capture or loss of some of them
+        - consensus            # agreement on one order or one value among replicas
+        - partition            # parts of the system cut off from each other
+        - revocation           # taking authority back, and how fast that bites
+        - expiry               # authority that lapses by time or count
+        - emergency-path       # an override, break-glass or manual reversion
+        - monitoring           # a monitor that is absent, defeated, slow or wrong
+        - sensing              # an input that misreports the world
+        - interlock            # a guard that blocks an action outright
+        - actuation            # an effect on the world and whether it can be undone
+        - containment          # what an actor can reach at all
+        - ingress              # untrusted input treated as instruction or fact
+        - interface-types      # a value whose type, unit or schema is misread at a boundary
+        - configuration-change # a change to rules, routes or settings in service
+        - deployment           # promotion of code or content into service, staged or not
+        - rollback             # undoing a change or an effect
+        - supply-chain         # a component trusted for where it came from
+        - identity             # credentials, keys, who a party is
+        - insider              # a party inside the trust boundary acting against it
+        - collusion            # several parties coordinating outside the rules
+        - incentives           # a mechanism whose rules reward the wrong move
+        - feedback             # a loop that amplifies instead of damping
+        - cascading-failure    # one failure that propagates by the recovery itself
+        - timing               # deadlines, races, clocks and latency
+        - accountability       # the record of who did what, and liability after
+  rules_at_time:
+    description: >-
+      the rules, standard, procedure or protocol that governed the conduct at the time, paraphrased and
+      never quoted at length. Empty only for a canonical scenario or a thought experiment.
+    type: array
+    items:
+      type: object
+      additionalProperties: false
+      required: [document, clause, paraphrase]
+      properties:
+        document: {type: string}
+        clause: {type: string}
+        paraphrase: {type: string}
+  analogue:
+    description: where the same question sits in the corpus's own records (resolved by scenarios.py)
+    type: array
+    items:
+      type: object
+      additionalProperties: false
+      required: [record, clause, note]
+      properties:
+        record: {type: string, pattern: "^[A-Z][A-Za-z]*-[0-9]+$"}
+        clause: {type: string}
+        note: {type: string}
+  actors:
+    type: array
+    minItems: 1
+    items:
+      type: object
+      additionalProperties: false
+      required: [party, role, fault]
+      properties:
+        party: {type: string}
+        role:
+          enum: [operator, supervisor, automation, controller, sensor, actuator, monitor,
+                 safety-system, peer, counterparty, vendor, maintainer, regulator, court,
+                 investigator, attacker, insider, user, public]
+        fault:
+          description: >-
+            honest: acted within the rules and did the right thing. honest-error: a mistake, not a choice.
+            crash: stopped. omission: failed to send, act or report, and otherwise behaved.
+            byzantine: acted outside the rules, knowingly or by an arbitrary failure (a component that
+            reports what is false). contested: the classification is the dispute.
+            none-alleged: a party whose conduct is not in question.
+          enum: [honest, honest-error, crash, omission, byzantine, contested, none-alleged]
+        note: {type: string}
+  detection:
+    type: object
+    additionalProperties: false
+    required: [means, latency]
+    properties:
+      means:
+        type: array
+        minItems: 1
+        items:
+          enum: [automated-monitor, alarm, interlock, operator, peer, counterparty, customer,
+                 audit, insider, researcher, regulator, investigation, public, none]
+      latency:
+        enum: [immediate, seconds, minutes, hours, days, weeks, months, years, never, not-applicable]
+      note:
+        description: how it was detected where the means alone do not say, or the basis of the latency
+        type: string
+  trace:
+    description: >-
+      the scenario as steps in the corpus's specification vocabulary. A step is an action of a module
+      (resolved by scenarios.py), or "outside:<name>" for an event no module has yet. The outside steps
+      are the to-do list.
+    type: array
+    minItems: 1
+    items: {$ref: "#/$defs/step"}
+  counterfactual:
+    description: >-
+      optional. The run that would have kept the system within bounds: who would have had to act, the
+      steps in the same vocabulary as trace, and the properties that would then have held. A scenario
+      whose question is "what would have saved it" carries one.
+    type: object
+    additionalProperties: false
+    required: [by, trace, holds]
+    properties:
+      by: {type: string}
+      trace:
+        type: array
+        minItems: 1
+        items: {$ref: "#/$defs/step"}
+      holds:
+        description: property names (resolved as model.properties are)
+        type: array
+        items: {type: string}
+  outcome:
+    type: object
+    additionalProperties: false
+    required: [by, date, summary, aftermath, effect_reversed]
+    properties:
+      by:
+        description: the body or bodies that decided, investigated or settled it; "n/a" for a canonical scenario
+        type: string
+      date: {type: string, pattern: "^([0-9]{4}(-[0-9]{2}(-[0-9]{2})?)?|n/a)$"}
+      summary: {type: string}
+      aftermath:
+        description: rule, design or practice changes that followed
+        type: string
+      effect_reversed:
+        description: >-
+          whether the harmful effect itself was undone (funds returned, routes restored, a result
+          reversed), as distinct from being compensated or merely stopped
+        enum: ["yes", "no", partial, not-applicable]
+  model:
+    type: object
+    additionalProperties: false
+    required: [modules, properties, mutations, records, findings, fault_class]
+    properties:
+      modules:
+        description: existing modules by name, or proposed ones as "proposed:<Name>"
+        type: array
+        minItems: 1
+        items: {type: string, pattern: "^(proposed:)?[A-Z][A-Za-z0-9_]*$"}
+      properties:
+        description: operator names in the specification (resolved)
+        type: array
+        items: {type: string}
+      mutations:
+        description: mutation names used in the specification (resolved)
+        type: array
+        items: {type: string}
+      records:
+        description: the corpus's decision records the scenario bears on (resolved)
+        type: array
+        items: {type: string, pattern: "^[A-Z][A-Za-z]*-[0-9]+$"}
+      findings:
+        description: >-
+          finding, threat, trusted-base or assumption identifiers in the corpus's reviews and records
+          (resolved): CR-12, TM11, T-0068-8, A-0068-4
+        type: array
+        items: {type: string, pattern: "^([A-Z][A-Z0-9]*-?[0-9]+|[A-Z]-[0-9]{4}-[0-9]+)$"}
+      fault_class:
+        description: the fault model the scenario exercises, in one line
+        type: string
+  sources:
+    description: read when the entry was written; at least two for an incident, disclosure or case study
+    type: array
+    minItems: 1
+    items: {type: string, pattern: "^https?://"}
+  verified:
+    description: the date the facts were checked against the sources
+    type: string
+    pattern: "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+allOf:
+  - if:
+      properties: {kind: {enum: [incident, disclosure, case-study]}}
+    then:
+      properties:
+        sources: {minItems: 2}
+        rules_at_time: {minItems: 1}
+$defs:
+  step:
+    type: object
+    additionalProperties: false
+    required: [step, at]
+    properties:
+      step: {type: string, pattern: "^(outside:[a-z0-9-]+|[A-Z][A-Za-z0-9_]*)$"}
+      at: {type: string}
+      note: {type: string}
