@@ -5,7 +5,7 @@ Checkpoint G11 (2026.10.09)**; the checkpoint is the state of record and this in
 edited after ratification except by a typed History row: an amendment, an erratum, a revision before ratification,
 or a dependent entry written when another record's ratification touches it. Accepted records that carry a
 confirmation-required criterion (ADR-0029 §4: C1 privileged path, C2 exhaustiveness or confinement, C3 reversal, C4
-resolves a debt) were ratified by one person and await the first post-bootstrap quorum.
+resolves a debt) were ratified by one person and wait for the first post-bootstrap quorum.
 
 `mechanism/corpus-pins.sha256` pins the digest of every record the reference follows; a test fails when one moves.
 
