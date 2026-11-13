@@ -5,7 +5,7 @@ Checkpoint G11 (2026.10.09)**; the checkpoint is the state of record and this in
 edited after ratification except by a typed History row: an amendment, an erratum, a revision before ratification,
 or a dependent entry written when another record's ratification touches it. Accepted records that carry a
 confirmation-required criterion (ADR-0029 §4: C1 privileged path, C2 exhaustiveness or confinement, C3 reversal, C4
-resolves a debt) were ratified by one person and await the first post-bootstrap quorum.
+resolves a debt) were ratified by one person and wait for the first post-bootstrap quorum.
 
 `mechanism/corpus-pins.sha256` pins the digest of every record the reference follows; a test fails when one moves.
 
@@ -79,4 +79,5 @@ resolves a debt) were ratified by one person and await the first post-bootstrap 
 | [ADR-0066](ADR-0066.md) | An irreversible effect is a person's: an entry declares its effect class, and a `release` seat held by a person at a commanded plane is the only kind that reaches an irreversible entry | Proposed (drafted 2026.11.10, after G11) · an overlay, not the archetype; confirmation required: C1; provisional while ADR-0052 is | |
 | [ADR-0067](ADR-0067.md) | Rules of engagement live in three places: standing rules in the one Cedar floor, a mission's rules in a promoted Wasm bundle, and judgments about the world nowhere in the admit path; the floor gains a `federation` stage | Proposed (drafted 2026.11.10, after G11) · an overlay, not the archetype; confirmation required: C1 | |
 | [ADR-0068](ADR-0068.md) | The command-chain overlay declares its adversaries, its trusted-base rows and its assumptions of use: fourteen adversaries with what bounds each and what is left, twelve rows classed by failure direction, and ten assumptions | Proposed (drafted 2026.11.10, after G11) · an overlay, not the archetype; confirmation required: C2 | |
+| [ADR-0069](ADR-0069.md) | The Build-Run pipeline: one ordered path from intake to rollout, keyed by digest; Run's output re-enters only through intake and enables nothing; git and GitHub carry it and decide nothing | Proposed (drafted 2026.11.12, after G11); confirmation required: C1, C2, C3, C4 | |
 | [ADR-0070](ADR-0070.md) | The lifecycle is secured at its boundaries: every boundary declares what crosses it, its instant, its adversary and its owner; every artifact reaches Run only as bytes a quorum voted on whose provenance the gate computed; the tandem developer's agent half is a havoc drafter outside the trusted base and its human half is at the gate; and Run reaches Build only as a deny or as labelled, erasable ingress that enables nothing | Proposed (drafted 2026.11.13, after G11); confirmation required: C2, C4 | |
