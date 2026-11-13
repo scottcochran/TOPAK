@@ -83,10 +83,16 @@ jobs:
             ~/.cargo/registry
             ~/.cargo/git
             mechanism/target
-          key: cargo-${{ runner.os }}-${{ hashFiles('mechanism/Cargo.lock') }}
-          restore-keys: cargo-${{ runner.os }}-
-      - name: Rust toolchain
-        run: rustup toolchain install stable --profile minimal && rustup default stable
+          key: cargo-${{ runner.os }}-rust-1.98.1-${{ hashFiles('mechanism/Cargo.lock') }}
+          restore-keys: cargo-${{ runner.os }}-rust-1.98.1-
+      # Pinned, as every other tool here is. `stable` floats: rustc 1.100.0 (2026-11-09) moved test binaries out of
+      # target/<profile>/deps, and topak-node's contain tests find the guest relative to their own executable, so
+      # they could not find it. 1.98.1 is the toolchain the reference's tests were last seen passing on.
+      - name: Rust toolchain (pinned)
+        run: rustup toolchain install 1.98.1 --profile minimal && rustup default 1.98.1 && cargo --version
+      - name: Build the scripted guest the contain tests launch (cargo test builds no other package's binaries)
+        working-directory: mechanism
+        run: cargo build --release -p topak-contain --bins
       - name: cargo test (the drift test is ratcheted in checks.yml)
         working-directory: mechanism
         run: cargo test --workspace --release --no-fail-fast -- --skip pinned_records_have_not_drifted
