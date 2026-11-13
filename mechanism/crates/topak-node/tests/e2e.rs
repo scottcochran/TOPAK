@@ -2003,6 +2003,9 @@ async fn a_workflow_is_run_by_its_promotion() {
     assert_eq!(open.payload["task"]["outcomes"], json!(["bad", "ok"]));
     // ADR-0039 §2: nothing is admitted until s's cell Observer is live. ows reads from the start.
     assert!(act(n1, &obs["ows"], Action::Report { record: heartbeat(&s_topic, 0) }).await.admitted);
+    // The heartbeat was admitted at n1 and the Thinker reports to ms, which may be another replica: wait until every
+    // replica has applied it, or ms's floor can still see no live Observer (R3-observer-live) and rightly refuse.
+    settle(&c).await;
     // An outcome outside the node's enum is refused by the mechanism.
     let r = act(ms, &s_tok, Action::Report { record: json!({ "outcome": "shipped" }) }).await;
     assert!(deny_reason(&r).contains("not in the node's enum"), "{}", r.detail);
