@@ -2025,6 +2025,7 @@ async fn a_workflow_is_run_by_its_promotion() {
     assert_eq!(track["edges"].as_array().unwrap().len(), 2, "both chosen edges, each with its target's interface");
     assert!(track["history"][0]["attributes"]["outcome"] == "ok" && track.to_string().find("the valve schedule").is_none(), "{track}");
     assert!(act(n1, &obs["oorc"], Action::Report { record: heartbeat(&o_topic, 0) }).await.admitted);
+    settle(&c).await; // the orchestrator acts at mo, which may not yet hold n1's heartbeat (as for s above)
 
     // 5. The orchestrator routes. A computed edge is not its to take; e1 is, and the floor's R8
     //    admits it. The route consumes the event, ends the round and enters b.
@@ -2052,6 +2053,7 @@ async fn a_workflow_is_run_by_its_promotion() {
     }
     assert!(n1.state.read().unwrap().leases[&b_fence].labels.clear_set.contains("internal"));
     assert!(act(n1, &obs["owb"], Action::Report { record: heartbeat(&b_topic, 0) }).await.admitted);
+    settle(&c).await; // b reports at mb, which may not yet hold n1's heartbeat
     assert!(act(mb, &b_tok, Action::Report { record: json!({ "outcome": "done" }) }).await.admitted);
     settle(&c).await;
     let seq = n1.state.read().unwrap().leases[&b_fence].seq;
@@ -2062,6 +2064,7 @@ async fn a_workflow_is_run_by_its_promotion() {
     let (mj, j_tok, _) = wf_session(&c, &wf, "wj").await;
     let j_topic = topak_core::lift::topic_name(&chain, Domain::Run, "wj", 0, 1);
     assert!(act(n1, &obs["owj"], Action::Report { record: heartbeat(&j_topic, 0) }).await.admitted);
+    settle(&c).await; // j reports at mj, which may not yet hold n1's heartbeat
     assert!(act(mj, &j_tok, Action::Report { record: json!({ "outcome": "done" }) }).await.admitted);
     settle(&c).await;
     let runs: Vec<Value> = c.nodes.iter().map(|m| serde_json::to_value(&m.state.read().unwrap().workflows[&wf]).unwrap()).collect();
