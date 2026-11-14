@@ -1,0 +1,7 @@
+# Rows for live-gen-results.sh Paxos, what two mutations keep at two values: name mut spec kind property expected [CONST=value ...] [states=N]
+# Run: DEFAULTS='N=3 Values={1} Electors={1,3} Beaters={} Hosts={1,3} Crashers={} MaxRound=1 MaxHand=1 MaxDup=0 MaxCrash=0' ./live-gen-results.sh Paxos Paxos-kept-rows.txt "<title>" > Paxos-kept-results-<date>.txt
+# Not in modules.tsv: each row is millions of states at one worker. The defaults are Paxos-rows.txt's.
+# expected: at two values, where each breaks ChosenUnique and Agreement (Paxos-rows.txt), M_BELOWPROMISE and M_NOPERSIST keep OneValuePerBallot, LearnerSound, OnlyHanded and NoAmplification (KeptUnderLogMutations)
+#
+m-below-kept-2       M_BELOWPROMISE    Spec INVARIANT KeptUnderLogMutations  HOLDS    Values={1,2}
+m-nopersist-kept-2   M_NOPERSIST       Spec INVARIANT KeptUnderLogMutations  HOLDS    Values={1,2} MaxCrash=1 Crashers={2}

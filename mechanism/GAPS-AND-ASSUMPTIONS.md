@@ -191,6 +191,12 @@ Findings 12 to 14 are from 2026.09.29, carrying ADR-0040 to ADR-0043 (then Propo
    doubled every term (a million slots in the simulation). The fix is host-level retry under an
    idempotent entry id. This is an implementation lesson, but the `Paxos` TLA+ module the ToO
    calls for should model proposer retry, because that is where it goes wrong.
+   **Since 2026.11.14 it does** (`spec/Paxos.tla`): the host's hand-in, first or repeated, is an
+   action; the first implementation is the mutation `M_REQUEUE`, and what it breaks is stated as
+   `NoAmplification`. The code has the same mutation (`Mutation::RequeueOnStepDown`) and the
+   simulation the same check, and a recorded run of it is replayed through the module
+   (`spec/PaxosTrace.tla`; §6). The module is checked in TLC at three replicas and one round, and
+   is not proved.
 10. **Floor denials carry reasons only from forbids.** A deny because no permit matched has an
     empty reason list, so "why was this denied?" has no answer for most denials. ADR-0030 §5 gate
     evidence is unaffected. For the Observer and for operators it is a legibility gap.
@@ -349,6 +355,8 @@ Every traced state is also read against `Confinement_A1.tla`'s invariants
 | G2 §3 | a threshold needs ≥ 3 counted seats | `a_threshold_needs_three_counted_seats_to_differ_from_unanimity` |
 | ADR-0024 | recusal, timeout ≠ grant, stale votes, veto | four `tally` tests; e2e promotion |
 | `Voting` (cheat sheet) | `OneValuePerBallot`, chosen-unique, agreement | `topak-paxos/tests/sim.rs`, both mutations caught |
+| `Paxos.tla` (2026.11.14) | `OneValuePerBallot`, `ChosenUnique`, `Agreement`, `LearnerSound`: the row above. `NoAmplification` (finding 9). Its four mutations | `sim.rs`: the amplification check in `feed`; `mutation_requeue_on_step_down_is_caught` (caught by that check and no other); `a_host_that_does_not_persist_is_caught` (`M_NOPERSIST`); the two older mutation tests |
+| `PaxosTrace.tla` (2026.11.14) | the replica's state after every call of `handle`, and what the call sent, are the model's | `sim.rs` `traced_runs_under_faults` and `traced_runs_under_each_mutation`, recorded with `TOPAK_TRACE_DIR` set and replayed by `spec/paxos-trace-results.sh`. The host is the simulation's: `topak-node`'s driver and WAL are not traced |
 
 **What these are:** the same kind of evidence the TLA+ runs are, restated against running code,
 written by the same hand. They are discrimination tests, not proofs.

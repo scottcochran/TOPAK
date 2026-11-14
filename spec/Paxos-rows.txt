@@ -1,0 +1,38 @@
+# Rows for live-gen-results.sh Paxos: name mut spec kind property expected [CONST=value ...] [states=N]
+# Run: DEFAULTS='N=3 Values={1} Electors={1,3} Beaters={} Hosts={1,3} Crashers={} MaxRound=1 MaxHand=1 MaxDup=0 MaxCrash=0' ./live-gen-results.sh Paxos Paxos-rows.txt "<title>"
+# expected: none: Safe HOLDS at the defaults and with each bound opened in turn (every replica an elector; one crash anywhere; heartbeat ticks; one duplicated forward), and every witness is VIOLATED; M_IGNOREPROMISED, M_BELOWPROMISE and M_NOPERSIST each break ChosenUnique and Agreement, at two values; M_REQUEUE breaks NoAmplification, at one value. Each mutation keeps what the module header says it keeps (KeptUnderLogMutations, KeptUnderRequeue), at one value, and M_IGNOREPROMISED at two as well. The rows too large for this file: Safe at two values and with a retry (Paxos-larger-rows.txt), and what M_BELOWPROMISE and M_NOPERSIST keep at two values (Paxos-kept-rows.txt)
+#
+# Mut = none: Safe, exhaustively. Three replicas, one value handed in once at replica 1 or 3, one round, in which
+# replicas 1 and 3 may each stand: two leaders at most, ballots 5 and 7.
+s-none-safe          none              Spec INVARIANT Safe                   HOLDS    states=11713
+s-none-electors      none              Spec INVARIANT Safe                   HOLDS    Electors={1,2,3}
+s-none-crash         none              Spec INVARIANT Safe                   HOLDS    MaxCrash=1 Crashers={1,2,3}
+s-none-beat          none              Spec INVARIANT Safe                   HOLDS    Beaters={1,3}
+s-none-dup           none              Spec INVARIANT Safe                   HOLDS    MaxDup=1
+# Witnesses.
+w-chosen             none              Spec INVARIANT NeverChosen            VIOLATED
+w-learned            none              Spec INVARIANT NeverLearned           VIOLATED
+w-secondleader       none              Spec INVARIANT NeverSecondLeader      VIOLATED
+w-adopted            none              Spec INVARIANT NeverAdopted           VIOLATED
+w-gapfilled          none              Spec INVARIANT NeverGapFilled         VIOLATED Values={1,2}
+w-nacked             none              Spec INVARIANT NeverNacked            VIOLATED
+w-forwarded          none              Spec INVARIANT NeverForwarded         VIOLATED
+w-caughtup           none              Spec INVARIANT NeverCaughtUp          VIOLATED Beaters={1}
+w-twoslots           none              Spec INVARIANT NeverTwoSlots          VIOLATED MaxHand=2
+w-duped              none              Spec INVARIANT NeverDuped             VIOLATED MaxDup=1
+# M_IGNOREPROMISED: a second command for a slot needs a second value.
+m-ignore-chosen      M_IGNOREPROMISED  Spec INVARIANT ChosenUnique           VIOLATED Values={1,2}
+m-ignore-agreement   M_IGNOREPROMISED  Spec INVARIANT Agreement              VIOLATED Values={1,2}
+m-ignore-kept        M_IGNOREPROMISED  Spec INVARIANT KeptUnderLogMutations  HOLDS
+m-ignore-kept-2      M_IGNOREPROMISED  Spec INVARIANT KeptUnderLogMutations  HOLDS    Values={1,2}
+# M_BELOWPROMISE.
+m-below-chosen       M_BELOWPROMISE    Spec INVARIANT ChosenUnique           VIOLATED Values={1,2}
+m-below-agreement    M_BELOWPROMISE    Spec INVARIANT Agreement              VIOLATED Values={1,2}
+m-below-kept         M_BELOWPROMISE    Spec INVARIANT KeptUnderLogMutations  HOLDS
+# M_NOPERSIST: replica 2 crashes once.
+m-nopersist-chosen     M_NOPERSIST     Spec INVARIANT ChosenUnique           VIOLATED Values={1,2} MaxCrash=1 Crashers={2}
+m-nopersist-agreement  M_NOPERSIST     Spec INVARIANT Agreement              VIOLATED Values={1,2} MaxCrash=1 Crashers={2}
+m-nopersist-kept       M_NOPERSIST     Spec INVARIANT KeptUnderLogMutations  HOLDS    MaxCrash=1 Crashers={2}
+# M_REQUEUE: one value, handed in once, in two slots.
+m-requeue-amplifies  M_REQUEUE         Spec INVARIANT NoAmplification        VIOLATED
+m-requeue-kept       M_REQUEUE         Spec INVARIANT KeptUnderRequeue       HOLDS
