@@ -84,8 +84,8 @@ restates eight alignment problems in those terms. Read for what a design could b
 ## 2. Where the corpus meets the sequence
 
 *In force* means Accepted (genesis); every such record was ratified by one person, most carry a
-confirmation-required marker, and ADR-0050 and ADR-0052 are provisional. *Proposed* is not in force. *Overlay* is ADR-0059 to ADR-0068, Proposed, the
-command-chain overlay and not the archetype.
+confirmation-required marker, and ADR-0050 and ADR-0052 are provisional. *Proposed* is not in force. *Overlay* is
+ADR-0059 to ADR-0068, Proposed, the command-chain overlay and not the archetype.
 
 | Test | What the records say | Record · standing |
 |---|---|---|
@@ -127,8 +127,8 @@ keys", "whoever reaches the socket can seat", and "cells are declared, not enfor
 In the sequence's terms infiltration and exfiltration are nonzero and unmeasured for every real principal.
 
 **BD-2. Nothing protects what a person in a seat comes to believe (S4).** No record treats persuasion or a change of
-preference. For voters: "Correlated review failure is untouched" (ADR-0024), and under workflows "The `Report` gap carries
-weight" (ADR-0054). For operators the open item is "What a peer must have read
+preference. For voters: "Correlated review failure is untouched" (ADR-0024), and under workflows "The `Report` gap
+carries weight" (ADR-0054). For operators the open item is "What a peer must have read
 before an add proceeds" (ADR-0050), and what is trusted of them is "nothing of their judgment" (ADR-0045). `Report`
 is unconstrained: "`Report` takes `clearSet` and no entry reads it yet" (ADR-0041), and ADR-0047 "does not cover an
 injection that changes what a Thinker says in a `Report`". The overlay goes furthest and then stops: an agent's
@@ -224,8 +224,8 @@ the corpus protects some boundaries by mechanism, some by consent, and some not 
 
 Two patterns stand out. **Consent to one's own constraint or removal belongs, in the records, to one kind of
 party: an anchor key-holder** (ADR-0025, ADR-0026; by a search for the word, which otherwise finds only ADR-0056
-naming a subject's consent as not covered). And **the two parties with the least protection are the ones farthest from the mechanism in opposite
-directions**: the person whose judgment the design finally rests on, and the bystander it never names.
+naming a subject's consent as not covered). And **the two parties with the least protection are the ones farthest
+from the mechanism in opposite directions**: the person whose judgment the design finally rests on, and the bystander it never names.
 
 ---
 
