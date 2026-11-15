@@ -83,10 +83,33 @@ All paths below are relative to `skills/writing-tla-specs-and-proofs/`:
 - `references/evidence.md` — results files, digests and pins, freezing
   and successor modules, the sync script, the vocabulary of claims, what
   each tool leaves trusted, certification, a second route
+- `scripts/setup_check.py` — is this machine and project ready: Python,
+  Java, the pinned `tla2tools.jar` (`--fetch-jar` downloads it), TLC run
+  on a bundled fixture, and with `--proofs` tlapm, the fixture's proof and
+  its flip test; `--write-pins` records the tools found
+- `scripts/tlc_run.py` — one TLC run of one property, printed as one row;
+  the run script of the method, for any module
+- `scripts/tlc_rows.py` — a row list to a dated, digest-stamped results
+  file, written only when every row is as expected
+- `scripts/proof_results.py` — `tlapm --cleanfp --strict` to a dated proof
+  results file, written only when every obligation is proved
+- `scripts/flip_test.py` — the flip-one-hypothesis check
+- `scripts/proof_sync.py` — the sync script: `IN SYNC`, `STALE`, `MISSING`
+- `scripts/tla_common.py`, `scripts/TLC-PIN` — what the scripts share:
+  where modules, tools, pins and results are looked for, and the default
+  pin for the model checker
+- `assets/selftest/` — the fixture the setup check runs (`Counter.tla`,
+  its row list and its proof)
+
+The scripts are Python 3.9, standard library only. They are generalized
+from the generators of `gov-tla`, a development written with this skill.
 
 ## Status
 
-A draft. It has no eval suite yet; the natural first suite is a review
+A draft. The scripts are tested against the bundled fixture and against
+TOPAK's `Coupling` and `Coupling_live` modules, with TLA+ tools v1.7.4
+and a tlapm 1.6.0 pre-release, on Linux; other versions and platforms are
+untried. It has no eval suite yet; the natural first suite is a review
 flow over small TLA+ fixtures with planted flaws (a property that carries
 its check, a module without witnesses, a `Mut = "none"` theorem, a
 hand-edited results file) and known non-flaws (an unconstrained constant,

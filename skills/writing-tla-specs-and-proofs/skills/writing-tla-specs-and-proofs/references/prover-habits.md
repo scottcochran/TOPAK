@@ -27,7 +27,9 @@ tlapm --cleanfp --strict <Module>_proof.tla
 - `--strict` makes a failed obligation a non-zero exit, which is what a
   results-file generator and a sync script need.
 - Point `--cache-dir` at a temp directory and remove it after; nothing is
-  written beside the module.
+  written beside the module. The bundled `scripts/proof_results.py`,
+  `flip_test.py` and `proof_sync.py --run` all call the prover this way,
+  and kill its backend processes when it ends.
 - **Read only the final count and the exit status.** tlapm tries backends
   in turn and prints each failure; a Zenon failure line is noise when the
   obligation count says proved.

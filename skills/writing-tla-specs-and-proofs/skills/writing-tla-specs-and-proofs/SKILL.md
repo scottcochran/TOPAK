@@ -1,6 +1,6 @@
 ---
 name: writing-tla-specs-and-proofs
-description: "Writes, model-checks and proves TLA+ specifications: transition systems written so their safety properties are local and mutation-testable, checked with TLC at small constants, and proved with TLAPS as Spec => []P under named hypotheses, with dated results files as the evidence. Use when writing a new TLA+ module, adding a mutation or reachability witness, writing or repairing a TLC run script or results file, writing a TLAPS proof module, finding an inductive invariant, diagnosing a failed tlapm obligation, adding fairness and liveness properties, extending a frozen module as a successor, or reviewing a TLA+ development for what its results do and do not claim."
+description: "Writes, model-checks and proves TLA+ specifications: transition systems written so their safety properties are local and mutation-testable, checked with TLC at small constants, and proved with TLAPS as Spec => []P under named hypotheses, with dated results files as the evidence. Use when writing a new TLA+ module, adding a mutation or reachability witness, writing or repairing a TLC run script or results file, writing a TLAPS proof module, finding an inductive invariant, diagnosing a failed tlapm obligation, checking that TLC and tlapm are installed and pinned for a project, adding fairness and liveness properties, extending a frozen module as a successor, or reviewing a TLA+ development for what its results do and do not claim."
 ---
 
 # Writing TLA+ Specs and Proofs
@@ -9,6 +9,7 @@ description: "Writes, model-checks and proves TLA+ specifications: transition sy
 
 - [When to Use](#when-to-use)
 - [When NOT to Use](#when-not-to-use)
+- [Setup and bundled scripts](#setup-and-bundled-scripts)
 - [The workflow](#the-workflow)
 - [Finding the inductive invariant](#finding-the-inductive-invariant)
 - [Quick reference](#quick-reference)
@@ -62,6 +63,42 @@ is the only form the evidence takes.
   is a different and harder job
 - A project with its own conventions for module layout, naming or results:
   defer to its README and CONTRIBUTING
+
+## Setup and bundled scripts
+
+Before the first module in a project, run the setup check from the
+directory that holds, or will hold, the modules (`scripts/` is beside this
+file):
+
+```sh
+python3 scripts/setup_check.py              # java, the jar and its pin, TLC on a bundled fixture
+python3 scripts/setup_check.py --fetch-jar  # and download the pinned tla2tools.jar into tools/ if there is none
+python3 scripts/setup_check.py --proofs     # and require tlapm: prove the fixture, flip its hypothesis
+```
+
+It needs Python 3.9 and Java 11 and installs neither, nor tlapm. It ends
+`setup: ready for model checking`, or names what is missing. Tell the user
+what is missing rather than working around it: a result from an absent or
+unpinned tool is not evidence.
+
+The scripts are the generators the workflow describes, for a project that
+has none of its own:
+
+| Script | What it does | Step |
+|--------|--------------|------|
+| `tlc_run.py <Module> <mut> <property> [KEY=value ...]` | One TLC run, one row; `--trace` prints the counterexample. Writes nothing | 2, while working |
+| `tlc_rows.py <Module>-rows.txt` | Runs the row list, compares every row with its expectation, writes `<Module>-results-<date>.txt` | 2, the evidence |
+| `proof_results.py <Module>` | `tlapm --cleanfp --strict` on the proof module; writes `<Module>-proof-results-<date>.txt` only if every obligation is proved | 3 and 4 |
+| `flip_test.py <Module> <M_X> ...` | Flips `Mut # "M_X"` in a scratch copy and requires the proof to fail where the hypothesis was | 4 |
+| `proof_sync.py` | Every results file's digests against the tree and the pins: `IN SYNC`, `STALE`, `MISSING`; fails on a module with no proof and no recorded reason | 4, before a commit |
+| `setup_check.py --write-pins` | Records the jar and the prover in the pin files `TLC-PIN` and `TLAPS-PIN`, under `tools/`, where the project has none | once |
+
+Each script's `--help` is its reference. They look for modules in the
+current directory (or `--dir`), write results to `results/` if it exists
+and beside the modules if not, and find the jar and the pins in a `tools/`
+directory at or above the modules. A project that already has run scripts,
+generators or a layout of its own keeps them, as under
+[When NOT to Use](#when-not-to-use).
 
 ## The workflow
 
@@ -125,7 +162,9 @@ Full rationale and a worked module in
 Every module gets a run script that writes the `.cfg` itself, runs TLC with
 `-deadlock` unless a deadlock check is the point, and prints one row:
 `name | Mut=… | Property | HOLDS or COUNTEREXAMPLE | N distinct states`.
-The results file is the concatenation of rows for
+`scripts/tlc_run.py` is that script for any module; a row list and
+`scripts/tlc_rows.py` turn the rows into the results file. The results
+file is the concatenation of rows for
 
 - every property under `Mut = "none"`: `HOLDS`;
 - every mutation against the property it must break: `COUNTEREXAMPLE`;
@@ -188,7 +227,8 @@ Check with `tlapm --cleanfp --strict <Module>_proof.tla`. `--cleanfp`
 discards fingerprints so nothing is taken from an earlier run; `--strict`
 makes a failed obligation a non-zero exit. Only the final count and the
 exit status matter; a backend's failure line is noise when another backend
-closed the obligation.
+closed the obligation. `scripts/proof_results.py <Module>` runs exactly
+this, with a throwaway cache directory.
 
 Proof structure, the patterns and the prover's habits in
 [proof-style.md](references/proof-style.md) and
@@ -201,16 +241,19 @@ Proof structure, the patterns and the prover's habits in
   obligations. A proof that survives is proving the wrong thing: the
   hypothesis is not load-bearing, or the invariant is weaker than the
   property. The failing count stays in the session; a mutated proof is not
-  an artefact.
+  an artefact. `scripts/flip_test.py <Module> <M_X>` does this and checks
+  that a failure lies in a statement that carried the hypothesis.
 - **Generate the results file** with a script that prints the digest of
   every module in the `EXTENDS` chain and of the prover binary, the
   assumptions, the theorems and lemmas by name, and the prover's own
-  obligation count, and exits non-zero if any obligation fails.
+  obligation count, and exits non-zero if any obligation fails
+  (`scripts/proof_results.py`).
 - **Commit module, results file and the README row together.**
 - **Keep proofs in step with a sync script** that reads each results
   file's digest line, compares with the tree, and reports `IN SYNC` or
   `STALE`; it also lists base modules without a proof and the recorded
-  reason for each, and fails on a module with no reason.
+  reason for each, and fails on a module with no reason
+  (`scripts/proof_sync.py`; the reasons are lines of `PROOF-GAPS.txt`).
 
 Results files, digests, pins, freezing, successor modules and what stays
 trusted in [evidence.md](references/evidence.md).
@@ -334,3 +377,9 @@ Each row's rationale, with the anti-pattern it prevents, in
 - [evidence.md](references/evidence.md) — results files, digests and pins;
   freezing and successor modules; the sync script; the vocabulary of
   claims; what each tool leaves trusted; certification and a second route
+- `scripts/` — the setup check, the single-run script, the two results
+  generators, the flip test and the sync script described under
+  [Setup and bundled scripts](#setup-and-bundled-scripts); `tla_common.py`
+  says where each looks for modules, tools, pins and results
+- `assets/selftest/` — the fixture the setup check runs: a module with one
+  of each kind of row, its row list and its proof
