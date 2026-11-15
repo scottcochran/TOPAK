@@ -332,8 +332,8 @@ documentation, not as prover weakness.
 | Prove an unquantified leads-to by a measure, one WF1 step that lowers it, and `Nat` induction over a local `G(n)` hidden outside `PTL` steps | WF1 needs `ENABLED <<A>>_vars`, and a backend other than LS4 must see `G` only as an uninterpreted function | the proof shape in [proof-style.md](references/proof-style.md) |
 | `-deadlock` on by default; audit it separately | most modules have always-enabled actions, so a stall is a livelock and only a leads-to sees it | a deadlock audit over every `-deadlock` script |
 | Pin the checker and the prover by digest; print them in every results file; refuse an unpinned binary without an explicit override | a different build is a different trusted-base item | wrapper script, sync script |
-| Keep untranslated terms (`ENABLED`, `\cdot`, temporal formulas) behind hidden definitions in SMT, Zenon and Isabelle steps; expand them only `BY ExpandENABLED` where proved or in `PTL` steps | the prover abstracts them to a constant that forgets bound variables | the scan described in [prover-habits.md](references/prover-habits.md) |
-| Expand no definition at an argument that names one of its bound variables | the expansion prints, and is named, as another term | the same scan |
+| Keep untranslated terms (`ENABLED`, `\cdot`, temporal formulas) behind hidden definitions in SMT, Zenon and Isabelle steps; expand them only `BY ExpandENABLED` where proved or in `PTL` steps | the prover abstracts them to a constant that forgets bound variables | the writer; a scan, described in [prover-habits.md](references/prover-habits.md) and not bundled, lists candidates for a reader |
+| Expand no definition at an argument that names one of its bound variables | the expansion prints, and is named, as another term | the same; no rule and no bundled script guards against a hash collision |
 
 Each row's rationale, with the anti-pattern it prevents, in
 [anti-patterns.md](references/anti-patterns.md).
@@ -370,8 +370,9 @@ Each row's rationale, with the anti-pattern it prevents, in
   measure, WF1, induction
 - [prover-habits.md](references/prover-habits.md) — tlapm and backend
   habits that cost time, with the fix for each; steps that certify under
-  checked backends; the two known unsound translation cases and the
-  writing rules that avoid them
+  checked backends; the two known unsound translation cases, the writing
+  rules that avoid the first and a capture in the second, and what they
+  leave unprotected
 - [anti-patterns.md](references/anti-patterns.md) — what goes wrong in
   specs, runs, proofs and evidence, why, and what catches it
 - [evidence.md](references/evidence.md) — results files, digests and pins;

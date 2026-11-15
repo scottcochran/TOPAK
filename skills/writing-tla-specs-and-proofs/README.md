@@ -34,8 +34,9 @@ agrees with the derived truth, append-only set, valid state predicate,
 established-and-frozen, arithmetic in layers, generation binding); the
 liveness proof shape for an unquantified leads-to; the prover's habits that cost time and the fix for
 each; the rules for steps that certify under checked backends; the two
-known unsound cases in the prover's translation and the writing rules that
-avoid them; the vocabulary of claims (checked, proved, certified, sampled)
+known unsound cases in the prover's translation (tlaplus/tlapm#309 and
+#310) and the writing rules that avoid the first and a capture in the
+second; the vocabulary of claims (checked, proved, certified, sampled)
 and what each tool leaves trusted.
 
 ## Why these rules
@@ -76,8 +77,10 @@ All paths below are relative to `skills/writing-tla-specs-and-proofs/`:
   shape (measure, WF1, `Nat` induction over a hidden `G(n)`), step hygiene
 - `references/prover-habits.md` — running tlapm; parse, scope and
   temporal habits; what the SMT backend handles alone; steps that certify
-  under checked backends; the two unsound translation cases and the rules
-  that avoid them; the cost model
+  under checked backends; the two unsound translation cases, the rules
+  that avoid the first and a capture in the second, and what stays
+  unprotected (a hash collision; the scan is described, not bundled); the
+  cost model
 - `references/anti-patterns.md` — what goes wrong in specs, runs, proofs
   and evidence, why, and what catches it
 - `references/evidence.md` — results files, digests and pins, freezing
