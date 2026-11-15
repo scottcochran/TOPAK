@@ -1,0 +1,26 @@
+TOPAK — Paxos.tla trace validation: the reference's recorded consensus runs replayed through the operational model (PaxosTrace.tla; ADR-0033 §2 row P, finding 9)
+Modules: Paxos.tla (sha256 ac26b35f368beeb8) · PaxosTrace.tla (sha256 63a086605dca3cad) · TLC Version 2.19 of 08 August 2024 (jar sha256 936a262061c91469) · openjdk version "21.0.12.1" 2026-08-18
+Reference: mechanism/ at 63e9922 · recorder: crates/topak-paxos/tests/sim.rs over Replica::snapshot · converter: paxos-trace2tla.py (sha256 ddf49dfddbf74c50) · driver: paxos-trace-run.sh (sha256 c494c6a147a771f9)
+Suite traced: topak-paxos tests/sim.rs, traced_runs_under_faults (the unmutated replica, three and five replicas, under loss, delay, duplication, partition and restarts) and traced_runs_under_each_mutation (the first seed a check catches, recorded up to the event that check fails on)
+A trace is one simulated run of every replica; an event is one call of Replica::handle that did something. MATCH means that at every event the replica's state after the call, and what it sent, are the model's, and that the model's properties hold of every replayed state.
+expected: every run of the unmutated code is MATCH under Mut=none; every run of mutated code, replayed under its own mutation, matches to its last event, after which the property that mutation must break is violated (ChosenUnique, or NoAmplification for M_REQUEUE); replayed under Mut=none it is a MISMATCH
+
+test result: ok. 8 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out
+
+Each run, under the mutation the code ran under:
+paxos_M_BELOWPROMISE_n3_seed1 | 147 events | Mut=M_BELOWPROMISE | PROPERTY ChosenUnique violated after event 147
+paxos_M_IGNOREPROMISED_n3_seed0 | 173 events | Mut=M_IGNOREPROMISED | PROPERTY ChosenUnique violated after event 173
+paxos_M_NOPERSIST_n3_seed6 | 713 events | Mut=M_NOPERSIST | PROPERTY ChosenUnique violated after event 713
+paxos_M_REQUEUE_n3_seed0 | 70 events | Mut=M_REQUEUE | PROPERTY NoAmplification violated after event 70
+paxos_none_n3_seed101 | 547 events | Mut=none | MATCH
+paxos_none_n3_seed48 | 807 events | Mut=none | MATCH
+paxos_none_n3_seed78 | 432 events | Mut=none | MATCH
+paxos_none_n5_seed29 | 413 events | Mut=none | MATCH
+
+Each run of mutated code, under Mut=none:
+paxos_M_BELOWPROMISE_n3_seed1_as_none | 147 events | Mut=none | MISMATCH at event 46 (STATE)
+paxos_M_IGNOREPROMISED_n3_seed0_as_none | 173 events | Mut=none | MISMATCH at event 70 (STATE)
+paxos_M_NOPERSIST_n3_seed6_as_none | 713 events | Mut=none | MISMATCH at event 330 (STATE)
+paxos_M_REQUEUE_n3_seed0_as_none | 70 events | Mut=none | MISMATCH at event 14 (STATE)
+
+8 traces · 3302 events · 4 unmutated, 4 mutated · every line as expected
