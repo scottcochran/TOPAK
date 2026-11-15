@@ -21,8 +21,10 @@ row. KEY=value overrides a constant (Persons={p1,p2}, no spaces), or sets states
 distinct-state count), depth=D, num=N, seed=S (SIMULATE rows), or constraint=Op (add CONSTRAINT Op for this row).
 
 Every row runs with -workers 1 so a counterexample row's state count is reproducible; PROPERTY rows add -fp 0 for
-the same reason; every row but a DEADLOCK row passes -deadlock (DEADLOCK rows exist to audit that flag). Each row
-runs on a copy of the module chain in a temp directory, so nothing is written beside the module.
+the same reason; every row but a DEADLOCK row passes -deadlock (DEADLOCK rows exist to audit that flag). One count
+is not reproducible and is not printed: TLC checks temporal properties at intervals of the clock, so the number
+of states it has when it finds a liveness counterexample differs from run to run. Each row runs on a copy of the
+module chain in a temp directory, so nothing is written beside the module.
 
 The results file names the checker, this script and every local module in the EXTENDS chain by sha256, prints
 the rows, and is written as <results>/<Module>-results-<date>.txt. It is never overwritten: a rerun that

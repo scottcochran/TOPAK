@@ -246,6 +246,13 @@ Give each row its own `java.io.tmpdir` as well as `-metadir`: TLC unpacks
 the standard modules into the shared temp directory, and a concurrent run
 can remove them underneath this one.
 
+One number stays out of a violated liveness row even so: the state count.
+TLC checks temporal properties at intervals of the clock, so on a module
+too large to finish before the first check, the count at which it finds
+the counterexample differs from run to run and with the machine's load.
+The bundled generator prints it only when the search had ended (no states
+left on the queue); `states=N` belongs on `HOLDS` rows.
+
 TLC reads a state with no successor as stuttering forever, which is how
 TLA+ reads a behaviour that stops; a leads-to that holds only because the
 model never stalls is what the `DEADLOCK` rows rule out.

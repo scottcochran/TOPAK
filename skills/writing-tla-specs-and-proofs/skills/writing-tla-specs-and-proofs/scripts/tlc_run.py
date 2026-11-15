@@ -69,7 +69,7 @@ def main(argv):
                      where="tlc_run.py")
     checker = t.require_checker(layout)
     verdict, states, ok, out = t.run_row(layout, checker, module, meta, row, workers=a.workers)
-    count = (f"{states} states checked" if a.kind == "SIMULATE" else f"{states} distinct states") if states else "no state count"
+    count = t.count_text(row, verdict, states)
     what = row["prop"] if a.kind == "INVARIANT" else f"{a.kind} {row['prop']}"
     extra = "".join(f" {k}={v}" for k, v in row["consts"].items())
     line = f"{row['name']} | Mut={a.mut} | {a.spec}{extra} | {what} | {verdict} | {count}"

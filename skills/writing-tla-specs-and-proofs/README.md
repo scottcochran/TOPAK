@@ -102,12 +102,17 @@ All paths below are relative to `skills/writing-tla-specs-and-proofs/`:
   its row list and its proof)
 
 The scripts are Python 3.9, standard library only. They are generalized
-from the generators of `gov-tla`, a development written with this skill.
+from the generators of `gov-tla`, a development written with this skill,
+and were run against it before being bundled: one row list in full (208
+rows, each as its committed results file has it, but for the state counts
+of four liveness counterexamples, which differ on every run and which
+`tlc_rows.py` no longer prints), one row in eight of the other three (166
+rows), one proof module (814 obligations) and two flip tests.
 
 ## Status
 
-A draft. The scripts are tested against the bundled fixture and against
-TOPAK's `Coupling` and `Coupling_live` modules, with TLA+ tools v1.7.4
+A draft. The scripts are tested against the bundled fixture, TOPAK's
+`Coupling` and `Coupling_live` modules and `gov-tla`, with TLA+ tools v1.7.4
 and a tlapm 1.6.0 pre-release, on Linux; other versions and platforms are
 untried. It has no eval suite yet; the natural first suite is a review
 flow over small TLA+ fixtures with planted flaws (a property that carries

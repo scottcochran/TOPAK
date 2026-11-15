@@ -386,10 +386,22 @@ def run_row(layout, checker, module, meta, row, workers="1"):
         pat = r"Progress: ([0-9,]+) states checked" if row["kind"] == "SIMULATE" else r"([0-9,]+) distinct states found"
         m = re.findall(pat, out)
         states = m[-1].replace(",", "") if m else ""
+        if row["kind"] == "PROPERTY" and verdict == "COUNTEREXAMPLE" and not re.search(r"\b0 states left on queue", out):
+            # TLC checks temporal properties at intervals of the clock, so the count at which it finds a liveness
+            # counterexample differs from run to run; printed, it would keep the results file from reproducing.
+            states = ""
         ok = verdict == row["exp"] and ("states" not in row["opts"] or states == row["opts"]["states"])
         return verdict, states, ok, out
     finally:
         shutil.rmtree(tmp, ignore_errors=True)
+
+
+def count_text(row, verdict, states):
+    if states:
+        return f"{states} states checked" if row["kind"] == "SIMULATE" else f"{states} distinct states"
+    if row["kind"] == "PROPERTY" and verdict == "COUNTEREXAMPLE":
+        return "found before the search ended, count not recorded"
+    return "no state count"
 
 
 def format_row(row, verdict, states, ok):
@@ -398,8 +410,7 @@ def format_row(row, verdict, states, ok):
         o = row["opts"]
         what += f" (simulate depth={o.get('depth', '40')} traces={o.get('num', '10000')} seed={o.get('seed', '1')})"
     extra = "".join(f" {k}={v}" for k, v in row["consts"].items())
-    count = (f"{states} states checked" if row["kind"] == "SIMULATE" else f"{states} distinct states") if states \
-        else "no state count"
+    count = count_text(row, verdict, states)
     mark = "as expected" if ok else f"UNEXPECTED (expected {row['exp']}" + (
         f", states={row['opts']['states']}" if "states" in row["opts"] else "") + ")"
     return f"{row['name']} | Mut={row['mut']} | {row['spec']}{extra} | {what} | {verdict} | {count} | {mark}"
