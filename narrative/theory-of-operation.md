@@ -1,23 +1,25 @@
 # TOPAK — Theory of Operation
 
-**2026.10.09** · revision 15 · **narrative only** · cut from Genesis Checkpoint G11 · supersedes revision 14 as narrative
+**2026.11.16** · revision 16 · **narrative only** · cut from Genesis Checkpoint G12 · supersedes revision 15 as narrative
 
-Revision 15 is revision 14 corrected against G11. Between the cuts two batches were ratified. **One record is new
-and in force**: a second deductive method, Lean 4, whose kernel is a trusted-base row (ADR-0053). **The prover the
-corpus has relied on since Batch 25 is known to be unsound in two ways** (ADR-0046 A2, Batch 37). Both are recorded
-against its row, with a rule and a scan that keep a proof from them, and no check that detects the first.
-**Liveness is stated for the first time**, in two modules that extend frozen ones, and coupling's leads-to
-properties are checked and not proved. **Two records are drafted and Proposed**, a workflow as a promoted DAG
-(ADR-0054) and a workflow that may be a mesh (ADR-0055), with twelve amendments pending on them. **The reference
-follows both, on a floor stage that is not in force.** **No real principal is `Contained`**, as before. Three
-sections are added, §2.11, §5.5 and §7.11; elsewhere the spine is revision 14's. Appendix K lists every change.
+Revision 16 is revision 15 corrected against G12. Between the cuts two batches were ratified, and **neither changed
+what is in force**: a citation corrected (Batch 38), and the prover's two unsound cases reported upstream (Batch 39),
+where upstream has since fixed one and half of the other. **The pin still has both.** **Twenty-two records were
+drafted and none is in force**: user scope, the specification graph and its declaration, a command-chain overlay of
+ten records, the Build-Run pipeline, lifecycle security, six on the archive and user documentation, and a proposal to
+run the TLA+ checks in a published image and move the prover. **The proofs grew to thirty-four modules**: the two
+workflow records are proved, and so are eight modules of the overlay, all under Proposed records. **The reference was
+measured again** with no source file changed, and still follows the workflow records. **A trained model ran as a
+compiled guest that passes P3** at rung 1, on DEV rules, and **no real principal is `Contained`**, as before. Seven
+sections are added, §2.12, §4.5, §7.12 to §7.15, and §17, which has seven parts; elsewhere the spine is revision 15's.
+Appendix L lists every change.
 
 ---
 
 ## 0. How to read this
 
 **This document explains how the design fits together. It is not the state of record.** Status, readiness,
-digests, the ratification queue, the genesis debt ledger, and the open list are in **G11**.
+digests, the ratification queue, the genesis debt ledger, and the open list are in **G12**.
 
 The narrative describes what the records say. Status words appear only where status changes the meaning — a
 reversal in effect, a claim still carrying a confirmation marker, or a section of a record that was deliberately
@@ -43,9 +45,19 @@ checked against. Each marks its choices as the drafter's, and the custodian sett
 ratifying the text. That is one step further from review than the records they draw on, each says so on its face,
 and ADR-0029 still has no criterion for it. Since G10 the same holds of ADR-0053 and its three Lean packages, of
 Batch 37's amendments and the review runs that found what they record, and of the two Proposed records with their
-modules, floor stage and reference. **Twelve amendments are pending**, and every one depends on a Proposed record:
-ten that ADR-0054 drafted into accepted records, and two addenda to ADR-0033 for the reference that follows it (A16,
-A17).
+modules, floor stage and reference. **Since G11 it holds of everything**: the two batches, both ratified on texts the
+assistant drafted; twenty-two Proposed records, every revision of them, and the ten proof modules under them; the
+specification graph, the CI pipeline and the rung-1 run. No reader other than the drafter has read any of it, and two
+reviews in that window, the self review of 2026.11.11 and ADR-0070's adversarial review, were fresh sessions of the
+same model and say so. **Sixteen amendments are pending.** Fifteen depend on a Proposed record: the ten that ADR-0054
+drafted into accepted records and two addenda to ADR-0033 for the reference that follows it (A16, A17), and three
+entries ADR-0057 drafted (ADR-0033 A18, ADR-0045 A5, ADR-0053 A1). The sixteenth, ADR-0033 A19, measures the
+reference for G12 and stands alone.
+
+**Proposed is not in force, and this revision describes a great deal that is Proposed.** Twenty-seven records are
+Proposed at G12, twenty-two of them drafted since G11, and the sections that describe them say so in their titles:
+§2.11 and §2.12, §4.5, §7.12 to §7.15, and §17. A Proposed record can be revised in place, and its text here is a
+description of its current revision, not a promise about its final one.
 
 **Proved, and proved in Lean.** ADR-0046 reserves *proved* for a claim the TLA+ Proof System discharged. A claim the
 Lean kernel discharged is **proved in Lean**, of the re-encoding, transcription or statement it names (ADR-0053 §1),
@@ -360,6 +372,20 @@ session is the pipe, the pipe belongs to one launched instance, and no other pro
 
 ADR-0036 is still Proposed, and only the addendum for the code under it is ratified. Rung-1 leases are issued in the
 reference's tests, and §7's three refusals are seen there; the ratification run on `slm/serve`'s image is unrun.
+
+**A run on another image exists** (2026.11.11; `slm/occupant-rung1-results-2026.11.11.txt`). It is the custodian's
+choice of image, and no record cites it. The trained Persona was compiled into a single binary, with no
+interpreter, and runs on a `FROM scratch` image whose only file with content is that binary, so **P3 passes**. Under
+the reference's launcher, on DEV rules, the launch is attested at rung 1 and the token never reaches the guest. The
+guest reads one object, drafts the same bytes the trained model drafts on the host, and submits. §7's three refusals
+are seen: the wrong image, a Persona bundle with one bit flipped, and a second process with no token or a made-up one.
+Every clause passes or is vacuous, and **`contained` is still false**, for one reason the run prints: ADR-0035's
+criterion is not in force. Beside it, the same occupant at rung 0 is `Mediated` by its rung and its profile. What it
+found is in G12 item 119. ADR-0036 §7 names a different image, so §7 is not met as written. The rung-0 and rung-1
+profiles are different files, so the step from one to the other changed the profile as well as the rung, against
+R1's rule of one change at a time. The launcher applies no memory, CPU or environment limits, and ignores launch keys
+it does not know. And the image's identity is stable only with provenance turned off, so the build is not
+reproducible. **This is the first guest to pass P3**, as the launcher asserts it, and it is not a real principal.
 Under ADR-0050 a launch stops being something an operator asks for: it is the mechanism's part of a first lease, or
 of a successor grant at rung 1 or above (ADR-0036 R6). The reference has not built the second, so a launch is still
 an unsigned request on the path that stands in for a quorum (§7.10).
@@ -643,16 +669,49 @@ evaluator and the orchestrator's Listener are mechanism code on the path every w
 custodian accepted. A denial count was dropped from the attributes: a denial is never ordered (§4.1), so no replica
 holds a count every replica agrees on (ADR-0054 R6).
 
-**Checked.** `Workflow.tla`: ten properties hold, nine witnesses are reached, and nine mutations each break their
-property and nothing else. Among them is a re-check skipped at apply, which lets a finding be overtaken. Without
-write-once attributes an orchestrator can loop for ever: one unbounded run reached depth 665 after thirteen hours,
-and that remainder is checked under a stated cap. `Mesh.tla`: seven properties, seven witnesses, seven mutations, and
-a budget that does not charge the orchestrator leaves it unbounded. Neither module has a proof. The floor's
-`workflow` stage is gated (§3.1), and the reference runs both records (§15).
+**Checked, and since 2026.11.11 proved.** `Workflow.tla`: ten properties hold, nine witnesses are reached, and nine
+mutations each break their property and nothing else. Among them is a re-check skipped at apply, which lets a finding
+be overtaken. Without write-once attributes an orchestrator can loop for ever: one unbounded run reached depth 665
+after thirteen hours, and that remainder is checked under a stated cap. `Mesh.tla`: seven properties, seven
+witnesses, seven mutations, and a budget that does not charge the orchestrator leaves it unbounded. **Both are now
+proved** (ADR-0054 R7, ADR-0055 R3): `Workflow_proof` proves the ten properties and their conjunction in 1,136
+obligations, and `Mesh_proof` the seven and their conjunction, at the module's mesh and a budget of six, in 1,470;
+both certify, with their temporal steps unchecked as for every module (§11.1). **Neither proof needs a state
+constraint**, so the properties TLC could check only under a cap hold without one. Writing them changed no pairing of
+a property with the mutation that breaks it. The proofs change no decision text: they meet one item of each record's
+condition, and the records stay Proposed (§9). The floor's `workflow` stage is gated (§3.1), and the reference runs
+both records (§15).
 
 **Proposed, and followed.** Both records were drafted on 2026.10.07 from a design discussion in which the custodian
 settled fourteen things, each marked where it is used, and every other choice is the drafter's. The reference was
 built to them the next day and links their floor stage, as it was built to ADR-0047 to ADR-0052 before Batch 34.
+
+### 2.12 A user behind the call (Proposed)
+
+A Run tool that reaches a system holding per-user data acts as somebody. Until 2026.11.06 the corpus said only who
+the principal was, and ADR-0037 listed acting on behalf of an end user as not owed. **ADR-0056 proposes user scope**,
+and its title, in short, is the decision: **a call's user scope is enforced downstream; the membrane decides only which user, and whether.** The custodian settled two things, that scope is not carried in the lease (⟨U1⟩) and that the
+mechanism and policy, not the model, decide which user (⟨U2⟩), and the rest is the drafter's.
+
+- **Four questions, four owners.** The mechanism binds the **subject**, by a syntactic lift from a signed assertion;
+  policy decides whether a call may use it; the downstream system decides what the credential may do; and nobody
+  chooses the credential, because the tool host injects the one for the round's subject. A subject is the party whose
+  downstream authority a round's calls may use. It is not a principal, and holds no seat, no lease and no alphabet.
+- **One subject per round, evidenced and fixed.** A grant may carry at most one, beside the lease and not in it, with
+  an assertion signed by a provider on the issued rules' list, naming the subject and the fence of the grant. No wall
+  clock is read: the fence is the freshness. The seating bounds which providers it accepts.
+- **Every Run entry declares a credential mode**, `none`, `service` or `subject`, with no default; two floor forbids
+  refuse a `subject` call with no subject or an unaccepted provider; and the host obtains the credential, preferably by exchange rather than storage (the drafter's choice; a store of per-user credentials is D-0056-2), and presents it on the tool's one channel.
+- **The downstream system is assumed to authorize on the credential's subject, never on one named in the request.**
+  That is an assumption of use, owed to §13, and the record says it carries the weight for free text. A subject
+  provider is a proposed trust-root row (T-0045-38), and a downstream system's authorization an excluded one
+  (T-0045-39): that is the position, not a gap.
+
+**What it finds against itself.** A deployment serving users at volume reopens the rate problem ADR-0050 assumed away,
+since a subject round needs a grant per user. Freshness by fence excludes work for an absent user. The `service` mode
+is where the OWASP excessive-agency example the record starts from survives, and nothing checks the declaration. And
+a workflow edge could carry one user's data into another user's round (§2.11). **Nothing is built**: no module, no
+floor stage, no code, and none of its dependent entries is drafted.
 
 ---
 
@@ -1012,7 +1071,8 @@ nor the emission is the record; the log is.
 the authority record lapses exactly when it matters most, since re-genesis follows anchor loss or capture. The rule
 that a successor inherits read access to its predecessor's forensic classes is carried as a re-genesis migration
 obligation and must be settled before ADR-0028's confirmation promotion. ADR-0003 A1 removes one precondition — a
-successor can now tell its topics from its predecessor's — and settles nothing else.
+successor can now tell its topics from its predecessor's — and settles nothing else. ADR-0075 (Proposed) would keep a
+closed chain's holdings down the line of succession, and leaves who reads them, and their erasure, open (§4.5).
 
 **Stop attribution is non-erasable because it is a feedback path, not just evidence.** In system-theoretic terms
 (STPA), the Observer is a controller, not a probe.
@@ -1022,6 +1082,74 @@ not change the position: the roster is withheld by the ceremony itself, not by e
 therefore disabled from epoch 0, and the first erasure roster is issued after bootstrap under the two-key rule, by
 which point both records have been through confirmation. This is fail-closed and costs nothing, since there is
 nothing to erase yet — but it does mean ADR-0006 stands ratified with no path to exercise it until then.
+
+### 4.5 The archive of record, and the documentation (Proposed)
+
+The records in force say that the archive is the system of record (ADR-0005 §1), what it must keep (ADR-0028), and
+that payloads live apart from facts (ADR-0004). None says what is in the archive, how anything gets there, how long
+it stays, or how a reader can tell a true copy from a false one. **Six records drafted on 2026.11.16 propose
+answers**, from one request of the custodian's that settled twelve things (⟨K1⟩ to ⟨K12⟩, numbered once across the
+six). Three are about the archive (ADR-0074 to ADR-0076) and three about the user documentation that will be kept in
+it (ADR-0071 to ADR-0073). **All six are Proposed, and none is modelled, checked or built.**
+
+**The archive keeps copies and creates nothing but its own journal** (ADR-0074). Every other item is a copy of something with a position in a source: a log entry, a sealed round topic, an object a fact cites by digest, or a file a manifest measured. That
+reconciles two accepted sentences. ADR-0005 makes the archive the system of record, and ADR-0024 says the log is:
+the log is about authorship and the archive is about keeping, so where they disagree **the log is right and the copy
+is a finding**. There are five **holdings**: facts (every log entry, in complete **segments**), round units (a
+sealed topic with its `after` companion, whole), the corpus (every file a manifest measured, so that each manifest
+still verifies as cut with no carrier), evidence a fact cites by digest, and the archive's journal of itself. Payload
+is only ever in the second. Each holding is filled by one **feeder**, a program named by digest that reads one source
+and judges nothing; a cited object that cannot be found is recorded as *missing*, not skipped. **The archive mark**
+ties the archive to the log. When a segment is stored in every declared fault domain, a replica recomputes the
+segment's root from its own log and proposes a mark naming the range and the root; a wrong root is refused. The mark
+enables nothing, and **no replica may discard a log entry above the newest mark**, so if the archive is down the log
+grows. That is a rule about compaction, which no record in force decides; a mechanism record owes it. One consequence
+the record states: a denial is in the round unit and not in the log, so **denials die with their round**.
+
+**How long, and how a thing leaves** (ADR-0075). A deployment declares one retention schedule, a line per class, each
+with an *at least* that protects evidence and an *at most* that limits exposure. No record fixes a length in any unit
+of time, and this one fixes none. Facts are never erased. **Erasure reaches the archive only as the logged F6
+fact**: the governed store drops the named units whole, in every fault domain, and the erasure is complete only when
+the mechanism orders an *erased* mark on the archive's report. Until then it is listed as ordered and not complete.
+**Every absence is explained**: a unit's container is present, or a fact says it was erased, disposed of, or never
+captured, and anything else is a finding, a loss or a suppression. Disposition follows the schedule in force and never
+a person's choice, and **errs towards keeping**: R2 reads an *at most* as elapsed late, so a period is a limit a
+deployment can overrun and **not a guarantee of deletion by a date**. A **hold** may only preserve. A closed chain's holdings are kept down the line of succession (the drafter's choice), a proposed answer in part to §4.4's seam, which leaves who may read them, and their erasure, open. R2, written against ADR-0070, makes placing a hold a recommended operator's deny, owed
+to ADR-0050, so that a hold need not wait for a quorum an erasure could beat, and adds, as the drafter's choice at the archetype, a rule that **no body of a round unit is read into a drafting session**; R2 rests on a thirteenth instruction of the custodian's, for that record only (⟨K13⟩).
+
+**Two stores and an index; the log orders the roots** (ADR-0076). A **locked store** holds facts, the corpus,
+evidence and the journal, content-addressed and under a lock no credential can shorten, in at least three fault
+domains under two administrations. A **governed store** holds the round units, with no versions and no lock, so that
+a deleted unit is gone from every read at once. They share no bucket, credential or administrator: on the common
+object-store interface a locked bucket must keep versions, and a versioned bucket keeps what a delete removed. The
+**index** is a projection of both and can be rebuilt. A chain's facts form one Merkle tree, and each *held* mark puts
+its root in the log. **Nothing that decides reads the archive without a proof**: a gate that needs a compacted entry
+gets it with an inclusion proof against a root the log ordered, or treats it as absent and fails. So an archive that
+fails in any way, lying included, produces no admit, promotion or issuance the mechanism would otherwise refuse.
+Reading is by **reader sets**, declared per holding and promoted as policy, and every read but the corpus's is
+journalled. The record proposes a new trusted-base row, **T-0045-40**, delegated, for the governed store, with
+T-0045-7 narrowed to the locked store; it asks that an external auditor role be defined, which ADR-0028 owes.
+
+**User documentation is derived and decides nothing** (ADR-0071). A **unit** states what records, modules, policies
+and code already state, for a named reader, and where it and a record disagree, the record wins; documentation ranks
+with the derived layer, below this narrative. The record lists twenty-one readers and forty-three documents owed, each with what the records do not yet decide for it, where anything, and writes every unit at three levels, MI, SI and DI (the
+drafter's reading of the custodian's terms), where a level may leave out and never adds, and a limit travels with the
+guarantee it limits. Every DI statement is **bound** to the artifact that makes it true by a pinned citation; when a
+pin moves the unit is **stale**, served marked as stale, and only a person's reading clears it. A release is a fifth
+kind of manifest, `documentation`, under seven gates; no gate checks that a unit says what its clause says. **The
+documentation service** (ADR-0072) is a projection of the corpus that can be dropped and rebuilt to the same
+digests, serves every past view equal to `latest`, and is not a system of record for anything; the recommended engine
+is months old and declares itself unfit for production, and nothing in the corpus has run it. **The reference
+reader** (ADR-0073) is a client of that service with no privilege and no content of its own, with a reading mode that
+needs no script and may hide navigation but never a status mark. Its accessibility target is WCAG 2.2 AA, the
+drafter's choice, and a release says *checked* only when someone who did not write it has examined it, and *claimed*
+otherwise. Those two words are ADR-0049's, not TLC's.
+
+**What it costs, and what is owed.** Every condition of the six is Not met: no module (fifteen properties are named,
+with their mutations), no mechanism record for the mark and compaction, no holding of G1 to G11, no external auditor,
+no dependent entry drafted, no product run, and no reader but the drafter. ADR-0075 R2 asks an R-revision of
+ADR-0070, which has not been made. If they are ratified, this section and the glossary owe their terms: holding, segment, unit, cut, feeder, archive mark, schedule, disposition, hold, closed chain, locked and governed store, root, inclusion
+proof, reader set, unit, level, binding, stale and view. They are in the glossary now, marked Proposed.
 
 ---
 
@@ -1178,7 +1306,10 @@ unproved.
   mutation of the base, the extension's next-state relation is the base's, so the state graphs and the safety results
   carry over, and each one's proof module proves `SpecL ⇒ Spec`. Both certify.
 - **An emergency call cannot be blocked by an Observer** (the plan's Tier 0; §3.3): two invariants over `ENABLED`,
-  proved, and proved in Lean of the encoding.
+  proved, and proved in Lean of the encoding. Three more of the same shape are proved under the command-chain
+  overlay, which is Proposed (§17.7): two in `Alone` and one in `Release`. Each is proved in one step from its
+  expansion, with no `ENABLED` under a binder, which is the form the prover's first unsound case cannot reach (§7.9).
+  An invariant over `ENABLED` says an action can be taken, not that it will be: none of the five is a leads-to.
 - **The coupling stall ends** (Tier 1, its first item). `Coupling_live` states four leads-to properties: a Thinker
   refused for its backlog is eventually admitted again, and a sealed round is followed by the next round's grant, each
   under the conditions it needs. **TLC checks them, and nothing proves them.** The fairness they assume is A12, the
@@ -1542,6 +1673,11 @@ encodings, transcriptions and statements, which are read against what they state
 T-0045-31, because an unsound kernel accepts a false theorem, and its identity is fixed by digests every results file
 prints and `tools/LEAN-PIN` pins (§7.11).
 
+**Rows proposed, and in no record in force**: T-0045-38, a subject provider, and T-0045-39, a downstream system's
+authorization (§2.12); T-0045-40, the archive's governed store (§4.5); the overlay's twelve, T-0068-1 to T-0068-12
+(§17.6); and ADR-0070's ten, T-0070-1 to T-0070-10 (§7.15). Several fail the rule above by their own records' reading,
+and say so.
+
 **T-0045-31 is known to be unsound in two ways** (ADR-0046 A2, ADR-0045 A3, Batch 37). Writing `Emergency_live_proof`
 found the first, and a review of the record the second. **In the first**, the prover abstracts a term it does not
 translate, an `ENABLED` or `\cdot` not expanded or a temporal formula, as a constant that drops any variable bound
@@ -1553,9 +1689,20 @@ because the query it checks is not the obligation. The row keeps its class, and 
 **What stands between a proof and the cases** is a rule for writing proofs (`spec/proof-certification.md` §10) and a
 scan run on every new proof module, which reads every obligation as the prover forms it and runs the module again
 with every identifier renamed. The scan and the custodian's reading of the 67 steps it listed say that no result in
-the twenty-four proof modules rests on either case. **No check detects the first case**: one would need the prover's
-record of what each abstraction stands for, and ADR-0046 A2 owes it. The defects are not reported upstream, by the
-custodian's decision.
+the twenty-four proof modules of G11 rests on either case, and the scans of the ten modules proved since find no
+capture and no renamed run that differs. **No check detects the first case**: one would need the prover's record of
+what each abstraction stands for, and ADR-0046 A2 owes it.
+
+**Both cases are now reported upstream** (ADR-0046 A3, ADR-0045 A4, Batch 39). Revision 15 said they were not, by
+the custodian's decision; on 2026.10.18 the custodian reported them as `tlapm` #309 and #310, and a maintainer opened
+reproducer pull requests for both. A3 claims that the report is made and nothing more, and is confirmation-required
+under C4. **Upstream has since fixed the first case and the collision half of the second**: #309 closed on
+2026.11.10, and #339 fixed the collisions, in a build, `ff40755`, that ADR-0077 records (§7.12). #310 is open, and
+its capture half is not claimed fixed. **The pin has not moved.** `tools/TLAPS-PIN` still names `7824dab`, which has
+both cases, and every proof the corpus cites ran under it. The reproducers are files, `spec/defects/`, run against
+`spec/proof-certification.md` §8, and both still reproduce under the pin. A release that fixes either case is a new
+instance of T-0045-31, identified by its digest, so moving to it is a change to a trust root and not an upgrade.
+ADR-0077 proposes that move and says what must be rerun first.
 
 ### 7.10 The operator is a principal
 
@@ -1658,7 +1805,7 @@ specification rested on trace replay. **ADR-0053 (ratified 2026.10.06 in Batch 3
 - **It is kept in step by digest.** Every results file names the digest of what it transcribes and of every Lean
   source, and `tools/lean-sync.sh` compares them with the tree and the pin, as `spec/proof-sync.sh` does for the proofs.
   The re-encodings freeze with their modules, and the transcriptions and the floor statement are pinned, not frozen.
-  **At G11 the code-level package is stale.** The models transcribe the action and seat kinds, which gained `Route` and
+  **At G11 and G12 the code-level package is stale.** The models transcribe the action and seat kinds, which gained `Route` and
   `orchestrator` for the workflow records, and the custodian chose to leave them stale until those records are
   settled, so `lean-sync.sh` fails where Batch 36's condition had it pass.
 
@@ -1675,6 +1822,115 @@ discharges no stage of the refinement chain (§15).
 **Author-ratified**: drafted, built and run in two days, revised eight times, and ratified with the custodian's
 three mutations, a control the replay refused, and the custodian's own reading of one transcription against its
 source.
+
+### 7.12 The toolchain in an image, and the prover's move (Proposed)
+
+The TLA+ tools have been installed by script on the custodian's machine, and pinned by digest in files the results
+cite: `tools/TLAPS-PIN` for the prover, by the first sixteen hex of its binary's digest, and, since G11,
+`tools/TLA-PIN` for the TLC jar, checked on every push. **tla-kit**, a separate repository, now publishes an image of
+both tools, referenced by digest, with build-provenance and bill-of-materials attestations; its `v0.1.0` carries the
+same jar and the prover at `ff40755`, the upstream build with the fix for the first case and for the collision half of the second (§7.9). **ADR-0077 proposes that TOPAK's TLA+
+checks run in that image**, pinned by its published digest in a new pin file, `TLA-KIT-PIN`, beside the others: CI's TLC job in the image,
+and a new `proofs` job that reruns every proof module there and refuses a count that differs. The prover's pin gains
+its full digest, measured for the record and not yet written to the pin file. The record declines a trusted-base row
+for the image, since the jar and the prover in it have rows already; a reviewer who counts the runtime and base image
+as components may prefer one.
+
+**It recommends moving the prover's pin to `ff40755`, and does not make the move.** Ratifying it would decide that
+the move is made, and when; the move is its own change, after five things: the defect record rerun under the new
+build, with every listing read; every proof module regenerated and its differences listed; a certified rerun; the
+scan rerun; and the records that cite the two unsound cases read again. Under the new build, in tla-kit's runs, all thirty-four
+modules prove with the same counts, and the defect record no longer reproduces its false statements, from one
+uncertified run. After a move **the corpus cites two prover builds**: the results files that name `7824dab` stay
+results of `7824dab`. Of its conditions, only the first is met, the attested release. Three questions are the
+custodian's: whether the move is made at all, whether it waits for the image to carry the certifying checker, and
+whether the `proofs` job is strict or ratcheted.
+
+### 7.13 The specification as a graph (Proposed)
+
+The binding table says which premises a theorem rests on, and §7.11 added a second route to some of them. Neither
+says how strong a route is. A theorem proved of a module, the module read against a record, and the record followed
+by code that nothing checks against it: each link is a different kind of evidence, and the inventory counted them
+all alike. **ADR-0057 proposes that the corpus's specifications form one graph**, and ADR-0058 that a deployment
+declares its own as an overlay on it. Both are Proposed, and the graph is built.
+
+- **Nodes are artifacts and edges say how one discharges another.** A node is anything that states something
+  normative or checks something stated: a record's clause, a module, a proof, a policy, a crate. A layer is a label
+  for reading and carries no premise; only edges do. An edge has one of eight types, ordered by what it leaves to a
+  person: *executed*, *generated*, *proved*, *proved of a reading*, *replayed*, *tested*, *read*, and *trusted*,
+  which has no edge and a trusted-base row where the edge would be. A citation is not an edge, and a *read* edge names
+  its reader.
+- **An edge is a premise.** Each contributes `edge(t, x → y)`, a premise of kind `check` whose value is the edge's
+  freshness: when the pin at either end no longer matches, the edge is **stale** and its premise false. A theorem is
+  inherited at a **grade**, the strongest edge type at which it still holds when every weaker edge is set false. So
+  the inventory of ADR-0023 becomes an inventory per grade.
+- **Pins move from files to clauses**, so that a record's unrelated edit does not stale the reference (ADR-0033 A18,
+  pending). ADR-0045 A5 and ADR-0053 A1, also pending, restate the binding's derived premises and Lean's routes as
+  edge premises.
+- **A deployment's graph is an overlay** (ADR-0058): for each archetype node, keep, replace, add or omit; a replaced
+  node re-establishes each of its edges at a declared type, or the edge is absent and its premise false. A claim with
+  no grade is read at *trusted*. A supplier publishes a subgraph, and an imported edge is *read*, with the supplier as
+  reader, unless the deployment reruns its check.
+
+**What the graph shows today.** It has 419 nodes and 435 edges, and its checker finds it well formed and the four
+lists that pin the corpus in agreement with it. **Every theorem the reference's declaration keeps holds at grade
+*trusted* and at no grade above it**: nineteen of forty-three, the same nineteen as the inventory. Eight edges are stale: six whose evidence is `mechanism/lean`'s three series, and the two trace replays into `Mechanism.tla` and `ConfinementRefinement.tla`. Thirteen modules have no theorem in the binding. Fifty-one clauses of twelve
+followed records have no edge but the code's own reading. One result was not anticipated: with the Lean package
+stale, the two `Seats` theorems are void where T-0045-28 is excluded, while the premise routes show them holding
+(finding 7, which the custodian has not read). The graph was built before the overlay's modules and the workflow
+proofs, and holds neither. ADR-0057 asks records drafted after it to give each clause a goal, givens, guarantees and
+a discharge; none of the twenty drafted since does. ADR-0058 was not revised after the graph was computed, and its
+reading of the reference's grades is higher than the computed one.
+
+### 7.14 The Build-Run pipeline (Proposed)
+
+The records say how an artifact is promoted (§7.1), signed (ADR-0044) and loaded, and nothing joins the steps into
+one path. **ADR-0069 proposes the path**, nine stages each taking only the digest the stage before produced: intake,
+the round, authoring, submit and seal, gates, the tally, signing, publication, rollout. **Authority runs one way.**
+What Run produces returns to Build only as data, through **intake**, the one way into a corpus root: a corpus-root
+revision is a Build artifact promoted under ADR-0024 like any other, gated by seven intake gates, and an object
+returned from Run carries a provenance computed from the log by an allowlisted tool, never one a principal wrote.
+So the pipeline has a return path and no return arrow. A gate is a program named by digest, whose evidence counts
+once a **gate-evidence key** in the issued rules signs it, and a class with no gates stated does not promote. Every
+promoted class is signed after its tally, which reverses ADR-0016 §1 in effect. A **carrier**, the version control,
+CI runners and hosting that move objects, **moves objects and decides nothing**: an approval is not a vote, a merge
+is not a promotion, and a CI runner is not a principal.
+
+**Only the carrier is built**, for this repository. Four workflows are on GitHub: `checks` on every change, with
+three strict checks and four **ratcheted** ones that show the findings that predate CI and fail only on what a change
+adds; `results`, which reruns TLC, the reference's tests, the Lean builds and the floor's gates against the committed
+evidence for the suites a change touches, and never writes a results file; `sources`, which has never run; and the
+frozen-files guard, which refuses a change to what the corpus has frozen, among it a checkpoint, a derived document, a results file, a manifest and a module a record in force cites, unless the custodian lifts the freeze for one pull request (G12 §5). **CI gates nothing**: the ruleset that would require its checks is disabled, and during genesis nothing it runs
+promotes anything. It does not run the prover. Building it found that a new Rust compiler failed fourteen of the
+reference's tests, and the toolchain is now pinned. The record's own note says the workflows are not on
+`main`, which has been false since they merged; ADR-0070 found it (F9).
+
+**Not met:** the module, with seven named properties; gates for mechanism code, profiles and seatings; the
+gate-evidence key, an amendment to ADR-0025 in the bootstrap set; any of the eight dependent entries; and four open
+questions, among them whether GitHub is a trust root and whether a CI runner is a principal.
+
+### 7.15 Lifecycle security at its boundaries (Proposed)
+
+**ADR-0070 proposes that every boundary declares seven things**: its sides, what crosses, the instant it is checked,
+how long its claim may be false, what happens when the check cannot run, its adversary, and its owner. **A boundary
+with no instant is not a control; it is a finding.** It keeps the register's fourteen boundaries and adds fifteen numbered ones, B15 to B29, and three temporal ones, among them the replicas, the operator, the build host's internet, the assistant's reach into the corpus,
+the custodian's merge, the CI checker's verdict and the drafting session's provider; seven have no instant today. It
+gives every production artifact a build-side check, a check at promotion (B1), run checks and a declared end, and asks for a
+hermetic build, signed bytes, a bill of materials the gate projects, and code rebuilt by a second builder from the
+same pinned toolchain. It names **the tandem developer**, the custodian's term: the human and the assistant, in which
+**the assistant is a havoc drafter**, `Mediated` and outside the trusted base, and never votes, and the custodian is
+at the gate. CI gates fail closed and run the base's copy of their checker, so a change cannot grade itself. A
+promotion advances ring by ring, and silence is not a pass. Revocation on an advisory does not wait for a quorum. Run
+reaches Build only as a deny, as evidence, or as labelled ingress that may be removed with the request still
+permitted. And a finding closes only when a check that would have caught it exists.
+
+**Its review was adversarial and not independent.** The record was revised once (R1) on a review by a fresh session
+of the same model, which it calls independence of context and not of lineage. It records nine findings. One is that
+the ratchet passes a checker that crashes, since it ignores the exit status (F6). One is against the reference (F1); **its disclosure under `SECURITY.md` is the custodian's decision, not yet taken**, so this document does not describe it. It proposes ten trusted-base rows, T-0070-1 to T-0070-10, of
+which, by its own count, three fail ADR-0045 §2's rule for being a row (G12 item 115 says two), and six assumptions of
+use beside §13's. The custodian decided its scope and none of its content. Nothing in it is modelled, checked or
+built, and its dependent entries, among them a criterion for assisted drafting in ADR-0029, are listed and not
+drafted.
 
 ---
 
@@ -1797,26 +2053,33 @@ trusted by declaration and becomes part of the genesis TCB.
   attestation, **which must name them as provisional**, so that what a bootstrap reviewer attests to includes the
   fact that part of the rules it runs under is expected to change.
 
-**Where ratification stands (2026.10.09).** Forty-seven records are Accepted (genesis); one, ADR-0008, is
-superseded; five are Proposed: ADR-0035 and ADR-0036, blocked on evidence and on a review; ADR-0051, the
-correlator's folds, drafted and unbuilt; and ADR-0054 and ADR-0055, the workflow records, drafted, modelled and built
-at the reference and unproved. The confirmation-required set is **twenty-nine**: ADR-0005 (C4), ADR-0006 and ADR-0009
+**Where ratification stands (2026.11.16).** Forty-seven records are Accepted (genesis); one, ADR-0008, is
+superseded; **twenty-seven are Proposed**. Five were Proposed at G11: ADR-0035 and ADR-0036, blocked on evidence and
+on a review; ADR-0051, the correlator's folds, drafted and unbuilt; and ADR-0054 and ADR-0055, the workflow records,
+drafted, modelled, built at the reference and, since 2026.11.11, proved. Twenty-two are new, ADR-0056 to ADR-0077:
+user scope (§2.12), the specification graph and its declaration (§7.13), a command-chain overlay of ten records
+(§17), the Build-Run pipeline (§7.14), lifecycle security (§7.15), six records on user documentation and the archive
+(§4.5), and the move of the corpus's TLA+ checks into the tla-kit image (§7.12). **Nothing drafted since G11 is in
+force.** The confirmation-required set is **twenty-nine**: ADR-0005 (C4), ADR-0006 and ADR-0009
 (C1, C4 via ADR-0013), ADR-0013 (C1, C4), ADR-0015 (C2), ADR-0021 (C4), ADR-0023 (C3), ADR-0028 (C1), ADR-0030 (C1),
 ADR-0031 (C1, and C2 for A1 only), ADR-0034 (C2, C4), ADR-0037 (C3, C4), ADR-0038 (C3, C4), ADR-0039 (C4), ADR-0040
 (C3, C4), ADR-0041 (C1, C4), ADR-0042 (C4, and C2 for §6), ADR-0043 (C4), ADR-0044 (C1), ADR-0045 (C2, C4, with C2
 on A3), ADR-0046 (C2, C4, with C2 on A2), ADR-0047 (C4, and C2 for §3), ADR-0048 (C4, C3), ADR-0049 (C4, and C2 for
 §5), **ADR-0053 (C4, for `refines(Seats)` only)**, the two provisional records, ADR-0050 and ADR-0052 (C1, C3, C4),
-and two records marked for particular amendments only: ADR-0003 A2 (C1) and ADR-0029 A2 and A4 (C3). **Two batches
-since G10**: ADR-0053 alone, with dependent entries in seven records and the premise binding (36); and the prover's
-two unsound cases, recorded against its row, with three errata (37). **Twelve amendments are pending**, all on
-Proposed records: ten dependent amendments ADR-0054 drafted, one of them, ADR-0024 A4, to the bootstrap set, and
-ADR-0033 A16 and A17. One record is ratified in part: ADR-0022 §1–§5,
+and two records marked for particular amendments only: ADR-0003 A2 (C1) and ADR-0029 A2 and A4 (C3). ADR-0046 A3
+is C4 inside a record already marked. **Two batches since G11**, neither changing a record's status: a citation
+corrected in ADR-0024, E1, found while checking an external draft against the corpus (38); and the upstream report of
+the prover's two unsound cases, ADR-0046 A3 with its dependent entry ADR-0045 A4 (39). **Sixteen amendments are
+pending** (§0): ten dependent amendments ADR-0054 drafted, one of them, ADR-0024 A4, to the bootstrap set; ADR-0033
+A16 and A17; three entries on ADR-0057; and ADR-0033 A19, the only one that waits on no Proposed record. One record
+is ratified in part: ADR-0022 §1–§5,
 §7 and §8, with **§6 not**, since ADR-0034 discharges its obligation for Build as a specification and not as a
 mechanism. Accepted records carry **debts on their face**, ADR-0030's, ADR-0033's refinement chain, ADR-0034's,
 ADR-0045's and the two provisional records', which is ADR-0029 §2 working as written. **One marking has no
 criterion:** ADR-0035 R2 is confirmation-required by custodian instruction, because its measurement rule is a novel
 construction to be reviewed against practice. **One kind of debt has grown past counting by hand**: nearly everything
-ratified since G9 was drafted by the assistant (§0). ADR-0029 has no criterion for that either, and G11 carries it.
+ratified since G9 was drafted by the assistant, and everything drafted since G11 (§0). ADR-0029 has no criterion for
+that either, and G12 carries it (item 66).
 
 **Bootstrap trigger.** The anchor *may* bootstrap once a drafted TLA+ bootstrap specification exists: five modules
 (`Genesis`, `Anchor`, `RulesFloor`, `Promotion`, `BreakGlass`), five invariants, and a mutation for each that must
@@ -1894,7 +2157,8 @@ its behavior when unavailable.
 - **`Contained` has no members**, and will not until ADR-0035 is in force and a guest passes P3–P5 under an
   attested profile (§2.3, §2.6, §2.7).
 - **Detection fails open against a colluding Observer**, and against nothing else that ADR-0039 can see (§5.4). The
-  sentence belongs on the residual-risk statement, which is unwritten.
+  residual-risk statement carries it, since its first edition of 2026.10.03; the latest is
+  `derived/topak-residual-risk-statement-2026.11.11.md`.
 
 **The clock model is stated** (ADR-0032), and it is small because of its first clause: **clocks buy liveness, never
 safety.** Epoch fencing carries safety without reading a clock, so an expired lease its holder still believes in is
@@ -1951,7 +2215,7 @@ mechanism claim for effect exclusivity; the rules floor, which carries the same 
    and they make the refinement's target precise and do nothing else for it. Since 2026.10.06 there is code-level
    evidence beside the trace replay: two functions of the reference transcribed and proved in Lean, and two models of
    `apply` proved in Lean and replayed against the recorded traces (§7.11). It is evidence toward the row and not a
-   refinement of the running code either, and it is stale at G11.
+   refinement of the running code either, and it is stale at G11 and G12.
 7. **Their trusted list is shorter than ours and names the Dafny verifier**, which discharges every obligation
    through Z3 and emits no certificate. ADR-0045 §2 applied to the corpus's own gate refused cvc5 for exactly that
    reason, and ADR-0030 A1 put a proof checker behind it (§3.1), so a Dafny or Verus chain would not remove T-0045-28
@@ -1963,7 +2227,7 @@ mechanism claim for effect exclusivity; the rules floor, which carries the same 
    the corpus has said it. **And the row now has a certified configuration** (ADR-0046 A1): asking the Isabelle
    backend turned out to check Zenon's proofs and nothing an SMT solver discharges (E2), so cvc5 stands in for Z3
    behind the wrapper the floor's gate already used, and an SMT obligation counts only with a proof the `ethos`
-   checker accepted. Twenty-one of twenty-four proof modules certify that way. The prover's translation of an
+   checker accepted. Thirty-one of thirty-four proof modules certify that way. The prover's translation of an
    obligation into a query, its own normalization and the temporal backend stay trusted, **and the translation is now
    known to be unsound in two ways** (§7.9): a certified proof is checked against a query that can say something
    other than the obligation. **The chain shape ADR-0030 §3 accepted now has a first instance**: a Lean model whose
@@ -2095,17 +2359,28 @@ The narrative expectation for that pass:
   orchestrator from the budget had reached 282 million states, with 125 million queued, after eight hours. Each is
   checked under a state constraint at the unmutated module's reach, and the constraint's own row shows it binds
   nothing the unmutated module does.
+- **What TLC needs a cap for, a proof may not.** `Workflow_proof` and `Mesh_proof` prove every property with no state
+  constraint, so the remainders TLC checked only under `CapLog` and `CapOnePast` hold without them. An inductive
+  invariant does not care how deep the state graph goes.
+- **A fixed prover is a different prover.** Under the build that fixes the first case, the defect modules no longer
+  prove their false statements, and all thirty-four modules prove with the same obligation counts. Both runs were
+  tla-kit's, under a binary the corpus does not pin, and the first was one uncertified run; neither fix has been
+  checked in TOPAK. A fix is evidence for a move, and the move is a change of trust root (§7.12).
+- **A cached test binary can check another tree.** The drift test fixes the repository's root when it is compiled.
+  Run from a second working tree with a shared build cache, it read the first tree's pin file and reported drift that
+  was not there. Any test that locates the corpus at compile time has the same exposure (§15).
 
 ---
 
 ## 12. Where the argument is thin
 
-The open list is G11. In narrative terms, the argument is weakest in twenty-one places.
+The open list is G12. In narrative terms, the argument is weakest in twenty-five places.
 
 1. **The sandbox gap.** Effect exclusivity, ADR-0015's exhaustiveness, and ADR-0022 §6's confinement all rest on a
    mechanism that is now specified (ADR-0034) and built only at rung 1, where the host is trusted by construction,
-   and in simulation at rung 3 (ADR-0033 A7). Every real guest's profile fails P3 on its face, and no host
-   the reference runs on can attest. Until a guest runs under an attested profile that passes P3 to P5, the strongest
+   and in simulation at rung 3 (ADR-0033 A7). One guest now passes P3, the compiled occupant on a `FROM scratch`
+   image, as the rung-1 launcher asserts it and on DEV rules (§2.7); every other guest's profile fails P3 on its
+   face, and no host the reference runs on can attest. Until a guest runs under an attested profile that passes P3 to P5, the strongest
    claim TOPAK makes is an assertion. **This is still the single largest gap in the pattern**, and the
    record that closed its design half says so: only a mechanism can close the other.
 2. **Correlated review failure.** Unanimity multiplies reviewers without making them independent. Floor fitness is
@@ -2115,7 +2390,9 @@ The open list is G11. In narrative terms, the argument is weakest in twenty-one 
    person, eleven batches of them in five days. Nearly everything ratified since G9 was drafted by the assistant at
    the custodian's request, built at the reference by the same hand, modelled, proved and trace-checked by it, and
    settled by ratification; since G10 that includes three Lean packages and the review runs that found the prover's
-   defects. Twenty-nine records carry confirmation markers and will be reviewed after bootstrap; the
+   defects. Since G11 twenty-two records were drafted and none ratified, so the debt grows in the queue and not yet in
+   force; the two reviews of that window were fresh sessions of the same model (§0). Twenty-nine records carry
+   confirmation markers and will be reviewed after bootstrap; the
    bootstrap set gets no confirmation promotion, by construction, and since ADR-0029 A2 it is instead reviewed at
    the bootstrap gate with the entire corpus. Until a reviewer is engaged, every review any record has received is
    the author's own, and the checkpoint now says so in a line of its own.
@@ -2132,9 +2409,11 @@ The open list is G11. In narrative terms, the argument is weakest in twenty-one 
    the invariants and leaves it standing for the mutations and witnesses. It changes nothing else here: the proofs
    were written, checked and regenerated by the hand that wrote the records, the prover is trusted as written
    (T-0045-31), and **agreement among records, checks, proofs and code written by one hand is not independence**
-   (ADR-0033). There are now twenty-four proof modules and 5,416 obligations, and twenty-one of the modules are
-   certified (§11.1). Fifteen are proved in Lean too, of re-encodings, with the temporal step a kernel-checked
-   induction (§7.11), which is a second derivation by the same hand and not a second reader. The
+   (ADR-0033). There are now thirty-four proof modules and 13,622 obligations, and thirty-one of the modules are
+   certified (§11.1); **ten of the thirty-four are of Proposed records**, eight of them of a design with no floor and
+   no code (§17). Fifteen are proved in Lean too, of re-encodings, with the temporal step a kernel-checked
+   induction (§7.11), which is a second derivation by the same hand and not a second reader; nineteen proved modules
+   have no encoding. The
    trace harness makes the link between modules and code mechanized for the first time, and ADR-0045 T-0045-28 says
    what it is not: a refinement.
 8. **No floor is ratified.** The machinery that checks a floor is accepted; the entries are named by text in force;
@@ -2180,7 +2459,7 @@ The open list is G11. In narrative terms, the argument is weakest in twenty-one 
     and not a refinement. A proof of a module makes the refinement's target precise
     and does nothing else for it. Since 2026.10.06 two functions and two models of `apply` are proved in Lean, the
     models replayed against the tests' traces; they are a transcription and models, not the compiled code, and are
-    stale at G11 (§7.11). The implementation, the model checker, the prover and the build toolchain are trust roots
+    stale at G11 and G12 (§7.11). The implementation, the model checker, the prover and the build toolchain are trust roots
     for every deployment, and the reproducible build that would fix the last one's identity is not declared (§7.9,
     §15).
 17. **The operator design does not stand on evidence.** Its centre is that a first lease comes from a quorum, and
@@ -2195,15 +2474,36 @@ The open list is G11. In narrative terms, the argument is weakest in twenty-one 
 19. **The prover is known to be unsound.** Two cases are recorded against its row, and a rule and a scan keep a proof
     from them. That no result a record cites rests on either is a claim over every proof module, made by the scan and
     the custodian's reading, not by a check, and no check detects the first case. The proofs written before
-    2026.10.07 were written without the rule. The defects are not reported upstream (§7.9).
+    2026.10.07 were written without the rule. Both cases are reported upstream and partly fixed there, and **the pin
+    has both**: a fixed build is a new trust root, which ADR-0077 proposes and nothing has adopted (§7.9, §7.12).
 20. **The reference follows text that is not in force, again.** Since 2026.10.08 it follows two Proposed records and
     links a floor stage that is not the floor in force, at the custodian's direction, as it followed ADR-0047 to
     ADR-0052 for two days before Batch 34. `Mechanism.tla` does not model workflows, so trace validation was not
-    rerun, and the code-level Lean package is stale. The workflow modules are checked and unproved (§2.11, §15).
+    rerun, and the code-level Lean package is stale. The workflow modules are now proved, which ratifies neither
+    record; the reference was measured again for G12 with no source file changed (ADR-0033 A19, pending), and still
+    follows them (§2.11, §15).
 21. **No stall is shown to end.** The design's answer to failure is to stall, and a stall that never ends is safe.
     Coupling's leads-to properties are checked by TLC at small constants, under fairness the assumptions of use now
     name (A12, A18), and proved by nothing; a proof that the promotion stall ends needs a premise the corpus does not
     have (§5.5).
+22. **The design is growing faster than anyone reads it.** Twenty-two records were drafted between 2026.11.06 and 2026.11.16, each
+    revised by its drafter against its own modules, and none has been read by a second reader or ratified. The self
+    review of 2026.11.11 found 108 open items that no list in the corpus carries, and its findings are not
+    dispositioned (G12 items 121, 66). ADR-0070 proposes that new drafting wait while too many records stand Proposed
+    and unread, which is a bound the corpus would have to adopt against itself (§7.15).
+23. **The command-chain overlay gives up what the archetype holds.** No person need be on the plane that orders an
+    effect; a mechanism delegates; replicas must be Byzantine-tolerant where exposed; a plane's clock is a quorum's
+    count. Each is marked an overlay and reported upstream, its modules prove what they state at small constants, and
+    four of its twelve trusted-base rows meet neither of ADR-0045's tests by its own reading (§17).
+24. **The toolchain moves under the corpus.** The prover is fixed upstream and pinned with both defects (§7.12). The
+    Lean pin, v4.33.1, predates v4.34.0's kernel fixes and v4.35.0's `lake check --paranoid`. The reference's release builds
+    wrap on integer overflow, and its signature check uses `verify` and not `verify_strict`. These three are true at
+    G12 and are named by a derived reading, not by a record (G12 item 118).
+25. **What an effect does in the world is outside the argument.** The scenario inventory of 2026.11.12 finds, against
+    records in force, that a stop's cost in the world is priced nowhere, that nothing checks an effect happened (an
+    `Actuate`'s outcome is the tool's claim), and that the people an effect lands on have no standing in the pattern.
+    Its entries are suggested and none is made (G12 item 122). The pattern's guarantees are about authority; these
+    are about consequence, and the corpus has not said where that line is.
 
 ---
 
@@ -2334,6 +2634,16 @@ to end across three replicas, promoted by a Build round and completed by its sin
 behaviour is seen at the replicated state. **The next day it dropped `denials`** (A17, pending), as ADR-0054 R6
 decided. The register stands at forty-seven assumptions and eighteen gaps.
 
+**On 2026.11.16 it was measured again, for G12** (A19, pending, which by the custodian's decision stands alone and
+does not wait for the workflow records). **No source file changed since G11.** What moved: a dependency update that
+takes the Run tool host and the bundle's in-process WASM fallback to `wasmtime` 48.0.8 (T-0045-25, T-0045-6); a race
+in the end-to-end workflow test, fixed in the test; and the pins of ADR-0054 and ADR-0055, re-read after their proofs,
+whose revisions changed no decision text. 155 tests across fifteen binaries, none failing. The Rego tests and trace
+validation were not rerun. **The run found one thing about the harness**: the drift test fixes the repository's root
+when it is compiled, and a cached test binary built in another working tree read that tree's pin file and reported
+drift that was not this one's. A clean build passed. A ratified A19 makes the new manifest the measure of the
+reference; it does not bring the workflow build into force, which takes force with its records.
+
 **What it showed.** The records compose, subject to what it does not show (below): every link of §4.1's audit chain
 has running code. Making them run took the assumptions and gaps above, each tagged in the code, which turns "the
 mechanism will handle it" into a list. And it produced eleven findings about the records themselves, and on
@@ -2420,7 +2730,9 @@ trust-root row, and ADR-0033 owns the chain's next two stages, a Lean model with
 compilation. **Trace validation has not been rerun since 2026.10.05**: `Mechanism.tla` does not model workflows, and a
 traced run that loads one would not match it. Beside it since 2026.10.06, the two Lean models of `apply` replay the
 same 82 traces, 1,014 and 1,015 steps, every one matching (§7.11). Both are
-behind the tree since the workflow build, the Lean models by the custodian's decision.
+behind the tree since the workflow build, the Lean models by the custodian's decision. **The self review of
+2026.11.11 reran the replay** and matched 82 of 83 traces: the one that does not is the end-to-end workflow run, which
+the model cannot follow, and the workflow tests are not traced at all (G12 item 56).
 
 **How it stays honest.** The reference pins the digest of every record and TLA+ module it follows, sixty-one pins
 now, and a test fails when one changes or when the code cites one that is not pinned (G3 §5). Every change to a
@@ -2464,6 +2776,192 @@ directories are not tracked, and G4 measures the tree by manifest.
 **What it does not show.** That θ is right, that the near-duplicate tool is the right tool, that two lineages the
 rule calls independent fail independently (only §6's test can), and that the bound is how anyone else measures
 overlap. The last is why ADR-0035 R2 is marked for review before ratification (§12, item 10).
+
+---
+
+## 17. A command chain (Proposed)
+
+Everything above describes one control plane. On 2026.11.10 the custodian asked what follows if TOPAK is the top tier
+of a command chain, with control planes below it that only narrow. **A command chain hands authority down, and the
+corpus excluded that**: §2.11 says no principal grants another, so there is no chain of delegation to attenuate.
+**Ten records, ADR-0059 to ADR-0068, propose an answer**, and each is marked **an overlay, not the archetype**: under
+ADR-0023 §4, a variation with a capability the archetype lacks is not a rung, so eight of the records list what they report upstream and what the archetype's records would owe if they took them, and ADR-0068 lists what would be owed. The custodian settled twenty-two things from a
+design proposal in nine prompts and answered its twenty questions the same day, nineteen of them by taking the
+drafter's recommendation. **All ten are Proposed. Eight modules are checked, proved and certified; no floor stage is
+written and no reference is built.**
+
+**What the overlay qualifies.** Several sentences in this document are true of the archetype and would not be true
+of a deployment that took the overlay. No principal grants another (§2.11): here a mechanism grants, the delegation
+only attenuates, and it is budgeted, so the sentence is answered in substance and reversed in letter. The replicas
+are crash-recovery and BFT is not required (§12, item 9; A9): here an exposed plane runs Byzantine agreement. An
+effect with no time budget must not be in the alphabet (§10, A10): here a person may hold it. Event-driven means the
+mechanism is the bus (§2.11): here stacks report to one another on promoted topics. An interval is read on a replica's local clock (§2.5, §10): here it is a count of ticks a quorum signs, each replica still reading only its own clock. Each is reported upstream and none is in
+force.
+
+### 17.1 A tree of planes
+
+**A deployment may be a tree of planes** (ADR-0059). A **plane** is one replica set with one log, one epoch and one
+set of rules in force, seated by a promotion at its parent, which votes a **charter**: a closed schema, so a
+capability that is not a field is not carried, with every field the parent's or narrower, compared before the vote,
+at apply and by every verifier. A child's budget is debited from its parent's. One floor governs the whole tree, and
+policy narrows by composition. A plane is a havoc issuer bounded by its charter, as the anchor is bounded by the rules
+floor (§7.2, §7.3). Every charter and lease carries a **commit certificate**, a quorum's signatures over its digest and log
+index, and a verifier walks the **chain** from the anchor key down before it permits. Any plane that moves its epoch
+fences everything below it, a **plane fence**: a subtraction, ordered, needing no quorum. **The module found the
+first unanticipated result**: the root's tally does not bound the whole tree once a plane is captured, since a
+captured plane can sign more leases than its budget, one to each vehicle, and no verifier sees more than its own. So
+the budget is conserved for a subtree with no captured plane, and the chain bounds what each lease may carry, not how
+many a captured plane signs.
+
+### 17.2 The intent boundary, and a plane with no authority path
+
+**Every effect is admitted at the intent boundary** (ADR-0060), the last **commanded plane**, one with people seated
+at it, above a group of vehicles. A reversible effect is admitted as an **intent**, a charter for one round with a
+task, an envelope, a budget of activations and an expiry, the first from the quorum that promoted the mission, later
+ones from one operator, each within the promoted seating. An irreversible one is admitted singly, by a person
+(§17.5). Below the boundary an **autonomous plane** has no path that changes authority: no person holds a seat there,
+it makes one kind of grant, a vehicle's lease under a live intent, and its log holds no promotion, seating, issuance
+or bundle change. It is a declared degeneracy with additions, not a second pattern. The module found that an intent's
+predecessor is ordered before the effect but need not be live at it. R2 sets out three ways to treat ADR-0032 §4's
+budget while a plane is out of reach, since a reversible effect cannot meet it unattended, and leaves the choice to
+the custodian, with the drafter recommending the third.
+
+**The autonomous plane is seven replicas under Byzantine agreement** (ADR-0061), tolerating two captured, which
+shrinks along a voted schedule to a **capture floor** as replicas are lost, each step ordered by the membership it
+replaces. **The module found a membership could have two successors**: a replica that has heard neither of two others
+could sign both drops. R1 adds that an honest replica signs at most one step of a membership; read as one vote with no second ballot, a split vote then stalls the schedule for good, which is safe and not live; whether a split vote may be retried is open. The module is checked and proved at five replicas, not
+seven, and PBFT's statements in the record are recalled and not re-read.
+
+### 17.3 The vehicle: a governor, a stack, and alone
+
+**A vehicle is a trusted governor and a Byzantine stack** (ADR-0062). The **governor** is mechanism, not a principal:
+it verifies the chain, hosts the replica, evaluates the floor in Cedar and the bundles in Wasm, permits and counts
+each entry, lifts its own facts and holds the radio. The **stack** is the autonomy software, the Thinker, and is
+Byzantine. **The lease pre-authorizes**: one plane round per lease and none per entry, so an entry marked `local` is
+permitted by the governor with no round, and only one marked `ordered` waits for the plane; the archetype marks none
+`ordered`. Each entry declares an **extent**, how far it runs, and the governor holds when it ends. **A vehicle that
+stops hearing its plane is alone and loses its lease at once**, keeping its terminal behaviour, its listening and a
+beacon; nothing a governor permitted is void, and a failed check at the seal is a finding. **The beacon is an effect**
+(R1), so the proposal's sentence that the only effects after expiry are hold and the terminal behaviour is true of
+actuation and nothing else. Coupling moves to the grant, and that is stated and not modelled (R2).
+
+**A plane's clock is its ticks** (ADR-0064). Each replica keeps one reading of its own monotonic clock, taken when it applies the charter, and measures elapsed time from it; and a **tick** is a numbered entry saying that many periods have passed; every interval below the boundary
+is a number of ticks from a named tick. A replica never signs a tick ahead of its own clock, and never signs a lease
+while by its own clock the next tick is due. Under the premise that captured and slow replicas together are fewer
+than a certificate, no grant is made more than one tick past an intent's expiry, and the record calls that **a
+declared bound and not a safety theorem**, because it has a premise about time. The module found that the first of
+the two vote rules carries no property; it is availability, ADR-0032's side. A governor's own clock decides only
+that the next tick is overdue, which ends the lease. The module is in discrete time.
+
+### 17.4 Revocation, bounded in effects and not in time
+
+**ADR-0063 keeps ADR-0032's first clause** where the proposal's first draft reversed it: clocks buy liveness, never
+safety, below the boundary too. The boundary is the plane's Observer. It reads the plane's log as it is made and
+answers with a **watermark**, ordered by its mechanism and carrying the fences of every plane above, so a fence is
+pulled as well as pushed. A plane may have fewer than **`K_up`** effects outstanding: a lease's whole count is charged
+when it is granted, an `ordered` entry when it is admitted, and a charge is released when a watermark covers it.
+**Effects after a revocation are bounded by a count, with no premise about time**: below `K_up` for an honest plane,
+and per honest governor under a captured one. A cut link fails closed, since the charge only grows. **The module
+found that the governor rule, read literally, let a captured plane admit `ordered` entries free of charge**; R1
+charges them, and `K_up` is at least two and must exceed a lease's count. No variable or guard in the module is a
+time.
+
+### 17.5 Peers, and an irreversible effect is a person's
+
+**Stacks report to each other on topics promoted with the mesh** (ADR-0065), sent as a `Report` the governor
+permits, not ordered and not charged, and received as a sixth ingress item labelled `untrusted` with the topic's
+declared name. A stack names a topic and no recipient. Talk settles nothing; agreement is an ordered entry. The
+property is that every permit holds with every item a peer originates removed. **The module found it false as first
+written**, since a relayed certified lease does enable a permit; the property now ranges over what a peer
+originates, and a certified fact a peer relays is the plane's act.
+
+**An irreversible effect is a person's** (ADR-0066). An entry declares itself `reversible` or `irreversible`, with its
+`T_irrev`, and an irreversible one is reachable from no agent seat's alphabet, is never `local`, and is reachable
+only from a new seat kind, **`release`**, held by a person, at a commanded plane whose charter allows it, activated by
+a roster's quorum as an emergency seating is (§3.3). Each **release act** names the entry, its inputs, the vehicle,
+the fences and a tick; it is ordered at the commanded plane while it is in contact, delivered with its certificate,
+and checked by the governor's **interlock**: the person's key, the certificate, the envelope, that the act names
+this vehicle, that it is unused, and that it is fresh. **The module found that without the vehicle check one act
+fires once per vehicle**, and that a cut link stops the order but not an act already across it. Freshness is a count
+of the plane's ticks, which a captured plane can stop. Its `ENABLED` invariant says that while the seat is live and
+the plane in contact a release can be admitted whatever any agent or Observer does, in the shape of §3.3's emergency
+call.
+
+### 17.6 Rules of engagement, and what the overlay trusts
+
+**Rules of engagement live in three places** (ADR-0067): standing rules in the one Cedar floor; a mission's rules that
+can be lifted mechanically in a promoted bundle compiled to Wasm, the only engine at an autonomous plane and on a
+governor; and rules that need a judgment about the world nowhere in the admit path. Identification, intent, necessity
+and proportion are judgments, and nothing in these records enforces them. The record drafts a `federation` floor stage of fourteen forbids, and a fifteenth (FD15) that depends on the custodian's choice in ADR-0060 §5, relaxes two existing entries for the release seat and a plane's
+admits, and writes no Cedar.
+
+**ADR-0068 is the overlay's own declaration** of what it trusts and assumes, as ADR-0045's Annex B is the reference's:
+fourteen adversaries, each with what bounds it and what is left; twelve trusted-base rows; and ten assumptions of use
+beside §13's, the first of which is that the governor is separate and the sole path to the actuators and radio, A1 for
+a vehicle. **Models stay out of the trusted base, and the base grows on every vehicle.** It finds against itself that
+four of its rows meet neither of ADR-0045's tests, and that adding twelve rows is outside ADR-0045 §4's sentence on what a deployment may add, as ADR-0058 quotes it. Two adversaries, navigation deception and a colluding Observer, are bounded by nothing in the design.
+And it lists what the overlay gives up, ending: **it is no longer true that a person is always on the plane that
+orders an effect.** Its condition still says that no module is written; eight are.
+
+### 17.7 What is checked, and what is not
+
+The eight modules, `Federation`, `Intent`, `Membership`, `Alone`, `Outstanding`, `PlaneClock`, `Peer` and `Release`,
+are each checked by TLC with every row as expected, and proved by TLAPS with every proof certified but for its LS4
+steps: 5,600 obligations among them. Writing and running them found eight of the thirteen results G12 lists as
+unanticipated, one for each module, and each is now in its record's R1 or R2. Three of the five `ENABLED` invariants the
+corpus proves are here, two in `Alone`, that a `local` entry never waits on a primary, a peer or an Observer and that
+the terminal behaviour never waits on the stack, and one in `Release` (§5.5). A deadlock audit finds no stray terminal
+state in any of the eight. The scan finds no capture.
+
+**What none of it shows.** The modules are of records that are Proposed, at small constants, of a design with no
+floor and no code. Every value is a placeholder: `T_tick`, `K_up`, a lease's count, the membership's size. Seven
+findings of the two readings of the proposal, both in `derived/` and dated 2026.11.10, are not answered by any of the
+ten records:
+a captured vehicle discloses the rules (F3); an envelope has no field for the world (F4); sibling planes cannot
+deconflict (N1); a second anchor, for a coalition, is outside the design (N2); a finding revokes a lease and leaves the
+replica voting (Z2); a false finding where nobody can respond (Z3); and most of Z4, that an Observer can accuse as
+well as vanish. The modules have no binding rows and no Lean encodings. An illustrative deployment declaration,
+`derived/recon-fleet-7-2026.11.10/`, configures a fleet of seven under the overlay, and says it is not a record and
+cannot run.
+
+---
+
+## Appendix L. Changes from revision 15
+
+- **State of record repointed** from G11 to G12 (§0, §9, §12). Batches 38 and 39 recorded; sixteen amendments
+  pending, fifteen on Proposed records and A19 alone; twenty-seven records Proposed (§0, §9).
+- **The header** says what changed between G11 and G12.
+- **§0:** assisted drafting since G11, including two reviews by fresh sessions of the same model; a paragraph on how
+  this revision describes Proposed records.
+- **§2.7:** the rung-1 run of the compiled occupant on a `FROM scratch` image, what it shows and what it found.
+- **§2.11:** `Workflow` and `Mesh` proved, with no state constraint.
+- **§2.12, new:** user scope, Proposed (ADR-0056).
+- **§4.4:** a pointer from the re-genesis seam to ADR-0075's closed chains.
+- **§4.5, new:** the archive of record and user documentation, Proposed (ADR-0071 to ADR-0076).
+- **§5.5:** the overlay's three `ENABLED` invariants beside the emergency call's two.
+- **§7.9:** the two cases reported upstream and partly fixed there, the pin unmoved, the reproducers as files, and a
+  fixed release as a new instance of the row. Revision 15's "not reported upstream" is retired. The rows proposed
+  since G11, listed and not counted.
+- **§7.11:** the code-level package stale at G12 too.
+- **§7.12 to §7.15, new:** the tla-kit image and the prover's move (ADR-0077); the specification graph and a
+  deployment's overlay of it (ADR-0057, ADR-0058); the Build-Run pipeline and the CI built for this repository
+  (ADR-0069); lifecycle security at its boundaries (ADR-0070), with F1 named and not described, its disclosure being
+  the custodian's decision.
+- **§9:** where ratification stands at G12.
+- **§10:** the residual-risk statement exists, and has since 2026.10.03; revision 15 still called it unwritten.
+- **§11.1:** thirty-one of thirty-four certified; the Lean evidence stale at G12.
+- **§11.3:** three lessons: what TLC needs a cap for a proof may not; a fixed prover is a different prover; a cached
+  test binary can check another tree.
+- **§12:** items 1, 3, 7, 16, 19 and 20 brought to G12; items 22 to 25 added.
+- **§15:** the reference measured for G12 (A19), the drift test's finding, and the self review's rerun of the trace
+  replay.
+- **§17, new:** the command-chain overlay, Proposed (ADR-0059 to ADR-0068), with what it qualifies in the archetype.
+  "Autonomous", dropped from §1's descriptor after revision 15's tag, returns here only as the name of a plane with no
+  path that changes authority, which is ADR-0060's term.
+- **Not changed, and behind:** §13 has no assumption for ADR-0056, ADR-0068 or ADR-0070, since each is owed as a
+  dependent entry on ratification; §7.9's row count stays thirty-seven, since the proposed rows T-0045-38 to T-0045-40,
+  T-0068-n and T-0070-n are in no record in force.
+- **Appendices A to K retained.**
 
 ---
 
