@@ -1,7 +1,7 @@
 # Checkpoints
 
-**Current state of record: [Genesis Checkpoint G11](topak-genesis-checkpoint-G11-2026.10.09.md)** (2026.10.09, tag
-`G11`). Each checkpoint is one cut, never revised: what each record says, what was ratified and by whom, what is owed,
+**Current state of record: [Genesis Checkpoint G12](topak-genesis-checkpoint-G12-2026.11.16.md)** (2026.11.16, tag
+`G12`). Each checkpoint is one cut, never revised: what each record says, what was ratified and by whom, what is owed,
 what is open, and the manifest that measures it. The narrative cut with it is `narrative/theory-of-operation.md`,
 and where the two disagree the checkpoint wins. The v1 corpus manifest (2026.09.15) is the first cut of all.
 
@@ -41,6 +41,10 @@ lease above rung 0: a rung-1 launcher in the node, and rung 3 SIMULATED, under a
 **G11 (2026.10.09)** is the first cut whose trusted base names two deductive methods (ADR-0053, T-0045-37), and the
 first that records known unsound cases in a trust root kept in use (ADR-0046 A2); from this cut `manifests/EXCLUDE`
 also lists `tools/lean-report.sh` and `tools/lean-sync.sh` (ADR-0053 §6).
+**G12 (2026.11.16)** is the first cut at which the prover's two known unsound cases are reported upstream (ADR-0046
+A3), and the first with proof modules under Proposed records only: ten, among thirty-four. From this cut the manifest
+measures `skills/`, four project skills packaged as plugins, at the custodian's decision; `manifests/EXCLUDE` is
+unchanged.
 
 ## Errata to frozen checkpoints
 
@@ -56,7 +60,7 @@ is the resolution point for such errors, as the layout map above is for moved pa
 ADR-0029 A2.5 (ratified 2026.09.25) says the genesis debt ledger gains a line stating whether a bootstrap reviewer is
 engaged and the manifest digest of the last completed review pass. G3 was frozen when A2 was ratified and the line
 was to appear in G3's successor; G4 to G9 do not carry it (the 10.02 critical review's CR-28 (ii)). It is kept here
-until the next checkpoint's §4 carries it, and is to be copied there at every cut. **G10's and G11's §4 carry it**, with
+until the next checkpoint's §4 carries it, and is to be copied there at every cut. **G10's to G12's §4 carry it**, with
 the values below unchanged.
 
 | Field | Value at 2026.10.03 |
@@ -66,6 +70,6 @@ the values below unchanged.
 
 ## Tags
 
-`G3` to `G11` mark the commit that added each checkpoint; `glossary-<date>` each revision of the glossary in place;
-`ToO-rev7` to `ToO-rev14` each Theory of Operation revision; `REF-<date>` the reference tree each ADR-0033 addendum cites; `SLM-2026.09.28` the rehearsal tree. G1, G2
+`G3` to `G12` mark the commit that added each checkpoint; `glossary-<date>` each revision of the glossary in place;
+`ToO-rev7` to `ToO-rev15` each Theory of Operation revision; `REF-<date>` the reference tree each ADR-0033 addendum cites; `SLM-2026.09.28` the rehearsal tree. G1, G2
 and revisions before 7 predate git and have no tag.
