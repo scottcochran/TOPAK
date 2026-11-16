@@ -108,8 +108,9 @@ The scripts are Python 3.9, standard library only. They are generalized
 from the generators of `gov-tla`, a development written with this skill,
 and were run against it before being bundled: one row list in full (208
 rows, each as its committed results file has it, but for the state counts
-of four liveness counterexamples, which differ on every run and which
-`tlc_rows.py` no longer prints), one row in eight of the other three (166
+of four liveness counterexamples, which differ from run to run and from
+machine to machine and which `tlc_rows.py` does not print), one row in
+eight of the other three (166
 rows), one proof module (814 obligations) and two flip tests.
 
 ## Status
