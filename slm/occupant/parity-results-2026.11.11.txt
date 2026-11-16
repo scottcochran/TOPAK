@@ -1,0 +1,32 @@
+# compiled occupant parity · 2026.11.11 04:41:43 -0500
+bundle model.json 2a2e0945c22d0e6ef5f4b93b643a737fd70197b35aaf5a566dd024e99e33c6cc
+occupant binary   aa1981d2830867ba49d5baa1218352820176ba45d586843dee22cb1b9273ef8d
+mlx 0.32.2 (device Device(gpu, 0)), tokenizers (python) 0.23.2
+
+## tokenizer: identical ids
+  PASS    5 ids  "The history of the city"
+  PASS   10 ids  "Photosynthesis is the process by which"
+  PASS    7 ids  "In 1905, Albert Einstein published"
+  PASS   15 ids  "  leading spaces,\ttabs\tand\n\nblank lines\n"
+  PASS   42 ids  "Unicode: caf\u00e9, na\u00efve, Z\u00fcrich, \u6771\u4eac, 
+  PASS   33 ids  "Numbers 3.14159, 1,000,000 and dates 2026-11-11; code: def 
+  PASS    0 ids  ""
+## logits: max |Δ| at the last position < 0.001
+  PASS  max|Δ| 1.14e-05  argmax equal True  "The history of the city"
+  PASS  max|Δ| 9.54e-06  argmax equal True  "Photosynthesis is the process by which"
+  PASS  max|Δ| 1.05e-05  argmax equal True  "In 1905, Albert Einstein published"
+  PASS  max|Δ| 1.91e-05  argmax equal True  "Unicode: caf\u00e9, na\u00efve, Z\u00fcrich, \u67
+  PASS  max|Δ| 9.54e-06  argmax equal True  "Students should"
+## greedy: 64 tokens identical (serve.py's generate, temperature 0)
+  PASS   64 tokens  "The history of the city"
+        → " of Houston, the city of Houston, and the city of Houston, is a fascinating place to explore.\nThe city of Ho
+  PASS   64 tokens  "Photosynthesis is the process by which"
+        → " the cells are made. The cells are then separated from the cells by the cell. The cells are then separated by
+  PASS   64 tokens  "In 1905, Albert Einstein published"
+        → " his first book, The Life of the Left: The Life of the Left: The Life of the Left: The Life of the Left: The 
+  PASS   64 tokens  "Unicode: caf\u00e9, na\u00efve, Z\u00fcrich, \u67
+        → "\n- \u201cThe Rise of the Rise of the Rise of the Rise of the Rise of the Rise of the Rise of the Rise of the
+  PASS   64 tokens  "Students should"
+        → " be able to:\n- Understand the importance of the learning process and how to use it in the classroom\n- Under
+
+RESULT PASS
