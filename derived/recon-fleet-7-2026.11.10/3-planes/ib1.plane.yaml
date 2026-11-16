@@ -1,0 +1,47 @@
+# Plane ib1, the intent boundary: the last plane where a person commands.
+# The charter is ib1.charter.yaml. Everything here is seating and runtime, and adds no authority.
+plane: ib1
+charter: { file: ib1.charter.yaml, sha256: a6571996c1108937e1cff0753066fb906628c9b589253fe7dfc9aa465ca96d06 }
+rules:
+  quorum: all
+  min_grant: 3
+  seats:
+    g1: { domain: build, kind: grant, role: commander, key: "ed25519:14d1315f18503419ceae7a6d6d1388e7f2f785c4dbcfbd0d8feeadedf18b3a74" }
+    g2: { domain: build, kind: grant, role: operations-officer, key: "ed25519:7b5d3d71d6648057e7b2bbdad7208bdcf8891ee6e43628a12ad9d49bf1cd73ec" }
+    g3: { domain: build, kind: grant, role: legal-advisor, key: "ed25519:bb7cddffacb20ae9835154506e5206b289b27be010a0cf1d1af153beaedc9882" }
+    a1: { domain: build, kind: thinker, cell: ao1, key: "ed25519:58b376ea4ea0c2989947e40803f3e67e045a3ad0eaeece719eb30f69803606dd" }
+    ao1: { domain: build, kind: observer, cell: a1, key: "ed25519:088e397f80182ba52a4529675a3c5bb5141b4d3ac9de8ef70b38028c388dd762" }
+    op1: { domain: run, kind: operator, actor: person, idp: idp-a, key: "ed25519:00dadfb3a4015654eaeb7166ba1544532417af074dfd4631d383f4955af67dc7" }
+    op2: { domain: run, kind: operator, actor: person, idp: idp-b, key: "ed25519:05a578d391f86322647ce736bae675d923643f25839ede83275782d6ce69af14" }
+    op3: { domain: run, kind: operator, actor: person, idp: idp-a, key: "ed25519:a7f9acd8c7f1ac54bf36b3329e3263814b5cfd58da92eb756ea6588450a22127" }
+    orc-co: { domain: run, kind: orchestrator, actor: person, cell: oo1, key: "ed25519:618656f8d90a9066b355d85ebea7cf390d87f8970f065f04b08d3e1c86d05011" }
+    oo1: { domain: run, kind: observer, cell: orc-co, key: "ed25519:8ca4b125c32784ff4752afbcc67bb8acc441264f28d81cf12b84d09ef4132fd9" }
+    corr: { domain: run, kind: observer, role: correlator, key: "ed25519:519e796b1b94bfa2ad1263988673a095f88b4948cc0e2da33279e7989384048b" }
+    ts1: { domain: run, kind: thinker, cell: os1, key: "ed25519:aa2796faab7f10439f57e3dad72e6662735cea6e2af567336e40686de1d78acb" }
+    os1: { domain: run, kind: observer, cell: ts1, key: "ed25519:878efc4ff618ba9752e044eb23240c7a9a46cd4fbfa4ef76da980339adff813f" }
+    ts2: { domain: run, kind: thinker, cell: os2, key: "ed25519:647a61f35f5f5f14cceb95984b61e884a9d3311465d07228cd4376c7fe72d801" }
+    os2: { domain: run, kind: observer, cell: ts2, key: "ed25519:2e9f26abfffd0be0ba70ecbd4122d7e60ef9ec71378c9545cfa902cf94a37770" }
+    ts3: { domain: run, kind: thinker, cell: os3, key: "ed25519:813eb462a5665dba39d5e5ced7a97f7a20dd4f081085bb0971afa9978aef3380" }
+    os3: { domain: run, kind: observer, cell: ts3, key: "ed25519:3f15ab6f32eac160700961351a92d2f3177f19c6233c5677cfc9302c73e98a73" }
+    ts4: { domain: run, kind: thinker, cell: os4, key: "ed25519:2e5a1faf8fb7b8a408de0af06ed3ba803f0be083a50720331efdc69190dff557" }
+    os4: { domain: run, kind: observer, cell: ts4, key: "ed25519:d3e73c6a3341a581ac487498047eab84f5d3b099f52a60247578236f96a8ce75" }
+    ts5: { domain: run, kind: thinker, cell: os5, key: "ed25519:aa6088a11db74075a53b233f2c1b2095c8792aeb94f3c2f2fa2ea530cd9a9d5f" }
+    os5: { domain: run, kind: observer, cell: ts5, key: "ed25519:742e628726505e79b0a70a70fe8f4acda1d134f2ea97975970930cfd48e57af6" }
+    ts6: { domain: run, kind: thinker, cell: os6, key: "ed25519:bcd9eb7d3dce2365fcb62d01ecbc1fd5b7bf3c894c9e45a5851494f21691b883" }
+    os6: { domain: run, kind: observer, cell: ts6, key: "ed25519:18e2a6a88c2c2b08e7b744d119b73678edae1423554345488f5fd66a08240945" }
+  grant_roster: [g1, g2, g3]
+  veto_roster: [corr]
+  bundle_keys: ["ed25519:7d7d8dabe7a4d1d7f80241c63e199e0d1871cd22f9fdef1ce931a42a299325f7"]
+workflows:
+  - { file: ../2-workflows/staff-cycle.dag.json, kind: dag, sha256: 31f9589a8fabfc8d64194bd0af0d8dcc67083efe11e11a23b217d53d409be4ab }
+child_planes: [ap1]
+# ADR-0063: the plane above reads ap1's record and answers with watermarks. The mechanism's act ⟨Q12⟩.
+watermark:
+  child: ap1
+  segment_ticks: 20             # One segment read every 10 minutes
+  carries_fences: [root, ib1]
+runtime:
+  transport: kafka
+  policy: { sidecar: "http://127.0.0.1:18181", wasm_fallback: true }
+  pbft: { view_change_timeout_ms: 2000 }
+  archive: { store: s3-compatible, bucket: recon7-ib1-archive, retention_days: 365 }

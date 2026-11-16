@@ -1,0 +1,73 @@
+# Deployment recon-7's declaration against the archetype, in the shape ADR-0058 §1 and §9 ask for and
+# derived/sdd-equivalents-2026.11.06/10-deployment/topak-overlay.reference.yaml illustrates.
+# Read, not computed: the checker of ADR-0057 §8 does not exist.
+
+archetype: { version: G11, graph-digest: "<the published graph's digest>" }
+deployment: recon-7, 2026.11.10
+standing: "Illustrative. Every record it rests on, ADR-0054, ADR-0055 and ADR-0059 to ADR-0068, is Proposed"
+
+overlay:
+  keep:
+    - floor/genesis-floor.cedar               # Standing rules, through the proposed stages
+    - decisions/ADR-0031.md                   # The lease, with a count and a ttl in ticks added
+  replace:
+    - { node: "P at ib1 and ap1", from: "crash-recovery consensus", to: "PBFT with signed messages", record: ADR-0059 §5 and ADR-0061 §2 }
+    - { node: "K at ap1", from: Kafka, to: "the governors' radios", record: ADR-0060 §3 }
+  add:
+    - { node: "tree of planes under charters", record: ADR-0059 }
+    - { node: "intent boundary, autonomous plane", record: ADR-0060 }
+    - { node: "membership shrink schedule", record: ADR-0061 }
+    - { node: "governor, count, extent, alone", record: ADR-0062 }
+    - { node: "watermark and K_up", record: ADR-0063 }
+    - { node: "plane ticks", record: ADR-0064 }
+    - { node: "peer topics", record: ADR-0065 }
+    - { node: "federation floor stage", record: ADR-0067, state: "unwritten" }
+  omit:
+    - { node: "Build, grant seats, operators at ap1", record: ADR-0060 §3 }
+    - { node: "release seat, at every plane", record: ADR-0066, why: "This mission has no irreversible entry" }
+
+# ADR-0060 §5 is the custodian's open choice. This deployment needs an answer, so it takes the drafter's
+# recommendation, and every entry declares `while_unattended`.
+open_choice_taken: { record: "ADR-0060 §5", option: 3, consequence: "FD15 as drafted. sensor.sar_strip is refused while unattended" }
+
+degeneracies:
+  - id: D-0054-1
+    kind: declaration
+    parameter: "Lineage at workflow load"
+    archetype_value: "enforced independence (ADR-0035)"
+    deployed_value: "declared and compared at load"
+    theorems_voided: "those resting on independent Thinkers across a clear edge"
+    type_changes: "no participant changes type"
+  - id: D-0065-1
+    kind: declaration
+    parameter: "One lineage across a clear peer topic"
+    archetype_value: "independent Thinkers at both ends of a clear edge"
+    deployed_value: "peer.coverage is delivered clear among seven stacks of one build"
+    mitigation: "peer.tracks is a handle. Typed fields only. ROE-11 refuses SAR after a clear read"
+    theorems_voided: "those resting on lineage independence over peer.coverage"
+    type_changes: "no participant changes type"
+
+not_taken:
+  - { id: D-0061-1, why: "ap1 seats seven replicas, not four" }
+  - { id: D-0062-1, why: "A-0068-1 is assumed. If a stack reaches an actuator by another path, it applies, and every property of ADR-0062 to ADR-0066 is void for that vehicle" }
+
+composition_note: "No theorem is claimed for this deployment, so the delta is not computed. A missing note is not an empty delta: this note states that it was not done."
+
+assumptions_of_use:                  # ADR-0068 §3
+  A-0068-1:  { state: assumed, owner: vehicle builder }
+  A-0068-2:  { state: assumed, note: "At seven replicas, captured and slow together at most four" }
+  A-0068-3:  { state: declared, note: "Every entry on both allowlists is reversible" }
+  A-0068-4:  { state: assumed, owner: vehicle builder, note: "safe_state_bound_ticks in ap1.plane.yaml" }
+  A-0068-5:  { state: not-applicable, note: "No release seat" }
+  A-0068-6:  { state: assumed }
+  A-0068-7:  { state: declared, note: "A vehicle's noise, wake and visibility are outside the alphabet" }
+  A-0068-8:  { state: declared, note: "Extents are in 4-mission/data.json" }
+  A-0068-9:  { state: to-be-voted, note: "The tally votes the seven stacks' joint worst case" }
+  A-0068-10: { state: unmeasured, note: "T_tick 30 s against a round's placeholder p99 of 2.5 s" }
+
+inventory-at-grade:
+  all: "void. Nothing here is built, so no property reaches this deployment. The modules' results are about the modules"
+
+upstream-reports:                    # ADR-0058 §6
+  - "ADR-0064 §5: 'overdue' at the due time leaves no room for the round that orders the tick. See README, Findings"
+  - "ADR-0059 open obligation F4: the charter has no field for an envelope in the world, so this envelope lives in the mission bundle"

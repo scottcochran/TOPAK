@@ -1,0 +1,98 @@
+  pre   t      root plane: genesis rules issued; the floor is modelled, and the standing bundle is promoted
+  pre   t      ib1 charter applied: 4 PBFT replicas, certificate 3, budget debited from root
+  pre   t      staff-cycle DAG starts at ib1
+  pre   t      dag_grant lineage=A node=reqs seat=ts1
+  pre   t      dag_end covered=True node=reqs observer=os1 outcome=complete
+  pre   t      dag_grant lineage=B node=airspace seat=ts2
+  pre   t      dag_end covered=True node=airspace observer=os2 outcome=amber
+  pre   t      dag_grant lineage=A node=readiness seat=ts3
+  pre   t      dag_end covered=True node=readiness observer=os3 outcome=ready
+  pre   t      dag_grant lineage=B node=plan seat=ts4
+  pre   t      dag_end covered=True node=plan observer=os4 outcome=feasible
+  pre   t      dag_edges computed_fired=['e-reqs-airspace', 'e-airspace-readiness', 'e-readiness-plan']
+  pre   t      dag_decision_point enabled=['e-go', 'e-scrub'] note=the mechanism enables these. The commander chooses among them
+  pre   t      dag_complete sink=package skipped=['scrub']
+  pre   t      gate evidence={'fleet': {'exit': 0, 'result': 'PASS: 17/17'}, 'mission': {'exit': 0, 'result': 'PASS: 73/73'}} note=opa test really ran on the two bundles the tally votes on
+  pre   t      tally artifacts_verified={'ap1_charter': True, 'ap1_seating': True, 'fleet_bundle': True, 'mesh': True, 'mission_bundle': True} mission=MSN-0001 votes={'g1': 'yes', 'g2': 'yes', 'g3': 'yes'}
+H+00:00 t0     charter_applied expiry_tick=2879 kUp=120 note=tick zero: the 24 hours start here plane=ap1
+H+00:00 t0     grant  L1 to v7 (node muster, via None) count 4, ends tick 20, cert 7, outstanding 4
+H+00:00 t0     end    L1 on v7: outcome, 1 used · the stack reported ready
+H+00:00 t1     grant  L2 to v1 (node v1, via start-v1) count 8, ends tick 121, cert 7, outstanding 12
+H+00:00 t1     grant  L3 to v2 (node v2, via start-v2) count 8, ends tick 121, cert 7, outstanding 20
+H+00:00 t1     grant  L4 to v3 (node v3, via start-v3) count 8, ends tick 121, cert 7, outstanding 28
+H+00:30 t60    sector A coverage ON
+H+00:30 t60    sector B coverage ON
+H+00:30 t60    sector C coverage ON
+H+02:30 t300   INJECT jam v2 · vehicle cut from its plane
+H+02:30 t300   end    L9 on v2: expired, 4 used · the next tick is overdue: the vehicle is alone
+H+02:30 t300   terminal v2: return (sector B) · alone
+H+02:30 t300   alone had_lease=True vehicle=v2
+H+02:30 t300   sector B coverage off
+H+02:34 t308   heard_again sealed=['L9'] vehicle=v2
+H+02:34 t308   grant  L11 to v7 (node v7, via spare-v2) count 8, ends tick 428, cert 7, outstanding 32
+H+02:46 t332   sector B coverage ON
+H+02:47 t335   v2 recovered at R1, fuel 78.1%
+H+05:25 t650   INJECT nav_degraded v3 · the navigation solution degrades
+H+07:40 t920   end    L24 on v1: outcome, 6 used · the stack reported relief_due
+H+07:40 t920   end    L25 on v3: outcome, 6 used · the stack reported relief_due
+H+07:40 t920   end    L26 on v7: outcome, 3 used · the stack reported handoff_v5
+H+07:40 t920   sector A coverage off
+H+07:40 t920   sector B coverage off
+H+07:40 t920   sector C coverage off
+H+07:40 t921   grant  L27 to v4 (node v4, via relief-v1-v4) count 8, ends tick 1041, cert 7, outstanding 32
+H+07:40 t921   grant  L28 to v6 (node v6, via relief-v3-v6) count 8, ends tick 1041, cert 7, outstanding 40
+H+07:40 t921   grant  L29 to v5 (node v5, via handoff-v7-v5) count 8, ends tick 1041, cert 7, outstanding 48
+H+07:42 t924   terminal v1: return (sector A) · the lease ended with no successor
+H+07:42 t924   terminal v3: return (sector C) · the lease ended with no successor
+H+07:42 t924   terminal v7: return (sector B) · the lease ended with no successor
+H+08:00 t960   sector A coverage ON
+H+08:00 t960   sector B coverage ON
+H+08:00 t960   sector C coverage ON
+H+08:06 t972   v7 recovered at R1, fuel 53.9%
+H+08:16 t992   v1 recovered at R1, fuel 32.5%
+H+08:16 t992   v3 recovered at R1, fuel 32.5%
+H+11:30 t1380  INJECT link_cut  · the link above the autonomous plane is cut for 4 h 20 min
+H+12:30 t1500  revocation_ordered link_up=False vehicle=v5
+H+14:40 t1760  sector B coverage off
+H+14:40 t1761  BLOCKED v5: outstanding 112 + 8 would reach K_up 120 (FD10-outstanding-bound)
+H+14:42 t1764  terminal v5: return (sector B) · the lease ended with no successor
+H+15:05 t1811  BLOCKED v5: outstanding 112 + 8 would reach K_up 120 (FD10-outstanding-bound)
+H+15:06 t1812  v5 recovered at R1, fuel 38.2%
+H+15:10 t1820  end    L48 on v4: outcome, 5 used · the stack reported relief_due
+H+15:10 t1820  end    L49 on v6: outcome, 5 used · the stack reported relief_due
+H+15:10 t1820  sector A coverage off
+H+15:10 t1820  sector C coverage off
+H+15:12 t1824  terminal v4: return (sector A) · the lease ended with no successor
+H+15:12 t1824  terminal v6: return (sector C) · the lease ended with no successor
+H+15:17 t1834  BLOCKED v1: outstanding 112 + 8 would reach K_up 120 (FD10-outstanding-bound)
+H+15:25 t1851  BLOCKED v5: outstanding 112 + 8 would reach K_up 120 (FD10-outstanding-bound)
+H+15:33 t1867  BLOCKED v3: outstanding 112 + 8 would reach K_up 120 (FD10-outstanding-bound)
+H+15:42 t1884  BLOCKED v1: outstanding 112 + 8 would reach K_up 120 (FD10-outstanding-bound)
+H+15:46 t1892  v4 recovered at R1, fuel 32.6%
+H+15:46 t1892  v6 recovered at R1, fuel 32.6%
+H+15:50 t1900  INJECT link_restored
+H+15:50 t1900  revocation_delivered delay_ticks=400 effects_since_order=55 live_lease=False ordered_at=1500 vehicle=v5
+H+15:50 t1900  grant_refused act=a50 node=v5 vehicle=v5 why=the vehicle's authority was revoked
+H+15:50 t1900  grant  L50 to v1 (node v1, via relief-v4-v1) count 8, ends tick 2020, cert 7, outstanding 8
+H+15:50 t1900  grant  L51 to v3 (node v3, via relief-v6-v3) count 8, ends tick 2020, cert 7, outstanding 16
+H+16:06 t1932  sector A coverage ON
+H+16:06 t1932  sector C coverage ON
+H+19:10 t2300  INJECT destroyed v3 · a vehicle is destroyed in flight
+H+19:10 t2300  sector C coverage off
+H+19:20 t2320  membership_step budget_cap=96 certificate=4 dropped=v3 floor=FD13-step-in-schedule members=6
+H+20:49 t2499  INJECT jam v2 · the vehicle hosting v1's Observer goes silent as v1's lease ends
+H+20:49 t2499  sector A coverage off
+H+20:50 t2500  alone had_lease=False vehicle=v2
+H+20:51 t2503  terminal v1: return (sector A) · the lease ended with no successor
+H+20:55 t2511  heard_again sealed=[] vehicle=v2
+H+20:55 t2511  sector A coverage ON
+H+22:30 t2700  end    L60 on v1: outcome, 6 used · the stack reported wave3_complete
+H+22:30 t2701  grant  L61 to v4 (node close, via close-v1) count 2, ends tick 2721, cert 6, outstanding 18
+H+22:31 t2702  end    L61 on v4: outcome, 1 used · the stack reported closed
+H+22:31 t2703  mesh_complete sink=close
+H+22:32 t2704  terminal v1: return (sector A) · the lease ended with no successor
+H+23:02 t2764  v1 recovered at R1, fuel 40.0%
+H+23:59 t2879  intent_expired note=the intent's last tick. No grant, and no lease survives it
+H+24:59 t2999  end text=the simulation ends after the drain window
+
+Refused admits by reason are in --summary. Routine renewals, watermarks and coverage gaps under 3 minutes are omitted.

@@ -1,0 +1,9 @@
+{
+  "name": "auditing-claims-against-evidence",
+  "version": "0.1.0",
+  "description": "Claim-by-claim audits of technical documents against their results files, digests, counts, citations, quotations and status marks, by a reader who has not seen the drafter's conclusions",
+  "author": {
+    "name": "Scott Cochran",
+    "url": "https://github.com/scottcochran/TOPAK"
+  }
+}

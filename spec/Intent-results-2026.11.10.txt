@@ -1,0 +1,973 @@
+TOPAK — Intent.tla (ADR-0060 §7), TLC results 2026.11.10
+Module: Intent.tla (sha256 0c90ea5004c4f127) · TLC Version 2.19 of 08 August 2024 (jar sha256 936a262061c91469) · openjdk version "25.0.1" 2025-10-21
+Runner: live-gen-results.sh (sha256 b4d8857ad6fb6081) · rows: Intent-rows.txt (sha256 c6cb296aa5fdc259) · Vehicles = {"v1"} · SeatingBudget = 1 · MaxRound = 2 · MaxLease = 2 · MaxCount = 1 · MaxEffects = 2 unless the row says otherwise · TLC -workers 1 -fp 0, with -deadlock except on a DEADLOCK row
+expected: none: every property HOLDS and every witness is VIOLATED; M_NOINTENT breaks EveryEffectHasAnIntent only; M_NOCOUNT breaks EveryEffectHasALease only; M_WIDEINTENT breaks IntentNarrows only; M_LITEPROMOTES breaks AutonomousAddsNothing only; M_LASTINTENT breaks no property and leaves the witness NeverRestored holding.
+
+=== s-none-safe · Mut=none · Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.3E-9
+  based on the actual fingerprints:  val = 7.0E-9
+665089 states generated, 71712 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 17.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 4).
+Finished in 07s at (2026-11-10 06:34:25)
+→ HOLDS (expected HOLDS: as expected)
+
+=== s-none-safe-2v · Mut=none · Vehicles={"v1","v2"} SeatingBudget=1 MaxRound=2 MaxLease=1 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 3.8E-8
+  based on the actual fingerprints:  val = 1.0E-8
+2780833 states generated, 279840 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 17.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 11 and the 95th percentile is 4).
+Finished in 12s at (2026-11-10 06:34:38)
+→ HOLDS (expected HOLDS: as expected)
+
+=== s-none-safe-budget2 · Mut=none · Vehicles={"v1"} SeatingBudget=2 MaxRound=2 MaxLease=2 MaxCount=2 MaxEffects=3 · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.1E-6
+  based on the actual fingerprints:  val = 1.7E-7
+14364417 states generated, 1571872 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 19.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 15 and the 95th percentile is 4).
+Finished in 41s at (2026-11-10 06:35:20)
+→ HOLDS (expected HOLDS: as expected)
+
+=== w-ordered · Mut=none · Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT NeverOrdered
+Error: Invariant NeverOrdered is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ log = {}
+/\ intent = [live |-> FALSE, envelope |-> {}, budget |-> 0]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 0
+/\ ordered = {}
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+State 2: <Order line 114, col 3 to line 124, col 47 of module Intent>
+/\ log = {}
+/\ intent = [live |-> TRUE, envelope |-> {}, budget |-> 1]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 1
+/\ ordered = {[envelope |-> {}, budget |-> 1, round |-> 1]}
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+2 states generated, 2 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 05s at (2026-11-10 06:35:26)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-successor · Mut=none · Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT NeverSuccessor
+Error: Invariant NeverSuccessor is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ log = {}
+/\ intent = [live |-> FALSE, envelope |-> {}, budget |-> 0]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 0
+/\ ordered = {}
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+State 2: <Order line 114, col 3 to line 124, col 47 of module Intent>
+/\ log = {}
+/\ intent = [live |-> TRUE, envelope |-> {}, budget |-> 1]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 1
+/\ ordered = {[envelope |-> {}, budget |-> 1, round |-> 1]}
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+State 3: <Order line 114, col 3 to line 124, col 47 of module Intent>
+/\ log = {}
+/\ intent = [live |-> TRUE, envelope |-> {}, budget |-> 1]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 2
+/\ ordered = { [envelope |-> {}, budget |-> 1, round |-> 1],
+  [envelope |-> {}, budget |-> 1, round |-> 2] }
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+27 states generated, 11 distinct states found, 8 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 9 (minimum is 9, the maximum 9 and the 95th percentile is 9).
+Finished in 05s at (2026-11-10 06:35:32)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-restored · Mut=none · Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT NeverRestored
+Error: Invariant NeverRestored is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ log = {}
+/\ intent = [live |-> FALSE, envelope |-> {}, budget |-> 0]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 0
+/\ ordered = {}
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+State 2: <Order line 114, col 3 to line 124, col 47 of module Intent>
+/\ log = {}
+/\ intent = [live |-> TRUE, envelope |-> {}, budget |-> 1]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 1
+/\ ordered = {[envelope |-> {}, budget |-> 1, round |-> 1]}
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+State 3: <Order line 114, col 3 to line 124, col 47 of module Intent>
+/\ log = {}
+/\ intent = [live |-> TRUE, envelope |-> {"e1"}, budget |-> 1]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 2
+/\ ordered = { [envelope |-> {}, budget |-> 1, round |-> 1],
+  [envelope |-> {"e1"}, budget |-> 1, round |-> 2] }
+/\ seen = {"restored"}
+/\ granted = {}
+/\ effects = {}
+29 states generated, 13 distinct states found, 10 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 9 (minimum is 9, the maximum 9 and the 95th percentile is 9).
+Finished in 05s at (2026-11-10 06:35:37)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-refwide · Mut=none · Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT NeverRefusedWide
+Error: Invariant NeverRefusedWide is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ log = {}
+/\ intent = [live |-> FALSE, envelope |-> {}, budget |-> 0]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 0
+/\ ordered = {}
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+State 2: <RefuseOrder line 127, col 3 to line 130, col 78 of module Intent>
+/\ log = {}
+/\ intent = [live |-> FALSE, envelope |-> {}, budget |-> 0]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 0
+/\ ordered = {}
+/\ seen = {"refWide"}
+/\ granted = {}
+/\ effects = {}
+3 states generated, 3 distinct states found, 1 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 05s at (2026-11-10 06:35:43)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-leased · Mut=none · Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT NeverLeased
+Error: Invariant NeverLeased is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ log = {}
+/\ intent = [live |-> FALSE, envelope |-> {}, budget |-> 0]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 0
+/\ ordered = {}
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+State 2: <Order line 114, col 3 to line 124, col 47 of module Intent>
+/\ log = {}
+/\ intent = [live |-> TRUE, envelope |-> {}, budget |-> 1]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 1
+/\ ordered = {[envelope |-> {}, budget |-> 1, round |-> 1]}
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+State 3: <Grant line 141, col 3 to line 153, col 50 of module Intent>
+/\ log = {"lease"}
+/\ intent = [live |-> TRUE, envelope |-> {}, budget |-> 1]
+/\ lease = [v1 |-> [live |-> TRUE, gen |-> 1, count |-> 1, used |-> 0, intent |-> 1]]
+/\ spent = 1
+/\ round = 1
+/\ ordered = {[envelope |-> {}, budget |-> 1, round |-> 1]}
+/\ seen = {"leased"}
+/\ granted = {[gen |-> 1, count |-> 1, intent |-> 1, v |-> "v1"]}
+/\ effects = {}
+44 states generated, 17 distinct states found, 14 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 9 (minimum is 9, the maximum 9 and the 95th percentile is 9).
+Finished in 05s at (2026-11-10 06:35:48)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-effect · Mut=none · Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT NeverEffect
+Error: Invariant NeverEffect is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ log = {}
+/\ intent = [live |-> FALSE, envelope |-> {}, budget |-> 0]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 0
+/\ ordered = {}
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+State 2: <Order line 114, col 3 to line 124, col 47 of module Intent>
+/\ log = {}
+/\ intent = [live |-> TRUE, envelope |-> {}, budget |-> 1]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 1
+/\ ordered = {[envelope |-> {}, budget |-> 1, round |-> 1]}
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+State 3: <Grant line 141, col 3 to line 153, col 50 of module Intent>
+/\ log = {"lease"}
+/\ intent = [live |-> TRUE, envelope |-> {}, budget |-> 1]
+/\ lease = [v1 |-> [live |-> TRUE, gen |-> 1, count |-> 1, used |-> 0, intent |-> 1]]
+/\ spent = 1
+/\ round = 1
+/\ ordered = {[envelope |-> {}, budget |-> 1, round |-> 1]}
+/\ seen = {"leased"}
+/\ granted = {[gen |-> 1, count |-> 1, intent |-> 1, v |-> "v1"]}
+/\ effects = {}
+State 4: <Effect line 165, col 3 to line 174, col 62 of module Intent>
+/\ log = {"lease"}
+/\ intent = [live |-> TRUE, envelope |-> {}, budget |-> 1]
+/\ lease = [v1 |-> [live |-> TRUE, gen |-> 1, count |-> 1, used |-> 1, intent |-> 1]]
+/\ spent = 1
+/\ round = 1
+/\ ordered = {[envelope |-> {}, budget |-> 1, round |-> 1]}
+/\ seen = {"leased", "effect", "countSpent"}
+/\ granted = {[gen |-> 1, count |-> 1, intent |-> 1, v |-> "v1"]}
+/\ effects = {[gen |-> 1, intent |-> 1, v |-> "v1", n |-> 1]}
+362 states generated, 103 distinct states found, 85 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 6 (minimum is 0, the maximum 10 and the 95th percentile is 10).
+Finished in 05s at (2026-11-10 06:35:54)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-countspent · Mut=none · Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT NeverCountSpent
+Error: Invariant NeverCountSpent is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ log = {}
+/\ intent = [live |-> FALSE, envelope |-> {}, budget |-> 0]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 0
+/\ ordered = {}
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+State 2: <Order line 114, col 3 to line 124, col 47 of module Intent>
+/\ log = {}
+/\ intent = [live |-> TRUE, envelope |-> {}, budget |-> 1]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 1
+/\ ordered = {[envelope |-> {}, budget |-> 1, round |-> 1]}
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+State 3: <Grant line 141, col 3 to line 153, col 50 of module Intent>
+/\ log = {"lease"}
+/\ intent = [live |-> TRUE, envelope |-> {}, budget |-> 1]
+/\ lease = [v1 |-> [live |-> TRUE, gen |-> 1, count |-> 1, used |-> 0, intent |-> 1]]
+/\ spent = 1
+/\ round = 1
+/\ ordered = {[envelope |-> {}, budget |-> 1, round |-> 1]}
+/\ seen = {"leased"}
+/\ granted = {[gen |-> 1, count |-> 1, intent |-> 1, v |-> "v1"]}
+/\ effects = {}
+State 4: <Effect line 165, col 3 to line 174, col 62 of module Intent>
+/\ log = {"lease"}
+/\ intent = [live |-> TRUE, envelope |-> {}, budget |-> 1]
+/\ lease = [v1 |-> [live |-> TRUE, gen |-> 1, count |-> 1, used |-> 1, intent |-> 1]]
+/\ spent = 1
+/\ round = 1
+/\ ordered = {[envelope |-> {}, budget |-> 1, round |-> 1]}
+/\ seen = {"leased", "effect", "countSpent"}
+/\ granted = {[gen |-> 1, count |-> 1, intent |-> 1, v |-> "v1"]}
+/\ effects = {[gen |-> 1, intent |-> 1, v |-> "v1", n |-> 1]}
+362 states generated, 103 distinct states found, 85 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 6 (minimum is 0, the maximum 10 and the 95th percentile is 10).
+Finished in 05s at (2026-11-10 06:35:59)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-afterend · Mut=none · Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT NeverEffectAfterIntentEnded
+Error: Invariant NeverEffectAfterIntentEnded is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ log = {}
+/\ intent = [live |-> FALSE, envelope |-> {}, budget |-> 0]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 0
+/\ ordered = {}
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+State 2: <Order line 114, col 3 to line 124, col 47 of module Intent>
+/\ log = {}
+/\ intent = [live |-> TRUE, envelope |-> {}, budget |-> 1]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 1
+/\ ordered = {[envelope |-> {}, budget |-> 1, round |-> 1]}
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+State 3: <Grant line 141, col 3 to line 153, col 50 of module Intent>
+/\ log = {"lease"}
+/\ intent = [live |-> TRUE, envelope |-> {}, budget |-> 1]
+/\ lease = [v1 |-> [live |-> TRUE, gen |-> 1, count |-> 1, used |-> 0, intent |-> 1]]
+/\ spent = 1
+/\ round = 1
+/\ ordered = {[envelope |-> {}, budget |-> 1, round |-> 1]}
+/\ seen = {"leased"}
+/\ granted = {[gen |-> 1, count |-> 1, intent |-> 1, v |-> "v1"]}
+/\ effects = {}
+State 4: <Order line 114, col 3 to line 124, col 47 of module Intent>
+/\ log = {"lease"}
+/\ intent = [live |-> TRUE, envelope |-> {}, budget |-> 1]
+/\ lease = [v1 |-> [live |-> TRUE, gen |-> 1, count |-> 1, used |-> 0, intent |-> 1]]
+/\ spent = 0
+/\ round = 2
+/\ ordered = { [envelope |-> {}, budget |-> 1, round |-> 1],
+  [envelope |-> {}, budget |-> 1, round |-> 2] }
+/\ seen = {"leased"}
+/\ granted = {[gen |-> 1, count |-> 1, intent |-> 1, v |-> "v1"]}
+/\ effects = {}
+State 5: <Effect line 165, col 3 to line 174, col 62 of module Intent>
+/\ log = {"lease"}
+/\ intent = [live |-> TRUE, envelope |-> {}, budget |-> 1]
+/\ lease = [v1 |-> [live |-> TRUE, gen |-> 1, count |-> 1, used |-> 1, intent |-> 1]]
+/\ spent = 0
+/\ round = 2
+/\ ordered = { [envelope |-> {}, budget |-> 1, round |-> 1],
+  [envelope |-> {}, budget |-> 1, round |-> 2] }
+/\ seen = {"leased", "effect", "countSpent", "afterEnd"}
+/\ granted = {[gen |-> 1, count |-> 1, intent |-> 1, v |-> "v1"]}
+/\ effects = {[gen |-> 1, intent |-> 1, v |-> "v1", n |-> 1]}
+1835 states generated, 391 distinct states found, 292 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 4 (minimum is 0, the maximum 10 and the 95th percentile is 10).
+Finished in 05s at (2026-11-10 06:36:05)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-refcount · Mut=none · Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT NeverRefusedAtCount
+Error: Invariant NeverRefusedAtCount is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ log = {}
+/\ intent = [live |-> FALSE, envelope |-> {}, budget |-> 0]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 0
+/\ ordered = {}
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+State 2: <Order line 114, col 3 to line 124, col 47 of module Intent>
+/\ log = {}
+/\ intent = [live |-> TRUE, envelope |-> {}, budget |-> 1]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 1
+/\ ordered = {[envelope |-> {}, budget |-> 1, round |-> 1]}
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+State 3: <Grant line 141, col 3 to line 153, col 50 of module Intent>
+/\ log = {"lease"}
+/\ intent = [live |-> TRUE, envelope |-> {}, budget |-> 1]
+/\ lease = [v1 |-> [live |-> TRUE, gen |-> 1, count |-> 1, used |-> 0, intent |-> 1]]
+/\ spent = 1
+/\ round = 1
+/\ ordered = {[envelope |-> {}, budget |-> 1, round |-> 1]}
+/\ seen = {"leased"}
+/\ granted = {[gen |-> 1, count |-> 1, intent |-> 1, v |-> "v1"]}
+/\ effects = {}
+State 4: <Effect line 165, col 3 to line 174, col 62 of module Intent>
+/\ log = {"lease"}
+/\ intent = [live |-> TRUE, envelope |-> {}, budget |-> 1]
+/\ lease = [v1 |-> [live |-> TRUE, gen |-> 1, count |-> 1, used |-> 1, intent |-> 1]]
+/\ spent = 1
+/\ round = 1
+/\ ordered = {[envelope |-> {}, budget |-> 1, round |-> 1]}
+/\ seen = {"leased", "effect", "countSpent"}
+/\ granted = {[gen |-> 1, count |-> 1, intent |-> 1, v |-> "v1"]}
+/\ effects = {[gen |-> 1, intent |-> 1, v |-> "v1", n |-> 1]}
+State 5: <RefuseEffect line 177, col 3 to line 180, col 78 of module Intent>
+/\ log = {"lease"}
+/\ intent = [live |-> TRUE, envelope |-> {}, budget |-> 1]
+/\ lease = [v1 |-> [live |-> TRUE, gen |-> 1, count |-> 1, used |-> 1, intent |-> 1]]
+/\ spent = 1
+/\ round = 1
+/\ ordered = {[envelope |-> {}, budget |-> 1, round |-> 1]}
+/\ seen = {"leased", "effect", "countSpent", "refCount"}
+/\ granted = {[gen |-> 1, count |-> 1, intent |-> 1, v |-> "v1"]}
+/\ effects = {[gen |-> 1, intent |-> 1, v |-> "v1", n |-> 1]}
+1921 states generated, 424 distinct states found, 320 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 4 (minimum is 0, the maximum 10 and the 95th percentile is 10).
+Finished in 05s at (2026-11-10 06:36:11)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-refnointent · Mut=none · Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT NeverRefusedNoIntent
+Error: Invariant NeverRefusedNoIntent is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ log = {}
+/\ intent = [live |-> FALSE, envelope |-> {}, budget |-> 0]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 0
+/\ ordered = {}
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+State 2: <RefuseGrant line 156, col 3 to line 161, col 78 of module Intent>
+/\ log = {}
+/\ intent = [live |-> FALSE, envelope |-> {}, budget |-> 0]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 0
+/\ ordered = {}
+/\ seen = {"refNoIntent"}
+/\ granted = {}
+/\ effects = {}
+18 states generated, 7 distinct states found, 5 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 05s at (2026-11-10 06:36:16)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-refbudget · Mut=none · Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT NeverRefusedBudget
+Error: Invariant NeverRefusedBudget is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ log = {}
+/\ intent = [live |-> FALSE, envelope |-> {}, budget |-> 0]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 0
+/\ ordered = {}
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+State 2: <Order line 114, col 3 to line 124, col 47 of module Intent>
+/\ log = {}
+/\ intent = [live |-> TRUE, envelope |-> {}, budget |-> 1]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 1
+/\ ordered = {[envelope |-> {}, budget |-> 1, round |-> 1]}
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+State 3: <Grant line 141, col 3 to line 153, col 50 of module Intent>
+/\ log = {"lease"}
+/\ intent = [live |-> TRUE, envelope |-> {}, budget |-> 1]
+/\ lease = [v1 |-> [live |-> TRUE, gen |-> 1, count |-> 1, used |-> 0, intent |-> 1]]
+/\ spent = 1
+/\ round = 1
+/\ ordered = {[envelope |-> {}, budget |-> 1, round |-> 1]}
+/\ seen = {"leased"}
+/\ granted = {[gen |-> 1, count |-> 1, intent |-> 1, v |-> "v1"]}
+/\ effects = {}
+State 4: <EndLease line 184, col 3 to line 186, col 77 of module Intent>
+/\ log = {"lease"}
+/\ intent = [live |-> TRUE, envelope |-> {}, budget |-> 1]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 1, count |-> 1, used |-> 0, intent |-> 1]]
+/\ spent = 1
+/\ round = 1
+/\ ordered = {[envelope |-> {}, budget |-> 1, round |-> 1]}
+/\ seen = {"leased"}
+/\ granted = {[gen |-> 1, count |-> 1, intent |-> 1, v |-> "v1"]}
+/\ effects = {}
+State 5: <RefuseGrant line 156, col 3 to line 161, col 78 of module Intent>
+/\ log = {"lease"}
+/\ intent = [live |-> TRUE, envelope |-> {}, budget |-> 1]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 1, count |-> 1, used |-> 0, intent |-> 1]]
+/\ spent = 1
+/\ round = 1
+/\ ordered = {[envelope |-> {}, budget |-> 1, round |-> 1]}
+/\ seen = {"leased", "refBudget"}
+/\ granted = {[gen |-> 1, count |-> 1, intent |-> 1, v |-> "v1"]}
+/\ effects = {}
+1948 states generated, 429 distinct states found, 324 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 4 (minimum is 0, the maximum 10 and the 95th percentile is 10).
+Finished in 05s at (2026-11-10 06:36:22)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-relet · Mut=none · Vehicles={"v1"} SeatingBudget=2 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT NeverReletSameIntent
+Error: Invariant NeverReletSameIntent is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ log = {}
+/\ intent = [live |-> FALSE, envelope |-> {}, budget |-> 0]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 0
+/\ ordered = {}
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+State 2: <Order line 114, col 3 to line 124, col 47 of module Intent>
+/\ log = {}
+/\ intent = [live |-> TRUE, envelope |-> {}, budget |-> 2]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 1
+/\ ordered = {[envelope |-> {}, budget |-> 2, round |-> 1]}
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+State 3: <Grant line 141, col 3 to line 153, col 50 of module Intent>
+/\ log = {"lease"}
+/\ intent = [live |-> TRUE, envelope |-> {}, budget |-> 2]
+/\ lease = [v1 |-> [live |-> TRUE, gen |-> 1, count |-> 1, used |-> 0, intent |-> 1]]
+/\ spent = 1
+/\ round = 1
+/\ ordered = {[envelope |-> {}, budget |-> 2, round |-> 1]}
+/\ seen = {"leased"}
+/\ granted = {[gen |-> 1, count |-> 1, intent |-> 1, v |-> "v1"]}
+/\ effects = {}
+State 4: <EndLease line 184, col 3 to line 186, col 77 of module Intent>
+/\ log = {"lease"}
+/\ intent = [live |-> TRUE, envelope |-> {}, budget |-> 2]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 1, count |-> 1, used |-> 0, intent |-> 1]]
+/\ spent = 1
+/\ round = 1
+/\ ordered = {[envelope |-> {}, budget |-> 2, round |-> 1]}
+/\ seen = {"leased"}
+/\ granted = {[gen |-> 1, count |-> 1, intent |-> 1, v |-> "v1"]}
+/\ effects = {}
+State 5: <Grant line 141, col 3 to line 153, col 50 of module Intent>
+/\ log = {"lease"}
+/\ intent = [live |-> TRUE, envelope |-> {}, budget |-> 2]
+/\ lease = [v1 |-> [live |-> TRUE, gen |-> 2, count |-> 1, used |-> 0, intent |-> 1]]
+/\ spent = 2
+/\ round = 1
+/\ ordered = {[envelope |-> {}, budget |-> 2, round |-> 1]}
+/\ seen = {"leased", "relet"}
+/\ granted = { [gen |-> 1, count |-> 1, intent |-> 1, v |-> "v1"],
+  [gen |-> 2, count |-> 1, intent |-> 1, v |-> "v1"] }
+/\ effects = {}
+5418 states generated, 1335 distinct states found, 1048 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 5 (minimum is 0, the maximum 14 and the 95th percentile is 13).
+Finished in 05s at (2026-11-10 06:36:27)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-refauth · Mut=none · Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT NeverRefusedAuthority
+Error: Invariant NeverRefusedAuthority is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ log = {}
+/\ intent = [live |-> FALSE, envelope |-> {}, budget |-> 0]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 0
+/\ ordered = {}
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+State 2: <AutoRefuse line 196, col 3 to line 198, col 78 of module Intent>
+/\ log = {}
+/\ intent = [live |-> FALSE, envelope |-> {}, budget |-> 0]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 0
+/\ ordered = {}
+/\ seen = {"refAuth"}
+/\ granted = {}
+/\ effects = {}
+19 states generated, 8 distinct states found, 6 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 05s at (2026-11-10 06:36:33)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-step · Mut=none · Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT NeverScheduleStep
+Error: Invariant NeverScheduleStep is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ log = {}
+/\ intent = [live |-> FALSE, envelope |-> {}, budget |-> 0]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 0
+/\ ordered = {}
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+State 2: <AutoOrder line 190, col 3 to line 193, col 79 of module Intent>
+/\ log = {"scheduleStep"}
+/\ intent = [live |-> FALSE, envelope |-> {}, budget |-> 0]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 0
+/\ ordered = {}
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+26 states generated, 10 distinct states found, 8 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 05s at (2026-11-10 06:36:39)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-nointent-intent · Mut=M_NOINTENT · Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT EveryEffectHasAnIntent
+Error: Invariant EveryEffectHasAnIntent is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ log = {}
+/\ intent = [live |-> FALSE, envelope |-> {}, budget |-> 0]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 0
+/\ ordered = {}
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+State 2: <Grant line 141, col 3 to line 153, col 50 of module Intent>
+/\ log = {"lease"}
+/\ intent = [live |-> FALSE, envelope |-> {}, budget |-> 0]
+/\ lease = [v1 |-> [live |-> TRUE, gen |-> 1, count |-> 1, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 0
+/\ ordered = {}
+/\ seen = {"leased"}
+/\ granted = {[gen |-> 1, count |-> 1, intent |-> 0, v |-> "v1"]}
+/\ effects = {}
+State 3: <Effect line 165, col 3 to line 174, col 62 of module Intent>
+/\ log = {"lease"}
+/\ intent = [live |-> FALSE, envelope |-> {}, budget |-> 0]
+/\ lease = [v1 |-> [live |-> TRUE, gen |-> 1, count |-> 1, used |-> 1, intent |-> 0]]
+/\ spent = 0
+/\ round = 0
+/\ ordered = {}
+/\ seen = {"leased", "effect", "countSpent"}
+/\ granted = {[gen |-> 1, count |-> 1, intent |-> 0, v |-> "v1"]}
+/\ effects = {[gen |-> 1, intent |-> 0, v |-> "v1", n |-> 1]}
+176 states generated, 59 distinct states found, 51 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 9 (minimum is 7, the maximum 10 and the 95th percentile is 10).
+Finished in 05s at (2026-11-10 06:36:44)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-nointent-lease · Mut=M_NOINTENT · Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT EveryEffectHasALease
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 7.5E-9
+  based on the actual fingerprints:  val = 3.5E-10
+1240753 states generated, 123728 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 17.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 4).
+Finished in 07s at (2026-11-10 06:36:52)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-nointent-narrows · Mut=M_NOINTENT · Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT IntentNarrows
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 7.5E-9
+  based on the actual fingerprints:  val = 3.5E-10
+1240753 states generated, 123728 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 17.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 4).
+Finished in 08s at (2026-11-10 06:37:01)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-nointent-auto · Mut=M_NOINTENT · Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT AutonomousAddsNothing
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 7.5E-9
+  based on the actual fingerprints:  val = 3.5E-10
+1240753 states generated, 123728 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 17.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 4).
+Finished in 07s at (2026-11-10 06:37:09)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-nocount-lease · Mut=M_NOCOUNT · Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT EveryEffectHasALease
+Error: Invariant EveryEffectHasALease is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ log = {}
+/\ intent = [live |-> FALSE, envelope |-> {}, budget |-> 0]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 0
+/\ ordered = {}
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+State 2: <Order line 114, col 3 to line 124, col 47 of module Intent>
+/\ log = {}
+/\ intent = [live |-> TRUE, envelope |-> {}, budget |-> 1]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 1
+/\ ordered = {[envelope |-> {}, budget |-> 1, round |-> 1]}
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+State 3: <Grant line 141, col 3 to line 153, col 50 of module Intent>
+/\ log = {"lease"}
+/\ intent = [live |-> TRUE, envelope |-> {}, budget |-> 1]
+/\ lease = [v1 |-> [live |-> TRUE, gen |-> 1, count |-> 1, used |-> 0, intent |-> 1]]
+/\ spent = 1
+/\ round = 1
+/\ ordered = {[envelope |-> {}, budget |-> 1, round |-> 1]}
+/\ seen = {"leased"}
+/\ granted = {[gen |-> 1, count |-> 1, intent |-> 1, v |-> "v1"]}
+/\ effects = {}
+State 4: <Effect line 165, col 3 to line 174, col 62 of module Intent>
+/\ log = {"lease"}
+/\ intent = [live |-> TRUE, envelope |-> {}, budget |-> 1]
+/\ lease = [v1 |-> [live |-> TRUE, gen |-> 1, count |-> 1, used |-> 1, intent |-> 1]]
+/\ spent = 1
+/\ round = 1
+/\ ordered = {[envelope |-> {}, budget |-> 1, round |-> 1]}
+/\ seen = {"leased", "effect", "countSpent"}
+/\ granted = {[gen |-> 1, count |-> 1, intent |-> 1, v |-> "v1"]}
+/\ effects = {[gen |-> 1, intent |-> 1, v |-> "v1", n |-> 1]}
+State 5: <Effect line 165, col 3 to line 174, col 62 of module Intent>
+/\ log = {"lease"}
+/\ intent = [live |-> TRUE, envelope |-> {}, budget |-> 1]
+/\ lease = [v1 |-> [live |-> TRUE, gen |-> 1, count |-> 1, used |-> 2, intent |-> 1]]
+/\ spent = 1
+/\ round = 1
+/\ ordered = {[envelope |-> {}, budget |-> 1, round |-> 1]}
+/\ seen = {"leased", "effect", "countSpent"}
+/\ granted = {[gen |-> 1, count |-> 1, intent |-> 1, v |-> "v1"]}
+/\ effects = { [gen |-> 1, intent |-> 1, v |-> "v1", n |-> 1],
+  [gen |-> 1, intent |-> 1, v |-> "v1", n |-> 2] }
+1935 states generated, 424 distinct states found, 320 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 4 (minimum is 0, the maximum 10 and the 95th percentile is 10).
+Finished in 05s at (2026-11-10 06:37:15)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-nocount-intent · Mut=M_NOCOUNT · Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT EveryEffectHasAnIntent
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 3.2E-9
+  based on the actual fingerprints:  val = 7.0E-9
+782209 states generated, 86048 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 18.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 4).
+Finished in 06s at (2026-11-10 06:37:22)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-nocount-narrows · Mut=M_NOCOUNT · Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT IntentNarrows
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 3.2E-9
+  based on the actual fingerprints:  val = 7.0E-9
+782209 states generated, 86048 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 18.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 4).
+Finished in 07s at (2026-11-10 06:37:29)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-nocount-auto · Mut=M_NOCOUNT · Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT AutonomousAddsNothing
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 3.2E-9
+  based on the actual fingerprints:  val = 7.0E-9
+782209 states generated, 86048 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 18.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 4).
+Finished in 06s at (2026-11-10 06:37:37)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-wide-narrows · Mut=M_WIDEINTENT · Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT IntentNarrows
+Error: Invariant IntentNarrows is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ log = {}
+/\ intent = [live |-> FALSE, envelope |-> {}, budget |-> 0]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 0
+/\ ordered = {}
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+State 2: <Order line 114, col 3 to line 124, col 47 of module Intent>
+/\ log = {}
+/\ intent = [live |-> TRUE, envelope |-> {}, budget |-> 1]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 1
+/\ ordered = {[envelope |-> {}, budget |-> 1, round |-> 1]}
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+State 3: <Order line 114, col 3 to line 124, col 47 of module Intent>
+/\ log = {}
+/\ intent = [live |-> TRUE, envelope |-> {"e3"}, budget |-> 1]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 2
+/\ ordered = { [envelope |-> {}, budget |-> 1, round |-> 1],
+  [envelope |-> {"e3"}, budget |-> 1, round |-> 2] }
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+33 states generated, 15 distinct states found, 12 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 9 (minimum is 9, the maximum 9 and the 95th percentile is 9).
+Finished in 05s at (2026-11-10 06:37:42)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-wide-intent · Mut=M_WIDEINTENT · Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT EveryEffectHasAnIntent
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.5E-9
+  based on the actual fingerprints:  val = 7.0E-9
+1253377 states generated, 140320 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 17.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 14 and the 95th percentile is 4).
+Finished in 07s at (2026-11-10 06:37:51)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-wide-lease · Mut=M_WIDEINTENT · Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT EveryEffectHasALease
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.5E-9
+  based on the actual fingerprints:  val = 7.0E-9
+1253377 states generated, 140320 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 17.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 14 and the 95th percentile is 4).
+Finished in 07s at (2026-11-10 06:37:59)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-wide-auto · Mut=M_WIDEINTENT · Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT AutonomousAddsNothing
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.5E-9
+  based on the actual fingerprints:  val = 7.0E-9
+1253377 states generated, 140320 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 17.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 14 and the 95th percentile is 4).
+Finished in 07s at (2026-11-10 06:38:07)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-last-restored · Mut=M_LASTINTENT · Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT NeverRestored
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.3E-10
+  based on the actual fingerprints:  val = 1.2E-10
+407713 states generated, 41696 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 17.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 4).
+Finished in 06s at (2026-11-10 06:38:14)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-last-safe · Mut=M_LASTINTENT · Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.3E-10
+  based on the actual fingerprints:  val = 1.2E-10
+407713 states generated, 41696 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 17.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 4).
+Finished in 06s at (2026-11-10 06:38:21)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-lite-auto · Mut=M_LITEPROMOTES · Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT AutonomousAddsNothing
+Error: Invariant AutonomousAddsNothing is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ log = {}
+/\ intent = [live |-> FALSE, envelope |-> {}, budget |-> 0]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 0
+/\ ordered = {}
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+State 2: <AutoOrder line 190, col 3 to line 193, col 79 of module Intent>
+/\ log = {"promotion"}
+/\ intent = [live |-> FALSE, envelope |-> {}, budget |-> 0]
+/\ lease = [v1 |-> [live |-> FALSE, gen |-> 0, count |-> 0, used |-> 0, intent |-> 0]]
+/\ spent = 0
+/\ round = 0
+/\ ordered = {}
+/\ seen = {}
+/\ granted = {}
+/\ effects = {}
+19 states generated, 8 distinct states found, 6 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 05s at (2026-11-10 06:38:27)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-lite-intent · Mut=M_LITEPROMOTES · Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT EveryEffectHasAnIntent
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.7E-9
+  based on the actual fingerprints:  val = 7.0E-9
+1258465 states generated, 143424 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 18.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 11 and the 95th percentile is 4).
+Finished in 08s at (2026-11-10 06:38:35)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-lite-lease · Mut=M_LITEPROMOTES · Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT EveryEffectHasALease
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.7E-9
+  based on the actual fingerprints:  val = 7.0E-9
+1258465 states generated, 143424 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 18.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 11 and the 95th percentile is 4).
+Finished in 08s at (2026-11-10 06:38:44)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-lite-narrows · Mut=M_LITEPROMOTES · Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2 · SPECIFICATION Spec · INVARIANT IntentNarrows
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.7E-9
+  based on the actual fingerprints:  val = 7.0E-9
+1258465 states generated, 143424 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 18.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 11 and the 95th percentile is 4).
+Finished in 07s at (2026-11-10 06:38:52)
+→ HOLDS (expected HOLDS: as expected)
+
+Rows: 35 · as expected: 35 · not as expected: none · ERROR: none

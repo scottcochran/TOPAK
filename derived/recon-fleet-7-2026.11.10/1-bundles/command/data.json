@@ -1,0 +1,194 @@
+{
+  "topak": {
+    "labels": {
+      "vocabulary": [
+        "untrusted",
+        "restricted"
+      ],
+      "delivery": {
+        "thinker": {
+          "untrusted": "clear",
+          "restricted": "handle"
+        },
+        "observer": {
+          "untrusted": "clear",
+          "restricted": "clear"
+        }
+      },
+      "root": {
+        "label": []
+      }
+    },
+    "tools": {
+      "staff.wx_airspace@b7ec878386956c9f3c3b535f5c7532d208f240968c2bffa2da297175962c82fb": {
+        "name": "staff.wx_airspace",
+        "digest": "b7ec878386956c9f3c3b535f5c7532d208f240968c2bffa2da297175962c82fb",
+        "domain": "run",
+        "purpose": "Fetch the weather and airspace notices for the operating area. Returns text from outside the deployment.",
+        "inputs": {
+          "valid_for_hours": {
+            "type": "number",
+            "required": true,
+            "note": "Hours ahead to cover.",
+            "destination": false,
+            "accepts": []
+          }
+        },
+        "destinations": "none",
+        "result": {
+          "label": [
+            "untrusted"
+          ],
+          "releases": []
+        },
+        "channel": {
+          "kind": "https",
+          "target": "wx-airspace.external.example:443"
+        },
+        "effect": {
+          "class": "reversible",
+          "t_irrev_ms": 5000,
+          "permit": "ordered",
+          "extent": {
+            "kind": "act"
+          },
+          "beacon": false,
+          "while_unattended": "refuse"
+        }
+      },
+      "staff.fleet_status@c041df1b4035af1623ec5ceefb5f1258d82d3411f9086b4f18f73e09a3618901": {
+        "name": "staff.fleet_status",
+        "digest": "c041df1b4035af1623ec5ceefb5f1258d82d3411f9086b4f18f73e09a3618901",
+        "domain": "run",
+        "purpose": "Read the fleet's airframe and maintenance status from the ground station.",
+        "inputs": {},
+        "destinations": "none",
+        "result": {
+          "label": [],
+          "releases": []
+        },
+        "channel": {
+          "kind": "tcp",
+          "target": "gcs.ib1.local:7444"
+        },
+        "effect": {
+          "class": "reversible",
+          "t_irrev_ms": 5000,
+          "permit": "ordered",
+          "extent": {
+            "kind": "act"
+          },
+          "beacon": false,
+          "while_unattended": "refuse"
+        }
+      },
+      "staff.package_submit@2938a0c10439c6efe4a02801034f362e10561cdf4447066012344e1d69a6bdd5": {
+        "name": "staff.package_submit",
+        "digest": "2938a0c10439c6efe4a02801034f362e10561cdf4447066012344e1d69a6bdd5",
+        "domain": "run",
+        "purpose": "File the staff's finished mission package with the promotion queue, for the tally to vote on.",
+        "inputs": {
+          "package": {
+            "type": "string",
+            "required": true,
+            "note": "A handle to the package.",
+            "destination": false,
+            "accepts": [
+              "untrusted"
+            ]
+          }
+        },
+        "destinations": "none",
+        "result": {
+          "label": [],
+          "releases": []
+        },
+        "channel": {
+          "kind": "https",
+          "target": "promotion.ib1.local:443"
+        },
+        "effect": {
+          "class": "reversible",
+          "t_irrev_ms": 5000,
+          "permit": "ordered",
+          "extent": {
+            "kind": "act"
+          },
+          "beacon": false,
+          "while_unattended": "refuse"
+        }
+      },
+      "staff.notify@00cfd9149e8bb4d1ed2d20ea1d30519b8673a0ae076e281e6a0ff96a96b3ad52": {
+        "name": "staff.notify",
+        "digest": "00cfd9149e8bb4d1ed2d20ea1d30519b8673a0ae076e281e6a0ff96a96b3ad52",
+        "domain": "run",
+        "purpose": "Post a notice to the staff channel.",
+        "inputs": {
+          "reason": {
+            "type": "string",
+            "required": true,
+            "note": "One of: scrub-airspace, scrub-readiness, scrub-plan, scrub-commander.",
+            "destination": false,
+            "accepts": []
+          }
+        },
+        "destinations": "none",
+        "result": {
+          "label": [],
+          "releases": []
+        },
+        "channel": {
+          "kind": "https",
+          "target": "notices.ib1.local:443"
+        },
+        "effect": {
+          "class": "reversible",
+          "t_irrev_ms": 5000,
+          "permit": "ordered",
+          "extent": {
+            "kind": "act"
+          },
+          "beacon": false,
+          "while_unattended": "refuse"
+        }
+      },
+      "gate.opa_test@4c992d4976a099c92703e2a570e6a91c0d045d425588f61e7c769a0078b21867": {
+        "name": "gate.opa_test",
+        "digest": "4c992d4976a099c92703e2a570e6a91c0d045d425588f61e7c769a0078b21867",
+        "domain": "build",
+        "purpose": "Run the bundle's policy tests inside the promotion gate.",
+        "inputs": {
+          "bundle": {
+            "type": "string",
+            "required": true,
+            "note": "Workspace-relative path of the bundle.",
+            "destination": false,
+            "accepts": []
+          }
+        }
+      },
+      "gate.tlc@13bfedc24a701f57c5ec42234dc9991ae355e2f39fe4b1c8e2113b0d9653046b": {
+        "name": "gate.tlc",
+        "digest": "13bfedc24a701f57c5ec42234dc9991ae355e2f39fe4b1c8e2113b0d9653046b",
+        "domain": "build",
+        "purpose": "Model-check a TLA+ specification inside the promotion gate.",
+        "inputs": {
+          "spec": {
+            "type": "string",
+            "required": true,
+            "note": "Workspace-relative path of the module.",
+            "destination": false,
+            "accepts": []
+          },
+          "config": {
+            "type": "string",
+            "required": true,
+            "note": "Workspace-relative path of the configuration.",
+            "destination": false,
+            "accepts": []
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,48 @@
+# Plane ap1, the autonomous plane. Nobody is seated here, and it has no path that changes authority.
+# The charter is ap1.charter.yaml. `seating` is voted in the same tally. `runtime` adds no authority.
+plane: ap1
+charter: { file: ap1.charter.yaml, sha256: 547dd33ab3883a8374ea6c3930d3c7279e4be9738b3258d5e6664152a6708116 }
+seats:
+  t1: { domain: run, kind: thinker, vehicle: v1, cell: o1, key: "ed25519:a618616fc9ceb2775b62cf659e0974ae059ecfdcea994d0a717aaf2c91d42177" }
+  o1: { domain: run, kind: observer, vehicle: v2, cell: t1, key: "ed25519:a23abee8c38303e5b3e9e17c955ad4fcd2952711b813d8f14fe8e4c527cffbd6" }
+  t2: { domain: run, kind: thinker, vehicle: v2, cell: o2, key: "ed25519:ee08cd1864557f83500c615c2ef0485de161fb0d0cb10d9ebb46b941abd97515" }
+  o2: { domain: run, kind: observer, vehicle: v3, cell: t2, key: "ed25519:fe8391214e1bb630c1c1db003a9250e9aeed90169df5ad85664f591e53a34596" }
+  t3: { domain: run, kind: thinker, vehicle: v3, cell: o3, key: "ed25519:b42ff2f11f48be02e2d0c30ba82a359b85f7935ff7f48f7636cb679aed122bfe" }
+  o3: { domain: run, kind: observer, vehicle: v1, cell: t3, key: "ed25519:5bda5253b426efda2a1b4a77f02bb8fefcf3258b51ea7e6113043614be8b7e66" }
+  t4: { domain: run, kind: thinker, vehicle: v4, cell: o4, key: "ed25519:fb4f6439146f12e7c675d9c07bdb7d6df782b510c6e50d5a2422ea046a42e88b" }
+  o4: { domain: run, kind: observer, vehicle: v5, cell: t4, key: "ed25519:6e6a5ae77b930d868b2fa7c8bb086dc76b4fda82f82c461c28b95afffd7f4a55" }
+  t5: { domain: run, kind: thinker, vehicle: v5, cell: o5, key: "ed25519:716c359e200d79008f3343a707bdd8d877ce489c15d3e75e7f5b2697946e78f4" }
+  o5: { domain: run, kind: observer, vehicle: v6, cell: t5, key: "ed25519:94a54fb72e78c414f0247758c057806bacc53781a7e7733a4b58ddcacabd9f63" }
+  t6: { domain: run, kind: thinker, vehicle: v6, cell: o6, key: "ed25519:89828eaecbfb21246f6db2ea6b08920a6c3bddde07edd82a8ae44d069ffea2b3" }
+  o6: { domain: run, kind: observer, vehicle: v4, cell: t6, key: "ed25519:bb2737600c6e2945f3f82ce3e6ae92d307f37004773e1daf277289535e2ce37f" }
+  t7: { domain: run, kind: thinker, vehicle: v7, cell: o7, key: "ed25519:56178e6e9a0c7da50a4cc7fa8de097ca1273a9f399d15797fc015e1a36c8e161" }
+  o7: { domain: run, kind: observer, vehicle: v1, cell: t7, key: "ed25519:d511234b9ac941de79945d88fc47cc7d81a0300f812a3abdacced6f02d1d3ce1" }
+workflow: { file: ../2-workflows/recon-sectors.mesh.json, kind: mesh, sha256: 0d1f5b87676dcbbfcb138df1a248c65612b480ad2488cf5893c0cdcd5a1233fd }
+observer_placement: other_vehicle    # ⟨Q9⟩ Declared for this mission, and the ring is in the mesh
+seating:
+  vehicle_class: fixed-wing-group-2
+  safe_state: "on the ground, engine stopped, at a recovery site"
+  safe_state_bound_ticks: 120        # Builder's obligation, not provable here (A-0068-4)
+  hold: { behaviour: loiter, radius_m: 400, altitude: current }   # ⟨Q14⟩ Governor's, when an extent ends
+  terminal:                          # Selected by the first rule that matches the governor's measured facts
+    - { when: "nav_integrity != ok", do: stop, how: "controlled descent where it stands" }
+    - { when: "fuel_pct < 15", do: land, site: nearest_alternate }
+    - { when: otherwise, do: return, route: rtb-by-sector }
+  recovery:
+    primary: { id: R1, e: 0, n: 0 }
+    alternates:
+      - { id: ALT-NORTH, e: 15000, n: 22000 }
+      - { id: ALT-SOUTH, e: 15000, n: -22000 }
+    routes:
+      rtb-by-sector:
+        A: [{ e: 21000, n: 18000 }, { e: 0, n: 0 }]
+        B: [{ e: 21000, n: 0 }, { e: 0, n: 0 }]
+        C: [{ e: 21000, n: -18000 }, { e: 0, n: 0 }]
+runtime:
+  transport: { primary: "802.11s MANET, 5 GHz", fallback: "UHF narrowband mesh" }
+  policy: { engine: wasm, sidecar: none }
+  pbft: { view_change_timeout_ms: 6000, round_p99_ms_placeholder: 2500 }
+  watchdog:
+    overdue_grace_ms: 10000          # See README: ADR-0064 §5 read literally leaves no room for a round
+  lease_margin_ms: 500
+  drain_ticks_after_expiry: 120      # Replicas stay up to seal and hand up the record. Grants nothing

@@ -1,0 +1,42 @@
+# Charter of plane ib1, the intent boundary. Voted at root by its grant seats (ADR-0059 §1).
+# The schema is closed: a capability that is not a field here is not carried.
+plane: ib1
+replicas:
+  protocol: pbft                # Declared exposed: a forward command post can be captured (ADR-0059 §5, ⟨Q7⟩)
+  n: 4
+  f: 1
+  certificate: 3
+  members:
+    - { id: ib1-r1, key: "ed25519:c9ea64c8d5b91ce28824d84aa664aaecaee9add35307526f9654c4231be1edd8" }
+    - { id: ib1-r2, key: "ed25519:6eab6b92e2adb00465e0cb7951780ffb5c71380421abf335685d572dd2e8f279" }
+    - { id: ib1-r3, key: "ed25519:f999105ca089f88ddf030b5d6e962c975d47d6ca946bc7290f49a6a56e416918" }
+    - { id: ib1-r4, key: "ed25519:5c68701e264c94b84891f5d36a8cd89835b588a300e52b7cfde153af5ec5cb59" }
+kind: commanded
+parent: root
+fences:
+  root: { epoch: 1, index: 4127 }
+floor: 35b4978b39cdc071cde2dfc0c9ba31629cee2d9c44defc2801b970719660b4ec          # Placeholder. The federation stage is unwritten (ADR-0067 §5)
+bundles:
+  - { name: standing, revision: 4ef39c81a965bc414c4c0144f288a8a38b9d9b63217b131d1e33de4980c66e7b }
+  - { name: command, revision: a874ff71d1751ddf664c0eb0a5e4e0b1bfb751ea908bd0ac05e05a509bae8591 }
+alphabet:
+  actions: [Read, Draft, Invoke, Emit, Submit, Vote, Consult, Actuate, Report, Route]
+  entries:
+    - staff.wx_airspace@b7ec878386956c9f3c3b535f5c7532d208f240968c2bffa2da297175962c82fb
+    - staff.fleet_status@c041df1b4035af1623ec5ceefb5f1258d82d3411f9086b4f18f73e09a3618901
+    - staff.package_submit@2938a0c10439c6efe4a02801034f362e10561cdf4447066012344e1d69a6bdd5
+    - staff.notify@00cfd9149e8bb4d1ed2d20ea1d30519b8673a0ae076e281e6a0ff96a96b3ad52
+    - gate.opa_test@4c992d4976a099c92703e2a570e6a91c0d045d425588f61e7c769a0078b21867
+    - gate.tlc@13bfedc24a701f57c5ec42234dc9991ae355e2f39fe4b1c8e2113b0d9653046b
+    - flight.transit@cd3d43373ce222108f47e27fdfe5fd9ac0923c7bb129010ef92082fe3c5bb188
+    - flight.orbit@b1fe6db5dea9dd12d53d2deb0cf77c194f5ba7c0cc4bec8d954e427deea45b48
+    - sensor.eoir_collect@8a726fce18a3f9270019afd5d948abdfc7fc364045013ab0abc1f896858d1bdb
+    - sensor.sar_strip@2a8aba8ec289ee88209b3e484d99bb52ae4c822e5551d7332ffc956b670b2582
+    - comms.downlink@8617f1b204186f0fddd7ccca8be5eb9897bb7e07fc8773d7f4075383a98c97cb
+    - comms.beacon@b4d7e3050dd8622c7669a60618766949c3e2f161e4203651de2fa1fb91c2fde6
+labels: [untrusted, restricted, peer-tracks, peer-coverage]
+ttlMax: { unit: ms, reversible: 3600000, irreversible: 0 }
+countMax: { reversible: 8, irreversible: 0 }
+budget: 400
+expiry: { unit: ms, after_seating: 259200000 }   # 72 hours: seating, the 24-hour intent, recovery and reading
+release: false

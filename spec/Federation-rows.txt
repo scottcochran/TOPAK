@@ -1,0 +1,53 @@
+# Rows for live-gen-results.sh Federation: name mut spec kind property expected [CONST=value ...] [states=N]
+# Run: DEFAULTS='MaxEpoch=0 RootBudget=2 Captured={"a"} Verifiers={"g"}' ./live-gen-results.sh Federation Federation-rows.txt "<title>"
+# Rows about fences set MaxEpoch=1 and RootBudget=1; rows about budget set Captured={}, since BudgetConserved is a statement about an honest subtree (the module's header).
+# expected: none: every property HOLDS, at each capture, and every witness is VIOLATED; M_WIDEN breaks CharterNarrows only; M_LASTLINK and M_TRUSTPLANE break LeaseWithinChain and HavocPlaneBounded only; M_NODEBIT breaks BudgetConserved only; M_STALEEPOCH breaks AnyPlaneFences only.
+#
+# Mut = none.
+s-none-safe          none          Spec INVARIANT Safe                  HOLDS
+s-none-safe-b        none          Spec INVARIANT Safe                  HOLDS    Captured={"b"}
+s-none-safe-ab       none          Spec INVARIANT Safe                  HOLDS    Captured={"a","b"}
+s-none-safe-honest   none          Spec INVARIANT Safe                  HOLDS    Captured={}
+s-none-safe-fence    none          Spec INVARIANT Safe                  HOLDS    MaxEpoch=1 RootBudget=1
+s-none-safe-fence2   none          Spec INVARIANT Safe                  HOLDS    MaxEpoch=1 RootBudget=0 Verifiers={"g","p"}
+# Witnesses.
+w-permit             none          Spec INVARIANT NeverPermitted        VIOLATED
+w-deep               none          Spec INVARIANT NeverDeepPermit       VIOLATED
+w-afterfence         none          Spec INVARIANT NeverPermitAfterFence VIOLATED MaxEpoch=1 RootBudget=1
+w-refchain           none          Spec INVARIANT NeverRefusedByChain   VIOLATED
+w-reffence           none          Spec INVARIANT NeverRefusedByFence   VIOLATED MaxEpoch=1 RootBudget=1
+w-havocwide          none          Spec INVARIANT NeverHavocWideCharter VIOLATED
+w-debited            none          Spec INVARIANT NeverChildDebited     VIOLATED
+w-spent              none          Spec INVARIANT NeverBudgetSpent      VIOLATED Captured={}
+# M_WIDEN.
+m-widen-narrows      M_WIDEN       Spec INVARIANT CharterNarrows        VIOLATED
+m-widen-chain        M_WIDEN       Spec INVARIANT LeaseWithinChain      HOLDS
+m-widen-root         M_WIDEN       Spec INVARIANT HavocPlaneBounded     HOLDS
+m-widen-budget       M_WIDEN       Spec INVARIANT BudgetConserved       HOLDS    Captured={}
+m-widen-fence        M_WIDEN       Spec INVARIANT AnyPlaneFences        HOLDS    MaxEpoch=1 RootBudget=1
+# M_LASTLINK.
+m-last-chain         M_LASTLINK    Spec INVARIANT LeaseWithinChain      VIOLATED
+m-last-root          M_LASTLINK    Spec INVARIANT HavocPlaneBounded     VIOLATED
+m-last-narrows       M_LASTLINK    Spec INVARIANT CharterNarrows        HOLDS
+m-last-budget        M_LASTLINK    Spec INVARIANT BudgetConserved       HOLDS    Captured={}
+m-last-fence         M_LASTLINK    Spec INVARIANT AnyPlaneFences        HOLDS    MaxEpoch=1 RootBudget=1
+m-last-honest        M_LASTLINK    Spec INVARIANT LeaseWithinChain      HOLDS    Captured={}
+# M_TRUSTPLANE.
+m-trust-chain        M_TRUSTPLANE  Spec INVARIANT LeaseWithinChain      VIOLATED
+m-trust-root         M_TRUSTPLANE  Spec INVARIANT HavocPlaneBounded     VIOLATED
+m-trust-narrows      M_TRUSTPLANE  Spec INVARIANT CharterNarrows        HOLDS
+m-trust-budget       M_TRUSTPLANE  Spec INVARIANT BudgetConserved       HOLDS    Captured={}
+m-trust-fence        M_TRUSTPLANE  Spec INVARIANT AnyPlaneFences        HOLDS    MaxEpoch=1 RootBudget=1
+m-trust-honest       M_TRUSTPLANE  Spec INVARIANT LeaseWithinChain      HOLDS    Captured={}
+# M_NODEBIT.
+m-nodebit-budget     M_NODEBIT     Spec INVARIANT BudgetConserved       VIOLATED Captured={}
+m-nodebit-narrows    M_NODEBIT     Spec INVARIANT CharterNarrows        HOLDS
+m-nodebit-chain      M_NODEBIT     Spec INVARIANT LeaseWithinChain      HOLDS
+m-nodebit-root       M_NODEBIT     Spec INVARIANT HavocPlaneBounded     HOLDS
+m-nodebit-fence      M_NODEBIT     Spec INVARIANT AnyPlaneFences        HOLDS    MaxEpoch=1 RootBudget=1
+# M_STALEEPOCH.
+m-stale-fence        M_STALEEPOCH  Spec INVARIANT AnyPlaneFences        VIOLATED MaxEpoch=1 RootBudget=1
+m-stale-narrows      M_STALEEPOCH  Spec INVARIANT CharterNarrows        HOLDS
+m-stale-chain        M_STALEEPOCH  Spec INVARIANT LeaseWithinChain      HOLDS
+m-stale-root         M_STALEEPOCH  Spec INVARIANT HavocPlaneBounded     HOLDS
+m-stale-budget       M_STALEEPOCH  Spec INVARIANT BudgetConserved       HOLDS    Captured={}

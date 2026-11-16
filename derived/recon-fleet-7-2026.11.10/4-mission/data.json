@@ -1,0 +1,380 @@
+{
+  "topak": {
+    "labels": {
+      "vocabulary": [
+        "untrusted",
+        "restricted",
+        "peer-tracks",
+        "peer-coverage"
+      ],
+      "delivery": {
+        "thinker": {
+          "untrusted": "clear",
+          "restricted": "handle",
+          "peer-tracks": "handle",
+          "peer-coverage": "clear"
+        },
+        "observer": {
+          "untrusted": "clear",
+          "restricted": "clear",
+          "peer-tracks": "clear",
+          "peer-coverage": "clear"
+        }
+      },
+      "root": {
+        "label": []
+      }
+    },
+    "tools": {
+      "flight.transit@cd3d43373ce222108f47e27fdfe5fd9ac0923c7bb129010ef92082fe3c5bb188": {
+        "name": "flight.transit",
+        "digest": "cd3d43373ce222108f47e27fdfe5fd9ac0923c7bb129010ef92082fe3c5bb188",
+        "domain": "run",
+        "purpose": "Fly to a point at a commanded altitude and speed.",
+        "inputs": {
+          "e": {
+            "type": "number",
+            "required": true,
+            "note": "Metres east in the mission frame.",
+            "destination": false,
+            "accepts": []
+          },
+          "n": {
+            "type": "number",
+            "required": true,
+            "note": "Metres north in the mission frame.",
+            "destination": false,
+            "accepts": []
+          },
+          "alt_agl_m": {
+            "type": "number",
+            "required": true,
+            "note": "Height above ground, metres.",
+            "destination": false,
+            "accepts": []
+          },
+          "speed_mps": {
+            "type": "number",
+            "required": true,
+            "note": "Ground speed, m/s.",
+            "destination": false,
+            "accepts": []
+          }
+        },
+        "destinations": "none",
+        "result": {
+          "label": [],
+          "releases": []
+        },
+        "channel": {
+          "kind": "actuator",
+          "target": "fcc.local:flight"
+        },
+        "effect": {
+          "class": "reversible",
+          "t_irrev_ms": 120000,
+          "permit": "local",
+          "extent": {
+            "kind": "distance",
+            "metres": 40000
+          },
+          "beacon": false,
+          "while_unattended": "permit"
+        }
+      },
+      "flight.orbit@b1fe6db5dea9dd12d53d2deb0cf77c194f5ba7c0cc4bec8d954e427deea45b48": {
+        "name": "flight.orbit",
+        "digest": "b1fe6db5dea9dd12d53d2deb0cf77c194f5ba7c0cc4bec8d954e427deea45b48",
+        "domain": "run",
+        "purpose": "Orbit a point at a commanded altitude and radius.",
+        "inputs": {
+          "e": {
+            "type": "number",
+            "required": true,
+            "note": "Metres east in the mission frame.",
+            "destination": false,
+            "accepts": []
+          },
+          "n": {
+            "type": "number",
+            "required": true,
+            "note": "Metres north in the mission frame.",
+            "destination": false,
+            "accepts": []
+          },
+          "alt_agl_m": {
+            "type": "number",
+            "required": true,
+            "note": "Height above ground, metres.",
+            "destination": false,
+            "accepts": []
+          },
+          "radius_m": {
+            "type": "number",
+            "required": true,
+            "note": "Orbit radius, metres.",
+            "destination": false,
+            "accepts": []
+          }
+        },
+        "destinations": "none",
+        "result": {
+          "label": [],
+          "releases": []
+        },
+        "channel": {
+          "kind": "actuator",
+          "target": "fcc.local:flight"
+        },
+        "effect": {
+          "class": "reversible",
+          "t_irrev_ms": 120000,
+          "permit": "local",
+          "extent": {
+            "kind": "ticks",
+            "ticks": 60
+          },
+          "beacon": false,
+          "while_unattended": "permit"
+        }
+      },
+      "sensor.eoir_collect@8a726fce18a3f9270019afd5d948abdfc7fc364045013ab0abc1f896858d1bdb": {
+        "name": "sensor.eoir_collect",
+        "digest": "8a726fce18a3f9270019afd5d948abdfc7fc364045013ab0abc1f896858d1bdb",
+        "domain": "run",
+        "purpose": "Aim the EO/IR turret at a point and record for the entry's extent. Returns a detection summary.",
+        "inputs": {
+          "e": {
+            "type": "number",
+            "required": true,
+            "note": "Metres east in the mission frame.",
+            "destination": false,
+            "accepts": []
+          },
+          "n": {
+            "type": "number",
+            "required": true,
+            "note": "Metres north in the mission frame.",
+            "destination": false,
+            "accepts": []
+          },
+          "mode": {
+            "type": "string",
+            "required": true,
+            "note": "wide or narrow.",
+            "destination": false,
+            "accepts": []
+          }
+        },
+        "destinations": "none",
+        "result": {
+          "label": [
+            "untrusted"
+          ],
+          "releases": []
+        },
+        "channel": {
+          "kind": "actuator",
+          "target": "payload.local:eoir"
+        },
+        "effect": {
+          "class": "reversible",
+          "t_irrev_ms": 600000,
+          "permit": "local",
+          "extent": {
+            "kind": "ticks",
+            "ticks": 40
+          },
+          "beacon": false,
+          "while_unattended": "permit"
+        }
+      },
+      "sensor.sar_strip@2a8aba8ec289ee88209b3e484d99bb52ae4c822e5551d7332ffc956b670b2582": {
+        "name": "sensor.sar_strip",
+        "digest": "2a8aba8ec289ee88209b3e484d99bb52ae4c822e5551d7332ffc956b670b2582",
+        "domain": "run",
+        "purpose": "Collect one synthetic-aperture radar strip between two points. An active emission.",
+        "inputs": {
+          "from_e": {
+            "type": "number",
+            "required": true,
+            "note": "Strip start, metres east.",
+            "destination": false,
+            "accepts": []
+          },
+          "from_n": {
+            "type": "number",
+            "required": true,
+            "note": "Strip start, metres north.",
+            "destination": false,
+            "accepts": []
+          },
+          "to_e": {
+            "type": "number",
+            "required": true,
+            "note": "Strip end, metres east.",
+            "destination": false,
+            "accepts": []
+          },
+          "to_n": {
+            "type": "number",
+            "required": true,
+            "note": "Strip end, metres north.",
+            "destination": false,
+            "accepts": []
+          }
+        },
+        "destinations": "none",
+        "result": {
+          "label": [
+            "untrusted"
+          ],
+          "releases": []
+        },
+        "channel": {
+          "kind": "actuator",
+          "target": "payload.local:sar"
+        },
+        "effect": {
+          "class": "reversible",
+          "t_irrev_ms": 30000,
+          "permit": "ordered",
+          "extent": {
+            "kind": "distance",
+            "metres": 20000
+          },
+          "beacon": false,
+          "while_unattended": "refuse"
+        }
+      },
+      "comms.downlink@8617f1b204186f0fddd7ccca8be5eb9897bb7e07fc8773d7f4075383a98c97cb": {
+        "name": "comms.downlink",
+        "digest": "8617f1b204186f0fddd7ccca8be5eb9897bb7e07fc8773d7f4075383a98c97cb",
+        "domain": "run",
+        "purpose": "Send one stored product to the ground station, by handle.",
+        "inputs": {
+          "product": {
+            "type": "string",
+            "required": true,
+            "note": "A handle to a stored product or to a peer track.",
+            "destination": false,
+            "accepts": [
+              "untrusted",
+              "peer-tracks"
+            ]
+          }
+        },
+        "destinations": "none",
+        "result": {
+          "label": [],
+          "releases": []
+        },
+        "channel": {
+          "kind": "radio-downlink",
+          "target": "gcs.ib1.local:7443"
+        },
+        "effect": {
+          "class": "reversible",
+          "t_irrev_ms": 5000,
+          "permit": "local",
+          "extent": {
+            "kind": "act"
+          },
+          "beacon": false,
+          "while_unattended": "permit"
+        }
+      },
+      "comms.beacon@b4d7e3050dd8622c7669a60618766949c3e2f161e4203651de2fa1fb91c2fde6": {
+        "name": "comms.beacon",
+        "digest": "b4d7e3050dd8622c7669a60618766949c3e2f161e4203651de2fa1fb91c2fde6",
+        "domain": "run",
+        "purpose": "Send the governor's fixed position report. The governor composes it, and the stack supplies nothing.",
+        "inputs": {},
+        "destinations": "none",
+        "result": {
+          "label": [],
+          "releases": []
+        },
+        "channel": {
+          "kind": "radio-mesh",
+          "target": "mesh.local:beacon"
+        },
+        "effect": {
+          "class": "reversible",
+          "t_irrev_ms": 5000,
+          "permit": "local",
+          "extent": {
+            "kind": "act"
+          },
+          "beacon": true,
+          "while_unattended": "permit"
+        }
+      }
+    },
+    "topics": {
+      "peer.tracks": {
+        "schema": {
+          "track_id": {
+            "type": "number"
+          },
+          "e": {
+            "type": "number"
+          },
+          "n": {
+            "type": "number"
+          },
+          "class": {
+            "type": "enum",
+            "values": [
+              "vehicle",
+              "vessel",
+              "structure",
+              "unknown"
+            ]
+          },
+          "confidence": {
+            "type": "number"
+          },
+          "observed_tick": {
+            "type": "number"
+          }
+        },
+        "reporters": [
+          "thinker"
+        ],
+        "label": "peer-tracks",
+        "delivery": "handle",
+        "rate_per_tick": 4
+      },
+      "peer.coverage": {
+        "schema": {
+          "sector": {
+            "type": "enum",
+            "values": [
+              "A",
+              "B",
+              "C"
+            ]
+          },
+          "phase": {
+            "type": "enum",
+            "values": [
+              "ingress",
+              "on_station",
+              "egress"
+            ]
+          },
+          "relief_tick": {
+            "type": "number"
+          }
+        },
+        "reporters": [
+          "thinker"
+        ],
+        "label": "peer-coverage",
+        "delivery": "clear",
+        "rate_per_tick": 1
+      }
+    }
+  }
+}

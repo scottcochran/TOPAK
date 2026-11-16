@@ -1,0 +1,951 @@
+{
+  "kind": "mesh",
+  "root": "muster",
+  "sinks": [
+    "close"
+  ],
+  "nodes": {
+    "muster": {
+      "seat": "t7",
+      "principal": "stack-v7",
+      "persona": "ca74f8a9d040e5f14b26ecf3d25d7159ab3cd72fdb27690c4861385004042b7b",
+      "bundle": "8784a46caaaf0684a16ee033b39c4101c75236b9a39f9b9a19d623e29e91d51c",
+      "confinement": {
+        "digest": "353777234d6676885e3affe7cb8190e4b767916475c10207fe15330dd05d856a",
+        "rung": 2
+      },
+      "alphabet": [
+        "Consult",
+        "Report"
+      ],
+      "ttl_ms": 600000,
+      "lineage": "stk-a",
+      "task": "1f0fb0b752758150c6ffef3dadc8f5adfd23964d685e5c25bde1d786db06c509",
+      "task_label": [],
+      "outcomes": [
+        "degraded",
+        "ready"
+      ],
+      "outward": false,
+      "join": "any",
+      "lease": {
+        "count": 4,
+        "ttl_ticks": 20
+      },
+      "observer": {
+        "seat": "o7",
+        "host": "v1",
+        "lineage": "obs-b"
+      }
+    },
+    "close": {
+      "seat": "t4",
+      "principal": "stack-v4",
+      "persona": "ca74f8a9d040e5f14b26ecf3d25d7159ab3cd72fdb27690c4861385004042b7b",
+      "bundle": "8784a46caaaf0684a16ee033b39c4101c75236b9a39f9b9a19d623e29e91d51c",
+      "confinement": {
+        "digest": "353777234d6676885e3affe7cb8190e4b767916475c10207fe15330dd05d856a",
+        "rung": 2
+      },
+      "alphabet": [
+        "Consult",
+        "Report"
+      ],
+      "ttl_ms": 600000,
+      "lineage": "stk-a",
+      "task": "0fcb89d0557a54815f307334701870b7854ddeb2521274d09757507e1b0f4183",
+      "task_label": [],
+      "outcomes": [
+        "closed"
+      ],
+      "outward": false,
+      "join": "any",
+      "lease": {
+        "count": 2,
+        "ttl_ticks": 20
+      },
+      "observer": {
+        "seat": "o4",
+        "host": "v5",
+        "lineage": "obs-b"
+      }
+    },
+    "v1": {
+      "seat": "t1",
+      "principal": "stack-v1",
+      "persona": "ca74f8a9d040e5f14b26ecf3d25d7159ab3cd72fdb27690c4861385004042b7b",
+      "bundle": "8784a46caaaf0684a16ee033b39c4101c75236b9a39f9b9a19d623e29e91d51c",
+      "confinement": {
+        "digest": "353777234d6676885e3affe7cb8190e4b767916475c10207fe15330dd05d856a",
+        "rung": 2
+      },
+      "alphabet": [
+        "Actuate",
+        "Consult",
+        "Report"
+      ],
+      "ttl_ms": 3600000,
+      "lineage": "stk-a",
+      "task": "6e3ea45744ccf939ba688182e5b7aa07cd9a4ee8e5f6eef31d1ef7c57b42dbd9",
+      "task_label": [],
+      "outcomes": [
+        "aborted",
+        "on_station",
+        "relief_due",
+        "wave3_complete"
+      ],
+      "outward": false,
+      "join": "any",
+      "lease": {
+        "count": 8,
+        "ttl_ticks": 120
+      },
+      "observer": {
+        "seat": "o1",
+        "host": "v2",
+        "lineage": "obs-b"
+      }
+    },
+    "v2": {
+      "seat": "t2",
+      "principal": "stack-v2",
+      "persona": "ca74f8a9d040e5f14b26ecf3d25d7159ab3cd72fdb27690c4861385004042b7b",
+      "bundle": "8784a46caaaf0684a16ee033b39c4101c75236b9a39f9b9a19d623e29e91d51c",
+      "confinement": {
+        "digest": "353777234d6676885e3affe7cb8190e4b767916475c10207fe15330dd05d856a",
+        "rung": 2
+      },
+      "alphabet": [
+        "Actuate",
+        "Consult",
+        "Report"
+      ],
+      "ttl_ms": 3600000,
+      "lineage": "stk-a",
+      "task": "3e8c6da62d5b31a2906c72612d3c0e7180f72b0019269ef35fbd4cf567ac4399",
+      "task_label": [],
+      "outcomes": [
+        "aborted",
+        "on_station",
+        "relief_due",
+        "wave3_complete"
+      ],
+      "outward": false,
+      "join": "any",
+      "lease": {
+        "count": 8,
+        "ttl_ticks": 120
+      },
+      "observer": {
+        "seat": "o2",
+        "host": "v3",
+        "lineage": "obs-b"
+      }
+    },
+    "v3": {
+      "seat": "t3",
+      "principal": "stack-v3",
+      "persona": "ca74f8a9d040e5f14b26ecf3d25d7159ab3cd72fdb27690c4861385004042b7b",
+      "bundle": "8784a46caaaf0684a16ee033b39c4101c75236b9a39f9b9a19d623e29e91d51c",
+      "confinement": {
+        "digest": "353777234d6676885e3affe7cb8190e4b767916475c10207fe15330dd05d856a",
+        "rung": 2
+      },
+      "alphabet": [
+        "Actuate",
+        "Consult",
+        "Report"
+      ],
+      "ttl_ms": 3600000,
+      "lineage": "stk-a",
+      "task": "1dacd5a44d6c585a93584553916dc49e97a7388d4c0ab57b9f9fe9bf5844a0cd",
+      "task_label": [],
+      "outcomes": [
+        "aborted",
+        "on_station",
+        "relief_due",
+        "wave3_complete"
+      ],
+      "outward": false,
+      "join": "any",
+      "lease": {
+        "count": 8,
+        "ttl_ticks": 120
+      },
+      "observer": {
+        "seat": "o3",
+        "host": "v1",
+        "lineage": "obs-b"
+      }
+    },
+    "v4": {
+      "seat": "t4",
+      "principal": "stack-v4",
+      "persona": "ca74f8a9d040e5f14b26ecf3d25d7159ab3cd72fdb27690c4861385004042b7b",
+      "bundle": "8784a46caaaf0684a16ee033b39c4101c75236b9a39f9b9a19d623e29e91d51c",
+      "confinement": {
+        "digest": "353777234d6676885e3affe7cb8190e4b767916475c10207fe15330dd05d856a",
+        "rung": 2
+      },
+      "alphabet": [
+        "Actuate",
+        "Consult",
+        "Report"
+      ],
+      "ttl_ms": 3600000,
+      "lineage": "stk-a",
+      "task": "38a4c02b10254013e54d55527a6393fda89d33615ec4cdfa32bd4a5dacc931c2",
+      "task_label": [],
+      "outcomes": [
+        "aborted",
+        "on_station",
+        "relief_due"
+      ],
+      "outward": false,
+      "join": "any",
+      "lease": {
+        "count": 8,
+        "ttl_ticks": 120
+      },
+      "observer": {
+        "seat": "o4",
+        "host": "v5",
+        "lineage": "obs-b"
+      }
+    },
+    "v5": {
+      "seat": "t5",
+      "principal": "stack-v5",
+      "persona": "ca74f8a9d040e5f14b26ecf3d25d7159ab3cd72fdb27690c4861385004042b7b",
+      "bundle": "8784a46caaaf0684a16ee033b39c4101c75236b9a39f9b9a19d623e29e91d51c",
+      "confinement": {
+        "digest": "353777234d6676885e3affe7cb8190e4b767916475c10207fe15330dd05d856a",
+        "rung": 2
+      },
+      "alphabet": [
+        "Actuate",
+        "Consult",
+        "Report"
+      ],
+      "ttl_ms": 3600000,
+      "lineage": "stk-a",
+      "task": "17209bcb0bfe3325fab2fc9cb01ac97296de0991a0e7ae02ebf2eda6edc2d0ab",
+      "task_label": [],
+      "outcomes": [
+        "aborted",
+        "on_station",
+        "relief_due"
+      ],
+      "outward": false,
+      "join": "any",
+      "lease": {
+        "count": 8,
+        "ttl_ticks": 120
+      },
+      "observer": {
+        "seat": "o5",
+        "host": "v6",
+        "lineage": "obs-b"
+      }
+    },
+    "v6": {
+      "seat": "t6",
+      "principal": "stack-v6",
+      "persona": "ca74f8a9d040e5f14b26ecf3d25d7159ab3cd72fdb27690c4861385004042b7b",
+      "bundle": "8784a46caaaf0684a16ee033b39c4101c75236b9a39f9b9a19d623e29e91d51c",
+      "confinement": {
+        "digest": "353777234d6676885e3affe7cb8190e4b767916475c10207fe15330dd05d856a",
+        "rung": 2
+      },
+      "alphabet": [
+        "Actuate",
+        "Consult",
+        "Report"
+      ],
+      "ttl_ms": 3600000,
+      "lineage": "stk-a",
+      "task": "813e6dffe39781cdc01fc76f9bd98d14cc2647a508cebb1537f4ef8a043bdd50",
+      "task_label": [],
+      "outcomes": [
+        "aborted",
+        "on_station",
+        "relief_due"
+      ],
+      "outward": false,
+      "join": "any",
+      "lease": {
+        "count": 8,
+        "ttl_ticks": 120
+      },
+      "observer": {
+        "seat": "o6",
+        "host": "v4",
+        "lineage": "obs-b"
+      }
+    },
+    "v7": {
+      "seat": "t7",
+      "principal": "stack-v7",
+      "persona": "ca74f8a9d040e5f14b26ecf3d25d7159ab3cd72fdb27690c4861385004042b7b",
+      "bundle": "8784a46caaaf0684a16ee033b39c4101c75236b9a39f9b9a19d623e29e91d51c",
+      "confinement": {
+        "digest": "353777234d6676885e3affe7cb8190e4b767916475c10207fe15330dd05d856a",
+        "rung": 2
+      },
+      "alphabet": [
+        "Actuate",
+        "Consult",
+        "Report"
+      ],
+      "ttl_ms": 3600000,
+      "lineage": "stk-a",
+      "task": "113d7e6e9e30bfc516dbd78f73c3c5ed4c30d3ca69e066ae2386af2f9bbb3cb5",
+      "task_label": [],
+      "outcomes": [
+        "aborted",
+        "handoff_v1",
+        "handoff_v2",
+        "handoff_v3",
+        "handoff_v4",
+        "handoff_v5",
+        "handoff_v6",
+        "on_station",
+        "wave3_complete"
+      ],
+      "outward": false,
+      "join": "any",
+      "lease": {
+        "count": 8,
+        "ttl_ticks": 120
+      },
+      "observer": {
+        "seat": "o7",
+        "host": "v1",
+        "lineage": "obs-b"
+      }
+    }
+  },
+  "edges": {
+    "start-v1": {
+      "from": "muster",
+      "to": "v1",
+      "kind": "computed",
+      "guard": {
+        "outcome": {
+          "node": "muster",
+          "any_of": [
+            "degraded",
+            "ready"
+          ]
+        }
+      },
+      "delivery": "handle"
+    },
+    "start-v2": {
+      "from": "muster",
+      "to": "v2",
+      "kind": "computed",
+      "guard": {
+        "outcome": {
+          "node": "muster",
+          "any_of": [
+            "degraded",
+            "ready"
+          ]
+        }
+      },
+      "delivery": "handle"
+    },
+    "start-v3": {
+      "from": "muster",
+      "to": "v3",
+      "kind": "computed",
+      "guard": {
+        "outcome": {
+          "node": "muster",
+          "any_of": [
+            "degraded",
+            "ready"
+          ]
+        }
+      },
+      "delivery": "handle"
+    },
+    "loop-v1": {
+      "from": "v1",
+      "to": "v1",
+      "kind": "computed",
+      "guard": {
+        "outcome": {
+          "node": "v1",
+          "any_of": [
+            "on_station"
+          ]
+        }
+      },
+      "delivery": "handle"
+    },
+    "loop-v2": {
+      "from": "v2",
+      "to": "v2",
+      "kind": "computed",
+      "guard": {
+        "outcome": {
+          "node": "v2",
+          "any_of": [
+            "on_station"
+          ]
+        }
+      },
+      "delivery": "handle"
+    },
+    "loop-v3": {
+      "from": "v3",
+      "to": "v3",
+      "kind": "computed",
+      "guard": {
+        "outcome": {
+          "node": "v3",
+          "any_of": [
+            "on_station"
+          ]
+        }
+      },
+      "delivery": "handle"
+    },
+    "loop-v4": {
+      "from": "v4",
+      "to": "v4",
+      "kind": "computed",
+      "guard": {
+        "outcome": {
+          "node": "v4",
+          "any_of": [
+            "on_station"
+          ]
+        }
+      },
+      "delivery": "handle"
+    },
+    "loop-v5": {
+      "from": "v5",
+      "to": "v5",
+      "kind": "computed",
+      "guard": {
+        "outcome": {
+          "node": "v5",
+          "any_of": [
+            "on_station"
+          ]
+        }
+      },
+      "delivery": "handle"
+    },
+    "loop-v6": {
+      "from": "v6",
+      "to": "v6",
+      "kind": "computed",
+      "guard": {
+        "outcome": {
+          "node": "v6",
+          "any_of": [
+            "on_station"
+          ]
+        }
+      },
+      "delivery": "handle"
+    },
+    "loop-v7": {
+      "from": "v7",
+      "to": "v7",
+      "kind": "computed",
+      "guard": {
+        "outcome": {
+          "node": "v7",
+          "any_of": [
+            "on_station"
+          ]
+        }
+      },
+      "delivery": "handle"
+    },
+    "relief-v1-v4": {
+      "from": "v1",
+      "to": "v4",
+      "kind": "computed",
+      "guard": {
+        "outcome": {
+          "node": "v1",
+          "any_of": [
+            "relief_due"
+          ]
+        }
+      },
+      "delivery": "handle"
+    },
+    "relief-v2-v5": {
+      "from": "v2",
+      "to": "v5",
+      "kind": "computed",
+      "guard": {
+        "outcome": {
+          "node": "v2",
+          "any_of": [
+            "relief_due"
+          ]
+        }
+      },
+      "delivery": "handle"
+    },
+    "relief-v3-v6": {
+      "from": "v3",
+      "to": "v6",
+      "kind": "computed",
+      "guard": {
+        "outcome": {
+          "node": "v3",
+          "any_of": [
+            "relief_due"
+          ]
+        }
+      },
+      "delivery": "handle"
+    },
+    "relief-v4-v1": {
+      "from": "v4",
+      "to": "v1",
+      "kind": "computed",
+      "guard": {
+        "outcome": {
+          "node": "v4",
+          "any_of": [
+            "relief_due"
+          ]
+        }
+      },
+      "delivery": "handle"
+    },
+    "relief-v5-v2": {
+      "from": "v5",
+      "to": "v2",
+      "kind": "computed",
+      "guard": {
+        "outcome": {
+          "node": "v5",
+          "any_of": [
+            "relief_due"
+          ]
+        }
+      },
+      "delivery": "handle"
+    },
+    "relief-v6-v3": {
+      "from": "v6",
+      "to": "v3",
+      "kind": "computed",
+      "guard": {
+        "outcome": {
+          "node": "v6",
+          "any_of": [
+            "relief_due"
+          ]
+        }
+      },
+      "delivery": "handle"
+    },
+    "spare-v1": {
+      "from": "v1",
+      "to": "v7",
+      "kind": "computed",
+      "guard": {
+        "any": [
+          {
+            "outcome": {
+              "node": "v1",
+              "any_of": [
+                "aborted"
+              ]
+            }
+          },
+          {
+            "end": {
+              "node": "v1",
+              "any_of": [
+                "expired"
+              ]
+            }
+          }
+        ]
+      },
+      "delivery": "handle"
+    },
+    "spare-v2": {
+      "from": "v2",
+      "to": "v7",
+      "kind": "computed",
+      "guard": {
+        "any": [
+          {
+            "outcome": {
+              "node": "v2",
+              "any_of": [
+                "aborted"
+              ]
+            }
+          },
+          {
+            "end": {
+              "node": "v2",
+              "any_of": [
+                "expired"
+              ]
+            }
+          }
+        ]
+      },
+      "delivery": "handle"
+    },
+    "spare-v3": {
+      "from": "v3",
+      "to": "v7",
+      "kind": "computed",
+      "guard": {
+        "any": [
+          {
+            "outcome": {
+              "node": "v3",
+              "any_of": [
+                "aborted"
+              ]
+            }
+          },
+          {
+            "end": {
+              "node": "v3",
+              "any_of": [
+                "expired"
+              ]
+            }
+          }
+        ]
+      },
+      "delivery": "handle"
+    },
+    "spare-v4": {
+      "from": "v4",
+      "to": "v7",
+      "kind": "computed",
+      "guard": {
+        "any": [
+          {
+            "outcome": {
+              "node": "v4",
+              "any_of": [
+                "aborted"
+              ]
+            }
+          },
+          {
+            "end": {
+              "node": "v4",
+              "any_of": [
+                "expired"
+              ]
+            }
+          }
+        ]
+      },
+      "delivery": "handle"
+    },
+    "spare-v5": {
+      "from": "v5",
+      "to": "v7",
+      "kind": "computed",
+      "guard": {
+        "any": [
+          {
+            "outcome": {
+              "node": "v5",
+              "any_of": [
+                "aborted"
+              ]
+            }
+          },
+          {
+            "end": {
+              "node": "v5",
+              "any_of": [
+                "expired"
+              ]
+            }
+          }
+        ]
+      },
+      "delivery": "handle"
+    },
+    "spare-v6": {
+      "from": "v6",
+      "to": "v7",
+      "kind": "computed",
+      "guard": {
+        "any": [
+          {
+            "outcome": {
+              "node": "v6",
+              "any_of": [
+                "aborted"
+              ]
+            }
+          },
+          {
+            "end": {
+              "node": "v6",
+              "any_of": [
+                "expired"
+              ]
+            }
+          }
+        ]
+      },
+      "delivery": "handle"
+    },
+    "handoff-v7-v1": {
+      "from": "v7",
+      "to": "v1",
+      "kind": "computed",
+      "guard": {
+        "outcome": {
+          "node": "v7",
+          "any_of": [
+            "handoff_v1"
+          ]
+        }
+      },
+      "delivery": "handle"
+    },
+    "handoff-v7-v2": {
+      "from": "v7",
+      "to": "v2",
+      "kind": "computed",
+      "guard": {
+        "outcome": {
+          "node": "v7",
+          "any_of": [
+            "handoff_v2"
+          ]
+        }
+      },
+      "delivery": "handle"
+    },
+    "handoff-v7-v3": {
+      "from": "v7",
+      "to": "v3",
+      "kind": "computed",
+      "guard": {
+        "outcome": {
+          "node": "v7",
+          "any_of": [
+            "handoff_v3"
+          ]
+        }
+      },
+      "delivery": "handle"
+    },
+    "handoff-v7-v4": {
+      "from": "v7",
+      "to": "v4",
+      "kind": "computed",
+      "guard": {
+        "outcome": {
+          "node": "v7",
+          "any_of": [
+            "handoff_v4"
+          ]
+        }
+      },
+      "delivery": "handle"
+    },
+    "handoff-v7-v5": {
+      "from": "v7",
+      "to": "v5",
+      "kind": "computed",
+      "guard": {
+        "outcome": {
+          "node": "v7",
+          "any_of": [
+            "handoff_v5"
+          ]
+        }
+      },
+      "delivery": "handle"
+    },
+    "handoff-v7-v6": {
+      "from": "v7",
+      "to": "v6",
+      "kind": "computed",
+      "guard": {
+        "outcome": {
+          "node": "v7",
+          "any_of": [
+            "handoff_v6"
+          ]
+        }
+      },
+      "delivery": "handle"
+    },
+    "close-v1": {
+      "from": "v1",
+      "to": "close",
+      "kind": "computed",
+      "guard": {
+        "outcome": {
+          "node": "v1",
+          "any_of": [
+            "wave3_complete"
+          ]
+        }
+      },
+      "delivery": "handle"
+    },
+    "close-v2": {
+      "from": "v2",
+      "to": "close",
+      "kind": "computed",
+      "guard": {
+        "outcome": {
+          "node": "v2",
+          "any_of": [
+            "wave3_complete"
+          ]
+        }
+      },
+      "delivery": "handle"
+    },
+    "close-v3": {
+      "from": "v3",
+      "to": "close",
+      "kind": "computed",
+      "guard": {
+        "outcome": {
+          "node": "v3",
+          "any_of": [
+            "wave3_complete"
+          ]
+        }
+      },
+      "delivery": "handle"
+    },
+    "close-v7": {
+      "from": "v7",
+      "to": "close",
+      "kind": "computed",
+      "guard": {
+        "outcome": {
+          "node": "v7",
+          "any_of": [
+            "wave3_complete"
+          ]
+        }
+      },
+      "delivery": "handle"
+    }
+  },
+  "orchestrator": null,
+  "budget": {
+    "n": 112,
+    "per_node": {
+      "muster": 1,
+      "close": 1,
+      "v1": 22,
+      "v2": 22,
+      "v3": 22,
+      "v4": 11,
+      "v5": 11,
+      "v6": 11,
+      "v7": 20
+    }
+  },
+  "topics": {
+    "peer.tracks": {
+      "schema": {
+        "track_id": {
+          "type": "number"
+        },
+        "e": {
+          "type": "number"
+        },
+        "n": {
+          "type": "number"
+        },
+        "class": {
+          "type": "enum",
+          "values": [
+            "vehicle",
+            "vessel",
+            "structure",
+            "unknown"
+          ]
+        },
+        "confidence": {
+          "type": "number"
+        },
+        "observed_tick": {
+          "type": "number"
+        }
+      },
+      "reporters": [
+        "thinker"
+      ],
+      "label": "peer-tracks",
+      "delivery": "handle",
+      "rate_per_tick": 4,
+      "hear": [
+        "v1",
+        "v2",
+        "v3",
+        "v4",
+        "v5",
+        "v6",
+        "v7"
+      ]
+    },
+    "peer.coverage": {
+      "schema": {
+        "sector": {
+          "type": "enum",
+          "values": [
+            "A",
+            "B",
+            "C"
+          ]
+        },
+        "phase": {
+          "type": "enum",
+          "values": [
+            "ingress",
+            "on_station",
+            "egress"
+          ]
+        },
+        "relief_tick": {
+          "type": "number"
+        }
+      },
+      "reporters": [
+        "thinker"
+      ],
+      "label": "peer-coverage",
+      "delivery": "clear",
+      "rate_per_tick": 1,
+      "hear": [
+        "v1",
+        "v2",
+        "v3",
+        "v4",
+        "v5",
+        "v6",
+        "v7"
+      ]
+    }
+  }
+}

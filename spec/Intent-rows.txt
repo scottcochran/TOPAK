@@ -1,0 +1,47 @@
+# Rows for live-gen-results.sh Intent: name mut spec kind property expected [CONST=value ...] [states=N]
+# Run: DEFAULTS='Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2' ./live-gen-results.sh Intent Intent-rows.txt "<title>"
+# A witness about a second lease under one intent sets SeatingBudget=2. MaxEffects is one above MaxCount, so that M_NOCOUNT has a next effect to reach.
+# expected: none: every property HOLDS and every witness is VIOLATED; M_NOINTENT breaks EveryEffectHasAnIntent only; M_NOCOUNT breaks EveryEffectHasALease only; M_WIDEINTENT breaks IntentNarrows only; M_LITEPROMOTES breaks AutonomousAddsNothing only; M_LASTINTENT breaks no property and leaves the witness NeverRestored holding.
+#
+# Mut = none.
+s-none-safe          none            Spec INVARIANT Safe                         HOLDS
+s-none-safe-2v       none            Spec INVARIANT Safe                         HOLDS    Vehicles={"v1","v2"} MaxLease=1
+s-none-safe-budget2  none            Spec INVARIANT Safe                         HOLDS    SeatingBudget=2 MaxCount=2 MaxEffects=3
+# Witnesses.
+w-ordered            none            Spec INVARIANT NeverOrdered                 VIOLATED
+w-successor          none            Spec INVARIANT NeverSuccessor               VIOLATED
+w-restored           none            Spec INVARIANT NeverRestored                VIOLATED
+w-refwide            none            Spec INVARIANT NeverRefusedWide             VIOLATED
+w-leased             none            Spec INVARIANT NeverLeased                  VIOLATED
+w-effect             none            Spec INVARIANT NeverEffect                  VIOLATED
+w-countspent         none            Spec INVARIANT NeverCountSpent              VIOLATED
+w-afterend           none            Spec INVARIANT NeverEffectAfterIntentEnded  VIOLATED
+w-refcount           none            Spec INVARIANT NeverRefusedAtCount          VIOLATED
+w-refnointent        none            Spec INVARIANT NeverRefusedNoIntent         VIOLATED
+w-refbudget          none            Spec INVARIANT NeverRefusedBudget           VIOLATED
+w-relet              none            Spec INVARIANT NeverReletSameIntent         VIOLATED SeatingBudget=2
+w-refauth            none            Spec INVARIANT NeverRefusedAuthority        VIOLATED
+w-step               none            Spec INVARIANT NeverScheduleStep            VIOLATED
+# M_NOINTENT.
+m-nointent-intent    M_NOINTENT      Spec INVARIANT EveryEffectHasAnIntent       VIOLATED
+m-nointent-lease     M_NOINTENT      Spec INVARIANT EveryEffectHasALease         HOLDS
+m-nointent-narrows   M_NOINTENT      Spec INVARIANT IntentNarrows                HOLDS
+m-nointent-auto      M_NOINTENT      Spec INVARIANT AutonomousAddsNothing        HOLDS
+# M_NOCOUNT.
+m-nocount-lease      M_NOCOUNT       Spec INVARIANT EveryEffectHasALease         VIOLATED
+m-nocount-intent     M_NOCOUNT       Spec INVARIANT EveryEffectHasAnIntent       HOLDS
+m-nocount-narrows    M_NOCOUNT       Spec INVARIANT IntentNarrows                HOLDS
+m-nocount-auto       M_NOCOUNT       Spec INVARIANT AutonomousAddsNothing        HOLDS
+# M_WIDEINTENT.
+m-wide-narrows       M_WIDEINTENT    Spec INVARIANT IntentNarrows                VIOLATED
+m-wide-intent        M_WIDEINTENT    Spec INVARIANT EveryEffectHasAnIntent       HOLDS
+m-wide-lease         M_WIDEINTENT    Spec INVARIANT EveryEffectHasALease         HOLDS
+m-wide-auto          M_WIDEINTENT    Spec INVARIANT AutonomousAddsNothing        HOLDS
+# M_LASTINTENT: ADR-0050's rule, which ⟨Q4⟩ declined. The witness holds, and so does every property.
+m-last-restored      M_LASTINTENT    Spec INVARIANT NeverRestored                HOLDS
+m-last-safe          M_LASTINTENT    Spec INVARIANT Safe                         HOLDS
+# M_LITEPROMOTES.
+m-lite-auto          M_LITEPROMOTES  Spec INVARIANT AutonomousAddsNothing        VIOLATED
+m-lite-intent        M_LITEPROMOTES  Spec INVARIANT EveryEffectHasAnIntent       HOLDS
+m-lite-lease         M_LITEPROMOTES  Spec INVARIANT EveryEffectHasALease         HOLDS
+m-lite-narrows       M_LITEPROMOTES  Spec INVARIANT IntentNarrows                HOLDS

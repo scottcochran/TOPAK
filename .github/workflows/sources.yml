@@ -1,0 +1,18 @@
+# Checks that the upstream builds the pins name are still what upstream serves: today, the tlapm release tag in
+# tools/TLAPS-PIN. On demand only; it reports and never edits a pin (tools/check-sources.sh). The upstream half of
+# intake, ADR-0069 §3 I-2 (Proposed); adapted from f1-tla's sources.yml.
+name: sources
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  sources:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+      - name: Check the pins against upstream
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: tools/check-sources.sh

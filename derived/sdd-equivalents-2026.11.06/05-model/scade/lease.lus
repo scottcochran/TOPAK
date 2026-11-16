@@ -1,0 +1,80 @@
+-- Layer: model · SCADE Suite / Lustre, checked with Kind 2 (or SCADE Design Verifier) · TOPAK source: spec/Lease_A1.tla
+-- Model-based design's natural home for this layer. The TLA+ module's nondeterministic actions
+-- become free inputs constrained by `assert`; its invariants become --%PROPERTY lines that Kind 2
+-- proves by k-induction or refutes with a trace. Two principals, two acts, as in the TLC run.
+-- Run: kind2 --enable IC3 --enable BMC lease.lus
+include "../../02-vocabulary/scade/lease_types.lus"
+
+const MAX_EPOCH : int = 2;
+const MAX_FENCE : int = 6;
+
+type Mut = enum { None, M_RENEW, M_FENCE, M_RUNG, M_ROLE, M_REVOKE, M_LOWER };
+
+type L = { live: bool; read: bool; emit: bool; rung: Rung; author: bool; epoch: int; fence: int };
+const NO_LEASE : L = { live = false; read = false; emit = false; rung = 0; author = true; epoch = 0; fence = 0 };
+
+function narrows(n, o: L) returns (b: bool) let b = (n.read => o.read) and (n.emit => o.emit); tel
+function refines(n, o: L) returns (b: bool) let b = narrows(n, o) and n.rung = o.rung and n.author = o.author; tel
+
+function renewal_allowed(mut: Mut; n, o: L) returns (b: bool)
+let
+  b = if mut = M_RENEW then true
+      else if mut = M_ROLE then narrows(n, o) and n.rung = o.rung
+      else if mut = M_LOWER then narrows(n, o) and n.rung <= o.rung and n.author = o.author
+      else refines(n, o);
+tel
+
+-- One principal's lease, driven by the scheduler's choice `act` and the free values of a grant/renewal.
+type Action = enum { Idle, Grant, Renew, Act, EndRound, RevokeLease };
+
+node principal(mut: Mut; act: Action; a_read, a_emit: bool; a_rung: Rung; a_author: bool;
+               epoch, fence: int; revoked_in: bool)
+      returns (lease, prev: L; revoked: bool; fence_used: bool; stale_admit: bool)
+var pl, pp: L; prev_revoked: bool; new: L;
+let
+  pl = NO_LEASE -> pre lease;  pp = NO_LEASE -> pre prev;  prev_revoked = false -> pre revoked;
+  new = { live = true; read = a_read; emit = a_emit; rung = a_rung; author = a_author; epoch = epoch; fence = fence + 1 };
+
+  lease = if act = Grant and not pl.live and (mut = M_REVOKE or not prev_revoked) and fence < MAX_FENCE then new
+          else if act = Renew and pl.live and pl.epoch = epoch and fence < MAX_FENCE and renewal_allowed(mut, new, pl) then new
+          else if act = EndRound and pl.live then NO_LEASE
+          else if act = RevokeLease then NO_LEASE
+          else pl;
+  prev  = if (act = Grant or act = Renew) and lease <> pl then pl
+          else if act = EndRound or act = RevokeLease then NO_LEASE else pp;
+  revoked = prev_revoked or act = RevokeLease;
+  fence_used = (act = Grant or act = Renew) and lease <> pl;
+  -- Act(p): admitted only live, in the alphabet, and (unless M_FENCE) at the current epoch.
+  stale_admit = act = Act and pl.live and (a_read and pl.read or a_emit and pl.emit)
+                and (mut = M_FENCE or pl.epoch = epoch) and pl.epoch <> epoch;
+tel
+
+node lease_system(mut: Mut; who: subrange [1, 2] of int; act: Action; fleet_fence: bool;
+                  a_read, a_emit: bool; a_rung: Rung; a_author: bool)
+      returns (ok_monotone, ok_fenced, ok_rung0, ok_revoked: bool)
+var epoch, fence: int; l1, p1, l2, p2: L; r1, r2, u1, u2, s1, s2: bool; stale: bool;
+let
+  epoch = 0 -> (if fleet_fence and pre epoch < MAX_EPOCH then pre epoch + 1 else pre epoch);
+  fence = 0 -> (pre fence + (if u1 or u2 then 1 else 0));
+  (l1, p1, r1, u1, s1) = principal(mut, (if who = 1 then act else Idle), a_read, a_emit, a_rung, a_author, 0 -> pre epoch, 0 -> pre fence, false);
+  (l2, p2, r2, u2, s2) = principal(mut, (if who = 2 then act else Idle), a_read, a_emit, a_rung, a_author, 0 -> pre epoch, 0 -> pre fence, false);
+  assert not (fleet_fence and act <> Idle);           -- one action per step, as Next is a disjunction
+  stale = false -> (pre stale or s1 or s2);
+
+  ok_monotone = (l1.live and p1.live and l1.epoch = p1.epoch => refines(l1, p1))
+            and (l2.live and p2.live and l2.epoch = p2.epoch => refines(l2, p2));
+  ok_fenced   = not stale;
+  ok_rung0    = (l1.live and l1.rung = 0 => not (mut <> M_RUNG and l1.rung >= 1))
+            and (l2.live and l2.rung = 0 => not (mut <> M_RUNG and l2.rung >= 1));
+  ok_revoked  = (r1 => not l1.live) and (r2 => not l2.live);
+
+  --%MAIN;
+  --%PROPERTY "LeaseAuthorityMonotone"   mut = None => ok_monotone;
+  --%PROPERTY "NoActionUnderFencedEpoch" mut = None => ok_fenced;
+  --%PROPERTY "Rung0NeverContained"      mut = None => ok_rung0;
+  --%PROPERTY "RevokedStaysStopped"      mut = None => ok_revoked;
+  -- Mutations: each must be *falsifiable*. Kind 2 reports a counterexample trace, which is the TLC row.
+  --%PROPERTY "M_RENEW breaks monotone (expect falsified)" mut = M_RENEW => ok_monotone;
+  --%PROPERTY "M_FENCE breaks fenced (expect falsified)"   mut = M_FENCE => ok_fenced;
+  --%PROPERTY "M_REVOKE breaks revoked (expect falsified)" mut = M_REVOKE => ok_revoked;
+tel

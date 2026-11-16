@@ -1,0 +1,6 @@
+running 4 test(s)
+  test PROBE Renew naming an emergency seat (same domain as the operator) ... ok
+  test CONTROL Renew as tracked (C2 renewal of a live lease) ... ok
+  test PROBE Regrant naming an emergency seat (same domain as the operator) ... ok
+  test CONTROL Regrant as tracked (C1 successor grant, nothing wider) ... ok
+results: 4 passed, 0 failed

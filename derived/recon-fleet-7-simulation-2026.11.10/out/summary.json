@@ -1,0 +1,384 @@
+{
+  "scenario": "recon-7 life cycle, nominal plan with injected adversity",
+  "seed": 20261110,
+  "events": 6024,
+  "policy_decisions_recorded": 6429,
+  "mesh_status": "completed",
+  "coverage": {
+    "A": {
+      "ticks": 2445,
+      "of": 2640,
+      "pct": 92.6,
+      "gaps": [
+        [
+          120,
+          124
+        ],
+        [
+          240,
+          241
+        ],
+        [
+          360,
+          361
+        ],
+        [
+          480,
+          481
+        ],
+        [
+          600,
+          601
+        ],
+        [
+          720,
+          721
+        ],
+        [
+          840,
+          844
+        ],
+        [
+          920,
+          960
+        ],
+        [
+          1040,
+          1044
+        ],
+        [
+          1160,
+          1161
+        ],
+        [
+          1280,
+          1281
+        ],
+        [
+          1400,
+          1401
+        ],
+        [
+          1520,
+          1521
+        ],
+        [
+          1640,
+          1641
+        ],
+        [
+          1760,
+          1761
+        ],
+        [
+          1820,
+          1932
+        ],
+        [
+          2019,
+          2020
+        ],
+        [
+          2139,
+          2140
+        ],
+        [
+          2259,
+          2260
+        ],
+        [
+          2379,
+          2380
+        ],
+        [
+          2460,
+          2463
+        ],
+        [
+          2499,
+          2511
+        ],
+        [
+          2630,
+          2631
+        ]
+      ]
+    },
+    "B": {
+      "ticks": 1615,
+      "of": 2640,
+      "pct": 61.2,
+      "gaps": [
+        [
+          120,
+          121
+        ],
+        [
+          240,
+          241
+        ],
+        [
+          300,
+          332
+        ],
+        [
+          427,
+          428
+        ],
+        [
+          547,
+          548
+        ],
+        [
+          667,
+          668
+        ],
+        [
+          787,
+          788
+        ],
+        [
+          907,
+          908
+        ],
+        [
+          920,
+          960
+        ],
+        [
+          1040,
+          1041
+        ],
+        [
+          1160,
+          1161
+        ],
+        [
+          1280,
+          1281
+        ],
+        [
+          1400,
+          1401
+        ],
+        [
+          1520,
+          1521
+        ],
+        [
+          1640,
+          1641
+        ],
+        [
+          1760,
+          2700
+        ]
+      ]
+    },
+    "C": {
+      "ticks": 2071,
+      "of": 2640,
+      "pct": 78.4,
+      "gaps": [
+        [
+          120,
+          121
+        ],
+        [
+          240,
+          241
+        ],
+        [
+          360,
+          361
+        ],
+        [
+          480,
+          481
+        ],
+        [
+          600,
+          601
+        ],
+        [
+          720,
+          721
+        ],
+        [
+          840,
+          841
+        ],
+        [
+          920,
+          960
+        ],
+        [
+          1040,
+          1041
+        ],
+        [
+          1160,
+          1161
+        ],
+        [
+          1280,
+          1281
+        ],
+        [
+          1400,
+          1401
+        ],
+        [
+          1520,
+          1521
+        ],
+        [
+          1640,
+          1641
+        ],
+        [
+          1760,
+          1761
+        ],
+        [
+          1820,
+          1932
+        ],
+        [
+          2019,
+          2020
+        ],
+        [
+          2139,
+          2140
+        ],
+        [
+          2259,
+          2260
+        ],
+        [
+          2300,
+          2700
+        ]
+      ]
+    }
+  },
+  "leases_granted": 61,
+  "budget": 112,
+  "per_node_spent": {
+    "muster": 1,
+    "v1": 15,
+    "v2": 3,
+    "v3": 12,
+    "v7": 6,
+    "v4": 8,
+    "v6": 8,
+    "v5": 7,
+    "close": 1
+  },
+  "outstanding_final": 8,
+  "outstanding_peak_at_grant": 112,
+  "first_kup_block_tick": 1761,
+  "ticks_blocked_on_kup": 297,
+  "membership_final": [
+    "v1",
+    "v2",
+    "v4",
+    "v5",
+    "v6",
+    "v7"
+  ],
+  "certificate_final": 4,
+  "budget_cap_final": 96,
+  "watermarks": 124,
+  "revocations": {
+    "v5": {
+      "delivered_at": 1900,
+      "effects_since_order": 55,
+      "ordered_at": 1500
+    }
+  },
+  "admits": 1396,
+  "permits": 1296,
+  "refused_at_floor": 3,
+  "refused_by_bundle": 97,
+  "by_rule": {
+    "C1": 1,
+    "C2": 1,
+    "C3": 1,
+    "F4": 1,
+    "F5": 1,
+    "FD12-topic-declared": 1,
+    "FD8-local-bounds": 1,
+    "R1-actuate-allowlisted": 1,
+    "ROE-10": 1,
+    "ROE-11": 2,
+    "ROE-12": 1,
+    "ROE-3": 2,
+    "ROE-4": 1,
+    "ROE-5": 1,
+    "ROE-6": 5,
+    "ROE-7": 1,
+    "ROE-8": 1,
+    "ROE-9": 79
+  },
+  "effects": 399,
+  "peer_sends": 876,
+  "beacons": 4,
+  "peer_adds_nothing": {
+    "checked": 224,
+    "held": 224
+  },
+  "invariant_failures": 0,
+  "vehicles_final": {
+    "v1": {
+      "alive": true,
+      "mode": "ground",
+      "sorties": 2,
+      "fuel_pct": 99.0384,
+      "chain_len": 349
+    },
+    "v2": {
+      "alive": true,
+      "mode": "ground",
+      "sorties": 1,
+      "fuel_pct": 100.0,
+      "chain_len": 51
+    },
+    "v3": {
+      "alive": false,
+      "mode": "destroyed",
+      "sorties": 1,
+      "fuel_pct": 72.24,
+      "chain_len": 222
+    },
+    "v4": {
+      "alive": true,
+      "mode": "ground",
+      "sorties": 1,
+      "fuel_pct": 100.0,
+      "chain_len": 191
+    },
+    "v5": {
+      "alive": true,
+      "mode": "ground",
+      "sorties": 1,
+      "fuel_pct": 100.0,
+      "chain_len": 169
+    },
+    "v6": {
+      "alive": true,
+      "mode": "ground",
+      "sorties": 1,
+      "fuel_pct": 100.0,
+      "chain_len": 160
+    },
+    "v7": {
+      "alive": true,
+      "mode": "ground",
+      "sorties": 1,
+      "fuel_pct": 100.0,
+      "chain_len": 137
+    }
+  }
+}

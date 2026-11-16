@@ -1,0 +1,12 @@
+{
+  "_comment": "ADR-0031 §1: the lease is closed. The OpenAPI's Lease schema has additionalProperties: false, so Specmatic refuses a stub that adds a field and fails a provider that returns one.",
+  "http-request": { "method": "POST", "path": "/leases/1/renew", "body": { "seat": "a1", "alphabet": ["Read"], "rung": 0, "ttl_ms": 500 } },
+  "http-response": {
+    "status": 201,
+    "body": {
+      "principal": "a1", "seat": "a1", "persona": "(string)", "epoch": 0, "fence": 2, "rulesEpoch": 0,
+      "bundle": "(string)", "confinement": { "digest": "(string)", "rung": 0 },
+      "alphabet": ["Read"], "round": 7, "role": "author", "ttl_ms": 500
+    }
+  }
+}

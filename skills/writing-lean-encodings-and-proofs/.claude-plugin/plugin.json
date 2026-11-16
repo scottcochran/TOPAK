@@ -1,0 +1,9 @@
+{
+  "name": "writing-lean-encodings-and-proofs",
+  "version": "0.1.0",
+  "description": "Second-route Lean 4 proofs of formal specifications, code and policies: re-encodings, transcriptions, models and statements in a verified semantics, each with its added premise named, checked where it carries weight, and evidenced by dated results files with a kernel replay",
+  "author": {
+    "name": "Scott Cochran",
+    "url": "https://github.com/scottcochran/TOPAK"
+  }
+}

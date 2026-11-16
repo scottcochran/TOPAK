@@ -1,0 +1,44 @@
+regenerated 52 diagrams with Python 3.9.25 (pinned 3.9)
+  unchanged   48
+  UNEXPECTED  G1-trusted-base-2026.10.05.svg bdb22890fb7f000e -> b686591abe496302
+  UNEXPECTED  G3-theorem-premise-dag-2026.10.05.svg 1698c0d2d0fae8a2 -> ee306a494c8003f3
+  UNEXPECTED  H6-proof-certification-2026.10.05.svg 4561bec4905c58b2 -> 2b89db4e0d6e70c9
+  UNEXPECTED  H7-lean-route-2026.10.05.svg 7b0a8a2e9057300d -> a5027eb4a5727b40
+
+Unexpected changes are findings: a diagram's input moved (a record, a results file, a pin), or the library changed. Read the diff (git diff --word-diff on the SVG) before amending or restoring.
+## H7
+-e995fb0b221a96a8),
++0204367335e9989a),
+## G1
+-height="6683"
++height="6702"
+-6683"
++6702"
+-height="6683"
++height="6702"
+-height="181.4"
++height="200.0"
+-height="181.4"
++height="200.0"
+-lists).
++lists). Both cases are reported upstream ⟨A4⟩ ⟨B39⟩ (tlaplus/tlapm#309 and #310, 2026.10.18; ADR-0046 A3), labelled
++soundness, their reproducers and tests taken up by a maintainer, neither fixed as of 2026.11.03; a release that fixes either is a new instance of this row, by its digest.
+-y="6147.8"
+## G3
+-font-size="12.9">premise-routes-results-2026.10.08b.txt,
++font-size="12.9">premise-routes-results-2026.11.03.txt,
+## H6
+-height="5974"
++height="5973"
+-5974"
++5973"
+-height="5974"
++height="5973"
+-5
++9
+-class="f-red">5
++class="f-red">1
+-5
++1
+-proofs
++proof

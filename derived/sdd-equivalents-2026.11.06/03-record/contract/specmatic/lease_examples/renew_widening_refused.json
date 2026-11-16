@@ -1,0 +1,12 @@
+{
+  "_comment": "Layer: record · Specmatic example for ../api/lease.openapi.yaml · ADR-0031 §4.1. `specmatic test` sends the request to the real provider and checks the response against the spec; `specmatic stub` serves it to consumers.",
+  "http-request": {
+    "method": "POST",
+    "path": "/leases/1/renew",
+    "body": { "seat": "a1", "alphabet": ["Read", "Emit", "Draft"], "rung": 0, "ttl_ms": 1000 }
+  },
+  "http-response": {
+    "status": 409,
+    "body": { "reason": "renewal widens the alphabet" }
+  }
+}

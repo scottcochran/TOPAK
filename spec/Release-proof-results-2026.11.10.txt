@@ -1,0 +1,10 @@
+TOPAK — TLAPS proof results for Release.tla: every obligation of Release_proof.tla, checked by the prover below
+Modules: Release.tla (sha256 7a8a212d3f07956b) · Release_proof.tla (sha256 ac1cb37282c19f5a)
+Prover: tlapm 7824dab (binary sha256 e150fb793fb28592) · backends: Z3 version 4.8.9 - 64 bit · zenon version 0.8.4 [a268] 2017-11-14 · Isabelle2025 · LS4 for PTL · driver: proof-results.sh
+Assumptions: MaxActsNat == MaxActs \in Nat · MaxTickNat == MaxTick \in Nat · FreshTNat == FreshT \in Nat
+Theorems: ShapeAlways · SignedByPersonAlways · OrderedAtCommandAlways · NoOlderThanDeclaredAlways · UsedOnceAlways · IrreversibleIsAPersonsAlways · ConflictIsAFindingAlways · OrderedInContactAlways · ReleaseNeverCoupledAlways · SafeAlways
+Lemmas: NoActRec · ActFacts · NewAct · InitShape · QuietFacts · QuietType · NextShape · FireFrame · NextSignedByPerson · NextOrderedAtCommand · NextNoOlderThanDeclared · InitOnce · NextOnce · ConflictFrame · NextConflict · ContactFrame · NextOrderedInContact · ReleaseNeverCoupledValid · MutAgentReleaseSkipsTheKey · MutLiteReleaseTakesAnyCertificate · MutReplayIgnoresUsed · MutAnyVehicleIgnoresTheVehicle · MutLateFirstIgnoresTheTicks · MutNoContactAdmitsCut · MutVoidRemovesFromStanding · MutObsCoupleNeedsObserver · MutAgentProposesNeedsAgent
+A proved obligation is a theorem of the module under its assumptions and the hypotheses the statement names; the prover, not the constants, bounds the claim. Mutations and witnesses are behaviours and stay with TLC.
+
+File "./Release_proof.tla", line 1, character 1 to line 753, character 77:
+[INFO]: All 613 obligations proved.

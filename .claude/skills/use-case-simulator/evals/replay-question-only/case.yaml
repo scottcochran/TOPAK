@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: replay-question-only
+expected_outcome: |
+  Answers come from the existing trace with the existing replay tool. No simulation is run and nothing is written.

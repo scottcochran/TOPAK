@@ -1,0 +1,104 @@
+# Layer: record · API specification (OpenAPI 3.1) · TOPAK source: ADR-0031 §4, §5
+# The paper's "design-first" form: the record as the contract the operator channel (ADR-0050) would
+# expose. Each operation carries the guarantee it discharges in an `x-guarantee` extension so a
+# contract test (./../contract) can name it. The rules that are not request properties (one live
+# lease, the revocation set) appear as 409 responses, which is as much as an API spec can say.
+openapi: 3.1.0
+info:
+  title: TOPAK lease operations (ADR-0031)
+  version: 2026.11.06
+  description: >
+    A lease is granted, renewed, ended and fenced over the operator socket. Every operation is a
+    consensus-ordered log entry; the response carries the log index it was applied at, which is the
+    lease's fence. Renewal may only narrow (§4). Revocation and the epoch fence are the mechanism's,
+    ahead of the floor (§5).
+paths:
+  /leases/{fence}/renew:
+    post:
+      operationId: renewLease
+      x-guarantee: [ADR-0031 §4.1, ADR-0031 §4.2, ADR-0031 §4.4]
+      summary: Renew a live lease, narrowing it
+      parameters:
+        - { name: fence, in: path, required: true, schema: { type: integer, minimum: 1 } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RenewRequest' }
+      responses:
+        '201':
+          description: Renewed at a new fence. Every field but alphabet, ttl_ms and fence is the old lease's.
+          content: { application/json: { schema: { $ref: '#/components/schemas/Lease' } } }
+        '409':
+          description: Refused. The live lease is unchanged.
+          content: { application/json: { schema: { $ref: '#/components/schemas/Refusal' } } }
+  /epoch/increment:
+    post:
+      operationId: fenceEpoch
+      x-guarantee: [ADR-0031 §5.2, ADR-0031 §5.3]
+      summary: The fleet fence. Ends every live round.
+      responses:
+        '202': { description: Applied. Every lease at the old epoch is fenced. }
+  /revocations:
+    post:
+      operationId: revoke
+      x-guarantee: [ADR-0031 §5.1, ADR-0031 §5.5]
+      summary: Targeted revocation. Ends matching leases and bars later grants. Permanent within the chain.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [kind, id]
+              properties:
+                kind: { type: string, enum: [principal, persona, confinement] }
+                id: { type: string }
+      responses:
+        '202': { description: Applied at its log position. The epoch and every other lease are untouched. }
+  /actions:
+    post:
+      operationId: act
+      x-guarantee: [ADR-0031 §5.3]
+      summary: An action under a lease. Rejected by the mechanism before the floor when the epoch is fenced.
+      responses:
+        '200': { description: Decided by floor and bundle. }
+        '403':
+          description: Mechanism deny. `FencedEpoch` never reaches the floor.
+          content: { application/json: { schema: { $ref: '#/components/schemas/MechanismDeny' } } }
+components:
+  schemas:
+    RenewRequest:
+      type: object
+      additionalProperties: false
+      required: [seat, alphabet, rung, ttl_ms]
+      properties:
+        seat: { type: string }
+        alphabet: { type: array, items: { $ref: '#/components/schemas/ActionKind' }, uniqueItems: true }
+        rung: { type: integer, minimum: 0, maximum: 3, description: Must equal the live lease's (A1). }
+        ttl_ms: { type: integer, minimum: 0, description: At most the live lease's and at most T_persona (A2). }
+    Refusal:
+      type: object
+      required: [reason]
+      properties:
+        reason:
+          type: string
+          enum:
+            - renewal widens the alphabet
+            - renewal lengthens the TTL
+            - renewal changes confinement rung
+            - renewal changes confinement digest
+            - renewal changes round
+            - renewal changes role
+            - renewal changes bundle
+            - renewal of a fenced lease
+            - renewal names a lease that is not the seat's live lease
+            - renewal ttl exceeds T_persona
+    MechanismDeny:
+      type: object
+      required: [kind]
+      properties:
+        kind: { type: string, enum: [FencedEpoch, RequestEpochMismatch, FencedRulesEpoch, NoLiveLease] }
+        lease: { type: integer }
+        current: { type: integer }
+    ActionKind: { type: string, enum: [Read, Draft, Invoke, Emit, Submit, Vote, Consult, Actuate, Report] }
+    Lease: { $ref: '../../06-interface/api/lease.schema.json' }

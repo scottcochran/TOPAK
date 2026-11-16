@@ -1,0 +1,32 @@
+-- Layer: vocabulary · SCADE Suite / Lustre type declarations · TOPAK source: narrative/glossary.md §4, ADR-0031 §1
+-- In model-based design the vocabulary lives in the type and constant declarations the models
+-- share (SCADE: a package of types; Simulink: a data dictionary of Bus and Enum objects).
+-- Lustre has no sets or strings, so an alphabet is a record of booleans and digests are opaque ints.
+
+type Digest = int;                       -- stands for a SHA-256; never computed on
+
+-- Alphabet: the action variants a seat may express (ADR-0022 §1, ADR-0040 §1).
+type Alphabet = { read: bool; draft: bool; invoke: bool; emit: bool; submit: bool; vote: bool;
+                  consult: bool; actuate: bool; report: bool };
+
+-- Rung: how belief in the confinement profile was established. 0 is Mediated, always.
+type Rung = subrange [0, 3] of int;
+
+type Confinement = { digest: Digest; rung: Rung };
+
+type RoundRole = enum { Author, Voter };    -- not ordered: a change of role is a grant
+
+-- Lease: one composite credential, one round, twelve fields, closed (ADR-0031 §1).
+type Lease = { principal: int; seat: int; persona: Digest; epoch: int; fence: int;
+               rulesEpoch: int; bundle: Digest; confinement: Confinement; alphabet: Alphabet;
+               round: int; role: RoundRole; ttl_ms: int };
+
+const T_PERSONA_MS : int = 3600000;      -- placeholder value (floor/genesis-values.json)
+
+-- Renewal only narrows: alphabet ⊆, ttl ≤; everything else fixed (ADR-0031 §4, A1).
+function subset(a, b: Alphabet) returns (ok: bool)
+let
+  ok = (a.read => b.read) and (a.draft => b.draft) and (a.invoke => b.invoke) and
+       (a.emit => b.emit) and (a.submit => b.submit) and (a.vote => b.vote) and
+       (a.consult => b.consult) and (a.actuate => b.actuate) and (a.report => b.report);
+tel

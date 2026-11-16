@@ -1,0 +1,16 @@
+module	runner	rows	tier	defaults
+Alone	live	Alone-rows.txt	pr	Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return"
+Coupling_live	live	Coupling_live-rows.txt	pr
+Emergency_live	live	Emergency_live-rows.txt	pr
+Federation	live	Federation-rows.txt	pr	MaxEpoch=0 RootBudget=2 Captured={"a"} Verifiers={"g"}
+Intent	live	Intent-rows.txt	pr	Vehicles={"v1"} SeatingBudget=1 MaxRound=2 MaxLease=2 MaxCount=1 MaxEffects=2
+Membership	live	Membership-rows.txt	pr	Floor=1 Schedule={5,4} Captured={"r1"} MaxBallots=30
+Outstanding	live	Outstanding-rows.txt	pr	KUp=2 MaxCount=2 Active={"l1","l2"} PlaneCaptured=FALSE
+Peer	live	Peer-rows.txt	pr	MaxDeliver=2 MaxSend=1
+PlaneClock	live	PlaneClock-rows.txt	pr	Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4
+Release	live	Release-rows.txt	pr	MaxActs=2 MaxTick=1 FreshT=0
+BreakGlass_A1	a1	BreakGlass_A1-rows.txt	pr
+NonComposition_A1	a1	NonComposition_A1-rows.txt	pr
+RunConfinement	runconfinement-gen-results.sh	runconfinement-rows-2026.10.02.txt	pr
+Workflow	workflow-gen-results.sh	Workflow-rows.txt	pr
+Mesh	mesh-gen-results.sh	Mesh-rows.txt	manual

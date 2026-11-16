@@ -1,0 +1,81 @@
+# Rows for live-gen-results.sh Release: name mut spec kind property expected [CONST=value ...] [states=N]
+# Run: DEFAULTS='MaxActs=2 MaxTick=1 FreshT=0' ./live-gen-results.sh Release Release-rows.txt "<title>"
+# expected: none: every property HOLDS and every witness is VIOLATED; M_AGENTRELEASE breaks SignedByPerson; M_LITERELEASE breaks OrderedAtCommand; M_REPLAY and M_ANYVEHICLE break UsedOnce; M_LATEFIRST breaks NoOlderThanDeclared; each of those four also breaks IrreversibleIsAPersons, their conjunction; M_VOID breaks ConflictIsAFinding; M_NOCONTACT breaks OrderedInContact; M_OBSCOUPLE and M_AGENTPROPOSES break ReleaseNeverCoupled; no mutation breaks a property it is not listed against.
+#
+# Mut = none.
+s-none-safe          none             Spec INVARIANT Safe                   HOLDS
+s-none-coupled       none             Spec INVARIANT ReleaseNeverCoupled    HOLDS
+s-none-safe-3        none             Spec INVARIANT Safe                   HOLDS    MaxActs=3
+s-none-safe-fresh1   none             Spec INVARIANT Safe                   HOLDS    MaxTick=2 FreshT=1
+s-none-coup-fresh1   none             Spec INVARIANT ReleaseNeverCoupled    HOLDS    MaxTick=2 FreshT=1
+# Witnesses.
+w-fired              none             Spec INVARIANT NeverFired             VIOLATED
+w-aftercut           none             Spec INVARIANT NeverFiredAfterCut     VIOLATED
+w-refkey             none             Spec INVARIANT NeverRefusedKey        VIOLATED
+w-refcert            none             Spec INVARIANT NeverRefusedCert       VIOLATED
+w-refvehicle         none             Spec INVARIANT NeverRefusedVehicle    VIOLATED
+w-refreplay          none             Spec INVARIANT NeverRefusedReplay     VIOLATED
+w-refaged            none             Spec INVARIANT NeverRefusedAged       VIOLATED
+w-relayrefuse        none             Spec INVARIANT NeverRelayRefused      VIOLATED
+w-finding            none             Spec INVARIANT NeverFinding           VIOLATED
+w-subtract           none             Spec INVARIANT NeverSubtraction       VIOLATED
+# M_AGENTRELEASE.
+m-agent-person       M_AGENTRELEASE   Spec INVARIANT SignedByPerson         VIOLATED
+m-agent-all          M_AGENTRELEASE   Spec INVARIANT IrreversibleIsAPersons VIOLATED
+m-agent-cmd          M_AGENTRELEASE   Spec INVARIANT OrderedAtCommand       HOLDS
+m-agent-once         M_AGENTRELEASE   Spec INVARIANT UsedOnce               HOLDS
+m-agent-fresh        M_AGENTRELEASE   Spec INVARIANT NoOlderThanDeclared    HOLDS
+m-agent-conflict     M_AGENTRELEASE   Spec INVARIANT ConflictIsAFinding     HOLDS
+m-agent-contact      M_AGENTRELEASE   Spec INVARIANT OrderedInContact       HOLDS
+m-agent-coupled      M_AGENTRELEASE   Spec INVARIANT ReleaseNeverCoupled    HOLDS
+# M_LITERELEASE.
+m-lite-cmd           M_LITERELEASE    Spec INVARIANT OrderedAtCommand       VIOLATED
+m-lite-all           M_LITERELEASE    Spec INVARIANT IrreversibleIsAPersons VIOLATED
+m-lite-person        M_LITERELEASE    Spec INVARIANT SignedByPerson         HOLDS
+m-lite-once          M_LITERELEASE    Spec INVARIANT UsedOnce               HOLDS
+m-lite-fresh         M_LITERELEASE    Spec INVARIANT NoOlderThanDeclared    HOLDS
+m-lite-conflict      M_LITERELEASE    Spec INVARIANT ConflictIsAFinding     HOLDS
+m-lite-contact       M_LITERELEASE    Spec INVARIANT OrderedInContact       HOLDS
+m-lite-coupled       M_LITERELEASE    Spec INVARIANT ReleaseNeverCoupled    HOLDS
+# M_REPLAY.
+m-replay-once        M_REPLAY         Spec INVARIANT UsedOnce               VIOLATED
+m-replay-all         M_REPLAY         Spec INVARIANT IrreversibleIsAPersons VIOLATED
+m-replay-person      M_REPLAY         Spec INVARIANT SignedByPerson         HOLDS
+m-replay-cmd         M_REPLAY         Spec INVARIANT OrderedAtCommand       HOLDS
+m-replay-fresh       M_REPLAY         Spec INVARIANT NoOlderThanDeclared    HOLDS
+m-replay-conflict    M_REPLAY         Spec INVARIANT ConflictIsAFinding     HOLDS
+m-replay-contact     M_REPLAY         Spec INVARIANT OrderedInContact       HOLDS
+m-replay-coupled     M_REPLAY         Spec INVARIANT ReleaseNeverCoupled    HOLDS
+# M_ANYVEHICLE: the check ADR-0066 §4 omits (the module's header, finding 1).
+m-vehicle-once       M_ANYVEHICLE     Spec INVARIANT UsedOnce               VIOLATED
+m-vehicle-all        M_ANYVEHICLE     Spec INVARIANT IrreversibleIsAPersons VIOLATED
+m-vehicle-person     M_ANYVEHICLE     Spec INVARIANT SignedByPerson         HOLDS
+m-vehicle-cmd        M_ANYVEHICLE     Spec INVARIANT OrderedAtCommand       HOLDS
+m-vehicle-fresh      M_ANYVEHICLE     Spec INVARIANT NoOlderThanDeclared    HOLDS
+m-vehicle-conflict   M_ANYVEHICLE     Spec INVARIANT ConflictIsAFinding     HOLDS
+m-vehicle-contact    M_ANYVEHICLE     Spec INVARIANT OrderedInContact       HOLDS
+m-vehicle-coupled    M_ANYVEHICLE     Spec INVARIANT ReleaseNeverCoupled    HOLDS
+# M_LATEFIRST.
+m-late-fresh         M_LATEFIRST      Spec INVARIANT NoOlderThanDeclared    VIOLATED
+m-late-all           M_LATEFIRST      Spec INVARIANT IrreversibleIsAPersons VIOLATED
+m-late-person        M_LATEFIRST      Spec INVARIANT SignedByPerson         HOLDS
+m-late-cmd           M_LATEFIRST      Spec INVARIANT OrderedAtCommand       HOLDS
+m-late-once          M_LATEFIRST      Spec INVARIANT UsedOnce               HOLDS
+m-late-conflict      M_LATEFIRST      Spec INVARIANT ConflictIsAFinding     HOLDS
+m-late-contact       M_LATEFIRST      Spec INVARIANT OrderedInContact       HOLDS
+m-late-coupled       M_LATEFIRST      Spec INVARIANT ReleaseNeverCoupled    HOLDS
+# M_VOID.
+m-void-conflict      M_VOID           Spec INVARIANT ConflictIsAFinding     VIOLATED
+m-void-all           M_VOID           Spec INVARIANT IrreversibleIsAPersons HOLDS
+m-void-contact       M_VOID           Spec INVARIANT OrderedInContact       HOLDS
+m-void-coupled       M_VOID           Spec INVARIANT ReleaseNeverCoupled    HOLDS
+# M_NOCONTACT.
+m-nolink-contact     M_NOCONTACT      Spec INVARIANT OrderedInContact       VIOLATED
+m-nolink-all         M_NOCONTACT      Spec INVARIANT IrreversibleIsAPersons HOLDS
+m-nolink-conflict    M_NOCONTACT      Spec INVARIANT ConflictIsAFinding     HOLDS
+m-nolink-coupled     M_NOCONTACT      Spec INVARIANT ReleaseNeverCoupled    HOLDS
+# M_OBSCOUPLE and M_AGENTPROPOSES: only the ENABLED invariant sees them.
+m-obs-coupled        M_OBSCOUPLE      Spec INVARIANT ReleaseNeverCoupled    VIOLATED
+m-obs-safe           M_OBSCOUPLE      Spec INVARIANT Safe                   HOLDS
+m-agentp-coupled     M_AGENTPROPOSES  Spec INVARIANT ReleaseNeverCoupled    VIOLATED
+m-agentp-safe        M_AGENTPROPOSES  Spec INVARIANT Safe                   HOLDS

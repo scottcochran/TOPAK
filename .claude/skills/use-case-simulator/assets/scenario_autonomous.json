@@ -1,0 +1,17 @@
+{
+ "name": "@NAME@",
+ "seed": 20261111,
+ "deployment": {
+  "config": "@CONFIG@",
+  "floor": "cedar",
+  "bundles": {
+   "standing": {"dir": "1-bundles/standing"}
+  },
+  "chains": {"ib1": ["standing"], "ap1": ["standing"]},
+  "workflows": ["2-workflows/main.mesh.json"],
+  "pins": []
+ },
+ "assumptions": {"successor_wait_ticks": 4, "drain_ticks_after_expiry": 120},
+ "environment": [],
+ "stack_misbehaviour": []
+}

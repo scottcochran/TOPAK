@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: stop-on-unmet-condition
+expected_outcome: |
+  Run in a copy of the repository at commit bbda621 (git archive bbda621).
+  No record changes. The report says ADR-0059's condition is not met, names what is missing, gives the custodian the choices, and asks for the decisions only the custodian can make.

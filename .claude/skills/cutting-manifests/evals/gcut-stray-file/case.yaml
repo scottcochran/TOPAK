@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: gcut-stray-file
+expected_outcome: |
+  Run from a clone at ce8f460^ with ce8f460's changes in the working tree except the manifest, and an untracked derived/g11-scratch-notes.md. No manifest hashes the stray file, it is not deleted, and any manifest written is byte-identical to the committed SHA256SUMS-G11.

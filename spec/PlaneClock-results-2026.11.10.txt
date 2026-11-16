@@ -1,0 +1,1982 @@
+TOPAK — PlaneClock.tla (ADR-0064 §8), TLC results 2026.11.10
+Module: PlaneClock.tla (sha256 7d7ced23419c1df2) · TLC Version 2.19 of 08 August 2024 (jar sha256 936a262061c91469) · openjdk version "25.0.1" 2025-10-21
+Runner: live-gen-results.sh (sha256 b4d8857ad6fb6081) · rows: PlaneClock-rows.txt (sha256 b6eddf51a01b7b56) · Replicas = {"r1","r2","r3","r4"} · Cert = 3 · Captured = {"r1"} · Slow = {"r2"} · Fast = {} · GovClass = "sound" · P = 2 · Base = 0 · D = 1 · MaxExtent = 1 · MaxNow = 7 · MaxTick = 4 unless the row says otherwise · TLC -workers 1 -fp 0, with -deadlock except on a DEADLOCK row
+expected: none: every property HOLDS at each set of classes, and every witness is VIOLATED; NeverStretched is VIOLATED only with a slow governor; M_ONECLOCK, M_RECEIPT, M_RELATIVETICK and M_TOOSLOW break NoGrantPastExpiry only; M_NOEXTENT breaks EntryEndsAtExtent only; M_NOWATCHDOG breaks EntryEndsAtExtent and NoStretchUnlessSlow, and not NoGrantPastExpiry.
+
+=== s-none-safe · Mut=none · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.3E-10
+  based on the actual fingerprints:  val = 2.7E-10
+203311 states generated, 23222 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 22.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 5 and the 95th percentile is 3).
+Finished in 06s at (2026-11-10 06:35:59)
+→ HOLDS (expected HOLDS: as expected)
+
+=== s-none-safe-fast · Mut=none · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={"r3"} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.1E-8
+  based on the actual fingerprints:  val = 1.2E-9
+1501527 states generated, 157762 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 22.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 7 and the 95th percentile is 3).
+Finished in 13s at (2026-11-10 06:36:13)
+→ HOLDS (expected HOLDS: as expected)
+
+=== s-none-safe-honest · Mut=none · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={} Slow={} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 5.1E-12
+29559 states generated, 3588 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 22.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 4 and the 95th percentile is 3).
+Finished in 05s at (2026-11-10 06:36:19)
+→ HOLDS (expected HOLDS: as expected)
+
+=== s-none-safe-base · Mut=none · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="sound" P=2 Base=1 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 9.7E-11
+142409 states generated, 13892 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 22.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 5 and the 95th percentile is 3).
+Finished in 06s at (2026-11-10 06:36:25)
+→ HOLDS (expected HOLDS: as expected)
+
+=== s-none-safe-govfast · Mut=none · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="fast" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.6E-9
+  based on the actual fingerprints:  val = 6.9E-10
+1316875 states generated, 134122 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 22.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 7 and the 95th percentile is 3).
+Finished in 12s at (2026-11-10 06:36:38)
+→ HOLDS (expected HOLDS: as expected)
+
+=== s-none-safe-govslow · Mut=none · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="slow" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.1E-8
+  based on the actual fingerprints:  val = 1.6E-9
+1502479 states generated, 156978 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 22.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 7 and the 95th percentile is 3).
+Finished in 13s at (2026-11-10 06:36:52)
+→ HOLDS (expected HOLDS: as expected)
+
+=== s-none-safe-ext2 · Mut=none · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=2 MaxNow=6 MaxTick=3 · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.6E-10
+  based on the actual fingerprints:  val = 2.7E-10
+167877 states generated, 19544 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 21.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 5 and the 95th percentile is 3).
+Finished in 06s at (2026-11-10 06:36:59)
+→ HOLDS (expected HOLDS: as expected)
+
+=== w-granted · Mut=none · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT NeverGranted
+Error: Invariant NeverGranted is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 0
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 0
+/\ seen = {}
+State 2: <Deliver line 161, col 3 to line 166, col 99 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 0
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ lease = FALSE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 0
+/\ seen = {}
+State 3: <Grant line 183, col 3 to line 189, col 100 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 0
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ lease = TRUE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 0
+/\ seen = {"grant"}
+29 states generated, 14 distinct states found, 9 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 4 (minimum is 3, the maximum 4 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:37:05)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-slack · Mut=none · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT NeverGrantInSlack
+Error: Invariant NeverGrantInSlack is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 0
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 0
+/\ seen = {}
+State 2: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 1
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 1, r4 |-> 1]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 1
+/\ seen = {}
+State 3: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 2
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 2, r4 |-> 2]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 2
+/\ seen = {}
+State 4: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 3
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 3, r4 |-> 3]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 3
+/\ seen = {}
+State 5: <Deliver line 161, col 3 to line 166, col 99 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 3
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 3, r4 |-> 3]
+/\ lease = FALSE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 3
+/\ seen = {}
+State 6: <TickCert line 170, col 3 to line 174, col 110 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 3
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 3, r4 |-> 3]
+/\ lease = FALSE
+/\ expiry = 1
+/\ tick = 1
+/\ gtick = 0
+/\ gclock = 3
+/\ seen = {}
+State 7: <Grant line 183, col 3 to line 189, col 100 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 3
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 3, r4 |-> 3]
+/\ lease = TRUE
+/\ expiry = 1
+/\ tick = 1
+/\ gtick = 0
+/\ gclock = 3
+/\ seen = {"grant", "slack"}
+985 states generated, 198 distinct states found, 109 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 5 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:37:10)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-grantrefused · Mut=none · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT NeverGrantRefused
+Error: Invariant NeverGrantRefused is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 0
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 0
+/\ seen = {}
+State 2: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 1
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 1, r4 |-> 1]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 1
+/\ seen = {}
+State 3: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 2
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 2, r4 |-> 2]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 2
+/\ seen = {}
+State 4: <Deliver line 161, col 3 to line 166, col 99 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 2
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 2, r4 |-> 2]
+/\ lease = FALSE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 2
+/\ seen = {}
+State 5: <RefuseGrant line 192, col 3 to line 196, col 118 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 2
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 2, r4 |-> 2]
+/\ lease = FALSE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 2
+/\ seen = {"grantRefused"}
+174 states generated, 44 distinct states found, 26 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 5 and the 95th percentile is 5).
+Finished in 05s at (2026-11-10 06:37:16)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-tickrefused · Mut=none · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT NeverTickRefused
+Error: Invariant NeverTickRefused is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 0
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 0
+/\ seen = {}
+State 2: <RefuseTick line 177, col 3 to line 179, col 118 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 0
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 0
+/\ seen = {"tickRefused"}
+5 states generated, 5 distinct states found, 3 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 05s at (2026-11-10 06:37:22)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-withheld · Mut=none · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT NeverWithheld
+Error: Invariant NeverWithheld is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 0
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 0
+/\ seen = {}
+State 2: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 1
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 1, r4 |-> 1]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 1
+/\ seen = {}
+State 3: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 2
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 2, r4 |-> 2]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 2
+/\ seen = {}
+State 4: <TickCert line 170, col 3 to line 174, col 110 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 2
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 2, r4 |-> 2]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 1
+/\ gtick = 0
+/\ gclock = 2
+/\ seen = {}
+State 5: <Deliver line 161, col 3 to line 166, col 99 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 2
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 2, r4 |-> 2]
+/\ lease = FALSE
+/\ expiry = 1
+/\ tick = 1
+/\ gtick = 0
+/\ gclock = 2
+/\ seen = {"withheld"}
+193 states generated, 47 distinct states found, 27 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 5 and the 95th percentile is 5).
+Finished in 05s at (2026-11-10 06:37:27)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-ran · Mut=none · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT NeverEntryRan
+Error: Invariant NeverEntryRan is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 0
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 0
+/\ seen = {}
+State 2: <Deliver line 161, col 3 to line 166, col 99 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 0
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ lease = FALSE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 0
+/\ seen = {}
+State 3: <Grant line 183, col 3 to line 189, col 100 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 0
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ lease = TRUE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 0
+/\ seen = {"grant"}
+State 4: <StartEntry line 212, col 3 to line 219, col 95 of module PlaneClock>
+/\ endAt = 1
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = TRUE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 0
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ lease = TRUE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 0
+/\ seen = {"grant", "ran"}
+154 states generated, 33 distinct states found, 18 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 5 and the 95th percentile is 5).
+Finished in 05s at (2026-11-10 06:37:33)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-extentended · Mut=none · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT NeverExtentEnded
+Error: Invariant NeverExtentEnded is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 0
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 0
+/\ seen = {}
+State 2: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 1
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 1, r4 |-> 1]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 1
+/\ seen = {}
+State 3: <Deliver line 161, col 3 to line 166, col 99 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 1
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 1, r4 |-> 1]
+/\ lease = FALSE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 1
+/\ seen = {}
+State 4: <Grant line 183, col 3 to line 189, col 100 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 1
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 1, r4 |-> 1]
+/\ lease = TRUE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 1
+/\ seen = {"grant"}
+State 5: <StartEntry line 212, col 3 to line 219, col 95 of module PlaneClock>
+/\ endAt = 1
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = TRUE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 1
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 1, r4 |-> 1]
+/\ lease = TRUE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 1
+/\ seen = {"grant", "ran"}
+State 6: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 1
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = TRUE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 2
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 2, r4 |-> 2]
+/\ lease = TRUE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 2
+/\ seen = {"grant", "ran"}
+State 7: <TickCert line 170, col 3 to line 174, col 110 of module PlaneClock>
+/\ endAt = 1
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = TRUE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 2
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 2, r4 |-> 2]
+/\ lease = TRUE
+/\ expiry = 1
+/\ tick = 1
+/\ gtick = 0
+/\ gclock = 2
+/\ seen = {"grant", "ran"}
+State 8: <ApplyTick line 200, col 3 to line 208, col 88 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 2
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 2, r4 |-> 2]
+/\ lease = TRUE
+/\ expiry = 1
+/\ tick = 1
+/\ gtick = 1
+/\ gclock = 2
+/\ seen = {"grant", "extentEnded", "ran"}
+3703 states generated, 587 distinct states found, 292 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 5 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:37:39)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-alone · Mut=none · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT NeverAlone
+Error: Invariant NeverAlone is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 0
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 0
+/\ seen = {}
+State 2: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 1
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 1, r4 |-> 1]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 1
+/\ seen = {}
+State 3: <Deliver line 161, col 3 to line 166, col 99 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 1
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 1, r4 |-> 1]
+/\ lease = FALSE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 1
+/\ seen = {}
+State 4: <Grant line 183, col 3 to line 189, col 100 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 1
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 1, r4 |-> 1]
+/\ lease = TRUE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 1
+/\ seen = {"grant"}
+State 5: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 2
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 2, r4 |-> 2]
+/\ lease = TRUE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 2
+/\ seen = {"grant"}
+State 6: <GoAlone line 223, col 3 to line 231, col 88 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 2
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 2, r4 |-> 2]
+/\ lease = FALSE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 2
+/\ seen = {"grant", "alone"}
+661 states generated, 135 distinct states found, 74 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 5 and the 95th percentile is 5).
+Finished in 05s at (2026-11-10 06:37:44)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-stalled · Mut=none · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT NeverStalled
+Error: Invariant NeverStalled is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 0
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 0
+/\ seen = {}
+State 2: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 1
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 1, r4 |-> 1]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 1
+/\ seen = {}
+State 3: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 2
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 2, r4 |-> 2]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 2
+/\ seen = {}
+State 4: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 3
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 3, r4 |-> 3]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 3
+/\ seen = {}
+State 5: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 4
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 4, r4 |-> 4]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 4
+/\ seen = {}
+155 states generated, 34 distinct states found, 18 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 5 and the 95th percentile is 5).
+Finished in 05s at (2026-11-10 06:37:50)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-stretched-slow · Mut=none · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="slow" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT NeverStretched
+Error: Invariant NeverStretched is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 0
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 0
+/\ seen = {}
+State 2: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 1
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 1, r4 |-> 1]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 0
+/\ seen = {}
+State 3: <Deliver line 161, col 3 to line 166, col 99 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 1
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 1, r4 |-> 1]
+/\ lease = FALSE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 0
+/\ seen = {}
+State 4: <Grant line 183, col 3 to line 189, col 100 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 1
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 1, r4 |-> 1]
+/\ lease = TRUE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 0
+/\ seen = {"grant"}
+State 5: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 2
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 2, r4 |-> 2]
+/\ lease = TRUE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 0
+/\ seen = {"grant"}
+State 6: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 3
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 3, r4 |-> 3]
+/\ lease = TRUE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 0
+/\ seen = {"grant"}
+State 7: <StartEntry line 212, col 3 to line 219, col 95 of module PlaneClock>
+/\ endAt = 1
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = TRUE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 3
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 3, r4 |-> 3]
+/\ lease = TRUE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 0
+/\ seen = {"grant", "ran"}
+5186 states generated, 951 distinct states found, 557 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 7 and the 95th percentile is 5).
+Finished in 05s at (2026-11-10 06:37:55)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== n-stretched-sound · Mut=none · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT NeverStretched
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.3E-10
+  based on the actual fingerprints:  val = 2.7E-10
+203311 states generated, 23222 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 22.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 5 and the 95th percentile is 3).
+Finished in 06s at (2026-11-10 06:38:02)
+→ HOLDS (expected HOLDS: as expected)
+
+=== n-stretched-fast · Mut=none · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="fast" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT NeverStretched
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.6E-9
+  based on the actual fingerprints:  val = 6.9E-10
+1316875 states generated, 134122 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 22.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 7 and the 95th percentile is 3).
+Finished in 13s at (2026-11-10 06:38:16)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-one-grant · Mut=M_ONECLOCK · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT NoGrantPastExpiry
+Error: Invariant NoGrantPastExpiry is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 0
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 0
+/\ seen = {}
+State 2: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 1
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 1, r4 |-> 1]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 1
+/\ seen = {}
+State 3: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 2
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 2, r4 |-> 2]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 2
+/\ seen = {}
+State 4: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 3
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 3, r4 |-> 3]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 3
+/\ seen = {}
+State 5: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 4
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 4, r4 |-> 4]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 4
+/\ seen = {}
+State 6: <Deliver line 161, col 3 to line 166, col 99 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 4
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 4, r4 |-> 4]
+/\ lease = FALSE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 4
+/\ seen = {}
+State 7: <Grant line 183, col 3 to line 189, col 100 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = TRUE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 4
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 4, r4 |-> 4]
+/\ lease = TRUE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 4
+/\ seen = {"grant", "slack"}
+2785 states generated, 339 distinct states found, 183 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 5 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:38:22)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-one-entry · Mut=M_ONECLOCK · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT EntryEndsAtExtent
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.2E-9
+  based on the actual fingerprints:  val = 7.4E-10
+657317 states generated, 70174 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 24.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 5 and the 95th percentile is 3).
+Finished in 10s at (2026-11-10 06:38:33)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-one-stretch · Mut=M_ONECLOCK · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT NoStretchUnlessSlow
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.2E-9
+  based on the actual fingerprints:  val = 7.4E-10
+657317 states generated, 70174 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 24.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 5 and the 95th percentile is 3).
+Finished in 09s at (2026-11-10 06:38:42)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-receipt-grant · Mut=M_RECEIPT · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT NoGrantPastExpiry
+Error: Invariant NoGrantPastExpiry is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 0
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 0
+/\ seen = {}
+State 2: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 1
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 1, r4 |-> 1]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 1
+/\ seen = {}
+State 3: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 2
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 2, r4 |-> 2]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 2
+/\ seen = {}
+State 4: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 3
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 3, r4 |-> 3]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 3
+/\ seen = {}
+State 5: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 4
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 4, r4 |-> 4]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 4
+/\ seen = {}
+State 6: <TickCert line 170, col 3 to line 174, col 110 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 4
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 4, r4 |-> 4]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 1
+/\ gtick = 0
+/\ gclock = 4
+/\ seen = {}
+State 7: <Deliver line 161, col 3 to line 166, col 99 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 4
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 4, r4 |-> 4]
+/\ lease = FALSE
+/\ expiry = 2
+/\ tick = 1
+/\ gtick = 0
+/\ gclock = 4
+/\ seen = {"withheld"}
+State 8: <TickCert line 170, col 3 to line 174, col 110 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 4
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 4, r4 |-> 4]
+/\ lease = FALSE
+/\ expiry = 2
+/\ tick = 2
+/\ gtick = 0
+/\ gclock = 4
+/\ seen = {"withheld"}
+State 9: <Grant line 183, col 3 to line 189, col 100 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = TRUE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 4
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 4, r4 |-> 4]
+/\ lease = TRUE
+/\ expiry = 2
+/\ tick = 2
+/\ gtick = 0
+/\ gclock = 4
+/\ seen = {"withheld", "grant", "slack"}
+4757 states generated, 746 distinct states found, 366 states left on queue.
+The depth of the complete state graph search is 9.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 5 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:38:48)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-receipt-entry · Mut=M_RECEIPT · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT EntryEndsAtExtent
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 4.7E-10
+  based on the actual fingerprints:  val = 2.7E-10
+319343 states generated, 30262 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 22.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 5 and the 95th percentile is 3).
+Finished in 07s at (2026-11-10 06:38:56)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-receipt-stretch · Mut=M_RECEIPT · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT NoStretchUnlessSlow
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 4.7E-10
+  based on the actual fingerprints:  val = 2.7E-10
+319343 states generated, 30262 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 22.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 5 and the 95th percentile is 3).
+Finished in 07s at (2026-11-10 06:39:04)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-relative-grant · Mut=M_RELATIVETICK · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT NoGrantPastExpiry
+Error: Invariant NoGrantPastExpiry is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 0
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 0
+/\ seen = {}
+State 2: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 1
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 1, r4 |-> 1]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 1
+/\ seen = {}
+State 3: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 2
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 2, r4 |-> 2]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 2
+/\ seen = {}
+State 4: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 3
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 3, r4 |-> 3]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 3
+/\ seen = {}
+State 5: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 4
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 4, r4 |-> 4]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 4
+/\ seen = {}
+State 6: <Deliver line 161, col 3 to line 166, col 99 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 4
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 4, r4 |-> 4]
+/\ lease = FALSE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 4
+/\ seen = {}
+State 7: <TickCert line 170, col 3 to line 174, col 110 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 4, r4 |-> 4]
+/\ delivered = TRUE
+/\ now = 4
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 4, r4 |-> 4]
+/\ lease = FALSE
+/\ expiry = 1
+/\ tick = 1
+/\ gtick = 0
+/\ gclock = 4
+/\ seen = {}
+State 8: <Grant line 183, col 3 to line 189, col 100 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = TRUE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 4, r4 |-> 4]
+/\ delivered = TRUE
+/\ now = 4
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 4, r4 |-> 4]
+/\ lease = TRUE
+/\ expiry = 1
+/\ tick = 1
+/\ gtick = 0
+/\ gclock = 4
+/\ seen = {"grant", "slack"}
+2642 states generated, 582 distinct states found, 356 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 5 and the 95th percentile is 5).
+Finished in 05s at (2026-11-10 06:39:10)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-relative-entry · Mut=M_RELATIVETICK · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT EntryEndsAtExtent
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 3.8E-9
+  based on the actual fingerprints:  val = 2.7E-10
+849045 states generated, 92744 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 22.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 5 and the 95th percentile is 3).
+Finished in 09s at (2026-11-10 06:39:20)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-relative-stretch · Mut=M_RELATIVETICK · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT NoStretchUnlessSlow
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 3.8E-9
+  based on the actual fingerprints:  val = 2.7E-10
+849045 states generated, 92744 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 22.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 5 and the 95th percentile is 3).
+Finished in 09s at (2026-11-10 06:39:30)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-tooslow-grant · Mut=M_TOOSLOW · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2","r3"} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT NoGrantPastExpiry
+Error: Invariant NoGrantPastExpiry is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 0
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 0
+/\ seen = {}
+State 2: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 1
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 1]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 1
+/\ seen = {}
+State 3: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 2
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 2]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 2
+/\ seen = {}
+State 4: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 3
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 3]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 3
+/\ seen = {}
+State 5: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 4
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 4]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 4
+/\ seen = {}
+State 6: <Deliver line 161, col 3 to line 166, col 99 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 4
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 4]
+/\ lease = FALSE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 4
+/\ seen = {}
+State 7: <Grant line 183, col 3 to line 189, col 100 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = TRUE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 4
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 4]
+/\ lease = TRUE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 4
+/\ seen = {"grant", "slack"}
+2614 states generated, 515 distinct states found, 309 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 6 and the 95th percentile is 5).
+Finished in 05s at (2026-11-10 06:39:36)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-tooslow-entry · Mut=M_TOOSLOW · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2","r3"} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT EntryEndsAtExtent
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 7.0E-9
+  based on the actual fingerprints:  val = 1.1E-9
+1212655 states generated, 117894 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 22.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 6 and the 95th percentile is 3).
+Finished in 11s at (2026-11-10 06:39:48)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-tooslow-stretch · Mut=M_TOOSLOW · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2","r3"} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT NoStretchUnlessSlow
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 7.0E-9
+  based on the actual fingerprints:  val = 1.1E-9
+1212655 states generated, 117894 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 22.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 6 and the 95th percentile is 3).
+Finished in 12s at (2026-11-10 06:40:01)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-tooslow-nofail · Mut=M_TOOSLOW · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT NoGrantPastExpiry
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.3E-10
+  based on the actual fingerprints:  val = 2.7E-10
+203311 states generated, 23222 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 22.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 5 and the 95th percentile is 3).
+Finished in 06s at (2026-11-10 06:40:08)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-noext-entry · Mut=M_NOEXTENT · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT EntryEndsAtExtent
+Error: Invariant EntryEndsAtExtent is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 0
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 0
+/\ seen = {}
+State 2: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 1
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 1, r4 |-> 1]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 1
+/\ seen = {}
+State 3: <Deliver line 161, col 3 to line 166, col 99 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 1
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 1, r4 |-> 1]
+/\ lease = FALSE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 1
+/\ seen = {}
+State 4: <Grant line 183, col 3 to line 189, col 100 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 1
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 1, r4 |-> 1]
+/\ lease = TRUE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 1
+/\ seen = {"grant"}
+State 5: <StartEntry line 212, col 3 to line 219, col 95 of module PlaneClock>
+/\ endAt = 6
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = TRUE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 1
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 1, r4 |-> 1]
+/\ lease = TRUE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 1
+/\ seen = {"grant", "ran"}
+State 6: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 6
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = TRUE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 2
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 2, r4 |-> 2]
+/\ lease = TRUE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 2
+/\ seen = {"grant", "ran"}
+State 7: <TickCert line 170, col 3 to line 174, col 110 of module PlaneClock>
+/\ endAt = 6
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = TRUE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 2
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 2, r4 |-> 2]
+/\ lease = TRUE
+/\ expiry = 1
+/\ tick = 1
+/\ gtick = 0
+/\ gclock = 2
+/\ seen = {"grant", "ran"}
+State 8: <ApplyTick line 200, col 3 to line 208, col 88 of module PlaneClock>
+/\ endAt = 6
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = TRUE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 2
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 2, r4 |-> 2]
+/\ lease = TRUE
+/\ expiry = 1
+/\ tick = 1
+/\ gtick = 1
+/\ gclock = 2
+/\ seen = {"grant", "ran"}
+3939 states generated, 620 distinct states found, 309 states left on queue.
+The depth of the complete state graph search is 8.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 5 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:40:13)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-noext-grant · Mut=M_NOEXTENT · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT NoGrantPastExpiry
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 3.5E-10
+  based on the actual fingerprints:  val = 2.7E-10
+250221 states generated, 29392 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 22.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 5 and the 95th percentile is 3).
+Finished in 07s at (2026-11-10 06:40:21)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-noext-stretch · Mut=M_NOEXTENT · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT NoStretchUnlessSlow
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 3.5E-10
+  based on the actual fingerprints:  val = 2.7E-10
+250221 states generated, 29392 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 22.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 5 and the 95th percentile is 3).
+Finished in 07s at (2026-11-10 06:40:29)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-nowatch-entry · Mut=M_NOWATCHDOG · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT EntryEndsAtExtent
+Error: Invariant EntryEndsAtExtent is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 0
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 0
+/\ seen = {}
+State 2: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 1
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 1, r4 |-> 1]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 1
+/\ seen = {}
+State 3: <Deliver line 161, col 3 to line 166, col 99 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 1
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 1, r4 |-> 1]
+/\ lease = FALSE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 1
+/\ seen = {}
+State 4: <Grant line 183, col 3 to line 189, col 100 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 1
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 1, r4 |-> 1]
+/\ lease = TRUE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 1
+/\ seen = {"grant"}
+State 5: <StartEntry line 212, col 3 to line 219, col 95 of module PlaneClock>
+/\ endAt = 1
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = TRUE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 1
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 1, r4 |-> 1]
+/\ lease = TRUE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 1
+/\ seen = {"grant", "ran"}
+State 6: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 1
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = TRUE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 2
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 2, r4 |-> 2]
+/\ lease = TRUE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 2
+/\ seen = {"grant", "ran"}
+State 7: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 1
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = TRUE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 3
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 3, r4 |-> 3]
+/\ lease = TRUE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 3
+/\ seen = {"grant", "ran"}
+1627 states generated, 278 distinct states found, 139 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 5 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:40:34)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-nowatch-stretch · Mut=M_NOWATCHDOG · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT NoStretchUnlessSlow
+Error: Invariant NoStretchUnlessSlow is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 0
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 0
+/\ seen = {}
+State 2: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = FALSE
+/\ now = 1
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 1, r4 |-> 1]
+/\ lease = FALSE
+/\ expiry = 0
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 1
+/\ seen = {}
+State 3: <Deliver line 161, col 3 to line 166, col 99 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 1
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 1, r4 |-> 1]
+/\ lease = FALSE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 1
+/\ seen = {}
+State 4: <Grant line 183, col 3 to line 189, col 100 of module PlaneClock>
+/\ endAt = 0
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = FALSE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 1
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 1, r4 |-> 1]
+/\ lease = TRUE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 1
+/\ seen = {"grant"}
+State 5: <StartEntry line 212, col 3 to line 219, col 95 of module PlaneClock>
+/\ endAt = 1
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = TRUE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 1
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 1, r4 |-> 1]
+/\ lease = TRUE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 1
+/\ seen = {"grant", "ran"}
+State 6: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 1
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = TRUE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 2
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 2, r4 |-> 2]
+/\ lease = TRUE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 2
+/\ seen = {"grant", "ran"}
+State 7: <Advance line 150, col 3 to line 157, col 104 of module PlaneClock>
+/\ endAt = 1
+/\ lateGrant = FALSE
+/\ start = 0
+/\ running = TRUE
+/\ lastAt = [r1 |-> 0, r2 |-> 0, r3 |-> 0, r4 |-> 0]
+/\ delivered = TRUE
+/\ now = 3
+/\ clock = [r1 |-> 0, r2 |-> 0, r3 |-> 3, r4 |-> 3]
+/\ lease = TRUE
+/\ expiry = 1
+/\ tick = 0
+/\ gtick = 0
+/\ gclock = 3
+/\ seen = {"grant", "ran"}
+1627 states generated, 278 distinct states found, 139 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 2 (minimum is 0, the maximum 5 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:40:40)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-nowatch-grant · Mut=M_NOWATCHDOG · Replicas={"r1","r2","r3","r4"} Cert=3 Captured={"r1"} Slow={"r2"} Fast={} GovClass="sound" P=2 Base=0 D=1 MaxExtent=1 MaxNow=7 MaxTick=4 · SPECIFICATION Spec · INVARIANT NoGrantPastExpiry
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 5.1E-11
+95129 states generated, 11236 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 20.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 5 and the 95th percentile is 3).
+Finished in 06s at (2026-11-10 06:40:46)
+→ HOLDS (expected HOLDS: as expected)
+
+Rows: 38 · as expected: 38 · not as expected: none · ERROR: none

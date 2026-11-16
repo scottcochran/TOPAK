@@ -1,0 +1,62 @@
+# Rows for live-gen-results.sh Alone: name mut spec kind property expected [CONST=value ...] [states=N]
+# Run: DEFAULTS='Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return"' ./live-gen-results.sh Alone Alone-rows.txt "<title>"
+# Rows that need a second lease set MaxGrant=2, a fence MaxFence=1, a count above one Count=2.
+# expected: none: all four properties HOLD (and Safe, also at larger constants) and every witness is VIOLATED; M_ALONEACTS and M_BEACONUNCOUNTED break AlonePermitsNothing only; M_STACKCHOOSES breaks ExpiryGrantsNothing only; M_ENTRYAFTEREND breaks ExpiryGrantsNothing and AlonePermitsNothing; M_WAITPRIMARY, M_WAITPEER and M_WAITOBSERVER break LocalNeverWaits only; M_STACKGATED breaks TerminalNeverWaits only.
+#
+# Mut = none.
+s-none-safe          none               Spec INVARIANT Safe                  HOLDS
+s-none-safe-large    none               Spec INVARIANT Safe                  HOLDS    Count=2 MaxGrant=2 MaxFence=1
+s-none-alone         none               Spec INVARIANT AlonePermitsNothing   HOLDS
+s-none-expiry        none               Spec INVARIANT ExpiryGrantsNothing   HOLDS
+s-none-local         none               Spec INVARIANT LocalNeverWaits       HOLDS
+s-none-terminal      none               Spec INVARIANT TerminalNeverWaits    HOLDS
+# Witnesses.
+w-local              none               Spec INVARIANT NeverLocalPermitted   VIOLATED
+w-ordered            none               Spec INVARIANT NeverOrderedPermitted VIOLATED
+w-alone              none               Spec INVARIANT NeverAlone            VIOLATED
+w-endedbyalone       none               Spec INVARIANT NeverEndedByAlone     VIOLATED
+w-beacon             none               Spec INVARIANT NeverBeacon           VIOLATED
+w-recovered          none               Spec INVARIANT NeverRecovered        VIOLATED
+w-fencealone         none               Spec INVARIANT NeverFenceWhileAlone  VIOLATED MaxFence=1
+w-regrant            none               Spec INVARIANT NeverLeasedAfterAlone VIOLATED MaxGrant=2
+w-orderedwaits       none               Spec INVARIANT NeverOrderedWaits     VIOLATED
+# M_ALONEACTS.
+m-alone-alone        M_ALONEACTS        Spec INVARIANT AlonePermitsNothing   VIOLATED
+m-alone-expiry       M_ALONEACTS        Spec INVARIANT ExpiryGrantsNothing   HOLDS
+m-alone-local        M_ALONEACTS        Spec INVARIANT LocalNeverWaits       HOLDS
+m-alone-terminal     M_ALONEACTS        Spec INVARIANT TerminalNeverWaits    HOLDS
+# M_BEACONUNCOUNTED.
+m-beacon-alone       M_BEACONUNCOUNTED  Spec INVARIANT AlonePermitsNothing   VIOLATED
+m-beacon-expiry      M_BEACONUNCOUNTED  Spec INVARIANT ExpiryGrantsNothing   HOLDS
+m-beacon-local       M_BEACONUNCOUNTED  Spec INVARIANT LocalNeverWaits       HOLDS
+m-beacon-terminal    M_BEACONUNCOUNTED  Spec INVARIANT TerminalNeverWaits    HOLDS
+# M_STACKCHOOSES.
+m-chooses-expiry     M_STACKCHOOSES     Spec INVARIANT ExpiryGrantsNothing   VIOLATED
+m-chooses-alone      M_STACKCHOOSES     Spec INVARIANT AlonePermitsNothing   HOLDS
+m-chooses-local      M_STACKCHOOSES     Spec INVARIANT LocalNeverWaits       HOLDS
+m-chooses-terminal   M_STACKCHOOSES     Spec INVARIANT TerminalNeverWaits    HOLDS
+# M_ENTRYAFTEREND.
+m-after-expiry       M_ENTRYAFTEREND    Spec INVARIANT ExpiryGrantsNothing   VIOLATED
+m-after-alone        M_ENTRYAFTEREND    Spec INVARIANT AlonePermitsNothing   VIOLATED
+m-after-local        M_ENTRYAFTEREND    Spec INVARIANT LocalNeverWaits       HOLDS
+m-after-terminal     M_ENTRYAFTEREND    Spec INVARIANT TerminalNeverWaits    HOLDS
+# M_WAITPRIMARY.
+m-primary-local      M_WAITPRIMARY      Spec INVARIANT LocalNeverWaits       VIOLATED
+m-primary-alone      M_WAITPRIMARY      Spec INVARIANT AlonePermitsNothing   HOLDS
+m-primary-expiry     M_WAITPRIMARY      Spec INVARIANT ExpiryGrantsNothing   HOLDS
+m-primary-terminal   M_WAITPRIMARY      Spec INVARIANT TerminalNeverWaits    HOLDS
+# M_WAITPEER.
+m-peer-local         M_WAITPEER         Spec INVARIANT LocalNeverWaits       VIOLATED
+m-peer-alone         M_WAITPEER         Spec INVARIANT AlonePermitsNothing   HOLDS
+m-peer-expiry        M_WAITPEER         Spec INVARIANT ExpiryGrantsNothing   HOLDS
+m-peer-terminal      M_WAITPEER         Spec INVARIANT TerminalNeverWaits    HOLDS
+# M_WAITOBSERVER.
+m-observer-local     M_WAITOBSERVER     Spec INVARIANT LocalNeverWaits       VIOLATED
+m-observer-alone     M_WAITOBSERVER     Spec INVARIANT AlonePermitsNothing   HOLDS
+m-observer-expiry    M_WAITOBSERVER     Spec INVARIANT ExpiryGrantsNothing   HOLDS
+m-observer-terminal  M_WAITOBSERVER     Spec INVARIANT TerminalNeverWaits    HOLDS
+# M_STACKGATED.
+m-gated-terminal     M_STACKGATED       Spec INVARIANT TerminalNeverWaits    VIOLATED
+m-gated-alone        M_STACKGATED       Spec INVARIANT AlonePermitsNothing   HOLDS
+m-gated-expiry       M_STACKGATED       Spec INVARIANT ExpiryGrantsNothing   HOLDS
+m-gated-local        M_STACKGATED       Spec INVARIANT LocalNeverWaits       HOLDS

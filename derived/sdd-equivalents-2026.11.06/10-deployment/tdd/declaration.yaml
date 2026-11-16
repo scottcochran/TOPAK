@@ -1,0 +1,23 @@
+# Layer: deployment · the declaration 04-assurance/tdd/conftest.py reads · TOPAK source: ADR-0045 §4 and Annex B (the reference), ADR-0053 R7
+# pytest's deployment artifact is this file plus `--declaration`: the inventory is computed at
+# collection from markers and rows. What it lacks against ADR-0058: no overlay (which nodes are kept
+# or replaced), no grade computed from edges, no composition note.
+deployment: the reference, 2026.11.06
+rows:
+  - { id: T-0045-1,  status: trust root, note: three replicas in one process tree, unauthenticated }
+  - { id: T-0045-10, status: trust root, note: dev rules, not genesis rules }
+  - { id: T-0045-11, status: trust root }
+  - { id: T-0045-28, status: trust root, note: no refinement exists }
+  - { id: T-0045-29, status: trust root }
+  - { id: T-0045-30, status: trust root }
+  - { id: T-0045-31, status: trust root }
+  - { id: T-0045-37, status: trust root }
+  - { id: T-0045-3,  status: delegated }
+  - { id: T-0045-16, status: excluded, note: SIMULATED only (tests/contain.rs) }
+  - { id: T-0045-17, status: excluded, note: SIMULATED only }
+  - { id: T-0045-20, status: excluded, note: no P3-passing image }
+derived:
+  - name: invariant(Lease_A1)
+    routes: [[T-0045-31], [T-0045-37, enc-faithful(Lease_A1)]]
+  - name: enc-faithful(Lease_A1)
+    routes: [[declared-read-by-non-drafter]]       # a condition; not declared at the reference

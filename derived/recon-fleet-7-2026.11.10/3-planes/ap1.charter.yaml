@@ -1,0 +1,56 @@
+# Charter of plane ap1, the autonomous plane: seven governors, no person, one intent.
+# Voted at ib1 in the mission tally (tally.msn-0001.yaml), and it IS the first intent: ADR-0060 §2, and
+# the proposal's §3.2, "an intent is a charter for one round". The schema is closed.
+#
+# The 24 hours are the expiry below. T_tick is 30 s, so 2880 periods is 24 hours. The field says tick
+# 2879 because PlaneClock's NoGrantPastExpiry bounds a grant before (expiry + 1) · T_tick, so 2879 keeps
+# every grant inside 24 hours. The count starts when the charter is applied ⟨Q13⟩, and not at the vote.
+plane: ap1
+replicas:
+  protocol: pbft-signed         # Signed messages, so that a governor can check a certificate (ADR-0061 §2)
+  n: 7
+  f: 2
+  certificate: 5
+  members:
+    - { id: v1, key: "ed25519:7c5065e9c0e654fa0652de327524ea6b235f5a86dde2edf97eb60380af0e7cf6" }
+    - { id: v2, key: "ed25519:81f4c5a06c6bba6155f02cdcf59ea79cab53c685552b5be77ee7a75f18b92f4b" }
+    - { id: v3, key: "ed25519:0a3700db4f62497eab8b4e8e259b8dfe96a9f1027135fc18dda7444ceb27a9de" }
+    - { id: v4, key: "ed25519:d8cf0395202e2680e1d70702e73b784d76becf4c0d996ab71569ff9b187b0fa1" }
+    - { id: v5, key: "ed25519:d0f110b1f8333951813dd9e227188009b3ef9fcb65d739f586f19f8df3b06842" }
+    - { id: v6, key: "ed25519:c66f9cf88a07f449b0dd46a6bd64767bb3f23785db88cc42986c70bd70cda118" }
+    - { id: v7, key: "ed25519:679121bc02013c9fccf9f1092a371717ca3b62a5adfb5744a515fe3364fd25e7" }
+kind: autonomous
+parent: ib1
+fences:
+  root: { epoch: 1, index: 4188 }
+  ib1: { epoch: 1, index: 912 }
+floor: 35b4978b39cdc071cde2dfc0c9ba31629cee2d9c44defc2801b970719660b4ec          # Placeholder, and the same digest at every plane ⟨Q8⟩
+bundles:
+  - { name: standing, revision: 4ef39c81a965bc414c4c0144f288a8a38b9d9b63217b131d1e33de4980c66e7b }
+  - { name: command, revision: a874ff71d1751ddf664c0eb0a5e4e0b1bfb751ea908bd0ac05e05a509bae8591 }
+  - { name: fleet, revision: 97008eafb269b8820a9a4d602ce8b8d5a474da238bce3481a02ff23b1216abe3 }
+  - { name: mission, revision: 8784a46caaaf0684a16ee033b39c4101c75236b9a39f9b9a19d623e29e91d51c }
+alphabet:
+  actions: [Consult, Actuate, Report]
+  entries:
+    - flight.transit@cd3d43373ce222108f47e27fdfe5fd9ac0923c7bb129010ef92082fe3c5bb188
+    - flight.orbit@b1fe6db5dea9dd12d53d2deb0cf77c194f5ba7c0cc4bec8d954e427deea45b48
+    - sensor.eoir_collect@8a726fce18a3f9270019afd5d948abdfc7fc364045013ab0abc1f896858d1bdb
+    - sensor.sar_strip@2a8aba8ec289ee88209b3e484d99bb52ae4c822e5551d7332ffc956b670b2582
+    - comms.downlink@8617f1b204186f0fddd7ccca8be5eb9897bb7e07fc8773d7f4075383a98c97cb
+    - comms.beacon@b4d7e3050dd8622c7669a60618766949c3e2f161e4203651de2fa1fb91c2fde6
+labels: [untrusted, restricted, peer-tracks, peer-coverage]
+ttlMax: { unit: ticks, reversible: 120, irreversible: 0 }   # 120 ticks is one hour, T_persona's bound
+countMax: { reversible: 8, irreversible: 0 }                # K, the policy floor's value (ADR-0062 §8)
+budget: 112
+kUp: 120
+expiry: { unit: ticks, from_tick: 0, ticks: 2879 }
+membership:
+  schedule: [7, 6, 5, 4]
+  capture_floor: 1
+  drop_silent_after_ticks: 20    # 10 minutes unheard before a replica may propose a drop
+  budgets: { 7: 112, 6: 96, 5: 80, 4: 64 }   # ⟨Q17⟩ A smaller plane holds less. A cap on the total issued
+tick: { period_ms: 30000 }
+release: false
+round: 1
+task: f75ada9bcf23e0e6701df665ebd321f6bdd96d12ab70dcdce5e08f6c040457eb     # sha256 of 4-mission/plan.rego

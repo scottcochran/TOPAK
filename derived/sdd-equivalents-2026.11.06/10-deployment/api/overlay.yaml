@@ -1,0 +1,33 @@
+# Layer: deployment · OpenAPI Overlay Specification 1.0.0 · TOPAK source: ADR-0058 §1 (keep, replace, add, omit)
+# The one place in the API-spec world with an overlay in ADR-0058's sense: an Overlay document applies
+# `update` and `remove` actions, by JSONPath, to a published OpenAPI document, producing a deployment's
+# document without editing the archetype's. Keep is the default; replace is `update`; omit is `remove`;
+# add is `update` on a path that did not exist. What it lacks: a type on the relation it changes, and
+# any notion of what is lost when an operation is removed.
+overlay: 1.0.0
+info:
+  title: Reference deployment overlay on the TOPAK lease API
+  version: 2026.11.06
+extends: ../../03-record/api/lease.openapi.yaml       # the archetype's document, by reference (and, in practice, by digest)
+actions:
+  # Keep: everything not named below.
+
+  # Replace: the reference's servers and its T_persona value.
+  - target: $.servers
+    update: [ { url: "http://127.0.0.1:18080", description: "the reference's operator HTTP shim; three replicas in one process tree, unauthenticated (T-0045-1 as trust root)" } ]
+  - target: $.components.schemas.RenewRequest.properties.ttl_ms
+    update: { maximum: 3600000, description: "At most T_persona = 3 600 000 ms at the reference (placeholder, floor/genesis-values.json)" }
+
+  # Add: a declaration the archetype document does not carry.
+  - target: $.info
+    update:
+      x-topak-declaration:
+        trusted-base: ./../tdd/declaration.yaml
+        rung-per-seat: { a1: 0, a2: 0, r1: 0, guest-seats: 1 }
+        inventory-at-grade: ./../topak-overlay.reference.yaml#/inventory-at-grade
+
+  # Omit: a rung-3 renewal needs an appraisal (ADR-0034 §3.6), which the reference cannot produce for real.
+  - target: $.paths['/leases/{fence}/renew'].post.requestBody.content['application/json'].schema.properties.appraisal
+    remove: true
+  - target: $.paths['/leases/{fence}/renew'].post
+    update: { x-omitted-at-this-deployment: "appraisal-bearing renewals: T-0045-16, T-0045-17 excluded; §4.3 void" }

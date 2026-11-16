@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: rerun-recon-with-fix
+expected_outcome: |
+  A new, separately dated or named configuration and simulation carry the changed mesh with re-pinned digests, the frozen directories are unchanged, and the comparison gives coverage before and after from the traces.

@@ -1,0 +1,131 @@
+# Deployment recon-7: where each application and each part of the mechanism runs.
+# PSEUDO-CONFIGURATION · 2026.11.10 · no tool reads this file.
+#
+# `status` says what exists today:
+#   reference    built, in mechanism/ at G11
+#   third-party  an off-the-shelf component
+#   unbuilt      required by ADR-0059 to ADR-0068, and nothing implements it
+
+deployment: recon-7
+mission: MSN-0001
+fleet: { vehicles: 7, class: fixed-wing-group-2, endurance_hours: 12 }
+
+planes:
+  root: { config: ../3-planes/root.plane.yaml, site: [hq, dr] }
+  ib1: { config: ../3-planes/ib1.plane.yaml, charter: ../3-planes/ib1.charter.yaml, site: [cp1] }
+  ap1: { config: ../3-planes/ap1.plane.yaml, charter: ../3-planes/ap1.charter.yaml, site: [fleet] }
+
+sites:
+  hq: { role: "root plane, primary", hosts: [root-r1, root-r2, root-r3, root-kafka-1, root-archive] }
+  dr: { role: "root plane, second site", hosts: [root-r4, root-r5] }
+  cp1:
+    role: "intent boundary: forward command post, declared exposed"
+    hosts: [ib1-r1, ib1-r2, ib1-r3, ib1-r4, ib1-kafka-1, ib1-kafka-2, ib1-kafka-3, ib1-archive, ib1-agents, ib1-gate, gcs-1]
+  fleet: { role: "autonomous plane: one governor replica on each vehicle", hosts: [v1, v2, v3, v4, v5, v6, v7] }
+
+links:
+  - { between: [hq, dr], kind: leased-line, carries: "root consensus" }
+  - { between: [hq, cp1], kind: satcom, carries: "charters, fences, ib1 record up", loss_means: "ib1 keeps its charter and cannot be re-seated" }
+  - { between: [cp1, fleet], kind: gcs-radio, carries: "ap1 record up, watermarks and intents down, downlink", loss_means: "ap1 is meshed and stops granting before K_up" }
+  - { between: [fleet, fleet], kind: manet, carries: "PBFT, ticks, certified relays, peer topics, round payloads to Observers", loss_means: "the vehicle is alone and its lease ends" }
+
+# ---- mechanism -----------------------------------------------------------------------------------
+
+mechanism:
+  root:
+    replica:          { app: topak-node, status: reference, on: [root-r1, root-r2, root-r3, root-r4, root-r5], consensus: paxos }
+    floor:            { app: topak-floor, status: unbuilt, note: "Cedar, linked in. The federation stage (FD1 to FD15) is unwritten" }
+    bundle_engine:    { app: opa-sidecar, status: third-party, chain: [standing], fallback: "in-process Wasm" }
+    log_transport:    { app: kafka, status: third-party, on: [root-kafka-1] }
+    archive:          { app: archive-store, status: third-party, on: [root-archive] }
+  ib1:
+    replica:          { app: topak-node-bft, status: unbuilt, on: [ib1-r1, ib1-r2, ib1-r3, ib1-r4], consensus: pbft, note: "The reference's consensus is Paxos only" }
+    floor:            { app: topak-floor, status: unbuilt }
+    bundle_engine:    { app: opa-sidecar, status: third-party, chain: [standing, command], fallback: "in-process Wasm" }
+    workflow:         { app: topak-node, status: reference, runs: staff-cycle.dag, note: "A person in the orchestrator seat is unbuilt ⟨Q10⟩" }
+    log_transport:    { app: kafka, status: third-party, on: [ib1-kafka-1, ib1-kafka-2, ib1-kafka-3] }
+    archive:          { app: archive-store, status: third-party, on: [ib1-archive] }
+    watermark:        { app: topak-watermark, status: unbuilt, on: [ib1-r1, ib1-r2, ib1-r3, ib1-r4], note: "Reads ap1's record, checks it, orders the watermark. No person signs ⟨Q12⟩" }
+  ap1:
+    host: "the governor partition of every vehicle"
+    replica:          { app: topak-governor, status: unbuilt, consensus: pbft-signed, note: "One binary: replica, chain verifier, permit path, lease and count, record" }
+    floor:            { app: cedar, status: third-party, note: "Linked into the governor" }
+    bundle_engine:    { app: opa-wasm, status: third-party, chain: [standing, command, fleet, mission], fallback: none, note: "ap1 has no sidecar (ADR-0067 §2)" }
+    workflow:         { app: topak-governor, status: unbuilt, runs: recon-sectors.mesh }
+    log_transport:    { app: radio-daemon, status: unbuilt, note: "No Kafka below the intent boundary (ADR-0060 §3)" }
+
+# ---- applications --------------------------------------------------------------------------------
+
+applications:
+  staff_agents:
+    on: ib1-agents
+    status: third-party
+    thinkers: { lineage_A: [ts1, ts3, ts5, ts6], lineage_B: [ts2, ts4] }
+    observers: [os1, os2, os3, os4, os5, os6, oo1]
+    tools: [staff.wx_airspace, staff.fleet_status, staff.package_submit, staff.notify]
+    note: "A and B are two model lineages, declared and not enforced (D-0054-1)"
+  commander_console:
+    on: gcs-1
+    status: unbuilt
+    seats: [orc-co, op1, op2, op3]
+    shows: "the staff DAG's track, the go/no-go, the fleet picture, fence and revoke"
+  ground_station:
+    on: gcs-1
+    status: third-party
+    serves: { "gcs.ib1.local:7443": imagery-downlink, "gcs.ib1.local:7444": fleet-status }
+  promotion_gate:
+    on: ib1-gate
+    status: reference
+    tools: [gate.opa_test, gate.tlc]
+    serves: { "promotion.ib1.local:443": package-queue }
+  notices:
+    on: ib1-gate
+    status: third-party
+    serves: { "notices.ib1.local:443": staff-channel }
+
+# ---- one vehicle ---------------------------------------------------------------------------------
+
+vehicle:
+  separation: "hardware-enforced partitions on the flight computer"
+  assumption: A-0068-1                # The governor is the only path to the actuators and the radio
+  partitions:
+    governor:
+      trusted: true
+      apps:
+        - { app: topak-governor, status: unbuilt }
+        - { app: cedar, status: third-party }
+        - { app: opa-wasm, status: third-party }
+        - { app: recovery-function, status: unbuilt, note: "Carries out hold and the terminal behaviour. The stack cannot reach it" }
+        - { app: radio-daemon, status: unbuilt, note: "Owns the radios" }
+        - { app: nav-gateway, status: unbuilt, note: "The position the governor lifts. A trust root (ADR-0068)" }
+        - { app: tool-host, status: reference, note: "One Wasm component per entry, each with one channel. A core module today" }
+      key_store: "hardware security module on the vehicle"
+    stack:
+      trusted: false                  # The Thinker. Byzantine by assumption
+      apps:
+        - { app: autonomy-planner, lineage: stk-a, status: third-party }
+        - { app: perception, lineage: stk-a, status: third-party }
+    observer:
+      trusted: false
+      apps:
+        - { app: vehicle-observer, lineage: obs-b, status: third-party, note: "Watches another vehicle's stack ⟨Q9⟩. The ring is in the mesh" }
+  resident_at_load:                   # Everything a governor needs with no link
+    - "the anchor's public key, and the release roster (empty)"
+    - "ib1's and ap1's charters, each with its commit certificate"
+    - "the floor and its values"
+    - "the four bundle revisions, compiled to Wasm"
+    - "the mesh, and the seating with its hold and terminal behaviour"
+    - "the mission frame's datum"
+  on_the_ground: "The governor stays powered and on the MANET: a landed vehicle is still a replica"
+
+# ---- bring-up, in order --------------------------------------------------------------------------
+
+bring_up:
+  - { step: 1, at: root, act: "anchor issues genesis rules; the floor and the standing bundle are promoted" }
+  - { step: 2, at: root, act: "grant seats vote ib1's charter, with the command bundle" }
+  - { step: 3, at: ib1, act: "ib1 applies its charter and seats its people and staff cells" }
+  - { step: 4, at: ib1, act: "staff-cycle runs. The commander routes e-go or e-scrub at the go/no-go" }
+  - { step: 5, at: ib1, act: "on a package, the grant seats vote the mission tally: fleet and mission bundles, mesh, ap1's charter and seating" }
+  - { step: 6, at: fleet, act: "governors are loaded with the resident set, and the MANET forms" }
+  - { step: 7, at: ap1, act: "the charter is applied. This is tick zero, and the 24 hours start here ⟨Q13⟩" }
+  - { step: 8, at: ap1, act: "muster runs on v7, then the mesh fans out to W1" }

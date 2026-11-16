@@ -1,0 +1,10 @@
+TOPAK — TLAPS proof results for Federation.tla: every obligation of Federation_proof.tla, checked by the prover below
+Modules: Federation.tla (sha256 03e0bbb28b5e9a1d) · Federation_proof.tla (sha256 cb0264730a865d32)
+Prover: tlapm 7824dab (binary sha256 e150fb793fb28592) · backends: Z3 version 4.8.9 - 64 bit · zenon version 0.8.4 [a268] 2017-11-14 · Isabelle2025 · LS4 for PTL · driver: proof-results.sh
+Assumptions: RootBudgetNat == RootBudget \in Nat · MaxEpochNat == MaxEpoch \in Nat
+Theorems: ShapeAlways · LeaseWithinChainAlways · AnyPlaneFencesAlways · HavocPlaneBoundedAlways · CharterNarrowsAlways · BudgetConservedAlways · SafeAlways
+Lemmas: OfferedFacts · RootCharterFacts · NoCharterFacts · ParentFacts · InitShape · NextTypeOK · NextShape · PermitFlags · FlagsFrame · NextLeaseWithinChain · NextAnyPlaneFences · RootOnChain · NextHavocPlaneBounded · NextCharterNarrows · InitAccount · NextAccount · AccountBounds · MutWidenAdmitsAny · MutLastLinkReadsOneCharter · MutTrustPlaneChecksNothing · MutNoDebitDebitsNothing · MutStaleEpochReadsOneEpoch
+A proved obligation is a theorem of the module under its assumptions and the hypotheses the statement names; the prover, not the constants, bounds the claim. Mutations and witnesses are behaviours and stay with TLC.
+
+File "./Federation_proof.tla", line 1, character 1 to line 866, character 77:
+[INFO]: All 892 obligations proved.

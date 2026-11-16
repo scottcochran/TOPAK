@@ -1,0 +1,5 @@
+schema_version: "1.1"
+name: replay-batch-37-six-items
+expected_outcome: |
+  Run in a copy of the repository at commit 1708726 (git archive 1708726).
+  The result matches commit 848aed5 in form: three records carry B37, the pending notes are gone, the premise routes are renewed in a new file generated after the last edit to ADR-0045, and the prose stops calling the items pending.

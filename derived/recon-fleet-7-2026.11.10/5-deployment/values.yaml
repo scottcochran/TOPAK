@@ -1,0 +1,62 @@
+# The values deployment recon-7 declares, row for row against ADOPTERS_GUIDE_README.md §6, plus the
+# command-chain overlay's own. Nothing here has been measured. "A deployment that ships these numbers
+# unexamined is declaring them, not inheriting them" (ADR-0039 §1).
+#
+# tools/check_consistency.py compares every number in `declared` with the file that holds it.
+
+status: PLACEHOLDERS · 2026.11.10 · not measured
+
+declared:
+  time:
+    T_tick_ms: 30000
+    intent_expiry_tick: 2879           # Grants stop before 2880 · 30 s = 24 h (PlaneClock.NoGrantPastExpiry)
+    lease_ttl_ticks: 120               # One hour, T_persona's bound
+    drop_silent_after_ticks: 20
+    watermark_segment_ticks: 20
+    unattended_after_ticks: 60         # Three missed watermarks. ROE-8
+    overdue_grace_ms: 10000            # Longer than a round's placeholder p99 of 2500 ms
+  counts:
+    K: 8                               # Per lease. Policy floor's value
+    run_round_bound_R: 64              # K < R
+    K_up: 120
+    sends_per_lease: 240
+    beacons_per_lease: 10
+  budget:
+    root: 1000
+    ib1: 400
+    ap1: 112
+    ap1_by_membership: { 7: 112, 6: 96, 5: 80, 4: 64 }
+  observer:
+    T_obs_ms: 5000
+    L_detection_latency: unmeasured
+  persona:
+    T_persona_ms: 3600000
+  t_irrev_ms:                          # Per entry. W + L + D < T_irrev is unmet while unattended (ADR-0060 §5)
+    flight.transit: 120000
+    flight.orbit: 120000
+    sensor.eoir_collect: 600000
+    sensor.sar_strip: 30000
+    comms.downlink: 5000
+    comms.beacon: 5000
+  custody: { anchor_capture_threshold: 3, anchor_loss_tolerance: 2 }
+
+# Worked figures that follow from the values above.
+derived:
+  lease_budget_ap1:
+    formula: "87 planned + v7's 2 sorties of 10 + muster + close = 109, + 3 re-leases ⟨Q15⟩"
+    total: 112
+    per_sortie: "hours rounded up, plus 1: W1 and W2 are 10 leases, and W3 is 9"
+    per_node_ceiling_total: 121        # Above 112 on purpose: every node's ceiling cannot be spent at once
+  k_up_sizing:
+    all_seven_live: 56                 # 7 · 8, the most one lease each can charge
+    all_seven_at_renewal: 112          # 7 · 16, a live lease and a sealed one not yet watermarked
+    chosen: 120                        # Above 112, so a relief does not stall on a watermark while linked
+  revocation_bound: "After a fence: fewer than 120 further effects, with no premise about time (ADR-0063 §4)"
+  link_lost_above_ap1:
+    on_station: 3
+    charge_rate_per_hour: 24           # 3 · 8
+    start_of_outage_charge: "24 to 48"
+    grants_stop: "when the next would reach 120"
+    authority_lasts: "about 3 to 4 hours, then vehicles spend what they hold and hold"
+  sar_after_link_lost: "refused after 60 ticks (30 minutes) with no watermark, by ROE-8"
+  vehicle_losing_the_plane: "lease ends at once, within one tick period plus the grace: at most 40 s"

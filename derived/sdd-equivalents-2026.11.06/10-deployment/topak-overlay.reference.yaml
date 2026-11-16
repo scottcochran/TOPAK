@@ -1,0 +1,31 @@
+# Layer: deployment · the TOPAK side: ADR-0058 §1 and §9, the reference's overlay as a declaration
+# (read, not computed; the checker of ADR-0057 §8 does not exist). Every alternative in this
+# directory translates this file.
+archetype: { version: G11, graph-digest: "<the published graph's digest>" }
+deployment: the reference (mechanism/), 2026.11.06
+overlay:
+  keep:
+    - decisions/ADR-0031.md §4, §5          # digest pinned in mechanism/corpus-pins.sha256
+    - spec/Lease_A1.tla
+    - spec/Lease_A1_proof.tla
+    - spec/lean/TopakSpec/Lease_A1.lean
+    - floor/genesis-floor.cedar              # built into floor/proposed/ stages by build.py
+  replace: []
+  add:
+    - node: mechanism/crates/topak-core/src/lease.rs      # layer: implementation
+      edges:
+        - { to: spec/Lease_A1.tla, type: tested, evidence: tests/mutations.rs, tests/confinement.rs, fresh: true }
+        - { to: spec/Mechanism.tla, type: replayed, evidence: spec/Mechanism-trace-results-2026.10.05.txt, fresh: "stale for workflows (G11 item 56)" }
+        - { to: spec/Lease_A1.tla, type: trusted, row: T-0045-28 }
+    - node: mechanism/crates/topak-floor (linked workflow stage)
+      edges:
+        - { to: floor/proposed/workflow-floor.cedar, type: executed, pin: PINNED_*_SHA256, fresh: true, standing: Proposed (G11 item 102) }
+  omit: []
+inventory-at-grade:
+  trusted:    { LeaseAuthorityMonotone: holds, NoActionUnderFencedEpoch: holds, Rung0NeverContained: holds, RevokedStaysStopped: holds }
+  read:       { same as trusted }
+  tested:     { LeaseAuthorityMonotone: holds via tests/mutations.rs, NoActionUnderFencedEpoch: holds, Rung0NeverContained: holds, RevokedStaysStopped: holds }
+  replayed:   { all four: holds, route Mechanism.tla; stale for workflow paths }
+  proved-of-a-reading: { all four: void at the code (no Lean transcription of the lease arms; SeatsModel covers Seats only) }
+  proved:     { all four: void at the code }
+upstream-reports: []

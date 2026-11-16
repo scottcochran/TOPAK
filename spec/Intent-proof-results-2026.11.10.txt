@@ -1,0 +1,10 @@
+TOPAK — TLAPS proof results for Intent.tla: every obligation of Intent_proof.tla, checked by the prover below
+Modules: Intent.tla (sha256 0c90ea5004c4f127) · Intent_proof.tla (sha256 0b81c0025abb588c)
+Prover: tlapm 7824dab (binary sha256 e150fb793fb28592) · backends: Z3 version 4.8.9 - 64 bit · zenon version 0.8.4 [a268] 2017-11-14 · Isabelle2025 · LS4 for PTL · driver: proof-results.sh
+Assumptions: SeatingBudgetNat == SeatingBudget \in Nat · MaxCountNat == MaxCount \in Nat
+Theorems: EveryEffectHasAnIntentAlways · EveryEffectHasALeaseAlways · IntentNarrowsAlways · AutonomousAddsNothingAlways · SafeAlways
+Lemmas: IntentSpaceFacts · CountFacts · NoLeaseFacts · NoIntentFacts · InitTypeOK · LiveRoundNat · NextTypeOK · QuietOrder · QuietVehicle · QuietLog · InitInvI · NextInvI · InitInvL · NextInvL · InitInvN · NextInvN · NextAutonomous · MutNoIntentGrantsAnyway · MutNoCountCountsNothing · MutWideIntentAdmitsAny · MutLastIntentReadsTheLast · MutLitePromotesAdmitsPromotion
+A proved obligation is a theorem of the module under its assumptions and the hypotheses the statement names; the prover, not the constants, bounds the claim. Mutations and witnesses are behaviours and stay with TLC.
+
+File "./Intent_proof.tla", line 1, character 1 to line 726, character 77:
+[INFO]: All 677 obligations proved.

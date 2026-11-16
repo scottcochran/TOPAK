@@ -1,0 +1,4 @@
+schema_version: "1.1"
+name: audit-real-records
+expected_outcome: |
+  Run at bbda621 with the diagram-findings document removed. Finds the known inconsistencies R-3, R-5, R-6 and R-8.

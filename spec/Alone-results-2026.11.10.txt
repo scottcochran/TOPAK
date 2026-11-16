@@ -1,0 +1,1558 @@
+TOPAK — Alone.tla (ADR-0062 §11), TLC results 2026.11.10
+Module: Alone.tla (sha256 9e7e04adb2ab5161) · TLC Version 2.19 of 08 August 2024 (jar sha256 936a262061c91469) · openjdk version "25.0.1" 2025-10-21
+Runner: live-gen-results.sh (sha256 b4d8857ad6fb6081) · rows: Alone-rows.txt (sha256 c2b6bad1cd2fcee4) · Count = 1 · MaxBeacon = 1 · MaxGrant = 1 · MaxFence = 0 · Seated = "return" unless the row says otherwise · TLC -workers 1 -fp 0, with -deadlock except on a DEADLOCK row
+expected: none: all four properties HOLD (and Safe, also at larger constants) and every witness is VIOLATED; M_ALONEACTS and M_BEACONUNCOUNTED break AlonePermitsNothing only; M_STACKCHOOSES breaks ExpiryGrantsNothing only; M_ENTRYAFTEREND breaks ExpiryGrantsNothing and AlonePermitsNothing; M_WAITPRIMARY, M_WAITPEER and M_WAITOBSERVER break LocalNeverWaits only; M_STACKGATED breaks TerminalNeverWaits only.
+
+=== s-none-safe · Mut=none · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.2E-12
+19225 states generated, 2368 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 13.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 8 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:33:53)
+→ HOLDS (expected HOLDS: as expected)
+
+=== s-none-safe-large · Mut=none · Count=2 MaxBeacon=1 MaxGrant=2 MaxFence=1 Seated="return" · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 9.2E-10
+  based on the actual fingerprints:  val = 1.0E-9
+409951 states generated, 46640 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 17.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 9 and the 95th percentile is 4).
+Finished in 06s at (2026-11-10 06:34:00)
+→ HOLDS (expected HOLDS: as expected)
+
+=== s-none-alone · Mut=none · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT AlonePermitsNothing
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.2E-12
+19225 states generated, 2368 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 13.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 8 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:34:06)
+→ HOLDS (expected HOLDS: as expected)
+
+=== s-none-expiry · Mut=none · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT ExpiryGrantsNothing
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.2E-12
+19225 states generated, 2368 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 13.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 8 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:34:12)
+→ HOLDS (expected HOLDS: as expected)
+
+=== s-none-local · Mut=none · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT LocalNeverWaits
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.2E-12
+19225 states generated, 2368 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 13.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 8 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:34:19)
+→ HOLDS (expected HOLDS: as expected)
+
+=== s-none-terminal · Mut=none · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT TerminalNeverWaits
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.2E-12
+19225 states generated, 2368 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 13.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 8 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:34:25)
+→ HOLDS (expected HOLDS: as expected)
+
+=== w-local · Mut=none · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT NeverLocalPermitted
+Error: Invariant NeverLocalPermitted is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ primary = "up"
+/\ alphabet = {}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 0
+/\ hears = TRUE
+/\ lstate = "none"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 2: <Grant line 126, col 3 to line 137, col 70 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = TRUE
+/\ lstate = "live"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 3: <Permit line 142, col 3 to line 151, col 75 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = TRUE
+/\ lstate = "live"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 1
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {"local"}
+/\ stack = "ready"
+/\ recovered = "none"
+9 states generated, 9 distinct states found, 6 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 7 (minimum is 7, the maximum 7 and the 95th percentile is 7).
+Finished in 05s at (2026-11-10 06:34:31)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-ordered · Mut=none · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT NeverOrderedPermitted
+Error: Invariant NeverOrderedPermitted is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ primary = "up"
+/\ alphabet = {}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 0
+/\ hears = TRUE
+/\ lstate = "none"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 2: <Grant line 126, col 3 to line 137, col 70 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1", "o1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = TRUE
+/\ lstate = "live"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 3: <Permit line 142, col 3 to line 151, col 75 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1", "o1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = TRUE
+/\ lstate = "live"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 1
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {"ordered"}
+/\ stack = "ready"
+/\ recovered = "none"
+31 states generated, 17 distinct states found, 13 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 7 (minimum is 7, the maximum 7 and the 95th percentile is 7).
+Finished in 05s at (2026-11-10 06:34:36)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-alone · Mut=none · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT NeverAlone
+Error: Invariant NeverAlone is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ primary = "up"
+/\ alphabet = {}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 0
+/\ hears = TRUE
+/\ lstate = "none"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 2: <GoAlone line 163, col 3 to line 169, col 70 of module Alone>
+/\ primary = "up"
+/\ alphabet = {}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 0
+/\ hears = FALSE
+/\ lstate = "none"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {"alone"}
+/\ stack = "ready"
+/\ recovered = "none"
+4 states generated, 4 distinct states found, 2 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 05s at (2026-11-10 06:34:42)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-endedbyalone · Mut=none · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT NeverEndedByAlone
+Error: Invariant NeverEndedByAlone is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ primary = "up"
+/\ alphabet = {}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 0
+/\ hears = TRUE
+/\ lstate = "none"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 2: <Grant line 126, col 3 to line 137, col 70 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = TRUE
+/\ lstate = "live"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 3: <GoAlone line 163, col 3 to line 169, col 70 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = FALSE
+/\ lstate = "ended"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {"alone"}
+/\ stack = "ready"
+/\ recovered = "none"
+18 states generated, 11 distinct states found, 8 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 7 (minimum is 7, the maximum 7 and the 95th percentile is 7).
+Finished in 05s at (2026-11-10 06:34:48)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-beacon · Mut=none · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT NeverBeacon
+Error: Invariant NeverBeacon is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ primary = "up"
+/\ alphabet = {}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 0
+/\ hears = TRUE
+/\ lstate = "none"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 2: <Grant line 126, col 3 to line 137, col 70 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = TRUE
+/\ lstate = "live"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 3: <GoAlone line 163, col 3 to line 169, col 70 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = FALSE
+/\ lstate = "ended"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {"alone"}
+/\ stack = "ready"
+/\ recovered = "none"
+State 4: <Beacon line 191, col 3 to line 198, col 70 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = FALSE
+/\ lstate = "ended"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 1
+/\ entryAfterEnd = FALSE
+/\ seen = {"alone", "beacon"}
+/\ stack = "ready"
+/\ recovered = "none"
+85 states generated, 48 distinct states found, 36 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 5 (minimum is 0, the maximum 8 and the 95th percentile is 8).
+Finished in 05s at (2026-11-10 06:34:53)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-recovered · Mut=none · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT NeverRecovered
+Error: Invariant NeverRecovered is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ primary = "up"
+/\ alphabet = {}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 0
+/\ hears = TRUE
+/\ lstate = "none"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 2: <Grant line 126, col 3 to line 137, col 70 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = TRUE
+/\ lstate = "live"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 3: <EndLease line 155, col 3 to line 159, col 76 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = TRUE
+/\ lstate = "ended"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 4: <Recover line 202, col 3 to line 210, col 44 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = TRUE
+/\ lstate = "ended"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {"recover"}
+/\ stack = "ready"
+/\ recovered = "return"
+76 states generated, 41 distinct states found, 30 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 4 (minimum is 0, the maximum 8 and the 95th percentile is 8).
+Finished in 05s at (2026-11-10 06:34:59)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-fencealone · Mut=none · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=1 Seated="return" · SPECIFICATION Spec · INVARIANT NeverFenceWhileAlone
+Error: Invariant NeverFenceWhileAlone is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ primary = "up"
+/\ alphabet = {}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 0
+/\ hears = TRUE
+/\ lstate = "none"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 2: <GoAlone line 163, col 3 to line 169, col 70 of module Alone>
+/\ primary = "up"
+/\ alphabet = {}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 0
+/\ hears = FALSE
+/\ lstate = "none"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {"alone"}
+/\ stack = "ready"
+/\ recovered = "none"
+State 3: <FenceRelay line 181, col 3 to line 187, col 70 of module Alone>
+/\ primary = "up"
+/\ alphabet = {}
+/\ fence = 1
+/\ wrongTerminal = FALSE
+/\ grants = 0
+/\ hears = FALSE
+/\ lstate = "none"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {"alone", "fenceAlone"}
+/\ stack = "ready"
+/\ recovered = "none"
+42 states generated, 28 distinct states found, 23 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 8 (minimum is 8, the maximum 9 and the 95th percentile is 9).
+Finished in 05s at (2026-11-10 06:35:05)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-regrant · Mut=none · Count=1 MaxBeacon=1 MaxGrant=2 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT NeverLeasedAfterAlone
+Error: Invariant NeverLeasedAfterAlone is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ primary = "up"
+/\ alphabet = {}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 0
+/\ hears = TRUE
+/\ lstate = "none"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 2: <GoAlone line 163, col 3 to line 169, col 70 of module Alone>
+/\ primary = "up"
+/\ alphabet = {}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 0
+/\ hears = FALSE
+/\ lstate = "none"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {"alone"}
+/\ stack = "ready"
+/\ recovered = "none"
+State 3: <HearAgain line 173, col 3 to line 177, col 76 of module Alone>
+/\ primary = "up"
+/\ alphabet = {}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 0
+/\ hears = TRUE
+/\ lstate = "none"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {"alone"}
+/\ stack = "ready"
+/\ recovered = "none"
+State 4: <Grant line 126, col 3 to line 137, col 70 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = TRUE
+/\ lstate = "live"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {"alone", "regrant"}
+/\ stack = "ready"
+/\ recovered = "none"
+220 states generated, 95 distinct states found, 70 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 4 (minimum is 0, the maximum 8 and the 95th percentile is 8).
+Finished in 05s at (2026-11-10 06:35:11)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-orderedwaits · Mut=none · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT NeverOrderedWaits
+Error: Invariant NeverOrderedWaits is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ primary = "up"
+/\ alphabet = {}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 0
+/\ hears = TRUE
+/\ lstate = "none"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 2: <Grant line 126, col 3 to line 137, col 70 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1", "o1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = TRUE
+/\ lstate = "live"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 3: <MovePrimary line 214, col 3 to line 216, col 76 of module Alone>
+/\ primary = "down"
+/\ alphabet = {"l1", "o1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = TRUE
+/\ lstate = "live"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+34 states generated, 20 distinct states found, 16 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 7 (minimum is 7, the maximum 7 and the 95th percentile is 7).
+Finished in 05s at (2026-11-10 06:35:16)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-alone-alone · Mut=M_ALONEACTS · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT AlonePermitsNothing
+Error: Invariant AlonePermitsNothing is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ primary = "up"
+/\ alphabet = {}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 0
+/\ hears = TRUE
+/\ lstate = "none"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 2: <Grant line 126, col 3 to line 137, col 70 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = TRUE
+/\ lstate = "live"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 3: <GoAlone line 163, col 3 to line 169, col 70 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = FALSE
+/\ lstate = "live"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {"alone"}
+/\ stack = "ready"
+/\ recovered = "none"
+State 4: <Permit line 142, col 3 to line 151, col 75 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = FALSE
+/\ lstate = "live"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 1
+/\ aloneActed = TRUE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {"alone", "local"}
+/\ stack = "ready"
+/\ recovered = "none"
+84 states generated, 48 distinct states found, 36 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 5 (minimum is 0, the maximum 8 and the 95th percentile is 8).
+Finished in 05s at (2026-11-10 06:35:22)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-alone-expiry · Mut=M_ALONEACTS · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT ExpiryGrantsNothing
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 7.5E-12
+35461 states generated, 4464 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 14.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 8 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:35:28)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-alone-local · Mut=M_ALONEACTS · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT LocalNeverWaits
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 7.5E-12
+35461 states generated, 4464 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 14.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 8 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:35:33)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-alone-terminal · Mut=M_ALONEACTS · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT TerminalNeverWaits
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 7.5E-12
+35461 states generated, 4464 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 14.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 8 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:35:39)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-beacon-alone · Mut=M_BEACONUNCOUNTED · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT AlonePermitsNothing
+Error: Invariant AlonePermitsNothing is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ primary = "up"
+/\ alphabet = {}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 0
+/\ hears = TRUE
+/\ lstate = "none"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 2: <Grant line 126, col 3 to line 137, col 70 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = TRUE
+/\ lstate = "live"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 3: <GoAlone line 163, col 3 to line 169, col 70 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = FALSE
+/\ lstate = "ended"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {"alone"}
+/\ stack = "ready"
+/\ recovered = "none"
+State 4: <Beacon line 191, col 3 to line 198, col 70 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = FALSE
+/\ lstate = "ended"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 1
+/\ entryAfterEnd = FALSE
+/\ seen = {"alone", "beacon"}
+/\ stack = "ready"
+/\ recovered = "none"
+State 5: <Beacon line 191, col 3 to line 198, col 70 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = FALSE
+/\ lstate = "ended"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 2
+/\ entryAfterEnd = FALSE
+/\ seen = {"alone", "beacon"}
+/\ stack = "ready"
+/\ recovered = "none"
+384 states generated, 150 distinct states found, 101 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 8 and the 95th percentile is 8).
+Finished in 05s at (2026-11-10 06:35:45)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-beacon-expiry · Mut=M_BEACONUNCOUNTED · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT ExpiryGrantsNothing
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 4.3E-12
+27385 states generated, 3328 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 14.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 8 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:35:50)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-beacon-local · Mut=M_BEACONUNCOUNTED · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT LocalNeverWaits
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 4.3E-12
+27385 states generated, 3328 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 14.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 8 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:35:56)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-beacon-terminal · Mut=M_BEACONUNCOUNTED · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT TerminalNeverWaits
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 4.3E-12
+27385 states generated, 3328 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 14.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 8 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:36:02)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-chooses-expiry · Mut=M_STACKCHOOSES · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT ExpiryGrantsNothing
+Error: Invariant ExpiryGrantsNothing is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ primary = "up"
+/\ alphabet = {}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 0
+/\ hears = TRUE
+/\ lstate = "none"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 2: <Grant line 126, col 3 to line 137, col 70 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = TRUE
+/\ lstate = "live"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 3: <EndLease line 155, col 3 to line 159, col 76 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = TRUE
+/\ lstate = "ended"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 4: <Recover line 202, col 3 to line 210, col 44 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = TRUE
+/\ grants = 1
+/\ hears = TRUE
+/\ lstate = "ended"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {"recover"}
+/\ stack = "ready"
+/\ recovered = "land"
+80 states generated, 42 distinct states found, 31 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 4 (minimum is 0, the maximum 8 and the 95th percentile is 8).
+Finished in 05s at (2026-11-10 06:36:07)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-chooses-alone · Mut=M_STACKCHOOSES · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT AlonePermitsNothing
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.9E-11
+73145 states generated, 5248 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 14.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:36:13)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-chooses-local · Mut=M_STACKCHOOSES · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT LocalNeverWaits
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.9E-11
+73145 states generated, 5248 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 14.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:36:19)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-chooses-terminal · Mut=M_STACKCHOOSES · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT TerminalNeverWaits
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.9E-11
+73145 states generated, 5248 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 14.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:36:24)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-after-expiry · Mut=M_ENTRYAFTEREND · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT ExpiryGrantsNothing
+Error: Invariant ExpiryGrantsNothing is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ primary = "up"
+/\ alphabet = {}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 0
+/\ hears = TRUE
+/\ lstate = "none"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 2: <Grant line 126, col 3 to line 137, col 70 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = TRUE
+/\ lstate = "live"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 3: <EndLease line 155, col 3 to line 159, col 76 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = TRUE
+/\ lstate = "ended"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 4: <Permit line 142, col 3 to line 151, col 75 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = TRUE
+/\ lstate = "ended"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 1
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = TRUE
+/\ seen = {"local"}
+/\ stack = "ready"
+/\ recovered = "none"
+75 states generated, 41 distinct states found, 30 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 4 (minimum is 0, the maximum 8 and the 95th percentile is 8).
+Finished in 05s at (2026-11-10 06:36:30)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-after-alone · Mut=M_ENTRYAFTEREND · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT AlonePermitsNothing
+Error: Invariant AlonePermitsNothing is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ primary = "up"
+/\ alphabet = {}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 0
+/\ hears = TRUE
+/\ lstate = "none"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 2: <Grant line 126, col 3 to line 137, col 70 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = TRUE
+/\ lstate = "live"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 3: <GoAlone line 163, col 3 to line 169, col 70 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = FALSE
+/\ lstate = "ended"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {"alone"}
+/\ stack = "ready"
+/\ recovered = "none"
+State 4: <Permit line 142, col 3 to line 151, col 75 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = FALSE
+/\ lstate = "ended"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 1
+/\ aloneActed = TRUE
+/\ beacons = 0
+/\ entryAfterEnd = TRUE
+/\ seen = {"alone", "local"}
+/\ stack = "ready"
+/\ recovered = "none"
+92 states generated, 48 distinct states found, 36 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 5 (minimum is 0, the maximum 8 and the 95th percentile is 8).
+Finished in 05s at (2026-11-10 06:36:35)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-after-local · Mut=M_ENTRYAFTEREND · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT LocalNeverWaits
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 9.8E-12
+42517 states generated, 4816 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 13.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:36:41)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-after-terminal · Mut=M_ENTRYAFTEREND · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT TerminalNeverWaits
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 9.8E-12
+42517 states generated, 4816 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 13.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 10 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:36:47)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-primary-local · Mut=M_WAITPRIMARY · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT LocalNeverWaits
+Error: Invariant LocalNeverWaits is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ primary = "up"
+/\ alphabet = {}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 0
+/\ hears = TRUE
+/\ lstate = "none"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 2: <Grant line 126, col 3 to line 137, col 70 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = TRUE
+/\ lstate = "live"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 3: <MovePrimary line 214, col 3 to line 216, col 76 of module Alone>
+/\ primary = "down"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = TRUE
+/\ lstate = "live"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+15 states generated, 12 distinct states found, 9 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 7 (minimum is 7, the maximum 7 and the 95th percentile is 7).
+Finished in 05s at (2026-11-10 06:36:52)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-primary-alone · Mut=M_WAITPRIMARY · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT AlonePermitsNothing
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.1E-12
+19081 states generated, 2368 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 13.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 8 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:36:58)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-primary-expiry · Mut=M_WAITPRIMARY · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT ExpiryGrantsNothing
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.1E-12
+19081 states generated, 2368 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 13.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 8 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:37:04)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-primary-terminal · Mut=M_WAITPRIMARY · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT TerminalNeverWaits
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.1E-12
+19081 states generated, 2368 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 13.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 8 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:37:09)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-peer-local · Mut=M_WAITPEER · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT LocalNeverWaits
+Error: Invariant LocalNeverWaits is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ primary = "up"
+/\ alphabet = {}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 0
+/\ hears = TRUE
+/\ lstate = "none"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 2: <Grant line 126, col 3 to line 137, col 70 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = TRUE
+/\ lstate = "live"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 3: <MovePeer line 218, col 3 to line 220, col 76 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = TRUE
+/\ lstate = "live"
+/\ observer = "live"
+/\ peer = "down"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+16 states generated, 13 distinct states found, 10 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 7 (minimum is 7, the maximum 7 and the 95th percentile is 7).
+Finished in 05s at (2026-11-10 06:37:15)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-peer-alone · Mut=M_WAITPEER · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT AlonePermitsNothing
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.1E-12
+19081 states generated, 2368 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 13.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 8 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:37:21)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-peer-expiry · Mut=M_WAITPEER · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT ExpiryGrantsNothing
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.1E-12
+19081 states generated, 2368 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 13.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 8 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:37:26)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-peer-terminal · Mut=M_WAITPEER · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT TerminalNeverWaits
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.1E-12
+19081 states generated, 2368 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 13.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 8 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:37:32)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-observer-local · Mut=M_WAITOBSERVER · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT LocalNeverWaits
+Error: Invariant LocalNeverWaits is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ primary = "up"
+/\ alphabet = {}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 0
+/\ hears = TRUE
+/\ lstate = "none"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 2: <Grant line 126, col 3 to line 137, col 70 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = TRUE
+/\ lstate = "live"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 3: <MoveObserver line 222, col 3 to line 224, col 76 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = TRUE
+/\ lstate = "live"
+/\ observer = "stale"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+17 states generated, 14 distinct states found, 11 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 7 (minimum is 7, the maximum 7 and the 95th percentile is 7).
+Finished in 05s at (2026-11-10 06:37:37)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-observer-alone · Mut=M_WAITOBSERVER · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT AlonePermitsNothing
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.1E-12
+19081 states generated, 2368 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 13.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 8 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:37:43)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-observer-expiry · Mut=M_WAITOBSERVER · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT ExpiryGrantsNothing
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.1E-12
+19081 states generated, 2368 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 13.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 8 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:37:49)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-observer-terminal · Mut=M_WAITOBSERVER · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT TerminalNeverWaits
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.1E-12
+19081 states generated, 2368 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 13.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 8 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:37:54)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-gated-terminal · Mut=M_STACKGATED · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT TerminalNeverWaits
+Error: Invariant TerminalNeverWaits is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ primary = "up"
+/\ alphabet = {}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 0
+/\ hears = TRUE
+/\ lstate = "none"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 2: <Grant line 126, col 3 to line 137, col 70 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = TRUE
+/\ lstate = "live"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 3: <EndLease line 155, col 3 to line 159, col 76 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = TRUE
+/\ lstate = "ended"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "ready"
+/\ recovered = "none"
+State 4: <MoveStack line 226, col 3 to line 228, col 76 of module Alone>
+/\ primary = "up"
+/\ alphabet = {"l1"}
+/\ fence = 0
+/\ wrongTerminal = FALSE
+/\ grants = 1
+/\ hears = TRUE
+/\ lstate = "ended"
+/\ observer = "live"
+/\ peer = "up"
+/\ used = 0
+/\ aloneActed = FALSE
+/\ beacons = 0
+/\ entryAfterEnd = FALSE
+/\ seen = {}
+/\ stack = "wedged"
+/\ recovered = "none"
+81 states generated, 46 distinct states found, 35 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 4 (minimum is 0, the maximum 8 and the 95th percentile is 8).
+Finished in 05s at (2026-11-10 06:38:00)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-gated-alone · Mut=M_STACKGATED · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT AlonePermitsNothing
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.6E-12
+14905 states generated, 2368 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 13.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 8 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:38:06)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-gated-expiry · Mut=M_STACKGATED · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT ExpiryGrantsNothing
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.6E-12
+14905 states generated, 2368 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 13.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 8 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:38:11)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-gated-local · Mut=M_STACKGATED · Count=1 MaxBeacon=1 MaxGrant=1 MaxFence=0 Seated="return" · SPECIFICATION Spec · INVARIANT LocalNeverWaits
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.6E-12
+14905 states generated, 2368 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 13.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 8 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:38:17)
+→ HOLDS (expected HOLDS: as expected)
+
+Rows: 47 · as expected: 47 · not as expected: none · ERROR: none

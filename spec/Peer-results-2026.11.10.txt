@@ -1,0 +1,688 @@
+TOPAK — Peer.tla (ADR-0065 §9), TLC results 2026.11.10
+Module: Peer.tla (sha256 5ee3528164cd1a35) · TLC Version 2.19 of 08 August 2024 (jar sha256 936a262061c91469) · openjdk version "25.0.1" 2025-10-21
+Runner: live-gen-results.sh (sha256 b4d8857ad6fb6081) · rows: Peer-rows.txt (sha256 c9fb5d556ef939c9) · MaxDeliver = 2 · MaxSend = 1 unless the row says otherwise · TLC -workers 1 -fp 0, with -deadlock except on a DEADLOCK row
+expected: none: every property HOLDS at both bounds and every witness is VIOLATED, including NeverPermitUnderRelayedLease, which is the module header's finding on §1; M_PEERENABLES breaks PeerAddsNothing and NarrowsInReceived only; M_SENDERLABEL breaks ReceivedIsUntrusted only; M_ANYTOPIC breaks SendWithinTopics only.
+
+=== s-none-safe · Mut=none · MaxDeliver=2 MaxSend=1 · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.5E-10
+  based on the actual fingerprints:  val = 8.0E-11
+173241 states generated, 17696 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 11.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 16 and the 95th percentile is 4).
+Finished in 06s at (2026-11-10 06:29:00)
+→ HOLDS (expected HOLDS: as expected)
+
+=== s-none-safe-3 · Mut=none · MaxDeliver=3 MaxSend=1 · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.4E-9
+  based on the actual fingerprints:  val = 1.6E-10
+763977 states generated, 62480 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 12.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 16 and the 95th percentile is 4).
+Finished in 07s at (2026-11-10 06:29:07)
+→ HOLDS (expected HOLDS: as expected)
+
+=== w-permit · Mut=none · MaxDeliver=2 MaxSend=1 · SPECIFICATION Spec · INVARIANT NeverPermitted
+Error: Invariant NeverPermitted is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ offTopicSent = FALSE
+/\ deliveries = 0
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = {}
+/\ live = FALSE
+/\ sends = 0
+/\ seen = {}
+State 2: <Grant line 126, col 3 to line 129, col 80 of module Peer>
+/\ offTopicSent = FALSE
+/\ deliveries = 0
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = {}
+/\ live = TRUE
+/\ sends = 0
+/\ seen = {}
+State 3: <Permit line 187, col 3 to line 192, col 89 of module Peer>
+/\ offTopicSent = FALSE
+/\ deliveries = 0
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = {}
+/\ live = TRUE
+/\ sends = 0
+/\ seen = {"permit"}
+52 states generated, 33 distinct states found, 30 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 16 (minimum is 16, the maximum 16 and the 95th percentile is 16).
+Finished in 05s at (2026-11-10 06:29:13)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-narrowed · Mut=none · MaxDeliver=2 MaxSend=1 · SPECIFICATION Spec · INVARIANT NeverNarrowedByClear
+Error: Invariant NeverNarrowedByClear is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ offTopicSent = FALSE
+/\ deliveries = 0
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = {}
+/\ live = FALSE
+/\ sends = 0
+/\ seen = {}
+State 2: <Grant line 126, col 3 to line 129, col 80 of module Peer>
+/\ offTopicSent = FALSE
+/\ deliveries = 0
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = {}
+/\ live = TRUE
+/\ sends = 0
+/\ seen = {}
+State 3: <Deliver line 153, col 3 to line 158, col 67 of module Peer>
+/\ offTopicSent = FALSE
+/\ deliveries = 1
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = { [ kind |-> "report",
+    topic |-> "t1",
+    labels |-> {"untrusted", "n1"},
+    clear |-> TRUE,
+    value |-> "none" ] }
+/\ live = TRUE
+/\ sends = 0
+/\ seen = {"labelLow"}
+State 4: <Refuse line 195, col 3 to line 199, col 89 of module Peer>
+/\ offTopicSent = FALSE
+/\ deliveries = 1
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = { [ kind |-> "report",
+    topic |-> "t1",
+    labels |-> {"untrusted", "n1"},
+    clear |-> TRUE,
+    value |-> "none" ] }
+/\ live = TRUE
+/\ sends = 0
+/\ seen = {"labelLow", "narrowedClear"}
+560 states generated, 191 distinct states found, 169 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 9 (minimum is 0, the maximum 16 and the 95th percentile is 16).
+Finished in 05s at (2026-11-10 06:29:18)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-handle · Mut=none · MaxDeliver=2 MaxSend=1 · SPECIFICATION Spec · INVARIANT NeverPermitAfterHandle
+Error: Invariant NeverPermitAfterHandle is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ offTopicSent = FALSE
+/\ deliveries = 0
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = {}
+/\ live = FALSE
+/\ sends = 0
+/\ seen = {}
+State 2: <Grant line 126, col 3 to line 129, col 80 of module Peer>
+/\ offTopicSent = FALSE
+/\ deliveries = 0
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = {}
+/\ live = TRUE
+/\ sends = 0
+/\ seen = {}
+State 3: <Deliver line 153, col 3 to line 158, col 67 of module Peer>
+/\ offTopicSent = FALSE
+/\ deliveries = 1
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = { [ kind |-> "report",
+    topic |-> "t2",
+    labels |-> {"untrusted", "n2"},
+    clear |-> FALSE,
+    value |-> "none" ] }
+/\ live = TRUE
+/\ sends = 0
+/\ seen = {"labelLow"}
+State 4: <Permit line 187, col 3 to line 192, col 89 of module Peer>
+/\ offTopicSent = FALSE
+/\ deliveries = 1
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = { [ kind |-> "report",
+    topic |-> "t2",
+    labels |-> {"untrusted", "n2"},
+    clear |-> FALSE,
+    value |-> "none" ] }
+/\ live = TRUE
+/\ sends = 0
+/\ seen = {"labelLow", "permit", "handlePermit"}
+587 states generated, 200 distinct states found, 177 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 9 (minimum is 0, the maximum 16 and the 95th percentile is 16).
+Finished in 05s at (2026-11-10 06:29:24)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-measured · Mut=none · MaxDeliver=2 MaxSend=1 · SPECIFICATION Spec · INVARIANT NeverRefusedByMeasured
+Error: Invariant NeverRefusedByMeasured is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ offTopicSent = FALSE
+/\ deliveries = 0
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = {}
+/\ live = FALSE
+/\ sends = 0
+/\ seen = {}
+State 2: <ReceiveMeasured line 146, col 3 to line 149, col 73 of module Peer>
+/\ offTopicSent = FALSE
+/\ deliveries = 1
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = { [ kind |-> "measured",
+    topic |-> "none",
+    labels |-> {},
+    clear |-> FALSE,
+    value |-> "near" ] }
+/\ live = FALSE
+/\ sends = 0
+/\ seen = {}
+State 3: <Refuse line 195, col 3 to line 199, col 89 of module Peer>
+/\ offTopicSent = FALSE
+/\ deliveries = 1
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = { [ kind |-> "measured",
+    topic |-> "none",
+    labels |-> {},
+    clear |-> FALSE,
+    value |-> "near" ] }
+/\ live = FALSE
+/\ sends = 0
+/\ seen = {"measuredStop"}
+132 states generated, 77 distinct states found, 71 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 16 (minimum is 14, the maximum 16 and the 95th percentile is 16).
+Finished in 05s at (2026-11-10 06:29:30)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-fence · Mut=none · MaxDeliver=2 MaxSend=1 · SPECIFICATION Spec · INVARIANT NeverStoppedByFence
+Error: Invariant NeverStoppedByFence is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ offTopicSent = FALSE
+/\ deliveries = 0
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = {}
+/\ live = FALSE
+/\ sends = 0
+/\ seen = {}
+State 2: <OrderFence line 132, col 3 to line 134, col 81 of module Peer>
+/\ offTopicSent = FALSE
+/\ deliveries = 0
+/\ fenceOrdered = TRUE
+/\ viaPeer = FALSE
+/\ received = {}
+/\ live = FALSE
+/\ sends = 0
+/\ seen = {}
+State 3: <RelayFence line 138, col 3 to line 142, col 73 of module Peer>
+/\ offTopicSent = FALSE
+/\ deliveries = 1
+/\ fenceOrdered = TRUE
+/\ viaPeer = FALSE
+/\ received = { [ kind |-> "certified",
+    topic |-> "none",
+    labels |-> {},
+    clear |-> FALSE,
+    value |-> "fence" ] }
+/\ live = FALSE
+/\ sends = 0
+/\ seen = {}
+State 4: <Refuse line 195, col 3 to line 199, col 89 of module Peer>
+/\ offTopicSent = FALSE
+/\ deliveries = 1
+/\ fenceOrdered = TRUE
+/\ viaPeer = FALSE
+/\ received = { [ kind |-> "certified",
+    topic |-> "none",
+    labels |-> {},
+    clear |-> FALSE,
+    value |-> "fence" ] }
+/\ live = FALSE
+/\ sends = 0
+/\ seen = {"fenceStop"}
+1313 states generated, 399 distinct states found, 348 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 8 (minimum is 0, the maximum 16 and the 95th percentile is 16).
+Finished in 05s at (2026-11-10 06:29:36)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-dropped · Mut=none · MaxDeliver=2 MaxSend=1 · SPECIFICATION Spec · INVARIANT NeverDroppedOffTopic
+Error: Invariant NeverDroppedOffTopic is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ offTopicSent = FALSE
+/\ deliveries = 0
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = {}
+/\ live = FALSE
+/\ sends = 0
+/\ seen = {}
+State 2: <Drop line 162, col 3 to line 163, col 89 of module Peer>
+/\ offTopicSent = FALSE
+/\ deliveries = 0
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = {}
+/\ live = FALSE
+/\ sends = 0
+/\ seen = {"dropped"}
+23 states generated, 15 distinct states found, 13 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 05s at (2026-11-10 06:29:42)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-refdecl · Mut=none · MaxDeliver=2 MaxSend=1 · SPECIFICATION Spec · INVARIANT NeverSendRefusedDeclared
+Error: Invariant NeverSendRefusedDeclared is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ offTopicSent = FALSE
+/\ deliveries = 0
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = {}
+/\ live = FALSE
+/\ sends = 0
+/\ seen = {}
+State 2: <RefuseSend line 181, col 3 to line 184, col 89 of module Peer>
+/\ offTopicSent = FALSE
+/\ deliveries = 0
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = {}
+/\ live = FALSE
+/\ sends = 0
+/\ seen = {"refSendDecl"}
+25 states generated, 17 distinct states found, 15 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 05s at (2026-11-10 06:29:47)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-refbundle · Mut=none · MaxDeliver=2 MaxSend=1 · SPECIFICATION Spec · INVARIANT NeverSendRefusedByBundle
+Error: Invariant NeverSendRefusedByBundle is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ offTopicSent = FALSE
+/\ deliveries = 0
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = {}
+/\ live = FALSE
+/\ sends = 0
+/\ seen = {}
+State 2: <RefuseSend line 181, col 3 to line 184, col 89 of module Peer>
+/\ offTopicSent = FALSE
+/\ deliveries = 0
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = {}
+/\ live = FALSE
+/\ sends = 0
+/\ seen = {"refSendBundle"}
+24 states generated, 16 distinct states found, 14 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 05s at (2026-11-10 06:29:53)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-sent · Mut=none · MaxDeliver=2 MaxSend=1 · SPECIFICATION Spec · INVARIANT NeverSent
+Error: Invariant NeverSent is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ offTopicSent = FALSE
+/\ deliveries = 0
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = {}
+/\ live = FALSE
+/\ sends = 0
+/\ seen = {}
+State 2: <Grant line 126, col 3 to line 129, col 80 of module Peer>
+/\ offTopicSent = FALSE
+/\ deliveries = 0
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = {}
+/\ live = TRUE
+/\ sends = 0
+/\ seen = {}
+State 3: <Send line 171, col 3 to line 178, col 68 of module Peer>
+/\ offTopicSent = FALSE
+/\ deliveries = 0
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = {}
+/\ live = TRUE
+/\ sends = 1
+/\ seen = {"sent"}
+49 states generated, 30 distinct states found, 27 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 16 (minimum is 16, the maximum 16 and the 95th percentile is 16).
+Finished in 05s at (2026-11-10 06:29:58)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-labellow · Mut=none · MaxDeliver=2 MaxSend=1 · SPECIFICATION Spec · INVARIANT NeverSenderLabelledLow
+Error: Invariant NeverSenderLabelledLow is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ offTopicSent = FALSE
+/\ deliveries = 0
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = {}
+/\ live = FALSE
+/\ sends = 0
+/\ seen = {}
+State 2: <Deliver line 153, col 3 to line 158, col 67 of module Peer>
+/\ offTopicSent = FALSE
+/\ deliveries = 1
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = { [ kind |-> "report",
+    topic |-> "t1",
+    labels |-> {"untrusted", "n1"},
+    clear |-> TRUE,
+    value |-> "none" ] }
+/\ live = FALSE
+/\ sends = 0
+/\ seen = {"labelLow"}
+7 states generated, 7 distinct states found, 5 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 05s at (2026-11-10 06:30:04)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-relayedlease · Mut=none · MaxDeliver=2 MaxSend=1 · SPECIFICATION Spec · INVARIANT NeverPermitUnderRelayedLease
+Error: Invariant NeverPermitUnderRelayedLease is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ offTopicSent = FALSE
+/\ deliveries = 0
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = {}
+/\ live = FALSE
+/\ sends = 0
+/\ seen = {}
+State 2: <Grant line 126, col 3 to line 129, col 80 of module Peer>
+/\ offTopicSent = FALSE
+/\ deliveries = 0
+/\ fenceOrdered = FALSE
+/\ viaPeer = TRUE
+/\ received = {}
+/\ live = TRUE
+/\ sends = 0
+/\ seen = {}
+State 3: <Permit line 187, col 3 to line 192, col 89 of module Peer>
+/\ offTopicSent = FALSE
+/\ deliveries = 0
+/\ fenceOrdered = FALSE
+/\ viaPeer = TRUE
+/\ received = {}
+/\ live = TRUE
+/\ sends = 0
+/\ seen = {"permit", "relayedLease"}
+78 states generated, 49 distinct states found, 45 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 16 (minimum is 16, the maximum 16 and the 95th percentile is 16).
+Finished in 05s at (2026-11-10 06:30:10)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-enables-adds · Mut=M_PEERENABLES · MaxDeliver=2 MaxSend=1 · SPECIFICATION Spec · INVARIANT PeerAddsNothing
+Error: Invariant PeerAddsNothing is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ offTopicSent = FALSE
+/\ deliveries = 0
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = {}
+/\ live = FALSE
+/\ sends = 0
+/\ seen = {}
+State 2: <Grant line 126, col 3 to line 129, col 80 of module Peer>
+/\ offTopicSent = FALSE
+/\ deliveries = 0
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = {}
+/\ live = TRUE
+/\ sends = 0
+/\ seen = {}
+State 3: <Deliver line 153, col 3 to line 158, col 67 of module Peer>
+/\ offTopicSent = FALSE
+/\ deliveries = 1
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = { [ kind |-> "report",
+    topic |-> "t1",
+    labels |-> {"untrusted", "n1"},
+    clear |-> TRUE,
+    value |-> "none" ] }
+/\ live = TRUE
+/\ sends = 0
+/\ seen = {"labelLow"}
+32 states generated, 21 distinct states found, 18 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 16 (minimum is 16, the maximum 16 and the 95th percentile is 16).
+Finished in 05s at (2026-11-10 06:30:16)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-enables-narrows · Mut=M_PEERENABLES · MaxDeliver=2 MaxSend=1 · SPECIFICATION Spec · INVARIANT NarrowsInReceived
+Error: Invariant NarrowsInReceived is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ offTopicSent = FALSE
+/\ deliveries = 0
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = {}
+/\ live = FALSE
+/\ sends = 0
+/\ seen = {}
+State 2: <Grant line 126, col 3 to line 129, col 80 of module Peer>
+/\ offTopicSent = FALSE
+/\ deliveries = 0
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = {}
+/\ live = TRUE
+/\ sends = 0
+/\ seen = {}
+State 3: <Deliver line 153, col 3 to line 158, col 67 of module Peer>
+/\ offTopicSent = FALSE
+/\ deliveries = 1
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = { [ kind |-> "report",
+    topic |-> "t1",
+    labels |-> {"untrusted", "n1"},
+    clear |-> TRUE,
+    value |-> "none" ] }
+/\ live = TRUE
+/\ sends = 0
+/\ seen = {"labelLow"}
+32 states generated, 21 distinct states found, 18 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 16 (minimum is 16, the maximum 16 and the 95th percentile is 16).
+Finished in 05s at (2026-11-10 06:30:21)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-enables-untrusted · Mut=M_PEERENABLES · MaxDeliver=2 MaxSend=1 · SPECIFICATION Spec · INVARIANT ReceivedIsUntrusted
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.5E-10
+  based on the actual fingerprints:  val = 8.0E-11
+177209 states generated, 17696 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 11.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 16 and the 95th percentile is 4).
+Finished in 06s at (2026-11-10 06:30:28)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-enables-send · Mut=M_PEERENABLES · MaxDeliver=2 MaxSend=1 · SPECIFICATION Spec · INVARIANT SendWithinTopics
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.5E-10
+  based on the actual fingerprints:  val = 8.0E-11
+177209 states generated, 17696 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 11.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 16 and the 95th percentile is 4).
+Finished in 06s at (2026-11-10 06:30:34)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-label-untrusted · Mut=M_SENDERLABEL · MaxDeliver=2 MaxSend=1 · SPECIFICATION Spec · INVARIANT ReceivedIsUntrusted
+Error: Invariant ReceivedIsUntrusted is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ offTopicSent = FALSE
+/\ deliveries = 0
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = {}
+/\ live = FALSE
+/\ sends = 0
+/\ seen = {}
+State 2: <Deliver line 153, col 3 to line 158, col 67 of module Peer>
+/\ offTopicSent = FALSE
+/\ deliveries = 1
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = { [ kind |-> "report",
+    topic |-> "t1",
+    labels |-> {},
+    clear |-> TRUE,
+    value |-> "none" ] }
+/\ live = FALSE
+/\ sends = 0
+/\ seen = {"labelLow"}
+7 states generated, 7 distinct states found, 5 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 05s at (2026-11-10 06:30:40)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-label-adds · Mut=M_SENDERLABEL · MaxDeliver=2 MaxSend=1 · SPECIFICATION Spec · INVARIANT PeerAddsNothing
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.2E-9
+  based on the actual fingerprints:  val = 1.6E-10
+455449 states generated, 53856 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 12.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 24 and the 95th percentile is 4).
+Finished in 07s at (2026-11-10 06:30:48)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-label-narrows · Mut=M_SENDERLABEL · MaxDeliver=2 MaxSend=1 · SPECIFICATION Spec · INVARIANT NarrowsInReceived
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.2E-9
+  based on the actual fingerprints:  val = 1.6E-10
+455449 states generated, 53856 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 12.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 24 and the 95th percentile is 4).
+Finished in 06s at (2026-11-10 06:30:55)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-label-send · Mut=M_SENDERLABEL · MaxDeliver=2 MaxSend=1 · SPECIFICATION Spec · INVARIANT SendWithinTopics
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.2E-9
+  based on the actual fingerprints:  val = 1.6E-10
+455449 states generated, 53856 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 12.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 24 and the 95th percentile is 4).
+Finished in 06s at (2026-11-10 06:31:02)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-topic-send · Mut=M_ANYTOPIC · MaxDeliver=2 MaxSend=1 · SPECIFICATION Spec · INVARIANT SendWithinTopics
+Error: Invariant SendWithinTopics is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ offTopicSent = FALSE
+/\ deliveries = 0
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = {}
+/\ live = FALSE
+/\ sends = 0
+/\ seen = {}
+State 2: <Grant line 126, col 3 to line 129, col 80 of module Peer>
+/\ offTopicSent = FALSE
+/\ deliveries = 0
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = {}
+/\ live = TRUE
+/\ sends = 0
+/\ seen = {}
+State 3: <Send line 171, col 3 to line 178, col 68 of module Peer>
+/\ offTopicSent = TRUE
+/\ deliveries = 0
+/\ fenceOrdered = FALSE
+/\ viaPeer = FALSE
+/\ received = {}
+/\ live = TRUE
+/\ sends = 1
+/\ seen = {"sent"}
+51 states generated, 31 distinct states found, 28 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 15 (minimum is 15, the maximum 15 and the 95th percentile is 15).
+Finished in 05s at (2026-11-10 06:31:08)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== m-topic-adds · Mut=M_ANYTOPIC · MaxDeliver=2 MaxSend=1 · SPECIFICATION Spec · INVARIANT PeerAddsNothing
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 7.5E-11
+119693 states generated, 12976 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 10.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 16 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:31:14)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-topic-narrows · Mut=M_ANYTOPIC · MaxDeliver=2 MaxSend=1 · SPECIFICATION Spec · INVARIANT NarrowsInReceived
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 7.5E-11
+119693 states generated, 12976 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 10.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 16 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:31:20)
+→ HOLDS (expected HOLDS: as expected)
+
+=== m-topic-untrusted · Mut=M_ANYTOPIC · MaxDeliver=2 MaxSend=1 · SPECIFICATION Spec · INVARIANT ReceivedIsUntrusted
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 7.5E-11
+119693 states generated, 12976 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 10.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 16 and the 95th percentile is 4).
+Finished in 05s at (2026-11-10 06:31:26)
+→ HOLDS (expected HOLDS: as expected)
+
+Rows: 25 · as expected: 25 · not as expected: none · ERROR: none

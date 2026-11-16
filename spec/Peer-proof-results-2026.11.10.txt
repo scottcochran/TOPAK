@@ -1,0 +1,10 @@
+TOPAK — TLAPS proof results for Peer.tla: every obligation of Peer_proof.tla, checked by the prover below
+Modules: Peer.tla (sha256 5ee3528164cd1a35) · Peer_proof.tla (sha256 3c661ef57179a03c)
+Prover: tlapm 7824dab (binary sha256 e150fb793fb28592) · backends: Z3 version 4.8.9 - 64 bit · zenon version 0.8.4 [a268] 2017-11-14 · Isabelle2025 · LS4 for PTL · driver: proof-results.sh
+Assumptions: none
+Theorems: TypeAlways · PeerAddsNothingAlways · NarrowsInReceivedAlways · ReceivedIsUntrustedAlways · SendWithinTopicsAlways · SafeAlways
+Lemmas: InitTypeOK · FenceItemType · MeasuredItemType · DeliveredLabelsType · HeardTopics · NextTypeOK · StopsMonotone · NoStopsOnEmpty · EnabledIsAlphabet · NarrowsValid · AddsNothingValid · NextReceivedIsUntrusted · NextSendWithinTopics · MutPeerEnablesEnablesGated · MutSenderLabelTakesTheLabel · MutAnyTopicAdmitsAny
+A proved obligation is a theorem of the module under its assumptions and the hypotheses the statement names; the prover, not the constants, bounds the claim. Mutations and witnesses are behaviours and stay with TLC.
+
+File "./Peer_proof.tla", line 1, character 1 to line 360, character 77:
+[INFO]: All 254 obligations proved.

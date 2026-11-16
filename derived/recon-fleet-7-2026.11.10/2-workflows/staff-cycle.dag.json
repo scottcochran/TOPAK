@@ -1,0 +1,303 @@
+{
+  "kind": "dag",
+  "root": "reqs",
+  "sinks": [
+    "package",
+    "scrub"
+  ],
+  "nodes": {
+    "reqs": {
+      "seat": "ts1",
+      "principal": "staff-reqs",
+      "persona": "befd48da10de9a998fccedf599247ef6b51b460ef28ee2a52421f4bf3911db67",
+      "bundle": "a874ff71d1751ddf664c0eb0a5e4e0b1bfb751ea908bd0ac05e05a509bae8591",
+      "confinement": {
+        "digest": "d128e6ed8dd3871f56ca38874cbb6893c74d4eef07a4f05b4d733d1fee015428",
+        "rung": 2
+      },
+      "alphabet": [
+        "Consult",
+        "Report"
+      ],
+      "ttl_ms": 1800000,
+      "lineage": "A",
+      "task": "cfb1428e32a9cba8565872cc37f48939f56066839706561dae63f4b255912eac",
+      "task_label": [],
+      "outcomes": [
+        "complete",
+        "gaps"
+      ],
+      "outward": false,
+      "join": "any"
+    },
+    "airspace": {
+      "seat": "ts2",
+      "principal": "staff-airspace",
+      "persona": "95d88a1a05bf8db92f300e20101b46ec529af7ad715c416476e0308372d5b1ab",
+      "bundle": "a874ff71d1751ddf664c0eb0a5e4e0b1bfb751ea908bd0ac05e05a509bae8591",
+      "confinement": {
+        "digest": "d128e6ed8dd3871f56ca38874cbb6893c74d4eef07a4f05b4d733d1fee015428",
+        "rung": 2
+      },
+      "alphabet": [
+        "Actuate",
+        "Report"
+      ],
+      "ttl_ms": 1800000,
+      "lineage": "B",
+      "task": "eada86233e321182ab7ac907420366fb6fed24872edf645fd9e2939452460daf",
+      "task_label": [],
+      "outcomes": [
+        "amber",
+        "green",
+        "red"
+      ],
+      "outward": true,
+      "join": "any"
+    },
+    "readiness": {
+      "seat": "ts3",
+      "principal": "staff-readiness",
+      "persona": "befd48da10de9a998fccedf599247ef6b51b460ef28ee2a52421f4bf3911db67",
+      "bundle": "a874ff71d1751ddf664c0eb0a5e4e0b1bfb751ea908bd0ac05e05a509bae8591",
+      "confinement": {
+        "digest": "d128e6ed8dd3871f56ca38874cbb6893c74d4eef07a4f05b4d733d1fee015428",
+        "rung": 2
+      },
+      "alphabet": [
+        "Actuate",
+        "Report"
+      ],
+      "ttl_ms": 1800000,
+      "lineage": "A",
+      "task": "5c3a43ad0a0320ac54997a49e8983061aeca70f26d0697d751b5dd4d012f3ee9",
+      "task_label": [],
+      "outcomes": [
+        "degraded",
+        "nogo",
+        "ready"
+      ],
+      "outward": false,
+      "join": "any"
+    },
+    "plan": {
+      "seat": "ts4",
+      "principal": "staff-plan",
+      "persona": "95d88a1a05bf8db92f300e20101b46ec529af7ad715c416476e0308372d5b1ab",
+      "bundle": "a874ff71d1751ddf664c0eb0a5e4e0b1bfb751ea908bd0ac05e05a509bae8591",
+      "confinement": {
+        "digest": "d128e6ed8dd3871f56ca38874cbb6893c74d4eef07a4f05b4d733d1fee015428",
+        "rung": 2
+      },
+      "alphabet": [
+        "Consult",
+        "Report"
+      ],
+      "ttl_ms": 1800000,
+      "lineage": "B",
+      "task": "1383c4d996036cc5bb60527371bb89cd8532c6f9dcb1e5ac00ac432b179494da",
+      "task_label": [],
+      "outcomes": [
+        "feasible",
+        "infeasible"
+      ],
+      "outward": false,
+      "join": "any"
+    },
+    "package": {
+      "seat": "ts5",
+      "principal": "staff-package",
+      "persona": "befd48da10de9a998fccedf599247ef6b51b460ef28ee2a52421f4bf3911db67",
+      "bundle": "a874ff71d1751ddf664c0eb0a5e4e0b1bfb751ea908bd0ac05e05a509bae8591",
+      "confinement": {
+        "digest": "d128e6ed8dd3871f56ca38874cbb6893c74d4eef07a4f05b4d733d1fee015428",
+        "rung": 2
+      },
+      "alphabet": [
+        "Actuate",
+        "Report"
+      ],
+      "ttl_ms": 1800000,
+      "lineage": "A",
+      "task": "5734f2c3fe48ff134ddd6dc843d2910a1a2fbcd0dc18dd148448f01281b3ef25",
+      "task_label": [],
+      "outcomes": [
+        "submitted"
+      ],
+      "outward": false,
+      "join": "any"
+    },
+    "scrub": {
+      "seat": "ts6",
+      "principal": "staff-scrub",
+      "persona": "befd48da10de9a998fccedf599247ef6b51b460ef28ee2a52421f4bf3911db67",
+      "bundle": "a874ff71d1751ddf664c0eb0a5e4e0b1bfb751ea908bd0ac05e05a509bae8591",
+      "confinement": {
+        "digest": "d128e6ed8dd3871f56ca38874cbb6893c74d4eef07a4f05b4d733d1fee015428",
+        "rung": 2
+      },
+      "alphabet": [
+        "Actuate",
+        "Report"
+      ],
+      "ttl_ms": 1800000,
+      "lineage": "A",
+      "task": "8ee20a1cdde56d78d3e5cabcc926dd36ec9269f37db21493f223beed64b3fdf1",
+      "task_label": [],
+      "outcomes": [
+        "notified"
+      ],
+      "outward": false,
+      "join": "any"
+    }
+  },
+  "edges": {
+    "e-reqs-airspace": {
+      "from": "reqs",
+      "to": "airspace",
+      "kind": "computed",
+      "guard": {
+        "outcome": {
+          "node": "reqs",
+          "any_of": [
+            "complete"
+          ]
+        }
+      },
+      "delivery": "clear"
+    },
+    "e-reqs-scrub": {
+      "from": "reqs",
+      "to": "scrub",
+      "kind": "computed",
+      "guard": {
+        "outcome": {
+          "node": "reqs",
+          "any_of": [
+            "gaps"
+          ]
+        }
+      },
+      "delivery": "handle"
+    },
+    "e-airspace-readiness": {
+      "from": "airspace",
+      "to": "readiness",
+      "kind": "computed",
+      "guard": {
+        "outcome": {
+          "node": "airspace",
+          "any_of": [
+            "amber",
+            "green"
+          ]
+        }
+      },
+      "delivery": "clear"
+    },
+    "e-airspace-scrub": {
+      "from": "airspace",
+      "to": "scrub",
+      "kind": "computed",
+      "guard": {
+        "outcome": {
+          "node": "airspace",
+          "any_of": [
+            "red"
+          ]
+        }
+      },
+      "delivery": "handle"
+    },
+    "e-readiness-plan": {
+      "from": "readiness",
+      "to": "plan",
+      "kind": "computed",
+      "guard": {
+        "outcome": {
+          "node": "readiness",
+          "any_of": [
+            "degraded",
+            "ready"
+          ]
+        }
+      },
+      "delivery": "clear"
+    },
+    "e-readiness-scrub": {
+      "from": "readiness",
+      "to": "scrub",
+      "kind": "computed",
+      "guard": {
+        "outcome": {
+          "node": "readiness",
+          "any_of": [
+            "nogo"
+          ]
+        }
+      },
+      "delivery": "handle"
+    },
+    "e-go": {
+      "from": "plan",
+      "to": "package",
+      "kind": "chosen",
+      "guard": {
+        "all": [
+          {
+            "outcome": {
+              "node": "plan",
+              "any_of": [
+                "feasible"
+              ]
+            }
+          },
+          {
+            "outcome": {
+              "node": "readiness",
+              "any_of": [
+                "degraded",
+                "ready"
+              ]
+            }
+          },
+          {
+            "outcome": {
+              "node": "airspace",
+              "any_of": [
+                "amber",
+                "green"
+              ]
+            }
+          }
+        ]
+      },
+      "delivery": "clear"
+    },
+    "e-scrub": {
+      "from": "plan",
+      "to": "scrub",
+      "kind": "chosen",
+      "guard": "true",
+      "delivery": "handle"
+    }
+  },
+  "orchestrator": {
+    "seat": "orc-co",
+    "principal": "person:commander",
+    "persona": "b96456ef3cf0b75931fde9d924778cbe91b7743c7fda147d74d496abf75c9dff",
+    "bundle": "a874ff71d1751ddf664c0eb0a5e4e0b1bfb751ea908bd0ac05e05a509bae8591",
+    "confinement": {
+      "digest": "ab684769c1a381c0060e25d13e6de446ee0628391eac82c3a23fd5ed4b603550",
+      "rung": 0
+    },
+    "alphabet": [
+      "Report",
+      "Route"
+    ],
+    "ttl_ms": 1800000,
+    "lineage": "human",
+    "task": "f5a5b958a556efc886688a819ad40457784e12b532d3de8dbf117e31c4caf47a",
+    "task_label": []
+  }
+}

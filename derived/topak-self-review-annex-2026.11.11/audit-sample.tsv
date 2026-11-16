@@ -1,0 +1,15 @@
+reader	record	row	kind	heading
+A	ADR-0010	History	history	typed rows: amendments, errata, revisions, ratifications
+B	ADR-0027	Context / Consequences	non-clause	sections outside the Decision
+C	ADR-0035	§9	clause	9. Degeneracy on this record
+D	ADR-0043	Open obligations	open-obligations	
+E	ADR-0045	T-0045-30	table-row	trusted-base row, Annex A
+F	ADR-0048	Context / Options considered / Consequences / Findings	non-clause	sections outside the Decision
+G	ADR-0056	§6	clause	6. The downstream system takes the subject from the credenti
+I1	ADR-0060	§4	clause	4. It is a declared degeneracy and an addition, not a second
+I2	ADR-0065	Open obligations	open-obligations	
+K1	narrative/theory-of-operation.md	6. The model is pinned	section	
+K2	narrative/architecture-description.md	4. Solution strategy	section	
+C	ADR-0030	§6	clause	6. No transpiler, in either direction
+A	ADR-0020	History	history	typed rows: amendments, errata, revisions, ratifications
+I2	ADR-0063	History	history	typed rows: amendments, errata, revisions, ratifications

@@ -1,0 +1,34 @@
+# Layer: interface · GraphQL SDL · TOPAK source: ADR-0031 §1
+# The lease as a type, the renewal as a mutation whose input lacks every fixed field, so that a
+# widening of round, role, bundle or confinement is unexpressible rather than refused.
+type Lease {
+  principal: ID!
+  seat: ID!
+  persona: Digest!
+  epoch: Int!
+  fence: Int!
+  rulesEpoch: Int!
+  bundle: Digest!
+  confinement: Confinement!
+  alphabet: [ActionKind!]!
+  round: Int!
+  role: RoundRole!
+  ttlMs: Int!
+}
+type Confinement { digest: Digest!, rung: Int! }
+enum ActionKind { Read Draft Invoke Emit Submit Vote Consult Actuate Report }
+enum RoundRole { author voter }
+scalar Digest
+
+"Only what a renewal may change (ADR-0031 §4). Everything else is read from the live lease."
+input RenewInput { seat: ID!, fence: Int!, alphabet: [ActionKind!]!, rung: Int!, ttlMs: Int! }
+
+union RenewResult = Lease | Refusal
+type Refusal { reason: String! }
+
+type Mutation {
+  renew(input: RenewInput!): RenewResult!
+  fenceEpoch: Int!                                   # the new epoch
+  revoke(kind: RevocationKind!, id: String!): Boolean!
+}
+enum RevocationKind { principal persona confinement }

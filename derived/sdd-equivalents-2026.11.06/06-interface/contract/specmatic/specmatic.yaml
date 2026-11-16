@@ -1,0 +1,11 @@
+# Layer: interface · Specmatic configuration · TOPAK source: ADR-0031 §1 via ../../03-record/api/lease.openapi.yaml
+# Specmatic is the paper's "spec-anchored with OpenAPI": the OpenAPI file is the contract, it stubs the
+# provider for consumers and tests the provider in CI, and any drift fails the build. Here the
+# contract is the record-layer OpenAPI; the examples are the interface-layer checks.
+sources:
+  - provider: filesystem
+    directory: ../../03-record/api
+    provides:
+      - lease.openapi.yaml
+    consumes:
+      - lease.openapi.yaml

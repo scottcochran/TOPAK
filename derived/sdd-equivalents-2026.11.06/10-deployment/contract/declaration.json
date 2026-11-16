@@ -1,0 +1,9 @@
+{
+  "_comment": "The declaration 04-assurance/contract/renew.provider.verify.spec.js reads: the rows the provider holds, as a Pact provider would publish them. Same content as ../tdd/declaration.yaml.",
+  "deployment": "the reference, 2026.11.06",
+  "rows": [
+    { "id": "T-0045-1", "status": "trust root" }, { "id": "T-0045-10", "status": "trust root" },
+    { "id": "T-0045-28", "status": "trust root" }, { "id": "T-0045-3", "status": "delegated" },
+    { "id": "T-0045-16", "status": "excluded" }, { "id": "T-0045-17", "status": "excluded" }, { "id": "T-0045-20", "status": "excluded" }
+  ]
+}

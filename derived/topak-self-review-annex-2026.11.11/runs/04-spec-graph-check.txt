@@ -1,0 +1,204 @@
+TOPAK — the specification graph, checked (ADR-0057, Proposed): stale edges, what no model reads, guarantees stated twice, the four lists against the graph, and the inventory at every grade
+Sources: spec/specification-graph.json (sha256 01a5dc99d65eb60f) · spec/specification-graph.py (sha256 7b4a4d699290d1cb) · spec/clauses.py (sha256 d476d7659e44d089) · spec/inventory.py (sha256 20dbddd6a819b4b7) · spec/theorem-premise-binding.json (sha256 3590ae1af467fa02) · decisions/ADR-0045.md (sha256 8e425f423b0b89ca)
+Graph: 419 nodes, 435 edges, built at 9749dfa + working tree · types, strongest first: executed > generated > proved > proved of a reading > replayed > tested > read > trusted
+Layers: intent 0 · vocabulary 0 · record 325 · assurance 4 · model 69 · interface 0 · policy 6 · implementation 15 · runtime 0 · deployment 0
+Edges: executed 1 · generated 4 · proved 36 · proved of a reading 20 · replayed 4 · tested 9 · read 340 · trusted 21
+
+== Well formed: yes
+
+== Stale edges (§3, §8): 10 of 435
+- generated: 2 edge(s)
+    generated: floor/proposed/control-floor.cedar → floor/genesis-floor.cedar  [premise false]
+      floor/proposed/control-tests.json 4247f94588f550f1 -> gone
+    generated: floor/proposed/labels-floor.cedar → floor/genesis-floor.cedar  [premise false]
+      floor/proposed/labels-tests.json 9877990b5ebeb101 -> gone
+- mechanism/lean/Admit-results-*.txt: 4 edge(s)
+    proved of a reading: mechanism/crates/topak-core → ADR-0032 §2  [premise false]
+      mechanism/crates/topak-core/src/rules.rs 94b543971af7b9ba -> 2f869fec373905f7
+      mechanism/crates/topak-core/src/state.rs 25eeeeb3830ee9f8 -> e6a927a19935e329
+      mechanism/crates/topak-core/src/types.rs 6524de30f4ada72a -> 9052f7a910657449
+      mechanism/crates/topak-floor/src/lib.rs 0f280725956a15b4 -> 93f01304236d3708
+      … and 1 more
+    proved of a reading: mechanism/crates/topak-core → ADR-0039 §2  [premise false]
+      mechanism/crates/topak-core/src/rules.rs 94b543971af7b9ba -> 2f869fec373905f7
+      mechanism/crates/topak-core/src/state.rs 25eeeeb3830ee9f8 -> e6a927a19935e329
+      mechanism/crates/topak-core/src/types.rs 6524de30f4ada72a -> 9052f7a910657449
+      mechanism/crates/topak-floor/src/lib.rs 0f280725956a15b4 -> 93f01304236d3708
+      … and 1 more
+    proved of a reading: mechanism/crates/topak-core → spec/FloorComposition.tla  [premise false]
+      mechanism/crates/topak-core/src/rules.rs 94b543971af7b9ba -> 2f869fec373905f7
+      mechanism/crates/topak-core/src/state.rs 25eeeeb3830ee9f8 -> e6a927a19935e329
+      mechanism/crates/topak-core/src/types.rs 6524de30f4ada72a -> 9052f7a910657449
+      mechanism/crates/topak-floor/src/lib.rs 0f280725956a15b4 -> 93f01304236d3708
+      … and 1 more
+    proved of a reading: mechanism/crates/topak-core → spec/Seats.tla  [premise false]
+      mechanism/crates/topak-core/src/rules.rs 94b543971af7b9ba -> 2f869fec373905f7
+      mechanism/crates/topak-core/src/state.rs 25eeeeb3830ee9f8 -> e6a927a19935e329
+      mechanism/crates/topak-core/src/types.rs 6524de30f4ada72a -> 9052f7a910657449
+      mechanism/crates/topak-floor/src/lib.rs 0f280725956a15b4 -> 93f01304236d3708
+      … and 1 more
+- mechanism/lean/CouplingReplay-results-*.txt: 1 edge(s)
+    replayed: mechanism/crates/topak-core → mechanism/lean/Topak/CouplingModel.lean  [premise false]
+      mechanism/crates/topak-core/src/rules.rs 94b543971af7b9ba -> 2f869fec373905f7
+      mechanism/crates/topak-core/src/state.rs 25eeeeb3830ee9f8 -> e6a927a19935e329
+      mechanism/crates/topak-core/src/trace.rs 5056e2da471b18a8 -> 2b8c59b4b03e6d89
+- mechanism/lean/SeatsReplay-results-*.txt: 1 edge(s)
+    replayed: mechanism/crates/topak-core → mechanism/lean/Topak/SeatsModel.lean  [model-faithful(apply/Seats)]
+      mechanism/crates/topak-core/src/state.rs 25eeeeb3830ee9f8 -> e6a927a19935e329
+      mechanism/crates/topak-core/src/trace.rs 5056e2da471b18a8 -> 2b8c59b4b03e6d89
+- spec/Mechanism-trace-results-*.txt: 2 edge(s)
+    replayed: mechanism/crates/topak-core → spec/ConfinementRefinement.tla  [premise false]
+      mechanism/crates/topak-core changed since 9c57221: 17 files: src/action.rs, src/control.rs, src/labels.rs, src/lib.rs, src/lift.rs, src/observer.rs, src/rules.rs, src/state.rs, src/trace.rs, src/types.rs, src/workflow.rs, tests/emergency.rs, tests/mutations.rs, tests/operators.rs, tests/support/mod.rs, tests/support/wf.rs, tests/workflow.rs
+      mechanism/crates/topak-node changed since 9c57221: 4 files: src/lib.rs, src/mechanism.rs, src/ops.rs, tests/e2e.rs
+    replayed: mechanism/crates/topak-core → spec/Mechanism.tla  [premise false]
+      mechanism/crates/topak-core changed since 9c57221: 17 files: src/action.rs, src/control.rs, src/labels.rs, src/lib.rs, src/lift.rs, src/observer.rs, src/rules.rs, src/state.rs, src/trace.rs, src/types.rs, src/workflow.rs, tests/emergency.rs, tests/mutations.rs, tests/operators.rs, tests/support/mod.rs, tests/support/wf.rs, tests/workflow.rs
+      mechanism/crates/topak-node changed since 9c57221: 4 files: src/lib.rs, src/mechanism.rs, src/ops.rs, tests/e2e.rs
+
+== Clauses the reference follows with no edge but the reference's own reading (§8)
+  51 clauses of 12 of the 42 records it follows: no module, stage, proof or check reads them; the code's reading is their only discharge
+  ADR-0003: text
+  ADR-0004: text
+  ADR-0005: text
+  ADR-0010: text
+  ADR-0016: Decision, §1, §2, §3, §4, §5, §6, §7, §8, §9
+  ADR-0018: Decision, Why the decoder need not be trusted, The downstream artifact chain, Reader scope correction
+  ADR-0020: Decision, Three properties follow, Consequence for Persona
+  ADR-0032: §1, §3, §4, §5, §6
+  ADR-0035: §1, §2, §3, §4, §5, §6, §7, §8, §9
+  ADR-0040: §4, §5, §6, §7
+  ADR-0044: §1, §2, §3, §4, §5
+  ADR-0049: §1, §2, §4, §5, §7, §8, §9
+  Each replay's model, against the records the replayed code follows and some other module reads:
+  - spec/ConfinementRefinement.tla (stale) reads none of: ADR-0007 (read by Observers.tla); ADR-0009 (read by BreakGlass.tla, NonComposition.tla); ADR-0013 (read by NonComposition.tla, NonComposition_A1.tla, RulesFloorBase.tla); ADR-0015 (read by BreakGlass.tla); ADR-0026 (read by Anchor.tla, BreakGlass.tla, BreakGlass_A1.tla, RulesFloorBase.tla, RulesFloorNV.tla, RulesFloorNV_rev5.tla); ADR-0027 (read by Anchor.tla, RulesFloorBase.tla); ADR-0028 (read by NonComposition.tla, NonComposition_A1.tla); ADR-0030 (read by FloorComposition.tla, FloorRouting.tla); ADR-0038 (read by Observers.tla); ADR-0040 (read by RunConfinement.tla, RunCoupling.tla, RunSeats.tla); ADR-0041 (read by Labels.tla, RunCoupling.tla); ADR-0049 (read by Labels.tla); ADR-0054 (read by Mesh.tla, Workflow.tla); ADR-0055 (read by Mesh.tla)
+  - spec/Mechanism.tla (stale) reads none of: ADR-0007 (read by Observers.tla); ADR-0009 (read by BreakGlass.tla, NonComposition.tla); ADR-0013 (read by NonComposition.tla, NonComposition_A1.tla, RulesFloorBase.tla); ADR-0015 (read by BreakGlass.tla); ADR-0026 (read by Anchor.tla, BreakGlass.tla, BreakGlass_A1.tla, RulesFloorBase.tla, RulesFloorNV.tla, RulesFloorNV_rev5.tla); ADR-0027 (read by Anchor.tla, RulesFloorBase.tla); ADR-0028 (read by NonComposition.tla, NonComposition_A1.tla); ADR-0030 (read by FloorComposition.tla, FloorRouting.tla); ADR-0038 (read by Observers.tla); ADR-0040 (read by RunConfinement.tla, RunCoupling.tla, RunSeats.tla); ADR-0041 (read by Labels.tla, RunCoupling.tla); ADR-0049 (read by Labels.tla); ADR-0054 (read by Mesh.tla, Workflow.tla); ADR-0055 (read by Mesh.tla)
+
+== Guarantees stated more than once (§6)
+- the operator's envelope, C1 to C9 (ADR-0050 §4; mechanism/ I47 (e))
+    entries C1 to C9, for the decision  ~  control.rs ControlFacts::permitted, restated at apply: tested (fresh)
+    entries C1 to C9, for the decision  ~  the control entry, restated on every traced request: no edge
+    control.rs ControlFacts::permitted, restated at apply  ~  the control entry, restated on every traced request: read (fresh); replayed (stale)
+
+== Modules no theorem in the binding is checked in: 13 of 31
+  BreakGlass_A1, Correlator, Coupling_live, Emergency, Emergency_live, Labels, Mesh, NonComposition_A1, Operators, RulesFloorBase, RulesFloorNV, ToolList, Workflow
+
+== Edges up, from each module to what it reads (§5): graded once per module
+  read, by the drafter: 31 modules (Anchor.tla, BreakGlass.tla, BreakGlass_A1.tla, Confinement.tla, ConfinementRefinement.tla, Confinement_A1.tla, Correlator.tla, Coupling.tla, Coupling_live.tla, Emergency.tla, Emergency_live.tla, FloorComposition.tla, FloorRouting.tla, Labels.tla, Lease.tla, Lease_A1.tla, Mechanism.tla, Mesh.tla, NonComposition.tla, NonComposition_A1.tla, Observers.tla, Operators.tla, RulesFloorBase.tla, RulesFloorNV.tla, RulesFloorNV_rev5.tla, RunConfinement.tla, RunCoupling.tla, RunSeats.tla, Seats.tla, ToolList.tla, Workflow.tla)
+  modules that read no record: none
+
+== The four lists, read against the graph (§8)
+- mechanism/corpus-pins.sha256: agrees
+    61 pinned paths, 61 upper ends of read edges from the reference, 139 such edges: the same paths, at the same pins
+- the binding's check columns: agrees
+    enc-faithful(Seats): the edge proved: spec/lean/TopakSpec/Seats.lean → spec/Seats.tla, on spec/lean/GraphCheck-results-*.txt
+    enc-faithful(FloorComposition): the edge proved: spec/lean/TopakSpec/FloorComposition.lean → spec/FloorComposition.tla, on spec/lean/GraphCheck-results-*.txt
+    every faithfulness column of kind condition is an edge's premise
+- manifests/index.tsv: agrees
+    SHA256SUMS-REF-2026.10.09 (2026.10.09, 749d54f): its 8 crates are the graph's 8 crate nodes
+    SHA256SUMS-G11 (2026.10.09): 0 file nodes entered since that cut (information)
+- the sync scripts: DISAGREES
+    proof-sync.sh reads ['spec/Alone_proof.tla', 'spec/Federation_proof.tla', 'spec/Intent_proof.tla', 'spec/Membership_proof.tla', 'spec/Outstanding_proof.tla', 'spec/Peer_proof.tla', 'spec/PlaneClock_proof.tla', 'spec/Release_proof.tla'] that no edge does; edges [] it does not
+    tools/lean-sync.sh: its 7 series are the Lean edges' evidence (Admit, CouplingReplay, GraphCheck, GraphCheckEmergency, SeatsReplay, TopakFloor, TopakSpec)
+    spec/mechanism-trace-results.sh: its results are the replayed edges' evidence
+
+== The inventory at grade trusted against inventory.py's (§14)
+- Annex B as declared (inventory.py --annex-b): 19 of 43 hold by inventory.py, 19 at grade trusted by the graph; the same, theorem by theorem
+- premise-routes.sh's five declarations (spec/premise-routes-results-2026.11.03.txt), each against the graph at grade trusted:
+    1-reference: 38 hold in the results file's run, 38 by the graph; the same verdicts
+    2-lean-not-tlaps: 9 hold in the results file's run, 9 by the graph; the same verdicts
+    3-lean-every-encoding-read: 32 hold in the results file's run, 32 by the graph; the same verdicts
+    4-lean-stage-not-T28: 2 hold in the results file's run, 0 by the graph; 2 differ: OnlyThinkersAuthor void: refines(Seats) [edge(trusted, mechanism → spec/Seats.tla): T-0045-28 excluded | edge(proved of a reading, mechanism/crates/topak-core → spec/Seats.tla) stale + model-faithful(apply/Seats) stale]; OneSeatPerPrincipal void: refines(Seats) [edge(trusted, mechanism → spec/Seats.tla): T-0045-28 excluded | edge(proved of a reading, mechanism/crates/topak-core → spec/Seats.tla) stale + model-faithful(apply/Seats) stale]
+    5-graph-check-refused: 3 hold in the results file's run, 3 by the graph; the same verdicts
+
+== The inventory at every grade (§5): each theorem's grade, the route that carried it, and why it fails one grade up
+=== the reference, Annex B as declared
+  held at each grade: executed 0 · generated 0 · proved 0 · proved of a reading 0 · replayed 0 · tested 0 · read 0 · trusted 19
+- LeaseAuthorityMonotone: trusted (via reaches-code(spec/Lease_A1.tla) by edge(trusted, mechanism → spec/Lease_A1.tla); invariant(Lease_A1) by T-0045-31 + edge(proved, spec/Lease_A1_proof.tla → spec/Lease_A1.tla)) · one grade up: reaches-code(spec/Lease_A1.tla) [edge(trusted, mechanism → spec/Lease_A1.tla) below grade]
+- NoActionUnderFencedEpoch: trusted (via reaches-code(spec/Lease_A1.tla) by edge(trusted, mechanism → spec/Lease_A1.tla); invariant(Lease_A1) by T-0045-31 + edge(proved, spec/Lease_A1_proof.tla → spec/Lease_A1.tla)) · one grade up: reaches-code(spec/Lease_A1.tla) [edge(trusted, mechanism → spec/Lease_A1.tla) below grade]
+- Rung0NeverContained: trusted (via reaches-code(spec/Lease_A1.tla) by edge(trusted, mechanism → spec/Lease_A1.tla); invariant(Lease_A1) by T-0045-31 + edge(proved, spec/Lease_A1_proof.tla → spec/Lease_A1.tla)) · one grade up: reaches-code(spec/Lease_A1.tla) [edge(trusted, mechanism → spec/Lease_A1.tla) below grade]
+- RevokedStaysStopped: trusted (via reaches-code(spec/Lease_A1.tla) by edge(trusted, mechanism → spec/Lease_A1.tla); invariant(Lease_A1) by T-0045-31 + edge(proved, spec/Lease_A1_proof.tla → spec/Lease_A1.tla)) · one grade up: reaches-code(spec/Lease_A1.tla) [edge(trusted, mechanism → spec/Lease_A1.tla) below grade]
+- AdmitImpliesFloorPermit: void at every grade: floor-verified
+- FloorErrorIsDeny: void at every grade: floor-verified
+- BundleRefusalHonored: void at every grade: bundle-signed
+- BundleCannotWriteFloorInputs: trusted (via reaches-code(spec/FloorComposition.tla) by edge(trusted, mechanism → spec/FloorComposition.tla); invariant(FloorComposition) by T-0045-31 + edge(proved, spec/FloorComposition_proof.tla → spec/FloorComposition.tla)) · one grade up: reaches-code(spec/FloorComposition.tla) [edge(trusted, mechanism → spec/FloorComposition.tla) below grade]
+- EnvelopeHolds, FloorNeverVacuous: void at every grade: floor-verified
+- NoWideningWithoutIssuance: void at every grade: routing-checked
+- NC1, NC2: void at every grade: rules-floor-R6-R7
+- P1_Unanimity: void at every grade: quorum-all
+- P2_TwoSeatsCounted: void at every grade: min-grant-ge-2
+- P3_AuthorNotCounted: trusted (via reaches-code(spec/RulesFloorNV_rev5.tla) by edge(trusted, mechanism → spec/RulesFloorNV_rev5.tla); invariant(RulesFloorNV_rev5) by T-0045-31 + edge(proved, spec/RulesFloorNV_rev5_proof.tla → spec/RulesFloorNV_rev5.tla)) · one grade up: reaches-code(spec/RulesFloorNV_rev5.tla) [edge(trusted, mechanism → spec/RulesFloorNV_rev5.tla) below grade]
+- P5_AnchorNotApprover: trusted (via reaches-code(spec/RulesFloorNV_rev5.tla) by edge(trusted, mechanism → spec/RulesFloorNV_rev5.tla); invariant(RulesFloorNV_rev5) by T-0045-31 + edge(proved, spec/RulesFloorNV_rev5_proof.tla → spec/RulesFloorNV_rev5.tla)) · one grade up: reaches-code(spec/RulesFloorNV_rev5.tla) [edge(trusted, mechanism → spec/RulesFloorNV_rev5.tla) below grade]
+- P7_BGNoAuthority: trusted (via reaches-code(spec/RulesFloorNV_rev5.tla) by edge(trusted, mechanism → spec/RulesFloorNV_rev5.tla); invariant(RulesFloorNV_rev5) by T-0045-31 + edge(proved, spec/RulesFloorNV_rev5_proof.tla → spec/RulesFloorNV_rev5.tla)) · one grade up: reaches-code(spec/RulesFloorNV_rev5.tla) [edge(trusted, mechanism → spec/RulesFloorNV_rev5.tla) below grade]
+- P9_NoSoloGrant: void at every grade: quorum-ge-2
+- FloorPreserved: trusted (via reaches-code(spec/Anchor.tla) by edge(trusted, mechanism → spec/Anchor.tla); invariant(Anchor) by T-0045-31 + edge(proved, spec/Anchor_proof.tla → spec/Anchor.tla)) · one grade up: reaches-code(spec/Anchor.tla) [edge(trusted, mechanism → spec/Anchor.tla) below grade]
+- BreakGlassNeverChangesAuthority: trusted (via reaches-code(spec/BreakGlass.tla) by edge(trusted, mechanism → spec/BreakGlass.tla); invariant(BreakGlass) by T-0045-31 + edge(proved, spec/BreakGlass_proof.tla → spec/BreakGlass.tla)) · one grade up: reaches-code(spec/BreakGlass.tla) [edge(trusted, mechanism → spec/BreakGlass.tla) below grade]
+- ContainedMeansConfined: void at every grade: confinement>=1, independence-criterion
+- NoSilentDowngrade: trusted (via reaches-code(spec/Confinement.tla, spec/Confinement_A1.tla) by reaches-code(spec/Confinement.tla) + reaches-code(spec/Confinement_A1.tla); invariant(Confinement, Confinement_A1) by invariant(Confinement) + invariant(Confinement_A1)) · one grade up: reaches-code(spec/Confinement.tla, spec/Confinement_A1.tla) [reaches-code(spec/Confinement.tla) [edge(trusted, mechanism → spec/Confinement.tla) below grade] + reaches-code(spec/Confinement_A1.tla) [edge(trusted, mechanism → spec/Confinement_A1.tla) below grade]]
+- ContestedStopped: void at every grade: confinement>=2
+- FreshAppraisal: void at every grade: confinement>=1
+- EffectsOnDeclaredChannels, ContainedEffectsUseHeldTools: void at every grade: run-p4-pass, run-confinement-delivered
+- OnlyThinkersAuthor: trusted (via refines(Seats) by edge(trusted, mechanism → spec/Seats.tla); invariant(Seats) by T-0045-31 + edge(proved, spec/Seats_proof.tla → spec/Seats.tla)) · one grade up: refines(Seats) [edge(trusted, mechanism → spec/Seats.tla) below grade | edge(proved of a reading, mechanism/crates/topak-core → spec/Seats.tla) stale + model-faithful(apply/Seats) stale]
+- OneSeatPerPrincipal: trusted (via refines(Seats) by edge(trusted, mechanism → spec/Seats.tla); invariant(Seats) by T-0045-31 + edge(proved, spec/Seats_proof.tla → spec/Seats.tla)) · one grade up: refines(Seats) [edge(trusted, mechanism → spec/Seats.tla) below grade | edge(proved of a reading, mechanism/crates/topak-core → spec/Seats.tla) stale + model-faithful(apply/Seats) stale]
+- DenyByAnyOf: void at every grade: observer-per-cell
+- ReachIsBounded: trusted (via reaches-code(spec/Observers.tla) by edge(trusted, mechanism → spec/Observers.tla); invariant(Observers) by T-0045-31 + edge(proved, spec/Observers_proof.tla → spec/Observers.tla)) · one grade up: reaches-code(spec/Observers.tla) [edge(trusted, mechanism → spec/Observers.tla) below grade]
+- NoAdmitWithoutLiveObserver: void at every grade: coupling-on, gap:honest-watermark
+- UnreadBounded: void at every grade: coupling-on, gap:honest-watermark
+- CorrelatorNeverGates: void at every grade: correlator-exists
+- UnreadEffectsBounded: void at every grade: effects-counted, coupling-on, gap:honest-watermark
+- ConsultNeverCoupled: void at every grade: run-root-pinned
+- SealCountsEffects: void at every grade: effects-counted
+- RoundBoundCountsAll: trusted (via reaches-code(spec/RunCoupling.tla) by edge(trusted, mechanism → spec/RunCoupling.tla); invariant(RunCoupling) by T-0045-31 + edge(proved, spec/RunCoupling_proof.tla → spec/RunCoupling.tla)) · one grade up: reaches-code(spec/RunCoupling.tla) [edge(trusted, mechanism → spec/RunCoupling.tla) below grade]
+- NoEffectWithoutLiveObserver: void at every grade: coupling-on, gap:honest-watermark
+- OnlyThinkersActuate, ObserversConsultAndReport: trusted (via reaches-code(spec/RunSeats.tla) by edge(trusted, mechanism → spec/RunSeats.tla); invariant(RunSeats) by T-0045-31 + edge(proved, spec/RunSeats_proof.tla → spec/RunSeats.tla)) · one grade up: reaches-code(spec/RunSeats.tla) [edge(trusted, mechanism → spec/RunSeats.tla) below grade]
+- NoNameCrossesDomains: trusted (via reaches-code(spec/RunSeats.tla) by edge(trusted, mechanism → spec/RunSeats.tla); invariant(RunSeats) by T-0045-31 + edge(proved, spec/RunSeats_proof.tla → spec/RunSeats.tla)) · one grade up: reaches-code(spec/RunSeats.tla) [edge(trusted, mechanism → spec/RunSeats.tla) below grade]
+- Effect exclusivity: void at every grade: T-0045-23 excluded, T-0045-24 excluded, T-0045-22 excluded, confinement>=1, run-confinement-delivered
+- PromotionMeetsIssuedQuorum: void at every grade: T-0045-13 excluded, T-0045-15 undeclared, promotion-tally-constants, gap:independence-table
+- OneValuePerBallot, chosen-unique, agreement: trusted (via reaches-code(ADR-0033 §2) by edge(trusted, mechanism → ADR-0033 §2)) · one grade up: reaches-code(ADR-0033 §2) [edge(trusted, mechanism → ADR-0033 §2) below grade]
+- floor gates: void at every grade: routing-checked
+- TraceMatches, ConfinementRefined: trusted (via reaches-code(spec/Mechanism.tla, spec/ConfinementRefinement.tla) by reaches-code(spec/Mechanism.tla) + reaches-code(spec/ConfinementRefinement.tla)) · one grade up: reaches-code(spec/Mechanism.tla, spec/ConfinementRefinement.tla) [reaches-code(spec/Mechanism.tla) [edge(trusted, mechanism → spec/Mechanism.tla) below grade] + reaches-code(spec/ConfinementRefinement.tla) [edge(trusted, mechanism → spec/ConfinementRefinement.tla) below grade]]
+=== the reference with every parameter, condition and gap premise true (premise-routes.sh's 1-reference)
+  held at each grade: executed 0 · generated 0 · proved 0 · proved of a reading 0 · replayed 0 · tested 0 · read 0 · trusted 38
+- LeaseAuthorityMonotone: trusted (via reaches-code(spec/Lease_A1.tla) by edge(trusted, mechanism → spec/Lease_A1.tla); invariant(Lease_A1) by T-0045-31 + edge(proved, spec/Lease_A1_proof.tla → spec/Lease_A1.tla)) · one grade up: reaches-code(spec/Lease_A1.tla) [edge(trusted, mechanism → spec/Lease_A1.tla) below grade]
+- NoActionUnderFencedEpoch: trusted (via reaches-code(spec/Lease_A1.tla) by edge(trusted, mechanism → spec/Lease_A1.tla); invariant(Lease_A1) by T-0045-31 + edge(proved, spec/Lease_A1_proof.tla → spec/Lease_A1.tla)) · one grade up: reaches-code(spec/Lease_A1.tla) [edge(trusted, mechanism → spec/Lease_A1.tla) below grade]
+- Rung0NeverContained: trusted (via reaches-code(spec/Lease_A1.tla) by edge(trusted, mechanism → spec/Lease_A1.tla); invariant(Lease_A1) by T-0045-31 + edge(proved, spec/Lease_A1_proof.tla → spec/Lease_A1.tla)) · one grade up: reaches-code(spec/Lease_A1.tla) [edge(trusted, mechanism → spec/Lease_A1.tla) below grade]
+- RevokedStaysStopped: trusted (via reaches-code(spec/Lease_A1.tla) by edge(trusted, mechanism → spec/Lease_A1.tla); invariant(Lease_A1) by T-0045-31 + edge(proved, spec/Lease_A1_proof.tla → spec/Lease_A1.tla)) · one grade up: reaches-code(spec/Lease_A1.tla) [edge(trusted, mechanism → spec/Lease_A1.tla) below grade]
+- AdmitImpliesFloorPermit: trusted (via reaches-code(spec/FloorComposition.tla) by edge(trusted, mechanism → spec/FloorComposition.tla); invariant(FloorComposition) by T-0045-31 + edge(proved, spec/FloorComposition_proof.tla → spec/FloorComposition.tla)) · one grade up: reaches-code(spec/FloorComposition.tla) [edge(trusted, mechanism → spec/FloorComposition.tla) below grade]
+- FloorErrorIsDeny: trusted (via reaches-code(spec/FloorComposition.tla) by edge(trusted, mechanism → spec/FloorComposition.tla); invariant(FloorComposition) by T-0045-31 + edge(proved, spec/FloorComposition_proof.tla → spec/FloorComposition.tla)) · one grade up: reaches-code(spec/FloorComposition.tla) [edge(trusted, mechanism → spec/FloorComposition.tla) below grade]
+- BundleRefusalHonored: trusted (via reaches-code(spec/FloorComposition.tla) by edge(trusted, mechanism → spec/FloorComposition.tla); invariant(FloorComposition) by T-0045-31 + edge(proved, spec/FloorComposition_proof.tla → spec/FloorComposition.tla)) · one grade up: reaches-code(spec/FloorComposition.tla) [edge(trusted, mechanism → spec/FloorComposition.tla) below grade]
+- BundleCannotWriteFloorInputs: trusted (via reaches-code(spec/FloorComposition.tla) by edge(trusted, mechanism → spec/FloorComposition.tla); invariant(FloorComposition) by T-0045-31 + edge(proved, spec/FloorComposition_proof.tla → spec/FloorComposition.tla)) · one grade up: reaches-code(spec/FloorComposition.tla) [edge(trusted, mechanism → spec/FloorComposition.tla) below grade]
+- EnvelopeHolds, FloorNeverVacuous: trusted (via reaches-code(spec/FloorComposition.tla, spec/FloorRouting.tla) by reaches-code(spec/FloorComposition.tla) + reaches-code(spec/FloorRouting.tla); invariant(FloorComposition, FloorRouting) by invariant(FloorComposition) + invariant(FloorRouting)) · one grade up: reaches-code(spec/FloorComposition.tla, spec/FloorRouting.tla) [reaches-code(spec/FloorComposition.tla) [edge(trusted, mechanism → spec/FloorComposition.tla) below grade] + reaches-code(spec/FloorRouting.tla) [edge(trusted, mechanism → spec/FloorRouting.tla) below grade]]
+- NoWideningWithoutIssuance: trusted (via reaches-code(spec/FloorRouting.tla) by edge(trusted, mechanism → spec/FloorRouting.tla); invariant(FloorRouting) by T-0045-31 + edge(proved, spec/FloorRouting_proof.tla → spec/FloorRouting.tla)) · one grade up: reaches-code(spec/FloorRouting.tla) [edge(trusted, mechanism → spec/FloorRouting.tla) below grade]
+- NC1, NC2: trusted (via reaches-code(spec/NonComposition.tla) by edge(trusted, mechanism → spec/NonComposition.tla); invariant(NonComposition) by T-0045-31 + edge(proved, spec/NonComposition_proof.tla → spec/NonComposition.tla)) · one grade up: reaches-code(spec/NonComposition.tla) [edge(trusted, mechanism → spec/NonComposition.tla) below grade]
+- P1_Unanimity: trusted (via reaches-code(spec/RulesFloorNV_rev5.tla) by edge(trusted, mechanism → spec/RulesFloorNV_rev5.tla); invariant(RulesFloorNV_rev5) by T-0045-31 + edge(proved, spec/RulesFloorNV_rev5_proof.tla → spec/RulesFloorNV_rev5.tla)) · one grade up: reaches-code(spec/RulesFloorNV_rev5.tla) [edge(trusted, mechanism → spec/RulesFloorNV_rev5.tla) below grade]
+- P2_TwoSeatsCounted: trusted (via reaches-code(spec/RulesFloorNV_rev5.tla) by edge(trusted, mechanism → spec/RulesFloorNV_rev5.tla); invariant(RulesFloorNV_rev5) by T-0045-31 + edge(proved, spec/RulesFloorNV_rev5_proof.tla → spec/RulesFloorNV_rev5.tla)) · one grade up: reaches-code(spec/RulesFloorNV_rev5.tla) [edge(trusted, mechanism → spec/RulesFloorNV_rev5.tla) below grade]
+- P3_AuthorNotCounted: trusted (via reaches-code(spec/RulesFloorNV_rev5.tla) by edge(trusted, mechanism → spec/RulesFloorNV_rev5.tla); invariant(RulesFloorNV_rev5) by T-0045-31 + edge(proved, spec/RulesFloorNV_rev5_proof.tla → spec/RulesFloorNV_rev5.tla)) · one grade up: reaches-code(spec/RulesFloorNV_rev5.tla) [edge(trusted, mechanism → spec/RulesFloorNV_rev5.tla) below grade]
+- P5_AnchorNotApprover: trusted (via reaches-code(spec/RulesFloorNV_rev5.tla) by edge(trusted, mechanism → spec/RulesFloorNV_rev5.tla); invariant(RulesFloorNV_rev5) by T-0045-31 + edge(proved, spec/RulesFloorNV_rev5_proof.tla → spec/RulesFloorNV_rev5.tla)) · one grade up: reaches-code(spec/RulesFloorNV_rev5.tla) [edge(trusted, mechanism → spec/RulesFloorNV_rev5.tla) below grade]
+- P7_BGNoAuthority: trusted (via reaches-code(spec/RulesFloorNV_rev5.tla) by edge(trusted, mechanism → spec/RulesFloorNV_rev5.tla); invariant(RulesFloorNV_rev5) by T-0045-31 + edge(proved, spec/RulesFloorNV_rev5_proof.tla → spec/RulesFloorNV_rev5.tla)) · one grade up: reaches-code(spec/RulesFloorNV_rev5.tla) [edge(trusted, mechanism → spec/RulesFloorNV_rev5.tla) below grade]
+- P9_NoSoloGrant: trusted (via reaches-code(spec/RulesFloorNV_rev5.tla) by edge(trusted, mechanism → spec/RulesFloorNV_rev5.tla); invariant(RulesFloorNV_rev5) by T-0045-31 + edge(proved, spec/RulesFloorNV_rev5_proof.tla → spec/RulesFloorNV_rev5.tla)) · one grade up: reaches-code(spec/RulesFloorNV_rev5.tla) [edge(trusted, mechanism → spec/RulesFloorNV_rev5.tla) below grade]
+- FloorPreserved: trusted (via reaches-code(spec/Anchor.tla) by edge(trusted, mechanism → spec/Anchor.tla); invariant(Anchor) by T-0045-31 + edge(proved, spec/Anchor_proof.tla → spec/Anchor.tla)) · one grade up: reaches-code(spec/Anchor.tla) [edge(trusted, mechanism → spec/Anchor.tla) below grade]
+- BreakGlassNeverChangesAuthority: trusted (via reaches-code(spec/BreakGlass.tla) by edge(trusted, mechanism → spec/BreakGlass.tla); invariant(BreakGlass) by T-0045-31 + edge(proved, spec/BreakGlass_proof.tla → spec/BreakGlass.tla)) · one grade up: reaches-code(spec/BreakGlass.tla) [edge(trusted, mechanism → spec/BreakGlass.tla) below grade]
+- ContainedMeansConfined: void at every grade: confinement>=1
+- NoSilentDowngrade: trusted (via reaches-code(spec/Confinement.tla, spec/Confinement_A1.tla) by reaches-code(spec/Confinement.tla) + reaches-code(spec/Confinement_A1.tla); invariant(Confinement, Confinement_A1) by invariant(Confinement) + invariant(Confinement_A1)) · one grade up: reaches-code(spec/Confinement.tla, spec/Confinement_A1.tla) [reaches-code(spec/Confinement.tla) [edge(trusted, mechanism → spec/Confinement.tla) below grade] + reaches-code(spec/Confinement_A1.tla) [edge(trusted, mechanism → spec/Confinement_A1.tla) below grade]]
+- ContestedStopped: void at every grade: confinement>=2
+- FreshAppraisal: void at every grade: confinement>=1
+- EffectsOnDeclaredChannels, ContainedEffectsUseHeldTools: trusted (via reaches-code(spec/RunConfinement.tla) by edge(trusted, mechanism → spec/RunConfinement.tla); invariant(RunConfinement) by T-0045-31 + edge(proved, spec/RunConfinement_proof.tla → spec/RunConfinement.tla)) · one grade up: reaches-code(spec/RunConfinement.tla) [edge(trusted, mechanism → spec/RunConfinement.tla) below grade]
+- OnlyThinkersAuthor: trusted (via refines(Seats) by edge(trusted, mechanism → spec/Seats.tla); invariant(Seats) by T-0045-31 + edge(proved, spec/Seats_proof.tla → spec/Seats.tla)) · one grade up: refines(Seats) [edge(trusted, mechanism → spec/Seats.tla) below grade | edge(proved of a reading, mechanism/crates/topak-core → spec/Seats.tla) stale + model-faithful(apply/Seats) stale]
+- OneSeatPerPrincipal: trusted (via refines(Seats) by edge(trusted, mechanism → spec/Seats.tla); invariant(Seats) by T-0045-31 + edge(proved, spec/Seats_proof.tla → spec/Seats.tla)) · one grade up: refines(Seats) [edge(trusted, mechanism → spec/Seats.tla) below grade | edge(proved of a reading, mechanism/crates/topak-core → spec/Seats.tla) stale + model-faithful(apply/Seats) stale]
+- DenyByAnyOf: trusted (via reaches-code(spec/Observers.tla) by edge(trusted, mechanism → spec/Observers.tla); invariant(Observers) by T-0045-31 + edge(proved, spec/Observers_proof.tla → spec/Observers.tla)) · one grade up: reaches-code(spec/Observers.tla) [edge(trusted, mechanism → spec/Observers.tla) below grade]
+- ReachIsBounded: trusted (via reaches-code(spec/Observers.tla) by edge(trusted, mechanism → spec/Observers.tla); invariant(Observers) by T-0045-31 + edge(proved, spec/Observers_proof.tla → spec/Observers.tla)) · one grade up: reaches-code(spec/Observers.tla) [edge(trusted, mechanism → spec/Observers.tla) below grade]
+- NoAdmitWithoutLiveObserver: trusted (via reaches-code(spec/Coupling.tla) by edge(trusted, mechanism → spec/Coupling.tla); invariant(Coupling) by T-0045-31 + edge(proved, spec/Coupling_proof.tla → spec/Coupling.tla)) · one grade up: reaches-code(spec/Coupling.tla) [edge(trusted, mechanism → spec/Coupling.tla) below grade]
+- UnreadBounded: trusted (via reaches-code(spec/Coupling.tla) by edge(trusted, mechanism → spec/Coupling.tla); invariant(Coupling) by T-0045-31 + edge(proved, spec/Coupling_proof.tla → spec/Coupling.tla)) · one grade up: reaches-code(spec/Coupling.tla) [edge(trusted, mechanism → spec/Coupling.tla) below grade]
+- CorrelatorNeverGates: trusted (via reaches-code(spec/Coupling.tla) by edge(trusted, mechanism → spec/Coupling.tla); invariant(Coupling) by T-0045-31 + edge(proved, spec/Coupling_proof.tla → spec/Coupling.tla)) · one grade up: reaches-code(spec/Coupling.tla) [edge(trusted, mechanism → spec/Coupling.tla) below grade]
+- UnreadEffectsBounded: trusted (via reaches-code(spec/RunCoupling.tla) by edge(trusted, mechanism → spec/RunCoupling.tla); invariant(RunCoupling) by T-0045-31 + edge(proved, spec/RunCoupling_proof.tla → spec/RunCoupling.tla)) · one grade up: reaches-code(spec/RunCoupling.tla) [edge(trusted, mechanism → spec/RunCoupling.tla) below grade]
+- ConsultNeverCoupled: trusted (via reaches-code(spec/RunCoupling.tla) by edge(trusted, mechanism → spec/RunCoupling.tla); invariant(RunCoupling) by T-0045-31 + edge(proved, spec/RunCoupling_proof.tla → spec/RunCoupling.tla)) · one grade up: reaches-code(spec/RunCoupling.tla) [edge(trusted, mechanism → spec/RunCoupling.tla) below grade]
+- SealCountsEffects: trusted (via reaches-code(spec/RunCoupling.tla) by edge(trusted, mechanism → spec/RunCoupling.tla); invariant(RunCoupling) by T-0045-31 + edge(proved, spec/RunCoupling_proof.tla → spec/RunCoupling.tla)) · one grade up: reaches-code(spec/RunCoupling.tla) [edge(trusted, mechanism → spec/RunCoupling.tla) below grade]
+- RoundBoundCountsAll: trusted (via reaches-code(spec/RunCoupling.tla) by edge(trusted, mechanism → spec/RunCoupling.tla); invariant(RunCoupling) by T-0045-31 + edge(proved, spec/RunCoupling_proof.tla → spec/RunCoupling.tla)) · one grade up: reaches-code(spec/RunCoupling.tla) [edge(trusted, mechanism → spec/RunCoupling.tla) below grade]
+- NoEffectWithoutLiveObserver: trusted (via reaches-code(spec/RunCoupling.tla) by edge(trusted, mechanism → spec/RunCoupling.tla); invariant(RunCoupling) by T-0045-31 + edge(proved, spec/RunCoupling_proof.tla → spec/RunCoupling.tla)) · one grade up: reaches-code(spec/RunCoupling.tla) [edge(trusted, mechanism → spec/RunCoupling.tla) below grade]
+- OnlyThinkersActuate, ObserversConsultAndReport: trusted (via reaches-code(spec/RunSeats.tla) by edge(trusted, mechanism → spec/RunSeats.tla); invariant(RunSeats) by T-0045-31 + edge(proved, spec/RunSeats_proof.tla → spec/RunSeats.tla)) · one grade up: reaches-code(spec/RunSeats.tla) [edge(trusted, mechanism → spec/RunSeats.tla) below grade]
+- NoNameCrossesDomains: trusted (via reaches-code(spec/RunSeats.tla) by edge(trusted, mechanism → spec/RunSeats.tla); invariant(RunSeats) by T-0045-31 + edge(proved, spec/RunSeats_proof.tla → spec/RunSeats.tla)) · one grade up: reaches-code(spec/RunSeats.tla) [edge(trusted, mechanism → spec/RunSeats.tla) below grade]
+- Effect exclusivity: void at every grade: T-0045-23 excluded, T-0045-24 excluded, T-0045-22 excluded, confinement>=1
+- PromotionMeetsIssuedQuorum: void at every grade: T-0045-13 excluded, T-0045-15 undeclared
+- OneValuePerBallot, chosen-unique, agreement: trusted (via reaches-code(ADR-0033 §2) by edge(trusted, mechanism → ADR-0033 §2)) · one grade up: reaches-code(ADR-0033 §2) [edge(trusted, mechanism → ADR-0033 §2) below grade]
+- floor gates: trusted (via reaches-code(floor/proposed/workflow-floor.cedar) by edge(trusted, mechanism → floor/proposed/workflow-floor.cedar)) · one grade up: reaches-code(floor/proposed/workflow-floor.cedar) [edge(trusted, mechanism → floor/proposed/workflow-floor.cedar) below grade]
+- TraceMatches, ConfinementRefined: trusted (via reaches-code(spec/Mechanism.tla, spec/ConfinementRefinement.tla) by reaches-code(spec/Mechanism.tla) + reaches-code(spec/ConfinementRefinement.tla)) · one grade up: reaches-code(spec/Mechanism.tla, spec/ConfinementRefinement.tla) [reaches-code(spec/Mechanism.tla) [edge(trusted, mechanism → spec/Mechanism.tla) below grade] + reaches-code(spec/ConfinementRefinement.tla) [edge(trusted, mechanism → spec/ConfinementRefinement.tla) below grade]]
+
+Result: FAILED: the sync scripts · 10 stale edges · 2 premise-route verdicts moved by stale edges
