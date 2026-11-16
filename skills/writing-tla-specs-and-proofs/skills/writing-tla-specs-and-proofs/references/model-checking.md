@@ -247,11 +247,13 @@ the standard modules into the shared temp directory, and a concurrent run
 can remove them underneath this one.
 
 One number stays out of a violated liveness row even so: the state count.
-TLC checks temporal properties at intervals of the clock, so on a module
-too large to finish before the first check, the count at which it finds
-the counterexample differs from run to run and with the machine's load.
-The bundled generator prints it only when the search had ended (no states
-left on the queue); `states=N` belongs on `HOLDS` rows.
+TLC checks temporal properties at intervals of the clock, so the count at
+which it finds the counterexample differs with the machine and its load.
+Whether the search ends before the first check does too: the same row can
+finish the search on one machine and stop part-way on a faster or slower
+one. So the bundled generator never prints the count on a violated
+`PROPERTY` row, and says "count not recorded"; `states=N` belongs on
+`HOLDS` rows.
 
 TLC reads a state with no successor as stuttering forever, which is how
 TLA+ reads a behaviour that stops; a leads-to that holds only because the

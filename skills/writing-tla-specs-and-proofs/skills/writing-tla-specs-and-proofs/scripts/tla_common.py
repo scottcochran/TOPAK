@@ -386,9 +386,10 @@ def run_row(layout, checker, module, meta, row, workers="1"):
         pat = r"Progress: ([0-9,]+) states checked" if row["kind"] == "SIMULATE" else r"([0-9,]+) distinct states found"
         m = re.findall(pat, out)
         states = m[-1].replace(",", "") if m else ""
-        if row["kind"] == "PROPERTY" and verdict == "COUNTEREXAMPLE" and not re.search(r"\b0 states left on queue", out):
+        if row["kind"] == "PROPERTY" and verdict == "COUNTEREXAMPLE":
             # TLC checks temporal properties at intervals of the clock, so the count at which it finds a liveness
-            # counterexample differs from run to run; printed, it would keep the results file from reproducing.
+            # counterexample depends on the machine and its load. Whether the search ends before the first check
+            # depends on them too, so the count is left out of every violated PROPERTY row, never only some.
             states = ""
         ok = verdict == row["exp"] and ("states" not in row["opts"] or states == row["opts"]["states"])
         return verdict, states, ok, out
@@ -400,7 +401,7 @@ def count_text(row, verdict, states):
     if states:
         return f"{states} states checked" if row["kind"] == "SIMULATE" else f"{states} distinct states"
     if row["kind"] == "PROPERTY" and verdict == "COUNTEREXAMPLE":
-        return "found before the search ended, count not recorded"
+        return "count not recorded"
     return "no state count"
 
 
