@@ -2,7 +2,8 @@
 
 Each entry: the symptom, the cause, the fix. Then the rules for steps that
 survive checked backends, and the two known unsound cases in the prover's
-translation with the writing rules that avoid them.
+translation with the writing rules for them, which avoid the first and
+half of the second.
 
 ## Contents
 
@@ -27,7 +28,9 @@ tlapm --cleanfp --strict <Module>_proof.tla
 - `--strict` makes a failed obligation a non-zero exit, which is what a
   results-file generator and a sync script need.
 - Point `--cache-dir` at a temp directory and remove it after; nothing is
-  written beside the module.
+  written beside the module. The bundled `scripts/proof_results.py`,
+  `flip_test.py` and `proof_sync.py --run` all call the prover this way,
+  and kill its backend processes when it ends.
 - **Read only the final count and the exit status.** tlapm tries backends
   in turn and prints each failure; a Zenon failure line is noise when the
   obligation count says proved.
@@ -137,10 +140,26 @@ Most proofs certify unchanged; the ones that do not teach the following.
 
 ## Two unsound cases in the translation
 
-Both are in the pinned prover build this method was developed against and
-are reported upstream. Until a release fixes them, the writing rules below
-are mandatory, and a scan over every new proof module is part of
-generating its results.
+Both are in the prover build this method was developed against and are
+reported upstream, with reproducers:
+[tlaplus/tlapm#309](https://github.com/tlaplus/tlapm/issues/309) (the
+first) and [#310](https://github.com/tlaplus/tlapm/issues/310) (the
+second). As read on 2026.11.15, #309 is closed as completed, and #310 is
+open: a maintainer reports its missing collision check fixed (#339) and
+says nothing yet of the capture. Whether a prover has either fix is a fact
+about its build, which the pin's digest names and a release tag does not.
+On a build without them the writing rules below are mandatory.
+
+**What protects a proof, and what does not.** The rules keep a proof from
+the first case and from a capture, if they are followed; nothing checks
+that they were. Nothing a proof writes avoids a collision of the hash;
+only a scan finds one. The scan is described below and is **not bundled
+with this skill**: none of the scripts in `scripts/` looks for either
+case, and the flip test does not either (it shows a hypothesis carries
+weight, not that the translation was sound). A project on an unfixed build
+either builds the scan and runs it on every new proof module as part of
+generating its results, or says on the prover's trusted-base row that its
+proofs are written to the rules and unscanned.
 
 **The first: a term under a binder.** The prover hands SMT, Zenon and
 Isabelle, as an opaque constant, any term it does not translate: an
@@ -195,8 +214,9 @@ Rules:
   operator are expanded as well. Rename the bound variable; take, witness
   and name nothing a definition binds; write no binder that shadows a
   constant.
-- **Run the scan on every new proof module.** No writing rule avoids a
-  hash collision. A scan runs the module again over renamed sources and
+- **Run a scan on every new proof module**, where the project has one. No
+  writing rule avoids a hash collision. A scan runs the module again over
+  renamed sources and
   reports every input whose names differ and every obligation whose route
   differs between the runs; a step at such an input rests on a collision
   until a reading shows otherwise. The scan also reads every obligation as

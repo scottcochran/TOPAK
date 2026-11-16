@@ -34,8 +34,9 @@ agrees with the derived truth, append-only set, valid state predicate,
 established-and-frozen, arithmetic in layers, generation binding); the
 liveness proof shape for an unquantified leads-to; the prover's habits that cost time and the fix for
 each; the rules for steps that certify under checked backends; the two
-known unsound cases in the prover's translation and the writing rules that
-avoid them; the vocabulary of claims (checked, proved, certified, sampled)
+known unsound cases in the prover's translation (tlaplus/tlapm#309 and
+#310) and the writing rules that avoid the first and a capture in the
+second; the vocabulary of claims (checked, proved, certified, sampled)
 and what each tool leaves trusted.
 
 ## Why these rules
@@ -76,17 +77,48 @@ All paths below are relative to `skills/writing-tla-specs-and-proofs/`:
   shape (measure, WF1, `Nat` induction over a hidden `G(n)`), step hygiene
 - `references/prover-habits.md` — running tlapm; parse, scope and
   temporal habits; what the SMT backend handles alone; steps that certify
-  under checked backends; the two unsound translation cases and the rules
-  that avoid them; the cost model
+  under checked backends; the two unsound translation cases, the rules
+  that avoid the first and a capture in the second, and what stays
+  unprotected (a hash collision; the scan is described, not bundled); the
+  cost model
 - `references/anti-patterns.md` — what goes wrong in specs, runs, proofs
   and evidence, why, and what catches it
 - `references/evidence.md` — results files, digests and pins, freezing
   and successor modules, the sync script, the vocabulary of claims, what
   each tool leaves trusted, certification, a second route
+- `scripts/setup_check.py` — is this machine and project ready: Python,
+  Java, the pinned `tla2tools.jar` (`--fetch-jar` downloads it), TLC run
+  on a bundled fixture, and with `--proofs` tlapm, the fixture's proof and
+  its flip test; `--write-pins` records the tools found
+- `scripts/tlc_run.py` — one TLC run of one property, printed as one row;
+  the run script of the method, for any module
+- `scripts/tlc_rows.py` — a row list to a dated, digest-stamped results
+  file, written only when every row is as expected
+- `scripts/proof_results.py` — `tlapm --cleanfp --strict` to a dated proof
+  results file, written only when every obligation is proved
+- `scripts/flip_test.py` — the flip-one-hypothesis check
+- `scripts/proof_sync.py` — the sync script: `IN SYNC`, `STALE`, `MISSING`
+- `scripts/tla_common.py`, `scripts/TLC-PIN` — what the scripts share:
+  where modules, tools, pins and results are looked for, and the default
+  pin for the model checker
+- `assets/selftest/` — the fixture the setup check runs (`Counter.tla`,
+  its row list and its proof)
+
+The scripts are Python 3.9, standard library only. They are generalized
+from the generators of `gov-tla`, a development written with this skill,
+and were run against it before being bundled: one row list in full (208
+rows, each as its committed results file has it, but for the state counts
+of four liveness counterexamples, which differ from run to run and from
+machine to machine and which `tlc_rows.py` does not print), one row in
+eight of the other three (166
+rows), one proof module (814 obligations) and two flip tests.
 
 ## Status
 
-A draft. It has no eval suite yet; the natural first suite is a review
+A draft. The scripts are tested against the bundled fixture, TOPAK's
+`Coupling` and `Coupling_live` modules and `gov-tla`, with TLA+ tools v1.7.4
+and a tlapm 1.6.0 pre-release, on Linux; other versions and platforms are
+untried. It has no eval suite yet; the natural first suite is a review
 flow over small TLA+ fixtures with planted flaws (a property that carries
 its check, a module without witnesses, a `Mut = "none"` theorem, a
 hand-edited results file) and known non-flaws (an unconstrained constant,

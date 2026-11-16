@@ -238,9 +238,10 @@ State no liveness unless the design claims progress, and then:
   `SpecResume`), and one spec per condition dropped or weakened
   (`SpecNoKeepUp`, `SpecWFKeepUp`), so that a row can show each condition
   is needed and each weaker form fails.
-- **A `NoBehaviour` property** (`FALSE`, or a property no behaviour
-  satisfies) that must be **violated** under every fair spec a `HOLDS` row
-  uses, to show the fair spec has a behaviour at all.
+- **A `NoBehaviour` property** (`<>FALSE`, or another property no
+  behaviour satisfies; TLC refuses a bare `FALSE` as a property) that must
+  be **violated** under every fair spec a `HOLDS` row uses, to show the
+  fair spec has a behaviour at all.
 - **Extend the safety module rather than edit it**, with `NextL` equal to
   the base `Next` under every base mutation and a restriction of it only
   under the liveness module's own mutations, so the safety proofs carry
