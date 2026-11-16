@@ -1,7 +1,7 @@
 # Decisions
 
 Architecture decision records, one file each, numbered in the order they were settled. **Status is as of Genesis
-Checkpoint G11 (2026.10.09)**; the checkpoint is the state of record and this index is a convenience. A record is never
+Checkpoint G12 (2026.11.16)**; the checkpoint is the state of record and this index is a convenience. A record is never
 edited after ratification except by a typed History row: an amendment, an erratum, a revision before ratification,
 or a dependent entry written when another record's ratification touches it. Accepted records that carry a
 confirmation-required criterion (ADR-0029 §4: C1 privileged path, C2 exhaustiveness or confinement, C3 reversal, C4
@@ -9,7 +9,7 @@ resolves a debt) were ratified by one person and wait for the first post-bootstr
 
 `mechanism/corpus-pins.sha256` pins the digest of every record the reference follows; a test fails when one moves.
 
-| Record | Title | Status at G8 | Superseded by |
+| Record | Title | Status at G12 | Superseded by |
 |---|---|---|---|
 | [ADR-0001](ADR-0001.md) | Rename the CI domain to `Build`; adopt `Build(Contain) → Run(Contain)` | Accepted (genesis) | |
 | [ADR-0002](ADR-0002.md) | Apply the membrane in `Build` as well: `Build(Contain) → Run(Contain)` | Accepted (genesis) | |
