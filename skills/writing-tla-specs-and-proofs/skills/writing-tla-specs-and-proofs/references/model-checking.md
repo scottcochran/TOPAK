@@ -20,7 +20,19 @@ is **checked**; the word **proved** is reserved for the prover.
 ## The run script
 
 One per module, next to it. It writes the `.cfg` itself, so no `.cfg` is
-tracked, and prints one row per run:
+tracked, and prints one row per run. The bundled `scripts/tlc_run.py` is
+this script for any module that follows the method:
+
+```sh
+python3 scripts/tlc_run.py Coupling none UnreadBounded
+python3 scripts/tlc_run.py Coupling M_MARK UnreadBounded --expect COUNTEREXAMPLE --trace
+python3 scripts/tlc_run.py Coupling none NeverRefused K=2 R=4
+```
+
+It takes its default constants from the module's row list when there is
+one, runs on a copy of the module in a temp directory, and refuses a jar
+that is not the pinned one. Written by hand for one module, the same
+script is:
 
 ```sh
 #!/bin/bash
@@ -120,7 +132,14 @@ Once a module has more than a handful of rows, move them to a row list and
 regenerate the results file from it:
 
 ```
-# Rows for live-gen-results.sh Coupling_live: name mut spec kind property expected [CONST=value ...] [states=N]
+# Rows for tlc_rows.py: name mut spec kind property expected [CONST=value ...] [states=N]
+# module: Coupling_live
+# title: Coupling_live.tla - liveness of the coupling
+# expected: Safe HOLDS and no state is terminal; the witness is VIOLATED; AdmitStallEnds HOLDS under SpecA12
+# expected: at both sets of constants and is VIOLATED when the Observer's fairness is dropped.
+# const: K = 1
+# const: R = 3
+# const: MaxRound = 2
 s-none-safe        none      SpecL    INVARIANT  Safe             HOLDS     states=1124
 d-none-deadlock    none      SpecL    DEADLOCK   Safe             HOLDS     states=1124
 w-none-refused     none      SpecL    INVARIANT  NeverRefused     VIOLATED
@@ -130,17 +149,33 @@ l-a12-k2           none      SpecA12  PROPERTY   AdmitStallEnds   HOLDS     K=2 
 ```
 
 The generator writes the header (title, module digest, checker digest,
-constants, the expected line taken from a `# expected:` comment in the row
-list), runs one TLC section per row, prints each section's verdict and
-whether it is the expected one, and exits non-zero if any row is `ERROR`,
-not as expected, or if the row list has no rows. **A generator that
-processes zero rows must fail**, or an empty list is a green file.
+constants, the expected line taken from the `# expected:` comments in the
+row list), runs TLC once per row, prints each row's verdict and whether it
+is the expected one, and exits non-zero if any row is `ERROR`, not as
+expected, or if the row list has no rows. **A generator that processes
+zero rows must fail**, or an empty list is a green file.
 
 `kind` distinguishes `INVARIANT`, `PROPERTY` (TLC's liveness checker) and
 `DEADLOCK` (the invariant with the deadlock check on, where the verdict is
 "deadlock reached" or not). `states=N` asserts the exact distinct-state
 count, which is how a liveness module shows its `NextL` is the base `Next`
 under a base mutation.
+
+The bundled generator is `scripts/tlc_rows.py <Module>-rows.txt`, and the
+list above is in its format: `# module:`, `# title:`, `# expected:`,
+`# const:` and `# cfg:` (a line copied into every `.cfg`, such as a
+`CONSTRAINT`) in the header, then the rows. It prints `COUNTEREXAMPLE`
+for a violated property and `DEADLOCK` for a deadlock reached, and reads
+`VIOLATED` in the expected column as whichever of the two the row's kind
+allows. It has a fourth kind, `SIMULATE`, whose only passing verdict is
+`NO-ERROR-SAMPLED` and which takes `depth=`, `num=` and `seed=`. A row
+may add `constraint=Op`, and `-` in the `mut` column runs a module that
+has no `Mut` constant yet. Every row runs with one worker, on a copy of
+the module chain in a temp directory; the results file is written only
+when every row is as expected, is never overwritten, and with `--date`
+regenerates under an earlier date to show that a cited file still
+reproduces byte for byte. `--only a,b` and `--dry-run` run rows without
+writing a file.
 
 ## The deadlock flag
 
@@ -210,6 +245,15 @@ changes from run to run, and the results file would not be reproducible.
 Give each row its own `java.io.tmpdir` as well as `-metadir`: TLC unpacks
 the standard modules into the shared temp directory, and a concurrent run
 can remove them underneath this one.
+
+One number stays out of a violated liveness row even so: the state count.
+TLC checks temporal properties at intervals of the clock, so the count at
+which it finds the counterexample differs with the machine and its load.
+Whether the search ends before the first check does too: the same row can
+finish the search on one machine and stop part-way on a faster or slower
+one. So the bundled generator never prints the count on a violated
+`PROPERTY` row, and says "count not recorded"; `states=N` belongs on
+`HOLDS` rows.
 
 TLC reads a state with no successor as stuttering forever, which is how
 TLA+ reads a behaviour that stops; a leads-to that holds only because the

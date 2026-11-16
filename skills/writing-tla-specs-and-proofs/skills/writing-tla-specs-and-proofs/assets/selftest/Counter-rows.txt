@@ -1,0 +1,20 @@
+# Rows for tlc_rows.py: name mut spec kind property expected [KEY=value ...]
+# module: Counter
+# title: Counter.tla - the setup check's fixture
+# expected: Mut = "none" HOLDS on Bounded and TypeOK in 4 states; M_NOLIMIT is COUNTEREXAMPLE on Bounded and HOLDS on TypeOK;
+# expected: the witness NeverStepped is COUNTEREXAMPLE; with the deadlock check on, the state at the limit is a DEADLOCK;
+# expected: Reaches HOLDS under SpecLive, at Limit = 3 and 2, and is COUNTEREXAMPLE without fairness;
+# expected: NoBehaviour is COUNTEREXAMPLE under SpecLive, so the fair spec has a behaviour; a sample finds no error.
+# const: Limit = 3
+
+c-none-bounded      none       Spec      INVARIANT  Bounded       HOLDS            states=4
+c-none-typeok       none       Spec      INVARIANT  TypeOK        HOLDS            states=4
+c-nolimit-bounded   M_NOLIMIT  Spec      INVARIANT  Bounded       COUNTEREXAMPLE   constraint=Small
+c-nolimit-typeok    M_NOLIMIT  Spec      INVARIANT  TypeOK        HOLDS            constraint=Small
+w-stepped           none       Spec      INVARIANT  NeverStepped  COUNTEREXAMPLE
+d-none-terminal     none       Spec      DEADLOCK   TypeOK        DEADLOCK
+l-live-reaches      none       SpecLive  PROPERTY   Reaches       HOLDS
+l-nofair-reaches    none       Spec      PROPERTY   Reaches       COUNTEREXAMPLE
+l-live-behaviour    none       SpecLive  PROPERTY   NoBehaviour   COUNTEREXAMPLE
+l-live-limit2       none       SpecLive  PROPERTY   Reaches       HOLDS            Limit=2
+s-none-bounded      none       Spec      SIMULATE   Bounded       NO-ERROR-SAMPLED depth=10 num=50 seed=7

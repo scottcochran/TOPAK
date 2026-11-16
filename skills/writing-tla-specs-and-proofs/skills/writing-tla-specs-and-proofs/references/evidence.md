@@ -50,7 +50,18 @@ Properties of every such file:
 ## Digests and pins
 
 - **The model checker jar is tracked**, for its digest, behind a wrapper
-  script; the digest appears in every results file.
+  script; the digest appears in every results file. Where a project would
+  rather not track a binary, a pin file and a fetch that checks it do the
+  same job, as for the prover.
+- **A pin file is `key value` lines**, in `tools/`: `TLC-PIN` with
+  `version`, `jar_sha256` and optionally `tlc <the banner TLC prints>` and
+  `url`; `TLAPS-PIN` with `version`, `binary_sha256` and optionally
+  `commit`, `platform` and `backends`. This is the form the bundled scripts
+  read. `scripts/setup_check.py` compares the tools it finds with the pins,
+  `--fetch-jar` downloads the pinned jar and refuses another, and
+  `--write-pins` records the tools found where a project has no pin yet.
+  The skill carries a default `TLC-PIN` for a project without one; it
+  carries none for the prover, for the reason in the next item.
 - **The prover is installed, not tracked** (it is large), and **pinned**: a
   pin file names the version, the commit, the binary's digest and the
   backends. The wrapper refuses a binary whose digest does not match unless
@@ -119,7 +130,11 @@ reason**. Exit non-zero on any stale proof, missing results file, unpinned
 prover, or unexplained gap. With a `--run` flag, re-check each stale proof
 with the prover, so the output says whether the drift broke the proof or
 only the digest (no results file is written; that is a separate,
-deliberate step).
+deliberate step). The bundled `scripts/proof_sync.py` is this script. It
+also checks each module's newest TLC results file the same way, and reads
+the reasons from `PROOF-GAPS.txt` beside the modules, one line per module,
+`<Module>: <reason>`; `<Module>: no results: <reason>` also excuses a
+module that has no TLC results of its own.
 
 Recorded reasons look like: "shared definitions, no `Spec`; its one fact is
 proved as a lemma in two proof modules"; "frozen and superseded by

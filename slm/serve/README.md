@@ -113,10 +113,16 @@ To register it with Claude Code, add this to `.mcp.json` (use absolute paths):
 
 ## Profile for the host-run occupant (rung 0)
 
-`profile-host-rung0.json` is a confinement profile (ADR-0034 §1, ADR-0036 §1) for running `serve.py` **on the host,
-with no container**, as the occupant of a rung-0 lease. Every clause verdict in it is **declared by the operator and
+`profile-host-rung0.json` is a confinement profile (ADR-0034 §1, ADR-0036 §1) for running the occupant **on the host,
+with no container**, as the occupant of a rung-0 lease. Until 2026.11.11 it named `serve.py --occupant`, a mode
+`serve.py` never had. It now names the compiled occupant in [`../occupant/`](../occupant/README.md), run with
+`--transport mcp` and holding its own token, and its `persona` is L-A's `model.json`. Every clause verdict in it is **declared by the operator and
 verified by nobody**; a results file that cites it prints `confinement: [digest, 0]` and the word *declared*. It
 exists so that the seat records (ADR-0037 to ADR-0039) have a rung-0 principal whose `Mediated` verdict is derived
-from a profile rather than from nothing. It is not a step toward the sandbox gap (`mechanism/` G1); the container
-and launcher above are. The same profile schema carries the guest up the rungs, and the file's `_ladder` lists the
-steps.
+from a profile rather than from nothing. It is not a step toward the sandbox gap (`mechanism/` G1). The same profile
+schema carries the guest up the rungs, and the file's `_ladder` lists the steps.
+
+The rung-1 step is in [`../occupant/`](../occupant/README.md). The same occupant on a `scratch` image is launched
+by the reference's launcher, and every clause passes or is vacuous. That step skipped the §4 profile for this
+directory's Python image, which is P3 `fail`. The image and the `run.sh` sandbox above remain the way to serve the
+model as an MCP tool. They are not what the launcher runs.
