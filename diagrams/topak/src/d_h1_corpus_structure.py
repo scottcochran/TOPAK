@@ -1,6 +1,6 @@
 """H1 — Corpus structure: the repository's layers, their precedence, how a change flows through them, and what
 measures each one."""
-from lib import AMENDED_G11, Canvas, wrap, render_line, text_width
+from lib import AMENDED_G12, Canvas, wrap, render_line, text_width
 
 ID, SLUG = "H1", "corpus-structure"
 
@@ -16,14 +16,19 @@ def build():
                "README.md; checkpoints/README.md; narrative/README.md; decisions/README.md; derived/README.md; "
                "manifests/README.md, manifests/index.tsv, manifests/EXCLUDE; process/README.md; spec/README.md; "
                "floor/README.md, floor/proposed/README.md; mechanism/README.md, mechanism/corpus-pins.sha256; slm/README.md; "
-               "tools/check-refs.py; the headers of checkpoints G1–G11; G9 §9; G10 header, §1, §5, §9; G11 header, §1, "
-               "§1.1, §1.2, §2.2, §2.9, §3, §5, §6, §7 (items 12, 14, 73, 76, 86, 90, 91, 98, 99, 100), §9; ADR-0029 A4; ADR-0030 A3; ADR-0033 "
-               "A9–A15 History; ADR-0046 A1; narrative/glossary.md and narrative/architecture-description.md headers; "
-               "git log 44ff854 … a77d226; git tags G10, G11, ToO-rev14, ToO-rev15, glossary-2026.10.05, "
-               "glossary-2026.10.09, REF-2026.10.05 … f, REF-2026.10.08, REF-2026.10.09; ToO rev 15 header, §0 and "
-               "Appendix K; ADR-0053 (B36) §4, §6; tools/LEAN-PIN; spec/lean/README.md, "
-               "mechanism/lean/README.md, floor/lean/README.md")
-    c.note = AMENDED_G11
+               "tools/check-refs.py; the headers of checkpoints G1–G12; G9 §9; G10 header, §1, §5, §9; G11 header, §1, "
+               "§1.1, §1.2, §2.2, §2.9, §3, §5, §6, §7 (items 12, 14, 73, 76, 86, 90, 91, 98, 99, 100), §9; G12 header, §1, "
+               "§1.1, §1.2, §2.2, §2.3, §2.6, §2.9, §3, §5, §6, §7 (items 12, 14, 76, 90, 99, 100, 103, 104, 109, 113, "
+               "114, 120), §8, §9; ADR-0029 A4; ADR-0030 A3; ADR-0033 A9–A20, R14 and B40 History and the Pending line; "
+               "ADR-0046 A1, A3; narrative/glossary.md and narrative/architecture-description.md headers; "
+               "git log 44ff854 … 1988f93; git tags G10, G11, G12, ToO-rev14, ToO-rev15, ToO-rev16, glossary-2026.10.05, "
+               "glossary-2026.10.09, glossary-2026.11.16, REF-2026.10.05 … f, REF-2026.10.08, REF-2026.10.09, "
+               "REF-2026.11.16; ToO rev 16 header, §0 and Appendix L; ADR-0053 (B36) §4, §6; tools/LEAN-PIN, tools/TLA-PIN; "
+               "spec/lean/README.md, mechanism/lean/README.md, floor/lean/README.md; the tree at 1988f93 (2026.11.17): "
+               "spec/*.tla, tools/, skills/, .github/workflows/, .github/rulesets/README.md, derived/; "
+               "spec/Paxos-results-2026.11.14.txt header; shasum -c of SHA256SUMS-G11, -G12, -REF-2026.11.16 and "
+               "-REF-2026.11.16b at 1988f93")
+    c.note = AMENDED_G12
     X0, X1 = c.x0, c.x1
     W = X1 - X0
     y = c.y
@@ -51,40 +56,45 @@ def build():
 
     b1, cy1, ch1, xs1 = row(y, [
         ("`checkpoints/`: the state of record", [
-            "**Current: Genesis Checkpoint G11** (2026.10.09, tag `G11`). Each checkpoint is **one cut, never "
+            "**Current: Genesis Checkpoint G12** (2026.11.16, tag `G12`). Each checkpoint is **one cut, never "
             "revised**: what each record says, what was ratified and by whom, what is owed, what is open, and the "
-            "manifest that measures it. G11 is the first whose trusted base names **two deductive methods**, and the "
-            "first to record a **known defect in a trust root** kept in use (ADR-0053; ADR-0046 A2).",
-            "Where the narrative and the checkpoint disagree, **the checkpoint wins**. G11 names ToO revision 14 as "
-            "standing, not revised at G11, and behind it on Lean, the prover's cases, liveness and the workflow "
-            "records (items 14, 100); revision 15 is cut against G11 afterwards.",
-            "`checkpoints/README.md` names G11 and holds the 2026.09.30 layout map, the one place stale paths resolve.",
+            "manifest that measures it. G12 is the first at which **the prover's two known unsound cases are reported "
+            "upstream**, and the first with **ten more proof modules, every one under a Proposed record** (G12 header).",
+            "Where the narrative and the checkpoint disagree, **the checkpoint wins**. G12 names ToO revision 15 as "
+            "standing, not revised at G12, and behind it on both batches, the upstream report and its fixes, the "
+            "proofs of `Workflow` and `Mesh`, and twenty-two Proposed records (items 14, 109); revision 16 is cut "
+            "against G12 afterwards. **Batch 40** (2026.11.17, ADR-0033 A19 and A20) comes after the cut.",
+            "`checkpoints/README.md` names G12 and holds the 2026.09.30 layout map, the one place stale paths resolve.",
         ], "blue", None, ""),
     ], "Layer 1 · state of record", "blue")
     y = b1 + 60
 
     b2, cy2, ch2, xs2 = row(y, [
         ("`decisions/`: the records", [
-            "ADR-0001 onward, one file each, numbered in the order settled; **54 files to ADR-0055**, ADR-0014 "
-            "reserved. **Twelve amendments are pending**, every one on a Proposed record (G11 §1.1).",
+            "ADR-0001 onward, one file each, numbered in the order settled; **76 files to ADR-0077**, ADR-0014 "
+            "reserved; twenty-two added since G11, all Proposed (G12 §1.1). **Sixteen amendments pending at G12**, "
+            "fifteen on a Proposed record and ADR-0033 A19 alone (R14); A19 ratified in Batch 40, so **fifteen are "
+            "pending**, every one on a Proposed record (ADR-0033 Pending line).",
             "**Never edited after ratification** except by a typed History row: an amendment, an erratum, a revision "
             "before ratification, a dependent entry, or a withdrawal (ADR-0026 W1).",
             "[[blue|Provisional]] since Batch 34: ratified, in force, subject to redesign, saying what it lacked "
-            "(ADR-0029 A4): ADR-0050, ADR-0052 and four amendments that depend on them.",
-            "`decisions/README.md` gives status at G11 and is a convenience; the checkpoint is the state of record.",
+            "(ADR-0029 A4): ADR-0050, ADR-0052 and four amendments that depend on them; as at G11 (G12 §1.2).",
+            "`decisions/README.md` gives status at G12 and is a convenience; the checkpoint is the state of record.",
         ], "blue", "accepted", "C1–C4 marked"),
         ("`narrative/`: the living layer", [
-            "`theory-of-operation.md`, the head: **revision 15** (2026.10.09, tag `ToO-rev15`), cut against G11; "
-            "**revision 14**, against G10, stands at G11 and is what G11's manifest measures. A revision is an edit, a "
+            "`theory-of-operation.md`, the head: **revision 16** (2026.11.16, tag `ToO-rev16`), cut against G12; "
+            "**revision 15**, against G11, stands at G12 and is what G12's manifest measures. A revision is an edit, a "
             "Changes appendix, a commit and a tag.",
-            "`glossary.md`, revised in place and tagged `glossary-<date>`; 2026.10.09 against G11.",
-            "`architecture-description.md`: **a draft**, revision 3 against G11, untagged; an arc42 index over the "
-            "records that decides nothing. G10 measures revision 1, G11 revision 2.",
+            "`glossary.md`, revised in place and tagged `glossary-<date>`; 2026.11.16 against G12.",
+            "`architecture-description.md`: **a draft**, revision 4 against G12, untagged; an arc42 index over the "
+            "records that decides nothing. G10 measures revision 1, G11 revision 2, G12 revision 3 (`narrative/README.md`).",
             "`revisions/`: a **closed archive** of the dated revisions before the cut (09.10 to rev 9).",
         ], "violet", None, ""),
         ("`derived/`: dated, frozen", [
             "One-shot analyses, reviews and assessments. **A derived document is never revised; a new one is "
-            "written.** 32 files in G11's manifest, three added since G10 and indexed (G11 item 12).",
+            "written.** 287 entries in G12's manifest: G11's 32, twenty-two dated documents and 233 files in five "
+            "directories (G12 §9); one dated document added after the cut (`topak-sici-assessment-2026.11.16.md`). "
+            "Two directories have no row in `derived/README.md` (G12 item 12).",
             "Ten accepted records cite files here by path in their provenance notes, so names do not change.",
             "The 09.17 and 09.26 glossaries stay here, frozen, because records cite them.",
         ], "grey", None, ""),
@@ -92,25 +102,33 @@ def build():
     y = b2 + 60
 
     b3, cy3, ch3, xs3 = row(y, [
-        ("`spec/`", ["TLA+ modules **checked** in TLC at small constants, with run scripts and dated results; "
-                     "**twenty-four** `*_proof.tla` modules, 5,416 obligations **proved**, **twenty-one certified** "
-                     "(ADR-0046 A1; `proof-certification.md`); `lean/`, fifteen of them **proved in Lean** too. Cited "
-                     "modules are frozen; a successor takes `_A1`; liveness is an extension, `_live`.",
-                     "`theorem-premise-binding.md` (DRAFT): no rows for ten modules (G11 item 90)."],
+        ("`spec/`", ["TLA+ modules **checked** in TLC at small constants, with run scripts and dated results: "
+                     "**forty-one** that are not proof modules, `Paxos` and `PaxosTrace` among them since 2026.11.14 "
+                     "(checked, not proved; ADR-0033 A20); **thirty-four** `*_proof.tla` modules, 13,622 obligations "
+                     "**proved**, **thirty-one certified**, ten of the thirty-four under Proposed records (G12 §2.9; "
+                     "`proof-certification.md`); `lean/`, fifteen of them **proved in Lean** too, unchanged (§2.9). "
+                     "Cited modules are frozen; a successor takes `_A1`; liveness is an extension, `_live`.",
+                     "`theorem-premise-binding.md` (DRAFT): no rows for eighteen modules (G12 item 90)."],
          "teal", None, ""),
         ("`floor/`", ["The genesis floor in Cedar, DRAFT, the text the stages are built from. `floor/proposed/`: "
                       "four gated stages; the floor in force is `emergency` (28 policies, 107 cases); the reference "
-                      "links `workflow` (30, 123), which is Proposed and not in force (G11 §2.2).", "Ratified when the bootstrap reviewer finds it fit. Values are "
+                      "links `workflow` (30, 123), which is Proposed and not in force. No file under `floor/` changed "
+                      "since G11 (G12 §2.2).", "Ratified when the bootstrap reviewer finds it fit. Values are "
                       "placeholders."],
          "violet", "genprov", "ADR-0030 A3"),
         ("`policies/`", ["Rego bundle-tier policies and tests (the bundle entrypoint is `policies/bundle.rego`).",
-                         "Measured with `mechanism/` by the reference manifests."], "teal", None, ""),
-        ("`mechanism/`", ["Rust reference implementation of the admit path. **A reference, not a deployment**; "
-                          "evidence, not the verified object (ADR-0033). Rebuilt in five stages on 2026.10.05, built to two "
-                          "Proposed records on 2026.10.08; 155 tests.",
+                         "Measured with `mechanism/` by the reference manifests; none changed between A19 and A20."],
+         "teal", None, ""),
+        ("`mechanism/`", ["Rust reference implementation of the admit path and the consensus log. **A reference, not a "
+                          "deployment**; evidence, not the verified object (ADR-0033). Rebuilt in five stages on "
+                          "2026.10.05, built to two Proposed records on 2026.10.08; no source file changed between G11 "
+                          "and G12 (G12 header); `topak-paxos` changed with `Paxos.tla` (pull request #68). Measured by "
+                          "A19 (`d1b72db`) and A20 (`36269bc`), both ratified in Batch 40; **159 tests** (A20, B40).",
                           "Read `GAPS-AND-ASSUMPTIONS.md` first: **not a corpus record**."], "teal", "built", ""),
         ("`slm/`", ["Small-model pre-training and the ADR-0035 §8 lineage rehearsal. **Not a corpus record.**",
-                    "Proves the pipeline and the rule's mechanics, not the guarantee."], "amber", None, ""),
+                    "Proves the pipeline and the rule's mechanics, not the guarantee. A compiled occupant runs at "
+                    "rung 1 on DEV rules (2026.11.11); no record cites it and no manifest measures it (G12 §2.3, §3)."],
+         "amber", None, ""),
     ], "Layer 3 · evidence", "teal", size=13.5)
     y = b3 + 60
 
@@ -119,16 +137,25 @@ def build():
                           "not today's: `index.tsv` names the commit. Checkpoint, reference, rehearsal, historical "
                           "kinds (table in §4).", "`EXCLUDE` states the cut rule once."], "grey", None, ""),
         ("`tools/`", ["`verify-manifest.sh --all`, `check-refs.py`, `cut-manifest.sh`; `tlc`, `tlc-workers`, "
-                      "`tlapm`; the installers; `lean-report.sh`, `lean-sync.sh`.", "Measured deliberately: `tla2tools.jar` "
-                      "(T-0045-29), `tools/cpc/` (T-0045-14), `TLAPS-PIN` and `LEAN-PIN` (T-0045-37). The scripts are "
-                      "excluded; the prover and the Lean toolchain are not tracked."],
+                      "`tlapm`; the installers; `lean-report.sh`, `lean-sync.sh`; since 2026.11.16 `TLA-PIN`, "
+                      "`check-pins.sh` and five CI scripts.", "Measured deliberately: `tla2tools.jar` "
+                      "(T-0045-29), `tools/cpc/` (T-0045-14), `TLAPS-PIN`, `LEAN-PIN` (T-0045-37), `TLA-PIN` and the "
+                      "CI scripts (G12 §9: 63). The wrappers and installers are excluded; the prover and the Lean "
+                      "toolchain are not tracked."],
          "grey", None, ""),
         ("`process/`", ["One-time logs of the genesis cleanup, 2026.09.15 to 09.17: the freeze, the recovery, the "
                         "fold, the normalization, two narrative logs.", "**Nothing is added here after the cut.**"],
          "grey", None, ""),
+        ("`skills/` and `.github/`", ["`skills/`: four project skills packaged as plugins (TLA+ specifications and "
+                                      "proofs, Lean encodings and proofs, auditing claims against evidence, generating "
+                                      "these diagrams); **132 entries, measured first at G12** (§9); `.claude/` stays "
+                                      "excluded.", "`.github/`: four workflows (`checks`, `frozen-files`, `results`, "
+                                      "`sources`), `scripts/frozen-files.py`, five rulesets, `CONTRIBUTING.md`, on "
+                                      "[[amber|ADR-0069 §10.2, Proposed]]; excluded. **CI gates nothing** (G12 §8)."],
+         "grey", None, ""),
         ("`diagrams/`", ["Diagrams and their generators, this one among them.", "Excluded from every checkpoint "
                          "manifest (`EXCLUDE`: `^diagrams/`). Drawn from the records; not one. Whether to measure "
-                         "them is G11 item 76."], "grey", None, ""),
+                         "them is G12 item 76, open; ten added since G11."], "grey", None, ""),
     ], "Layer 4 · integrity, tooling and history", "grey", rdash="10 6", size=13.5)
     y = b4 + 30
 
@@ -147,20 +174,14 @@ def build():
     y += 30
 
     # ================================================================ 2. checkpoint chain and narrative revisions
-    y += c.heading(X0, y, "2 · The checkpoint chain G1 → G11, and the narrative beside it", size=22)
+    y += c.heading(X0, y, "2 · The checkpoint chain G1 → G12, and the narrative beside it", size=22)
     y += 10
     dates = ["09.10", "09.11", "09.12", "09.15", "09.23", "09.25", "09.28", "09.29", "09.30", "10.01", "10.02",
-             "10.02b", "10.05", "10.09"]
+             "10.02b", "10.05", "10.09", "11.16"]
     tg = 22
     cw = (W - tg * (len(dates) - 1)) / len(dates)
     step = cw + tg
     pos = {d: X0 + cw / 2 + i * step for i, d in enumerate(dates)}
-    # axis
-    ay = y + 210
-    c.line(X0 + 20, ay, X1 - 20, ay, "muted", 2)
-    for d in dates:
-        c.line(pos[d], ay - 6, pos[d], ay + 6, "muted", 2)
-        c.text(pos[d], ay + 26, "2026." + d[:5], 13, "muted", anchor="middle", bold=True)
     cps = [
         ("G1", "09.15", "cleanup step 5; supersedes corpus manifest v1", "49", "29 at `8fdbe97` (pre-git)"),
         ("G2", "09.23", "narrative: rev 6", "64", "60 at `8fdbe97` (pre-git)"),
@@ -179,18 +200,26 @@ def build():
          "genesis-provisional floor", "499", "499 at `029a31b`"),
         ("G11", "10.09", "rev 14 stands, not revised at G11; first with two deductive methods and a known defect in a "
          "trust root", "604", "604 at `ce8f460`"),
+        ("G12", "11.16", "rev 15 stands, not revised at G12; first with the prover's cases reported upstream, and "
+         "with proof modules under Proposed records only; `skills/` measured", "1100", "1100 at `0a1bc8d`"),
     ]
+    # axis, below the tallest checkpoint card
+    hs = max(c.card(0, 0, cw, f"{nm} · 2026.{dd[:5]}", [nt, f"`SHA256SUMS-{nm}`: {nn} entries; verifies {vv}"],
+                    size=13, tsize=15, bullets=False, draw=False) for nm, dd, nt, nn, vv in cps)
+    ay = y + hs + 40
+    c.line(X0 + 20, ay, X1 - 20, ay, "muted", 2)
+    for d in dates:
+        c.line(pos[d], ay - 6, pos[d], ay + 6, "muted", 2)
+        c.text(pos[d], ay + 26, "2026." + d[:5], 13, "muted", anchor="middle", bold=True)
     prev = None
     for name, d, note, n, ver in cps:
         x = pos[d] - cw / 2
         x = max(X0, min(x, X1 - cw))
         acc = "blue"
         h = c.card(x, y, cw, f"{name} · 2026.{d[:5]}", [note, f"`SHA256SUMS-{name}`: {n} entries; verifies {ver}"],
-                   accent=acc, size=13, tsize=15, bullets=False, tint=(name == "G11"), draw=False)
-        hs = max(c.card(0, 0, cw, f"{nm} · 2026.{dd[:5]}", [nt, f"`SHA256SUMS-{nm}`: {nn} entries; verifies {vv}"],
-                        size=13, tsize=15, bullets=False, draw=False) for nm, dd, nt, nn, vv in cps)
+                   accent=acc, size=13, tsize=15, bullets=False, tint=(name == "G12"), draw=False)
         c.card(x, y, cw, f"{name} · 2026.{d[:5]}", [note, f"`SHA256SUMS-{name}`: {n} entries; verifies {ver}"],
-               accent=acc, size=13, tsize=15, bullets=False, tint=(name == "G11"), h=hs)
+               accent=acc, size=13, tsize=15, bullets=False, tint=(name == "G12"), h=hs)
         c.line(pos[d], y + hs, pos[d], ay - 8, "blue", 2, dash="3 3")
         if prev:
             c.arrow([(prev + 2, y + 26), (x - 3, y + 26)], "blue", sw=2)
@@ -200,7 +229,7 @@ def build():
         "state of record itself: G1 superseded manifest v1 in full and, as state of record, the 09.15 ToO rev 4's "
         "ledger, ADR log, open list, genesis plan and next steps; rev 4 stayed in force as narrative (G1 header).",
     ], accent="grey", size=13.5, bullets=False, h=hs, dash="6 4")
-    c.pill(X1 - 4, y - 32, "G11: current state of record", "blue", 12.5, solid=True, anchor="end")
+    c.pill(X1 - 4, y - 32, "G12: current state of record", "blue", 12.5, solid=True, anchor="end")
     # narrative revisions below the axis
     ny = ay + 52
     revs = [("09.10", "ToO 2026.09.10"), ("09.11", "ToO 09.11"), ("09.12", "ToO 09.12"),
@@ -211,18 +240,23 @@ def build():
                       "checked"),
             ("10.02b", "**rev 13**, against G9 (tag `ToO-rev13`): leases above rung 0; measured by G10"),
             ("10.05", "**rev 14**, against G10 (tag `ToO-rev14`): labels, operators, break-glass; measured by G11"),
-            ("10.09", "**rev 15**, the head, against G11 (tag `ToO-rev15`): workflows, liveness, Lean")]
+            ("10.09", "**rev 15**, against G11 (tag `ToO-rev15`): workflows, liveness, Lean; measured by G12"),
+            ("11.16", "**rev 16**, the head, against G12 (tag `ToO-rev16`): Batches 38, 39; the upstream report; "
+                      "`Workflow` and `Mesh` proved; twenty-two Proposed records (Appendix L)")]
+    heads = ("09.30", "10.01", "10.02", "10.02b", "10.05", "10.09", "11.16")
+    hr = max(c.card(0, 0, cw, None, [lab + ("" if d in heads else " · `narrative/revisions/`")], size=13,
+                    bullets=False, draw=False) for d, lab in revs)
     for d, lab in revs:
         x = pos[d] - cw / 2
         x = max(X0, min(x, X1 - cw))
-        head = d in ("09.30", "10.01", "10.02", "10.02b", "10.05", "10.09")
+        head = d in heads
         c.line(pos[d], ay + 34, pos[d], ny, "violet", 1.6, dash="3 3")
         c.card(x, ny, cw, None, [lab + ("" if head else " · `narrative/revisions/`")], accent="violet",
-               size=13, bullets=False, tint=head, h=96, dash=None if head else "6 4")
-    c.text(X0, ny + 128, "Narrative revisions (violet): the nine dated files before the cut sit in `narrative/revisions/`, "
-           "byte-identical moves, six of them from before git; revisions 7 to 15 are tagged `ToO-rev7` … `ToO-rev15`.",
+               size=13, bullets=False, tint=head, h=hr, dash=None if head else "6 4")
+    c.text(X0, ny + hr + 32, "Narrative revisions (violet): the nine dated files before the cut sit in `narrative/revisions/`, "
+           "byte-identical moves, six of them from before git; revisions 7 to 16 are tagged `ToO-rev7` … `ToO-rev16`.",
            14, "muted")
-    y = ny + 158
+    y = ny + hr + 62
 
     # ================================================================ 3. how a change flows
     y += c.heading(X0, y, "3 · How a change moves through the corpus", size=22)
@@ -230,9 +264,10 @@ def build():
     steps = [
         ("1 · Draft", ["A record is drafted and revised **in place** while Proposed: History rows R1, R2 …, each "
                        "\"Applied — Proposed record, revised in place\".", "Status: Proposed (ADR-0035, 0036, 0051, 0054, "
-                       "0055; ADR-0022 §6 at G11)."], "amber", "proposed", ""),
+                       "0055, 0056 to 0077; ADR-0022 §6 at G12)."], "amber", "proposed", ""),
         ("2 · Ratify, in a batch", ["The genesis custodian ratifies under ADR-0029 §2, in numbered batches (G9: "
-                                    "Batch 26; G10: Batches 27–35, on two days; G11: 36 and 37).", "Accepted (genesis); a "
+                                    "Batch 26; G10: Batches 27–35, on two days; G11: 36 and 37; G12: 38 and 39; after "
+                                    "G12: 40).", "Accepted (genesis); a "
                                     "confirmation-required marker C1–C4 when the first post-bootstrap quorum must review "
                                     "it (ADR-0029 §4); **provisional** when it did not meet its own ratification "
                                     "condition and says what it lacked (A4)."],
@@ -240,14 +275,15 @@ def build():
         ("3 · After ratification", ["Only typed History rows: an **amendment** (A1 …), an **erratum** (E1 …), or a "
                                     "**dependent entry** (B22 …) when another record's ratification touches it.",
                                     "A dependent amendment is drafted to be applied as marked, beside the text it "
-                                    "changes (G10 §5); twelve are pending at G11, all on Proposed records. A pending amendment may be **withdrawn** "
+                                    "changes (G10 §5); sixteen are pending at G12, fifteen after Batch 40, all on "
+                                    "Proposed records. A pending amendment may be **withdrawn** "
                                     "(ADR-0026 W1)."], "blue", None, ""),
         ("4 · Checkpoint cut", ["Gn supersedes Gn−1 as the state of record: ratifications, ledger, open list. "
                                 "`tools/cut-manifest.sh` cuts `SHA256SUMS-Gn` under `EXCLUDE`; `index.tsv` gains a "
                                 "row naming the commit; a tag `Gn`."], "blue", None, ""),
         ("5 · Narrative revision", ["The ToO is edited against the checkpoint, with a \"Changes from revision N\" "
                                     "appendix, a commit and a tag `ToO-revN`; the glossary is revised in place. Until "
-                                    "then the checkpoint wins (G11 item 100 owes rev 15 against G11; cut 2026.10.09)."], "violet", None, ""),
+                                    "then the checkpoint wins (G12 item 109 owes rev 16 against G12; cut 2026.11.16)."], "violet", None, ""),
         ("6 · Re-pin", ["`mechanism/corpus-pins.sha256`: the drift test fails when a pinned record moves; review, bring "
                         "the code into line or register the divergence, then replace the pin line.",
                         "An ADR-0033 addendum cites the new `SHA256SUMS-REF-<date>`."], "teal", "built", ""),
@@ -275,56 +311,76 @@ def build():
                 "36 (`15ae7f1`) → the prover's two unsound cases in Batch 37 (`848aed5`) → two Proposed records built at "
                 "the reference, `SHA256SUMS-REF-2026.10.08` and `-09` → G11 cut, 604 entries (`ce8f460`) → its index "
                 "row → ToO revision 15, the glossary, the architecture description's revision 3 and the reviewer's guide "
-                "(`a77d226`).",
+                "(`a77d226`). **G12** (2026.11.02–16): ADR-0024 E1 alone in Batch 38 (`d4eeb0d`) → the upstream report, "
+                "ADR-0046 A3 and ADR-0045 A4, in Batch 39 (`7719a2c`) → the reference measured, `SHA256SUMS-REF-2026.11.16` "
+                "at `d1b72db`, and A19 made to stand alone (R14, `f4e75f9`) → G12 cut, 1,100 entries (`0a1bc8d`) → its "
+                "index row (`0bb0292`) → ToO revision 16, the glossary, the architecture description's revision 4 and the "
+                "reviewer's guide (`6038475`), its tags cited (`cd97cb3`). **After G12**: `Paxos.tla` and `PaxosTrace.tla` pinned "
+                "by the reference (pull request #68, `36269bc`) → A20 and `SHA256SUMS-REF-2026.11.16b` (`ea09e54`) → "
+                "Batch 40, A19 and A20 together (`1988f93`, 2026.11.17).",
                 14.5, "ink") + 40
 
     # ================================================================ 4. tables
     y += c.heading(X0, y, "4 · The layout, and what measures each part", size=22)
     lay = [
         ["`decisions/`", "Architecture decision records, ADR-0001 onward ([index](decisions/README.md))",
-         "Immutable after ratification but for typed History rows", "checkpoint manifest: 54 records"],
+         "Immutable after ratification but for typed History rows", "checkpoint manifest: 76 records"],
         ["`checkpoints/`", "Genesis checkpoints, the state of record; the layout map from the 2026.09.30 cut",
-         "One cut each, never revised", "checkpoint manifest: 12 (v1 and G1–G11)"],
+         "One cut each, never revised", "checkpoint manifest: 13 (v1 and G1–G12)"],
         ["`narrative/`", "The living layer: the ToO and the glossary, cut with each checkpoint; the architecture "
          "description, a draft; the closed archive of earlier revisions", "Head edited per revision and tagged; "
          "`revisions/` closed", "checkpoint manifest: 12"],
-        ["`spec/`", "TLA+ modules and twenty-four proof modules, run scripts, generators and checkers, the binding table, "
-         "the method and certification notes, dated TLC, proof and certified-proof results, trace results; since "
-         "2026.10.05 `lean/`, sixteen modules re-encoded in Lean ([[blue|ADR-0053, B36]])",
+        ["`spec/`", "TLA+ modules (forty-one that are not proof modules; `Paxos` and `PaxosTrace` since 2026.11.14) and "
+         "thirty-four proof modules, run scripts, generators and checkers, the binding table, the method and "
+         "certification notes, dated TLC, proof and certified-proof results, trace results, the proof scans, a deadlock "
+         "audit, `defects/`, the specification graph and `modules.tsv`; since 2026.10.05 `lean/`, sixteen modules "
+         "re-encoded in Lean ([[blue|ADR-0053, B36]])",
          "Cited modules and proof modules frozen (successors `_A1`); results never change; `Mechanism.tla` pinned, "
-         "not frozen; Lean re-encodings frozen with their modules on ADR-0053's ratification",
-         "checkpoint manifest: 243, `lean/`'s 38 among them"],
+         "not frozen; Lean re-encodings frozen with their modules on ADR-0053's ratification; the ten new proof "
+         "modules freeze at their records' ratification (G12 §3)",
+         "checkpoint manifest: 321, `lean/`'s 38 among them; `Paxos` and `PaxosTrace` are after the cut"],
         ["`floor/`", "The genesis policy floor in Cedar, with tests and gates, and four proposed stages under "
          "`proposed/`, the fourth since 2026.10.08; since 2026.10.05 `lean/`, the floors in Cedar's Lean model "
          "([[blue|ADR-0053, B36]])", "Genesis text DRAFT; the floor in force genesis-provisional (ADR-0030 A3); dated gate runs "
-         "never change", "checkpoint manifest: 170 (`lean/`'s 20 among them)"],
+         "never change", "checkpoint manifest: 170 (`lean/`'s 20 among them), as at G11"],
         ["`policies/`", "Rego bundle-tier policies and tests", "Reference material", "`SHA256SUMS-REF-<date>`"],
-        ["`mechanism/`", "Rust reference implementation of the admit path; since 2026.10.05 `lean/`, `admit.rs` and "
-         "`clock.rs` and the floor wrapper transcribed and proved in Lean, the decision a step of `FloorComposition` "
-         "([[blue|ADR-0053, B36]])", "Evidence, not the verified "
+        ["`mechanism/`", "Rust reference implementation of the admit path and the consensus log; since 2026.10.05 `lean/`, "
+         "`admit.rs` and `clock.rs` and the floor wrapper transcribed and proved in Lean, the decision a step of "
+         "`FloorComposition` ([[blue|ADR-0053, B36]])", "Evidence, not the verified "
          "object; pins what it follows; the Lean transcriptions are pinned to the Rust by digest, not frozen, and "
-         "stale at G11", "`SHA256SUMS-REF-<date>` (eighteen cuts)"],
-        ["`slm/`", "Small-model pre-training and the ADR-0035 lineage rehearsal", "Not a corpus record",
-         "`SHA256SUMS-SLM-2026.09.28`"],
-        ["`derived/`", "Dated, frozen analyses, reviews and assessments", "Never revised; a new one is written",
-         "checkpoint manifest: 32"],
+         "stale at G12 (item 103)", "`SHA256SUMS-REF-<date>` (twenty cuts)"],
+        ["`slm/`", "Small-model pre-training and the ADR-0035 lineage rehearsal; the rung-1 occupant of 2026.11.11",
+         "Not a corpus record", "`SHA256SUMS-SLM-2026.09.28`, which predates the occupant (G12 §3)"],
+        ["`derived/`", "Dated, frozen analyses, reviews and assessments; since G11, five directories among them",
+         "Never revised; a new one is written", "checkpoint manifest: 287"],
         ["`manifests/`", "Digest manifests for checkpoint, reference and rehearsal cuts, with an index", "A manifest is "
-         "verified at the commit it measured", "G11 measures 19: the eighteen REF manifests and the SLM manifest; not "
-         "`index.tsv`, not earlier checkpoint manifests"],
+         "verified at the commit it measured", "G12 measures 20: the nineteen REF manifests and the SLM manifest; not "
+         "`index.tsv`, not earlier checkpoint manifests; `-REF-2026.11.16b` is cut after it"],
         ["`process/`", "The genesis cleanup's process logs", "Closed: nothing added after the cut",
          "checkpoint manifest: 6"],
         ["`tools/`", "The TLC jar and wrappers, the TLAPS wrapper, the installers, and the manifest and reference "
          "checkers; since 2026.10.05 `LEAN-PIN`, `install-lean.sh`, `lean-report.sh` and `lean-sync.sh` "
-         "([[blue|ADR-0053, B36]])", "Scripts excluded; the prover binary and the Lean toolchain not tracked",
-         "checkpoint manifest: 56 (the jar, the 53 files of `tools/cpc/`, `TLAPS-PIN`, `LEAN-PIN`)"],
-        ["`diagrams/`", "Diagrams and their generators", "Derived from the records", "excluded"],
+         "([[blue|ADR-0053, B36]]); since 2026.11.16 `TLA-PIN`, `check-pins.sh` and the CI scripts "
+         "([[amber|ADR-0069 §10.2, Proposed]])", "Scripts excluded but the pins' checker and the CI scripts; the prover "
+         "binary and the Lean toolchain not tracked",
+         "checkpoint manifest: 63 (the jar, the 53 files of `tools/cpc/`, `TLAPS-PIN`, `LEAN-PIN`, `TLA-PIN`, six CI "
+         "scripts)"],
+        ["`skills/`", "Four project skills packaged as plugins: TLA+ specifications and proofs, Lean encodings and "
+         "proofs, auditing claims against evidence, generating the corpus's diagrams (2026.11.09 to 11.11)",
+         "Not records; the skills under `.claude/` stay excluded",
+         "checkpoint manifest: 132, **a new area at G12**, the custodian's decision of 2026.11.16 (§9)"],
+        ["`.github/`", "Four workflows (`checks`, `frozen-files`, `results`, `sources`), `scripts/frozen-files.py`, five "
+         "rulesets and `CONTRIBUTING.md`, on [[amber|ADR-0069 §10.2, Proposed]]", "`checks` and `frozen-files` pass on "
+         "`main`; `sources` has never run; the required-checks ruleset is disabled; CI gates nothing (G12 §5, §8, items "
+         "113, 114)", "excluded (`EXCLUDE`: `^\\.github/`)"],
+        ["`diagrams/`", "Diagrams and their generators", "Derived from the records", "excluded (item 76)"],
     ]
     for r in lay:
         r[1] = r[1].replace(" ([index](decisions/README.md))", "")
     wl = W * 0.58
     ty = y
     h1 = c.table(X0, ty, [("Path (README.md)", 190), ("Contents (README.md)", wl * 0.40), ("Rule", wl * 0.30),
-                          ("Measured by (G11 §9; EXCLUDE)", wl - 190 - wl * 0.70)], lay, size=13.5, accent="blue")
+                          ("Measured by (G12 §9; EXCLUDE)", wl - 190 - wl * 0.70)], lay, size=13.5, accent="blue")
     idx = [
         ["`SHA256SUMS`", "historical", "09.15", "—", "60", "—", "pre-layout flat paths; the record of its cut"],
         ["`-G1`", "checkpoint", "09.15", "`8fdbe97`", "49", "29", "pre-git; the nearest tree"],
@@ -367,6 +423,12 @@ def build():
          "dropped"],
         ["`-G11`", "checkpoint", "10.09", "`ce8f460`", "604", "604", "first with two deductive methods; the Lean "
          "scripts excluded"],
+        ["`-REF-2026.11.16`", "reference", "11.16", "`d1b72db`", "116", "116", "A19 (B40): the reference measured for "
+         "G12; `wasmtime` 48.0.8, a test's race fixed, ADR-0054 and ADR-0055 re-pinned"],
+        ["`-G12`", "checkpoint", "11.16", "`0a1bc8d`", "1100", "1100", "first with the prover's cases reported "
+         "upstream, and with proof modules under Proposed records only; `skills/` measured"],
+        ["`-REF-2026.11.16b`", "reference", "11.16", "`36269bc`", "116", "116", "A20 (B40): after pull request #68, "
+         "`Paxos.tla` and `PaxosTrace.tla` pinned; seven entries changed from `-11.16`; untagged at 2026.11.17"],
     ]
     wr = W - wl - 40
     h2 = c.table(X0 + wl + 40, ty, [("Manifest (`index.tsv`)", wr * 0.21), ("Kind", wr * 0.12), ("Cut", wr * 0.07),
@@ -375,20 +437,26 @@ def build():
     ty0, ty = ty, ty + h1 + 30
 
     # status, layout map, tools
-    ha = c.table(X0, ty, [("Record status at G11 (§1.1)", wl * 0.30), ("Count", wl * 0.08), ("Records", wl * 0.62)], [
-        ["Accepted (genesis)", "18", "0001, 0002, 0004, 0007, 0010, 0012, 0016, 0017, 0018 (in part), 0019, 0020, "
-         "0022 (in part: §6 Proposed), 0024, 0025, 0026, 0027, 0032, 0033"],
-        ["Accepted (genesis) · confirmation required", "27", "0003 (A2 only), 0005, 0006, 0009, 0013, 0015, 0021, "
-         "0023, 0028, 0029 (A2, A4 only), 0030, 0031 (C2 for A1 only), 0034, 0037, 0038, 0039, 0040, 0041, 0042, "
-         "0043, 0044, 0045, 0046, 0047, 0048, 0049, **0053 (C4, for `refines(Seats)` only)**"],
+    ha = c.table(X0, ty, [("Record status at G12 (§1.1), and after Batch 40", wl * 0.30), ("Count", wl * 0.08),
+                          ("Records", wl * 0.62)], [
+        ["Accepted (genesis)", "18", "As at G11: 0001, 0002, 0004, 0007, 0010, 0012, 0016, 0017, 0018 (in part), 0019, "
+         "0020, 0022 (in part: §6 Proposed), 0024, 0025, 0026, 0027, 0032, 0033"],
+        ["Accepted (genesis) · confirmation required", "27", "As at G11: 0003 (A2 only), 0005, 0006, 0009, 0013, 0015, "
+         "0021, 0023, 0028, 0029 (A2, A4 only), 0030, 0031 (C2 for A1 only), 0034, 0037, 0038, 0039, 0040, 0041, 0042, "
+         "0043, 0044, 0045, 0046 (**A3 is C4**, inside a record already marked), 0047, 0048, 0049, 0053 (C4, for "
+         "`refines(Seats)` only)"],
         {"cells": ["Accepted (genesis) · **provisional** (confirmation required)", "2", "**0050, 0052**"],
          "accent": "blue"},
-        {"cells": ["Proposed", "5", "0035, 0036, 0051, **0054, 0055**; and ADR-0022 §6"], "accent": "amber"},
+        {"cells": ["Proposed", "27", "0035, 0036, 0051, 0054, 0055, and **0056 to 0077**; and ADR-0022 §6"],
+         "accent": "amber"},
         ["Superseded", "1", "0008, by 0038"],
         ["Tombstone", "1", "0011"],
         ["Reserved, no file", "1", "0014"],
-        {"cells": ["Pending amendments", "12", "ten of ADR-0054's (0015 A1, 0024 A4, 0031 A4, 0037 A5, 0039 A3, 0040 "
-                   "A2, 0041 A4, 0042 A3, 0043 A3, 0047 A1) and ADR-0033 A16, A17; ADR-0026 A1 (R8) **withdrawn** (W1)"],
+        {"cells": ["Pending amendments", "16 at G12; 15 after B40", "G11's twelve, all still pending: ten of ADR-0054's "
+                   "(0015 A1, 0024 A4, 0031 A4, 0037 A5, 0039 A3, 0040 A2, 0041 A4, 0042 A3, 0043 A3, 0047 A1) and "
+                   "ADR-0033 A16, A17; ADR-0057's three dependent entries, ADR-0033 A18, ADR-0045 A5, ADR-0053 A1; and "
+                   "ADR-0033 A19, alone (R14). **A19 ratified 2026.11.17 in Batch 40, with A20**: fifteen pending, every "
+                   "one on a Proposed record. ADR-0026 A1 (R8) **withdrawn** (W1)"],
          "accent": "amber"},
         ["Provisional amendments", "4", "0024 A3, 0025 A3, 0026 A2 (bootstrap set); 0029 A3"],
     ], size=13.5, accent="blue")
@@ -414,40 +482,56 @@ def build():
         ["`cut-manifest.sh`", "Cuts a manifest under the rule `manifests/EXCLUDE` states once"],
         ["`tlc`, `tlc-workers`", "Wrap TLC over the tracked `tla2tools.jar`; each module has a `*-run.sh` in `spec/`"],
         ["`tlapm`", "Wraps the TLA+ Proof System; `spec/proof-results.sh` runs it per proof module (excluded from the "
-         "manifest, G8 §5)"],
+         "manifest, G8 §5). `spec/proof-sync.sh` exits 0 at G12 (§2.9)"],
         ["`install-tlaps.sh`", "Installs the pinned prover, `tlapm` 1.6.0-pre at `7824dab`, beside the wrapper "
          "(1.9 GB, not tracked; T-0045-31)"],
         ["`install-tla.sh`", "Downloads a jar; run it only to reinstall the pinned digest (T-0045-29)"],
         ["`install-ethos.sh`", "Builds the pinned proof checker `ethos` 8dc85c4 (binary not tracked)"],
         ["`tla2tools.jar`, `cpc/`", "Measured: the TLC jar (since G6) and the CPC rule signature (from G7)"],
         ["`TLAPS-PIN`", "The pinned prover; the wrapper refuses another binary (G10 item 73). Measured from G10. "
-         "The build it names has two known unsound cases (ADR-0046 A2)"],
+         "The build it names has two known unsound cases, reported upstream (ADR-0046 A3, B39) and since fixed "
+         "upstream in part, in `ff40755`; the pin has not moved (G12 §2.6)"],
         ["`LEAN-PIN`, `install-lean.sh`", "The Lean toolchain's pin (T-0045-37), measured from G11; the installer "
          "through elan (not tracked)"],
         ["`lean-sync.sh`, `lean-report.sh`", "Hold the Lean results to the tree and the pin; excluded from the "
-         "manifest. `lean-sync.sh` exits 1 at G11 for `mechanism/lean` (item 103)"],
+         "manifest. `lean-sync.sh` exits 1 at G12 for `mechanism/lean`, as at G11, now ratcheted in CI (item 103)"],
+        ["`TLA-PIN`, `check-pins.sh`", "The TLC jar, v1.7.4, pinned by digest as the prover and Lean are, and checked "
+         "on every push; on ADR-0069 §10.2, Proposed. Measured from G12 (§2.6, §5)"],
+        ["`check-results.sh`, `compare-results.py`, `check-sources.sh`, `ci-plan.sh`, `ratchet.py`",
+         "The CI scripts (G12 §3), on ADR-0069 §10.2, Proposed; a check with findings that predate CI is "
+         "ratcheted, failing only on what a change adds (G12 §5). Measured from G12; no results file in the tree (§3)"],
     ], size=13, accent="grey")
     y = ty + max(hb, hc) + 40
 
     w2 = (W - 30) / 2
-    hh = c.card(X0, y, w2, "Two kinds of manifest failure that are correct", [
-        "`SHA256SUMS-G10` fails at G11's tree by construction (fifteen accepted records changed, with the narrative "
-        "and the binding table) and verifies 499 of 499 at `029a31b` (G11 §9).",
-        "`SHA256SUMS-REF-2026.10.09` fails two entries at G11's tree, the pin file and the register, which moved "
-        "after `749d54f`; 116 of 116 there. `-10.08` fails three, `workflow.rs` among them, and verifies whole at "
-        "its own commit.",
+    fail_title = ("Two kinds of manifest failure that are correct (counts at `1988f93` are the diagram's own, "
+                  "`shasum -c` on 2026.11.17)")
+    fail_body = [
+        "`SHA256SUMS-G11` fails twelve entries at G12's tree by construction (seven records, the three narrative files, "
+        "`spec/deadlock-audit.sh`, `spec/proof-certification.md`) and verifies 604 of 604 at `ce8f460` (G12 §9); "
+        "thirteen at `1988f93`, ADR-0033 having moved with Batch 40.",
+        "`SHA256SUMS-REF-2026.11.16` fails two entries at G12's tree, the pin file and the register (§9), and seven at "
+        "`1988f93`, the entries A20 lists; 116 of 116 at `d1b72db`. `-11.16b` fails one at `1988f93`, the pin file, "
+        "which moved with Batch 40 (B40); 116 of 116 at `36269bc`. `SHA256SUMS-G12` fails six at `1988f93`: ADR-0033, "
+        "the three narrative files, `spec/modules.tsv` and `spec/proof-sync.sh`; 1,100 of 1,100 at `0a1bc8d`.",
         "Frozen records that cite pre-move paths are not edited: their digests are pinned. Two such citations are "
         "knowingly left stale and resolve through the layout map.",
-    ], accent="grey", size=14)
-    c.card(X0 + w2 + 30, y, w2, "Pointers still behind the state of record", [
-        "G11's header names revision 14 as the standing narrative; revision 15 is written against G11 afterwards "
-        "(items 14, 100). The tags item 100 owed, `G11`, `REF-2026.10.08` and `-09`, `ToO-rev15` and "
-        "`glossary-2026.10.09`, are made.",
-        "The floor stages open with a comment that is wrong, \"not what the reference follows\" (G11 item 91); "
-        "`floor/README.md` says the reference links the `labels` stage, where it links `workflow` (G11 §2.2), and "
-        "that `T_persona` is not yet read, where it is (ADR-0033 A6); two policy comments call ADR-0049 Proposed "
-        "(item 98).",
-        "`decisions/README.md` gives status at G11 under a column still headed \"Status at G8\". "
-        "`REVIEWERS_GUIDE_README.md` is kept current outside the manifest (item 99).",
-    ], accent="amber", size=14, h=hh)
+    ]
+    ptr_title = "Pointers still behind the state of record"
+    ptr_body = [
+        "G12's header names revision 15 as the standing narrative; revision 16 is written against G12 afterwards "
+        "(items 14, 109). The tags item 109 owed, `G12` and `REF-2026.11.16`, and `ToO-rev16` and "
+        "`glossary-2026.11.16`, are made. `SHA256SUMS-REF-2026.11.16b` (A20, B40) has no tag at 2026.11.17, where "
+        "every earlier reference manifest has one (the diagram's observation).",
+        "The floor stages open with a comment that is wrong, \"not what the reference follows\" (G11 item 91, as at "
+        "G11 under G12 §7); `floor/README.md` says the reference links the `labels` stage, where it links `workflow` "
+        "(G12 §2.2), and that `T_persona` is not yet read, where it is (ADR-0033 A6); two policy comments call ADR-0049 "
+        "Proposed (item 98). ADR-0046 §8 still says the cases are \"not reported upstream\" (G12 item 104).",
+        "`decisions/README.md` gives status at G12 under a column headed \"Status at G12\". "
+        "`REVIEWERS_GUIDE_README.md`, against G12 and revision 16, is kept current outside the manifest (item 99).",
+    ]
+    hh = max(c.card(0, 0, w2, fail_title, fail_body, accent="grey", size=14, draw=False),
+             c.card(0, 0, w2, ptr_title, ptr_body, accent="amber", size=14, draw=False))
+    c.card(X0, y, w2, fail_title, fail_body, accent="grey", size=14, h=hh)
+    c.card(X0 + w2 + 30, y, w2, ptr_title, ptr_body, accent="amber", size=14, h=hh)
     return c

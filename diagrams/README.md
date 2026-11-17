@@ -87,6 +87,25 @@ other diagram is amended: H2 stops at ADR-0055, and G1, G3 and H6 are left as dr
 moved. G1 and G3 would take Batch 39's text, and H6 would read the overlay's scan as the newest
 `proof-scan-results` file.
 
+**Amended 2026.11.17** against Genesis Checkpoint G12 (2026.11.16), Batch 40 (2026.11.17) and ToO rev 16, for G12 item
+76 (the diagrams behind the checkpoint): six diagrams are new and fifteen are amended. The new ones draw the records G12
+names as undrawn, every one **Proposed** and nothing of them built: **A6**, the lifecycle secured at its boundaries
+(ADR-0070); **B11**, the Build-Run pipeline (ADR-0069), with an "as built" band that compares the record's cited digests
+with the tree at build time; **D9**, the archive of record, its retention schedule and its two stores (ADR-0074 to
+ADR-0076); **H9**, the specification graph and a deployment's declaration against it (ADR-0057, ADR-0058), reading
+`spec/specification-graph.json` and the 2026.11.07 results file at build time; **H10**, user documentation as a derived
+layer, the service and the reader (ADR-0071 to ADR-0073); and **H11**, TLA+ checks in the tla-kit image (ADR-0077). The
+amended diagrams are A1, A4, B7, C9, D6, E4, G1, G3, H1, H2, H3, H4, H6, H7 and H8's siblings' counts: `Workflow` and
+`Mesh` are drawn **proved** and certified (ADR-0054 R7, ADR-0055 R3; 2026.11.11), still under Proposed records; Batch 39
+is drawn (G1, G3, H6, E4) and Batch 40 (B7, H2, H4, A1): ADR-0033 A19 and A20 ratified, `SHA256SUMS-REF-2026.11.16b` the
+measure of the reference, finding 9 closed by `spec/Paxos.tla` (checked, not proved; trace-validated through
+`PaxosTrace.tla`); the counts are G12's: thirty-four proof modules, 13,622 obligations, thirty-one certified, forty-one
+TLA+ modules, 159 tests, eighteen modules without a binding row; H2 reaches ADR-0077 in five new bands. H6 now reads
+`spec/proof-scan-results-2026.10.08.txt` by name: the later scan files answer a different question (the prover's unsound
+cases), and reading the newest had drawn their counts as Isabelle's refusals. Each amended diagram says so in its footer
+(`AMENDED_G12`); each new one names G12 with Batch 40 as its state (`STATE_G12`). The other 37 regenerate byte for byte
+under the pinned interpreter. H9's counts move when the rebuilt graph lands (529 nodes, 495 edges; a separate branch).
+
 | Id | Diagram | What it shows |
 |---|---|---|
 | **A · Orientation** | | |
@@ -95,6 +114,7 @@ moved. G1 and G3 would take Batch 39's text, and H6 would read the overlay's sca
 | A3 | [Boundary register map](topak/A3-boundary-register-map-2026.10.05.svg) | B1–B14 placed on one system picture; the full register, and what has changed since it was written, restated at G10 |
 | A4 | [Orientation and monotonicity](topak/A4-orientation-monotonicity-2026.10.05.svg) | The orientation rule across eighteen layers, Ingress and Operation added at rev 14, and Workflow and the evidence of proof at G11 (two rows on Proposed records), with where it is not yet whole |
 | A5 | [The command-chain overlay](topak/A5-command-chain-overlay-2026.10.05.svg) | ADR-0059 to ADR-0068 (Proposed): the tree from the root plane through commanded planes and the intent boundary to the autonomous plane and vehicles, each element tagged by its record; the ten records and their evidence; postures by effect; what each record reports upstream and what the archetype would owe; ADR-0068 §4's ten things given up |
+| A6 | [Lifecycle boundaries](topak/A6-lifecycle-boundaries-2026.10.05.svg) | ADR-0070 (Proposed): the six phases with every boundary B1–B29 placed on one, what each declares (sides, what crosses, instant, interval, if unavailable), the common rule, the drills, the owed rows and every ratification item not met |
 | **B · Authority** | | |
 | B1 | [Authority chain](topak/B1-authority-chain-2026.10.05.svg) | From the intent axiom to an effect, including who puts a lease on the log (a quorum's first lease, operators' signed requests under `C1`–`C9`, BOOTSTRAP), break-glass as an emergency seating, and the audit chain back up |
 | B2 | [Verified object and edge](topak/B2-verified-object-and-edge-2026.10.05.svg) | What is proved once, against what may only subtract (B4); the 28 policies of the floor in force (genesis-provisional), one floor exception, X1 retired |
@@ -106,6 +126,7 @@ moved. G1 and G3 would take Batch 39's text, and H6 would read the overlay's sca
 | B8 | [The policy floor in force](topak/B8-floor-stages-2026.10.05.svg) | How `build.py` makes the floor in force from the genesis draft: the `labels`, `control` and `emergency` stages with each one's entries, schema changes, cases, digests and citing records; every gate per stage; the genesis-provisional status, the wrong opening comment, and all 28 policies; and a fourth stage, `workflow` (Proposed, 30 policies, 123 cases), which the reference links and which is not in force |
 | B9 | [Planes and charters](topak/B9-planes-and-charters-2026.10.05.svg) | ADR-0059 and ADR-0061 (Proposed): a chain under charters narrowed field by field, the budget debit and R1's capture finding, commit certificates, the plane fence; seven replicas, PBFT's two conditions (recalled), the shrink schedule with R1's one-vote rule and the split vote; `Federation` and `Membership` (five replicas, not seven) |
 | B10 | [Rules of engagement and the `federation` stage](topak/B10-federation-floor-stage-2026.10.05.svg) | ADR-0067 (Proposed): standing rules in the one Cedar floor, a mission's rules in a promoted Wasm bundle, judgments nowhere in the admit path; FD1–FD14, none written, with the diagram's own cross-reference to module properties; the two relaxations; "in force" as a precondition no record here meets |
+| B11 | [The Build-Run pipeline](topak/B11-build-run-pipeline-2026.10.05.svg) | ADR-0069 (Proposed): intake to rollout keyed by digests, K1–K7, the R1 intake gates and the per-class gates, the return path, the repurposed CI workflows with an "as built" band read from the tree at build time, Annex A and B |
 | **C · Principals and the membrane** | | |
 | C1 | [Principal, seat, cell](topak/C1-principal-seat-cell-2026.10.05.svg) | Deployment → domain → cell → seat and stage → principal → lease; the five seat kinds, including the people-only `operator` and `emergency` kinds (provisional); seatings; the per-seat declared rung; the orchestrator (Proposed) |
 | C2 | [Alphabets by seat](topak/C2-alphabets-by-seat-2026.10.05.svg) | Build's six variants, Run's three and the operator's control alphabet of six against five seat kinds, and the orchestrator's `Route(edge)` (a sixth, Proposed); the floor in force in full; channel fidelity in force |
@@ -127,6 +148,7 @@ moved. G1 and G3 would take Batch 39's text, and H6 would read the overlay's sca
 | D6 | [A mesh, and the mechanism as its bus](topak/D6-mesh-mechanism-bus-2026.10.05.svg) | ADR-0055 (Proposed; widens ADR-0054): a budget the promotion votes on is what makes a mesh end; the activation as the unit of attributes, routes and findings; lineages alternating on a 2-coloured clear graph; the mechanism tracking and the orchestrator holding no state; `Mesh.tla` and one run of it (checked, not proved); the reference under A17 (pending); the record's tables in full |
 | D7 | [The intent boundary and the governor](topak/D7-intent-boundary-and-governor-2026.10.05.svg) | ADR-0060 and ADR-0062 (Proposed): intents from a quorum then one operator, an autonomous plane with no path that changes authority, a vehicle as a trusted governor and a Byzantine stack, what waits for a round and what does not, extents, going alone, coupling at the grant; `Intent` and `Alone`, and hold ⟨Q14⟩ stated by no module |
 | D8 | [Peer topics](topak/D8-peer-topics-2026.10.05.svg) | ADR-0065 (Proposed): three kinds of traffic on the governors' radios, a send permitted and never ordered, receipt as labelled ingress, nothing a peer originates enables anything (R1), the labels that survive a captured sender, talk against order; `Peer` |
+| D9 | [The archive of record](topak/D9-archive-of-record-2026.10.05.svg) | ADR-0074 to ADR-0076 (Proposed): what the archive keeps (the log's order, a round's seal, a build's pin), the retention schedule whole, the two stores and the index beside D3's planes, the F6 erasure path, the proposed row T-0045-40, nothing built |
 | **E · Detection** | | |
 | E1 | [Observer topology](topak/E1-observer-topology-2026.10.05.svg) | Cell Observers, the correlator, `W(p)` as the ACL, placement; what a cell Observer is given; operators and emergency seats as readers |
 | E2 | [Liveness coupling](topak/E2-liveness-coupling-2026.10.05.svg) | `live(o)`, the `K` window, the clock model and the timing budget; an emergency seat uncoupled; the clock findings at G10; the clock check's arithmetic and `Coupling` proved in Lean (ADR-0053, B36); `Coupling_live`'s leads-to properties, checked and not proved (E4) |
@@ -149,6 +171,9 @@ moved. G1 and G3 would take Batch 39's text, and H6 would read the overlay's sca
 | H6 | [Proof certification](topak/H6-proof-certification-2026.10.05.svg) | How every obligation of a proof module is accounted for by the route that closed it (ADR-0046 E2, A1), all twenty-four modules (the liveness extensions among them), the three that do not certify, and what a certified proof still trusts, the translation's two known unsound cases among it; which modules are also proved in Lean, and LS4 against the Lean route |
 | H7 | [The Lean route](topak/H7-lean-route-2026.10.05.svg) | ADR-0053 (B36): three uses and one kernel, re-encodings, transcriptions and the floor in Cedar's model; how a Lean result is made, replayed and kept in step; the control that shows why `#print axioms` is not enough; two routes to the same theorems, module by module; what each route trusts; the row T-0045-37; which packages are stale; dependent entries, findings and open obligations. Reads the three Lean results files and both graph-check series, `tools/LEAN-PIN`, ADR-0053 and the certified TLAPS results at build time |
 | H8 | [The overlay's evidence](topak/H8-overlay-verification-2026.10.05.svg) | The eight modules of ADR-0059 to ADR-0066, read from `spec/` at build time: each module against its record, every property with its theorem, every mutation and what it breaks, witnesses, digests matched against the R1 citations, the scan and the deadlock audit, the findings and how R1 took them, and what is not verified |
+| H9 | [The specification graph](topak/H9-specification-graph-2026.10.05.svg) | ADR-0057 and ADR-0058 (Proposed): open layers, the eight edge types ordered by what each leaves to a person, pins and premises, the checker's lists; the graph's layers and seventeen of its edges read from `specification-graph.json` at build time, stale ones red; a deployment's declaration against the archetype's |
+| H10 | [User documentation is a derived layer](topak/H10-documentation-layer-2026.10.05.svg) | ADR-0071 to ADR-0073 (Proposed): the corpus's revisions as the source, the gates and the store, the document set for every role (43 documents, the diagram's count), the service as a rebuildable projection, the reader over the public API alone; nothing built |
+| H11 | [TLA+ checks in the tla-kit image](topak/H11-tla-kit-image-2026.10.05.svg) | ADR-0077 (Proposed): the image as a pin by published digest, the proofs job, the prover pin's move by its own pull request; what the tree holds today (the jar and TLAPS pins, the CI workflows) beside what the record proposes, every §7 item but one not met |
 
 ### Regenerating
 

@@ -2,7 +2,7 @@
 import pathlib
 import re
 
-from lib import strip_external, Canvas, AMENDED_G11
+from lib import strip_external, Canvas, AMENDED_G12
 
 ID, SLUG = "G1", "trusted-base"
 
@@ -108,11 +108,15 @@ def build():
                "(T-0045-27 B23, T-0045-14 B24, T-0045-24 B30 at the archetype) and seven were added: T-0045-31, the TLA+ "
                "Proof System (B25), with a certified configuration since B28; T-0045-32 to 34 for labels, handles and "
                "the tool list (A1, B34); T-0045-35 and 36 for the operator (A2, B34, provisional with ADR-0050); "
-               "T-0045-37, the Lean kernel and toolchain (B36, with ADR-0053). "
+               "T-0045-37, the Lean kernel and toolchain (B36, with ADR-0053). Since G11: A4 (B39) adds to T-0045-31's "
+               "instance that both unsound cases are reported upstream; A5 (pending, with ADR-0057) is not applied; "
+               "no row changed, and Annex A holds thirty-seven rows at G12 (G12 §2.6). "
                "Tables below are drawn in full from the record; where the reference has moved past Annex B "
                "(G10 §2.6, item 89), the row's note says so.",
                3600, "ADR-0045 §1–§9, Findings 1–7, Annex A, Annex B, History (R1–R6, B22, B23, B24, B25, B27, B28, "
-               "B29, B30, A1, A2, B34, B36, A3, E1, B37); ADR-0046 §1–§3 (B25), A1 (B28), A2 (B37); "
+               "B29, B30, A1, A2, B34, B36, A3, E1, B37, A4, B39, A5 pending); ADR-0046 §1–§3 (B25), A1 (B28), A2 (B37), "
+               "A3 (B39); ADR-0033 A19, A20, B40 (Batch 40, 2026.11.17); ADR-0054 R7 and ADR-0055 R3 (Proposed); "
+               "ADR-0056 §8 (Proposed); ADR-0076 §9, Annex B (Proposed); "
                "ADR-0015 (authority "
                "changes); ADR-0023 §4a, §6a, §6b, A1 §6c (B29); ADR-0025 §1; ADR-0029 A4; ADR-0030 A1 (B24); ADR-0033 "
                "A6 (B23), A7 (B29), A8 (B31), A9 (B32), A10 to A12 and A14 (B34); ADR-0034 §5, §6, A2 (B30); "
@@ -120,9 +124,12 @@ def build():
                "(provisional); G8 §2.6; "
                "G10 §1.1, §2.3, §2.6, §2.7, §2.9, §3, §7 items 35, 56, 57, 64, 69, 73, 74, 80, 89, 90, §8; "
                "G11 §2.9, §7 items 74, 90, 103, 104, §8; "
-               "ToO rev 14 §7.9, §7.10; spec/proof-certification.md §9; spec/*-proof-cert-results; "
+               "G12 §1.1, §2.6, §2.9, §3, §7 items 56, 74, 90, 101, 104, 110, §8; "
+               "ToO rev 16 §7.9, §7.10; spec/proof-certification.md §9; spec/*-proof-cert-results; "
+               "spec/Workflow-proof-results-2026.11.11.txt; spec/Mesh-proof-results-2026.11.11.txt; "
+               "spec/premise-routes-results-2026.11.03.txt (B39); "
                "spec/theorem-premise-binding.md (BASE paragraph; 43 rows, revised 2026.10.06); ADR-0053 §3 (Batch 36)")
-    c.note = AMENDED_G11
+    c.note = AMENDED_G12
     X0, X1 = c.x0, c.x1
     y = c.y
 
@@ -130,7 +137,8 @@ def build():
     sx = X0
     sx += c.status(sx, y, "accepted", "C2, C4 · Batch 22, 2026.10.01") + 12
     c.text(sx, y + 16, "Annexes A and B are **declaration records** under ADR-0023, ratified with the record as "
-                       "record-level entries; **no deployment declaration has been written** (G11 §8). Drafted by the "
+                       "record-level entries; **no deployment declaration has been written** (G12 §8; `derived/recon-fleet-7-2026.11.10/` "
+                       "holds an illustrative one, not a record). Drafted by the "
                        "assistant at the custodian's request; every drafter's choice settled by ratification.", 14.5, "muted")
     y += 48
 
@@ -251,10 +259,15 @@ def build():
             "The binding table exists: `spec/theorem-premise-binding.md` (R6), **43 rows**, last revised 2026.10.02 "
             "\"pending\" A7, which is ratified since (B29). At R6, three rows no theorem cited: T-0045-7, 21, 26. "
             "Since B25 the rows with a proof module (38) rest on **T-0045-31** for the invariant, in place of "
-            "T-0045-29 (ADR-0046 §5).",
-            "[[red|Behind the records]] (G11 item 90): **no rows** for `Labels`, `ToolList`, `Operators`, "
-            "`Emergency`, `BreakGlass_A1` or `NonComposition_A1`, nor now for `Emergency_live`, `Coupling_live`, "
-            "`Workflow` or `Mesh`, so T-0045-32 to 36 are premises of no row yet.",
+            "T-0045-29 (ADR-0046 §5). The premise routes were renewed with the pin at B39 "
+            "(`spec/premise-routes-results-2026.11.03.txt`): 43 rows and 34 other premises agree, 18 derived "
+            "premises, three of 43 rows hold (G12 §3).",
+            "[[red|Behind the records]] (G12 item 90): **eighteen modules have no binding rows**: `Labels`, "
+            "`ToolList`, `Operators`, `Emergency`, `BreakGlass_A1`, `NonComposition_A1`, `Emergency_live`, "
+            "`Coupling_live`, `Workflow` and `Mesh`, as at G11, and now the overlay's eight (`Federation`, `Intent`, "
+            "`Membership`, `Alone`, `Outstanding`, `PlaneClock`, `Peer`, `Release`; ADR-0059 to ADR-0066, "
+            "Proposed), so T-0045-32 to 36 are premises of no row yet. `Workflow` and `Mesh` are **proved** since "
+            "2026.11.11 (ADR-0054 R7, ADR-0055 R3, both Proposed); their binding rows are still owed (G12 item 101).",
         ], "teal", None),
         ("§4 · Changing the table has a direction", [
             "**Removing** a row, or trust root → delegated: a tightening; an ordinary promotion (archetype version at "
@@ -269,20 +282,30 @@ def build():
             "Admit path, linked floor, `Authentic`, tally, rules floor, log: **checked as specified** (TLA+ with "
             "mutations at small constants, floor gates, tests) and not trusted.",
             "**Since B25 (ADR-0046)** the modules' invariants are **proved** with TLAPS, for every constant their "
-            "assumptions admit: **twenty-four proof modules, 5,416 obligations** (G11 §2.9). The prover is trust root "
+            "assumptions admit: **thirty-four proof modules, 13,622 obligations, every one proved** (G12 §2.9; G11's "
+            "twenty-four still sum to 5,416). Ten of the thirty-four are of Proposed records: `Workflow` (1,136 "
+            "obligations) and `Mesh` (1,470), proved 2026.11.11 (ADR-0054 R7, ADR-0055 R3), and the overlay's eight "
+            "(ADR-0059 to ADR-0066); none of that growth is in force (G12 §1.1, §8). The prover is trust root "
             "**T-0045-31**, and TLC (T-0045-29) keeps the mutations and witnesses.",
-            "**Since B28 (ADR-0046 A1)** a module may be **certified**: **twenty-one of twenty-four** are, every SMT "
+            "**Since B28 (ADR-0046 A1)** a module may be **certified**: **thirty-one of thirty-four** are, every SMT "
             "obligation backed by a proof the checker of T-0045-14 accepted; `RulesFloorNV_rev5`, `Confinement` and "
-            "`Confinement_A1` are not (G11 §2.9, item 74). A certified proof is not a verified one: the translation, "
-            "normalization, LS4 and the checker stay trusted, and the translation has two known unsound cases "
-            "(B37; G11 item 104).",
+            "`Confinement_A1` are not, as at G11 (G12 §2.9, item 74); all ten new modules certify, each with its "
+            "LS4 steps uncertified (`Workflow` 11, `Mesh` 8; G12 §3). A certified proof is not a verified one: the "
+            "translation, normalization, LS4 and the checker stay trusted, and the translation has two known unsound "
+            "cases (B37), **reported upstream** (B39; `tlapm` #309 and #310) and since fixed upstream in part, in "
+            "`ff40755`; the pin, `7824dab`, has both, and no check detects the first (G12 §2.6, item 104).",
             "**What runs is not the specification** (R1): no refinement from TLA+ to Rust, an asserted build. Hence "
             "trust roots **T-0045-28 to 30** for every deployment; a proof is of the module, not of what runs.",
             "**A debt, owned by ADR-0033** (R2): the rows leave when a machine-checked chain is cited. Stage 1, trace "
             "validation, exists (R4), and is current with the tree: **82 traces, 1,007 steps**, every step matching "
             "and every state keeping `ConfinementRefinement.tla`'s invariants (ADR-0033 A14; G10 §3). It found a race "
-            "in lease expiry, fixed (A13). [[red|At G11 stage 1 is behind the tree]]: `Mechanism.tla` does not model "
-            "workflows and trace validation was not rerun (G11 item 56). Stages 2–3 open.",
+            "in lease expiry, fixed (A13). [[red|At G12 stage 1 is further behind the tree]]: `Mechanism.tla` does not "
+            "model workflows; the self review's rerun matched 82 of 83 traces, the end-to-end workflow trace does not "
+            "replay, `tests/workflow.rs` is not traced, and A19 did not rerun trace validation (G12 item 56). "
+            "**Batch 40** (ADR-0033 A19, A20, B40, 2026.11.17): the reference is measured at `d1b72db` for G12 (155 "
+            "tests) and at `36269bc` after `spec/Paxos.tla`, the consensus log's model, **checked** in TLC and not "
+            "proved, with its own trace validation (`spec/PaxosTrace.tla`) run twice (159 tests); ADR-0033 §7 "
+            "finding 9 is **closed**, and the admit path's trace validation was not rerun. Stages 2–3 open.",
         ], "teal", None),
         ("§8 · D-0045-1: no declaration at all", [
             "**Kind**: declaration (ADR-0023 §6a). **Parameter**: the trusted-base declaration, published → absent.",
@@ -360,6 +383,11 @@ def build():
         nrows += sum(1 for r in grouped[key] if "cells" in r)
     assert nrows == 37, nrows
     y += c.table(X0, y, cols, rows, size=13.5, accent="blue") + 18
+    y += c.para(X0, y, X1 - X0, "[[amber|Proposed, and not in Annex A]] (G12 §2.6): **T-0045-38**, a subject "
+                "provider (trust root), and **T-0045-39**, a downstream system's authorization (excluded), in ADR-0056 "
+                "§8 (Proposed, 2026.11.06); **T-0045-40**, the archive's governed store (delegated), in ADR-0076 §9 and "
+                "Annex B (Proposed, 2026.11.16); ADR-0077 (Proposed) declines a row for the tla-kit image. None is a "
+                "row until its record is ratified; ADR-0068 proposes none.", 14, "ink") + 18
 
     nr = annex_a_text.split("**Not rows, and why.**")[1].split("---")[0]
     paras = [" ".join(p.split()) for p in annex_a_text.split("\n\n")]
@@ -375,7 +403,8 @@ def build():
     y += h + 56
 
     # ======================================================================== Annex B in full
-    y += c.heading(X0, y, "Annex B · The reference's declaration, at fb40db1 and moved by addendum since: every principal "
+    y += c.heading(X0, y, "Annex B · The reference's declaration, at fb40db1 and moved by addendum since (last by A20, B40, at "
+                          "36269bc): every principal "
                           "is Mediated, and this is what that costs, row by row", "brown", 21)
     paras = [" ".join(p.split()) for p in annex_b_text.split("\n\n")]
     pb = [next(p for p in paras if p.startswith("*⟨A1⟩")), next(p for p in paras if p.startswith("*⟨A2⟩"))]
@@ -409,7 +438,7 @@ def build():
         if r[0].strip() == "T-0045-31":
             cells[3] = ("[[brown|Added by dependent entry (B25, ADR-0046 §3); certified configuration added by "
                         "B28 (ADR-0046 A1); the last clause corrected and both unsound cases noted by B37 (ADR-0045 "
-                        "E1, A3).]] " + cells[3])
+                        "E1, A3); both cases reported upstream by B39 (A4, ADR-0046 A3).]] " + cells[3])
         if r[0].strip() == "T-0045-6":
             cells[3] += (" [[red|Stale against G10 §2.7 (unchanged since G7): since ADR-0033 A6 (B23) the reference "
                          "loads a bundle only under a verified signature; the checkpoint wins.]]")
@@ -424,7 +453,10 @@ def build():
         if r[0].strip() == "T-0045-28":
             cells[3] += (" [[brown|At G10 (ADR-0033 A14): 82 traces, 1,007 steps, every step matching and every "
                          "state keeping ConfinementRefinement.tla's invariants; it exposed a race in lease expiry, fixed "
-                         "by A13 (G10 §3).]]")
+                         "by A13 (G10 §3).]] [[red|At G12 (item 56) stage 1 is further behind: the self review's rerun "
+                         "matched 82 of 83 traces, the end-to-end workflow trace does not replay, tests/workflow.rs is "
+                         "not traced; A19 and A20 (B40) did not rerun the admit path's trace validation. The reference "
+                         "is measured at 36269bc, 159 tests (A20).]]")
         rows.append({"cells": cells, "accent": acc} if acc else cells)
     y += c.table(X0, y, [("Row", 150), ("Instance at the reference", 1340), ("Class here", 520),
                          ("Note", (X1 - X0) - 2010)], rows, size=13.5, accent="brown") + 18
@@ -441,11 +473,14 @@ def build():
         "behind the certified proofs, through `spec/smt-checked`. Still on the face: what `holds°` rests on (item 69).",
         "**T-0045-31, the TLA+ Proof System, added** (B25, ADR-0046 §3), and **given a certified configuration** "
         "(B28, ADR-0046 A1): cvc5 behind `spec/smt-checked` and the checker of T-0045-14 in place of Z3, Zenon's "
-        "proofs checked by Isabelle. At G11 **twenty-one of twenty-four modules certify** (G11 §2.9); the row's own "
+        "proofs checked by Isabelle. At G12 **thirty-one of thirty-four modules certify** (G12 §2.9, item 74); the row's own "
         "residual still reads eleven of thirteen, as written at B28. The prover is pinned by `tools/TLAPS-PIN` and "
         "its wrapper refuses another binary (G10 item 73, discharged). **Since B37** (ADR-0046 A2, ADR-0045 A3) its "
         "residual names two known unsound cases in the prover's translation, and Annex B notes that build 7824dab "
-        "has both and that no result a record cites rests on either.",
+        "has both and that no result a record cites rests on either. **Since B39** (A4, ADR-0046 A3) the note ends "
+        "with both cases reported upstream (`tlapm` #309 and #310, 2026.10.18); at G12 #309 is closed by #314 and "
+        "#310's collisions fixed by #339, #310 open, both fixes in `ff40755`, and the pin still names `7824dab` "
+        "(G12 §2.6).",
         "**T-0045-5** drops \"Proposed\" with ADR-0005's ratification (B27); its class is unchanged.",
         "**Annex B's confinement rows follow the launcher** (B29, ADR-0033 A7): rung 1 real, filling T-0045-19 and 20; "
         "rung 3 SIMULATED under test keys standing in for 16 and 17; rung 2 a seam. The declaration template "

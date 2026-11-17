@@ -36,37 +36,43 @@ def build():
     c = Canvas(
         ID, "A workflow may be a mesh: a budget makes it end, the activation is the unit, and the mechanism is "
             "the bus",
-        "ADR-0055 (Proposed 2026.10.07, at R2) widens ADR-0054 (Proposed; its DAG is drawn in C9). A workflow "
+        "ADR-0055 (Proposed 2026.10.07, at R3) widens ADR-0054 (Proposed; its DAG is drawn in C9). A workflow "
         "declares its kind; a `mesh` may have cycles and does not load without an **activation budget** the "
         "promotion votes on, every lease charged to it, the orchestrator's rounds included. A node may run more than "
         "once, so the unit of attributes, routes and findings becomes the **activation**, with its causal history. "
         "The mechanism tracks the work and the orchestrator keeps nothing between rounds; the events a mesh reacts "
-        "to are entries in the consensus log. **Nothing here is in force**: `spec/Mesh.tla` is checked by TLC and "
-        "has no proof, and the reference follows the record under ADR-0033 A16, pending, on a floor stage that is "
-        "not in force (G11 §1.1, §3, §7 items 101, 102; ToO rev 15 §2.11).",
+        "to are entries in the consensus log. **Nothing here is in force**: `spec/Mesh.tla` is checked by TLC and, "
+        "since 2026.11.11, **proved** (`Mesh_proof.tla`, certified, 8 LS4 steps; R3), which ratifies nothing, and the "
+        "reference follows the record under ADR-0033 A16, pending, on a floor stage that is not in force (G12 §1.1, "
+        "§2.9, §3, §7 item 101, §8; G11 item 102, as at G12; ToO rev 16 §2.11).",
         W, "ADR-0055 (Proposed; provenance note, status note, Context, Decision §1–§11, Options considered, "
-        "Consequences, Findings 1–6, Open obligations, History R1–R2); ADR-0054 (Proposed) Context, §1–§5, §7–§9, "
+        "Consequences, Findings 1–6, Open obligations, History R1–R3); ADR-0054 (Proposed) Context, §1–§5, §7–§9, "
         "D-0054-1; ADR-0005 (Kafka is transport); ADR-0024 §2; ADR-0031 §2, A2; ADR-0035 §5 R8 (Proposed); "
         "ADR-0043 §1; ADR-0048 §2; ADR-0046 A1; ADR-0029 A2; ADR-0033 A16 (pending), \"Addendum — workflows and "
         "meshes\"; mechanism/GAPS-AND-ASSUMPTIONS.md I49 and its record row; spec/Mesh.tla (a5bc64953c38c9a9), mechanism/crates/topak-core/src/workflow.rs (Budget), "
-        "spec/Mesh-rows.txt (23 rows), spec/Mesh-results-2026.10.07.txt (c58fa4b2e8bcc555); G11 §1.1, §2.9, §3 "
-        "(results 9, 10), §5, §7 items 97, 101, 102; ToO rev 15 §2.11. The unrolling to depth N in the budget "
+        "spec/Mesh-rows.txt (23 rows), spec/Mesh-results-2026.10.07.txt (c58fa4b2e8bcc555); spec/Mesh_proof.tla "
+        "(1d4bd5ad924b6ab6), spec/Mesh-proof-results-2026.11.11.txt (4447b8e426f6dd79), "
+        "spec/Mesh-proof-cert-results-2026.11.11.txt (38a0b61ae1bf2872), spec/proof-scan-results-2026.11.11.txt "
+        "(78a6725f818e8c5d), spec/README.md (the proof-module row and the 2026.11.11 paragraph); G11 §1.1, §2.9, §3 "
+        "(results 9, 10), §5, §7 items 97, 101, 102; G12 §1.1, §2.9, §3 (result 9), §7 items 76, 90, 101, §8; "
+        "ToO rev 16 §2.11. The unrolling to depth N in the budget "
         "section is drawn here from Mesh.tla's Grant and OrchGrant at N = 6, as an illustration of ADR-0055 §2",
         state=lib.STATE_G11)
+    c.note = lib.AMENDED_G12
     X0, X1 = c.x0, c.x1
     Wd = X1 - X0
     y = c.y
 
     # ---------------------------------------------------------------- status strip
-    c.text(X0, y + 15, "Status at G11", 15, "faint", bold=True)
+    c.text(X0, y + 15, "Status at G12", 15, "faint", bold=True)
     px0 = X0 + 140
     px = px0
     for lab, key, extra, pill in [
-            ("ADR-0055", "proposed", "C1 · R2", None),
+            ("ADR-0055", "proposed", "C1 · R3", None),
             ("ADR-0054", "proposed", "C1–C4 · drawn in C9", None),
             ("ADR-0055's dependent entries", "open", "not drafted (§11)", None),
             ("ADR-0035 §5", "proposed", "R8; the 2-colour entry not drafted", None),
-            ("spec/Mesh.tla", None, "", ("Checked by TLC · no proof", "teal")),
+            ("spec/Mesh.tla", None, "", ("Checked by TLC · proved, certified (R3) · 8 LS4 steps", "teal")),
             ("ADR-0033 A16", "draft", "pending", None),
             ("the reference at 11aaf6a", "built", "in part · on a floor stage not in force", None),
             ("fan-out joins, pools, parity seatings, T_wf, the gate's evidence", "notbuilt", "I49", None)]:
@@ -660,13 +666,21 @@ def build():
     y = y0 + max(h1, h2) + 70
 
     # ================================================================ F. the module
-    y += c.heading(X0, y, "`spec/Mesh.tla`: checked by TLC, not proved (§11 ⟨R1⟩; G11 §2.9, §3, item 101; ADR-0046 "
+    y += c.heading(X0, y, "`spec/Mesh.tla`: checked by TLC, and proved (§11 ⟨R1, R3⟩; G12 §2.9, §3, item 101; ADR-0046 "
                           "A1)", "teal", 21)
     y += c.para(X0, y, Wd, "TLC 2.19 on 2026.10.07. Nodes {`s`, `w`, `x`}, the clear cycle `s` → `w` → `s` (`e1` chosen, "
                 "`e3` computed) and the chosen handle exit `e2` to the outward sink, guarded by `s` `ok`; budget `N` = 6; "
-                "lineages {A, B}. **No proof module exists**, and `spec/proof-sync.sh` exits 1 because it records no "
-                "reason for this module or `Workflow.tla` (G11 §2.9). **Checked, not proved**: these are results at "
-                "small constants. No binding rows (G11 item 90).", 14, "muted") + 18
+                "lineages {A, B}. **Checked**: these are results at small constants. **Proved since 2026.11.11** ⟨R3⟩: "
+                "`spec/Mesh_proof.tla` (`1d4bd5ad924b6ab6`) over `Mesh.tla`, which is not edited, proves the seven "
+                "properties as `Spec => []P`, each under only the mutations its rows say break it, and `SafeAlways` under "
+                "`Mut = \"none\"`, at the module's own mesh and budget of 6, for every length of log; writing the proofs "
+                "corrected no pairing (G12 §3, result 9). **Certified** (`Mesh-proof-cert-results-2026.11.11.txt`): 1,470 "
+                "obligations, 982 closed by tlapm's normalization, 480 by SMT with a proof `ethos` accepted, none by Zenon "
+                "or Isabelle, and **8 LS4 temporal steps, which no checker confirms**. The scan "
+                "(`proof-scan-results-2026.11.11.txt`) finds no capture and no difference under renaming; "
+                "`spec/proof-sync.sh` exits 0, where at G11 it exited 1 (G12 §2.9). Written 2026.11.11 by the assistant at "
+                "the custodian's direction, not reviewed (R3). Proofs of the module, not of what it leaves out. Still no "
+                "binding rows (G12 item 90).", 14, "muted") + 18
     pw_ = Wd
     y += c.table(X0, y, [("Property", pw_ * 0.14, {"mono": True}), ("What it says (`Mesh.tla`)", pw_ * 0.34),
                          ("Mutation that must break it", pw_ * 0.3), ("Row", pw_ * 0.06),
@@ -750,7 +764,9 @@ def build():
             "`CapOnePast == nAll <= N + 1`: one lease past the budget, **the reach `M_OVERRUN`'s row has with no "
             "constraint**. Used by `of_rest` and `tr_rest` and no other row, **by the custodian's decision** (R1; G11 "
             "§5: a remainder with no bound is checked under a stated cap, and the cap is a row).",
-            "Under either mutation the budget buys more worker rounds, and the state space outgrows the machine."],
+            "Under either mutation the budget buys more worker rounds, and the state space outgrows the machine.",
+            "**The proof needs no state constraint** ⟨R3⟩: the six properties each of `M_ORCHFREE` and `M_TRACKER` does "
+            "not break hold without `CapOnePast`."],
          "amber", {}),
         ("The unconstrained run was stopped", [
             "**Unconstrained, `M_ORCHFREE` had reached 282 million states with 125 million still queued after eight "
@@ -763,7 +779,8 @@ def build():
             "**pools**; **a self-loop with parity seatings**.",
             "Observer lineage; epochs and fences; **the track the orchestrator is delivered**; the gate's bipartite "
             "check, which is static, and whose runtime consequence is `ClearHopsAlternate`.",
-            "**Proofs.** Deadlock is not checked."],
+            "Deadlock is not checked. **Proofs**: struck ⟨R3⟩; what is proved is this mesh and budget, not fan-out, "
+            "joins or pools (spec/README.md, 2026.11.11)."],
          "red", {"tint": False, "dash": "6 4"}),
     ], size=13.5) + 70
 
@@ -817,18 +834,21 @@ def build():
     HW = (Wd - 40) / 2
     XR = X0 + HW + 40
     ya = y
-    ha = _sub(c, X0, y, "§11 · Ratification condition, at G11")
+    ha = _sub(c, X0, y, "§11 · Ratification condition, at G12")
     ha += c.table(X0, y + ha, [("Condition", HW * 0.42), ("State", HW * 0.58)], [
         {"cells": ["**ADR-0054 is ratified first**, or with this record", "**Not met.** ADR-0054 is Proposed "
-                   "(G11 §1.1)"], "accent": "red"},
+                   "(G12 §1.1)"], "accent": "red"},
         {"cells": ["**The dependent entries are drafted**: ADR-0054 §1, §2, §4, §8 and §9, read per activation and with "
                    "the kind and the budget; ADR-0035 §5 (the 2-colour check)", "**Not met.** \"ADR-0055's dependent "
-                   "entries are not drafted\" (G11 §1.1). The twelve amendments pending are ADR-0054's ten, A16 and A17"],
+                   "entries are not drafted\" (G11 §1.1, as at G12: item 101). Sixteen amendments pending at G12, up from "
+                   "twelve: ADR-0054's ten, A16 and A17, all still pending, and four new, of which ADR-0033 A19 was "
+                   "ratified at Batch 40 (G12 §1.1; ADR-0033 B40)"],
          "accent": "red"},
         {"cells": ["**A module** states the properties and its mutations break them, by ADR-0046's method",
-                   "**Met for TLC at drafting** ⟨R1⟩, with two remainders bounded. **Not met**: fan-out, scoped joins "
+                   "**Met for TLC at drafting** ⟨R1⟩, with two remainders bounded, **and for TLAPS** ⟨R3⟩: seven "
+                   "properties proved, certified, 8 LS4 steps, no state constraint. **Not met**: fan-out, scoped joins "
                    "and pools; serialisation per node; a self-loop with parity seatings; the static 2-colour check, "
-                   "which belongs to the gate; **proofs** (G11 item 101)"], "accent": "amber"},
+                   "which belongs to the gate (proofs struck ⟨R3⟩; G12 item 101)"], "accent": "amber"},
         {"cells": ["**The gate** computes the reachable activations within `N` and the edges with identically true "
                    "guards, as evidence; refuses a mesh without a budget, and one whose clear edges cannot be "
                    "2-coloured", "**Not met.** The evidence is not built (I49). At the reference's load, a mesh with no "
@@ -910,6 +930,16 @@ def build():
          "ADR-0033 A16 (pending): the six behaviours, seen at the replicated state on `Mesh.tla`'s mesh, with one "
          "engine for a dag and a mesh. What it does not meet is stated there and in `mechanism/` I49. No decision "
          "text changes", "ADR-0033 A16; the custodian's decisions of 2026.10.08", "Recorded"],
+        ["R3", "Revision before ratification", "**The module is proved.** §11's proofs item is met by "
+         "`spec/Mesh_proof.tla` (`1d4bd5ad924b6ab6`) over `spec/Mesh.tla` (`a5bc64953c38c9a9`), which is not edited: "
+         "the seven properties, each under only the mutations its rows in `spec/Mesh-rows.txt` say break it, and "
+         "`SafeAlways`, at the module's own mesh and budget. Writing the proofs corrected none of those pairings. The "
+         "proof needs no state constraint, so it covers what the `M_ORCHFREE` and `M_TRACKER` remainder rows check only "
+         "under `CapOnePast`. The module certifies: every SMT obligation has a proof ethos accepted, none is left to "
+         "Zenon or Isabelle, and 8 temporal steps rest on LS4. No decision text changes",
+         "`spec/Mesh-proof-results-2026.11.11.txt` (`4447b8e426f6dd79`), `spec/Mesh-proof-cert-results-2026.11.11.txt` "
+         "(`38a0b61ae1bf2872`), `spec/proof-scan-results-2026.11.11.txt` (`78a6725f818e8c5d`); written 2026.11.11 by "
+         "the assistant at the custodian's direction, not reviewed", "Recorded"],
     ], size=13, accent="amber") + 24
 
     # open obligations
@@ -925,12 +955,12 @@ def build():
             "**Rows for `spec/Mesh.tla` in `spec/theorem-premise-binding.md`.**",
             "**Narrative.** ToO and the glossary owe mesh, activation, causal history, decision event, "
             "budget and track; ToO rev 15 §2.11 now tells the mesh, as Proposed (G11 item 100)."],
-        accent="red", status="open", status_extra="G11 item 101", tint=False, size=13.5)
+        accent="red", status="open", status_extra="G12 item 101: proofs met, the rest owed", tint=False, size=13.5)
     y = ya + max(ha, hb) + 40
 
     c.legend(X0, y, [("box", "amber", "Proposed: ADR-0055, ADR-0054", "6 4"), ("box", "green", "an activation of a "
                                                                                              "worker or decision node"),
-                     ("box", "grey", "an orchestrator round; transport"), ("box", "teal", "the mechanism; TLC checks; "
+                     ("box", "grey", "an orchestrator round; transport"), ("box", "teal", "the mechanism; TLC checks, the proof; "
                                                                                           "built in part"),
                      ("box", "pink", "a finding"), ("box", "red", "refused, tainted, not built, open", "6 4"),
                      ("arrow", "green", "a clear edge"), ("arrow", "grey", "an event; a handle edge; a route"),

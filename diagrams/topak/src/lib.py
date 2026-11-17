@@ -31,6 +31,10 @@ STATE_G11 = "State of record: Genesis Checkpoint G11 (2026.10.09) · narrative: 
 STATE_CC = ("State of record: Genesis Checkpoint G11 (2026.10.09), with Batches 38 and 39 · narrative: Theory of "
             "Operation rev 15 · drawn 2026.11.10 for ADR-0059 to ADR-0068 (Proposed, 2026.11.10; ADR-0059 to ADR-0067 "
             "revised R1 the same day)")
+# Genesis Checkpoint G12 (2026.11.16) and Batch 40 (2026.11.17): diagrams amended or drawn new after the G12 cut.
+AMENDED_G12 = "amended 2026.11.17 against Genesis Checkpoint G12 (2026.11.16), Batch 40 and Theory of Operation rev 16"
+STATE_G12 = ("State of record: Genesis Checkpoint G12 (2026.11.16), with Batch 40 (2026.11.17) · narrative: Theory of "
+             "Operation rev 16 · drawn 2026.11.17")
 
 # ---------------------------------------------------------------------------------------------
 # Theme tokens: name -> (light, dark)

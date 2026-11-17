@@ -6,7 +6,7 @@ import hashlib
 import pathlib
 import re
 
-from lib import AMENDED_G11, Canvas
+from lib import AMENDED_G12, Canvas
 from d_h6_proof_certification import read_cert, _clean
 
 ID, SLUG = "H7", "lean-route"
@@ -204,7 +204,7 @@ def build():
                "spec/*-proof-cert-results-*.txt (read at build time, as H6 reads them); ADR-0045 Annex A T-0045-3, "
                "T-0045-28, T-0045-31; ADR-0046 §1, §4, A1; ADR-0030 §3, §5 A1; ADR-0032 §2; "
                "derived/topak-lean-formalization-options-2026.10.05.md")
-    c.note = AMENDED_G11
+    c.note = AMENDED_G12
     X0, X1 = c.x0, c.x1
     W = X1 - X0
     y = c.y
