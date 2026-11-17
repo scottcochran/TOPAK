@@ -1,11 +1,13 @@
-"""B7 — From genesis to bootstrap: the state of record at G11 (ADR-0029 with A1 to A4)."""
-from lib import AMENDED_G11, Canvas, text_width
+"""B7 — From genesis to bootstrap: the state of record at G12 with Batch 40 (ADR-0029 with A1 to A4)."""
+from lib import AMENDED_G12, Canvas, text_width
 
 ID, SLUG = "B7", "genesis-to-bootstrap"
 
-# The 29 confirmation-required records at G11: G9's 22, G10's ADR-0005, 0047, 0048, 0049 and the two provisional
-# records, and G11's ADR-0053 (G10 §1.1, §4; G11 §1.1, §4, §6; ToO rev 15 §9; each record's Status line and note).
+# The 29 confirmation-required records at G12, as at G11: G9's 22, G10's ADR-0005, 0047, 0048, 0049 and the two
+# provisional records, and G11's ADR-0053 (G10 §1.1, §4; G11 §1.1, §4, §6; G12 §1.1, §4, §6; ToO rev 16 §9; each
+# record's Status line and note). No record joined the set at G12; MOVED names the rows Batch 39 changed.
 NEW = ("ADR-0053",)
+MOVED = ("ADR-0045", "ADR-0046")
 PROV = ("ADR-0050", "ADR-0052")
 CONF = [
     ("ADR-0003", "Topic per principal per round, sealed on emit, as the unit of erasure", "C1 · **A2 only**",
@@ -63,13 +65,18 @@ CONF = [
      "Resolves the provisional Run column of ADR-0037 §4. A1, A2: four items and handles; what carries the task"),
     ("ADR-0044", "A bundle is trusted by its signature, not its file name", "C1", "09.30 · B17",
      "§3 is a check on the privileged path. **Drafted by the assistant**"),
-    ("ADR-0045", "The trusted base is declared row by row", "C2, C4", "10.01 · B22; A1, A2 B34",
+    ("ADR-0045", "The trusted base is declared row by row", "C2, C4", "10.01 · B22; A1, A2 B34; A3, E1 B37; A4 B39",
      "Annex A claims to enumerate what the theorems assume; **thirty-seven rows**, five added at B34, T-0045-37 at "
-     "B36; **A3, E1 (B37, C2 on A3)**: T-0045-31's residual names two known unsound cases"),
+     "B36; **A3, E1 (B37, C2 on A3)**: T-0045-31's residual names two known unsound cases. **A4 (B39)**: both cases "
+     "reported upstream, tlapm #309 and #310; the pin moved and the premise routes were renewed. A5 is pending, with "
+     "ADR-0057 (Proposed)"),
     ("ADR-0046", "The formal layer's method is declared: TLC checks, TLAPS proves, the prover is a trusted-base row",
-     "C2, C4", "10.02 · B25; E1 B26; E2, A1 B28; A2, E3, E4 B37", "§4 claims every invariant is proved "
-     "(exhaustiveness). A1: the certified configuration, twenty-one of twenty-four modules. **A2 (B37, C2)**: two "
-     "known unsound cases in the prover's translation, and that no cited result rests on either"),
+     "C2, C4 · **C4 on A3**", "10.02 · B25; E1 B26; E2, A1 B28; A2, E3, E4 B37; A3 B39", "§4 claims every invariant is "
+     "proved (exhaustiveness). A1: the certified configuration, twenty-one of twenty-four modules. **A2 (B37, C2)**: two "
+     "known unsound cases in the prover's translation, and that no cited result rests on either. **A3 (B39, C4)**: the "
+     "upstream report is made, 2026.10.18, neither case fixed as of 11.03; upstream has since fixed #309 and the "
+     "collision half of #310 in `ff40755`, which only ADR-0077 (Proposed) records, and **the pin still has both** "
+     "(G12 §2.6, item 117)"),
     ("ADR-0047", "The Listener labels what it delivers: a label on every item, a handle for what is suppressed",
      "C4 · C2 for §3", "10.05 · B34", "Decides the sentence ADR-0037 §2 left open; CR-6, CR-32 in part. §3: a "
      "suppressed item's bytes do not enter the guest. **New at G10**"),
@@ -88,28 +95,32 @@ CONF = [
     ("ADR-0053", "A second deductive method: Lean re-encodings, code transcriptions, the floor in Cedar's model; the "
      "Lean kernel a trusted-base row", "C4 · **for `refines(Seats)` only**", "10.06 · B36; E1 B37",
      "`refines(Seats)` gives the two `Seats` theorems a route around T-0045-28, ADR-0033's ratified debt; no "
-     "ADR-0033 addendum cites it as a stage. **New at G11**"),
+     "ADR-0033 addendum cites it as a stage. **New at G11**; A1 is pending, with ADR-0057 (Proposed)"),
 ]
 
 
 def build():
-    c = Canvas(ID, "From genesis to bootstrap: where the corpus stands at G11",
+    c = Canvas(ID, "From genesis to bootstrap: where the corpus stands at G12, with Batch 40",
                "The design process is genesis, not a degeneracy (ADR-0029): one custodian ratifies, the risky part is "
                "tracked as debt, and the anchor may bootstrap once a drafted TLA+ specification exists and the whole "
                "corpus has been independently reviewed. Since Batch 34 a record may be ratified **provisional**, and "
-               "the ceremony gains two steps: seating the first operators, and floor fitness. This is the G11 state "
-               "(2026.10.09); `diagrams/g1-to-bootstrap-2026.09.18.svg` shows the earlier G1 state.",
-               3200, "ADR-0029 §1–§7, A1, A2 (A2.1–A2.5), A3, A4, B25, B34, Options, Consequences; ADR-0024 §6, A3; "
-               "ADR-0025 Annex A-0025, A3; ADR-0026 §2 R2, R5, §6 finding 5, §7 finding 3, W1, A2; ADR-0027 §2, §4; "
-               "ADR-0030 A3; ADR-0050 §1, §2, §6, §10; ADR-0052 §9; ADR-0035 Status note; ADR-0045 Annex A; ADR-0046 "
-               "§4, A1, E1, A2, E3, E4; ADR-0053 B36, E1; ADR-0054, ADR-0055 (Proposed); every listed record's Status line "
-               "and Status note; decisions/README.md; G10 header, §1, §1.2, §4, §6; G11 §1, §1.1, §1.2, §2.9, §3, §4, "
-               "§5, §6, §7 items 2, 66, 85, 87, 88, 90, 92, 100, 101, §8; ToO rev 15 §0, §7.1, "
-               "§7.10, §9; glossary (Bootstrap reviewer, Headcount); spec/README.md; "
+               "the ceremony gains two steps: seating the first operators, and floor fitness. This is the G12 state "
+               "(2026.11.16) with Batch 40 (2026.11.17), ADR-0033 A19 and A20; `diagrams/g1-to-bootstrap-2026.09.18.svg` "
+               "shows the earlier G1 state.",
+               3200, "ADR-0029 §1–§7, A1, A2 (A2.1–A2.5), A3, A4, B25, B34, Options, Consequences; ADR-0024 §6, A3, "
+               "E1, B38, Pending line; ADR-0025 Annex A-0025, A3; ADR-0026 §2 R2, R5, §6 finding 5, §7 finding 3, W1, "
+               "A2; ADR-0027 §2, §4; ADR-0030 A3; ADR-0033 §7 finding 9, A19, R14, A20, B40, Status line, Pending line; "
+               "ADR-0050 §1, §2, §6, §10; ADR-0052 §9; ADR-0035 Status note; ADR-0045 Annex A, Annex B T-0045-31, A4, "
+               "B39; ADR-0046 §4, A1, E1, A2, E3, E4, A3, B39, Status note; ADR-0053 B36, E1, A1 (pending); ADR-0054 R7, "
+               "ADR-0055 R3, ADR-0057 R1, ADR-0077 (Proposed); every listed record's Status line and Status note; "
+               "decisions/README.md; manifests/index.tsv; G10 header, §1, §1.2, §4, §6; G11 §1.1, §4, §6, §7 items 85, "
+               "100, 101; G12 header, §1, §1.1, §1.2, §2.1, §2.6, §2.9, §3, §4, §5, §6, §7 items 2, 66, 87, 88, 90, 92, "
+               "104, 109, 117, 120, §8, §9; ToO rev 16 §0, §7.1, §7.10, §9; checkpoints/README.md (the A2.5 line); "
+               "glossary (Bootstrap reviewer, Headcount); spec/README.md; "
                "spec/bootstrap-results-2026.09.23.txt; spec/Anchor-proof-results-2026.10.02.txt, "
                "spec/BreakGlass-proof-results-2026.10.02.txt, spec/Anchor- and BreakGlass-proof-cert-results-"
                "2026.10.04.txt, spec/BreakGlass_A1-results-2026.10.05.txt; spec/RulesFloorBase.tla")
-    c.note = AMENDED_G11
+    c.note = AMENDED_G12
     X0, X1 = c.x0, c.x1
     W = X1 - X0
     y = c.y + 20
@@ -133,7 +144,7 @@ def build():
             "`BreakGlass_A1` succeeds the second where it models X1.",
             "**(b)** an **independent review of the entire corpus** at one named manifest digest, by at least one "
             "reviewer who is not the author, every finding dispositioned (A2.1). **Not met: no reviewer is engaged "
-            "and no pass has been run** (G11 §4).",
+            "and no pass has been run** (G12 §4).",
             "**Permission, not obligation**: bootstrap happens when the custodian declares it **and** the trigger is "
             "met (§7).",
         ]),
@@ -166,16 +177,16 @@ def build():
     y += ph + 70
 
     # ------------------------------------------------------------------ row 2: counts, criteria, status classes
-    c.heading(X0, y, "Where ratification stands (G11 §1.1; ToO rev 15 §9)", "ink", 21)
+    c.heading(X0, y, "Where ratification stands (G12 §1.1, §4; ADR-0033 B40; ToO rev 16 §9)", "ink", 21)
     y += 46
     tiles = [("47", "Accepted (genesis)", "18 unmarked + 27 confirmation-required + 2 provisional. **Ratified in part**: "
               "ADR-0022 only (§6 Proposed); ADR-0042 is whole", "blue"),
-             ("29", "Confirmation required", "**Up from 28**: 27, adding 0053 (C4, for one route), and the two "
-              "provisional records", "red"),
+             ("29", "Confirmation required", "**As at G11**: 27, with 0053 (C4, for one route), and the two "
+              "provisional records. 0046 A3 is C4 inside a record already marked (B39)", "red"),
              ("2", "Provisional", "ADR-0050 and ADR-0052, Batch 34: in force, **subject to redesign**, "
               "confirmation-required (ADR-0029 A4)", "blue"),
-             ("5", "Proposed", "ADR-0035, ADR-0036, ADR-0051; ADR-0054 and ADR-0055 (workflows, built at the "
-              "reference); and ADR-0022 §6", "amber"),
+             ("27", "Proposed", "**Up from 5**: 0035, 0036, 0051; 0054 and 0055 (workflows, built at the reference, "
+              "**proved** since 11.11, R7 and R3); **0056 to 0077**, twenty-two drafted since G11; and ADR-0022 §6", "amber"),
              ("1", "Superseded", "ADR-0008, by ADR-0038 (2026.09.29)", "grey"),
              ("1 + 1", "Tombstone · reserved", "ADR-0011 tombstone; ADR-0014 reserved, no file", "grey")]
     tw = (W - 5 * 24) / 6
@@ -187,14 +198,47 @@ def build():
         nw = text_width(n, 52, True)
         c.text(tx + 20 + nw + 16, y + 56, lab, 18, acc, bold=True)
         c.para(tx + 20, y + 78, tw - 40, note, 13.5, "ink")
-    c.para(X0, y + th_ + 14, W, "54 record files, numbered to 0055; three added since G10 (0053 to 0055); 0014 is the "
-           "only reserved number. **Twelve amendments are pending**, up from none, every one on a Proposed record: "
-           "ten of ADR-0054's and ADR-0033 A16, A17; **ADR-0026 A1, R8, was withdrawn** (W1, 2026.10.04). **Two batches "
-           "since G10, 36 and 37.** Ratified in part is distinct from ADR-0018, which is accepted and **reversed in "
-           "part** by ADR-0037 §3 (G11 §1.2, as at G9). 18 + 27 + 2 accepted, 5 Proposed, 1 superseded and 1 tombstone "
-           "make the 54 files.",
+    c.para(X0, y + th_ + 14, W, "76 record files, numbered to 0077; twenty-two added since G11 (0056 to 0077), all "
+           "Proposed; 0014 is the only reserved number. **Sixteen amendments were pending at G12**, up from twelve: "
+           "ADR-0054's ten, ADR-0033 A16, A17, ADR-0057's three entries (ADR-0033 A18, ADR-0045 A5, ADR-0053 A1) and "
+           "ADR-0033 A19, which stood alone (R14). **Batch 40 ratified A19**, with A20, drafted after the cut; by this "
+           "diagram's count **fifteen are pending**, every one on a Proposed record (ADR-0033 Pending line, B40). "
+           "**ADR-0026 A1, R8, was withdrawn** (W1, 2026.10.04); nothing withdrawn since G11. **Three batches since G11, "
+           "38, 39 and 40, and none changes a record's status.** Ratified in part is distinct from ADR-0018, which is "
+           "accepted and **reversed in part** by ADR-0037 §3 (G12 §1.2, as at G9). 18 + 27 + 2 accepted, 27 Proposed, "
+           "1 superseded and 1 tombstone make the 76 files.",
            14, "muted")
-    y += th_ + 82
+    y += th_ + 100
+
+    # ------------------------------------------------------------------ row 2a: the batches since G11
+    bcols = [("Batch", 250, {"bold": True}), ("Date", 150), ("Contents", 560), ("Criterion", 420),
+             ("What it changed (G12 §1, §6; ADR-0024 B38; ADR-0046 B39; ADR-0045 B39; ADR-0033 B40)", W - 250 - 150 - 560 - 420)]
+    brows = [
+        {"cells": ["38 · A citation", "2026.11.02", "**ADR-0024 E1**, alone", "None: ADR-0024 is in the bootstrap set, "
+                   "and no criterion attaches",
+                   "Correlated review failure: the human half is Knight and Leveson's, the gate's half Moon and Varshney's "
+                   "(§4.6, Appendix B); **floor fitness has an owner and a time, the bootstrap reviewer at bootstrap (A4), "
+                   "and no test**. No decision text changes. Nothing was run; found while checking an external draft "
+                   "against the corpus"], "accent": "blue"},
+        {"cells": ["39 · The upstream report", "2026.11.03", "**ADR-0046 A3**; **ADR-0045 A4**, its dependent entry",
+                   "[[red|C4]] on A3, the custodian's decision, inside a record already marked",
+                   "The prover's two unsound cases are reported upstream as `tlapm` #309 and #310 (2026.10.18). Condition "
+                   "(1): the assistant checked through GitHub's API that the issues exist, are labelled, and that a "
+                   "maintainer opened #314, #315 and #318; (2): the custodian read the issues against §8. ADR-0045's pin "
+                   "moved; the premise routes renewed (`premise-routes-results-2026.11.03.txt`). Neither case fixed as of "
+                   "11.03; since fixed in part upstream, **the pin unmoved** (G12 §2.6)"], "accent": "blue"},
+        {"cells": ["40 · The reference measured", "2026.11.17, after G12", "**ADR-0033 A19** (as revised at R14) and "
+                   "**A20**, together", "None, the custodian's decision: both are measurements of the reference (C1 to C4 "
+                   "each not applying)",
+                   "`SHA256SUMS-REF-2026.11.16` (`d1b72db`, 116 entries, 155 tests) is **the measure at G12**; "
+                   "`SHA256SUMS-REF-2026.11.16b` (`36269bc`, 116 entries, 159 tests) is **the measure of the reference**, "
+                   "after `spec/Paxos.tla` and `PaxosTrace.tla` (pull request #68), and closes §7 finding 9. Both verify "
+                   "116 of 116 at their commits; the admit path's trace validation not rerun; `mechanism/lean` stale. "
+                   "A16, A17 and A18 stay pending, each on a Proposed record. **Not reviewed by a reader other than the "
+                   "drafter**"], "accent": "blue"},
+    ]
+    bth = c.table(X0, y, bcols, brows, size=14, accent="blue")
+    y += bth + 50
 
     lw = 1500
     ccols = [("Criterion (ADR-0029 §4)", 520, {"bold": True}), ("Examples in the record", lw - 520)]
@@ -237,10 +281,10 @@ def build():
     y += max(h1, h2) + 60
 
     # ------------------------------------------------------------------ row 3: the 28-record ledger
-    c.heading(X0, y, "The genesis debt ledger: all 29 confirmation-required records (G11 §4, with G10's 28)", "ink", 21)
+    c.heading(X0, y, "The genesis debt ledger: all 29 confirmation-required records (G12 §4, as at G11; G10's 28)", "ink", 21)
     y += 46
     cols = [("Record", 130, {"bold": True}), ("Title", 820), ("Criteria", 300, {"bold": False}),
-            ("Ratified", 300), ("Why it is marked; what changed since G9 (Status note; G10 §4, §6; G11 §4, §6)",
+            ("Ratified", 300), ("Why it is marked; what changed since G9 (Status note; G10 §4, §6; G11 §4, §6; G12 §4, §6)",
                                 W - 130 - 820 - 300 - 300)]
     rows = []
     for rec, title, crit, rat, why in CONF:
@@ -249,40 +293,48 @@ def build():
         r = [rec, title, crit_s, rat, why]
         if rec in PROV:
             rows.append({"cells": r, "accent": "blue"})
-        elif rec in NEW:
+        elif rec in NEW or rec in MOVED:
             rows.append({"cells": r, "accent": "red"})
         else:
             rows.append(r)
     lt = c.table(X0, y, cols, rows, size=14, accent="red")
-    c.para(X0, y + lt + 12, W, "Highlighted: the record new to the set at G11, ADR-0053, and the two provisional in "
+    c.para(X0, y + lt + 12, W, "Highlighted in red: the record new to the set at G11, ADR-0053, and the two rows Batch "
+           "39 moved, ADR-0045 (A4) and ADR-0046 (A3, C4); **no record joined the set at G12**; the two provisional in "
            "blue; the rows marked new at G10 came in at that cut. "
            "The bootstrap set, ADR-0024 to ADR-0027, is Accepted with no marker and cannot carry one; since A2 it is "
-           "reached by the bootstrap review with everything else, before the rules it defines take effect. ADR-0029 "
+           "reached by the bootstrap review with everything else, before the rules it defines take effect; Batch 38's "
+           "ADR-0024 E1 lands there, with no criterion. ADR-0029 "
            "itself is marked for A2 and A4 only. **The twenty-six dependent amendments of Batch 34 were applied as "
            "marked**, beside the text they change; each depending on ADR-0050 or ADR-0052 is provisional with it "
-           "(G10 §1.2, §6). G11 adds ADR-0046 A2 and ADR-0045 A3 to records already marked (C2); ADR-0054's ten pending "
-           "amendments land in records of this ledger and are not in force (G11 §1.1, §4).", 14, "muted")
+           "(G10 §1.2, §6). G11 adds ADR-0046 A2 and ADR-0045 A3 to records already marked (C2); G12 adds ADR-0046 A3 "
+           "(C4). Nine of ADR-0054's ten pending amendments land in records of this ledger (the tenth, ADR-0024 A4, in "
+           "the bootstrap set), and ADR-0057's ADR-0045 A5 and ADR-0053 A1 too; none is in force (G12 §1.1, §6).",
+           14, "muted")
     y += lt + 100
 
     # ------------------------------------------------------------------ row 3b: the A2.5 line
-    c.heading(X0, y, "The ADR-0029 A2.5 line, carried since G10 (G11 §4; the 10.02 review's CR-28 (ii))",
-              "ink", 21)
+    c.heading(X0, y, "The ADR-0029 A2.5 line, carried since G10 (G12 §4; checkpoints/README.md; the 10.02 review's "
+              "CR-28 (ii))", "ink", 21)
     y += 46
     aw = 1900
-    ah = c.table(X0, y, [("Field", 380, {"bold": True}), ("Value at G11", aw - 380)], [
+    ah = c.table(X0, y, [("Field", 380, {"bold": True}), ("Value at G12", aw - 380)], [
         {"cells": ["Bootstrap reviewer engaged", "**None.** Every record, amendment, proof, module and reference tree is "
                    "one hand's, drafted or ratified by the genesis custodian with the assistant; no reviewer "
                    "independent of the author has read any record"], "accent": "red"},
         {"cells": ["Last completed review pass", "**None.** No confirmation pass has been run and no review attestation "
-                   "exists; the field has no manifest digest to name. The dated reviews under `derived/` are the "
-                   "drafter's own, as are the review runs behind ADR-0046 A2, and do not count under A2.1"], "accent": "red"},
+                   "exists; the field has no manifest digest to name. The self review of 2026.11.11 "
+                   "(`derived/topak-critical-review-2026.11.11.md` and its annex) and ADR-0070's adversarial review are "
+                   "the drafter's own, by fresh sessions of the same model, and say so; none counts under A2.1. An upstream "
+                   "maintainer took up the defect reports (B39), which is engagement with a trust root and not a review of "
+                   "any TOPAK text"], "accent": "red"},
     ], size=14, accent="red")
-    c.para(X0, y + ah + 12, aw, "G4 to G9 did not carry this line, though A2.5 (ratified 2026.09.25) asks for it.", 14,
-           "muted")
+    c.para(X0, y + ah + 12, aw, "G4 to G9 did not carry this line, though A2.5 (ratified 2026.09.25) asks for it; G10 to "
+           "G12 carry it, the values unchanged (checkpoints/README.md).", 14, "muted")
     bx2 = X0 + aw + 40
     dh = c.card(bx2, y, X1 - bx2, "The bootstrap reviewer's two new duties (ADR-0029 A4)", [
         "**Establish that the policy floor is fit**, with which it is ratified (ADR-0030 A3). The gates show "
-        "consistent, total, non-vacuous and minimal; **what makes a floor fit is not written** (items 2, 87).",
+        "consistent, total, non-vacuous and minimal; **what makes a floor fit is not written** (items 2, 87). "
+        "Since ADR-0024 E1 (Batch 38) that record says so too: **floor fitness has an owner and a time, and no test**.",
         "**Attest to rules that include three provisional amendments**, named as such: ADR-0024 A3, ADR-0025 A3, "
         "ADR-0026 A2.",
     ], accent="blue", size=14, status="provisional", status_extra="what the attestation names")
@@ -292,7 +344,7 @@ def build():
     c.heading(X0, y, "What the trigger and the ceremony need", "ink", 21)
     y += 46
     mw = 1240
-    mcols = [("Module (§5)", 190, {"mono": True}), ("Invariant", 380, {"mono": True}), ("State at G11", mw - 570)]
+    mcols = [("Module (§5)", 190, {"mono": True}), ("Invariant", 380, {"mono": True}), ("State at G12", mw - 570)]
     mrows = [
         {"cells": ["Genesis", "GenesisSatisfiesFloor", "[[red|Not drafted]]: waits on the genesis rules contents. Its "
                    "shape is a lemma in both proofs below, proved of the floor's definition and not of genesis "
@@ -312,11 +364,12 @@ def build():
                    "certified. `BreakGlass` is **proved in Lean** too (ADR-0053)"], "accent": "teal"},
     ]
     mh = c.table(X0, y, mcols, mrows, size=14, accent="grey")
-    c.para(X0, y + mh + 12, mw, "**Bootstrap specification: partial**, as at G9 (G11 §4): two of five modules, `Anchor` "
-           "and `BreakGlass`, are proved, and certified; `Genesis`, `RulesFloor` and `Promotion` are still owed. Both "
-           "proofs extend `RulesFloorBase.tla`, live and not frozen (ADR-0046 E1), which **has not caught up**: it "
-           "still carries `bgScope` and R6's bound of two (ADR-0026 A2; item 90). `RulesFloorNV` and its rev5 rerun "
-           "are precursors, not substitutes. The ceremony accepts a specification digest marked drafted-only.", 14,
+    c.para(X0, y + mh + 12, mw, "**Bootstrap specification: partial**, as at G9 (G12 §4, as at G11): two of five "
+           "modules, `Anchor` and `BreakGlass`, are proved, and certified; `Genesis`, `RulesFloor` and `Promotion` are "
+           "still owed. Both proofs extend `RulesFloorBase.tla`, live and not frozen (ADR-0046 E1), which **has not "
+           "caught up**: it still carries `bgScope` and R6's bound of two (ADR-0026 A2; G12 §2.1, item 90). "
+           "`RulesFloorNV` and its rev5 rerun are precursors, not substitutes; none of the ten proof modules added since "
+           "G11 is one of the five (G12 §2.9). The ceremony accepts a specification digest marked drafted-only.", 14,
            "ink")
     bx = X0 + mw + 40
     bw = 900
@@ -355,7 +408,7 @@ def build():
            "(ADR-0050 §6); a person who operates and also votes holds two seats and is two principals (§1). "
            "**A solo bootstrap is not a bootstrap**, and custody today is (1, 0).", 14, "ink")
     y += HB + 40
-    c.para(X0, y, W, "Debts no confirmation repays are carried beside the ledger (G11 §4). Those of G2 to G9 stand, "
+    c.para(X0, y, W, "Debts no confirmation repays are carried beside the ledger (G12 §4). Those of G2 to G9 stand, "
            "among them the checker's authorship, **the prover's soundness trusted as written** and **the proofs the same "
            "hand's**. G10 adds three: **five records, twenty-eight amendments, six modules and their proofs, a rebuilt "
            "reference and the model it is checked against are one hand's**, drafted, built, checked and ratified "
@@ -366,5 +419,10 @@ def build():
            "amendments and errata, three Lean packages, two liveness modules, two Proposed records with twelve pending "
            "amendments, two modules, a floor stage and a rebuilt reference are one hand's**, across five days; **a trust "
            "root is kept in use with two known defects**, unreported upstream; and **the reference again follows text "
-           "that is not in force**. **The debt is visible, not bounded.**", 14.5, "muted")
+           "that is not in force**. G12 adds: **twenty-two Proposed records, four pending amendments, ten proof modules, "
+           "a specification graph, a CI pipeline and a rung-1 run are one hand's**, drafted, built and checked across "
+           "five weeks, with no second reader; **a trust root is kept in use with two known defects** that upstream has "
+           "since fixed in part, **on a pin that has not moved**; and **the reference still follows text that is not in "
+           "force**. Batch 40's two measurements of the reference are the drafter's, not reviewed (ADR-0033 B40). "
+           "**The debt is visible, not bounded.**", 14.5, "muted")
     return c

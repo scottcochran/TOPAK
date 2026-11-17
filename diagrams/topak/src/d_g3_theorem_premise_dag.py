@@ -2,6 +2,9 @@
 three node-link chains (Contained, promotion, floor routing), with the proof column and the corrections ADR-0046 §5
 made at Batch 25, the launcher's revision of 2026.10.02, the certification of each bound module (ADR-0046 A1), and the
 gap G10 records: six proof modules with no row, and RulesFloorBase.tla behind ADR-0026 A2 (G10 §2.6, item 90).
+Amended 2026.11.17 against G12: thirty-four proof modules, nineteen with no row, the ten under Proposed records
+(Workflow and Mesh proved 2026.11.11, the command-chain overlay's eight 2026.11.10), all certified (G12 §2.9, §3,
+items 74, 90, 101, 112); Paxos.tla checked and not proved (spec/proof-sync.sh).
 
 The table is read at build time from spec/theorem-premise-binding.md (relative to the repository root), so the
 43-row table below is the file's text. The premise incidences are computed from its "Row premises" column (every
@@ -15,7 +18,7 @@ import pathlib
 import re
 
 import lib
-from lib import AMENDED_G11, strip_external, Canvas, render_line, parse, wrap, text_width, fill, sonly, fs
+from lib import AMENDED_G12, strip_external, Canvas, render_line, parse, wrap, text_width, fill, sonly, fs
 
 ID, SLUG = "G3", "theorem-premise-dag"
 
@@ -191,9 +194,11 @@ TROWS = {
     36: ("operator's key custody (A2)", "rootp"),
 }
 NT = 36
-# Proof certification (ADR-0046 A1; spec/proof-certification.md §9; G10 §2.9): the three modules that do not certify.
+# Proof certification (ADR-0046 A1; spec/proof-certification.md §9; G10 §2.9; G12 §2.9, item 74): the three modules
+# that do not certify, as at G11.
 UNCERT = {"RulesFloorNV_rev5", "Confinement", "Confinement_A1"}
-# Every proof module at G10, with its certified results file's obligation count (spec/*-proof-cert-results-*.txt).
+# Every proof module bound at G10 (the fifteen the table names), with its certified results file's obligation count
+# (spec/*-proof-cert-results-*.txt).
 # bound: named in the binding table's Checked-in column. record: the record the module is owed by.
 MODULES = [
     # (module, record, obligations, bound)
@@ -226,9 +231,21 @@ UNBOUND = [
     ("Coupling_live", "ADR-0039 §2 (extends Coupling); leads-to checked, not proved", 69,
      "`SpecL ⇒ Spec` and safety", 31),
 ]
-# The modules G11 item 90 names that have no proof at all: their records are Proposed (G11 §2.9, item 101).
-UNPROVED = [("Workflow", "ADR-0054 §12 (Proposed)", 33, "ten properties"),
-            ("Mesh", "ADR-0055 §11 (Proposed)", 23, "seven properties")]
+# The proof modules of Proposed records since G11, none with a row (G12 §2.9, §3; items 90, 101, 112): (module, record,
+# TLC rows, properties, obligations, LS4 steps no checker confirms). TLC rows and properties: G11 §3 for Workflow and
+# Mesh, G12 §3 and the results headers (spec/*-proof-results-2026.11.10.txt, -2026.11.11.txt) for the rest.
+PROPOSED_PROVED = [
+    ("Workflow", "ADR-0054 §12, R7 (Proposed)", 33, "ten properties and `SafeAlways`", 1136, 11),
+    ("Mesh", "ADR-0055 §11, R3 (Proposed)", 23, "seven properties and `SafeAlways`", 1470, 8),
+    ("Federation", "ADR-0059 R1 (Proposed)", 41, "six properties and `SafeAlways`", 892, 7),
+    ("Intent", "ADR-0060 R1, R2 (Proposed)", 35, "four properties and `SafeAlways`", 677, 5),
+    ("Membership", "ADR-0061 R1 (Proposed)", 28, "five properties and `SafeAlways`", 495, 6),
+    ("Alone", "ADR-0062 R1, R2 (Proposed)", 47, "five properties and `SafeAlways`", 263, 6),
+    ("Outstanding", "ADR-0063 R1, R2 (Proposed)", 40, "five properties and `SafeAlways`", 1871, 6),
+    ("PlaneClock", "ADR-0064 R1 (Proposed)", 38, "five properties and `SafeAlways`", 535, 6),
+    ("Peer", "ADR-0065 R1 (Proposed)", 25, "five properties and `SafeAlways`", 254, 6),
+    ("Release", "ADR-0066 R1 (Proposed)", 67, "nine properties and `SafeAlways`", 613, 10),
+]
 CORRELATOR = ("Correlator", "ADR-0051 §10 (Proposed)", 22, "the properties of §10", 455)
 TGROUPS = [
     ("Mechanism constants (all rungs)", list(range(1, 13)) + [35, 36]),
@@ -413,10 +430,12 @@ def build():
                "one row per checked property, naming the trusted-base rows (ADR-0045 Annex A), the degeneracy "
                "parameters (ADR-0023 §6a) and the declared gaps it rests on. A property holds for a deployment when "
                "every row it names is declared delegated or trust root, every parameter holds and no gap premise is "
-               "false; otherwise it is void. 38 of its 43 rows name a proof module, 15 modules in all; at G11 "
-               "**twelve of those certify and three do not**, and **nine of the twenty-four proof modules have no row**: "
-               "the eight G11 names behind the records (§2.6, item 90, open) and `Correlator`, whose record is Proposed; "
-               "nor do `Workflow` and `Mesh`, which have no proof (item 101). "
+               "false; otherwise it is void. 38 of its 43 rows name a proof module, 15 modules in all; at G12 "
+               "**twelve of those certify and three do not**, and **nineteen of the thirty-four proof modules have no row**: "
+               "the eight G11 item 90 named behind the records in force (G12 item 90, open), `Correlator`, whose record is "
+               "Proposed, and the ten proof modules of Proposed records since G11: `Workflow` and `Mesh`, proved 2026.11.11 "
+               "(ADR-0054 R7, ADR-0055 R3; item 101), and the command-chain overlay's eight (ADR-0059 to ADR-0066 R1; "
+               "item 112). "
                "Where a record moved and the table did not (A7, B29; ADR-0034 A2 and ADR-0042 §6, B30), the verdict is "
                "drawn as the table states it and marked. Drawn four ways: the gap, the key chains as a DAG, the full "
                "incidence matrix, and the table itself, all 43 rows. `spec/theorem-premise-binding.json` carries the "
@@ -434,8 +453,12 @@ def build():
                "ADR-0050 §10; ADR-0051 (Proposed); ADR-0052 §9, R5; G8 §2.2, §3; "
                "G10 §2.1, §2.3, §3, §7 items 80, 89; G11 §2.6, §2.9, §3, §7 items 7, 74, 90, 101, §8; "
                "spec/Emergency_live.tla, spec/Coupling_live.tla, spec/Workflow.tla, spec/Mesh.tla (headers and results); "
-               "spec/Mechanism-trace-results-2026.10.02.txt, spec/Mechanism-trace-results-2026.10.05.txt")
-    c.note = AMENDED_G11
+               "spec/Mechanism-trace-results-2026.10.02.txt, spec/Mechanism-trace-results-2026.10.05.txt; "
+               "G12 §2.9, §3, §7 items 74, 76, 90, 101, 112, §9; ADR-0054 §12, R7; ADR-0055 §11, R3; ADR-0059 to ADR-0066 R1 "
+               "(Proposed); spec/Workflow-proof-results-2026.11.11.txt, spec/Mesh-proof-results-2026.11.11.txt and the "
+               "overlay's eight spec/*-proof-results-2026.11.10.txt (headers), with their *-proof-cert-results files; "
+               "spec/Paxos.tla (header), spec/Paxos-results-2026.11.14.txt, spec/proof-sync.sh")
+    c.note = AMENDED_G12
     X0, X1 = c.x0, c.x1
     W = X1 - X0
     y = c.y
@@ -484,16 +507,21 @@ def build():
     y += hh + 54
 
     # ---------------------------------------------------------------- the gap at G10 (item 90) and certification
-    hx = X0 + c.pill(X0, y + 2, "Open · G11 §7 item 90", "red", 13, dash="6 4") + 14
-    c.text(hx, y + 18, "**0 · What the table covers at G11, and what it does not: twenty-four proof modules, fifteen "
-                       "bound, twelve of those certified; nine with no row; two modules with no proof**", 22, "ink")
+    hx = X0 + c.pill(X0, y + 2, "Open · G12 §7 item 90", "red", 13, dash="6 4") + 14
+    c.text(hx, y + 18, "**0 · What the table covers at G12, and what it does not: thirty-four proof modules, every one "
+                       "proved, fifteen bound, twelve of those certified; nineteen with no row, ten under Proposed records**",
+           22, "ink")
     y += 44
     y += c.para(X0, y, W, "G11 item 90: \"The binding table has no rows for `Labels`, `ToolList`, `Operators`, "
                 "`Emergency`, `BreakGlass_A1` or `NonComposition_A1`, nor now for `Emergency_live`, `Coupling_live`, "
-                "`Workflow` or `Mesh`.\" It also names `RulesFloorBase.tla`. Certification is ADR-0046 A1's (Batch 28): every obligation closed by the "
+                "`Workflow` or `Mesh`.\" G12 item 90: \"eighteen modules have no binding rows, now with the overlay's eight\"; "
+                "it also names `RulesFloorBase.tla`. `Workflow` and `Mesh` are proved since 2026.11.11 and the overlay's eight "
+                "since 2026.11.10, every one under a Proposed record (G12 §2.9, items 101, 112). Certification is ADR-0046 "
+                "A1's (Batch 28): every obligation closed by the "
                 "prover's normalization, an SMT proof the `ethos` checker accepted, a Zenon proof Isabelle checked, or "
-                "an LS4 temporal step no checker confirms (`spec/proof-certification.md` §2, §9; G10 §2.9). Obligation "
-                "counts are each module's certified results file.", 15, "muted") + 16
+                "an LS4 temporal step no checker confirms (`spec/proof-certification.md` §2, §9; G10 §2.9). At G12 "
+                "thirty-one of thirty-four certify (§2.9, item 74). Obligation counts are each module's certified results "
+                "file.", 15, "muted") + 16
     TW = 2140
     nrow = {m[0]: sum(1 for r in rows if m[0] in r["pmods"]) for m in MODULES}
     why = {"RulesFloorNV_rev5": "five obligations are Zenon's, and Isabelle refuses the script for one",
@@ -505,14 +533,14 @@ def build():
               "accent": "teal"}]
     for mod, rec, n, _ in MODULES:
         if mod in UNCERT:
-            cert = f"[[red|not certified]]: {why[mod]}. Restructuring deferred by the custodian (G11 item 74)"
+            cert = f"[[red|not certified]]: {why[mod]}. Restructuring deferred by the custodian (G11 item 74; as at G12, item 74)"
             acc = "red"
         else:
             cert = "[[teal|certified]]"
             acc = "teal"
         mrows.append({"cells": [f"`{mod}`", rec, "—", f"{n:,}", cert, f"{nrow[mod]} row" + ("s" if nrow[mod] != 1 else "")],
                       "accent": acc})
-    mrows.append({"group": f"No row: G11 item 90, open · {len(UNBOUND)} modules, "
+    mrows.append({"group": f"No row: item 90 (G11, G12), open · {len(UNBOUND)} modules, "
                            f"{sum(u[4] for u in UNBOUND):,} obligations · every one certified · their records in "
                            "force since Batch 34, two provisional; two liveness extensions since 2026.10.07",
                   "accent": "red"})
@@ -523,31 +551,44 @@ def build():
     mod, rec, tlc, props, n = CORRELATOR
     mrows.append({"cells": [f"`{mod}`", rec, f"{tlc} TLC rows; {props}", f"{n:,}", "[[teal|certified]]",
                             "[[amber|no row; record Proposed]]"], "accent": "amber"})
-    tot = sum(m[2] for m in MODULES) + sum(u[4] for u in UNBOUND) + n
-    ncert = sum(1 for m in MODULES if m[0] not in UNCERT) + len(UNBOUND) + 1
-    nall = len(MODULES) + len(UNBOUND) + 1
-    mrows.append({"cells": ["**All**", f"**{nall} proof modules** (G11 §2.9)", "", f"**{tot:,}**",
-                            f"**{ncert} of {nall} certify**", f"**{len(MODULES)} bound, {nall - len(MODULES)} not**"]})
-    mrows.append({"group": "No row and no proof: TLC-checked modules of Proposed records (G11 items 90, 101)",
+    npp = sum(p[4] for p in PROPOSED_PROVED)
+    mrows.append({"group": f"No row, and its record is Proposed: proved since G11, named by G12 item 90 · "
+                           f"{len(PROPOSED_PROVED)} modules, {npp:,} obligations · every one certified, each with LS4 steps no "
+                           "checker confirms (G12 §2.9, §3) · `Workflow` and `Mesh` since 2026.11.11 (ADR-0054 R7, ADR-0055 R3; "
+                           "item 101), the command-chain overlay's eight since 2026.11.10 (ADR-0059 to ADR-0066 R1; item 112); "
+                           "each record still owes its binding rows",
                   "accent": "amber"})
-    for mod, rec, tlc, props in UNPROVED:
-        mrows.append({"cells": [f"`{mod}`", rec, f"{tlc} TLC rows; {props}", "—", "[[red|no proof]]",
+    for mod, rec, tlc, props, n2, ls4 in PROPOSED_PROVED:
+        mrows.append({"cells": [f"`{mod}`", rec, f"{tlc} TLC rows; {props}", f"{n2:,}",
+                                f"[[teal|certified]]; {ls4} temporal steps by LS4",
                                 "[[amber|no row; record Proposed]]"], "accent": "amber"})
-    mth = c.table(X0, y, [("Proof module", 300), ("Record it is owed by", 620), ("TLC rows; properties (G10 §3, G11 §3; for the modules with no row)", 400),
+    tot = sum(m[2] for m in MODULES) + sum(u[4] for u in UNBOUND) + n + npp
+    ncert = sum(1 for m in MODULES if m[0] not in UNCERT) + len(UNBOUND) + 1 + len(PROPOSED_PROVED)
+    nall = len(MODULES) + len(UNBOUND) + 1 + len(PROPOSED_PROVED)
+    # G12 §2.9: thirty-four proof modules, 13,622 obligations, thirty-one certify; item 90: eighteen named, Correlator not.
+    assert (nall, tot, ncert) == (34, 13622, 31), (nall, tot, ncert)
+    assert nall - len(MODULES) == 19 and len(UNBOUND) + len(PROPOSED_PROVED) == 18
+    mrows.append({"cells": ["**All**", f"**{nall} proof modules** (G12 §2.9)", "", f"**{tot:,}**",
+                            f"**{ncert} of {nall} certify** (item 74)", f"**{len(MODULES)} bound, {nall - len(MODULES)} not**"]})
+    mth = c.table(X0, y, [("Proof module", 300), ("Record it is owed by", 620), ("TLC rows; properties (G10 §3, G11 §3, G12 §3; for the modules with no row)", 400),
                           ("Obligations", 150), ("Certified (ADR-0046 A1)", 470), ("In the binding table", 200)],
                   mrows, size=13.5, accent="teal")
     gx = X0 + TW + 40
     gw = X1 - gx
     gcards = [
-        ("Eight modules, 1,925 obligations, no premise rows; and two unproved", [
+        (f"Nineteen proof modules, {tot - sum(m[2] for m in MODULES):,} obligations, no premise rows; ten under Proposed "
+         "records", [
             "Every property `Labels`, `ToolList`, `Operators`, `Emergency`, `BreakGlass_A1`, `NonComposition_A1`, "
             "`Emergency_live` and `Coupling_live` prove is **outside the inventory**: no row names what it rests on, "
             "so the last column computes nothing for it, at the reference or for any deployment. `Coupling_live`'s "
             "four leads-to properties are checked, not proved, and are not rows either.",
-            "`Workflow` and `Mesh` have neither a proof nor a row; their records are Proposed (G11 item 101).",
+            "`Workflow` and `Mesh` are **proved and certified** since 2026.11.11 (ADR-0054 R7, ADR-0055 R3: 1,136 and "
+            "1,470 obligations, 11 and 8 temporal steps by LS4; no state constraint), and the overlay's eight since "
+            "2026.11.10 (ADR-0059 to ADR-0066 R1: 5,600 obligations). None has a row, every record is Proposed, and each "
+            "record still owes its binding rows (G12 items 101, 112).",
             "So **T-0045-32 to 36**, the five trusted-base rows Batch 34 added for the same records, are premises of "
             "no row (the matrix below draws their columns empty).",
-            "The record behind each is in force; two are **provisional** (ADR-0050, ADR-0052), so their properties "
+            "The record behind each of the eight is in force; two are **provisional** (ADR-0050, ADR-0052), so their properties "
             "would bind to text that is subject to redesign (ADR-0029 A4).",
         ], "red", "open"),
         ("`RulesFloorBase.tla` still carries `bgScope` and R6's bound of two", [
@@ -590,10 +631,13 @@ def build():
         ("The proof column", [
             "**38 of 43 rows** name a proof module: fifteen modules (thirteen at B25), **3,036 obligations** "
             "(2,417 at B25), each invariant proved as `Spec => []P` under the module's named assumptions and the "
-            "absence of the mutations that break it. At G10 there are 22 modules and 5,225 obligations (§2.9); "
-            "the seven others have no row (section 0).",
-            "**No proof**: effect exclusivity (a claim), `PromotionMeetsIssuedQuorum` (module unwritten), the Paxos "
-            "simulation, the floor gates, and trace validation (`Mechanism.tla` is a trace replay and "
+            "absence of the mutations that break it. At G12 there are 34 modules and 13,622 obligations, 31 certified "
+            "(§2.9); the nineteen others have no row (section 0).",
+            "**No proof**: effect exclusivity (a claim), `PromotionMeetsIssuedQuorum` (module unwritten), `Paxos.tla` "
+            "(the consensus log at the message level, an operational model of the reference's replica, **checked** in "
+            "TLC, 27 rows in `Paxos-results-2026.11.14.txt`; no proof module, because its safety argument is `Voting`'s, "
+            "ToO §11.3, not written as a module: `spec/proof-sync.sh`) and `PaxosTrace.tla` (a trace replay), the floor "
+            "gates, and trace validation (`Mechanism.tla` is a trace replay and "
             "`ConfinementRefinement.tla` a predicate set; the target is the refinement, T-0045-28).",
             "A proof of a module **adds nothing at the reference** (G10 §8), certified or not: the last column moved "
             "at 2026.10.02 for the launcher, not for the proofs.",
@@ -1078,9 +1122,9 @@ def build():
         "(`Mechanism-trace-results-2026.10.02.txt`), where G10 §3 records **82 traces, 1,007 steps** "
         "(`Mechanism-trace-results-2026.10.05.txt`, ADR-0033 A14), every step matching and every state keeping "
         "`ConfinementRefinement.tla`'s invariants.",
-        "[[red|Stale against G10]] (§2.6, item 90): four confinement rows still say \"pending ADR-0033 A7\", "
+        "[[red|Stale against G12]] (G10 §2.6; G12 item 90): four confinement rows still say \"pending ADR-0033 A7\", "
         "ratified at B29; the `RunConfinement` row says \"pending: A2 is not ratified\" and \"ADR-0042 §6 in force "
-        "(Proposed)\", both ratified at B30; no rows for six modules; `RulesFloorBase.tla` behind ADR-0026 A2 "
+        "(Proposed)\", both ratified at B30; no rows for eighteen modules; `RulesFloorBase.tla` behind ADR-0026 A2 "
         "(section 0). The verdicts above are the table's, marked where a record has moved.",
     ], accent="amber", size=14.5, h=hh)
     return c

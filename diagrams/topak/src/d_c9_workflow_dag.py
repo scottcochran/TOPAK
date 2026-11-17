@@ -1,7 +1,7 @@
 """C9 — A workflow is a promoted DAG (ADR-0054, Proposed). The promotion seats every cell, the mechanism routes on
 typed attributes, an orchestrator cell may only choose among enabled edges, and a route is checked again where it is
 applied. Meshes (ADR-0055) are D6's."""
-from lib import Canvas, STATUS, STATE_G11, text_width
+from lib import Canvas, STATUS, STATE_G11, AMENDED_G12, text_width
 
 ID, SLUG = "C9", "workflow-dag"
 
@@ -54,26 +54,33 @@ def build():
                "routes on typed attributes it lifts; an `orchestrator` cell **may only choose among edges the "
                "mechanism has already enabled**, and its route is checked again where it is applied. **ADR-0054 is "
                "Proposed and nothing here is in force**: its ten dependent amendments are pending and not applied. "
-               "The reference was built to it anyway and links its floor stage, which is not in force either (G11 "
-               "§1.1, §2.5, item 102; ToO rev 15 §2.11).",
+               "The reference was built to it anyway and links its floor stage, which is not in force either (G12 "
+               "§1.1, §2.5, §8; G11 item 102, as at G12; ToO rev 16 §2.11). **`spec/Workflow.tla` is checked by TLC "
+               "and, since 2026.11.11, proved** (`Workflow_proof.tla`, certified, 11 LS4 steps; ADR-0054 R7; G12 "
+               "§2.9, §3), which ratifies nothing (G12 §8).",
                W, "ADR-0054 provenance (K1–K9), Context, Decision §1–§12 (the attribute table, the orchestrator table, "
-               "§10's table), Options, Consequences, Findings 1–7, Open obligations, History R1–R6; the dependent "
+               "§10's table), Options, Consequences, Findings 1–7, Open obligations, History R1–R7; the dependent "
                "amendments ADR-0015 A1, ADR-0024 A4, ADR-0031 A4, ADR-0037 A5, ADR-0039 A3, ADR-0040 A2 (§1, §3, §4, "
                "§6), ADR-0041 A4 (§1, §4, §5; R3), ADR-0042 A3 (§5), ADR-0043 A3 (§1, §2), ADR-0047 A1 (§1, §4), each "
                "with its Pending line and History row; ADR-0035 §5 R8; ADR-0024 A3 and ADR-0050 (provisional, B34); "
                "ADR-0033 §4 and its addenda A16 (`11aaf6a`, `SHA256SUMS-REF-2026.10.08`) and A17 (`749d54f`, "
                "`SHA256SUMS-REF-2026.10.09`); ADR-0055 §1 (Proposed; D6); spec/Workflow.tla (a72973b5878e9468), "
-               "spec/Workflow-rows.txt, spec/Workflow-results-2026.10.08.txt (95b998f616da1875); "
+               "spec/Workflow-rows.txt, spec/Workflow-results-2026.10.08.txt (95b998f616da1875); spec/Workflow_proof.tla "
+               "(5dc68f94eeacda28), spec/Workflow-proof-results-2026.11.11.txt (34a18728d0e92e79), "
+               "spec/Workflow-proof-cert-results-2026.11.11.txt (a961be0445200e94), spec/proof-scan-results-2026.11.11.txt "
+               "(78a6725f818e8c5d), spec/README.md (the proof-module row and the 2026.11.11 paragraph); "
                "floor/proposed/workflow-floor.cedar (10ea6818af9b4efe), workflow.cedarschema (fd394bb8c074eec2), "
                "workflow-tests.json (123 cases), workflow-gates-results-2026.10.08.txt (878d9a431fec9eb9), "
                "floor/proposed/README.md; mechanism/GAPS-AND-ASSUMPTIONS.md §1.1, I49 (a)–(i), G12, findings 21–23; "
-               "G11 §1.1, §2.2, §2.4, §2.5, §3, §7 items 56, 90, 91, 101, 102, 103, 108, §8; ToO rev 15 §2.11", state=STATE_G11)
+               "G11 §1.1, §2.2, §2.4, §2.5, §3, §7 items 56, 90, 91, 101, 102, 103, 108, §8; G12 §1.1, §2.5, §2.9, §3 "
+               "(result 9), §7 items 76, 90, 101, §8; ToO rev 16 §2.11", state=STATE_G11)
+    c.note = AMENDED_G12
     X0, X1 = c.x0, c.x1
     WW = X1 - X0
     y = c.y
 
     # ================================================================== status strip
-    c.text(X0, y + 15, "Status at G11", 15, "faint", bold=True)
+    c.text(X0, y + 15, "Status at G12", 15, "faint", bold=True)
     px0 = X0 + 140
     px = px0
     for lab, key, extra in [
@@ -88,7 +95,7 @@ def build():
             ("ADR-0055, meshes (D6)", "proposed", "")]:
         lw = text_width(lab, 13.5, True) + 8
         if key == "checked":
-            pw = text_width("Checked by TLC · no proof", 11.5, True) + 18
+            pw = text_width("Checked by TLC · proved, certified (R7) · 11 LS4 steps", 11.5, True) + 18
         else:
             pw = text_width(STATUS[key][0] + (f" · {extra}" if extra else ""), 11.5, True) + 18
         if px + lw + pw > X1:
@@ -98,7 +105,7 @@ def build():
         px += lw
         if key == "checked":
             # a module result, not a reference behaviour: a plain pill
-            px += c.pill(px, y, "Checked by TLC · no proof", "violet", 11.5) + 26
+            px += c.pill(px, y, "Checked by TLC · proved, certified (R7) · 11 LS4 steps", "violet", 11.5) + 26
         else:
             px += c.status(px, y, key, extra) + 26
     y += 42
@@ -632,9 +639,9 @@ def build():
 
     # ================================================================== band 7: Workflow.tla
     y = band(c, X0, y, "`spec/Workflow.tla`: ten properties, nine mutations, ten witnesses, checked by TLC and "
-                       "not proved (ADR-0054 §12; R1, R2)", "violet")
+                       "proved (ADR-0054 §12; R1, R2, R7)", "violet")
     c.pill(X0 + text_width("`spec/Workflow.tla`: ten properties, nine mutations, ten witnesses, checked by TLC and "
-                           "not proved (ADR-0054 §12; R1, R2)", 22, True) + 20, y - 50, "Checked · no proof module",
+                           "proved (ADR-0054 §12; R1, R2, R7)", 22, True) + 20, y - 50, "Proved · certified · 11 LS4 steps",
            "violet", 11.5)
     PROPS = ["AppliedRouteEnabled", "OneRoutePerDecision", "FindingPrecedesNoRoute", "ChosenOnlyByRoute",
              "EdgeAfterCoverage", "TaintedNeverOutward", "GrantUnderPromotion", "PromotedAlternates",
@@ -669,7 +676,8 @@ def build():
                  "coverage `FindingPrecedesNoRoute` still holds, which is §7's claim that coverage does not close the "
                  "race and the re-check does. **The one bounded row**: under `M_REWRITE` the log has no bound (finding "
                  "7), so its remainder is checked under the state constraint `CapLog` (`idx ≤ 6`), the furthest the "
-                 "unmutated module reaches, by the custodian's decision (R2).", 13.5, "muted") + 14
+                 "unmutated module reaches, by the custodian's decision (R2). **The proof needs no state constraint** "
+                 "⟨R7⟩: the nine properties `M_REWRITE` does not break hold without `CapLog`.", 13.5, "muted") + 14
     wit = [("NeverRouted", "a route is applied", "7"), ("NeverCompleted", "the workflow completes", "14"),
            ("NeverVoidedByFinding", "a route void at apply: a finding between decide and apply, after coverage", "8"),
            ("NeverVoidedByConsumed", "a route void: another consumed the decision point first", "9"),
@@ -705,10 +713,18 @@ def build():
         ["CompletedOnlyBySink", "a workflow completes only when its sink has ended"],
         ["BasisStable", "what an applied Route was decided on is what holds when it applies"],
     ], size=13, accent="violet") + 16
-    c.card(rx7, ry, rw7, "Checked, not proved", [
-        "**There is no proof module.** Proofs of the ten properties are an open obligation (ADR-0054 §12 \"Not met\"; "
-        "Open obligations), and `spec/proof-sync.sh` exits 1 for want of a reason (G11 item 101). No binding row in "
-        "`theorem-premise-binding.md` (item 90).",
+    c.card(rx7, ry, rw7, "Checked by TLC, and proved: `spec/Workflow_proof.tla` (R7; G12 §2.9, §3)", [
+        "**Proved** (`Workflow_proof.tla`, `5dc68f94eeacda28`, over `Workflow.tla`, which is not edited): all ten "
+        "properties as `Spec => []P`, each under only the mutations its rows say break it, and `SafeAlways` under "
+        "`Mut = \"none\"`. Writing the proofs corrected no pairing (G12 §3, result 9). `FindingPrecedesNoRoute` assumes "
+        "only the re-check at apply, not coverage: §7's claim proved (§12 ⟨R7⟩).",
+        "**Certified** (`Workflow-proof-cert-results-2026.11.11.txt`): 1,136 obligations, 748 closed by tlapm's "
+        "normalization, 377 by SMT with a proof `ethos` accepted, none by Zenon or Isabelle, and **11 LS4 temporal "
+        "steps, which no checker confirms**. The scan (`proof-scan-results-2026.11.11.txt`) finds no capture and no "
+        "difference under renaming. `spec/proof-sync.sh` exits 0, where at G11 it exited 1 (G12 §2.9). Written "
+        "2026.11.11 by the assistant at the custodian's direction, not reviewed (R7).",
+        "**Proofs of the module, not of what it leaves out** (§12). Still no binding row in "
+        "`theorem-premise-binding.md` (G12 item 90). Ratifies nothing: ADR-0054 stays Proposed (G12 §8).",
         "**Model**: `Nodes` = {s, b, c, j}, lineages {A, B}, one fence; orchestrator and workers havoc. **Not "
         "modelled**: more than one decision point; multi-select; `all` joins and skips; the orchestrator's own seating "
         "and rounds; Run admits inside a round; attestation at grant; the step and time bounds; erasure. Deadlock is "
@@ -896,13 +912,14 @@ def build():
     rx9 = X0 + lw_ + 50
     rw9 = X1 - rx9
     ry = y
-    ry += c.table(rx9, ry, [("§12 · Ratification condition", rw9 * 0.5, {"bold": True}), ("At G11", rw9 * 0.5)], [
+    ry += c.table(rx9, ry, [("§12 · Ratification condition", rw9 * 0.5, {"bold": True}), ("At G12", rw9 * 0.5)], [
         {"cells": ["The dependent entries drafted", "**Met** ⟨R3⟩: the ten above and ADR-0035 R8"], "accent": "green"},
         {"cells": ["ADR-0050 and ADR-0024 A3 ratified first", "Ratified, **provisional**, Batch 34: this record stands on "
                                                                 "a provisional one"], "accent": "blue"},
-        {"cells": ["A module states the properties, and its mutations break them", "**Met for TLC** ⟨R2⟩. **Not met**: "
-                   "proofs; more than one decision point; multi-select; `all` joins and skips; the orchestrator's own "
-                   "rounds; the step and time bounds"], "accent": "amber"},
+        {"cells": ["A module states the properties, and its mutations break them", "**Met for TLC** ⟨R2⟩ **and for TLAPS** ⟨R7⟩: "
+                   "ten properties proved, certified, 11 LS4 steps, no state constraint. **Not met**: more than one "
+                   "decision point; multi-select; `all` joins and skips; the orchestrator's own rounds; the step and "
+                   "time bounds (proofs struck ⟨R7⟩)"], "accent": "amber"},
         {"cells": ["The floor: `orchestrator`, `Route`, the forbid, R3 widened, gates rerun", "**Met** ⟨R4⟩: the "
                                                                                               "`workflow` stage"],
          "accent": "green"},
@@ -943,7 +960,7 @@ def build():
     ], size=13.5, accent="amber")
     rx10 = X0 + lw_ + 50
     rw10 = X1 - rx10
-    c.card(rx10, y, rw10, "What it costs, and what is still open (Consequences; Open obligations; G11 item 101)", [
+    c.card(rx10, y, rw10, "What it costs, and what is still open (Consequences; Open obligations; G12 item 101)", [
         "**Many principals**: each node is a cell with its own Observer, on its own device, of the other lineage; n "
         "nodes and an orchestrator are about 2n+2 principals.",
         "**A worker steers the routing** through its declared `outcome`, within the enabled edges.",
@@ -951,7 +968,8 @@ def build():
         "archetype, or declares D-0054-1.",
         "**It rests on four Proposed or provisional records**: ADR-0035, ADR-0050, ADR-0024 A3 and ADR-0047's "
         "attributes.",
-        "**Open**: proofs; `all` joins, skips and multi-select in the module; values for `T_wf` and the step bound; "
+        "**Open** (proofs struck ⟨R7⟩; G12 item 101): `all` joins, skips and multi-select in the module; values for "
+        "`T_wf` and the step bound; "
         "finding 5; a per-attribute label; correlations over workflows for ADR-0051 (G11 item 97); binding rows; the "
         "custodian's reading of every drafter's choice.",
     ], accent="red", size=13.5, tint=False)

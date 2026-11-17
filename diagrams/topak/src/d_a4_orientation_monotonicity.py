@@ -1,9 +1,9 @@
-"""A4 — The orientation rule and monotonicity, layer by layer (ToO rev 15 §7.8)."""
-from lib import AMENDED_G11, Canvas
+"""A4 — The orientation rule and monotonicity, layer by layer (ToO rev 16 §7.8)."""
+from lib import AMENDED_G12, Canvas
 
 ID, SLUG = "A4", "orientation-monotonicity"
 
-# (layer, statement verbatim from ToO §7.8, source as printed + status, up reading, down reading, row accent)
+# (layer, statement verbatim from ToO rev 16 §7.8, source as printed + status, up reading, down reading, row accent)
 ROWS = [
     ("Decision", "Consensus for grants, local for denials", "Established",
      "A grant is an admit, consensus-ordered in the Paxos log (ADR-0015)",
@@ -92,14 +92,16 @@ def build():
     c = Canvas(ID, "One orientation, eighteen layers: toward more authority is consensus, toward less is local",
                "Every boundary in the design is asymmetric in the same direction. Crossing toward more authority needs "
                "consensus, an issuance or a fresh grant; crossing toward less is local and monotone, needs no quorum, "
-               "and is attributed. The boundary register found it stated five times in five vocabularies; ToO rev 15 "
-               "§7.8 states it at eighteen layers, two of them new at rev 15. At the pattern level it inverts.",
-               2900, "ToO rev 15 §2.10, §2.11, §3.2, §3.3, §4.1, §4.4, §5.4, §7.1, §7.3, §7.8, §7.9, §7.10, §7.11, "
-               "§8.1–§8.2, §10, §13 (A6, A16, A17), Appendices J, K; derived/topak-boundary-register-2026.09.13.md §5, "
-               "§6, §7.3; G10 §1; G11 §1, §1.1, §8, §7 items 7, 8, 49, 88; ADR-0053; ADR-0054, ADR-0055 (Proposed); ADR-0007, ADR-0010, ADR-0015, ADR-0023, ADR-0025, ADR-0026 W1, ADR-0028, "
+               "and is attributed. The boundary register found it stated five times in five vocabularies; ToO rev 16 "
+               "§7.8 states it at eighteen layers, two of them new at rev 15 and none at rev 16. At the pattern level it "
+               "inverts.",
+               2900, "ToO rev 16 §2.10, §2.11, §3.2, §3.3, §4.1, §4.4, §5.4, §7.1, §7.3, §7.8, §7.9, §7.10, §7.11, "
+               "§8.1–§8.2, §10, §13 (A6, A16, A17), Appendices J, K, L; derived/topak-boundary-register-2026.09.13.md §5, "
+               "§6, §7.3; G10 §1, items 8, 49; G12 §1, §1.1, §1.2, §2.4, §8, §7 items 7, 88, 101, 102; ADR-0053; ADR-0054 (Proposed, "
+               "R7), ADR-0055 (Proposed, R3); ADR-0007, ADR-0010, ADR-0015, ADR-0023, ADR-0025, ADR-0026 W1, ADR-0028, "
                "ADR-0030, ADR-0031, ADR-0032, ADR-0033 §4, ADR-0034, ADR-0035, ADR-0037, ADR-0038, ADR-0039 A2, "
                "ADR-0041 A1, ADR-0044, ADR-0045, ADR-0047, ADR-0050 and ADR-0052 (provisional)")
-    c.note = AMENDED_G11
+    c.note = AMENDED_G12
     X0, X1 = c.x0, c.x1
     y = c.y
 
@@ -120,12 +122,12 @@ def build():
     note = ("The five are the register's own wording. ToO §7.8 keeps decision, policy and deployment as rows, has no "
             "syntax or semantic row of its own, and adds fifteen: change, authority, evidence, credential, confinement, "
             "lineage, time, seat, detection, bundle and trusted base, at rev 14 ingress and operation, and at rev 15 workflow "
-            "and evidence of proof.")
+            "and evidence of proof. Rev 16 adds no row and changes none (Appendix L).")
     ph = c.para(0, 0, w2 - 32, note, 14, draw=False)
     h = max(c.card(0, 0, w2, lt, left, size=19, draw=False), 52 + chh + 16 + ph + 14)
     c.card(X0, y, w2, lt, left, accent="blue", size=19, h=h)
     cx = X0 + w2 + 30
-    c.card(cx, y, w2, "Five vocabularies in 2026.09.13; eighteen layers at ToO rev 15", [], accent="grey", h=h)
+    c.card(cx, y, w2, "Five vocabularies in 2026.09.13; eighteen layers at ToO rev 16", [], accent="grey", h=h)
     yy = y + 52
     for i, (a, b) in enumerate(chips):
         c.card(cx + 16 + i * (cw + 12), yy, cw, a, [b], accent="green", size=13.5, bullets=False, tsize=15, h=chh)
@@ -133,14 +135,15 @@ def build():
     y += h + 50
 
     # ---------------------------------------------------------------- the axis and the table
-    c.text(X0, y + 20, "Monotonicity, layer by layer (ToO rev 15 §7.8, every row)", 21, "ink", bold=True)
+    c.text(X0, y + 20, "Monotonicity, layer by layer (ToO rev 16 §7.8, every row)", 21, "ink", bold=True)
     y += 34
     y += c.para(X0, y, X1 - X0,
                 "The **Statement** column is §7.8 verbatim, and so is **Source**, with confirmation markers added "
                 "([[blue|C1–C4]]: author-ratified until confirmed; [[blue|provisional]]: in force and subject to "
                 "redesign, ADR-0029 A4). The two direction columns are this diagram's reading of each row, drawn from "
-                "the sections cited in them (§ alone means ToO rev 15). Ingress and Operation are new at rev 14 "
-                "(Appendix J), Workflow and Evidence of proof at rev 15 (Appendix K).",
+                "the sections cited in them (§ alone means ToO rev 16). Ingress and Operation are new at rev 14 "
+                "(Appendix J), Workflow and Evidence of proof at rev 15 (Appendix K); rev 16 leaves the table as it was "
+                "(Appendix L).",
                 14.5, "muted") + 16
     axis_w = 300
     tx = X0 + axis_w
@@ -183,7 +186,7 @@ def build():
     ], accent="red", size=15, h=ih)
     c.card(X0 + 2 * (iw + 30), y, iw, "Both directions cost something", [
         "Nothing bounds how the archetype grows: the archetype-evolution record (versioning, the dominance rule, "
-        "non-increasing TCB) is **unwritten** (§8.2; G11 item 7).",
+        "non-increasing TCB) is **unwritten** (§8.2; G12 item 7, as at G11).",
     ], accent="grey", size=15, h=ih, status="open")
     y += ih + 60
 
@@ -195,23 +198,27 @@ def build():
             "Register §7.3: a non-expiring grant broke the monotone story. Now a grant is one lease of an emergency "
             "seating and ends with its round; **R8 is withdrawn** (ADR-0026 W1; §3.3, §10; G10 item 8).",
             "X1's retirement is in force on ADR-0052, **provisional**: if it is redesigned, break-glass has no settled "
-            "form until the redesign is ratified (G10 §8).",
+            "form until the redesign is ratified (G12 §1.2, §8, as at G11).",
         ], "blue", "provisional"),
         ("Detection fails open against collusion", [
             "Coupling separates a present Observer from an absent one, not an honest one from a colluding one: every "
             "fact it reads is the Observer's own assertion (§5.4).",
             "An emergency seat is not a `thinker` and is not coupled (ADR-0039 A2; G10 item 49). Operators observe "
-            "each other by presence, not by anything read (G10 §8).",
+            "each other by presence, not by anything read; detection still fails open against a colluding Observer "
+            "(G12 §8).",
         ], "pink", "open"),
         ("Two rows on Proposed records", [
-            "**Lineage** rests on ADR-0035, Proposed; **Workflow** on ADR-0054 and ADR-0055, Proposed, which the "
-            "reference already follows on a floor stage not in force (G11 item 102).",
+            "**Lineage** rests on ADR-0035, Proposed and unrevised since G11 (G12 §2.4); **Workflow** on ADR-0054 and "
+            "ADR-0055, Proposed, which the reference already follows on a floor stage not in force (G12 item 102). "
+            "Their modules are **proved** since 2026.11.11 (`Workflow_proof`, `Mesh_proof`; R7, R3), and that does not "
+            "ratify them (G12 §8, item 101).",
             "Every other row cites Accepted (genesis) records or an established principle; most of those records carry "
             "confirmation markers and are author-ratified (§0).",
         ], "amber", "proposed"),
         ("A row on a provisional record", [
             "**Operation** rests on ADR-0050, provisional: its centre, a first lease from a quorum, **is not built**. At "
-            "the reference an unsigned [[red|BOOTSTRAP]] socket seats in place of the quorum (§7.10; G10 item 88).",
+            "the reference an unsigned [[red|BOOTSTRAP]] socket seats in place of the quorum (§7.10; G12 §1.2, item 88, "
+            "as at G11).",
             "Anything citing it says \"author-ratified, provisional\" (§0; A17).",
         ], "blue", "provisional"),
     ]

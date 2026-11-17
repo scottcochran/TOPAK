@@ -1,5 +1,5 @@
 """H4 — The reference implementation as deployed in development."""
-from lib import AMENDED_G11, Canvas, text_width
+from lib import AMENDED_G12, Canvas, text_width
 
 ID, SLUG = "H4", "reference-deployment"
 
@@ -11,20 +11,23 @@ CRATES = [
                    "state, trace recorder; since 10.05 labels and their fold (`labels.rs`), the control alphabet, "
                    "seatings and activations (`control.rs`); since 10.08 workflows and meshes, Proposed "
                    "(`workflow.rs`)", "none"),
-    ("topak-paxos", "Sans-IO crash-fault Multi-Paxos plus a `Voting` ghost", "none"),
+    ("topak-paxos", "Sans-IO crash-fault Multi-Paxos plus a `Voting` ghost; since 11.14 `Replica::snapshot`, the state "
+                    "between two calls of `handle` for a host that records, and the mutation `RequeueOnStepDown` "
+                    "(finding 9), the replica modelled by `spec/Paxos.tla` (A20)", "none"),
     ("topak-floor", "Cedar engine with `floor/proposed/workflow-floor.cedar`, `workflow.cedarschema` and "
                     "`genesis-values.json` compiled in by path, pinned by digest (since 10.08, a stage not in force; "
                     "the `emergency` stage 10.05 to 10.08; the genesis floor before)",
      "none"),
-    ("topak-bundle", "OPA sidecar client; local OPA WASM fallback bound to the lease's bundle; signature check "
-                     "(ADR-0044); the allowlist's load checks W1 to W9, label facts and the tool list (`allowlist.rs`)",
+    ("topak-bundle", "OPA sidecar client; local OPA WASM fallback bound to the lease's bundle (`opa-wasm` 0.3.4 since "
+                     "A19); signature check (ADR-0044); the allowlist's load checks W1 to W9, label facts and the tool "
+                     "list (`allowlist.rs`)",
      "HTTP"),
     ("topak-transport", "Round topics over `rskafka`, or in memory; record kinds `open`, `emit`, `actuate`, `control`, "
                         "`deny`", "Kafka"),
     ("topak-mcp", "The alphabet as MCP tools (`rmcp` server), `route` among them since 10.08, with the tool list in "
                   "its instructions; downstream tool host (`rmcp` client)", "stdio"),
     ("topak-contain", "The launcher's backends (host process, Docker, SIMULATED rung 3), appraisal, bridge; the Run "
-                      "tool host for Wasm modules; `topak-demo-guest`", "stdio"),
+                      "tool host for Wasm modules (`wasmtime` 48.0.8 since A19); `topak-demo-guest`", "stdio"),
 ]
 
 
@@ -36,23 +39,31 @@ def build():
                "a linked Cedar floor (since 2026.10.08 the proposed floor's `workflow` stage, which is **not in force**), "
                "an OPA sidecar with a WASM fallback, and Kafka or an in-memory transport. It was rebuilt on 2026.10.05 "
                "in five stages, to labels and handles, the tool list, the operator as a principal and the emergency "
-               "seating, and built on 2026.10.08 to two records that are **Proposed**, ADR-0054 and ADR-0055. It carries a launcher, a Run tool host and the operator path that the dev "
-               "configuration does not turn on. It is evidence, not the verified object.",
-               W, "mechanism/README.md (2026.10.05); mechanism/docker-compose.yml; mechanism/scripts/dev-init.sh, "
+               "seating, and built on 2026.10.08 to two records that are **Proposed**, ADR-0054 and ADR-0055. It was measured "
+               "for G12 at `d1b72db` (A19) and, after the consensus log's model, at `36269bc` (A20), both ratified in "
+               "Batch 40 on 2026.11.17, with no source file of the admit path changed since G11. It carries a launcher, a "
+               "Run tool host and the operator path that the dev configuration does not turn on. It is evidence, not the "
+               "verified object.",
+               W, "mechanism/README.md (2026.10.05; the trace commands of 2026.11.16); mechanism/docker-compose.yml; mechanism/scripts/dev-init.sh, "
                "build-bundle.sh, smoke.py; mechanism/crates/*/src (topak-node main.rs, lib.rs, api.rs, ops.rs, net.rs, "
                "wal.rs, config.rs, mechanism.rs, mechanism/launch.rs; topak-mcp proto.rs, server.rs, toolhost.rs; "
                "topak-bundle lib.rs, allowlist.rs; topak-transport lib.rs; topak-floor lib.rs; topak-core lib.rs, "
                "control.rs, labels.rs, rules.rs, types.rs, confine.rs, trace.rs, authentic.rs, state.rs (`Applied`); "
-               "topak-contain lib.rs, wasmtool.rs, guest.rs; topak-paxos/src/replica.rs); mechanism/crates/*/tests "
-               "(fifteen binaries); mechanism/corpus-pins.sha256 (61); GAPS-AND-ASSUMPTIONS G1–G19, I8, I13, I33, "
-               "I40–I49, findings 19–23; ADR-0033 §1–§6, A5–A17 (A9 to A15 ratified in Batches 32 to 35; A16, A17 "
-               "pending); ADR-0054, ADR-0055 (Proposed); topak-core workflow.rs, topak-node ops.rs (`load_workflow`, "
+               "topak-contain lib.rs, wasmtool.rs, guest.rs; topak-paxos/src/replica.rs (`snapshot`, `Mutation`), "
+               "topak-paxos/tests/sim.rs); mechanism/crates/*/tests (fifteen binaries, 159 tests counted); "
+               "mechanism/corpus-pins.sha256 (63); GAPS-AND-ASSUMPTIONS (at G12) G1–G19, I8, I13, I33, "
+               "I40–I49, findings 9, 19–23, §6; ADR-0033 §1–§6, §7 finding 9, A5–A20 (A9 to A15 ratified in Batches 32 to 35; "
+               "A16, A17, A18 pending; A19, R14, A20 ratified in Batch 40, B40); ADR-0054 (Proposed, R7), ADR-0055 (Proposed, R3); "
+               "topak-core workflow.rs, topak-node ops.rs (`load_workflow`, "
                "`workflow_status`); ADR-0044; "
                "ADR-0047, ADR-0048, ADR-0049, ADR-0050 and ADR-0052 (both provisional); ADR-0030 A3; floor/proposed/README.md "
-               "and the four stage gate results; ToO rev 15 §2.11, §15; G10 §2.3, §2.5, §3; G11 §2.2, §3, §7 items "
-               "34–36, 41, 46, 52, 56, 67, 84, 88, 91–98, 101–103, 108, §8, §9; spec/Mechanism-trace-results-2026.10.05.txt; "
+               "and the four stage gate results; ToO rev 16 §2.11, §15; G10 §2.3, §2.5, §3; G11 §3; G12 §2.2, §2.3, §3, "
+               "§7 items 1, 34–36, 41, 46, 52, 56, 67, 84, 88, 91–98, 101–103, 108, 119, 120, §8, §9; "
+               "spec/Mechanism-trace-results-2026.10.05.txt; spec/Paxos.tla, spec/PaxosTrace.tla, "
+               "spec/Paxos-results-2026.11.14.txt, spec/Paxos-larger-results-2026.11.14.txt, "
+               "spec/Paxos-trace-results-2026.11.14.txt; manifests/SHA256SUMS-REF-2026.11.16, -2026.11.16b; "
                "derived/topak-format-and-schema-inventory-2026.10.03.md §0, §4, §5, findings 8, 11, 12, 13, 19, 22")
-    c.note = AMENDED_G11
+    c.note = AMENDED_G12
     X0, X1 = c.x0, c.x1
     y = c.y
 
@@ -63,20 +74,24 @@ def build():
         "unsigned as before (I47 (b)); the operator path and the emergency seating run in the tests. "
         "In its tests the launcher (ADR-0033 A7, Batch 29) issues rung 1 on profiles that declare P3 `fail`, and rung 3 "
         "only SIMULATED under test keys: every principal it serves in earnest is `Mediated`; it fails assumption of use "
-        "A1, and no containment theorem describes it. **Never promoted**: no promotion pipeline exists, "
+        "A1, and no containment theorem describes it. Outside these tests one compiled occupant passes P3 at rung 1 "
+        "under this launcher, on DEV rules with no criterion in force, and is not `Contained` (G12 §2.3). **Never "
+        "promoted**: no promotion pipeline exists, "
         "and nothing in it is in any TCB. **Dev rules are not genesis rules**: `dev-init.sh` generates keys and writes "
         "their secrets to `dev/secrets/` in the clear (G6).",
-        "Cited like a TLA+ check, by manifest and commit: `SHA256SUMS-REF-2026.10.09`, digest `809c66beda3cdc6a`, 116 "
-        "entries, at `749d54f` (ADR-0033 A17, **pending**; the trees below). It fails two entries at today's tree, and "
-        "should: the pin file and the register moved after it (G11 §9). The last tree under a ratified addendum is "
-        "`075b2e7` (A15, Batch 35). **A running program invites being "
+        "Cited like a TLA+ check, by manifest and commit: `SHA256SUMS-REF-2026.11.16b`, digest `c311b84789afa8cc`, 116 "
+        "entries, at `36269bc` (ADR-0033 A20, **ratified in Batch 40**, 2026.11.17), the measure of the reference; "
+        "`SHA256SUMS-REF-2026.11.16`, `5bd868a0ca45e2c5`, 116 entries, at `d1b72db` (A19, Batch 40), its measure at G12 "
+        "(the trees below). At today's tree `-16b` fails one entry, and should: the pin file moved with Batch 40 (B40). "
+        "The workflow build in both trees is A16's and A17's, **pending**. **A running program invites being "
         "mistaken for the mechanism** (ToO §15).",
     ], accent="red", size=14.5, status="built", status_extra="evidence · rung 0 as deployed", tint=False, dash="6 4")
     y += bh + 40
 
     # ---- the rebuild of 2026.10.05
     c.text(X0, y + 21, "Rebuilt on 2026.10.05 in five stages, each its own commit and addendum (ADR-0033 A9 to A15; "
-                       "G10 §3); built to two Proposed records on 2026.10.08 (A16, A17; G11 §3)", 21, "teal", bold=True)
+                       "G10 §3); built to two Proposed records on 2026.10.08 (A16, A17; G11 §3); measured again on "
+                       "2026.11.16 (A19, A20; Batch 40; G12 §3)", 21, "teal", bold=True)
     y += 42
     sw_ = X1 - X0
     y += c.table(X0, y, [("Tree", sw_ * 0.07, {"mono": True}), ("Manifest · digest · entries", sw_ * 0.17),
@@ -117,6 +132,18 @@ def build():
         {"cells": ["749d54f", "`SHA256SUMS-REF-2026.10.09` · `809c66beda3cdc6a` · 116", "A17 · [[amber|pending]]",
                    "`workflow`", "`denials` dropped from a workflow's attributes, as ADR-0054 R6 decided (finding 22)",
                    "**155** · 38 Rego"], "accent": "amber"},
+        ["d1b72db", "`SHA256SUMS-REF-2026.11.16` · `5bd868a0ca45e2c5` · 116", "A19 (R14) · B40", "`workflow`",
+         "**Measured for G12**: `wasmtime` 47.0.4 to 48.0.8 (the Run tool host, T-0045-25) and `opa-wasm` 0.3.2 to "
+         "0.3.4 (the bundle's WASM fallback, T-0045-6) by a dependency update; a race in the end-to-end test "
+         "`a_workflow_is_run_by_its_promotion`, fixed in the test; ADR-0054 and ADR-0055 re-pinned at R7 and R3. **No "
+         "source file changed since G11.** Stands alone (R14) and brings no workflow build into force",
+         "**155** · 38 Rego, not rerun"],
+        ["36269bc", "`-16b` · `c311b84789afa8cc` · 116", "A20 · B40", "`workflow`",
+         "**The consensus log modelled** (pull request #68): `spec/Paxos.tla` and `spec/PaxosTrace.tla` added and "
+         "pinned; `Replica::snapshot`, `Mutation::RequeueOnStepDown` and traced runs in `topak-paxos`; the unmutated "
+         "replica's behaviour unchanged. Finding 9 closed, by the custodian's decision. The consensus log's trace "
+         "validation run twice; the admit path's not rerun; `mechanism/lean` stale",
+         "**159** across fifteen binaries · 38 Rego, not rerun"],
     ], size=13.5, accent="teal") + 12
     y += c.para(X0, y, sw_, "**For two days the reference followed records that were not in force and did not follow one "
                 "that was**, ADR-0013's X1; Batch 34 ended that by ratifying the records, two of them provisional (ToO "
@@ -124,7 +151,9 @@ def build():
                 "2026.10.04.txt`, every gate passing); the stage is **genesis-provisional** (ADR-0030 A3), and its files "
                 "open with a comment, \"not what the reference follows\", that is wrong and kept as gated (item 91). "
                 "**Since 2026.10.08 it follows Proposed records again**, at the custodian's direction, and links a "
-                "stage that is not the floor in force (G11 item 102).",
+                "stage that is not the floor in force (G12 item 102). **Since 2026.11.17 the measure of the reference is "
+                "`36269bc`** (A20, Batch 40), the first tree under a ratified addendum since `075b2e7`; the workflow "
+                "build in it stays A16's and A17's, pending, and nothing it measures is in force (B40).",
                 14, "muted") + 40
 
     # ---- columns
@@ -233,7 +262,9 @@ def build():
                             "node's attributes are lifted once when its round ends on its outcome; a clear input is "
                             "the predecessor's reports from **this replica's own cache** (finding 23). Proposed records "
                             "(I49)"),
-        ("Paxos", "`topak-paxos` driven by `driver.rs`: persists fsynced before any send"),
+        ("Paxos", "`topak-paxos` driven by `driver.rs`: persists fsynced before any send. The replica is modelled by "
+                  "`spec/Paxos.tla` and its simulated runs replay through `PaxosTrace.tla`; the driver and WAL are not "
+                  "traced (A20)"),
         ("WAL", "`run/n1/wal.jsonl`: promises and accepted votes, durable before replies"),
         ("expiry sweeper", "every 250 ms, proposes `EndRound(Expired)` for leases this replica saw expire; since "
                            "`7d8c7db` a grant's observation is recorded before the state lock is released (A13)"),
@@ -289,6 +320,11 @@ def build():
         "floor evaluated.",
         "No snapshots and no compaction: the log, the `chosen` map, the dedupe set and the WAL grow without bound "
         "(G14). Every admit waits for a consensus round.",
+        "**Modelled since 2026.11.14**: `spec/Paxos.tla`, an operational model of `replica.rs`, one operator per "
+        "function, **checked** in TLC at three replicas, one round and two leaders at most: 27 rows and two larger "
+        "rows, every one as expected; four mutations (`M_IGNOREPROMISED`, `M_BELOWPROMISE`, `M_NOPERSIST`, "
+        "`M_REQUEUE`) and ten witnesses. **Not proved**, and `Voting` is not written as a module (ADR-0033 A20, "
+        "Batch 40).",
     ], accent="violet", size=14)
     c.arrow([(cx_ + cw / 2, n1_bot), (cx_ + cw / 2, ny)], "violet", sw=2.4, both=True)
     c.arrow([(cx_ + nw / 2, ny + peer_h), (cx_ + nw / 2, pax_y)], "violet", sw=2.4, both=True)
@@ -522,25 +558,36 @@ def build():
     y += 42
     w4 = (X1 - X0 - 3 * 36) / 4
     hs = [
-        ("Tests: 155 across fifteen binaries; 38 Rego", "violet", [
+        ("Tests: 159 across fifteen binaries; 38 Rego", "violet", [
             "`mutations.rs` (36), `confinement.rs` (19), `operators.rs` (6), `emergency.rs` (5), `workflow.rs` (18), "
-            "`drift.rs` (2) (core); `sim.rs` (4, Paxos with `Voting` invariants); `floor.rs` (5, the stage's cases), "
+            "`drift.rs` (2) (core); `sim.rs` (8, Paxos with `Voting` invariants, the amplification check, a host that "
+            "does not persist, and two traced runs; four added at A20); `floor.rs` (5, the stage's cases), "
             "`workflow.rs` (3) (floor); `allowlist.rs` (13, W1 to W10), `fallback.rs` (10) (bundle tier); `e2e.rs` (10), "
             "`contain.rs` (14) (node); `launch.rs` (6), `wasmtool.rs` (4) (`topak-contain`).",
             "TLA+ properties restated as Rust tests with the same mutations; run on a copy of the tree at `11aaf6a` "
-            "(A16) and at `749d54f` (A17), 155 passing.",
+            "(A16) and at `749d54f` (A17), 155 passing; at `d1b72db` 155 and at `36269bc` 159, none failing, run "
+            "2026.11.17 for Batch 40 (B40). The drift test fixes its repository root at compile time, so a cached "
+            "binary built in another worktree can read that tree's pins (A19; G12 item 120).",
         ]),
-        ("Trace recorder → `spec/Mechanism.tla`", "violet", [
+        ("Trace recorders → `spec/Mechanism.tla`, `spec/Paxos.tla`", "violet", [
             "`TOPAK_TRACE_DIR` makes every `apply` write a step: index, entry, result and a projected state "
             "(`trace.rs`). `trace2tla.py` converts; `mechanism-trace-run.sh` replays in TLC.",
             "2026.10.05 (A14): **82 traces, 1,007 steps, every step matching**, each state also read against "
             "`Confinement_A1`'s invariants; the model broken on purpose five ways, each caught, and a sixth as an "
             "evaluation error. It found the race in lease expiry. A mechanized link, **not a refinement**; T-0045-28 "
-            "stays a trust root. **Not rerun since**: the model does not cover workflows (A16). The Lean models of "
-            "`apply` replay the same traces, and are stale since the workflow build (G11 item 103).",
+            "stays a trust root. **Not rerun since**, A19 and A20 included: the model does not cover workflows (A16); "
+            "the self review of 2026.11.11 reran it and matched 82 of 83 traces, the end-to-end workflow run does not "
+            "replay and `tests/workflow.rs` is not traced (G12 item 56). The Lean models of `apply` replay the same "
+            "traces, and are stale since the workflow build (G12 item 103, as at G11).",
+            "**The consensus log, since 2026.11.14** (A20): `sim.rs` records one event per call of `Replica::handle` "
+            "over `Replica::snapshot`; `paxos-trace2tla.py` converts, `paxos-trace-run.sh` replays through "
+            "`spec/PaxosTrace.tla`: **8 traces, 3,302 events**, the four unmutated runs matching event for event and "
+            "each mutated run violating the property its mutation must break; run at `63e9922` and again at "
+            "`48a392c`, the same lines. The host is the simulation's: `topak-node`'s driver and WAL are not traced.",
         ]),
         ("Corpus pins and the drift test", "blue", [
-            "`corpus-pins.sha256`: **61 pins**, 42 records and 19 TLA+ modules the reference follows.",
+            "`corpus-pins.sha256`: **63 pins**, 42 records and 21 TLA+ modules the reference follows, `Paxos.tla` and "
+            "`PaxosTrace.tla` since `7df7bb6` (A20).",
             "`cargo test -p topak-core --test drift` fails when a pinned file changes, or when the code cites a record "
             "that is not pinned. `PROVISIONAL (<tag>)` is meant to mark every gap in the code, and the register says it "
             "does; two items carry no tag (I40 evidence retention, I41 session proof) and two sites a bare "
@@ -549,7 +596,7 @@ def build():
         ("Live smoke run", "amber", [
             "`scripts/smoke.py`: processes, TCP, operator CLI and an MCP client, in-memory or against Kafka and the "
             "sidecar.",
-            "**Not rerun since 2026.09.25** (G7 item 52), and as written it would fail at its grant line: it reads a "
+            "**Not rerun since 2026.09.25** (item 52, as at G11; G12 §7), and as written it would fail at its grant line: it reads a "
             "`note` key the `grant` reply does not have (inventory finding 19).",
         ]),
     ]
@@ -559,15 +606,16 @@ def build():
     y += hh + 60
 
     # ---- not built panel
-    c.text(X0, y + 21, "What it does not show (ToO rev 15 §15; ADR-0033 §6, A11, A12, A16; the register at G11)", 21, "red",
+    c.text(X0, y + 21, "What it does not show (ToO rev 16 §15; ADR-0033 §6, A11, A12, A16, A20; the register at G12)", 21, "red",
            bold=True)
-    c.status(X0 + text_width("What it does not show (ToO rev 15 §15; ADR-0033 §6, A11, A12, A16; the register at G11)",
+    c.status(X0 + text_width("What it does not show (ToO rev 16 §15; ADR-0033 §6, A11, A12, A16, A20; the register at G12)",
                              21, True) + 20, y + 3, "notbuilt")
     y += 42
     nb = [
-        ["Confinement", "The launcher makes the alphabet the whole channel for a guest it starts; no guest it starts "
-         "passes P3, no host it runs on attests (rung 3 is SIMULATED, rung 2 a seam), and an agent outside a launcher "
-         "still has a shell", "G1; items 34, 36"],
+        ["Confinement", "The launcher makes the alphabet the whole channel for a guest it starts; in its tests no guest "
+         "passes P3, and outside them one compiled occupant does, at rung 1 on DEV rules with no criterion in force, so "
+         "no real principal is `Contained`; no host it runs on attests (rung 3 is SIMULATED, rung 2 a seam), and an "
+         "agent outside a launcher still has a shell. G1's P3 line is stale", "G1; G12 §2.3, items 1, 34, 36, 119"],
         ["Tool hermeticity", "Tools are pinned by binary and schema and run in a cleared environment; their behaviour "
          "is unchecked", "G4"],
         ["Channel fidelity", "A Wasm-hosted Run tool reaches only its declared target; a native one is checked by "
@@ -627,6 +675,10 @@ def build():
          "accent": "teal"},
         {"cells": ["(built since G10)", "Workflows and meshes, under A16 and A17, both pending, to records that are "
                    "[[amber|Proposed]], on a floor stage that is not in force", "G11 §3"], "accent": "amber"},
+        {"cells": ["(measured since G11)", "A dependency update, a test's race fixed and two re-pins (A19); the "
+                   "consensus log's model with `Replica::snapshot`, the re-queue mutation and traced runs (A20); both "
+                   "ratified in Batch 40, no source file of the admit path changed, finding 9 closed. Nothing measured "
+                   "is thereby in force", "G12 §3; ADR-0033 B40"], "accent": "teal"},
     ]
     c.table(X0, y, [("Not built", (X1 - X0) * 0.2, {"bold": True}), ("What stands in, and what that leaves",
                                                                       (X1 - X0) * 0.68),

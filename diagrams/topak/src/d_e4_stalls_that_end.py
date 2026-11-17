@@ -187,7 +187,10 @@ def build():
                "**not proved**. One mutation, `M_HBLIVE`, passes every safety check and every witness, and only a "
                "leads-to property catches it. The proofs are owed, and the four properties have the shape of the "
                "prover's first known unsound case (ADR-0046 A2). Neither module is a record: they sit under ADR-0039 "
-               "(accepted, C4) and its A2 (provisional, with ADR-0052), and G11 cites them by digest.",
+               "(accepted, C4) and its A2 (provisional, with ADR-0052), and G11 cites them by digest, which G12 keeps "
+               "(G12 §3). At G12, as at G11, **no liveness is proved** (G12 §8); what moved is the count of proof "
+               "modules, 34 for 24, and three more invariants over `ENABLED`, proved in the command-chain overlay, "
+               "Proposed (§2, §7).",
                3000,
                "derived/topak-liveness-2026.10.07.md (the plan: already safety, Tier 0, Tier 1 items 1–5, Tier 2, "
                "\"Why it's worth the cost\"); spec/Coupling_live.tla (d65189d3c71b30b4), Coupling_live-rows.txt and "
@@ -204,9 +207,11 @@ def build():
                "ADR-0039 §1, §2 with A2, §4, finding 3, B14, B34; ADR-0046 §3 with A2, B37; ADR-0052 (provisional, "
                "B34); ADR-0053 (B36); ADR-0024 open obligations; derived/topak-critical-review-2026.10.02.md CR-37; "
                "G11 §2.9, §3 (the liveness rows; results 1 and 8; \"What these checks are\"), §5, §7 items 104, 105, "
-               "§8; ToO rev 15 §3.3, §5.5, §11.3, §12 item 21, §13 rows A12 and A18",
+               "§8; G12 §2.6, §2.9, §3 (Alone, Release; \"G11's artifacts keep their digests\"), §7 items 74, 104, 107 "
+               "(item 105 not relisted: as at G11), §8; ToO rev 16 §3.3, §5.5, §11.3, §12 item 21, §13 rows A12 and A18",
                # drawn new against G11 and ToO rev 15 (lib.STATE_G11), where lib offers the footer for it
                **({"state": lib.STATE_G11} if hasattr(lib, "STATE_G11") else {}))
+    c.note = lib.AMENDED_G12
     X0, X1 = c.x0, c.x1
     W = X1 - X0
     y = c.y
@@ -217,9 +222,9 @@ def build():
     sx += c.status(sx, y, "provisional", "ADR-0039 A2 · B34, with ADR-0052: the escape hatch") + 10
     sx += c.status(sx, y, "accepted", "ADR-0046 A2 · C2 · B37: the prover's two unsound cases") + 10
     sx += c.status(sx, y, "accepted", "ADR-0053 · B36: the Lean route") + 10
-    sx += c.pill(sx, y, "Not a record: the two _live modules, cited by digest at G11 §3, frozen from G11", "grey",
+    sx += c.pill(sx, y, "Not a record: the two _live modules, cited by digest at G11 §3, frozen from G11; digests kept at G12 §3", "grey",
                  11.5) + 10
-    c.status(sx, y, "open", "G11 §7 item 105: liveness checked, not proved")
+    c.status(sx, y, "open", "G11 §7 item 105, as at G12: liveness checked, not proved (G12 §8)")
     y += 54
 
     # ================================================================ 1. why
@@ -264,15 +269,15 @@ def build():
     y += h + 50
 
     # ================================================================ 2. the plan's tiers
-    y += c.heading(X0, y, "2 · The plan's tiers, and where each item stands at G11 "
-                          "(derived/topak-liveness-2026.10.07.md; G11 §7 item 105)", "ink", 21)
+    y += c.heading(X0, y, "2 · The plan's tiers, and where each item stands at G12 "
+                          "(derived/topak-liveness-2026.10.07.md; G11 §7 item 105, as at G12; G12 §3, §8)", "ink", 21)
     st_proved = "[[teal|Stated · proved · certified]]"
     st_checked = "[[blue|Stated · checked by TLC]] · [[red|not proved]]"
     st_none = "[[red|Not stated · unmodelled]]"
     st_decl = "[[grey|Declared, not proved]]"
     st_safe = "[[green|Already safety]]"
     y += c.table(X0, y, [("Plan item", 330, {"bold": True}), ("The claim, in the plan's words", 1000),
-                         ("Rests on", 330), ("Where it stands at G11", W - 1660)], [
+                         ("Rests on", 330), ("Where it stands at G12 (as at G11 unless said)", W - 1660)], [
         {"group": "Already safety: withdrawing authority. \"Don't spend a liveness proof here\"", "accent": "green"},
         ["Expiry", "Checked at decide time on a local clock whose error margin ends the lease early.",
          "ADR-0032 §1, §2",
@@ -297,6 +302,15 @@ def build():
                    "ADR-0039 A2 (provisional, with ADR-0052)",
                    st_proved + " · [[teal|proved in Lean]], of the encoding: `Emergency_live.tla`, 32 TLC rows, two "
                                "invariants proved through Isabelle; the encoding checked against TLC's graphs (§4)"],
+         "accent": "teal"},
+        {"cells": ["**Since G11: three more, in the overlay**", "Not in the plan (2026.10.07). The command-chain "
+                   "overlay, drafted 2026.11.10, states three more invariants over `ENABLED`: two in `Alone`, one in "
+                   "`Release`. The diagram's row, from G12 §3 and §8.",
+                   "ADR-0062 R1, R2; ADR-0066 R1 (Proposed: no floor, no code)",
+                   st_proved + ": `Alone` 263 obligations, `Release` 613, both certified, LS4 steps uncertified as for "
+                               "every module (G12 §3); \"five `ENABLED` invariants are proved: two for the emergency "
+                               "call, and three in the overlay, under Proposed records\" (G12 §8). No Lean encoding: "
+                               "the Lean route is unchanged (G12 §2.9, item 107)"],
          "accent": "teal"},
         {"group": "Tier 1: real leads-to properties to model and prove, in priority order", "accent": "blue"},
         {"cells": ["**1 · The Run coupling stall resolves**", "If the cell Observer eventually holds its lease and "
@@ -757,7 +771,7 @@ def build():
             "Nothing in it uses fairness: a theorem about `SpecL` holds of every fair spec, since each adds "
             "conjuncts to it.",
             "[[red|Not proved: the four leads-to properties.]] They are owed, with `K ≥ 1` a hypothesis of the two "
-            "admit properties (G11 §7 item 105; §8: \"No liveness is proved\").",
+            "admit properties (G11 §7 item 105, as at G12; G12 §8: \"No liveness is proved\").",
         ], "red", {"status": "open", "status_extra": "the four proofs owed"}),
     ])
     y += h + 60
@@ -862,17 +876,21 @@ def build():
             "spec/README.md: \"A liveness property also needs a variant and a WF1-shaped proof; for `Coupling_live` "
             "it is owed.\"",
         ], "grey", {}),
-        (*cols[1], "The prover's two known unsound cases (T-0045-31; Batch 37)", [
+        (*cols[1], "The prover's two known unsound cases (T-0045-31; Batches 37, 39)", [
             r"**First: a term under a binder.** tlapm 7824dab hands SMT, Zenon and Isabelle an untranslated term, an "
             r"unexpanded `ENABLED` or `\cdot` or a temporal formula, as an opaque constant that does not depend on any "
             "variable bound around it, so a false statement can prove and certify.",
             "Among those that certify: a universal temporal statement from a true one-instance lemma, and "
-            "`Spec => []P` for a quantified `P` from a true `Spec => []P'`. **No check detects this case** (G11 item "
+            "`Spec => []P` for a quantified `P` from a true `Spec => []P'`. **No check detects this case** (G12 item "
             "104).",
             "**Second: two terms with one name**, by a 20-bit hash tlapm does not check; `FALSE` proves and "
             "certifies through SMT and through `PTL`.",
-            "No result in the 24 proof modules rests on either (`proof-scan-results-2026.10.08.txt`).",
-        ], "red", {"status": "accepted", "status_extra": "ADR-0046 A2 · C2 · B37"}),
+            "No result in the 34 proof modules rests on either: three scans, `proof-scan-results-2026.10.08.txt` "
+            "(G11's 24), `-2026.11.10.txt` (the overlay's eight) and `-2026.11.11.txt` (`Workflow`, `Mesh`); none finds "
+            "a capture, and no renamed run differs (G12 §2.9). **Reported upstream** 2026.10.18 (ADR-0046 A3, B39); the "
+            "first case and the collision half of the second are since fixed upstream, in `ff40755`; **the pin, "
+            "`7824dab`, has both** (G12 §2.6, item 104).",
+        ], "red", {"status": "accepted", "status_extra": "ADR-0046 A2 · C2 · B37 · A3 · B39"}),
         (*cols[2], "The four have the first case's shape", [
             "**Two of the four are quantified**: `AdmitsResume` over `n`, `NextRoundGranted` over `r`.",
             "**All four have `ENABLED` premises** (ADR-0046 A2).",
