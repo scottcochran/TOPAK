@@ -6,7 +6,7 @@ two files explain how it fits together and what the words mean.
 - `theory-of-operation.md` — the head. At the 2026.09.30 cut its bytes were revision 10's; revision 11 (2026.10.01, tag
   `ToO-rev11`) is the first revision made as an edit, revision 12 (2026.10.02, tag `ToO-rev12`) is cut
   against G8, revision 13 (2026.10.02, tag `ToO-rev13`) against G9, revision 14 (2026.10.05, tag `ToO-rev14`)
-  against G10, revision 15 (2026.10.09, tag `ToO-rev15`) against G11, and revision 16 (2026.11.16) against G12. A revision is an edit, a "Changes from revision N" appendix, a commit and a tag `ToO-revN`. **The
+  against G10, revision 15 (2026.10.09, tag `ToO-rev15`) against G11, and revision 16 (2026.11.16, tag `ToO-rev16`) against G12. A revision is an edit, a "Changes from revision N" appendix, a commit and a tag `ToO-revN`. **The
   narrative is revised against a checkpoint after it is cut**, so G12's manifest measures revision 15 and the next
   cut will measure revision 16. `git diff ToO-rev9 ToO-rev10 -- narrative/theory-of-operation.md` is how two revisions are read
   side by side.

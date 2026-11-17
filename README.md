@@ -17,7 +17,7 @@ deployable system.
 
 ## Start here
 
-- **How it fits together:** [Theory of Operation](narrative/theory-of-operation.md) (revision 16, against G12)
+- **How it fits together:** [Theory of Operation](narrative/theory-of-operation.md) (revision 16, tag `ToO-rev16`)
 - **State of record** (what is ratified, owed and open): [Genesis Checkpoint G12](checkpoints/topak-genesis-checkpoint-G12-2026.11.16.md). Where it and the narrative disagree, the checkpoint wins; where a frozen checkpoint is known to be wrong, [`checkpoints/README.md`](checkpoints/README.md) says so.
 - **Vocabulary:** [Glossary](narrative/glossary.md)
 - **Reviews:** [Reviewer's Guide](REVIEWERS_GUIDE_README.md): guidance for potential reviewers.
