@@ -10,6 +10,7 @@ description: "Writes, model-checks and proves TLA+ specifications: transition sy
 - [When to Use](#when-to-use)
 - [When NOT to Use](#when-not-to-use)
 - [Setup and bundled scripts](#setup-and-bundled-scripts)
+- [The tla-kit server](#the-tla-kit-server)
 - [The workflow](#the-workflow)
 - [Finding the inductive invariant](#finding-the-inductive-invariant)
 - [Quick reference](#quick-reference)
@@ -99,6 +100,45 @@ and beside the modules if not, and find the jar and the pins in a `tools/`
 directory at or above the modules. A project that already has run scripts,
 generators or a layout of its own keeps them, as under
 [When NOT to Use](#when-not-to-use).
+
+## The tla-kit server
+
+This plugin declares an MCP server, `tla-kit`
+([scottcochran/tla-kit](https://github.com/scottcochran/tla-kit)): one
+container image of TLC, SANY and tlapm, named by digest, with these
+scripts inside. Claude Code starts it with the session, as `docker run`
+with the repository's root (the working directory outside a repository)
+mounted as the project; its paths are relative to that root. The first
+start pulls the image, about 800 MB. If the server shows as failed, run
+the `docker pull` of the image `.mcp.json` names once, and start a new
+session.
+
+When the server is there, prefer it to tools on the machine: the checker
+and the prover are then the same build on every machine and in CI.
+
+| Step | Tool | Stands for |
+|------|------|------------|
+| setup | `info` | `setup_check.py`: what the image holds, with the digests a results file cites |
+| 1 | `parse`, `symbols` | SANY on a module, its errors with their locations; its constants, variables, definitions and theorems |
+| 1 | `evaluate` | A constant expression, through a scratch module |
+| 2, while working | `tlc_run`, `simulate`, `coverage`, `state_graph` | `tlc_run.py`, with the counterexample as structured states; a sampled run; per-action counts, naming actions that never fire; a small model's graph |
+| 2, the evidence | `tlc_rows` | `tlc_rows.py` |
+| 3, while working | `proof_check`, then `prove` | `tlapm --summary`; tlapm on a theorem or step by name, a line, a range or the module, returning each unproved obligation's text, the backends tried and why each failed |
+| 3 and 4, the evidence | `proof_results` | `proof_results.py` |
+| 4 | `flip_test`, `proof_sync` | `flip_test.py`, `proof_sync.py` |
+
+Only `tlc_rows` and `proof_results` write into the project, and only the
+results files their scripts write, as from the command line. Everything
+else the server returns is working output, not evidence. The proof
+scripts hold the image's prover to the project's `tools/TLAPS-PIN`, as on
+the command line. Without a pin they refuse unless an unpinned run is
+asked for, and then the output and the results file say so.
+
+**When Docker is absent**, the server fails to start and its tools are
+missing. Use the scripts above on the machine instead, after
+`setup_check.py`: the method and the evidence are the same, and only where
+the tools run changes. Do not install Docker or pull the image without the
+user's say.
 
 ## The workflow
 

@@ -113,6 +113,19 @@ machine to machine and which `tlc_rows.py` does not print), one row in
 eight of the other three (166
 rows), one proof module (814 obligations) and two flip tests.
 
+## The MCP server
+
+`.mcp.json`, at the root of this plugin, declares the `tla-kit` server
+([scottcochran/tla-kit](https://github.com/scottcochran/tla-kit)): TLC,
+SANY and tlapm in one container image named by digest, with the scripts
+above inside, offered as fourteen tools. Claude Code starts it with the
+session through `sh` and `docker run`, with the repository's root mounted
+as the project. It needs Docker and a POSIX shell; without them the server
+fails to start, and the skill says to run the scripts on the machine as
+before. `SKILL.md`'s "The tla-kit server" says which tool answers which
+step. A new tla-kit release reaches the plugin by a change to the digest
+in `.mcp.json`.
+
 ## Status
 
 A draft. The scripts are tested against the bundled fixture, TOPAK's
