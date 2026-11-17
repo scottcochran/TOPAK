@@ -71,8 +71,8 @@ disagreements are G12 §7, items 89 to 94, 98, 102, 103, 106, 108, 111, 113 and 
 reference's 2026.10.05 rebuild.
 
 **Mind the working tree.** G12 was cut at commit `0a1bc8d` (tag `G12`). The narrative was revised against it
-afterwards: Theory of Operation revision 16, the glossary of 2026.11.16 and the architecture description's revision 4
-are later than G12's manifest, which measures their predecessors. The diagrams were drawn against G10 and amended
+afterwards: Theory of Operation revision 16 (tag `ToO-rev16`), the glossary (tag `glossary-2026.11.16`) and the
+architecture description's revision 4 are later than G12's manifest, which measures their predecessors. The diagrams were drawn against G10 and amended
 since, among them for workflows and the command-chain overlay; several are behind G12, and nothing is drawn for
 ADR-0057, ADR-0058 or ADR-0069 to ADR-0077 (G12 item 76). The derived documents are older still. Agree with the
 custodian which manifest digest you are reviewing, and check out that commit.
