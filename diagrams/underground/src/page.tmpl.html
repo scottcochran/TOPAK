@@ -1,0 +1,178 @@
+<title>TOPAK Diagram of Lines</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cabin:ital,wdth,wght@0,75..100,400..700;1,75..100,400..700&family=Hammersmith+One&display=swap">
+<style>
+/* Layout: one printed pocket map, full width, then its line diagrams and its index to stations. */
+{{MAPCSS}}
+*{box-sizing:border-box}
+body{margin:0}
+body{background:var(--paper);color:var(--ink);font-family:var(--f-text);font-size:16px;line-height:1.55}
+.wrap{max-width:1560px;margin:0 auto;padding-block:36px 64px;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));
+  display:flex;flex-direction:column;gap:44px}
+.prose{max-width:68ch}
+h1,h2,h3{font-family:var(--f-display);font-weight:400;text-wrap:balance;margin:0;letter-spacing:.01em}
+h1{font-size:clamp(30px,4.6vw,50px);line-height:1.08;color:var(--frame)}
+h2{font-size:25px;line-height:1.2;color:var(--frame)}
+h3{font-size:19px;line-height:1.2}
+p{margin:0}
+.eyebrow{font-size:12.5px;letter-spacing:.16em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.masthead{display:flex;flex-direction:column;gap:14px}
+.masthead .lede{font-size:18.5px;line-height:1.5;max-width:66ch}
+.read{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:18px 36px;margin:0;padding:18px 0 0;
+  border-top:2px solid var(--frame)}
+.read div{min-width:0}
+.read dt{font-family:var(--f-display);font-size:15.5px;letter-spacing:.04em;margin-bottom:3px}
+.read dd{margin:0;color:var(--muted);font-size:15px}
+
+section{display:flex;flex-direction:column;gap:18px;min-width:0}
+.sechead{display:flex;flex-direction:column;gap:6px}
+.sechead p{color:var(--muted);max-width:68ch}
+
+/* chips */
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{font:600 13.5px/1 var(--f-text);letter-spacing:.03em;color:var(--ink);background:transparent;
+  border:1.5px solid var(--rule);border-radius:999px;padding:8px 13px;display:inline-flex;align-items:center;gap:8px;cursor:pointer}
+.chip:hover{border-color:var(--ink)}
+.chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.chip:focus-visible,.scroller:focus-visible{outline:3px solid var(--frame);outline-offset:2px}
+.swatch{display:inline-block;width:26px;height:7px;flex:none;background:var(--c)}
+.swatch.prov{background:linear-gradient(var(--c) 0 33%,var(--paper) 33% 67%,var(--c) 67%)}
+.chip.on .swatch.prov{background:linear-gradient(var(--c) 0 33%,var(--ink) 33% 67%,var(--c) 67%)}
+.swatch.prop{background:repeating-linear-gradient(90deg,var(--c) 0 7px,transparent 7px 11px)}
+.sw-admit{--c:var(--l-admit)}.sw-authority{--c:var(--l-authority)}.sw-promotion{--c:var(--l-promotion)}
+.sw-record{--c:var(--l-record)}.sw-detection{--c:var(--l-detection)}.sw-ingress{--c:var(--l-ingress)}
+.sw-operator{--c:var(--l-operator)}.sw-emergency{--c:var(--l-emergency)}.sw-workflow{--c:var(--l-workflow)}
+.sw-shuttle{--c:var(--l-shuttle)}.sw-overlay{--c:var(--l-overlay)}
+.chip.on .sw-record{--c:var(--paper)}
+
+/* scrollers: the diagrams may be wider than the page, the page never is */
+.scroller{overflow-x:auto;max-width:100%;border:1px solid var(--rule)}
+#map{display:block;width:100%;min-width:1240px;height:auto}
+.strip{display:block;width:100%;min-width:880px;height:auto}
+.hint{font-size:13.5px;color:var(--muted)}
+
+/* line diagrams */
+.lines{display:flex;flex-direction:column;gap:40px}
+.linecard{display:flex;flex-direction:column;gap:12px;min-width:0}
+.linecard header{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.linecard header .swatch{width:38px;height:8px}
+.tag{font-size:12.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);font-weight:600}
+.linecard .lede{max-width:72ch}
+.stops{list-style:none;margin:4px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:14px 28px}
+.stops li{display:flex;gap:10px;min-width:0;align-items:flex-start}
+.stops .n{flex:none;width:24px;height:24px;border-radius:50%;border:2.4px solid var(--ink);display:grid;place-items:center;
+  font:400 12px/1 var(--f-display);margin-top:1px}
+.stops div{min-width:0}
+.stops b{font-family:var(--f-display);font-weight:400;font-size:14.5px;letter-spacing:.03em}
+.stops p{font-size:14.5px;line-height:1.45;color:var(--muted)}
+.src{font-size:13.5px;color:var(--muted);font-style:italic}
+
+/* index */
+table{border-collapse:collapse;width:100%;min-width:900px;font-size:14.5px;line-height:1.42}
+th,td{text-align:left;vertical-align:top;padding:8px 14px 8px 0;border-bottom:1px solid var(--rule)}
+thead th{font:400 12.5px/1.2 var(--f-display);letter-spacing:.12em;text-transform:uppercase;color:var(--muted);
+  border-bottom:2px solid var(--frame);padding-bottom:8px}
+tbody th{font-weight:700;white-space:nowrap;padding-left:2px}
+tr.grp th{font:400 15.5px/1.2 var(--f-display);letter-spacing:.04em;padding-top:22px;border-bottom:1.5px solid var(--ink);white-space:normal}
+tr.grp .swatch{width:34px;height:8px;margin-right:10px;vertical-align:middle}
+.sq{font-family:var(--f-display);color:var(--frame);font-variant-numeric:tabular-nums;white-space:nowrap}
+.rec{color:var(--muted);min-width:150px}
+.chg{display:block;font-weight:400;font-style:italic;font-size:12.5px;color:var(--muted);white-space:normal}
+.tablewrap{overflow-x:auto;max-width:100%}
+.tablewrap.scroller{border:0}
+.colophon{border-top:2px solid var(--frame);padding-top:18px;color:var(--muted);font-size:14.5px;display:flex;flex-direction:column;gap:10px}
+.colophon p{max-width:82ch}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.9em}
+</style>
+
+<div class="wrap">
+  <header class="masthead">
+    <p class="eyebrow">Drawn 2026.11.14 · state of record: Genesis Checkpoint G11</p>
+    <h1>TOPAK, as a diagram of lines</h1>
+    <p class="lede">The pattern redrawn the way a 1930s pocket railway map draws a city: straight lines, 45-degree
+      bends, evenly spaced stations and one river. An action boards at a Thinker's seat and rides the red line. It
+      reaches the world only if it gets across the log.</p>
+    <dl class="read">
+      <div><dt>The river is the consensus log</dt><dd>North of it a request is decided. South of it an effect is
+        performed. Nothing reaches the south bank without being ordered first, and a denial never crosses.</dd></div>
+      <div><dt>A line is one path of authority or data</dt><dd>A solid line is an accepted record. A line with a
+        pale core is provisional. A broken line is Proposed, drawn as under construction.</dd></div>
+      <div><dt>A footnote mark is the reference's state</dt><dd>† not built, ‡ simulated, § partial, as the
+        Architecture Description reports the reference implementation. The map itself draws the archetype.</dd></div>
+    </dl>
+  </header>
+
+  <section aria-labelledby="h-map">
+    <div class="sechead">
+      <h2 id="h-map">The network</h2>
+      <p>Ten lines, {{NSTATIONS}} stations. Pick a line to follow it on its own. Hover a station for what happens there.</p>
+    </div>
+    <div class="chips" role="group" aria-label="Show one line">
+{{CHIPS}}
+    </div>
+    <div class="scroller" tabindex="0" role="group" aria-label="The network map, scrollable">
+{{MAP}}
+    </div>
+    <p class="hint">On a narrow screen the map scrolls sideways. Grid letters and numbers on the frame match the Sq. column of the index.</p>
+  </section>
+
+  <section aria-labelledby="h-lines">
+    <div class="sechead">
+      <h2 id="h-lines">Line diagrams</h2>
+      <p>The strips that hang above a carriage's windows: one line each, every stop in order. Two of the four are
+        lines the network map does not carry, because their records are Proposed.</p>
+    </div>
+    <div class="lines">
+{{STRIPS}}
+    </div>
+  </section>
+
+  <section aria-labelledby="h-index">
+    <div class="sechead">
+      <h2 id="h-index">Index to stations</h2>
+      <p>Each station under the line that owns its tick, with its square on the map, what happens there, the records
+        that decide it and where the reference implementation stands.</p>
+    </div>
+    <div class="tablewrap scroller" tabindex="0" role="group" aria-label="Index to stations, scrollable">
+      <table>
+        <thead><tr><th scope="col">Station</th><th scope="col">Sq.</th><th scope="col">What happens there</th><th scope="col">Records</th><th scope="col">At the reference</th></tr></thead>
+        <tbody>
+{{INDEX}}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer class="colophon">
+    <p><b>A diagram describes the records and decides nothing.</b> Where this one and a record disagree, the record
+      wins, and the state of record is the latest checkpoint. Read from <code>narrative/architecture-description.md</code>
+      §3 to §7, <code>narrative/theory-of-operation.md</code> (revision 15) §1, §2.4, §2.6 and §2.8,
+      <code>decisions/README.md</code>, ADR-0069 §1, <code>diagrams/README.md</code> and the source of diagram A5.</p>
+    <p>Three choices are the drawing's own and no record's: which stations sit on which line, the river as the
+      consensus log with its two banks, and the Survey line's reading of T. Build and Run share one membrane, so the
+      Admit line is drawn once and forks only where their effects differ. Reference marks follow the Architecture
+      Description §5.2 and §7.2; a station with no mark is built there, external, or not a block of the reference.</p>
+  </footer>
+</div>
+
+<script>
+(function(){
+  var map=document.getElementById('map');
+  var chips=[].slice.call(document.querySelectorAll('.chip'));
+  function show(line){
+    if(line){map.setAttribute('data-hl',line);}else{map.removeAttribute('data-hl');}
+    chips.forEach(function(c){
+      var on=(c.getAttribute('data-line')||'')===(line||'');
+      c.classList.toggle('on',on);c.setAttribute('aria-pressed',on?'true':'false');
+    });
+  }
+  chips.forEach(function(c){
+    c.addEventListener('click',function(){
+      var l=c.getAttribute('data-line')||'';
+      show(c.classList.contains('on')&&l?'':l);
+    });
+  });
+  show('');
+})();
+</script>

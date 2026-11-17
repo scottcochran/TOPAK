@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="map" viewBox="0 0 1760 1080" role="img" aria-labelledby="map-t map-d" xmlns="http://www.w3.org/2000/svg">
+<style>
+/* Shared by the page and by each standalone SVG: colour and type tokens for both themes, then the drawing's rules. */
+:root{
+  --paper:#f2eee2; --paper-2:#e8e2d0; --ink:#1d1d1b; --muted:#5a564b; --faint:#a59e8a; --rule:#cdc5af;
+  --frame:#1f3f8f; --river:#c6ddeb; --river-edge:#8fb5cf; --river-ink:#3a6c90;
+  --l-admit:#d42e22; --l-authority:#1f3f8f; --l-promotion:#0d7a3e; --l-record:#1d1d1b; --l-detection:#b3267f;
+  --l-ingress:#e0700f; --l-operator:#8b5a2b; --l-emergency:#0e9aa0; --l-workflow:#dba800; --l-shuttle:#7b8590;
+  --l-overlay:#6a5aa8;
+  --f-display:"Hammersmith One","Gill Sans","Gill Sans MT","Trebuchet MS",sans-serif;
+  --f-text:"Cabin","Gill Sans","Gill Sans MT","Trebuchet MS",sans-serif;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0f1826; --paper-2:#172438; --ink:#ece6d6; --muted:#a9b0ba; --faint:#58667e; --rule:#2a3b55;
+    --frame:#8fb0ff; --river:#1b3554; --river-edge:#2e527f; --river-ink:#86addb;
+    --l-admit:#ff5b4f; --l-authority:#7ea2ff; --l-promotion:#3fc47a; --l-record:#ece6d6; --l-detection:#f06fc0;
+    --l-ingress:#ff9a3c; --l-operator:#cf9a63; --l-emergency:#36cfd0; --l-workflow:#ffd33d; --l-shuttle:#9aa7b5;
+    --l-overlay:#a99cf0;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0f1826; --paper-2:#172438; --ink:#ece6d6; --muted:#a9b0ba; --faint:#58667e; --rule:#2a3b55;
+  --frame:#8fb0ff; --river:#1b3554; --river-edge:#2e527f; --river-ink:#86addb;
+  --l-admit:#ff5b4f; --l-authority:#7ea2ff; --l-promotion:#3fc47a; --l-record:#ece6d6; --l-detection:#f06fc0;
+  --l-ingress:#ff9a3c; --l-operator:#cf9a63; --l-emergency:#36cfd0; --l-workflow:#ffd33d; --l-shuttle:#9aa7b5;
+  --l-overlay:#a99cf0;
+  color-scheme:dark;
+}
+/* SVG */
+.paper{fill:var(--paper)}
+.ln{fill:none;stroke-width:6.5;stroke-linejoin:round;stroke-linecap:butt}
+.ln.prop{stroke-dasharray:9 5}
+.ln.thin{stroke-width:3.2;stroke-dasharray:6 5}
+.ln-stripe{fill:none;stroke:var(--paper);stroke-width:1.7;stroke-linejoin:round}
+.ln-admit{stroke:var(--l-admit)}.ln-authority{stroke:var(--l-authority)}.ln-promotion{stroke:var(--l-promotion)}
+.ln-record{stroke:var(--l-record)}.ln-detection{stroke:var(--l-detection)}.ln-ingress{stroke:var(--l-ingress)}
+.ln-operator{stroke:var(--l-operator)}.ln-emergency{stroke:var(--l-emergency)}.ln-workflow{stroke:var(--l-workflow)}
+.ln-shuttle{stroke:var(--l-shuttle)}.ln-overlay{stroke:var(--l-overlay)}
+.ln-stripe.ln-operator,.ln-stripe.ln-emergency{stroke:var(--paper)}
+.ring{fill:var(--paper);stroke:var(--ink);stroke-width:2.8}
+.st{font-family:var(--f-text);font-stretch:80%;font-size:10.8px;font-weight:600;letter-spacing:.055em;fill:var(--ink)}
+.st.ix{font-weight:700}
+.river{fill:none;stroke:var(--river);stroke-width:21}
+.river-e{fill:none;stroke:var(--river-edge);stroke-width:24}
+.river-band{fill:var(--river);stroke:var(--river-edge);stroke-width:1.5}
+.river-t{font-family:var(--f-text);font-style:italic;font-weight:600;font-size:10.5px;letter-spacing:.42em;fill:var(--river-ink)}
+.bank{font-family:var(--f-display);font-size:11.5px;letter-spacing:.55em;fill:var(--faint)}
+.branch,.xing,.loop-t{font-family:var(--f-text);font-style:italic;font-size:10.5px;fill:var(--muted)}
+.loop-t{font-size:12px}
+.frame-o{fill:none;stroke:var(--frame);stroke-width:5}
+.frame-i{fill:none;stroke:var(--frame);stroke-width:1.2}
+.strip-frame{fill:none;stroke:var(--frame);stroke-width:2}
+.grid{font-family:var(--f-display);font-size:11.5px;fill:var(--frame)}
+.gridtick{stroke:var(--frame);stroke-width:1.2}
+.box{fill:var(--paper);stroke:var(--frame);stroke-width:2.4}
+.box-in{fill:none;stroke:var(--frame);stroke-width:.9}
+.ct-name{font-family:var(--f-display);font-size:50px;letter-spacing:.07em;fill:var(--frame)}
+.ct-sub{font-family:var(--f-display);font-size:12.5px;letter-spacing:.34em;fill:var(--ink)}
+.ct-rule{stroke:var(--frame);stroke-width:1}
+.ct-role{font-family:var(--f-text);font-stretch:86%;font-size:11.2px;fill:var(--ink)}
+.ct-letter{font-family:var(--f-display);font-size:12.5px;fill:var(--frame)}
+.ct-foot{font-family:var(--f-text);font-style:italic;font-size:10.5px;fill:var(--muted)}
+.key-h{font-family:var(--f-display);font-size:14px;letter-spacing:.3em;fill:var(--frame)}
+.key-l{font-family:var(--f-text);font-stretch:84%;font-size:10.8px;font-weight:700;letter-spacing:.05em;fill:var(--ink)}
+.key-s{font-family:var(--f-text);font-stretch:84%;font-size:9.8px;fill:var(--muted)}
+.key-t{font-family:var(--f-text);font-stretch:86%;font-size:10.4px;fill:var(--ink)}
+.key-b{font-weight:700}
+.stop-n{font-family:var(--f-display);font-size:11px;fill:var(--muted)}
+.lg,.stn{transition:opacity .18s ease}
+#map[data-hl] .lg,#map[data-hl] .stn{opacity:.13}
+#map[data-hl="admit"] .lg-admit,#map[data-hl="admit"] .s-admit,
+#map[data-hl="authority"] .lg-authority,#map[data-hl="authority"] .s-authority,
+#map[data-hl="promotion"] .lg-promotion,#map[data-hl="promotion"] .s-promotion,
+#map[data-hl="record"] .lg-record,#map[data-hl="record"] .s-record,
+#map[data-hl="detection"] .lg-detection,#map[data-hl="detection"] .s-detection,
+#map[data-hl="ingress"] .lg-ingress,#map[data-hl="ingress"] .s-ingress,
+#map[data-hl="operator"] .lg-operator,#map[data-hl="operator"] .s-operator,
+#map[data-hl="emergency"] .lg-emergency,#map[data-hl="emergency"] .s-emergency,
+#map[data-hl="workflow"] .lg-workflow,#map[data-hl="workflow"] .s-workflow,
+#map[data-hl="shuttle"] .lg-shuttle,#map[data-hl="shuttle"] .s-shuttle{opacity:1}
+@media (prefers-reduced-motion: reduce){.lg,.stn{transition:none}}
+</style>
+<title id="map-t">TOPAK drawn as a railway line diagram</title>
+<desc id="map-d">Ten coloured lines and forty-seven stations. The consensus log is drawn as a river: lines decide on its north bank and take effect on its south bank. Every station is listed in the index below the map.</desc>
+<rect width="1760" height="1080" class="paper"/>
+<clipPath id="inner"><rect x="26" y="26" width="1708" height="1028"/></clipPath>
+<g clip-path="url(#inner)"><path d="M-20.0 840.0 L580.0 840.0 Q640.0 840.0 682.4 797.6 L1157.6 322.4 Q1200.0 280.0 1260.0 280.0 L1780.0 280.0" class="river-e"/><path d="M-20.0 840.0 L580.0 840.0 Q640.0 840.0 682.4 797.6 L1157.6 322.4 Q1200.0 280.0 1260.0 280.0 L1780.0 280.0" class="river"/></g>
+<text class="river-t" x="390" y="844" text-anchor="middle">THE CONSENSUS LOG</text>
+<text class="river-t" x="1350" y="284" text-anchor="middle">THE LOG</text>
+<text class="bank" x="720" y="330" text-anchor="middle">NORTH BANK · DECIDE</text>
+<text class="bank" x="890" y="888" text-anchor="middle">SOUTH BANK · EFFECT</text>
+<text class="branch" x="1284" y="384">Build branch</text>
+<text class="branch" x="1504" y="467" text-anchor="middle">Run branch</text>
+<text class="xing" x="1018" y="466" text-anchor="start">Admit</text>
+<text class="xing" x="1004" y="532" text-anchor="start">Control</text>
+<text class="xing" x="1534" y="266" text-anchor="start">votes</text>
+<g class="lg lg-workflow">
+<path d="M1520.0 200.0 L1492.7 172.7 Q1480.0 160.0 1462.0 160.0 L418.0 160.0 Q400.0 160.0 387.3 172.7 L332.7 227.3 Q320.0 240.0 320.0 258.0 L320.0 480.0" class="ln ln-workflow prop "/>
+</g>
+<g class="lg lg-operator">
+<path d="M210.0 720.0 L462.0 720.0 Q480.0 720.0 492.7 707.3 L692.3 507.7 Q705.0 495.0 723.0 495.0 L1100.0 495.0" class="ln ln-operator "/><path d="M210.0 720.0 L462.0 720.0 Q480.0 720.0 492.7 707.3 L692.3 507.7 Q705.0 495.0 723.0 495.0 L1100.0 495.0" class="ln-stripe ln-operator "/>
+</g>
+<g class="lg lg-emergency">
+<path d="M180.0 600.0 L382.0 600.0 Q400.0 600.0 412.7 587.3 L520.0 480.0" class="ln ln-emergency "/><path d="M180.0 600.0 L382.0 600.0 Q400.0 600.0 412.7 587.3 L520.0 480.0" class="ln-stripe ln-emergency "/>
+</g>
+<g class="lg lg-admit">
+<path d="M120.0 480.0 L1580.0 480.0" class="ln ln-admit "/>
+<path d="M1230.0 480.0 L1245.0 480.0 Q1260.0 480.0 1270.6 469.4 L1327.3 412.7 Q1340.0 400.0 1358.0 400.0 L1520.0 400.0" class="ln ln-admit "/>
+<path d="M850.0 480.0 L865.0 480.0 Q880.0 480.0 890.6 469.4 L940.0 420.0" class="ln ln-admit "/>
+</g>
+<g class="lg lg-authority">
+<path d="M930.0 100.0 L1442.0 100.0 Q1460.0 100.0 1472.7 112.7 L1507.3 147.3 Q1520.0 160.0 1520.0 178.0 L1520.0 200.0" class="ln ln-authority "/>
+</g>
+<g class="lg lg-promotion">
+<path d="M1520.0 400.0 L1520.0 218.0 Q1520.0 200.0 1502.0 200.0 L618.0 200.0 Q600.0 200.0 587.3 212.7 L532.7 267.3 Q520.0 280.0 520.0 298.0 L520.0 480.0" class="ln ln-promotion "/>
+</g>
+<g class="lg lg-record">
+<path d="M1220.0 480.0 L1220.0 860.0" class="ln ln-record "/>
+</g>
+<g class="lg lg-detection">
+<path d="M1220.0 560.0 L1132.7 647.3 Q1120.0 660.0 1102.0 660.0 L903.0 660.0 Q885.0 660.0 872.3 647.3 L720.0 495.0" class="ln ln-detection "/>
+<path d="M1040.0 660.0 L1040.0 760.0" class="ln ln-detection prop "/>
+</g>
+<g class="lg lg-ingress">
+<path d="M1420.0 960.0 L218.0 960.0 Q200.0 960.0 187.3 947.3 L132.7 892.7 Q120.0 880.0 120.0 862.0 L120.0 480.0" class="ln ln-ingress "/>
+<path d="M1420.0 480.0 L1420.0 862.0 Q1420.0 880.0 1407.3 892.7 L1350.6 949.4 Q1340.0 960.0 1325.0 960.0 L1310.0 960.0" class="ln ln-ingress "/>
+</g>
+<g class="lg lg-shuttle">
+<path d="M220.0 480.0 L220.0 380.0" class="ln ln-shuttle "/>
+</g>
+<g class="stn s-admit s-ingress" data-id="thinker"><title>THINKER SEAT (A3). A Persona in a confined guest, Byzantine by premise. It speaks one typed alphabet: six variants in Build, three in Run.</title><circle cx="120.0" cy="480.0" r="6.6" class="ring"/><text class="st ix" x="120.0" y="467.0" text-anchor="middle"><tspan x="120.0" dy="0">THINKER SEAT</tspan></text></g>
+<g class="stn s-admit s-shuttle" data-id="launcher"><title>LAUNCHER (B3). Starts a guest from a promoted profile, appraises it, grants, and bridges its channel.</title><circle cx="220.0" cy="480.0" r="6.6" class="ring"/><text class="st ix" x="220.0" y="502.0" text-anchor="middle"><tspan x="220.0" dy="0">LAUNCHER</tspan></text></g>
+<g class="stn s-shuttle" data-id="verifier"><title>VERIFIER ‡ (B3). An independent verifier appraises rung-3 evidence under an issued key and returns a signed verdict.</title><line x1="211.0" y1="380.0" x2="229.0" y2="380.0" stroke="var(--l-shuttle)" stroke-width="5.5"/><text class="st" x="232.0" y="384.0" text-anchor="start"><tspan x="232.0" dy="0">VERIFIER ‡</tspan></text></g>
+<g class="stn s-admit s-workflow" data-id="frontdoor"><title>FRONT DOOR (B3). Exposes the alphabet and nothing else.</title><circle cx="320.0" cy="480.0" r="6.6" class="ring"/><text class="st ix" x="320.0" y="502.0" text-anchor="middle"><tspan x="320.0" dy="0">FRONT DOOR</tspan></text></g>
+<g class="stn s-admit" data-id="fence"><title>EPOCH FENCE (B3). Local expiry, then the epoch fence. An action under a fenced epoch is rejected by the mechanism, not by policy.</title><line x1="420.0" y1="480.0" x2="420.0" y2="470.5" stroke="var(--l-admit)" stroke-width="5"/><text class="st" x="420.0" y="468.0" text-anchor="middle"><tspan x="420.0" dy="0">EPOCH FENCE</tspan></text></g>
+<g class="stn s-admit s-promotion s-emergency" data-id="lease"><title>LEASE (C3). The one composite credential, twelve fields. It ends with its round, renewal only narrows it, and revoking it needs no quorum.</title><circle cx="520.0" cy="480.0" r="6.6" class="ring"/><text class="st ix" x="529.0" y="501.0" text-anchor="start"><tspan x="529.0" dy="0">LEASE</tspan></text></g>
+<g class="stn s-admit" data-id="lift"><title>LIFT (C3). Syntactic lift to one frozen input. Semantic judgment is never a lift.</title><line x1="620.0" y1="480.0" x2="620.0" y2="470.5" stroke="var(--l-admit)" stroke-width="5"/><text class="st" x="620.0" y="468.0" text-anchor="middle"><tspan x="620.0" dy="0">LIFT</tspan></text></g>
+<g class="stn s-admit s-operator s-detection" data-id="floor"><title>POLICY FLOOR * (D3). Permits only what the floor allows, over schema S, and any error is a deny. It decides control requests alone, and entry R3 refuses a Thinker&#x27;s effect without a live cell Observer.</title><rect x="713.4" y="473.4" width="13.2" height="28.2" rx="6.6" class="ring"/><text class="st ix" x="720.0" y="467.0" text-anchor="middle"><tspan x="720.0" dy="0">POLICY FLOOR *</tspan></text></g>
+<g class="stn s-admit" data-id="bundle"><title>BUNDLE (D3). A signed bundle, evaluated at the lease&#x27;s revision. It can refuse and can never grant: admit ⟺ floor_permit ∧ ¬bundle_deny.</title><line x1="840.0" y1="480.0" x2="840.0" y2="470.5" stroke="var(--l-admit)" stroke-width="5"/><text class="st" x="840.0" y="468.0" text-anchor="middle"><tspan x="840.0" dy="0">BUNDLE</tspan></text></g>
+<g class="stn s-admit" data-id="denied"><title>DENIED (E3). A denial is recorded, unordered, with digests only. It never crosses the log.</title><line x1="933.6" y1="413.6" x2="946.4" y2="426.4" stroke="var(--l-admit)" stroke-width="5.5"/><text class="st" x="952.0" y="424.0" text-anchor="start"><tspan x="952.0" dy="0">DENIED</tspan></text></g>
+<g class="stn s-admit s-operator" data-id="apply"><title>APPLY (F3). At its log position every entry is checked again: fence, lease, alphabet. If one has moved the admit is void: ordered, recorded, no effect.</title><rect x="1093.4" y="473.4" width="13.2" height="28.2" rx="6.6" class="ring"/><text class="st ix" x="1100.0" y="467.0" text-anchor="middle"><tspan x="1100.0" dy="0">APPLY</tspan></text></g>
+<g class="stn s-admit s-record" data-id="effect"><title>EFFECT (F3). The effect executor performs an effect only after its admit commits.</title><circle cx="1220.0" cy="480.0" r="6.6" class="ring"/><text class="st ix" x="1220.0" y="467.0" text-anchor="middle"><tspan x="1220.0" dy="0">EFFECT</tspan></text></g>
+<g class="stn s-admit s-ingress" data-id="toolhost"><title>TOOL HOST (G3). Gives a tool its workspace or its one declared channel, and nothing else. Handles are resolved on the mechanism&#x27;s side.</title><circle cx="1420.0" cy="480.0" r="6.6" class="ring"/><text class="st ix" x="1429.0" y="501.0" text-anchor="start"><tspan x="1429.0" dy="0">TOOL HOST</tspan></text></g>
+<g class="stn s-admit" data-id="world"><title>THE WORLD (H3). The tools&#x27; targets: what Run acts on. Reached only by Actuate, on the allowlist entry&#x27;s declared channel.</title><line x1="1580.0" y1="471.0" x2="1580.0" y2="489.0" stroke="var(--l-admit)" stroke-width="5.5"/><text class="st" x="1592.0" y="484.0" text-anchor="start"><tspan x="1592.0" dy="0">THE WORLD</tspan></text></g>
+<g class="stn s-admit" data-id="workspace"><title>WORKSPACE (G3). Build&#x27;s round-scoped workspace, where Draft writes.</title><line x1="1400.0" y1="400.0" x2="1400.0" y2="390.5" stroke="var(--l-admit)" stroke-width="5"/><text class="st" x="1400.0" y="388.0" text-anchor="middle"><tspan x="1400.0" dy="0">WORKSPACE</tspan></text></g>
+<g class="stn s-admit s-promotion" data-id="submit"><title>SUBMIT &amp; SEAL (G3). Submit(digest) seals the workspace and the topic set. It is Build&#x27;s sole egress.</title><circle cx="1520.0" cy="400.0" r="6.6" class="ring"/><text class="st ix" x="1533.0" y="404.0" text-anchor="start"><tspan x="1533.0" dy="0">SUBMIT &amp; SEAL</tspan></text></g>
+<g class="stn s-authority" data-id="intent"><title>INTENT (E1). The sole axiom. Everything below it is issued, voted or derived.</title><line x1="930.0" y1="91.0" x2="930.0" y2="109.0" stroke="var(--l-authority)" stroke-width="5.5"/><text class="st" x="930.0" y="88.0" text-anchor="middle"><tspan x="930.0" dy="0">INTENT</tspan></text></g>
+<g class="stn s-authority" data-id="anchor"><title>ANCHOR † (E1). A havoc issuer. Its key-holders sign the rules and stand at the gate, outside the proofs.</title><line x1="1050.0" y1="100.0" x2="1050.0" y2="90.5" stroke="var(--l-authority)" stroke-width="5"/><text class="st" x="1050.0" y="88.0" text-anchor="middle"><tspan x="1050.0" dy="0">ANCHOR †</tspan></text></g>
+<g class="stn s-authority" data-id="rulesfloor"><title>RULES FLOOR (F1). Bounds every anchor issuance, R1 to R9 (R8 withdrawn). An issuance outside it is rejected.</title><line x1="1170.0" y1="100.0" x2="1170.0" y2="90.5" stroke="var(--l-authority)" stroke-width="5"/><text class="st" x="1170.0" y="88.0" text-anchor="middle"><tspan x="1170.0" dy="0">RULES FLOOR</tspan></text></g>
+<g class="stn s-authority" data-id="rules"><title>RULES (F1). Rosters, seat declarations, quorum, keys and the two lists the load checks read. Genesis rules are resident.</title><line x1="1290.0" y1="100.0" x2="1290.0" y2="90.5" stroke="var(--l-authority)" stroke-width="5"/><text class="st" x="1290.0" y="88.0" text-anchor="middle"><tspan x="1290.0" dy="0">RULES</tspan></text></g>
+<g class="stn s-authority" data-id="grantseats"><title>GRANT SEATS (G1). Human voters, Mediated. Each vote is bound to the artifact, the evidence and the rules epoch, and the author is recused.</title><line x1="1410.0" y1="100.0" x2="1410.0" y2="90.5" stroke="var(--l-authority)" stroke-width="5"/><text class="st" x="1410.0" y="88.0" text-anchor="middle"><tspan x="1410.0" dy="0">GRANT SEATS</tspan></text></g>
+<g class="stn s-authority s-promotion s-workflow" data-id="tally"><title>PROMOTION TALLY § (G2). Promotion is a unanimous quorum grant, counted at apply: Promoted, Pending, Stalled or Denied. A timeout never grants.</title><circle cx="1520.0" cy="200.0" r="6.6" class="ring"/><text class="st ix" x="1533.0" y="204.0" text-anchor="start"><tspan x="1533.0" dy="0">PROMOTION TALLY §</tspan></text></g>
+<g class="stn s-promotion" data-id="gates"><title>GATES § (G2). Totality, non-vacuity, discrimination. Each vote covers the evidence digest.</title><line x1="1520.0" y1="340.0" x2="1529.5" y2="340.0" stroke="var(--l-promotion)" stroke-width="5"/><text class="st" x="1532.0" y="344.0" text-anchor="start"><tspan x="1532.0" dy="0">GATES §</tspan></text></g>
+<g class="stn s-promotion" data-id="sign"><title>SIGN § (F2). The bundle key signs after the tally and never before.</title><line x1="1240.0" y1="200.0" x2="1240.0" y2="209.5" stroke="var(--l-promotion)" stroke-width="5"/><text class="st" x="1240.0" y="221.0" text-anchor="middle"><tspan x="1240.0" dy="0">SIGN §</tspan></text></g>
+<g class="stn s-promotion" data-id="rollout"><title>ROLL OUT † (C3). A promoted revision reaches a live principal when its round ends: the next lease names it. A promotion seats.</title><line x1="520.0" y1="360.0" x2="529.5" y2="360.0" stroke="var(--l-promotion)" stroke-width="5"/><text class="st" x="532.0" y="364.0" text-anchor="start"><tspan x="532.0" dy="0">ROLL OUT †</tspan></text></g>
+<g class="stn s-workflow" data-id="wfengine"><title>WORKFLOW ENGINE (F1). Loads a workflow only from a promoted artifact, grants each slot under the promotion&#x27;s authority, evaluates guards over settled attributes, and checks a route at decide and again at apply.</title><line x1="1120.0" y1="160.0" x2="1120.0" y2="150.5" stroke="var(--l-workflow)" stroke-width="5"/><text class="st" x="1120.0" y="148.0" text-anchor="middle"><tspan x="1120.0" dy="0">WORKFLOW ENGINE</tspan></text></g>
+<g class="stn s-workflow" data-id="orchestrator"><title>ORCHESTRATOR (D1). Chooses one enabled edge with Route(edge). It is given handles, never bytes. It can stall a workflow and cannot misroute it.</title><line x1="760.0" y1="160.0" x2="760.0" y2="150.5" stroke="var(--l-workflow)" stroke-width="5"/><text class="st" x="760.0" y="148.0" text-anchor="middle"><tspan x="760.0" dy="0">ORCHESTRATOR</tspan></text></g>
+<g class="stn s-operator" data-id="idp"><title>IDENTITY PROVIDER ‡ (A5). Vouches for the person behind an operator&#x27;s key: a sign-on assertion naming the key and a fence.</title><line x1="210.0" y1="711.0" x2="210.0" y2="729.0" stroke="var(--l-operator)" stroke-width="5.5"/><text class="st" x="210.0" y="741.0" text-anchor="middle"><tspan x="210.0" dy="0">IDENTITY</tspan><tspan x="210.0" dy="12.5">PROVIDER ‡</tspan></text></g>
+<g class="stn s-operator" data-id="operator"><title>OPERATOR SEAT (B5). A person and a principal. One operator keeps a quorum&#x27;s grant going and may only narrow it.</title><line x1="330.0" y1="720.0" x2="330.0" y2="729.5" stroke="var(--l-operator)" stroke-width="5"/><text class="st" x="330.0" y="741.0" text-anchor="middle"><tspan x="330.0" dy="0">OPERATOR</tspan><tspan x="330.0" dy="12.5">SEAT</tspan></text></g>
+<g class="stn s-operator" data-id="control"><title>CONTROL (C5). Six signed actions. Three add: Regrant, Renew, AttestGates. Three deny: EndRound, Revoke, FenceEpoch. Floor entries C1 to C9 decide them with no bundle, and a deny needs no lease.</title><line x1="440.0" y1="720.0" x2="440.0" y2="729.5" stroke="var(--l-operator)" stroke-width="5"/><text class="st" x="440.0" y="741.0" text-anchor="middle"><tspan x="440.0" dy="0">CONTROL</tspan></text></g>
+<g class="stn s-emergency" data-id="roster"><title>ROSTER (A4). The break-glass roster. Its quorum signs an activation.</title><line x1="180.0" y1="591.0" x2="180.0" y2="609.0" stroke="var(--l-emergency)" stroke-width="5.5"/><text class="st" x="180.0" y="621.0" text-anchor="middle"><tspan x="180.0" dy="0">ROSTER</tspan></text></g>
+<g class="stn s-emergency" data-id="activation"><title>ACTIVATION (B4). One person, one seating, one round, with the task. The Activate entry is forensic class F5.</title><line x1="280.0" y1="600.0" x2="280.0" y2="609.5" stroke="var(--l-emergency)" stroke-width="5"/><text class="st" x="280.0" y="621.0" text-anchor="middle"><tspan x="280.0" dy="0">ACTIVATION</tspan></text></g>
+<g class="stn s-emergency" data-id="emseat"><title>EMERGENCY SEAT (B4). One lease, no successor and no renewal, on an ordinary allowlist with no floor exception. It is not coupled to an Observer, so no Observer can block the call.</title><line x1="380.0" y1="600.0" x2="380.0" y2="609.5" stroke="var(--l-emergency)" stroke-width="5"/><text class="st" x="380.0" y="621.0" text-anchor="middle"><tspan x="380.0" dy="0">EMERGENCY</tspan><tspan x="380.0" dy="12.5">SEAT</tspan></text></g>
+<g class="stn s-record s-detection" data-id="topic"><title>ROUND TOPIC (F4). One topic per principal per round, opened by the mechanism&#x27;s record and sealed on emit: the unit of erasure. Kafka is neither the ordering authority nor the system of record.</title><circle cx="1220.0" cy="560.0" r="6.6" class="ring"/><text class="st ix" x="1233.0" y="564.0" text-anchor="start"><tspan x="1233.0" dy="0">ROUND TOPIC</tspan></text></g>
+<g class="stn s-record" data-id="archive"><title>ARCHIVE † (F4). The system of record for control-plane facts.</title><line x1="1220.0" y1="620.0" x2="1229.5" y2="620.0" stroke="var(--l-record)" stroke-width="5"/><text class="st" x="1232.0" y="624.0" text-anchor="start"><tspan x="1232.0" dy="0">ARCHIVE †</tspan></text></g>
+<g class="stn s-record" data-id="payload"><title>PAYLOAD STORE † (F4). Cognitive payloads, kept apart from the facts and built for deletion.</title><line x1="1220.0" y1="680.0" x2="1229.5" y2="680.0" stroke="var(--l-record)" stroke-width="5"/><text class="st" x="1232.0" y="684.0" text-anchor="start"><tspan x="1232.0" dy="0">PAYLOAD STORE †</tspan></text></g>
+<g class="stn s-record" data-id="erasure"><title>ERASURE † (F5). A privileged, modeled, consensus-ordered event, and the floor&#x27;s one exception.</title><line x1="1220.0" y1="740.0" x2="1229.5" y2="740.0" stroke="var(--l-record)" stroke-width="5"/><text class="st" x="1232.0" y="744.0" text-anchor="start"><tspan x="1232.0" dy="0">ERASURE †</tspan></text></g>
+<g class="stn s-record" data-id="forensic"><title>FORENSIC FLOOR (F5). Six classes survive erasure: F1 admit decisions, F2 stop attribution, F3 promotion votes, F4 anchor issuances, F5 activations, F6 erasure events.</title><line x1="1220.0" y1="800.0" x2="1229.5" y2="800.0" stroke="var(--l-record)" stroke-width="5"/><text class="st" x="1232.0" y="804.0" text-anchor="start"><tspan x="1232.0" dy="0">FORENSIC FLOOR</tspan></text></g>
+<g class="stn s-record" data-id="audit"><title>AUDIT AUTHORITY (F5). Reads the record: replay of boundary events, for the declared horizon.</title><line x1="1211.0" y1="860.0" x2="1229.0" y2="860.0" stroke="var(--l-record)" stroke-width="5.5"/><text class="st" x="1232.0" y="864.0" text-anchor="start"><tspan x="1232.0" dy="0">AUDIT AUTHORITY</tspan></text></g>
+<g class="stn s-detection" data-id="observer"><title>CELL OBSERVER (E4). One per cell, deny-only. It reads the cell&#x27;s round topics, and sends heartbeats, findings and Vote(deny).</title><line x1="1040.0" y1="660.0" x2="1040.0" y2="650.5" stroke="var(--l-detection)" stroke-width="5"/><text class="st" x="1040.0" y="648.0" text-anchor="middle"><tspan x="1040.0" dy="0">CELL OBSERVER</tspan></text></g>
+<g class="stn s-detection" data-id="heartbeat"><title>HEARTBEAT (D4). Liveness is progress, not presence: heard within T_obs, and seq − mark &lt; K. Run couples every effect to it; Build couples the gate.</title><line x1="800.0" y1="575.0" x2="793.3" y2="581.7" stroke="var(--l-detection)" stroke-width="5"/><text class="st" x="790.0" y="590.0" text-anchor="end"><tspan x="790.0" dy="0">HEARTBEAT</tspan></text></g>
+<g class="stn s-detection" data-id="correlator"><title>CORRELATOR † (E5). Named folds over facts: five correlations a second reader can recompute. Never coupled.</title><line x1="1031.0" y1="760.0" x2="1049.0" y2="760.0" stroke="var(--l-detection)" stroke-width="5.5"/><text class="st" x="1052.0" y="764.0" text-anchor="start"><tspan x="1052.0" dy="0">CORRELATOR †</tspan></text></g>
+<g class="stn s-ingress" data-id="pinned"><title>PINNED CONTENT (G6). The corpus root in Build and the Run root: content-addressed, reached by Read and Consult.</title><line x1="1420.0" y1="951.0" x2="1420.0" y2="969.0" stroke="var(--l-ingress)" stroke-width="5.5"/><text class="st" x="1420.0" y="981.0" text-anchor="middle"><tspan x="1420.0" dy="0">PINNED CONTENT</tspan></text></g>
+<g class="stn s-ingress" data-id="listener"><title>LISTENER (F6). A stage, not a seat. It delivers the task, admitted reads and results, and makes no choice.</title><line x1="1240.0" y1="960.0" x2="1240.0" y2="950.5" stroke="var(--l-ingress)" stroke-width="5"/><text class="st" x="1240.0" y="948.0" text-anchor="middle"><tspan x="1240.0" dy="0">LISTENER</tspan></text></g>
+<g class="stn s-ingress" data-id="labels"><title>LABELS (E6). Every item of Run&#x27;s ingress carries a label: a function of its source, and no judgment about content.</title><line x1="1040.0" y1="960.0" x2="1040.0" y2="950.5" stroke="var(--l-ingress)" stroke-width="5"/><text class="st" x="1040.0" y="948.0" text-anchor="middle"><tspan x="1040.0" dy="0">LABELS</tspan></text></g>
+<g class="stn s-ingress" data-id="handles"><title>CLEAR OR HANDLE (D6). An item arrives clear, and joins clearSet, or as a handle: a name and no bytes. Forbids R5 to R7 tighten with what was read.</title><line x1="840.0" y1="960.0" x2="840.0" y2="950.5" stroke="var(--l-ingress)" stroke-width="5"/><text class="st" x="840.0" y="948.0" text-anchor="middle"><tspan x="840.0" dy="0">CLEAR OR HANDLE</tspan></text></g>
+<g class="stn s-ingress" data-id="toollist"><title>TOOL LIST (C6). A Thinker learns its tools from the mechanism. The list is the round&#x27;s opening record.</title><line x1="600.0" y1="960.0" x2="600.0" y2="950.5" stroke="var(--l-ingress)" stroke-width="5"/><text class="st" x="600.0" y="948.0" text-anchor="middle"><tspan x="600.0" dy="0">TOOL LIST</tspan></text></g>
+<g class="cartouche"><rect x="40" y="40" width="252" height="212" class="box"/><rect x="44" y="44" width="244" height="204" class="box-in"/><text class="ct-name" x="166" y="98" text-anchor="middle">TOPAK</text><text class="ct-sub" x="166" y="122" text-anchor="middle">DIAGRAM OF LINES</text><line class="ct-rule" x1="64" y1="134" x2="268" y2="134"/><text class="ct-role" x="62" y="154"><tspan class="ct-letter">T</tspan><tspan dx="8">the survey: TLA+, TLC, proofs</tspan></text><text class="ct-role" x="62" y="170"><tspan class="ct-letter">O</tspan><tspan dx="8">Policy Floor and Bundle</tspan></text><text class="ct-role" x="62" y="187"><tspan class="ct-letter">P</tspan><tspan dx="8">the river: the consensus log</tspan></text><text class="ct-role" x="62" y="204"><tspan class="ct-letter">A</tspan><tspan dx="8">the seats: agents, as principals</tspan></text><text class="ct-role" x="62" y="220"><tspan class="ct-letter">K</tspan><tspan dx="8">the Record line: transport</tspan></text><text class="ct-foot" x="166" y="238" text-anchor="middle">The archetype, as the records draw it.</text></g>
+<g class="key"><rect x="1508" y="552" width="216" height="492" class="box"/><text class="key-h" x="1616" y="576" text-anchor="middle">REFERENCE</text><path d="M1520 598 L1558 598" class="ln ln-admit"/><text class="key-l" x="1567" y="597">ADMIT</text><text class="key-s" x="1567" y="608">The membrane, to an effect</text><path d="M1520 626 L1558 626" class="ln ln-authority"/><text class="key-l" x="1567" y="625">AUTHORITY</text><text class="key-s" x="1567" y="636">From intent to the tally</text><path d="M1520 654 L1558 654" class="ln ln-promotion"/><text class="key-l" x="1567" y="653">PROMOTION</text><text class="key-s" x="1567" y="664">The only way from Build to Run</text><path d="M1520 682 L1558 682" class="ln ln-record"/><text class="key-l" x="1567" y="681">RECORD</text><text class="key-s" x="1567" y="692">Topics, archive, audit</text><path d="M1520 710 L1558 710" class="ln ln-detection"/><text class="key-l" x="1567" y="709">DETECTION</text><text class="key-s" x="1567" y="720">Observers, deny-only</text><path d="M1520 738 L1558 738" class="ln ln-ingress"/><text class="key-l" x="1567" y="737">INGRESS</text><text class="key-s" x="1567" y="748">What the Listener delivers</text><path d="M1520 766 L1558 766" class="ln ln-operator"/><path d="M1520 766 L1558 766" class="ln-stripe"/><text class="key-l" x="1567" y="765">OPERATOR</text><text class="key-s" x="1567" y="776">Six signed control actions</text><path d="M1520 794 L1558 794" class="ln ln-emergency"/><path d="M1520 794 L1558 794" class="ln-stripe"/><text class="key-l" x="1567" y="793">EMERGENCY</text><text class="key-s" x="1567" y="804">Break-glass, as a seating</text><path d="M1520 822 L1558 822" class="ln ln-workflow prop"/><text class="key-l" x="1567" y="821">WORKFLOW</text><text class="key-s" x="1567" y="832">A promoted graph of cells</text><path d="M1520 850 L1558 850" class="ln ln-shuttle"/><text class="key-l" x="1567" y="849">APPRAISAL SHUTTLE</text><text class="key-s" x="1567" y="860">Rung 3 evidence and verdict</text><line class="ct-rule" x1="1520" y1="868" x2="1712" y2="868"/><path d="M1520 883 L1558 883" class="ln ln-admit"/><line x1="1539" y1="883" x2="1539" y2="874" stroke="var(--l-admit)" stroke-width="5"/><text class="key-t" x="1567" y="887">Station</text><path d="M1520 904 L1558 904" class="ln ln-admit"/><circle cx="1539" cy="904" r="6.6" class="ring"/><text class="key-t" x="1567" y="908">Interchange</text><path d="M1520 925 L1558 925" class="ln ln-operator"/><path d="M1520 925 L1558 925" class="ln-stripe"/><text class="key-t" x="1567" y="924">Provisional: in force,</text><text class="key-t" x="1567" y="935">subject to redesign</text><path d="M1520 952 L1558 952" class="ln ln-workflow prop"/><text class="key-t" x="1567" y="951">Proposed: under</text><text class="key-t" x="1567" y="962">construction</text><text class="key-t key-b" x="1520" y="979">At the reference implementation:</text><text class="key-t" x="1520" y="992">†  not built</text><text class="key-t" x="1520" y="1006">‡  simulated</text><text class="key-t" x="1520" y="1020">§  partial</text><text class="key-t" x="1520" y="1033">*  genesis-provisional</text></g>
+<rect x="6" y="6" width="1748" height="1068" class="frame-o"/><rect x="26" y="26" width="1708" height="1028" class="frame-i"/><text class="grid" x="110" y="20.5" text-anchor="middle">A</text><text class="grid" x="110" y="1068" text-anchor="middle">A</text><text class="grid" x="330" y="20.5" text-anchor="middle">B</text><text class="grid" x="330" y="1068" text-anchor="middle">B</text><line class="gridtick" x1="220" y1="8" x2="220" y2="26"/><line class="gridtick" x1="220" y1="1054" x2="220" y2="1072"/><text class="grid" x="550" y="20.5" text-anchor="middle">C</text><text class="grid" x="550" y="1068" text-anchor="middle">C</text><line class="gridtick" x1="440" y1="8" x2="440" y2="26"/><line class="gridtick" x1="440" y1="1054" x2="440" y2="1072"/><text class="grid" x="770" y="20.5" text-anchor="middle">D</text><text class="grid" x="770" y="1068" text-anchor="middle">D</text><line class="gridtick" x1="660" y1="8" x2="660" y2="26"/><line class="gridtick" x1="660" y1="1054" x2="660" y2="1072"/><text class="grid" x="990" y="20.5" text-anchor="middle">E</text><text class="grid" x="990" y="1068" text-anchor="middle">E</text><line class="gridtick" x1="880" y1="8" x2="880" y2="26"/><line class="gridtick" x1="880" y1="1054" x2="880" y2="1072"/><text class="grid" x="1210" y="20.5" text-anchor="middle">F</text><text class="grid" x="1210" y="1068" text-anchor="middle">F</text><line class="gridtick" x1="1100" y1="8" x2="1100" y2="26"/><line class="gridtick" x1="1100" y1="1054" x2="1100" y2="1072"/><text class="grid" x="1430" y="20.5" text-anchor="middle">G</text><text class="grid" x="1430" y="1068" text-anchor="middle">G</text><line class="gridtick" x1="1320" y1="8" x2="1320" y2="26"/><line class="gridtick" x1="1320" y1="1054" x2="1320" y2="1072"/><text class="grid" x="1650" y="20.5" text-anchor="middle">H</text><text class="grid" x="1650" y="1068" text-anchor="middle">H</text><line class="gridtick" x1="1540" y1="8" x2="1540" y2="26"/><line class="gridtick" x1="1540" y1="1054" x2="1540" y2="1072"/><text class="grid" x="16" y="94" text-anchor="middle">1</text><text class="grid" x="1744" y="94" text-anchor="middle">1</text><text class="grid" x="16" y="274" text-anchor="middle">2</text><text class="grid" x="1744" y="274" text-anchor="middle">2</text><line class="gridtick" x1="8" y1="180" x2="26" y2="180"/><line class="gridtick" x1="1734" y1="180" x2="1752" y2="180"/><text class="grid" x="16" y="454" text-anchor="middle">3</text><text class="grid" x="1744" y="454" text-anchor="middle">3</text><line class="gridtick" x1="8" y1="360" x2="26" y2="360"/><line class="gridtick" x1="1734" y1="360" x2="1752" y2="360"/><text class="grid" x="16" y="634" text-anchor="middle">4</text><text class="grid" x="1744" y="634" text-anchor="middle">4</text><line class="gridtick" x1="8" y1="540" x2="26" y2="540"/><line class="gridtick" x1="1734" y1="540" x2="1752" y2="540"/><text class="grid" x="16" y="814" text-anchor="middle">5</text><text class="grid" x="1744" y="814" text-anchor="middle">5</text><line class="gridtick" x1="8" y1="720" x2="26" y2="720"/><line class="gridtick" x1="1734" y1="720" x2="1752" y2="720"/><text class="grid" x="16" y="994" text-anchor="middle">6</text><text class="grid" x="1744" y="994" text-anchor="middle">6</text><line class="gridtick" x1="8" y1="900" x2="26" y2="900"/><line class="gridtick" x1="1734" y1="900" x2="1752" y2="900"/>
+</svg>

@@ -166,6 +166,46 @@ what the module expects; G1 reads `decisions/ADR-0045.md` the same way. H7 reads
 reaches every diagram that draws it. See [`topak/src/AUTHORING.md`](topak/src/AUTHORING.md) for the content rules and the
 visual language.
 
+## The line diagram (2026.11.14)
+
+The pattern drawn as a 1930s-style pocket railway map: straight lines, 45-degree bends, evenly spaced stations and one
+river. It is one drawing with its own generator, outside the family above, and it follows none of the family's layout
+rules. It is a derived artifact like the rest: **where it and a record disagree, the record wins.** Its state of
+record is Genesis Checkpoint G11, with the records drafted since drawn as Proposed.
+
+| File | What it shows |
+|---|---|
+| [The page](underground/topak-diagram-of-lines-2026.11.14.html) | The network map, the four line diagrams with a caption for every stop, and an index to stations: each station's square on the map, what happens there, the records that decide it and where the reference stands. Picking a line shows it alone |
+| [Network](underground/network-2026.11.14.svg) | Ten lines and forty-seven stations. The consensus log is the river: a request is decided on its north bank and an effect is performed on its south bank, and the denial spur ends before the crossing |
+| [Admit line](underground/line-admit-2026.11.14.svg) | Decide, then order, then effect, stop by stop (ADR-0033 §4) |
+| [Build-Run pipeline](underground/line-pipeline-2026.11.14.svg) | ADR-0069's stages 0 to 8 (Proposed), with the return through intake |
+| [Command-chain extension](underground/line-overlay-2026.11.14.svg) | ADR-0059 to ADR-0068 (Proposed; an overlay, not the archetype), from the root plane to a vehicle's stack |
+| [Survey line](underground/line-survey-2026.11.14.svg) | Specified, checked, proved, certified, proved in Lean, with G11's counts |
+
+**How status is drawn.** A solid line is an accepted record. A line with a pale core is provisional (ADR-0050,
+ADR-0052). A broken line is Proposed, drawn as under construction. A mark after a station's name is the reference's
+state as the Architecture Description §5.2 and §7.2 report it: † not built, ‡ simulated, § partial, and * for the
+genesis-provisional floor. A station with no mark is built there, external, or not a block of the reference.
+
+**What is the drawing's own and no record's:** which stations sit on which line; the river as the consensus log, with
+its two banks; and the Survey line's reading of T. Build and Run share one membrane, so the Admit line is drawn once
+and forks only where their effects differ.
+
+**What it was read from:** `narrative/architecture-description.md` §3 to §7, `narrative/theory-of-operation.md`
+(revision 15) §1, §2.4, §2.6 and §2.8, `decisions/README.md`, `decisions/ADR-0069.md` §1, this README and the source
+of diagram A5. The stations' text is data in the generator, written by hand from those documents. Nothing is read
+from the corpus at build time, so the drawing does not follow a record that moves, and no station was checked
+against the full text of its records.
+
+```sh
+python3 diagrams/gen-topak-underground.py
+```
+
+The generator uses only the Python standard library. The page's stylesheet and skeleton are in `underground/src/`.
+Stations are hand-placed on a grid and nothing measures the text, so a changed label is checked by looking at the
+rendered drawing in both themes. The page loads Cabin and Hammersmith One from Google Fonts; a standalone SVG, or the
+page offline, falls back to Gill Sans or the system sans-serif.
+
 ## Earlier diagrams
 
 | Diagram | Generator |
