@@ -77,6 +77,11 @@ pub enum Mutation {
     IgnorePromisedValues,
     /// Acceptors accept at ballots below their promise.
     AcceptBelowPromise,
+    /// A leader that steps down puts its in-flight values back in its queue, as the first
+    /// implementation did (GAPS finding 9). No safety check sees it: the log stays a log. Each
+    /// value inherited through phase 1 is then proposed twice per leadership change, which the
+    /// simulation's amplification check counts (`spec/Paxos.tla`, `NoAmplification`).
+    RequeueOnStepDown,
 }
 
 #[derive(Clone, Debug)]
@@ -120,6 +125,31 @@ impl<V: Clone> Durable<V> {
             _ => {}
         }
     }
+}
+
+/// A replica's protocol state, for a host that records what its replicas do so that the record
+/// can be replayed through `spec/Paxos.tla` (`spec/PaxosTrace.tla`). Everything `handle` reads
+/// is here except the clock fields: the model has no clock. Maps are in key order.
+#[derive(Clone, Debug, PartialEq)]
+pub struct Snapshot<V> {
+    pub promised: Ballot,
+    pub accepted: Vec<(Slot, Ballot, Cmd<V>)>,
+    pub chosen: Vec<(Slot, Cmd<V>)>,
+    pub next_deliver: Slot,
+    pub max_seen: Ballot,
+    pub role: RoleSnapshot<V>,
+    pub leader_hint: Option<NodeId>,
+    pub queue: Vec<V>,
+}
+
+/// What one promise reports: the commands its acceptor has accepted, by slot.
+pub type Reported<V> = Vec<(Slot, Ballot, Cmd<V>)>;
+
+#[derive(Clone, Debug, PartialEq)]
+pub enum RoleSnapshot<V> {
+    Follower,
+    Candidate { ballot: Ballot, from: Slot, promises: Vec<(NodeId, Reported<V>)> },
+    Leader { ballot: Ballot, next_slot: Slot, inflight: Vec<(Slot, Cmd<V>, Vec<NodeId>)> },
 }
 
 enum Role<V> {
@@ -193,6 +223,33 @@ impl<V: Clone + PartialEq + std::fmt::Debug> Replica<V> {
         self.next_deliver
     }
 
+    /// The protocol state as it stands between two calls of `handle` (see [`Snapshot`]).
+    pub fn snapshot(&self) -> Snapshot<V> {
+        let role = match &self.role {
+            Role::Follower => RoleSnapshot::Follower,
+            Role::Candidate { ballot, from, promises } => RoleSnapshot::Candidate {
+                ballot: *ballot,
+                from: *from,
+                promises: promises.iter().map(|(n, p)| (*n, p.clone())).collect(),
+            },
+            Role::Leader { ballot, next_slot, inflight } => RoleSnapshot::Leader {
+                ballot: *ballot,
+                next_slot: *next_slot,
+                inflight: inflight.iter().map(|(s, (c, a))| (*s, c.clone(), a.iter().copied().collect())).collect(),
+            },
+        };
+        Snapshot {
+            promised: self.promised,
+            accepted: self.accepted.iter().map(|(s, (b, c))| (*s, *b, c.clone())).collect(),
+            chosen: self.chosen.iter().map(|(s, c)| (*s, c.clone())).collect(),
+            next_deliver: self.next_deliver,
+            max_seen: self.max_seen,
+            role,
+            leader_hint: self.leader_hint,
+            queue: self.queue.iter().cloned().collect(),
+        }
+    }
+
     pub fn handle(&mut self, input: Input<V>) -> Vec<Output<V>> {
         match input {
             Input::Propose(v) => self.propose(v),
@@ -257,6 +314,15 @@ impl<V: Clone + PartialEq + std::fmt::Debug> Replica<V> {
     /// leadership change. A value that is simply lost is retried by the host, which proposes
     /// under an idempotent entry id (liveness is the host's; safety is here).
     fn step_down(&mut self) {
+        if self.cfg.mutation == Some(Mutation::RequeueOnStepDown)
+            && let Role::Leader { inflight, .. } = &self.role
+        {
+            for (cmd, _) in inflight.values() {
+                if let Cmd::Value(v) = cmd {
+                    self.queue.push_back(v.clone());
+                }
+            }
+        }
         self.role = Role::Follower;
     }
 

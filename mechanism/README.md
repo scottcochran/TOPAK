@@ -44,6 +44,9 @@ TOPAK_TRACE_DIR=/tmp/t cargo test --release -p topak-core --test mutations   # r
 ../spec/mechanism-trace-run.sh /tmp/t/*.jsonl                                 # … replay it through spec/Mechanism.tla,
                                                                              # and read each state against ConfinementRefinement.tla
 ../spec/mechanism-trace-results.sh > ../spec/Mechanism-trace-results-<date>.txt  # every suite, one results file
+TOPAK_TRACE_DIR=/tmp/p cargo test --release -p topak-paxos --test sim      # record the simulated replicas' runs …
+../spec/paxos-trace-run.sh /tmp/p/*.jsonl                                    # … replay each through spec/Paxos.tla (PaxosTrace.tla)
+../spec/paxos-trace-results.sh > ../spec/Paxos-trace-results-<date>.txt      # the runs and the mutated runs, one results file
 (cd lean && ./results.sh > Admit-results-<date>.txt)   # Lean: admit.rs, clock.rs, the floor wrapper and a model of apply, proved, with the kernel replay (lean/README.md)
 (cd lean && ./seats-replay.sh > SeatsReplay-results-<date>.txt)   # every suite traced and replayed through the Lean model of apply
 (cd lean && ./coupling-replay.sh > CouplingReplay-results-<date>.txt)   # … and through the Coupling-shaped model on it

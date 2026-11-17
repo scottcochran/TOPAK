@@ -46,6 +46,28 @@ hand-assembled TLC output with a dated name and never change; the two generators
 | `Release.tla` | ADR-0066 §7 (Proposed) | `live-gen-results.sh` with `Release-rows.txt` | `Release-results-2026.11.10.txt` | none yet |
 | `FloorComposition.tla`, `Coupling.tla`, `RunCoupling.tla` | ADR-0046 §5 (the premise-table corrections) | `premise-corrections-results.sh` | `premise-corrections-results-2026.10.02.txt` | ADR-0046 |
 | `Mechanism.tla` | ADR-0045 T-0045-28; ADR-0033 A5 | `mechanism-trace-run.sh` on traces the reference records; `mechanism-trace-results.sh` regenerates the file; `trace2tla.py` converts | `Mechanism-trace-results-2026.09.30.txt`, `-2026.10.01.txt`, `-2026.10.02.txt`, `-2026.10.02b.txt`, `-2026.10.05.txt` (labels, operators and the emergency seating, all Proposed; X1 retired) | Pinned, not frozen: the operational model moves with the code |
+| `Paxos.tla` | ADR-0033 §2 (row P), §3 and finding 9; Theory of Operation §11.3. An operational model of the reference's replica (`topak-paxos`), one step per call of `handle` | `live-gen-results.sh` with `Paxos-rows.txt`; the larger runs with `Paxos-larger-rows.txt` and `Paxos-kept-rows.txt`, which are not in `modules.tsv` | `Paxos-results-2026.11.14.txt`; `Paxos-larger-results-2026.11.14.txt`. `Paxos-kept-rows.txt` has no results file yet | none yet. Pinned, not frozen: it moves with the code |
+| `PaxosTrace.tla` | ADR-0033 finding 9; the stage-one replay `Mechanism.tla` is for the admit path, for the consensus log | `paxos-trace-run.sh` on traces the reference's simulation records; `paxos-trace-results.sh` regenerates the file; `paxos-trace2tla.py` converts | `Paxos-trace-results-2026.11.14.txt` | none yet |
+
+**The consensus log (2026.11.14).** `Paxos.tla` is the message-level module Theory of Operation §11.3 puts over
+`Voting`, and the one ADR-0033's finding 9 asks to model proposer retry. It is written from `replica.rs`, one
+operator per function and in the same order of effects, so that `PaxosTrace.tla` can replay the reference's recorded
+runs through the operators TLC checks. Its mutations: `M_IGNOREPROMISED` and `M_BELOWPROMISE` are the code's two;
+`M_NOPERSIST` is a host that restarts a replica without its durable state (ADR-0033 §3); `M_REQUEUE` is the first
+implementation's re-queue on step-down, which breaks `NoAmplification` (a value sits in no more fresh slots than it
+was handed in, plus the forwards of it the network duplicated) and no safety property. Its results are two files,
+both from `live-gen-results.sh` with the same defaults: `Paxos-rows.txt` (in `modules.tsv`; about seven minutes) and
+`Paxos-larger-rows.txt` (`Safe` at two values, and with one value handed in twice), the second outside `modules.tsv`
+because a row is millions of states. A third rows file, `Paxos-kept-rows.txt` (what `M_BELOWPROMISE` and `M_NOPERSIST`
+keep at two values), has no results: its first row did not finish in two hours at one worker, so what those two
+mutations keep is checked at one value only (`m-below-kept`, `m-nopersist-kept`), and at two values for
+`M_IGNOREPROMISED` (`m-ignore-kept-2`). What every row bounds: three replicas, and one round in which replicas 1 and 3 may stand, so two leaders
+at most. Not checked: a second round, five replicas, and, unmutated, a crash together with a second value. No proof module, and
+`proof-sync.sh` says why: the safety argument is `Voting`'s, which is not written as a module. `paxos-trace-results.sh`
+runs `topak-paxos`'s simulation with `TOPAK_TRACE_DIR` set and replays each recorded run: the unmutated code's runs
+match the module event for event; a run of each mutation of the code (or of the simulated host) matches the module
+under the same mutation up to the event at which the property that mutation breaks is violated, and does not match
+the module under `Mut = "none"`. The host in those runs is the simulation's, not `topak-node`'s driver and WAL.
 
 **Liveness (2026.10.07).** `Coupling_live.tla` and `Emergency_live.tla` extend frozen modules, as a proof module does,
 and add what they cannot state: fairness, leads-to properties, and invariants over `ENABLED`. Under every `Mut` of
@@ -222,7 +244,8 @@ most expensive, each with the kind of evidence it gives.
    one; the results file says `simulate` in its header with the depth, trace count and seed.
 5. **Validate the reference's traces** (`Mechanism.tla`, `mechanism-trace-run.sh`): every recorded behaviour of the
    running code replayed through an operational model of `apply`, step for step. Drift detection, not a refinement
-   (ADR-0045 T-0045-28).
+   (ADR-0045 T-0045-28). Since 2026.11.14 the consensus log has the same (`PaxosTrace.tla`, `paxos-trace-run.sh`),
+   over the replicas of a simulated run.
 6. **Prove the invariants** (`*_proof.tla`, `proof-results.sh`): each under the mutations that break it and the
    module's named assumptions, for every constant those admit. `proof-method.md` is the method; ADR-0046
    is the declaration. A proof replaces no mutation row: the existential claims stay with TLC.
