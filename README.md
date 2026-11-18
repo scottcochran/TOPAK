@@ -40,7 +40,7 @@ deployable system.
 | [`process/`](process/) | The genesis cleanup's process logs ([README](process/README.md)) |
 | [`tools/`](tools/) | The TLC jar and wrappers, the TLAPS wrapper and pin, the Lean pin, report and sync, the installers, and the manifest and reference checkers |
 | [`diagrams/`](diagrams/) | Diagrams and their generators |
-| [`skills/`](skills/) | Agent skills drafted from the corpus's methods: `writing-tla-specs-and-proofs`, the spec, model-checking and proof method as a reusable skill ([README](skills/writing-tla-specs-and-proofs/README.md)); `generating-corpus-diagrams`, the diagram family's method, its rationale and its scripts ([README](skills/generating-corpus-diagrams/README.md)) |
+| [`skills/`](skills/) | Agent skills drafted from the corpus's methods: `writing-tla-specs-and-proofs`, the spec, model-checking and proof method as a reusable skill ([README](skills/writing-tla-specs-and-proofs/README.md)); `writing-lean-encodings-and-proofs`, its companion for the Lean 4 second derivations and the premise each one adds ([README](skills/writing-lean-encodings-and-proofs/README.md)); `generating-corpus-diagrams`, the diagram family's method, its rationale and its scripts ([README](skills/generating-corpus-diagrams/README.md)); `auditing-claims-against-evidence`, the reading of a document claim by claim against the evidence it rests on ([README](skills/auditing-claims-against-evidence/README.md)) |
 
 ## Running things
 
