@@ -13,9 +13,12 @@ negated goal as named assertions (some with instantiation patterns), `(check-sat
   2. discards the declarations cvc5's proof dump restates, and prefixes the proof with declarations taken
      from the query text itself;
   3. requires the formula of every `assume` step, with cvc5's term abbreviations expanded, to be one of the
-     query's assertions, compared structurally after the two changes of notation cvc5 makes: `:named` and
+     query's assertions, compared structurally after the three changes of notation cvc5 makes: `:named` and
      `:pattern` annotations are dropped (a pattern is a hint to the solver and no part of the formula),
-     and a bound variable `x` of sort `S` is written `(@var "x" S)` under a binder `(@list ...)`;
+     a bound variable `x` of sort `S` is written `(@var "x" S)` under a binder `(@list ...)`, and every
+     `let` is expanded, its bindings in parallel (cvc5 substitutes them as it reads the query; tlapm from
+     ff40755 writes CASE as nested lets). A let whose value would be captured by a binder in its body is
+     refused, not expanded;
   4. runs ethos on the result with `--require-proof-of-false`.
 
 The checker thus certifies: the query's declarations and the query's assertions entail false. What it
@@ -89,12 +92,18 @@ def sha(data):
     return hashlib.sha256(data.encode() if isinstance(data, str) else data).hexdigest()
 
 
-def query_term(t, bound):
-    """A query term in the notation of cvc5's proof dump: annotations dropped, bound variables as @var."""
+def occurs(x, t):
+    """Whether the term x occurs in the term t."""
+    return t == x or (isinstance(t, list) and any(occurs(x, y) for y in t))
+
+
+def query_term(t, bound, lets=()):
+    """A query term in the notation of cvc5's proof dump: annotations dropped, bound variables as @var, and
+    every `let` expanded. `lets` holds the values of the lets in scope, already in the proof's notation."""
     if not isinstance(t, list):
         return bound.get(t, t)
     if t and t[0] == "!":
-        return query_term(t[1], bound)
+        return query_term(t[1], bound, lets)
     if t and t[0] in BINDERS:
         if len(t) != 3 or not all(isinstance(v, list) and len(v) == 2 and isinstance(v[0], str) for v in t[1]):
             raise ValueError("binder the wrapper does not read: " + show(t)[:80])
@@ -102,12 +111,31 @@ def query_term(t, bound):
         vs = []
         for name, sort in t[1]:
             var = ["@var", '"' + name + '"', sort]
+            # A let's value written above this binder may name an outer variable that prints as this one does.
+            # Substituted here, it would be read as this binder's variable: refuse rather than capture it.
+            if any(occurs(var, v) for v in lets):
+                raise ValueError("let in a query: a binder would capture a variable of a let's value: " + show(var))
             inner[name] = var
             vs.append(var)
-        return [t[0], ["@list", *vs], query_term(t[2], inner)]
+        return [t[0], ["@list", *vs], query_term(t[2], inner, lets)]
     if t and t[0] == "let":
-        raise ValueError("let in a query: the wrapper does not expand it")
-    return [query_term(y, bound) for y in t]
+        # (let ((x1 t1) ... (xn tn)) body) is body with each xi replaced by ti, every ti read in the scope
+        # outside the let (SMT-LIB 2.6 §3.6.1: the bindings are parallel). cvc5 makes the same substitution
+        # when it reads the query, so its proof assumes the expanded formula.
+        if len(t) != 3 or not isinstance(t[1], list) or not t[1] or \
+                not all(isinstance(b, list) and len(b) == 2 and isinstance(b[0], str) for b in t[1]):
+            raise ValueError("let the wrapper does not read: " + show(t)[:80])
+        names = [b[0] for b in t[1]]
+        if len(set(names)) != len(names):
+            raise ValueError("let binds a name twice: " + show(t)[:80])
+        inner = dict(bound)
+        values = []
+        for name, value in t[1]:
+            v = query_term(value, bound, lets)
+            inner[name] = v
+            values.append(v)
+        return query_term(t[2], inner, (*lets, *values))
+    return [query_term(y, bound, lets) for y in t]
 
 
 def read_query(text):
