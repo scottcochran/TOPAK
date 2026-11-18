@@ -4,7 +4,7 @@
       "command": "sh",
       "args": [
         "-c",
-        "root=$(git rev-parse --show-toplevel 2>/dev/null || pwd); exec docker run -i --rm --user \"$(id -u):$(id -g)\" -v \"$root:/work\" ghcr.io/scottcochran/tla-kit@sha256:948e6d1f275d64e4114950f03c2b5d1236068d1f3fe60885de7625789fc8257f tla-kit mcp"
+        "root=$(git rev-parse --show-toplevel 2>/dev/null || pwd); exec docker run -i --rm --user \"$(id -u):$(id -g)\" -v \"$root:/work\" ghcr.io/scottcochran/tla-kit@sha256:6c27b7a007d723b55c126eedd4a6f295ecefdfb98a1c27c34580eaab862b8f2f tla-kit mcp"
       ]
     }
   }

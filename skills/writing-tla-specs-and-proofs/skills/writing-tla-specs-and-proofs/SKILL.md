@@ -109,7 +109,7 @@ container image of TLC, SANY and tlapm, named by digest, with these
 scripts inside. Claude Code starts it with the session, as `docker run`
 with the repository's root (the working directory outside a repository)
 mounted as the project; its paths are relative to that root. The first
-start pulls the image, about 800 MB. If the server shows as failed, run
+start pulls the image, about 850 MB. If the server shows as failed, run
 the `docker pull` of the image `.mcp.json` names once, and start a new
 session.
 
