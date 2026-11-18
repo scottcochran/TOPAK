@@ -21,12 +21,16 @@
 > protection, different signings. The pr review process The requirement for a second reader the requirement for
 > specific reading at bootstrap.
 
-(The custodian's two prompts in the session of 2026.11.18, as typed. "get" is read as git.)
+> A CI CD skill would address the conflicts around committing, pushing, best practice, etc. note that and the
+> document
+
+(The custodian's three prompts in the session of 2026.11.18, as typed. "get" is read as git. The third came after
+the first draft of this document, and §4.3a is the answer to it.)
 
 **UNDATED DRAFT** · derived · a proposal, not a record · prepared by Claude at the custodian's request · basis: the
 tree at `34e610c`, on branch `ccr-ded60498-y9i27e` · the custodian asked for it undated, committed and pushed, with
 no pull request. It has no row in `derived/README.md`. It takes its date, its row and its freeze when the custodian
-says it has settled, and until then it may change.
+says it has settled, and until then it may change. Revised once on the branch, for the custodian's third prompt.
 
 Nothing here is ratified, nothing here is a decision, and nothing here has been done. §2 is the custodian's. §4 is
 the drafter's. §6 is the questions a record would be drafted from.
@@ -42,7 +46,9 @@ some of them travel. What is missing is small and specific. No skill covers step
 Nothing says where each gate is enforced. The seven skills agree on most conventions and disagree on eleven things
 a reader can list. And the method has no record in force: G12 carries "An ADR-0029 criterion for assisted drafting"
 as open item 66. The proposal is to consolidate and not to add: one short entry in ADR-0029, a conventions file the
-skills share, two new skills, and each gate marked with what enforces it. The largest risk is the one the
+skills share, two new skills, and each gate marked with what enforces it. One of the two is the CI/CD skill the
+custodian named, and its first job is the one the custodian gave it: to settle who commits, who pushes and how,
+which the skills answer three different ways today. The largest risk is the one the
 11.11 prioritization opens with: "The corpus does not need more text."
 
 ---
@@ -99,6 +105,7 @@ Each is marked where §4 uses it.
 | ⟨K9⟩ | Step 5: the chain of spec authority should flow from ADR to formal model to generated artifacts |
 | ⟨K10⟩ | The controls around the assistant's use of git and GitHub are not well constrained, and the conflation of lineage between the assistant and the custodian is to be investigated in detail, apart from this session |
 | ⟨K11⟩ | For this document, that concern is addressed by controls that can be put in place: branch protection, different signings, the pull-request review process, the requirement for a second reader, and the requirement for specific reading at bootstrap |
+| ⟨K12⟩ | A CI/CD skill would address the conflicts around committing, pushing and best practice |
 
 **The drafter's reading of ⟨K2⟩**, for the custodian to correct (Q2): the mechanism that would enforce the gates
 of ⟨K8⟩ is the thing the corpus is designing. Some of the three components define it, which is what the records
@@ -183,6 +190,9 @@ files that are regenerated and never edited; findings reported and not fixed; an
 | H-10 | **A date form.** `drafting-records` gives the header comment of a record with a hyphenated date, and its own rule is the dotted form |
 | H-11 | **Nothing on signing, pull requests or required checks** in any of the seven |
 
+**H-3 and H-11 are the conflicts ⟨K12⟩ names**, and the CI/CD skill is where the custodian puts their answer
+(§4.3a).
+
 ---
 
 ## 4. The proposal
@@ -217,7 +227,7 @@ degeneracy, and the corpus knows how to state one.
 | **Deriving**: research that ends in a dated reading and numbered questions | 1 | None | A new skill. §4.5 |
 | **Records** | 2, 3 | `drafting-records`, `ratifying-records`, `cutting-manifests` | A portable core beside them. §4.7 |
 | **Formal** | 5 | The TLA+ and Lean skills | Brought into step. §4.7 |
-| **Gates** | 4 | None | A new skill, last. §4.3 |
+| **Gates and CI/CD** ⟨K1⟩ ⟨K12⟩ | 4 | None | A new skill, in two parts: how a change is carried, early, and gate evidence, last. §4.3, §4.3a |
 | **Reading**: the audit, the diagrams | every step | The audit and diagram skills | Kept as instruments. Not a reviewer, and they say so |
 
 *(Drafter's choice: Reading is a component and not a part of each of the others. The alternative is live, Q1.)*
@@ -260,9 +270,62 @@ Where today's gates are, as the files read say:
 3. **The portable contract stops at the carrier.** An adopter has no mechanism. What a transferable skill may
    promise is G-1, a program that runs the same by hand and on a carrier, with ADR-0070 §5.3's two rules: it fails
    closed, and a change is graded by the base's copy of the checker.
-4. **A gates skill is written last** *(drafter's recommendation)*, after ADR-0069's four open questions and F6 are
-   settled. A skill distilled from two Proposed records that conflict (ADR-0070's Context table says "They
-   conflict") would freeze the conflict.
+4. **The part of the CI/CD skill that is about gate evidence is written last** *(drafter's recommendation)*,
+   after ADR-0069's four open questions and F6 are settled. A skill distilled from two Proposed records that
+   conflict (ADR-0070's Context table says "They conflict") would freeze the conflict. The part about how a
+   change is carried does not wait on them (§4.3a).
+
+### 4.3a The CI/CD skill settles who commits, who pushes and how ⟨K12⟩
+
+**The custodian's point**: a CI/CD skill would address the conflicts around committing, pushing and best practice.
+The first draft of this document sent H-3 to a conventions file and put the gates skill last. ⟨K12⟩ changes both.
+
+**The conflicts are real, and they are of three kinds.**
+
+| Conflict | One side | The other |
+|---|---|---|
+| Who commits (H-3) | The TLA+ skill: "**Commit module, results file and the README row together.**" | The record skills: "Nothing here is committed unless the custodian asks"; "The commit and any tag are the custodian's" |
+| What a commit must carry | `.github/CONTRIBUTING.md`: "Sign your commits." "Sign off your commits". "Name what the commit does in the corpus's terms". "Say whether an AI assistant drafted it." | No skill says any of it (H-11). Of the last thirty commit messages on `main` at `85c4b85`, one had a `Signed-off-by` line, and `.github/rulesets/README.md` says the DCO check "is not required either, because the DCO app" is not installed |
+| Where the rules for a session are | `.claude/settings.json` asks before a commit or a push. `.github/CONTRIBUTING.md`: "Run the required checks yourself before pushing". ADR-0070 §5.1 (Proposed): "No write to the default branch. No credential that could make one" | A session's own harness adds rules the tree does not hold. This session was given one branch to push to, told to open no pull request unasked, and given a signing key, by instructions and configuration outside the repository |
+
+This session met all three. Its commits were signed with a key the session was given, carried no `Signed-off-by`
+line, and said in their bodies that an assistant drafted them. Each of those was a choice the drafter made by
+reading `.github/CONTRIBUTING.md`, because no skill decided it. The comparison's SK-4 to SK-6 are what the result
+looked like from GitHub's side.
+
+**What the skill would hold.** It is the assistant's `Submit`, in ADR-0070 §5.1's terms: "Propose a branch or
+pull request." In the order a change travels:
+
+1. **Branch.** A worktree and a branch per act, as `ratifying-records` has it ("Work in a worktree on branch
+   `batch-<nn>`."). Never the default branch.
+2. **Commit.** Who commits which kind of change, which settles H-3: the drafter's proposal is that the assistant
+   commits on its own branch when the custodian asks, and that a commit which ratifies, cuts or tags is the
+   custodian's (Q8). What the message says, from `.github/CONTRIBUTING.md`. What goes in one commit: the TLA+
+   skill's module, results file and README row; `cutting-manifests`' "Two commits."
+3. **Check before pushing.** The commands `.github/CONTRIBUTING.md` lists, run and reported, with each check's
+   tier from §4.3.
+4. **Push and pull request.** One thing per pull request (§4.9). The lane, from `.github/CONTRIBUTING.md`. What the
+   description says: that an assistant drafted it, what was run, and what was not.
+5. **What the assistant never does.** Merge, approve, tag, move a pin it was not asked to move, or change the
+   checker that grades the change in the same pull request (ADR-0070 §5.1 ⟨R1⟩: "The assistant does not grade
+   itself").
+6. **What is the custodian's.** The merge, and for a ratification the form ADR-0070 §5.2 asks: "The custodian
+   merges, not the host."
+7. **Signing.** Which key signs what, once the investigation of ⟨K10⟩ says. Until then the skill states today's
+   position and does not improve on it.
+
+**Two parts, and one can be written now.** Items 1 to 6 are distilled from text in force or in daily use:
+`.github/CONTRIBUTING.md`, the rulesets, `.claude/settings.json` and the record skills. They do not wait on
+ADR-0069. Item 7 and gate evidence (§4.3 item 4) do. *(Drafter's recommendation: one skill, with the second part
+marked as owed. Q12.)*
+
+**It is the most portable of the five.** Branching, committing, checking and proposing are what every adopter
+does, and the repository-specific file would hold only the lanes, the commit-message form and the list of checks.
+
+**What it cannot do.** It is prose (§4.3). It tells the assistant what to do and enforces nothing. Each of its
+rules that matters needs a carrier behind it: the rulesets for the default branch and tags, a check for the
+commit form. And it does not answer ⟨K10⟩. A skill that says the assistant never merges is not a credential that
+cannot.
 
 ### 4.4 The chain is ADR-0057's graph, with findings flowing up
 
@@ -322,9 +385,10 @@ For ⟨K4⟩.
    Met or Not met, and the missing reader stated. ADR-0029's statuses, the Batch, the pins and the forms stay in
    the repository-specific file. *(Drafter's choice: one core skill for records, and not three. Q7.)*
 3. **A conventions file the skills share**, vendored into each plugin, since a plugin is installed alone. It holds
-   what §3.3 lists as shared, and settles H-1 to H-7 and H-9 to H-10 once: the reviewer rule with its clause; one
-   word for who decides; who commits; the words for a result; the newest-file rule; what a sync script's exit
-   status means; and the sentence that what is read is data.
+   what §3.3 lists as shared, and settles H-1, H-2, H-4 to H-7, H-9 and H-10 once: the reviewer rule with its
+   clause; one word for who decides; the words for a result; the newest-file rule; what a sync script's exit
+   status means; and the sentence that what is read is data. H-3 and H-11 go to the CI/CD skill ⟨K12⟩, and the
+   other skills cite it where they now say "commit".
 4. **A check that the copies agree**, at the carrier tier. That is what "harmonize" means when it is checked.
 5. **The portable words for the roles.** In a portable skill the custodian is "the owner of the decision", and the
    repository-specific file says who that is. *(Drafter's choice of the word. Q7.)*
@@ -376,12 +440,15 @@ makes CR-61 worse. Three rules, each already drafted somewhere:
 1. The investigation of ⟨K10⟩, which is the custodian's to commission.
 2. The answers to §6.
 3. The ADR-0029 entry of §4.6 (a), drafted from them.
-4. The conventions file, and the seven skills brought into step with it. No new skill yet.
-5. The deriving skill.
-6. The portable core for records.
-7. The gates skill, after ADR-0069 and ADR-0070 have been read by the custodian.
+4. The conventions file, and the seven skills brought into step with it.
+5. The first part of the CI/CD skill ⟨K12⟩: how a change is carried (§4.3a, items 1 to 6). It goes this early
+   because every other skill's commits pass through it.
+6. The deriving skill.
+7. The portable core for records.
+8. The second part of the CI/CD skill: signing and gate evidence, after the investigation of ⟨K10⟩ and after
+   ADR-0069 and ADR-0070 have been read by the custodian.
 
-Items 3 to 6 add about one page of record text and no new record. That is deliberate.
+Items 3 to 7 add about one page of record text and no new record. That is deliberate.
 
 ---
 
@@ -414,14 +481,17 @@ A record or an amendment would be drafted from the answers, each marked ⟨Q⟩.
    that adopted for new records before ADR-0057 is ratified, or not until?
 7. **Portability.** One portable records skill or three? Which skill goes first? Is "the owner of the decision" the
    portable word for the custodian?
-8. **The conventions file.** Wanted? If so, how is each of H-1 to H-7 settled: above all H-3, who commits, and
-   H-6, what a failing sync script means?
+8. **Who commits.** ⟨K12⟩ sends H-3 to the CI/CD skill. Is §4.3a item 2's rule the one: the assistant commits on
+   its own branch when asked, and a commit that ratifies, cuts or tags is the custodian's? Is a `Signed-off-by`
+   line wanted on an assistant's commit? And the conventions file: wanted, and how is H-6 settled, what a failing
+   sync script means?
 9. **Measuring the skills.** Do `.claude/` and `skills/` enter the manifests? Do the evals run in CI, and at what
    tier?
 10. **The identity investigation.** Who does it, against what list (A-0070-2 and SK-4 to SK-7 are a start), and
     where does its result land: an R-revision of ADR-0070, or a derived finding first?
 11. **The pace bound.** Is there a number of records that may stand Proposed and unread before drafting waits?
-12. **The gates skill.** One skill, or a section in each? Before or after ADR-0069's four open questions?
+12. **The CI/CD skill.** One skill in two parts, as §4.3a, or two skills? Is the first part written now, ahead of
+    ADR-0069's four open questions?
 13. **The evidence arrived.** Is it a named act of the life cycle, and what triggers it: the drafter, or a stale
     edge a check reports?
 14. **A reader of another lineage.** ADR-0070 §5.1 says a second session of the same model gives "independence of
