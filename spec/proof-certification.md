@@ -89,20 +89,28 @@ Only if ethos answers `correct` does the wrapper print `unsat`. In every other c
 it prints `unknown`, which the prover reads as "this backend did not prove it" and passes the obligation on to Zenon
 and then Isabelle.
 
-**The comparison in step 4** has to see through two changes of notation that cvc5 makes between reading a formula and
-printing it in a proof. Both are made explicit so that a reader can judge them.
+**The comparison in step 4** has to see through three changes of notation that cvc5 makes between reading a formula
+and printing it in a proof. All three are made explicit so that a reader can judge them.
 
 | In the query | In the proof | Why the two are the same formula |
 |---|---|---|
 | `(! φ :named N)`, `(! φ :pattern (…))` | `φ` | A name is a label. A pattern is a hint to the solver about when to instantiate a quantifier, and is no part of what the formula says |
 | `(forall ((x S)) φ)`, with `x` in `φ` | `(forall (@list (@var "x" S)) φ′)`, with `(@var "x" S)` where `x` was | The proof format's way of writing a bound variable. The wrapper rewrites the query into this form, scope by scope, and compares exactly |
+| `(let ((x₁ t₁) … (xₙ tₙ)) φ)` | `φ` with each `xᵢ` replaced by `tᵢ` | A `let` names a term and means nothing else (SMT-LIB 2.6 §3.6.1). cvc5 makes the substitution as it reads the query, so its proof assumes the expanded formula. The bindings are parallel: every `tᵢ` is read in the scope outside the `let`. tlapm writes `CASE` as nested `let`s from `ff40755` |
 
 The rewriting goes from the query to the proof's notation and not the other way, so that a bound variable and a
 declared constant of the same name can never be confused.
 
+**The one place the expansion could change a formula** is capture. If a `let`'s value names a bound variable `z`,
+and a quantifier in the `let`'s body binds another `z` of the same sort, then after substitution both are written
+`(@var "z" U)` and the proof's notation can no longer tell them apart. A satisfiable query could then be matched
+by a proof of a false one. The wrapper does not rename. It refuses the query, which sends the obligation to the next
+backend. The refusal is conservative: it also refuses when the `z` in the value is bound inside the value itself.
+
 **What the wrapper refuses.** A query with a form it does not carry into a proof (anything but `set-logic`,
-`set-option`, `set-info`, `declare-sort`, `declare-fun`, `declare-const`, `assert`, `check-sat`, `exit`); a `let`;
-a binder of a shape it does not read; a proof with a form other than a term abbreviation, `assume`, `assume-push`,
+`set-option`, `set-info`, `declare-sort`, `declare-fun`, `declare-const`, `assert`, `check-sat`, `exit`); a `let` that
+binds no name, binds a name twice or is of a shape it does not read; a `let` whose value a binder in its body would
+capture; a binder of a shape it does not read; a proof with a form other than a term abbreviation, `assume`, `assume-push`,
 `step` or `step-pop`; a proof that assumes nothing. Each refusal is recorded with its reason. `assume-push` introduces
 a local hypothesis inside the proof and is not an assumption about the query, so it is not compared.
 
@@ -208,7 +216,7 @@ tlapm's trace of Isabelle's check, and marks all five in every run.
 
 The wrapper is the one new piece of code the method trusts, so it has a test that tries to make it accept what it
 should not. Given any query file the prover wrote (`tlapm --debug tempfiles` keeps them), it runs the wrapper
-against four stand-in solvers.
+against four stand-in solvers, and then against three more on small queries of its own that use `let`.
 
 | Stand-in | What it does | The wrapper must | Reason it gives |
 |---|---|---|---|
@@ -216,9 +224,14 @@ against four stand-in solvers.
 | other | Proves the query with `(assert false)` added | Forward `unknown` | an `assume` is not one of the query's assertions |
 | empty | Says `unsat` and prints an empty proof | Forward `unknown` | proof assumes nothing |
 | cut | Prints an honest proof with its last step removed | Forward `unknown` | checker refused: the last step did not prove false |
+| let-parallel | Runs cvc5 on a query whose inner `let` reads an outer binding (`(let ((x a)) (let ((x b) (y x)) …))`) | Forward `unsat` | checker accepted the proof |
+| let-other | Changes a `let`'s value from `a` to `b` in a satisfiable query, and proves that | Forward `unknown` | an `assume` is not one of the query's assertions |
+| let-capture | Substitutes a `let`'s value under a quantifier that binds the same name, turning a satisfiable query into a false one, and proves that | Forward `unknown` | a binder would capture a variable of a let's value |
 
-All four behave as required. The second is the case the binding in §3 exists for; the fourth shows the checker is
-doing work and is not a formality.
+All seven behave as required. The second is the case the binding in §3 exists for; the fourth shows the checker is
+doing work and is not a formality. The last three were checked against two altered wrappers: one that reads a `let`'s
+bindings in sequence fails let-parallel, and one without the capture refusal forwards `unsat` for let-capture's
+satisfiable query, with ethos accepting the proof.
 
 ---
 

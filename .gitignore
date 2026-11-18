@@ -30,3 +30,6 @@ sessions/
 
 # Python bytecode caches (e.g. from running derived/scenarios-*/scenarios.py)
 __pycache__/
+
+# Editor settings, per machine
+.vscode/
