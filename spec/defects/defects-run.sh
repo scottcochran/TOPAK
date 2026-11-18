@@ -8,7 +8,8 @@
 # The modules EXTEND Emergency_live and Emergency_live_proof, which live in spec/, so tlapm runs with -I .. and TLC
 # runs from spec/ on the path defects/BinderDefectTLC.tla; proof-cert.sh takes the module as defects/<Module>.
 # Every cache, evidence dir, .cfg and metadir is in a mktemp directory removed at the end; nothing is written here.
-# Exits 1 if any outcome differs from §8, 2 if a step could not run, else 0.
+# Exits 1 if any outcome differs from §8, 2 if a step could not run, else 0. A step that could not run says so on
+# its line, and the verdict names it: the certified step needs cvc5 and ethos (proof-cert.sh exits 2 without them).
 set -u
 here=$(cd "$(dirname "$0")" && pwd)       # spec/defects
 spec=$(cd "$here/.." && pwd)              # spec
@@ -133,6 +134,10 @@ echo "2. Under the certified run (proof-cert.sh)"
 for m in $provers; do
   mkdir -p "$tmp/ev-$m"
   ./proof-cert.sh "defects/$m" "$tmp/ev-$m" > "$tmp/$m.cert.txt" 2>&1; st=$?
+  if [ "$st" -eq 2 ]; then
+    echo "  $m · NOT RUN: the certified step could not run ($(head -1 "$tmp/$m.cert.txt")) · expected $(certexp "$m")"
+    notrun=1; continue
+  fi
   n=$(sed -n 's/^Obligations: //p' "$tmp/$m.cert.txt")
   tr_=$(grep -E '^  trivial' "$tmp/$m.cert.txt" | awk '{print $NF}'); sm=$(grep -E '^  SMT' "$tmp/$m.cert.txt" | awk '{print $6}'); ze=$(grep -E '^  Zenon' "$tmp/$m.cert.txt" | awk '{print $NF}'); is=$(grep -E '^  Isabelle' "$tmp/$m.cert.txt" | awk '{print $NF}'); ls=$(grep -E '^  LS4' "$tmp/$m.cert.txt" | awk '{print $NF}')
   if [ "$st" -eq 0 ]; then got="certified"; else got="not certified"; fi
@@ -151,5 +156,6 @@ tlcrows | while read -r kind prop; do
 done
 [ -f "$tmp/tlcfail" ] && fail=1
 echo
-if [ "$fail" -eq 0 ]; then echo "Verdict: every outcome as §8 says. Both cases reproduce under tlapm $("$tlapm" --version): a false statement under a binder proves and certifies by SMT, and two terms with one name prove FALSE by SMT and by PTL."; else echo "Verdict: DIFFERS from §8 at the lines marked; the record is not reproduced by this run."; fi
+if [ "${notrun:-0}" -eq 1 ]; then echo "Verdict: NOT REPRODUCED. The certified step (section 2) could not run, so its outcomes are not known; $([ "$fail" -eq 0 ] && echo "every other outcome is as §8 says" || echo "and others DIFFER from §8 at the lines marked")."; exit 2
+elif [ "$fail" -eq 0 ]; then echo "Verdict: every outcome as §8 says. Both cases reproduce under tlapm $("$tlapm" --version): a false statement under a binder proves and certifies by SMT, and two terms with one name prove FALSE by SMT and by PTL."; else echo "Verdict: DIFFERS from §8 at the lines marked; the record is not reproduced by this run."; fi
 exit "$fail"

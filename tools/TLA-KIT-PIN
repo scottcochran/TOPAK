@@ -1,0 +1,15 @@
+# The tla-kit image TOPAK's TLA+ checks run in, by the digest tla-kit's release workflow published (ADR-0077 §1,
+# Proposed). One line per field, `key value`, in the form of tools/TLAPS-PIN. tools/check-pins.sh checks that
+# jar_sha256 is tools/TLA-PIN's jar, and reports tlapm_sha256 against tools/TLAPS-PIN until that pin names this
+# image (ADR-0077 §5). .github/workflows/results.yml verifies the image's attestations before any job uses it, and
+# runs the tlc and proofs jobs in it. tla-kit's CONSUMERS.md names this file; its log of each project's pin is made
+# there, by tla-kit's custodian. This repository sends nothing there.
+# The digests below are the values the release's PINS.json gives for the installed files.
+release v0.4.0
+image ghcr.io/scottcochran/tla-kit@sha256:6c27b7a007d723b55c126eedd4a6f295ecefdfb98a1c27c34580eaab862b8f2f
+commit ada119b7db96089bc7b2bc6a3b774b92fab28fe1
+jar_sha256 936a262061c914694dfd669a543be24573c45d5aa0ff20a8b96b23d01e050e88
+tlapm_sha256 6182df63c4513b09c31c8de12c37f8045ace9cab2517c017a2fa75f466685bb2
+cvc5_sha256 d4c534360e602f07adcbb2aafbe833e73ce1e7c6f2572cb7eee03de73d6e2e5b
+ethos_sha256 97e95d36dcb596e6439d935af68e9005a508620f667af546d92d6d3700f26538
+pinned 2026.11.18
