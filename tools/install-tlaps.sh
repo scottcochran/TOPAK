@@ -1,7 +1,10 @@
 #!/bin/bash
-# Fetch the pinned TLA+ Proof System (TLAPS) release into tools/tlaps-<version>/ (not tracked: about
-# 1.1 GB compressed, 1.9 GB on disk, Isabelle and Z3 included). The wrapper tools/tlapm runs it, and every
-# proof results file prints the binary's sha256, so a different build is a change the results show.
+# Fetch the pinned TLA+ Proof System (TLAPS) release into tools/tlaps-<version>/ (not tracked). Sizes as measured
+# on 2026.11.18 (ADR-0077 §6, Proposed): the pinned arm64-darwin install (7824dab) is 1.9 GB on disk, nearly all of
+# it a full Isabelle distribution with two JDKs; the tarballs the tag serves now, of a later build that installs a
+# smaller Isabelle, are 41 MB (arm64-darwin) and 52 MB (x86_64-linux-gnu). The size of 7824dab's own tarball is not
+# known, since the tag no longer serves it. The wrapper tools/tlapm runs it, and every proof results file prints the
+# binary's sha256, so a different build is a change the results show.
 # Prebuilt for macOS arm64 and Linux x86_64 only; see https://github.com/tlaplus/tlapm for other platforms.
 # tools/TLAPS-PIN names the build the results files cite. The release tag is a pre-release that gets rebuilt, so
 # what this script fetches today may not be that build; the install is compared with the pin and says so.

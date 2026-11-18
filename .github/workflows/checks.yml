@@ -2,7 +2,8 @@
 # Gate evidence for ADR-0069 §10.2 (Proposed): during genesis it supports the custodian's ratification and promotes
 # nothing (§10.3). Each step calls a repository script that runs the same by hand; this file only orders them.
 #
-# Strict, because each passes on main today: the TLC jar against tools/TLA-PIN; the proofs in step with the
+# Strict, because each passes on main today: the pins (tools/check-pins.sh: the TLC jar against tools/TLA-PIN, and
+# tools/TLA-KIT-PIN and tools/TLAPS-PIN against it and each other; ADR-0077, Proposed); the proofs in step with the
 # specifications (spec/proof-sync.sh; needs no prover); every manifest in manifests/index.tsv against its commit.
 # Ratcheted, because each has findings that predate CI (tools/ratchet.py): the corpus pins the reference follows
 # (mechanism/corpus-pins.sha256), the Lean results in step (tools/lean-sync.sh), the repository's path citations
@@ -31,7 +32,7 @@ jobs:
         id: plan
         run: tools/ci-plan.sh "${{ github.event_name }}" "${{ github.event.pull_request.base.sha }}" "${{ github.event.before }}" | tee -a "$GITHUB_OUTPUT"
 
-      - name: The TLC jar matches its pin
+      - name: The pins agree (the TLC jar, the tla-kit image, the prover)
         if: ${{ !cancelled() }}
         run: tools/check-pins.sh
       - name: The proofs are in step with the specifications

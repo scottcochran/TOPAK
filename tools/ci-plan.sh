@@ -4,9 +4,11 @@
 # Prints key=value lines (append them to $GITHUB_OUTPUT):
 #   base=<sha>        pull_request: the PR's base; push: the commit before the push; otherwise, or when that commit is
 #                     unknown (a new branch, a force push), HEAD's parent. tools/ratchet.py compares against it.
-#   tlc= reference= lean= floor=   true when the change touches that suite's inputs, and always on
+#   tlc= proofs= reference= lean= floor=   true when the change touches that suite's inputs, and always on
 #                     workflow_dispatch and schedule. A suite is:
-#     tlc        spec/, the TLC jar and its pin, the results tools          -> tools/check-results.sh
+#     tlc        spec/, the TLC jar and its pin, the results tools, the image's pin -> tools/check-results.sh
+#     proofs     spec/*.tla, proof-results.sh, tools/tlapm, the prover's and the image's pins (ADR-0077 §3,
+#                Proposed)                                                  -> tools/check-proofs.sh
 #     reference  mechanism/, policies/, floor/ (topak-floor links a floor)  -> cargo test in mechanism/
 #     lean       mechanism/lean, spec/lean, floor/lean, tools/LEAN-PIN      -> lake build in each
 #     floor      floor/                                                     -> floor/run-gates.py
@@ -21,12 +23,13 @@ elif [ "$event" = push ] && known "$before"; then base=$before
 else base=$(git rev-parse HEAD~1 2>/dev/null || git rev-parse HEAD); fi
 echo "base=$base"
 case "$event" in
-  workflow_dispatch|schedule) for s in tlc reference lean floor; do echo "$s=true"; done; exit 0 ;;
+  workflow_dispatch|schedule) for s in tlc proofs reference lean floor; do echo "$s=true"; done; exit 0 ;;
 esac
 changed=$(git diff --name-only "$base" HEAD)
 touches() { grep -qE "$1" <<< "$changed" && echo true || echo false; }
 all='^(\.github/workflows/results\.yml|tools/ci-plan\.sh)$'
-echo "tlc=$(touches "$all|^spec/|^tools/(tla2tools\.jar|TLA-PIN|check-results\.sh|compare-results\.py)$")"
+echo "tlc=$(touches "$all|^spec/|^tools/(tla2tools\.jar|TLA-PIN|TLA-KIT-PIN|check-results\.sh|compare-results\.py)$")"
+echo "proofs=$(touches "$all|^spec/[^/]*\.tla$|^spec/proof-results\.sh$|^tools/(tlapm|TLAPS-PIN|TLA-KIT-PIN|check-proofs\.sh)$")"
 echo "reference=$(touches "$all|^(mechanism|policies|floor)/")"
 echo "lean=$(touches "$all|^(mechanism|spec|floor)/lean/|^tools/LEAN-PIN$")"
 echo "floor=$(touches "$all|^floor/")"
