@@ -23,7 +23,8 @@
 # After the rows: the scripts that pass -deadlock, each with the rows that cover it, and the two that are not
 # model-checking runs of a transition system, with the reason the flag is there or is not needed.
 # Exits 1 if a stray deadlock is found, 2 if a row could not be checked (ERROR), else 0.
-# ONLY=<extended regex> runs only the rows whose module matches it, and the header says so. WORKERS sets TLC's -workers
+# ONLY=<extended regex> runs only the rows whose module matches it, and CONSTS=<extended regex> only the rows whose
+# constants (the third field, as written below) match it; the header says which. WORKERS sets TLC's -workers
 # (default auto). Every run's wrapper, .cfg, metadir, output and java.io.tmpdir are in the mktemp directory, which is
 # removed at the end; nothing is written to spec/.
 set -u
@@ -131,6 +132,35 @@ Outstanding | EXTENDS Spec | Mut = "none"; KUp = 2; MaxCount = 2; Active = {"l1"
 PlaneClock | EXTENDS Spec | Mut = "none"; Replicas = {"r1","r2","r3","r4"}; Cert = 3; Captured = {"r1"}; Slow = {"r2"}; Fast = {}; GovClass = "sound"; P = 2; Base = 0; D = 1; MaxExtent = 1; MaxNow = 7; MaxTick = 4 | Next |
 Peer | EXTENDS Spec | Mut = "none"; MaxDeliver = 2; MaxSend = 1 | Next |
 Release | EXTENDS Spec | Mut = "none"; MaxActs = 2; MaxTick = 1; FreshT = 0 | Next |
+# mesh-run.sh and mesh-gen-results.sh: every unmutated row of Mesh-results-2026.10.07.txt (Mut is the one constant).
+# The bound: the workflow settled. Promote is enabled until promoted; then Grant while an activation is ready, End
+# while one runs, Apply while a route is pending, OrchLapse while a round is live, and, for an open decision event,
+# OrchGrant until a round has served it and DecisionLapse after; Settle fails the workflow once none of these is left
+# (Quiescent), so a workflow cannot be left running.
+Mesh | EXTENDS Spec | Mut = "none" | Next | wf \in {"completed", "failed"}
+# workflow-run.sh and workflow-gen-results.sh: every unmutated row of Workflow-results-2026.10.08.txt. The bound: the
+# one fence spent (Fence needs promoted /\ epoch = PE, so every terminal state is past it), and then either the
+# workflow settled, or the stall the module's header calls safe: the decision consumed, no node ready, running or
+# failed, and the sink never activated, every edge into it closed by a finding or by the fence. After the fence no
+# edge is Enabled, Grant fails a ready node, the fence has failed every running one, and DecisionLapse fails an open
+# decision; Settle then fails or completes the workflow unless no node failed, the decision did not, and the sink is
+# idle. It has no Quiescent case as Mesh's has, and the fence fails only the nodes running when it lands, where
+# ADR-0054 §9 fails the workflow when the epoch is fenced (and when T_wf passes, which is not modelled).
+Workflow | EXTENDS Spec | Mut = "none" | Next | epoch = PE + 1 /\ (wf \in {"completed", "failed"} \/ (consumed /\ ~decisionFailed /\ status["j"] = "idle" /\ \A n \in Nodes : status[n] \in {"idle", "ended"}))
+# live-gen-results.sh with Paxos-rows.txt and Paxos-larger-rows.txt: every set of constants their unmutated rows use
+# (Paxos-results-2026.11.14.txt, Paxos-larger-results-2026.11.14.txt). No end is expected: no step removes a message
+# from msgs, and Receive(m) has no guard, so once a message has been sent every state has a successor. The last three
+# are the large ones: 4,414,419 and 3,879,847 distinct states in Paxos-larger-results, and the w-twoslots witness's
+# constants, which its row never explores in full.
+Paxos | EXTENDS Spec | Mut = "none"; N = 3; Values = {1}; Electors = {1,3}; Beaters = {}; Hosts = {1,3}; Crashers = {}; MaxRound = 1; MaxHand = 1; MaxDup = 0; MaxCrash = 0 | Next |
+Paxos | EXTENDS Spec | Mut = "none"; N = 3; Values = {1}; Electors = {1,2,3}; Beaters = {}; Hosts = {1,3}; Crashers = {}; MaxRound = 1; MaxHand = 1; MaxDup = 0; MaxCrash = 0 | Next |
+Paxos | EXTENDS Spec | Mut = "none"; N = 3; Values = {1}; Electors = {1,3}; Beaters = {}; Hosts = {1,3}; Crashers = {1,2,3}; MaxRound = 1; MaxHand = 1; MaxDup = 0; MaxCrash = 1 | Next |
+Paxos | EXTENDS Spec | Mut = "none"; N = 3; Values = {1}; Electors = {1,3}; Beaters = {1,3}; Hosts = {1,3}; Crashers = {}; MaxRound = 1; MaxHand = 1; MaxDup = 0; MaxCrash = 0 | Next |
+Paxos | EXTENDS Spec | Mut = "none"; N = 3; Values = {1}; Electors = {1,3}; Beaters = {1}; Hosts = {1,3}; Crashers = {}; MaxRound = 1; MaxHand = 1; MaxDup = 0; MaxCrash = 0 | Next |
+Paxos | EXTENDS Spec | Mut = "none"; N = 3; Values = {1}; Electors = {1,3}; Beaters = {}; Hosts = {1,3}; Crashers = {}; MaxRound = 1; MaxHand = 1; MaxDup = 1; MaxCrash = 0 | Next |
+Paxos | EXTENDS Spec | Mut = "none"; N = 3; Values = {1,2}; Electors = {1,3}; Beaters = {}; Hosts = {1,3}; Crashers = {}; MaxRound = 1; MaxHand = 1; MaxDup = 0; MaxCrash = 0 | Next |
+Paxos | EXTENDS Spec | Mut = "none"; N = 3; Values = {1}; Electors = {1,3}; Beaters = {}; Hosts = {1}; Crashers = {}; MaxRound = 1; MaxHand = 2; MaxDup = 0; MaxCrash = 0 | Next |
+Paxos | EXTENDS Spec | Mut = "none"; N = 3; Values = {1}; Electors = {1,3}; Beaters = {}; Hosts = {1,3}; Crashers = {}; MaxRound = 1; MaxHand = 2; MaxDup = 0; MaxCrash = 0 | Next |
 # lean/graph-check.sh: its two unmutated rows, through the Dump module it writes.
 Seats | Dump lean/graph-check.sh OnlyThinkersAuthor OneSeatPerPrincipal | Mut = "none" | Next |
 FloorComposition | Dump lean/graph-check.sh AdmitImpliesFloorPermit FloorErrorIsDeny BundleRefusalHonored BundleCannotWriteFloorInputs EnvelopeHolds | Mut = "none" | Next |
@@ -164,13 +194,15 @@ toollist-run.sh, toollist-gen-results.sh | ToolList
 operators-run.sh, operators-gen-results.sh | Operators
 correlator-run.sh, correlator-gen-results.sh | Correlator
 labels-run.sh, labels-gen-results.sh | Labels
-live-gen-results.sh | Coupling_live Emergency_live Federation Membership Intent Alone Outstanding PlaneClock Peer Release
+live-gen-results.sh | Coupling_live Emergency_live Federation Membership Intent Alone Outstanding PlaneClock Peer Release Paxos
+mesh-run.sh, mesh-gen-results.sh | Mesh
+workflow-run.sh, workflow-gen-results.sh | Workflow
 lean/graph-check.sh | SeatsDump FloorCompositionDump
 lean/graph-check-emergency.sh | EmergencyDump Emergency_liveDump
 SCRIPTS
 }
-# The two that are not model-checking runs of a transition system; their reasons are printed after the lines.
-others="mechanism-trace-run.sh simulate-run.sh"
+# The three that are not model-checking runs of a transition system; their reasons are printed after the lines.
+others="mechanism-trace-run.sh paxos-trace-run.sh simulate-run.sh"
 
 trim() { local s=$1; s=${s#"${s%%[![:space:]]*}"}; s=${s%"${s##*[![:space:]]}"}; printf '%s' "$s"; }
 d16() { shasum -a 256 "$1" | cut -c1-16; }
@@ -216,19 +248,22 @@ named() {
 }
 
 only=${ONLY:-}
+consts=${CONSTS:-}
 selected() { [ -z "$only" ] || printf '%s\n' "$1" | grep -qE "$only"; }
+# A row is run when its module is selected and its constants match CONSTS.
+rowsel() { selected "$1" && { [ -z "$consts" ] || printf '%s\n' "$2" | grep -qE "$consts"; }; }
 
 seen=""
-while IFS='|' read -r mod rest; do
+while IFS='|' read -r mod inst cs rest; do
   mod=$(trim "$mod"); case "$mod" in ''|\#*) continue ;; esac
-  selected "$mod" && chain "$mod"
+  rowsel "$mod" "$(trim "$cs")" && chain "$mod"
 done < <(rows)
 mods=""
 for m in $seen; do mods="$mods${mods:+ · }$m.tla (sha256 $(d16 "$m.tla"))"; done
 tlcv=$(java -cp "$jar" tlc2.TLC -h 2>&1 | grep -oE "Version [0-9.]+ of [^ ]+ [^ ]+ [0-9]+" | head -1)
 
 echo "TOPAK — the -deadlock audit: where the modules the run scripts check have states with no successor, at the constants their results files use, unmutated"
-echo "Runner: deadlock-audit.sh (sha256 $(d16 deadlock-audit.sh)) · TLC $tlcv (jar sha256 $(d16 "$jar")) · $(java -version 2>&1 | head -1) · TLC -workers $workers -fp 0 -deadlock${only:+ · rows: only modules matching $only}"
+echo "Runner: deadlock-audit.sh (sha256 $(d16 deadlock-audit.sh)) · TLC $tlcv (jar sha256 $(d16 "$jar")) · $(java -version 2>&1 | head -1) · TLC -workers $workers -fp 0 -deadlock${only:+ · rows: only modules matching $only}${consts:+ · rows: only constants matching $consts}"
 echo "Modules: $mods"
 echo "Every run script listed below passes -deadlock, which turns off TLC's report of a state with no successor, a terminal state. Each line is one module at one set of constants, unmutated, through a wrapper that EXTENDS it and adds only definitions, so the state graph is the module's own. TLC checks INVARIANT NotTerminal (Terminal == ~ENABLED of the specification's next-state relation) and, where that is violated, INVARIANT TerminalAtBound (Terminal => AtBound, the bound being the module's own end, as the line names it). A line claims that at its constants every terminal state is at that bound, or there is none, so that the flag turns off the report of the module's end and hides nothing else. It claims nothing at other constants, where an end can fall elsewhere, or under a mutation, whose rows may stop anywhere and need only reach their counterexample. Nor does it claim that the module never stalls: a state whose only step leaves it unchanged has a successor, for ENABLED as for TLC's check, so neither sees it."
 echo
@@ -238,13 +273,13 @@ trap 'rm -rf "$tmp"' EXIT
 trap 'exit 2' INT TERM HUP
 : > "$tmp/lines"
 n=0; nnone=0; nbound=0; nstray=0; nerr=0
-while IFS='|' read -r mod inst consts next atb; do
+while IFS='|' read -r mod inst rc next atb; do
   mod=$(trim "$mod"); case "$mod" in ''|\#*) continue ;; esac
-  selected "$mod" || continue
-  inst=$(trim "$inst"); consts=$(trim "$consts"); next=$(trim "$next"); atb=$(trim "$atb")
+  inst=$(trim "$inst"); rc=$(trim "$rc"); next=$(trim "$next"); atb=$(trim "$atb")
+  rowsel "$mod" "$rc" || continue
   n=$((n + 1)); d="$tmp/$n"; mkdir -p "$d"
-  cfgc=$(printf '%s\n' "$consts" | tr ';' '\n' | sed 's/^ *//; s/ *$//; /^$/d; s/^/  /')
-  shown=$(printf '%s\n' "$consts" | sed 's/ *; */ · /g')
+  cfgc=$(printf '%s\n' "$rc" | tr ';' '\n' | sed 's/^ *//; s/ *$//; /^$/d; s/^/  /')
+  shown=$(printf '%s\n' "$rc" | sed 's/ *; */ · /g')
   seen=""; chain "$mod"
   for m in $seen; do cp "$m.tla" "$d/"; done
   case "$inst" in
@@ -306,7 +341,7 @@ while IFS='|' read -r mod inst consts next atb; do
   esac
   rm -rf "$d"
 done < <(rows)
-if selected Operators; then
+if rowsel Operators 'Mut = "none"; Ops = {"a", "b", "c"}; MaxRound = 2'; then
   echo
   echo "Not run: Operators at Ops = {\"a\", \"b\", \"c\"} (rows w9 and nsv3 of Operators-results-2026.10.04.txt). Its graph has more than 91,597,194 distinct states: a run on 2026.10.06 had found that many, with 36,836,627 still queued, when it was stopped at 40 minutes, with no terminal state among them. For any Ops each operator has exactly one of Vouch(o) and Unvouch(o) enabled, so no state is terminal; that is a reading of Operators.tla, not a check."
 fi
@@ -347,6 +382,11 @@ if grep -qE '^TraceNext *== *TraceStep \\/ Done' Mechanism.tla && grep -qE '^Don
   echo "  $(named mechanism-trace-run.sh), and mechanism-trace-results.sh (sha256 $(d16 mechanism-trace-results.sh)), which runs it: a replay of one recorded trace through Mechanism.tla (sha256 $(d16 Mechanism.tla)) by TraceSpec, whose next-state relation is TraceNext == TraceStep \\/ Done. TraceStep is enabled at every step before the trace's end, and Done == i = Len(Trace) /\\ UNCHANGED vars is a step at the end that leaves the state unchanged, which TLC counts as a successor. So a replay has no terminal state and the flag is inert: the replay ends at the trace's end by design, but by stuttering there, and Done is what keeps TLC from reporting that end as a deadlock."
 else
   echo "  mechanism-trace-run.sh: NOT CHECKED. Mechanism.tla (sha256 $(d16 Mechanism.tla)) no longer has TraceNext == TraceStep \\/ Done with Done == i = Len(Trace) /\\ UNCHANGED vars, which the reason given here rests on."
+fi
+if grep -qE '^TraceNext *== *TraceStep \\/ Done' PaxosTrace.tla && grep -qE '^Done *== *~Pending /\\ UNCHANGED tvars' PaxosTrace.tla; then
+  echo "  $(named paxos-trace-run.sh), and paxos-trace-results.sh (sha256 $(d16 paxos-trace-results.sh)), which runs it: a replay of each recorded run of the reference's replicas through Paxos.tla by PaxosTrace.tla (sha256 $(d16 PaxosTrace.tla)), whose TraceNext == TraceStep \\/ Done. TraceStep needs only Pending (i < Len(Trace)) and an event of one of the seven kinds, each of whose disjuncts only assigns: whether the event could be given (a message received was sent, a forward was in flight, an election was a non-leader's) is the invariant TraceReceivable, not a guard, so an event the model would refuse is reported as a violation, not left as a state with no successor. An event of any other kind leaves TraceStep disabled, but before that TraceStateMatches evaluates EventCtx of it, a CASE with no arm for it, and TLC stops with an error, which the script prints as ERROR. Done == ~Pending /\\ UNCHANGED tvars is the stuttering step at the trace's end. So a replay has no terminal state and the flag is inert, as for mechanism-trace-run.sh."
+else
+  echo "  paxos-trace-run.sh: NOT CHECKED. PaxosTrace.tla (sha256 $(d16 PaxosTrace.tla)) no longer has TraceNext == TraceStep \\/ Done with Done == ~Pending /\\ UNCHANGED tvars, which the reason given here rests on."
 fi
 if grep -q -- '-simulate' simulate-run.sh; then
   echo "  $(named simulate-run.sh): TLC's simulation mode, which draws behaviours at random, each to -depth. Where a behaviour reaches a terminal state the flag ends it there and the next is drawn; without the flag the first terminal state any behaviour reaches stops the run with \"Deadlock reached\", so in a module that ends at its bounds the first behaviour to end would stop the run. The flag is needed for that. It runs at constants exhaustive checking cannot reach, which no line above covers, so where its behaviours end is not checked, and a NO ERROR SAMPLED line says nothing about it."
