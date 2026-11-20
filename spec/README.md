@@ -277,7 +277,7 @@ and keeps an edge's pins until `--repin` names it, which is the review. `specifi
 stale edges, the clauses no model reads, the guarantees stated twice, and the four lists (`corpus-pins.sha256`, the
 binding's `check` columns, `manifests/index.tsv`, the sync scripts) read against the graph. It also computes, through
 `inventory.py`, the inventory at every grade, and compares it at grade *trusted* with `inventory.py`'s and with
-`premise-routes.sh`'s (`specification-graph-results-2026.11.07.txt`). `clauses.py` splits a record into the clauses
+`premise-routes.sh`'s (`specification-graph-results-2026.11.07.txt`; `-2026.11.17.txt`, after Batch 40 and the ten modules added since). `clauses.py` splits a record into the clauses
 that are pinned (ADR-0057 §7).
 
 Every `*-run.sh` and `simulate-run.sh` finds the jar at `../tools/tla2tools.jar` or `$TLA_JAR`; from `spec/` no

@@ -419,16 +419,41 @@ def format_row(row, verdict, states, ok):
 
 # ---- results files ---------------------------------------------------------------------------------------------
 
+def cannot_write(layout, path, e):
+    """The line a run ends with when its results file cannot be written, in place of a traceback. The run itself
+    finished, so the line says that no file was written, and for a refusal by ownership, who would be allowed."""
+    msg = f"cannot write {layout.rel(path)}: {e.strerror or e}. The run finished and no results file was written."
+    d = os.path.dirname(path)
+    while not os.path.isdir(d) and os.path.dirname(d) != d:
+        d = os.path.dirname(d)
+    if isinstance(e, PermissionError):
+        try:
+            who = f"This run is uid {os.getuid()} and {layout.rel(d)} belongs to uid {os.stat(d).st_uid}. "
+        except (AttributeError, OSError):  # no uid on this platform, or the directory cannot be read either
+            who = ""
+        msg += (f" {who}Run it as a user who may write there (in a container: docker run --user \"$(id -u):$(id -g)\"),"
+                " or pass --results-dir.")
+    return SystemExit(msg)
+
+
 def write_results(layout, stem, date, text):
     """Write <results>/<stem>-<date>.txt and say what happened. A results file is never overwritten: a rerun that
-    reproduces it byte for byte says so, and one that differs is written beside it with a letter suffix."""
-    os.makedirs(layout.results, exist_ok=True)
+    reproduces it byte for byte says so, and one that differs is written beside it with a letter suffix. A run
+    that reproduces a file needs no write, so it passes in a directory it may not write to."""
+    if not os.path.isdir(layout.results):
+        try:
+            os.makedirs(layout.results, exist_ok=True)
+        except OSError as e:
+            raise cannot_write(layout, os.path.join(layout.results, f"{stem}-{date}.txt"), e)
     base = os.path.join(layout.results, f"{stem}-{date}")
     for suffix in [""] + list("bcdefghijklmnopqrstuvwxyz"):
         path = f"{base}{suffix}.txt"
         if not os.path.exists(path):
-            with open(path, "w", encoding="utf-8") as f:
-                f.write(text)
+            try:
+                with open(path, "w", encoding="utf-8") as f:
+                    f.write(text)
+            except OSError as e:
+                raise cannot_write(layout, path, e)
             return f"wrote {layout.rel(path)}"
         if read(path) == text:
             return f"reproduced {layout.rel(path)} byte for byte"

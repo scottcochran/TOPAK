@@ -2,7 +2,7 @@
  "_about": "The specification graph (ADR-0057, Proposed): the corpus's artifacts as nodes with an open set of layers (§1), typed edges between them, each pinned and each contributing a premise (§3, §4), ADR-0053's derived premises re-expressed over those premises and T-0045-28 as a derived premise of every theorem (§4). Built and checked by spec/specification-graph.py; a record's clauses are pinned by spec/clauses.py (§7). The binding table stays canonical for its row premises.",
  "record": "ADR-0057",
  "built": {
-  "at": "9749dfa + working tree"
+  "at": "1988f93 + working tree"
  },
  "types": [
   {
@@ -2624,6 +2624,716 @@
    "of": "ADR-0055"
   },
   {
+   "id": "ADR-0059",
+   "layer": "record",
+   "path": "decisions/ADR-0059.md",
+   "clauses": [
+    "§1",
+    "§2",
+    "§3",
+    "§4",
+    "§5",
+    "§6",
+    "§7",
+    "§8",
+    "§9",
+    "Annex A"
+   ]
+  },
+  {
+   "id": "ADR-0059 Annex A",
+   "layer": "record",
+   "path": "decisions/ADR-0059.md",
+   "clause": "Annex A",
+   "of": "ADR-0059"
+  },
+  {
+   "id": "ADR-0059 §1",
+   "layer": "record",
+   "path": "decisions/ADR-0059.md",
+   "clause": "§1",
+   "of": "ADR-0059"
+  },
+  {
+   "id": "ADR-0059 §2",
+   "layer": "record",
+   "path": "decisions/ADR-0059.md",
+   "clause": "§2",
+   "of": "ADR-0059"
+  },
+  {
+   "id": "ADR-0059 §3",
+   "layer": "record",
+   "path": "decisions/ADR-0059.md",
+   "clause": "§3",
+   "of": "ADR-0059"
+  },
+  {
+   "id": "ADR-0059 §4",
+   "layer": "record",
+   "path": "decisions/ADR-0059.md",
+   "clause": "§4",
+   "of": "ADR-0059"
+  },
+  {
+   "id": "ADR-0059 §5",
+   "layer": "record",
+   "path": "decisions/ADR-0059.md",
+   "clause": "§5",
+   "of": "ADR-0059"
+  },
+  {
+   "id": "ADR-0059 §6",
+   "layer": "record",
+   "path": "decisions/ADR-0059.md",
+   "clause": "§6",
+   "of": "ADR-0059"
+  },
+  {
+   "id": "ADR-0059 §7",
+   "layer": "record",
+   "path": "decisions/ADR-0059.md",
+   "clause": "§7",
+   "of": "ADR-0059"
+  },
+  {
+   "id": "ADR-0059 §8",
+   "layer": "record",
+   "path": "decisions/ADR-0059.md",
+   "clause": "§8",
+   "of": "ADR-0059"
+  },
+  {
+   "id": "ADR-0059 §9",
+   "layer": "record",
+   "path": "decisions/ADR-0059.md",
+   "clause": "§9",
+   "of": "ADR-0059"
+  },
+  {
+   "id": "ADR-0060",
+   "layer": "record",
+   "path": "decisions/ADR-0060.md",
+   "clauses": [
+    "§1",
+    "§2",
+    "§3",
+    "§4",
+    "§5",
+    "§6",
+    "§7"
+   ]
+  },
+  {
+   "id": "ADR-0060 §1",
+   "layer": "record",
+   "path": "decisions/ADR-0060.md",
+   "clause": "§1",
+   "of": "ADR-0060"
+  },
+  {
+   "id": "ADR-0060 §2",
+   "layer": "record",
+   "path": "decisions/ADR-0060.md",
+   "clause": "§2",
+   "of": "ADR-0060"
+  },
+  {
+   "id": "ADR-0060 §3",
+   "layer": "record",
+   "path": "decisions/ADR-0060.md",
+   "clause": "§3",
+   "of": "ADR-0060"
+  },
+  {
+   "id": "ADR-0060 §4",
+   "layer": "record",
+   "path": "decisions/ADR-0060.md",
+   "clause": "§4",
+   "of": "ADR-0060"
+  },
+  {
+   "id": "ADR-0060 §5",
+   "layer": "record",
+   "path": "decisions/ADR-0060.md",
+   "clause": "§5",
+   "of": "ADR-0060"
+  },
+  {
+   "id": "ADR-0060 §6",
+   "layer": "record",
+   "path": "decisions/ADR-0060.md",
+   "clause": "§6",
+   "of": "ADR-0060"
+  },
+  {
+   "id": "ADR-0060 §7",
+   "layer": "record",
+   "path": "decisions/ADR-0060.md",
+   "clause": "§7",
+   "of": "ADR-0060"
+  },
+  {
+   "id": "ADR-0061",
+   "layer": "record",
+   "path": "decisions/ADR-0061.md",
+   "clauses": [
+    "§1",
+    "§2",
+    "§3",
+    "§4",
+    "§5",
+    "§6",
+    "§7"
+   ]
+  },
+  {
+   "id": "ADR-0061 §1",
+   "layer": "record",
+   "path": "decisions/ADR-0061.md",
+   "clause": "§1",
+   "of": "ADR-0061"
+  },
+  {
+   "id": "ADR-0061 §2",
+   "layer": "record",
+   "path": "decisions/ADR-0061.md",
+   "clause": "§2",
+   "of": "ADR-0061"
+  },
+  {
+   "id": "ADR-0061 §3",
+   "layer": "record",
+   "path": "decisions/ADR-0061.md",
+   "clause": "§3",
+   "of": "ADR-0061"
+  },
+  {
+   "id": "ADR-0061 §4",
+   "layer": "record",
+   "path": "decisions/ADR-0061.md",
+   "clause": "§4",
+   "of": "ADR-0061"
+  },
+  {
+   "id": "ADR-0061 §5",
+   "layer": "record",
+   "path": "decisions/ADR-0061.md",
+   "clause": "§5",
+   "of": "ADR-0061"
+  },
+  {
+   "id": "ADR-0061 §6",
+   "layer": "record",
+   "path": "decisions/ADR-0061.md",
+   "clause": "§6",
+   "of": "ADR-0061"
+  },
+  {
+   "id": "ADR-0061 §7",
+   "layer": "record",
+   "path": "decisions/ADR-0061.md",
+   "clause": "§7",
+   "of": "ADR-0061"
+  },
+  {
+   "id": "ADR-0062",
+   "layer": "record",
+   "path": "decisions/ADR-0062.md",
+   "clauses": [
+    "§1",
+    "§2",
+    "§3",
+    "§4",
+    "§5",
+    "§6",
+    "§7",
+    "§8",
+    "§9",
+    "§10",
+    "§11"
+   ]
+  },
+  {
+   "id": "ADR-0062 §1",
+   "layer": "record",
+   "path": "decisions/ADR-0062.md",
+   "clause": "§1",
+   "of": "ADR-0062"
+  },
+  {
+   "id": "ADR-0062 §10",
+   "layer": "record",
+   "path": "decisions/ADR-0062.md",
+   "clause": "§10",
+   "of": "ADR-0062"
+  },
+  {
+   "id": "ADR-0062 §11",
+   "layer": "record",
+   "path": "decisions/ADR-0062.md",
+   "clause": "§11",
+   "of": "ADR-0062"
+  },
+  {
+   "id": "ADR-0062 §2",
+   "layer": "record",
+   "path": "decisions/ADR-0062.md",
+   "clause": "§2",
+   "of": "ADR-0062"
+  },
+  {
+   "id": "ADR-0062 §3",
+   "layer": "record",
+   "path": "decisions/ADR-0062.md",
+   "clause": "§3",
+   "of": "ADR-0062"
+  },
+  {
+   "id": "ADR-0062 §4",
+   "layer": "record",
+   "path": "decisions/ADR-0062.md",
+   "clause": "§4",
+   "of": "ADR-0062"
+  },
+  {
+   "id": "ADR-0062 §5",
+   "layer": "record",
+   "path": "decisions/ADR-0062.md",
+   "clause": "§5",
+   "of": "ADR-0062"
+  },
+  {
+   "id": "ADR-0062 §6",
+   "layer": "record",
+   "path": "decisions/ADR-0062.md",
+   "clause": "§6",
+   "of": "ADR-0062"
+  },
+  {
+   "id": "ADR-0062 §7",
+   "layer": "record",
+   "path": "decisions/ADR-0062.md",
+   "clause": "§7",
+   "of": "ADR-0062"
+  },
+  {
+   "id": "ADR-0062 §8",
+   "layer": "record",
+   "path": "decisions/ADR-0062.md",
+   "clause": "§8",
+   "of": "ADR-0062"
+  },
+  {
+   "id": "ADR-0062 §9",
+   "layer": "record",
+   "path": "decisions/ADR-0062.md",
+   "clause": "§9",
+   "of": "ADR-0062"
+  },
+  {
+   "id": "ADR-0063",
+   "layer": "record",
+   "path": "decisions/ADR-0063.md",
+   "clauses": [
+    "§1",
+    "§2",
+    "§3",
+    "§4",
+    "§5",
+    "§6",
+    "§7",
+    "§8"
+   ]
+  },
+  {
+   "id": "ADR-0063 §1",
+   "layer": "record",
+   "path": "decisions/ADR-0063.md",
+   "clause": "§1",
+   "of": "ADR-0063"
+  },
+  {
+   "id": "ADR-0063 §2",
+   "layer": "record",
+   "path": "decisions/ADR-0063.md",
+   "clause": "§2",
+   "of": "ADR-0063"
+  },
+  {
+   "id": "ADR-0063 §3",
+   "layer": "record",
+   "path": "decisions/ADR-0063.md",
+   "clause": "§3",
+   "of": "ADR-0063"
+  },
+  {
+   "id": "ADR-0063 §4",
+   "layer": "record",
+   "path": "decisions/ADR-0063.md",
+   "clause": "§4",
+   "of": "ADR-0063"
+  },
+  {
+   "id": "ADR-0063 §5",
+   "layer": "record",
+   "path": "decisions/ADR-0063.md",
+   "clause": "§5",
+   "of": "ADR-0063"
+  },
+  {
+   "id": "ADR-0063 §6",
+   "layer": "record",
+   "path": "decisions/ADR-0063.md",
+   "clause": "§6",
+   "of": "ADR-0063"
+  },
+  {
+   "id": "ADR-0063 §7",
+   "layer": "record",
+   "path": "decisions/ADR-0063.md",
+   "clause": "§7",
+   "of": "ADR-0063"
+  },
+  {
+   "id": "ADR-0063 §8",
+   "layer": "record",
+   "path": "decisions/ADR-0063.md",
+   "clause": "§8",
+   "of": "ADR-0063"
+  },
+  {
+   "id": "ADR-0064",
+   "layer": "record",
+   "path": "decisions/ADR-0064.md",
+   "clauses": [
+    "§1",
+    "§2",
+    "§3",
+    "§4",
+    "§5",
+    "§6",
+    "§7",
+    "§8"
+   ]
+  },
+  {
+   "id": "ADR-0064 §1",
+   "layer": "record",
+   "path": "decisions/ADR-0064.md",
+   "clause": "§1",
+   "of": "ADR-0064"
+  },
+  {
+   "id": "ADR-0064 §2",
+   "layer": "record",
+   "path": "decisions/ADR-0064.md",
+   "clause": "§2",
+   "of": "ADR-0064"
+  },
+  {
+   "id": "ADR-0064 §3",
+   "layer": "record",
+   "path": "decisions/ADR-0064.md",
+   "clause": "§3",
+   "of": "ADR-0064"
+  },
+  {
+   "id": "ADR-0064 §4",
+   "layer": "record",
+   "path": "decisions/ADR-0064.md",
+   "clause": "§4",
+   "of": "ADR-0064"
+  },
+  {
+   "id": "ADR-0064 §5",
+   "layer": "record",
+   "path": "decisions/ADR-0064.md",
+   "clause": "§5",
+   "of": "ADR-0064"
+  },
+  {
+   "id": "ADR-0064 §6",
+   "layer": "record",
+   "path": "decisions/ADR-0064.md",
+   "clause": "§6",
+   "of": "ADR-0064"
+  },
+  {
+   "id": "ADR-0064 §7",
+   "layer": "record",
+   "path": "decisions/ADR-0064.md",
+   "clause": "§7",
+   "of": "ADR-0064"
+  },
+  {
+   "id": "ADR-0064 §8",
+   "layer": "record",
+   "path": "decisions/ADR-0064.md",
+   "clause": "§8",
+   "of": "ADR-0064"
+  },
+  {
+   "id": "ADR-0065",
+   "layer": "record",
+   "path": "decisions/ADR-0065.md",
+   "clauses": [
+    "§1",
+    "§2",
+    "§3",
+    "§4",
+    "§5",
+    "§6",
+    "§7",
+    "§8",
+    "§9"
+   ]
+  },
+  {
+   "id": "ADR-0065 §1",
+   "layer": "record",
+   "path": "decisions/ADR-0065.md",
+   "clause": "§1",
+   "of": "ADR-0065"
+  },
+  {
+   "id": "ADR-0065 §2",
+   "layer": "record",
+   "path": "decisions/ADR-0065.md",
+   "clause": "§2",
+   "of": "ADR-0065"
+  },
+  {
+   "id": "ADR-0065 §3",
+   "layer": "record",
+   "path": "decisions/ADR-0065.md",
+   "clause": "§3",
+   "of": "ADR-0065"
+  },
+  {
+   "id": "ADR-0065 §4",
+   "layer": "record",
+   "path": "decisions/ADR-0065.md",
+   "clause": "§4",
+   "of": "ADR-0065"
+  },
+  {
+   "id": "ADR-0065 §5",
+   "layer": "record",
+   "path": "decisions/ADR-0065.md",
+   "clause": "§5",
+   "of": "ADR-0065"
+  },
+  {
+   "id": "ADR-0065 §6",
+   "layer": "record",
+   "path": "decisions/ADR-0065.md",
+   "clause": "§6",
+   "of": "ADR-0065"
+  },
+  {
+   "id": "ADR-0065 §7",
+   "layer": "record",
+   "path": "decisions/ADR-0065.md",
+   "clause": "§7",
+   "of": "ADR-0065"
+  },
+  {
+   "id": "ADR-0065 §8",
+   "layer": "record",
+   "path": "decisions/ADR-0065.md",
+   "clause": "§8",
+   "of": "ADR-0065"
+  },
+  {
+   "id": "ADR-0065 §9",
+   "layer": "record",
+   "path": "decisions/ADR-0065.md",
+   "clause": "§9",
+   "of": "ADR-0065"
+  },
+  {
+   "id": "ADR-0066",
+   "layer": "record",
+   "path": "decisions/ADR-0066.md",
+   "clauses": [
+    "§1",
+    "§2",
+    "§3",
+    "§4",
+    "§5",
+    "§6",
+    "§7"
+   ]
+  },
+  {
+   "id": "ADR-0066 §1",
+   "layer": "record",
+   "path": "decisions/ADR-0066.md",
+   "clause": "§1",
+   "of": "ADR-0066"
+  },
+  {
+   "id": "ADR-0066 §2",
+   "layer": "record",
+   "path": "decisions/ADR-0066.md",
+   "clause": "§2",
+   "of": "ADR-0066"
+  },
+  {
+   "id": "ADR-0066 §3",
+   "layer": "record",
+   "path": "decisions/ADR-0066.md",
+   "clause": "§3",
+   "of": "ADR-0066"
+  },
+  {
+   "id": "ADR-0066 §4",
+   "layer": "record",
+   "path": "decisions/ADR-0066.md",
+   "clause": "§4",
+   "of": "ADR-0066"
+  },
+  {
+   "id": "ADR-0066 §5",
+   "layer": "record",
+   "path": "decisions/ADR-0066.md",
+   "clause": "§5",
+   "of": "ADR-0066"
+  },
+  {
+   "id": "ADR-0066 §6",
+   "layer": "record",
+   "path": "decisions/ADR-0066.md",
+   "clause": "§6",
+   "of": "ADR-0066"
+  },
+  {
+   "id": "ADR-0066 §7",
+   "layer": "record",
+   "path": "decisions/ADR-0066.md",
+   "clause": "§7",
+   "of": "ADR-0066"
+  },
+  {
+   "id": "ADR-0067",
+   "layer": "record",
+   "path": "decisions/ADR-0067.md",
+   "clauses": [
+    "§1",
+    "§2",
+    "§3",
+    "§4",
+    "§5",
+    "§6",
+    "§7"
+   ]
+  },
+  {
+   "id": "ADR-0067 §1",
+   "layer": "record",
+   "path": "decisions/ADR-0067.md",
+   "clause": "§1",
+   "of": "ADR-0067"
+  },
+  {
+   "id": "ADR-0067 §2",
+   "layer": "record",
+   "path": "decisions/ADR-0067.md",
+   "clause": "§2",
+   "of": "ADR-0067"
+  },
+  {
+   "id": "ADR-0067 §3",
+   "layer": "record",
+   "path": "decisions/ADR-0067.md",
+   "clause": "§3",
+   "of": "ADR-0067"
+  },
+  {
+   "id": "ADR-0067 §4",
+   "layer": "record",
+   "path": "decisions/ADR-0067.md",
+   "clause": "§4",
+   "of": "ADR-0067"
+  },
+  {
+   "id": "ADR-0067 §5",
+   "layer": "record",
+   "path": "decisions/ADR-0067.md",
+   "clause": "§5",
+   "of": "ADR-0067"
+  },
+  {
+   "id": "ADR-0067 §6",
+   "layer": "record",
+   "path": "decisions/ADR-0067.md",
+   "clause": "§6",
+   "of": "ADR-0067"
+  },
+  {
+   "id": "ADR-0067 §7",
+   "layer": "record",
+   "path": "decisions/ADR-0067.md",
+   "clause": "§7",
+   "of": "ADR-0067"
+  },
+  {
+   "id": "ADR-0068",
+   "layer": "record",
+   "path": "decisions/ADR-0068.md",
+   "clauses": [
+    "§1",
+    "§2",
+    "§3",
+    "§4",
+    "§5",
+    "§6"
+   ]
+  },
+  {
+   "id": "ADR-0068 §1",
+   "layer": "record",
+   "path": "decisions/ADR-0068.md",
+   "clause": "§1",
+   "of": "ADR-0068"
+  },
+  {
+   "id": "ADR-0068 §2",
+   "layer": "record",
+   "path": "decisions/ADR-0068.md",
+   "clause": "§2",
+   "of": "ADR-0068"
+  },
+  {
+   "id": "ADR-0068 §3",
+   "layer": "record",
+   "path": "decisions/ADR-0068.md",
+   "clause": "§3",
+   "of": "ADR-0068"
+  },
+  {
+   "id": "ADR-0068 §4",
+   "layer": "record",
+   "path": "decisions/ADR-0068.md",
+   "clause": "§4",
+   "of": "ADR-0068"
+  },
+  {
+   "id": "ADR-0068 §5",
+   "layer": "record",
+   "path": "decisions/ADR-0068.md",
+   "clause": "§5",
+   "of": "ADR-0068"
+  },
+  {
+   "id": "ADR-0068 §6",
+   "layer": "record",
+   "path": "decisions/ADR-0068.md",
+   "clause": "§6",
+   "of": "ADR-0068"
+  },
+  {
    "id": "floor/genesis-floor.cedar",
    "layer": "policy",
    "path": "floor/genesis-floor.cedar"
@@ -2731,6 +3441,16 @@
    "path": "mechanism/scripts"
   },
   {
+   "id": "spec/Alone.tla",
+   "layer": "model",
+   "path": "spec/Alone.tla"
+  },
+  {
+   "id": "spec/Alone_proof.tla",
+   "layer": "model",
+   "path": "spec/Alone_proof.tla"
+  },
+  {
    "id": "spec/Anchor.tla",
    "layer": "model",
    "path": "spec/Anchor.tla"
@@ -2836,6 +3556,16 @@
    "path": "spec/Emergency_proof.tla"
   },
   {
+   "id": "spec/Federation.tla",
+   "layer": "model",
+   "path": "spec/Federation.tla"
+  },
+  {
+   "id": "spec/Federation_proof.tla",
+   "layer": "model",
+   "path": "spec/Federation_proof.tla"
+  },
+  {
    "id": "spec/FloorComposition.tla",
    "layer": "model",
    "path": "spec/FloorComposition.tla"
@@ -2854,6 +3584,16 @@
    "id": "spec/FloorRouting_proof.tla",
    "layer": "model",
    "path": "spec/FloorRouting_proof.tla"
+  },
+  {
+   "id": "spec/Intent.tla",
+   "layer": "model",
+   "path": "spec/Intent.tla"
+  },
+  {
+   "id": "spec/Intent_proof.tla",
+   "layer": "model",
+   "path": "spec/Intent_proof.tla"
   },
   {
    "id": "spec/Labels.tla",
@@ -2886,9 +3626,24 @@
    "path": "spec/Mechanism.tla"
   },
   {
+   "id": "spec/Membership.tla",
+   "layer": "model",
+   "path": "spec/Membership.tla"
+  },
+  {
+   "id": "spec/Membership_proof.tla",
+   "layer": "model",
+   "path": "spec/Membership_proof.tla"
+  },
+  {
    "id": "spec/Mesh.tla",
    "layer": "model",
    "path": "spec/Mesh.tla"
+  },
+  {
+   "id": "spec/Mesh_proof.tla",
+   "layer": "model",
+   "path": "spec/Mesh_proof.tla"
   },
   {
    "id": "spec/NonComposition.tla",
@@ -2929,6 +3684,56 @@
    "id": "spec/Operators_proof.tla",
    "layer": "model",
    "path": "spec/Operators_proof.tla"
+  },
+  {
+   "id": "spec/Outstanding.tla",
+   "layer": "model",
+   "path": "spec/Outstanding.tla"
+  },
+  {
+   "id": "spec/Outstanding_proof.tla",
+   "layer": "model",
+   "path": "spec/Outstanding_proof.tla"
+  },
+  {
+   "id": "spec/Paxos.tla",
+   "layer": "model",
+   "path": "spec/Paxos.tla"
+  },
+  {
+   "id": "spec/PaxosTrace.tla",
+   "layer": "model",
+   "path": "spec/PaxosTrace.tla"
+  },
+  {
+   "id": "spec/Peer.tla",
+   "layer": "model",
+   "path": "spec/Peer.tla"
+  },
+  {
+   "id": "spec/Peer_proof.tla",
+   "layer": "model",
+   "path": "spec/Peer_proof.tla"
+  },
+  {
+   "id": "spec/PlaneClock.tla",
+   "layer": "model",
+   "path": "spec/PlaneClock.tla"
+  },
+  {
+   "id": "spec/PlaneClock_proof.tla",
+   "layer": "model",
+   "path": "spec/PlaneClock_proof.tla"
+  },
+  {
+   "id": "spec/Release.tla",
+   "layer": "model",
+   "path": "spec/Release.tla"
+  },
+  {
+   "id": "spec/Release_proof.tla",
+   "layer": "model",
+   "path": "spec/Release_proof.tla"
   },
   {
    "id": "spec/RulesFloorBase.tla",
@@ -3004,6 +3809,11 @@
    "id": "spec/Workflow.tla",
    "layer": "model",
    "path": "spec/Workflow.tla"
+  },
+  {
+   "id": "spec/Workflow_proof.tla",
+   "layer": "model",
+   "path": "spec/Workflow_proof.tla"
   },
   {
    "id": "spec/lean/TopakSpec/Anchor.lean",
@@ -3993,6 +4803,27 @@
    "row": "T-0045-14"
   },
   {
+   "id": "proved: spec/Alone_proof.tla → spec/Alone.tla",
+   "type": "proved",
+   "from": "spec/Alone_proof.tla",
+   "to": "spec/Alone.tla",
+   "premise": "edge(proved, spec/Alone_proof.tla → spec/Alone.tla)",
+   "leaves": "T-0045-31 (the prover)",
+   "pins": {
+    "spec/Alone-proof-results-2026.11.10.txt": "e13b75722458712f",
+    "spec/Alone.tla": "9e7e04adb2ab5161",
+    "spec/Alone_proof.tla": "635342d360ec2f86"
+   },
+   "evidence": {
+    "results": "spec/Alone-proof-results-*.txt",
+    "file": "spec/Alone-proof-results-2026.11.10.txt",
+    "verdict": {
+     "line": "^\\[INFO\\]: All \\d+ obligations proved\\.$"
+    }
+   },
+   "row": "T-0045-31"
+  },
+  {
    "id": "proved: spec/Anchor_proof.tla → spec/Anchor.tla",
    "type": "proved",
    "from": "spec/Anchor_proof.tla",
@@ -4210,6 +5041,27 @@
    "row": "T-0045-31"
   },
   {
+   "id": "proved: spec/Federation_proof.tla → spec/Federation.tla",
+   "type": "proved",
+   "from": "spec/Federation_proof.tla",
+   "to": "spec/Federation.tla",
+   "premise": "edge(proved, spec/Federation_proof.tla → spec/Federation.tla)",
+   "leaves": "T-0045-31 (the prover)",
+   "pins": {
+    "spec/Federation-proof-results-2026.11.10.txt": "8976255e169de16e",
+    "spec/Federation.tla": "03e0bbb28b5e9a1d",
+    "spec/Federation_proof.tla": "cb0264730a865d32"
+   },
+   "evidence": {
+    "results": "spec/Federation-proof-results-*.txt",
+    "file": "spec/Federation-proof-results-2026.11.10.txt",
+    "verdict": {
+     "line": "^\\[INFO\\]: All \\d+ obligations proved\\.$"
+    }
+   },
+   "row": "T-0045-31"
+  },
+  {
    "id": "proved: spec/FloorComposition_proof.tla → spec/FloorComposition.tla",
    "type": "proved",
    "from": "spec/FloorComposition_proof.tla",
@@ -4252,6 +5104,27 @@
    "row": "T-0045-31"
   },
   {
+   "id": "proved: spec/Intent_proof.tla → spec/Intent.tla",
+   "type": "proved",
+   "from": "spec/Intent_proof.tla",
+   "to": "spec/Intent.tla",
+   "premise": "edge(proved, spec/Intent_proof.tla → spec/Intent.tla)",
+   "leaves": "T-0045-31 (the prover)",
+   "pins": {
+    "spec/Intent-proof-results-2026.11.10.txt": "d903be71c6ca403f",
+    "spec/Intent.tla": "0c90ea5004c4f127",
+    "spec/Intent_proof.tla": "0b81c0025abb588c"
+   },
+   "evidence": {
+    "results": "spec/Intent-proof-results-*.txt",
+    "file": "spec/Intent-proof-results-2026.11.10.txt",
+    "verdict": {
+     "line": "^\\[INFO\\]: All \\d+ obligations proved\\.$"
+    }
+   },
+   "row": "T-0045-31"
+  },
+  {
    "id": "proved: spec/Labels_proof.tla → spec/Labels.tla",
    "type": "proved",
    "from": "spec/Labels_proof.tla",
@@ -4287,6 +5160,48 @@
    "evidence": {
     "results": "spec/Lease_A1-proof-results-*.txt",
     "file": "spec/Lease_A1-proof-results-2026.10.02.txt",
+    "verdict": {
+     "line": "^\\[INFO\\]: All \\d+ obligations proved\\.$"
+    }
+   },
+   "row": "T-0045-31"
+  },
+  {
+   "id": "proved: spec/Membership_proof.tla → spec/Membership.tla",
+   "type": "proved",
+   "from": "spec/Membership_proof.tla",
+   "to": "spec/Membership.tla",
+   "premise": "edge(proved, spec/Membership_proof.tla → spec/Membership.tla)",
+   "leaves": "T-0045-31 (the prover)",
+   "pins": {
+    "spec/Membership-proof-results-2026.11.10.txt": "adb21d8a7708d041",
+    "spec/Membership.tla": "bcf3c5d151488133",
+    "spec/Membership_proof.tla": "c88b8ed201aa5448"
+   },
+   "evidence": {
+    "results": "spec/Membership-proof-results-*.txt",
+    "file": "spec/Membership-proof-results-2026.11.10.txt",
+    "verdict": {
+     "line": "^\\[INFO\\]: All \\d+ obligations proved\\.$"
+    }
+   },
+   "row": "T-0045-31"
+  },
+  {
+   "id": "proved: spec/Mesh_proof.tla → spec/Mesh.tla",
+   "type": "proved",
+   "from": "spec/Mesh_proof.tla",
+   "to": "spec/Mesh.tla",
+   "premise": "edge(proved, spec/Mesh_proof.tla → spec/Mesh.tla)",
+   "leaves": "T-0045-31 (the prover)",
+   "pins": {
+    "spec/Mesh-proof-results-2026.11.11.txt": "4447b8e426f6dd79",
+    "spec/Mesh.tla": "a5bc64953c38c9a9",
+    "spec/Mesh_proof.tla": "1d4bd5ad924b6ab6"
+   },
+   "evidence": {
+    "results": "spec/Mesh-proof-results-*.txt",
+    "file": "spec/Mesh-proof-results-2026.11.11.txt",
     "verdict": {
      "line": "^\\[INFO\\]: All \\d+ obligations proved\\.$"
     }
@@ -4371,6 +5286,90 @@
    "evidence": {
     "results": "spec/Operators-proof-results-*.txt",
     "file": "spec/Operators-proof-results-2026.10.04.txt",
+    "verdict": {
+     "line": "^\\[INFO\\]: All \\d+ obligations proved\\.$"
+    }
+   },
+   "row": "T-0045-31"
+  },
+  {
+   "id": "proved: spec/Outstanding_proof.tla → spec/Outstanding.tla",
+   "type": "proved",
+   "from": "spec/Outstanding_proof.tla",
+   "to": "spec/Outstanding.tla",
+   "premise": "edge(proved, spec/Outstanding_proof.tla → spec/Outstanding.tla)",
+   "leaves": "T-0045-31 (the prover)",
+   "pins": {
+    "spec/Outstanding-proof-results-2026.11.10.txt": "98a3a4be28d53ce7",
+    "spec/Outstanding.tla": "8ecb0b147c7748ac",
+    "spec/Outstanding_proof.tla": "f118d16087ce08d2"
+   },
+   "evidence": {
+    "results": "spec/Outstanding-proof-results-*.txt",
+    "file": "spec/Outstanding-proof-results-2026.11.10.txt",
+    "verdict": {
+     "line": "^\\[INFO\\]: All \\d+ obligations proved\\.$"
+    }
+   },
+   "row": "T-0045-31"
+  },
+  {
+   "id": "proved: spec/Peer_proof.tla → spec/Peer.tla",
+   "type": "proved",
+   "from": "spec/Peer_proof.tla",
+   "to": "spec/Peer.tla",
+   "premise": "edge(proved, spec/Peer_proof.tla → spec/Peer.tla)",
+   "leaves": "T-0045-31 (the prover)",
+   "pins": {
+    "spec/Peer-proof-results-2026.11.10.txt": "f5678d36db4e1127",
+    "spec/Peer.tla": "5ee3528164cd1a35",
+    "spec/Peer_proof.tla": "3c661ef57179a03c"
+   },
+   "evidence": {
+    "results": "spec/Peer-proof-results-*.txt",
+    "file": "spec/Peer-proof-results-2026.11.10.txt",
+    "verdict": {
+     "line": "^\\[INFO\\]: All \\d+ obligations proved\\.$"
+    }
+   },
+   "row": "T-0045-31"
+  },
+  {
+   "id": "proved: spec/PlaneClock_proof.tla → spec/PlaneClock.tla",
+   "type": "proved",
+   "from": "spec/PlaneClock_proof.tla",
+   "to": "spec/PlaneClock.tla",
+   "premise": "edge(proved, spec/PlaneClock_proof.tla → spec/PlaneClock.tla)",
+   "leaves": "T-0045-31 (the prover)",
+   "pins": {
+    "spec/PlaneClock-proof-results-2026.11.10.txt": "7494a3a6bc66c1e5",
+    "spec/PlaneClock.tla": "7d7ced23419c1df2",
+    "spec/PlaneClock_proof.tla": "bbfe21580db67b9d"
+   },
+   "evidence": {
+    "results": "spec/PlaneClock-proof-results-*.txt",
+    "file": "spec/PlaneClock-proof-results-2026.11.10.txt",
+    "verdict": {
+     "line": "^\\[INFO\\]: All \\d+ obligations proved\\.$"
+    }
+   },
+   "row": "T-0045-31"
+  },
+  {
+   "id": "proved: spec/Release_proof.tla → spec/Release.tla",
+   "type": "proved",
+   "from": "spec/Release_proof.tla",
+   "to": "spec/Release.tla",
+   "premise": "edge(proved, spec/Release_proof.tla → spec/Release.tla)",
+   "leaves": "T-0045-31 (the prover)",
+   "pins": {
+    "spec/Release-proof-results-2026.11.10.txt": "b964374d95be6608",
+    "spec/Release.tla": "7a8a212d3f07956b",
+    "spec/Release_proof.tla": "ac1cb37282c19f5a"
+   },
+   "evidence": {
+    "results": "spec/Release-proof-results-*.txt",
+    "file": "spec/Release-proof-results-2026.11.10.txt",
     "verdict": {
      "line": "^\\[INFO\\]: All \\d+ obligations proved\\.$"
     }
@@ -4497,6 +5496,27 @@
    "evidence": {
     "results": "spec/ToolList-proof-results-*.txt",
     "file": "spec/ToolList-proof-results-2026.10.04.txt",
+    "verdict": {
+     "line": "^\\[INFO\\]: All \\d+ obligations proved\\.$"
+    }
+   },
+   "row": "T-0045-31"
+  },
+  {
+   "id": "proved: spec/Workflow_proof.tla → spec/Workflow.tla",
+   "type": "proved",
+   "from": "spec/Workflow_proof.tla",
+   "to": "spec/Workflow.tla",
+   "premise": "edge(proved, spec/Workflow_proof.tla → spec/Workflow.tla)",
+   "leaves": "T-0045-31 (the prover)",
+   "pins": {
+    "spec/Workflow-proof-results-2026.11.11.txt": "34a18728d0e92e79",
+    "spec/Workflow.tla": "a72973b5878e9468",
+    "spec/Workflow_proof.tla": "5dc68f94eeacda28"
+   },
+   "evidence": {
+    "results": "spec/Workflow-proof-results-*.txt",
+    "file": "spec/Workflow-proof-results-2026.11.11.txt",
     "verdict": {
      "line": "^\\[INFO\\]: All \\d+ obligations proved\\.$"
     }
@@ -5375,7 +6395,7 @@
     "ADR-0033 §4": "f131df713cf801b0",
     "ADR-0033 §5": "998eddcc5213ae2c",
     "ADR-0033 §6": "ff253420986a9f01",
-    "ADR-0033 §7": "bec26ade2f2fbca0"
+    "ADR-0033 §7": "baebca34afa5ee84"
    },
    "reader": "the drafter",
    "pinned_by": "mechanism/corpus-pins.sha256",
@@ -5735,7 +6755,7 @@
     "ADR-0054 §1": "20d90ae05b7caa76",
     "ADR-0054 §10": "d31993052a2994ad",
     "ADR-0054 §11": "db81131a005aac8a",
-    "ADR-0054 §12": "8c2a81a2973fd62c",
+    "ADR-0054 §12": "3318dbd52756a5ce",
     "ADR-0054 §2": "a99acc97163d0574",
     "ADR-0054 §3": "c0f6f437683ac5fc",
     "ADR-0054 §4": "407a1fdfc16e385f",
@@ -5759,7 +6779,7 @@
    "pins": {
     "ADR-0055 §1": "148c7d93dbe9aab5",
     "ADR-0055 §10": "54675b57aec6ad1a",
-    "ADR-0055 §11": "b00ebc7d8c5d2b62",
+    "ADR-0055 §11": "1fbeef45cac50baf",
     "ADR-0055 §2": "71715afd475b1e87",
     "ADR-0055 §3": "18884433b689a5b1",
     "ADR-0055 §4": "71c402896cbd275c",
@@ -6088,7 +7108,7 @@
     "ADR-0033 §4": "f131df713cf801b0",
     "ADR-0033 §5": "998eddcc5213ae2c",
     "ADR-0033 §6": "ff253420986a9f01",
-    "ADR-0033 §7": "bec26ade2f2fbca0"
+    "ADR-0033 §7": "baebca34afa5ee84"
    },
    "reader": "the drafter",
    "pinned_by": "mechanism/corpus-pins.sha256",
@@ -6235,7 +7255,7 @@
     "ADR-0054 §1": "20d90ae05b7caa76",
     "ADR-0054 §10": "d31993052a2994ad",
     "ADR-0054 §11": "db81131a005aac8a",
-    "ADR-0054 §12": "8c2a81a2973fd62c",
+    "ADR-0054 §12": "3318dbd52756a5ce",
     "ADR-0054 §2": "a99acc97163d0574",
     "ADR-0054 §3": "c0f6f437683ac5fc",
     "ADR-0054 §4": "407a1fdfc16e385f",
@@ -6344,7 +7364,7 @@
     "ADR-0054 §1": "20d90ae05b7caa76",
     "ADR-0054 §10": "d31993052a2994ad",
     "ADR-0054 §11": "db81131a005aac8a",
-    "ADR-0054 §12": "8c2a81a2973fd62c",
+    "ADR-0054 §12": "3318dbd52756a5ce",
     "ADR-0054 §2": "a99acc97163d0574",
     "ADR-0054 §3": "c0f6f437683ac5fc",
     "ADR-0054 §4": "407a1fdfc16e385f",
@@ -6891,7 +7911,7 @@
     "ADR-0054 §1": "20d90ae05b7caa76",
     "ADR-0054 §10": "d31993052a2994ad",
     "ADR-0054 §11": "db81131a005aac8a",
-    "ADR-0054 §12": "8c2a81a2973fd62c",
+    "ADR-0054 §12": "3318dbd52756a5ce",
     "ADR-0054 §2": "a99acc97163d0574",
     "ADR-0054 §3": "c0f6f437683ac5fc",
     "ADR-0054 §4": "407a1fdfc16e385f",
@@ -6915,7 +7935,7 @@
    "pins": {
     "ADR-0055 §1": "148c7d93dbe9aab5",
     "ADR-0055 §10": "54675b57aec6ad1a",
-    "ADR-0055 §11": "b00ebc7d8c5d2b62",
+    "ADR-0055 §11": "1fbeef45cac50baf",
     "ADR-0055 §2": "71715afd475b1e87",
     "ADR-0055 §3": "18884433b689a5b1",
     "ADR-0055 §4": "71c402896cbd275c",
@@ -7027,6 +8047,34 @@
     "ADR-0032 §4": "5fefb4db3b1448af",
     "ADR-0032 §5": "1f0d9d7e0df053d7",
     "ADR-0032 §6": "9e7abf864a658555"
+   },
+   "reader": "the drafter",
+   "pinned_by": "mechanism/corpus-pins.sha256",
+   "cited": "by the code"
+  },
+  {
+   "id": "read: mechanism/crates/topak-paxos → spec/Paxos.tla",
+   "type": "read",
+   "from": "mechanism/crates/topak-paxos",
+   "to": "spec/Paxos.tla",
+   "premise": "edge(read, mechanism/crates/topak-paxos → spec/Paxos.tla)",
+   "leaves": "the reader",
+   "pins": {
+    "spec/Paxos.tla": "ac26b35f368beeb8"
+   },
+   "reader": "the drafter",
+   "pinned_by": "mechanism/corpus-pins.sha256",
+   "cited": "by the code"
+  },
+  {
+   "id": "read: mechanism/crates/topak-paxos → spec/PaxosTrace.tla",
+   "type": "read",
+   "from": "mechanism/crates/topak-paxos",
+   "to": "spec/PaxosTrace.tla",
+   "premise": "edge(read, mechanism/crates/topak-paxos → spec/PaxosTrace.tla)",
+   "leaves": "the reader",
+   "pins": {
+    "spec/PaxosTrace.tla": "63a086605dca3cad"
    },
    "reader": "the drafter",
    "pinned_by": "mechanism/corpus-pins.sha256",
@@ -7234,6 +8282,81 @@
    "reader": "the drafter",
    "pinned_by": "mechanism/corpus-pins.sha256",
    "cited": "by the code"
+  },
+  {
+   "id": "read: spec/Alone.tla → ADR-0015",
+   "type": "read",
+   "from": "spec/Alone.tla",
+   "to": "ADR-0015",
+   "premise": "edge(read, spec/Alone.tla → ADR-0015)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0015 text": "47e36540955ff243",
+    "spec/Alone.tla": "9e7e04adb2ab5161"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/Alone.tla → ADR-0062",
+   "type": "read",
+   "from": "spec/Alone.tla",
+   "to": "ADR-0062",
+   "premise": "edge(read, spec/Alone.tla → ADR-0062)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0062 §1": "30324ded98459358",
+    "ADR-0062 §10": "6b5ca6e101bd75ba",
+    "ADR-0062 §11": "2123832afc892297",
+    "ADR-0062 §2": "576f27f03c26b1fa",
+    "ADR-0062 §3": "c12c22e2b8c8c32a",
+    "ADR-0062 §4": "134f1e9f08e05971",
+    "ADR-0062 §5": "c8fe6d40a33e9b8d",
+    "ADR-0062 §6": "8dbdc54d31864863",
+    "ADR-0062 §7": "cfa1f3fff20fe440",
+    "ADR-0062 §8": "fe6002111bbaae23",
+    "ADR-0062 §9": "2a191ce2feb69848",
+    "spec/Alone.tla": "9e7e04adb2ab5161"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/Alone.tla → ADR-0062 §2",
+   "type": "read",
+   "from": "spec/Alone.tla",
+   "to": "ADR-0062 §2",
+   "premise": "edge(read, spec/Alone.tla → ADR-0062 §2)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0062 §2": "576f27f03c26b1fa",
+    "spec/Alone.tla": "9e7e04adb2ab5161"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/Alone.tla → ADR-0062 §8",
+   "type": "read",
+   "from": "spec/Alone.tla",
+   "to": "ADR-0062 §8",
+   "premise": "edge(read, spec/Alone.tla → ADR-0062 §8)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0062 §8": "fe6002111bbaae23",
+    "spec/Alone.tla": "9e7e04adb2ab5161"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/Alone.tla → ADR-0065 §2",
+   "type": "read",
+   "from": "spec/Alone.tla",
+   "to": "ADR-0065 §2",
+   "premise": "edge(read, spec/Alone.tla → ADR-0065 §2)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0065 §2": "9a106758ee7e68b6",
+    "spec/Alone.tla": "9e7e04adb2ab5161"
+   },
+   "reader": "the drafter"
   },
   {
    "id": "read: spec/Anchor.tla → ADR-0025",
@@ -8136,6 +9259,94 @@
    "reader": "the drafter"
   },
   {
+   "id": "read: spec/Federation.tla → ADR-0025",
+   "type": "read",
+   "from": "spec/Federation.tla",
+   "to": "ADR-0025",
+   "premise": "edge(read, spec/Federation.tla → ADR-0025)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0025 §1": "290ac13122bd0179",
+    "ADR-0025 §2": "b5c5195cbf44e74c",
+    "spec/Federation.tla": "03e0bbb28b5e9a1d"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/Federation.tla → ADR-0059",
+   "type": "read",
+   "from": "spec/Federation.tla",
+   "to": "ADR-0059",
+   "premise": "edge(read, spec/Federation.tla → ADR-0059)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0059 Annex A": "0b61014cf92409ea",
+    "ADR-0059 §1": "51a9c4e7e97ba203",
+    "ADR-0059 §2": "f54931b39c7d81ab",
+    "ADR-0059 §3": "a631796fa8264ed1",
+    "ADR-0059 §4": "30eac62969047ac9",
+    "ADR-0059 §5": "e1dfc19457b5d900",
+    "ADR-0059 §6": "88ccd0367647f5f5",
+    "ADR-0059 §7": "f669f74bafe5548b",
+    "ADR-0059 §8": "ef062ad2bec9443e",
+    "ADR-0059 §9": "fa0698cfb174553e",
+    "spec/Federation.tla": "03e0bbb28b5e9a1d"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/Federation.tla → ADR-0059 §5",
+   "type": "read",
+   "from": "spec/Federation.tla",
+   "to": "ADR-0059 §5",
+   "premise": "edge(read, spec/Federation.tla → ADR-0059 §5)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0059 §5": "e1dfc19457b5d900",
+    "spec/Federation.tla": "03e0bbb28b5e9a1d"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/Federation.tla → ADR-0061",
+   "type": "read",
+   "from": "spec/Federation.tla",
+   "to": "ADR-0061",
+   "premise": "edge(read, spec/Federation.tla → ADR-0061)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0061 §1": "8e21b6d907bf0e32",
+    "ADR-0061 §2": "aa419d0d59ce230a",
+    "ADR-0061 §3": "46528c5b2b60ba26",
+    "ADR-0061 §4": "c53b91096d0a21dc",
+    "ADR-0061 §5": "633f7484d6771009",
+    "ADR-0061 §6": "69cd0854f32ec9f0",
+    "ADR-0061 §7": "33ba956d0f86a371",
+    "spec/Federation.tla": "03e0bbb28b5e9a1d"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/Federation.tla → ADR-0063",
+   "type": "read",
+   "from": "spec/Federation.tla",
+   "to": "ADR-0063",
+   "premise": "edge(read, spec/Federation.tla → ADR-0063)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0063 §1": "28fb6826a4b33981",
+    "ADR-0063 §2": "af31c147e748b069",
+    "ADR-0063 §3": "26e4482d95da96a1",
+    "ADR-0063 §4": "15a38578f724c156",
+    "ADR-0063 §5": "883b1f05bee8f7b7",
+    "ADR-0063 §6": "708f8f1879053f12",
+    "ADR-0063 §7": "58faa87c4f039e2e",
+    "ADR-0063 §8": "97798ae938e7d78d",
+    "spec/Federation.tla": "03e0bbb28b5e9a1d"
+   },
+   "reader": "the drafter"
+  },
+  {
    "id": "read: spec/FloorComposition.tla → ADR-0030",
    "type": "read",
    "from": "spec/FloorComposition.tla",
@@ -8202,6 +9413,93 @@
    "pins": {
     "ADR-0030 §5": "42c3af408ae6bf17",
     "spec/FloorRouting.tla": "9d4c0f5e03defc1e"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/Intent.tla → ADR-0050",
+   "type": "read",
+   "from": "spec/Intent.tla",
+   "to": "ADR-0050",
+   "premise": "edge(read, spec/Intent.tla → ADR-0050)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0050 §1": "3587b1e26cc428fb",
+    "ADR-0050 §10": "c89b29825549c742",
+    "ADR-0050 §2": "a05b4cdf8bd8e095",
+    "ADR-0050 §3": "453181f2ead324d2",
+    "ADR-0050 §4": "ae819911feacb7ac",
+    "ADR-0050 §5": "da2ae725431da659",
+    "ADR-0050 §6": "35b42988c16e31d4",
+    "ADR-0050 §7": "9a06e4a2e3311724",
+    "ADR-0050 §8": "f4fd2ea37c1afbd8",
+    "ADR-0050 §9": "3978ad3f19043b19",
+    "spec/Intent.tla": "0c90ea5004c4f127"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/Intent.tla → ADR-0059 §4",
+   "type": "read",
+   "from": "spec/Intent.tla",
+   "to": "ADR-0059 §4",
+   "premise": "edge(read, spec/Intent.tla → ADR-0059 §4)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0059 §4": "30eac62969047ac9",
+    "spec/Intent.tla": "0c90ea5004c4f127"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/Intent.tla → ADR-0060",
+   "type": "read",
+   "from": "spec/Intent.tla",
+   "to": "ADR-0060",
+   "premise": "edge(read, spec/Intent.tla → ADR-0060)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0060 §1": "7dfe1782253dd071",
+    "ADR-0060 §2": "90fbcb8599f9e342",
+    "ADR-0060 §3": "42ed0faa33c5da8c",
+    "ADR-0060 §4": "40f5627edc46141a",
+    "ADR-0060 §5": "feb53b075c2c2b5d",
+    "ADR-0060 §6": "955054661114bdc3",
+    "ADR-0060 §7": "c5d99a2dbcbd69fc",
+    "spec/Intent.tla": "0c90ea5004c4f127"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/Intent.tla → ADR-0062 §2",
+   "type": "read",
+   "from": "spec/Intent.tla",
+   "to": "ADR-0062 §2",
+   "premise": "edge(read, spec/Intent.tla → ADR-0062 §2)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0062 §2": "576f27f03c26b1fa",
+    "spec/Intent.tla": "0c90ea5004c4f127"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/Intent.tla → ADR-0063",
+   "type": "read",
+   "from": "spec/Intent.tla",
+   "to": "ADR-0063",
+   "premise": "edge(read, spec/Intent.tla → ADR-0063)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0063 §1": "28fb6826a4b33981",
+    "ADR-0063 §2": "af31c147e748b069",
+    "ADR-0063 §3": "26e4482d95da96a1",
+    "ADR-0063 §4": "15a38578f724c156",
+    "ADR-0063 §5": "883b1f05bee8f7b7",
+    "ADR-0063 §6": "708f8f1879053f12",
+    "ADR-0063 §7": "58faa87c4f039e2e",
+    "ADR-0063 §8": "97798ae938e7d78d",
+    "spec/Intent.tla": "0c90ea5004c4f127"
    },
    "reader": "the drafter"
   },
@@ -8985,6 +10283,71 @@
    "reader": "the drafter"
   },
   {
+   "id": "read: spec/Membership.tla → ADR-0059 §3",
+   "type": "read",
+   "from": "spec/Membership.tla",
+   "to": "ADR-0059 §3",
+   "premise": "edge(read, spec/Membership.tla → ADR-0059 §3)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0059 §3": "a631796fa8264ed1",
+    "spec/Membership.tla": "bcf3c5d151488133"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/Membership.tla → ADR-0061",
+   "type": "read",
+   "from": "spec/Membership.tla",
+   "to": "ADR-0061",
+   "premise": "edge(read, spec/Membership.tla → ADR-0061)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0061 §1": "8e21b6d907bf0e32",
+    "ADR-0061 §2": "aa419d0d59ce230a",
+    "ADR-0061 §3": "46528c5b2b60ba26",
+    "ADR-0061 §4": "c53b91096d0a21dc",
+    "ADR-0061 §5": "633f7484d6771009",
+    "ADR-0061 §6": "69cd0854f32ec9f0",
+    "ADR-0061 §7": "33ba956d0f86a371",
+    "spec/Membership.tla": "bcf3c5d151488133"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/Membership.tla → ADR-0061 §7",
+   "type": "read",
+   "from": "spec/Membership.tla",
+   "to": "ADR-0061 §7",
+   "premise": "edge(read, spec/Membership.tla → ADR-0061 §7)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0061 §7": "33ba956d0f86a371",
+    "spec/Membership.tla": "bcf3c5d151488133"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/Membership.tla → ADR-0064",
+   "type": "read",
+   "from": "spec/Membership.tla",
+   "to": "ADR-0064",
+   "premise": "edge(read, spec/Membership.tla → ADR-0064)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0064 §1": "e10a6579df17a535",
+    "ADR-0064 §2": "ab08226f83674137",
+    "ADR-0064 §3": "fd663cb0ba7c6b61",
+    "ADR-0064 §4": "90b4df4cf0beddd9",
+    "ADR-0064 §5": "4708f867906c2388",
+    "ADR-0064 §6": "4f2e2130931223f0",
+    "ADR-0064 §7": "c230cfe0c206f589",
+    "ADR-0064 §8": "b714555e1bc24b38",
+    "spec/Membership.tla": "bcf3c5d151488133"
+   },
+   "reader": "the drafter"
+  },
+  {
    "id": "read: spec/Mesh.tla → ADR-0054",
    "type": "read",
    "from": "spec/Mesh.tla",
@@ -9414,6 +10777,465 @@
    "pins": {
     "ADR-0050 §8": "f4fd2ea37c1afbd8",
     "spec/Operators.tla": "a465d7af62becd03"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/Outstanding.tla → ADR-0032",
+   "type": "read",
+   "from": "spec/Outstanding.tla",
+   "to": "ADR-0032",
+   "premise": "edge(read, spec/Outstanding.tla → ADR-0032)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0032 §1": "168d82f89c9f7a65",
+    "ADR-0032 §2": "b36c3cf9e4d93f2f",
+    "ADR-0032 §3": "348804c74f7490ff",
+    "ADR-0032 §4": "5fefb4db3b1448af",
+    "ADR-0032 §5": "1f0d9d7e0df053d7",
+    "ADR-0032 §6": "9e7abf864a658555",
+    "spec/Outstanding.tla": "8ecb0b147c7748ac"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/Outstanding.tla → ADR-0039",
+   "type": "read",
+   "from": "spec/Outstanding.tla",
+   "to": "ADR-0039",
+   "premise": "edge(read, spec/Outstanding.tla → ADR-0039)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0039 §1": "8b41a8569fd8915a",
+    "ADR-0039 §2": "d4687a3af0492176",
+    "ADR-0039 §3": "3eb9f3b989aca49a",
+    "ADR-0039 §4": "a57c570a722e36c8",
+    "ADR-0039 §5": "abf0d1f7653c844c",
+    "ADR-0039 §6": "8dc2965e0d74859a",
+    "ADR-0039 §7": "80d6c1732772ac6c",
+    "ADR-0039 §8": "1624eca0937cd0a7",
+    "spec/Outstanding.tla": "8ecb0b147c7748ac"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/Outstanding.tla → ADR-0059 §5",
+   "type": "read",
+   "from": "spec/Outstanding.tla",
+   "to": "ADR-0059 §5",
+   "premise": "edge(read, spec/Outstanding.tla → ADR-0059 §5)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0059 §5": "e1dfc19457b5d900",
+    "spec/Outstanding.tla": "8ecb0b147c7748ac"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/Outstanding.tla → ADR-0062 §6",
+   "type": "read",
+   "from": "spec/Outstanding.tla",
+   "to": "ADR-0062 §6",
+   "premise": "edge(read, spec/Outstanding.tla → ADR-0062 §6)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0062 §6": "8dbdc54d31864863",
+    "spec/Outstanding.tla": "8ecb0b147c7748ac"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/Outstanding.tla → ADR-0063",
+   "type": "read",
+   "from": "spec/Outstanding.tla",
+   "to": "ADR-0063",
+   "premise": "edge(read, spec/Outstanding.tla → ADR-0063)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0063 §1": "28fb6826a4b33981",
+    "ADR-0063 §2": "af31c147e748b069",
+    "ADR-0063 §3": "26e4482d95da96a1",
+    "ADR-0063 §4": "15a38578f724c156",
+    "ADR-0063 §5": "883b1f05bee8f7b7",
+    "ADR-0063 §6": "708f8f1879053f12",
+    "ADR-0063 §7": "58faa87c4f039e2e",
+    "ADR-0063 §8": "97798ae938e7d78d",
+    "spec/Outstanding.tla": "8ecb0b147c7748ac"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/Outstanding.tla → ADR-0063 §6",
+   "type": "read",
+   "from": "spec/Outstanding.tla",
+   "to": "ADR-0063 §6",
+   "premise": "edge(read, spec/Outstanding.tla → ADR-0063 §6)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0063 §6": "708f8f1879053f12",
+    "spec/Outstanding.tla": "8ecb0b147c7748ac"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/Outstanding.tla → ADR-0065",
+   "type": "read",
+   "from": "spec/Outstanding.tla",
+   "to": "ADR-0065",
+   "premise": "edge(read, spec/Outstanding.tla → ADR-0065)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0065 §1": "7439becae062b85a",
+    "ADR-0065 §2": "9a106758ee7e68b6",
+    "ADR-0065 §3": "6d9c427261175d85",
+    "ADR-0065 §4": "9ed73fcc38648536",
+    "ADR-0065 §5": "c68190cf0d3ffed8",
+    "ADR-0065 §6": "668bbbb336579f2c",
+    "ADR-0065 §7": "ba7e50b494e3668b",
+    "ADR-0065 §8": "96259b39e6bd1aa4",
+    "ADR-0065 §9": "d900c4deff450f91",
+    "spec/Outstanding.tla": "8ecb0b147c7748ac"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/Paxos.tla → ADR-0032",
+   "type": "read",
+   "from": "spec/Paxos.tla",
+   "to": "ADR-0032",
+   "premise": "edge(read, spec/Paxos.tla → ADR-0032)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0032 §1": "168d82f89c9f7a65",
+    "ADR-0032 §2": "b36c3cf9e4d93f2f",
+    "ADR-0032 §3": "348804c74f7490ff",
+    "ADR-0032 §4": "5fefb4db3b1448af",
+    "ADR-0032 §5": "1f0d9d7e0df053d7",
+    "ADR-0032 §6": "9e7abf864a658555",
+    "spec/Paxos.tla": "ac26b35f368beeb8"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/Paxos.tla → ADR-0033",
+   "type": "read",
+   "from": "spec/Paxos.tla",
+   "to": "ADR-0033",
+   "premise": "edge(read, spec/Paxos.tla → ADR-0033)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0033 §1": "6cf60a25f37f0ebc",
+    "ADR-0033 §2": "dc1daca2818e1465",
+    "ADR-0033 §3": "e902c316b74f9127",
+    "ADR-0033 §4": "f131df713cf801b0",
+    "ADR-0033 §5": "998eddcc5213ae2c",
+    "ADR-0033 §6": "ff253420986a9f01",
+    "ADR-0033 §7": "baebca34afa5ee84",
+    "spec/Paxos.tla": "ac26b35f368beeb8"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/PaxosTrace.tla → ADR-0045",
+   "type": "read",
+   "from": "spec/PaxosTrace.tla",
+   "to": "ADR-0045",
+   "premise": "edge(read, spec/PaxosTrace.tla → ADR-0045)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0045 Annex A": "27369c0af9f19d23",
+    "ADR-0045 Annex B": "15ea998167a68447",
+    "ADR-0045 §1": "062520bdcf317428",
+    "ADR-0045 §2": "9b8bcdbe0bb875aa",
+    "ADR-0045 §3": "70e5523b9ea35879",
+    "ADR-0045 §4": "c6305170a41bec48",
+    "ADR-0045 §5": "602cec93bd54764f",
+    "ADR-0045 §6": "5e01cc30940a093b",
+    "ADR-0045 §7": "2260f3976d47630f",
+    "ADR-0045 §8": "810f53a5891f6787",
+    "ADR-0045 §9": "8c1b951dff987005",
+    "spec/PaxosTrace.tla": "63a086605dca3cad"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/Peer.tla → ADR-0059 §5",
+   "type": "read",
+   "from": "spec/Peer.tla",
+   "to": "ADR-0059 §5",
+   "premise": "edge(read, spec/Peer.tla → ADR-0059 §5)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0059 §5": "e1dfc19457b5d900",
+    "spec/Peer.tla": "5ee3528164cd1a35"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/Peer.tla → ADR-0065",
+   "type": "read",
+   "from": "spec/Peer.tla",
+   "to": "ADR-0065",
+   "premise": "edge(read, spec/Peer.tla → ADR-0065)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0065 §1": "7439becae062b85a",
+    "ADR-0065 §2": "9a106758ee7e68b6",
+    "ADR-0065 §3": "6d9c427261175d85",
+    "ADR-0065 §4": "9ed73fcc38648536",
+    "ADR-0065 §5": "c68190cf0d3ffed8",
+    "ADR-0065 §6": "668bbbb336579f2c",
+    "ADR-0065 §7": "ba7e50b494e3668b",
+    "ADR-0065 §8": "96259b39e6bd1aa4",
+    "ADR-0065 §9": "d900c4deff450f91",
+    "spec/Peer.tla": "5ee3528164cd1a35"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/Peer.tla → ADR-0067 §7",
+   "type": "read",
+   "from": "spec/Peer.tla",
+   "to": "ADR-0067 §7",
+   "premise": "edge(read, spec/Peer.tla → ADR-0067 §7)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0067 §7": "36592a1f7a6b8445",
+    "spec/Peer.tla": "5ee3528164cd1a35"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/PlaneClock.tla → ADR-0032",
+   "type": "read",
+   "from": "spec/PlaneClock.tla",
+   "to": "ADR-0032",
+   "premise": "edge(read, spec/PlaneClock.tla → ADR-0032)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0032 §1": "168d82f89c9f7a65",
+    "ADR-0032 §2": "b36c3cf9e4d93f2f",
+    "ADR-0032 §3": "348804c74f7490ff",
+    "ADR-0032 §4": "5fefb4db3b1448af",
+    "ADR-0032 §5": "1f0d9d7e0df053d7",
+    "ADR-0032 §6": "9e7abf864a658555",
+    "spec/PlaneClock.tla": "7d7ced23419c1df2"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/PlaneClock.tla → ADR-0045",
+   "type": "read",
+   "from": "spec/PlaneClock.tla",
+   "to": "ADR-0045",
+   "premise": "edge(read, spec/PlaneClock.tla → ADR-0045)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0045 Annex A": "27369c0af9f19d23",
+    "ADR-0045 Annex B": "15ea998167a68447",
+    "ADR-0045 §1": "062520bdcf317428",
+    "ADR-0045 §2": "9b8bcdbe0bb875aa",
+    "ADR-0045 §3": "70e5523b9ea35879",
+    "ADR-0045 §4": "c6305170a41bec48",
+    "ADR-0045 §5": "602cec93bd54764f",
+    "ADR-0045 §6": "5e01cc30940a093b",
+    "ADR-0045 §7": "2260f3976d47630f",
+    "ADR-0045 §8": "810f53a5891f6787",
+    "ADR-0045 §9": "8c1b951dff987005",
+    "spec/PlaneClock.tla": "7d7ced23419c1df2"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/PlaneClock.tla → ADR-0061",
+   "type": "read",
+   "from": "spec/PlaneClock.tla",
+   "to": "ADR-0061",
+   "premise": "edge(read, spec/PlaneClock.tla → ADR-0061)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0061 §1": "8e21b6d907bf0e32",
+    "ADR-0061 §2": "aa419d0d59ce230a",
+    "ADR-0061 §3": "46528c5b2b60ba26",
+    "ADR-0061 §4": "c53b91096d0a21dc",
+    "ADR-0061 §5": "633f7484d6771009",
+    "ADR-0061 §6": "69cd0854f32ec9f0",
+    "ADR-0061 §7": "33ba956d0f86a371",
+    "spec/PlaneClock.tla": "7d7ced23419c1df2"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/PlaneClock.tla → ADR-0062 §4",
+   "type": "read",
+   "from": "spec/PlaneClock.tla",
+   "to": "ADR-0062 §4",
+   "premise": "edge(read, spec/PlaneClock.tla → ADR-0062 §4)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0062 §4": "134f1e9f08e05971",
+    "spec/PlaneClock.tla": "7d7ced23419c1df2"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/PlaneClock.tla → ADR-0062 §5",
+   "type": "read",
+   "from": "spec/PlaneClock.tla",
+   "to": "ADR-0062 §5",
+   "premise": "edge(read, spec/PlaneClock.tla → ADR-0062 §5)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0062 §5": "c8fe6d40a33e9b8d",
+    "spec/PlaneClock.tla": "7d7ced23419c1df2"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/PlaneClock.tla → ADR-0063",
+   "type": "read",
+   "from": "spec/PlaneClock.tla",
+   "to": "ADR-0063",
+   "premise": "edge(read, spec/PlaneClock.tla → ADR-0063)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0063 §1": "28fb6826a4b33981",
+    "ADR-0063 §2": "af31c147e748b069",
+    "ADR-0063 §3": "26e4482d95da96a1",
+    "ADR-0063 §4": "15a38578f724c156",
+    "ADR-0063 §5": "883b1f05bee8f7b7",
+    "ADR-0063 §6": "708f8f1879053f12",
+    "ADR-0063 §7": "58faa87c4f039e2e",
+    "ADR-0063 §8": "97798ae938e7d78d",
+    "spec/PlaneClock.tla": "7d7ced23419c1df2"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/PlaneClock.tla → ADR-0064",
+   "type": "read",
+   "from": "spec/PlaneClock.tla",
+   "to": "ADR-0064",
+   "premise": "edge(read, spec/PlaneClock.tla → ADR-0064)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0064 §1": "e10a6579df17a535",
+    "ADR-0064 §2": "ab08226f83674137",
+    "ADR-0064 §3": "fd663cb0ba7c6b61",
+    "ADR-0064 §4": "90b4df4cf0beddd9",
+    "ADR-0064 §5": "4708f867906c2388",
+    "ADR-0064 §6": "4f2e2130931223f0",
+    "ADR-0064 §7": "c230cfe0c206f589",
+    "ADR-0064 §8": "b714555e1bc24b38",
+    "spec/PlaneClock.tla": "7d7ced23419c1df2"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/PlaneClock.tla → ADR-0064 §3",
+   "type": "read",
+   "from": "spec/PlaneClock.tla",
+   "to": "ADR-0064 §3",
+   "premise": "edge(read, spec/PlaneClock.tla → ADR-0064 §3)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0064 §3": "fd663cb0ba7c6b61",
+    "spec/PlaneClock.tla": "7d7ced23419c1df2"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/PlaneClock.tla → ADR-0064 §5",
+   "type": "read",
+   "from": "spec/PlaneClock.tla",
+   "to": "ADR-0064 §5",
+   "premise": "edge(read, spec/PlaneClock.tla → ADR-0064 §5)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0064 §5": "4708f867906c2388",
+    "spec/PlaneClock.tla": "7d7ced23419c1df2"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/PlaneClock.tla → ADR-0068",
+   "type": "read",
+   "from": "spec/PlaneClock.tla",
+   "to": "ADR-0068",
+   "premise": "edge(read, spec/PlaneClock.tla → ADR-0068)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0068 §1": "367d01de45cd6d01",
+    "ADR-0068 §2": "f3717f0d5cf57f1f",
+    "ADR-0068 §3": "7d73df28b676f16c",
+    "ADR-0068 §4": "3c914b60668dc8f9",
+    "ADR-0068 §5": "a9b3def0524478b5",
+    "ADR-0068 §6": "561fe3550205949c",
+    "spec/PlaneClock.tla": "7d7ced23419c1df2"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/Release.tla → ADR-0062 §6",
+   "type": "read",
+   "from": "spec/Release.tla",
+   "to": "ADR-0062 §6",
+   "premise": "edge(read, spec/Release.tla → ADR-0062 §6)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0062 §6": "8dbdc54d31864863",
+    "spec/Release.tla": "7a8a212d3f07956b"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/Release.tla → ADR-0064 §5",
+   "type": "read",
+   "from": "spec/Release.tla",
+   "to": "ADR-0064 §5",
+   "premise": "edge(read, spec/Release.tla → ADR-0064 §5)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0064 §5": "4708f867906c2388",
+    "spec/Release.tla": "7a8a212d3f07956b"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/Release.tla → ADR-0066",
+   "type": "read",
+   "from": "spec/Release.tla",
+   "to": "ADR-0066",
+   "premise": "edge(read, spec/Release.tla → ADR-0066)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0066 §1": "6bb3ff7a5f6be5f4",
+    "ADR-0066 §2": "658e8fef9e08c88b",
+    "ADR-0066 §3": "4abe7bdf381d1eea",
+    "ADR-0066 §4": "01132cd8e8c9c769",
+    "ADR-0066 §5": "e05a9300b498890a",
+    "ADR-0066 §6": "db985fa8d295de1b",
+    "ADR-0066 §7": "2f0f96a8315fcfbc",
+    "spec/Release.tla": "7a8a212d3f07956b"
+   },
+   "reader": "the drafter"
+  },
+  {
+   "id": "read: spec/Release.tla → ADR-0067",
+   "type": "read",
+   "from": "spec/Release.tla",
+   "to": "ADR-0067",
+   "premise": "edge(read, spec/Release.tla → ADR-0067)",
+   "leaves": "the reader",
+   "pins": {
+    "ADR-0067 §1": "0b556aed2ac174c7",
+    "ADR-0067 §2": "44b2640280946e3f",
+    "ADR-0067 §3": "0f2718e018d1aa7d",
+    "ADR-0067 §4": "e70bedb91918894b",
+    "ADR-0067 §5": "b0b8b792b393de13",
+    "ADR-0067 §6": "ea8edfd0bfad688a",
+    "ADR-0067 §7": "36592a1f7a6b8445",
+    "spec/Release.tla": "7a8a212d3f07956b"
    },
    "reader": "the drafter"
   },
@@ -10536,6 +12358,38 @@
    },
    "evidence": {
     "tests": "mechanism/crates/topak-core/tests/workflow.rs"
+   },
+   "reader": "the drafter: the tests are named after the module's properties"
+  },
+  {
+   "id": "tested: mechanism/crates/topak-paxos → spec/Paxos.tla",
+   "type": "tested",
+   "from": "mechanism/crates/topak-paxos",
+   "to": "spec/Paxos.tla",
+   "premise": "edge(tested, mechanism/crates/topak-paxos → spec/Paxos.tla)",
+   "leaves": "the inputs no test chose, and whether the tests state the properties",
+   "pins": {
+    "mechanism/crates/topak-paxos/tests/sim.rs": "1489a6f6be3ae3ea",
+    "spec/Paxos.tla": "ac26b35f368beeb8"
+   },
+   "evidence": {
+    "tests": "mechanism/crates/topak-paxos/tests/sim.rs"
+   },
+   "reader": "the drafter: the tests are named after the module's properties"
+  },
+  {
+   "id": "tested: mechanism/crates/topak-paxos → spec/PaxosTrace.tla",
+   "type": "tested",
+   "from": "mechanism/crates/topak-paxos",
+   "to": "spec/PaxosTrace.tla",
+   "premise": "edge(tested, mechanism/crates/topak-paxos → spec/PaxosTrace.tla)",
+   "leaves": "the inputs no test chose, and whether the tests state the properties",
+   "pins": {
+    "mechanism/crates/topak-paxos/tests/sim.rs": "1489a6f6be3ae3ea",
+    "spec/PaxosTrace.tla": "63a086605dca3cad"
+   },
+   "evidence": {
+    "tests": "mechanism/crates/topak-paxos/tests/sim.rs"
    },
    "reader": "the drafter: the tests are named after the module's properties"
   },
