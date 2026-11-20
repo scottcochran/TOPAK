@@ -7,13 +7,16 @@
 # For each row it writes, in a mktemp directory, a wrapper module <Module>_DL that EXTENDS the module and adds only
 # definitions, so the state graph is the module's own:
 #   Terminal        == ~ENABLED <next>      (next: the next-state relation of the row's specification)
-#   NotTerminal     == ~Terminal
 #   AtBound         == <the row's bound>    (FALSE where the row states none: no terminal state is expected)
 #   TerminalAtBound == Terminal => AtBound
-# copies the module and the local modules it EXTENDS beside it, and runs TLC with INVARIANT NotTerminal and, where
-# that is violated, INVARIANT TerminalAtBound. TLC checks an invariant in every state it reaches, the first time it
-# reaches it, so these runs pass -deadlock themselves: the invariant, not TLC's check, is what reports a terminal
-# state. A row whose TerminalAtBound is violated is rerun on one worker, so that the first terminal state not at the
+# copies the module and the local modules it EXTENDS beside it, and runs TLC with its own deadlock check on (no
+# -deadlock, no invariant): TLC reports "Deadlock reached" at a reachable state that has no successor, a step that
+# leaves the state unchanged counting as one, which is ~ENABLED <next>, and it asks this of the successors it
+# computes anyway, so the run costs what the module's own runs cost. (Until 2026.11.20 this step was INVARIANT
+# NotTerminal == ~Terminal, the same question through ENABLED, which in Paxos.tla, whose handlers are a RECURSIVE
+# operator over LAMBDAs, ran some rows at a few states a minute.) Where it reports a deadlock, TLC checks INVARIANT
+# TerminalAtBound with -deadlock: an invariant is checked in every state, the first time TLC reaches it, so the
+# invariant, not TLC's check, is what reports a terminal state not at the bound. A row whose TerminalAtBound is violated is rerun on one worker, so that the first terminal state not at the
 # bound is the same on every run, and once with no invariant, for the size of the whole graph.
 # The rows are unmutated. No run script builds a module of its own: each writes a .cfg and runs the module file, so
 # a wrapper that EXTENDS the module sees the run's graph. The one construction is the <Module>Dump.tla that
@@ -225,17 +228,20 @@ laststate() {
        END { print s }' "$1" \
     | sed -E 's/[[:space:]]+/ /g; s/^ //; s/ $//; s/^\/\\ //; s/\{ /{/g; s/ \}/}/g; s/\[ /[/g; s/ \]/]/g; s/<< /<</g; s/ >>/>>/g'
 }
-# One TLC run: tlc <dir> <wrapper> <spec> <invariant or empty> <tag> <workers>; output in <dir>/<tag>.out, exit code returned.
+# One TLC run: tlc <dir> <wrapper> <spec> <invariant or empty> <tag> <workers> [check]; output in <dir>/<tag>.out, exit
+# code returned. With "check", TLC's deadlock check is on (no -deadlock).
 tlc() {
-  local d=$1 w=$2 spec=$3 inv=$4 tag=$5 wk=$6
+  local d=$1 w=$2 spec=$3 inv=$4 tag=$5 wk=$6 dl=-deadlock
+  [ "${7:-}" = check ] && dl=""
   { echo "SPECIFICATION $spec"; [ -n "$inv" ] && echo "INVARIANT $inv"; echo "CONSTANTS"; printf '%s\n' "$cfgc"; } > "$d/$tag.cfg"
   mkdir -p "$d/$tag.jtmp"
   (cd "$d" && java -XX:+UseParallelGC -Djava.io.tmpdir="$d/$tag.jtmp" -cp "$jar" tlc2.TLC -config "$tag.cfg" \
-      -workers "$wk" -fp 0 -deadlock -metadir "$d/$tag.meta" "$w.tla") > "$d/$tag.out" 2>&1
+      -workers "$wk" -fp 0 $dl -metadir "$d/$tag.meta" "$w.tla") > "$d/$tag.out" 2>&1
 }
-# HOLDS, VIOLATED (the invariant named) or ERROR.
-verdict() { # <out> <exit code> <invariant>
+# HOLDS, VIOLATED (the invariant named, or "deadlock": TLC reached a deadlock) or ERROR.
+verdict() { # <out> <exit code> <invariant or deadlock>
   if [ "$2" -eq 0 ] && grep -q "^Model checking completed. No error has been found." "$1"; then echo HOLDS
+  elif [ "$3" = deadlock ] && [ "$2" -eq 11 ] && grep -q "^Error: Deadlock reached." "$1"; then echo VIOLATED
   elif [ "$2" -eq 12 ] && grep -q "^Error: Invariant $3 is violated" "$1"; then echo VIOLATED
   else echo ERROR; fi
 }
@@ -263,9 +269,9 @@ for m in $seen; do mods="$mods${mods:+ · }$m.tla (sha256 $(d16 "$m.tla"))"; don
 tlcv=$(java -cp "$jar" tlc2.TLC -h 2>&1 | grep -oE "Version [0-9.]+ of [^ ]+ [^ ]+ [0-9]+" | head -1)
 
 echo "TOPAK — the -deadlock audit: where the modules the run scripts check have states with no successor, at the constants their results files use, unmutated"
-echo "Runner: deadlock-audit.sh (sha256 $(d16 deadlock-audit.sh)) · TLC $tlcv (jar sha256 $(d16 "$jar")) · $(java -version 2>&1 | head -1) · TLC -workers $workers -fp 0 -deadlock${only:+ · rows: only modules matching $only}${consts:+ · rows: only constants matching $consts}"
+echo "Runner: deadlock-audit.sh (sha256 $(d16 deadlock-audit.sh)) · TLC $tlcv (jar sha256 $(d16 "$jar")) · $(java -version 2>&1 | grep -v "^Picked up" | head -1) · TLC -workers $workers -fp 0, its deadlock check on, and -deadlock on the TerminalAtBound runs${only:+ · rows: only modules matching $only}${consts:+ · rows: only constants matching $consts}"
 echo "Modules: $mods"
-echo "Every run script listed below passes -deadlock, which turns off TLC's report of a state with no successor, a terminal state. Each line is one module at one set of constants, unmutated, through a wrapper that EXTENDS it and adds only definitions, so the state graph is the module's own. TLC checks INVARIANT NotTerminal (Terminal == ~ENABLED of the specification's next-state relation) and, where that is violated, INVARIANT TerminalAtBound (Terminal => AtBound, the bound being the module's own end, as the line names it). A line claims that at its constants every terminal state is at that bound, or there is none, so that the flag turns off the report of the module's end and hides nothing else. It claims nothing at other constants, where an end can fall elsewhere, or under a mutation, whose rows may stop anywhere and need only reach their counterexample. Nor does it claim that the module never stalls: a state whose only step leaves it unchanged has a successor, for ENABLED as for TLC's check, so neither sees it."
+echo "Every run script listed below passes -deadlock, which turns off TLC's report of a state with no successor, a terminal state. Each line is one module at one set of constants, unmutated, through a wrapper that EXTENDS it and adds only definitions, so the state graph is the module's own. TLC runs with its own deadlock check on, which reports a reachable state with no successor (Terminal == ~ENABLED of the specification's next-state relation), and, where it reports one, checks INVARIANT TerminalAtBound (Terminal => AtBound, the bound being the module's own end, as the line names it). A line claims that at its constants every terminal state is at that bound, or there is none, so that the flag turns off the report of the module's end and hides nothing else. It claims nothing at other constants, where an end can fall elsewhere, or under a mutation, whose rows may stop anywhere and need only reach their counterexample. Nor does it claim that the module never stalls: a state whose only step leaves it unchanged has a successor, for ENABLED as for TLC's check, so neither sees it."
 echo
 
 tmp=$(mktemp -d "${TMPDIR:-/tmp}/topak-deadlock.XXXXXX") || exit 2
@@ -309,11 +315,10 @@ while IFS='|' read -r mod inst rc next atb; do
     "(* Written by deadlock-audit.sh. Adds only definitions to $base; the state graph is $base's own. *)" \
     "EXTENDS $base" \
     "Terminal        == ~ENABLED $next" \
-    "NotTerminal     == ~Terminal" \
     "AtBound         == ${atb:-FALSE}" \
     "TerminalAtBound == Terminal => AtBound" \
     "====" > "$d/$w.tla"
-  tlc "$d" "$w" "$spec" NotTerminal nt "$workers"; v=$(verdict "$d/nt.out" $? NotTerminal)
+  tlc "$d" "$w" "$spec" "" nt "$workers" check; v=$(verdict "$d/nt.out" $? deadlock)
   case "$v" in
     HOLDS)
       echo "$label | $shown | $(distinct "$d/nt.out") distinct states | no terminal state"
@@ -336,7 +341,7 @@ while IFS='|' read -r mod inst rc next atb; do
           echo "$key	error" >> "$tmp/lines"; nerr=$((nerr + 1)) ;;
       esac ;;
     *)
-      echo "$label | $shown | ERROR on NotTerminal: $(tlcerror "$d/nt.out")"
+      echo "$label | $shown | ERROR on the deadlock check: $(tlcerror "$d/nt.out")"
       echo "$key	error" >> "$tmp/lines"; nerr=$((nerr + 1)) ;;
   esac
   rm -rf "$d"
