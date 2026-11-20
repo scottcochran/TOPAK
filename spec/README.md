@@ -32,7 +32,7 @@ hand-assembled TLC output with a dated name and never change; the two generators
 | `Labels.tla` | ADR-0047 §11 (Proposed) | `labels-run.sh`; `labels-gen-results.sh` with a row list | `Labels-results-2026.10.03.txt`, `-2026.10.04.txt` | ADR-0047 |
 | `Coupling_live.tla` | ADR-0039 §2; A12 (Theory of Operation §13); the liveness plan, Tier 1 item 1 (CR-37). Extends `Coupling.tla` without editing it: four leads-to properties, under fairness on the Observer's actions (A12), on the Thinker's `Admit` and on the grants, and two liveness mutations | `live-gen-results.sh` with `Coupling_live-rows.txt` | `Coupling_live-results-2026.10.07.txt` | none yet |
 | `Emergency_live.tla` | ADR-0039 A2; ADR-0052 §9 (provisional, B34); the liveness plan, Tier 0. Extends `Emergency.tla` without editing it: the emergency call split into its admit and its refusal, two `ENABLED` invariants, two mutations | `live-gen-results.sh` with `Emergency_live-rows.txt` | `Emergency_live-results-2026.10.07.txt` | none yet |
-| every module a `-deadlock` script checks, unmutated, at its results files' constants (`Operators` at two operators only) | the liveness plan's note on TLC's `-deadlock` flag ("Why it's worth the cost") | `deadlock-audit.sh` | `deadlock-audit-results-2026.10.07.txt`, `-2026.11.10.txt`, `-2026.11.20.txt` | none yet |
+| every module a `-deadlock` script checks, unmutated, at its results files' constants (`Operators` at two operators only) | the liveness plan's note on TLC's `-deadlock` flag ("Why it's worth the cost") | `deadlock-audit.sh` | `deadlock-audit-results-2026.10.07.txt`, `-2026.11.10.txt`, `-2026.11.20.txt`, `-2026.11.20-larger.txt` | none yet |
 | `defects/*.tla`: the thirteen listings of `proof-certification.md` §8 as files, twelve prover modules and the TLC model `BinderDefectTLC.tla` | ADR-0046 A2; ADR-0045 A3 (the prover's two unsound cases, Batch 37). The reproductions ADR-0046's ratification condition ran from the document, as files; reported upstream 2026.10.18 as tlaplus/tlapm#309 and #310 (ADR-0046 A3, ADR-0045 A4, Batch 39) | `defects/defects-run.sh`, from `spec/` | `defects/defects-results-2026.10.22.txt` | none; §8's text is the record |
 | `Workflow.tla` | ADR-0054 §12 (Proposed) | `workflow-run.sh`; `workflow-gen-results.sh` with `Workflow-rows.txt` | `Workflow-results-2026.10.08.txt` | ADR-0054 |
 | `Mesh.tla` | ADR-0055 §11 (Proposed) | `mesh-run.sh`; `mesh-gen-results.sh` with `Mesh-rows.txt` | `Mesh-results-2026.10.07.txt` | ADR-0055 |
@@ -81,8 +81,8 @@ is the same on every run. TLC's deadlock check is not a liveness check: in both 
 successor, so it reports nothing even under the mutation that stalls the next round for good. `deadlock-audit.sh`
 asks the converse question of every module a `-deadlock` script checks: at the constants its results files use
 (`Operators` at two operators only; three are beyond TLC), unmutated, every state with no successor is at a bound the
-module imposes, and 28 of its 48 lines have none. No stray deadlock was found. The 2026.11.20 run adds `Mesh`,
-`Workflow` and `Paxos`, which the earlier runs did not cover, and the Paxos trace replay among the scripts that are
+module imposes, and 28 of its 48 lines have none. No stray deadlock was found. The 2026.11.20 runs add `Mesh`,
+`Workflow` and `Paxos` (its three largest sets of constants, up to 4,414,419 states, in the `-larger` file), which the earlier runs did not cover, and the Paxos trace replay among the scripts that are
 not model-checking runs; since then the audit's first step is TLC's own deadlock check rather than an invariant over
 `ENABLED`, which is the same question at the cost of the module's own run. In `Workflow` a workflow can be left
 running at its end: a finding, or the one fence, closes every edge into the sink, and `Settle` has no case for nothing
