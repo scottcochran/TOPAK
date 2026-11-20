@@ -92,7 +92,13 @@ fails a workflow when the epoch is fenced, where the module fails only the nodes
 `Workflow_A1.tla` (2026.11.20, a draft) makes a fenced epoch a cause `Settle` fails the workflow for; its line in
 `deadlock-audit-results-2026.11.20-A1.txt` has every terminal state at the fence with the workflow settled, and no
 stall. A fence that failed the workflow in its own step was tried first and dropped: no grant could then be refused
-after a fence, so `NeverRefusedAtGrant` held and `M_GRANTANYEPOCH` no longer broke `GrantUnderPromotion`.
+after a fence, so `NeverRefusedAtGrant` held and `M_GRANTANYEPOCH` no longer broke `GrantUnderPromotion`. `Workflow_A1_proof.tla` proves it
+(below): `Workflow_proof` over the new module, whose steps citing `Settle` needed no change, and `FenceFailsWorkflow`
+from `FencedPromoted` (a fenced epoch was promoted), its `ENABLED` expanded in the one step that proves it, by
+Isabelle. That step fails under `M_FENCERUNS` and without `FencedPromoted` (a scratch run, not an artefact). It
+certifies, with that one obligation left to Isabelle. `proof-scan-results-2026.11.20.txt` scans it: no capture, the
+renamed run the same, and 24 SMT queries with an opaque constant under a binder, 22 of them `Workflow_proof`'s and two
+`NextFencedPromoted`'s (a frame step and its primed goal), none an `ENABLED`.
 
 ## TLAPS proofs
 
@@ -188,6 +194,7 @@ The `1.6.0-pre` release tag is rebuilt by its upstream: on 2026.10.03 both asset
 | `Peer_proof.tla` | `Peer.tla` | ADR-0065 §9 (Proposed) | `PeerAddsNothing`, `NarrowsInReceived`, `ReceivedIsUntrusted`, `SendWithinTopics` | none | `Peer-proof-results-2026.11.10.txt`, `Peer-proof-cert-results-2026.11.10.txt` |
 | `Release_proof.tla` | `Release.tla` | ADR-0066 §7 (Proposed) | `IrreversibleIsAPersons`, as four clauses, `ConflictIsAFinding`, `OrderedInContact`, and the `ENABLED` invariant `ReleaseNeverCoupled` | `MaxActs, MaxTick, FreshT ∈ Nat` | `Release-proof-results-2026.11.10.txt`, `Release-proof-cert-results-2026.11.10.txt` |
 | `Workflow_proof.tla` | `Workflow.tla` | ADR-0054 §12 (Proposed) | all ten, each under the mutations that break it and no others. The proof needs no state constraint, so it covers what `Workflow-rows.txt`'s `M_REWRITE` remainder row checks only under `CapLog` | none | `Workflow-proof-results-2026.11.11.txt`, `Workflow-proof-cert-results-2026.11.11.txt` |
+| `Workflow_A1_proof.tla` | `Workflow_A1.tla` | ADR-0054 §9, §12 (Proposed; A1 drafted, not yet in the record) | `Workflow_proof`'s ten, each under the mutations that break it and no others, and A1's `ENABLED` invariant `FenceFailsWorkflow` under `Mut # "M_FENCERUNS"`; `SafeAlways`, now eleven, under `Mut = "none"`. As for `Workflow_proof`, no state constraint | none | `Workflow_A1-proof-results-2026.11.20.txt`, `Workflow_A1-proof-cert-results-2026.11.20.txt` |
 | `Mesh_proof.tla` | `Mesh.tla` | ADR-0055 §11 (Proposed) | all seven, each under the mutations that break it and no others, at the module's own mesh and budget `N = 6`, for every length of log. The proof needs no state constraint, so it covers what `Mesh-rows.txt`'s `M_ORCHFREE` and `M_TRACKER` remainder rows check only under `CapOnePast` | none | `Mesh-proof-results-2026.11.11.txt`, `Mesh-proof-cert-results-2026.11.11.txt` |
 
 **The command-chain overlay's eight modules** (2026.11.10, ADR-0059 to ADR-0066, Proposed) were written from the ratification conditions of those records and proposal §10 of `derived/topak-federated-c2-design-proposal-2026.11.10b.md`. Each is checked, proved and certified as a pair of results files above; `proof-scan-results-2026.11.10.txt` scans the eight proof modules and `deadlock-audit-results-2026.11.10.txt` audits their `-deadlock` runs. `OneSuccessor` is in `Membership.tla` where proposal §10 lists it under `Federation`, since it shares no state with the charter chain. Each module's header states what it found against its record, and the R1 row of each of ADR-0059 to ADR-0066 (2026.11.10) cites its modules and results files by digest and says how the record took the findings.
