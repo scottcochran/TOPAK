@@ -150,6 +150,11 @@ Mesh | EXTENDS Spec | Mut = "none" | Next | wf \in {"completed", "failed"}
 # idle. It has no Quiescent case as Mesh's has, and the fence fails only the nodes running when it lands, where
 # ADR-0054 §9 fails the workflow when the epoch is fenced (and when T_wf passes, which is not modelled).
 Workflow | EXTENDS Spec | Mut = "none" | Next | epoch = PE + 1 /\ (wf \in {"completed", "failed"} \/ (consumed /\ ~decisionFailed /\ status["j"] = "idle" /\ \A n \in Nodes : status[n] \in {"idle", "ended"}))
+# workflow-run.sh and workflow-gen-results.sh with MODULE=Workflow_A1: every unmutated row of
+# Workflow_A1-results-2026.11.20.txt. The bound: the one fence spent, as for Workflow, and the workflow settled, with
+# no stall: after the fence Settle fails a running workflow whose sink has not ended (A1), and completes one whose
+# sink has.
+Workflow_A1 | EXTENDS Spec | Mut = "none" | Next | epoch = PE + 1 /\ wf \in {"completed", "failed"}
 # live-gen-results.sh with Paxos-rows.txt and Paxos-larger-rows.txt: every set of constants their unmutated rows use
 # (Paxos-results-2026.11.14.txt, Paxos-larger-results-2026.11.14.txt). No end is expected: no step removes a message
 # from msgs, and Receive(m) has no guard, so once a message has been sent every state has a successor. The last three
@@ -199,7 +204,7 @@ correlator-run.sh, correlator-gen-results.sh | Correlator
 labels-run.sh, labels-gen-results.sh | Labels
 live-gen-results.sh | Coupling_live Emergency_live Federation Membership Intent Alone Outstanding PlaneClock Peer Release Paxos
 mesh-run.sh, mesh-gen-results.sh | Mesh
-workflow-run.sh, workflow-gen-results.sh | Workflow
+workflow-run.sh, workflow-gen-results.sh | Workflow Workflow_A1
 lean/graph-check.sh | SeatsDump FloorCompositionDump
 lean/graph-check-emergency.sh | EmergencyDump Emergency_liveDump
 SCRIPTS

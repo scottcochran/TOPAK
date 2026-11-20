@@ -32,9 +32,10 @@ hand-assembled TLC output with a dated name and never change; the two generators
 | `Labels.tla` | ADR-0047 §11 (Proposed) | `labels-run.sh`; `labels-gen-results.sh` with a row list | `Labels-results-2026.10.03.txt`, `-2026.10.04.txt` | ADR-0047 |
 | `Coupling_live.tla` | ADR-0039 §2; A12 (Theory of Operation §13); the liveness plan, Tier 1 item 1 (CR-37). Extends `Coupling.tla` without editing it: four leads-to properties, under fairness on the Observer's actions (A12), on the Thinker's `Admit` and on the grants, and two liveness mutations | `live-gen-results.sh` with `Coupling_live-rows.txt` | `Coupling_live-results-2026.10.07.txt` | none yet |
 | `Emergency_live.tla` | ADR-0039 A2; ADR-0052 §9 (provisional, B34); the liveness plan, Tier 0. Extends `Emergency.tla` without editing it: the emergency call split into its admit and its refusal, two `ENABLED` invariants, two mutations | `live-gen-results.sh` with `Emergency_live-rows.txt` | `Emergency_live-results-2026.10.07.txt` | none yet |
-| every module a `-deadlock` script checks, unmutated, at its results files' constants (`Operators` at two operators only) | the liveness plan's note on TLC's `-deadlock` flag ("Why it's worth the cost") | `deadlock-audit.sh` | `deadlock-audit-results-2026.10.07.txt`, `-2026.11.10.txt`, `-2026.11.20.txt`, `-2026.11.20-larger.txt` | none yet |
+| every module a `-deadlock` script checks, unmutated, at its results files' constants (`Operators` at two operators only) | the liveness plan's note on TLC's `-deadlock` flag ("Why it's worth the cost") | `deadlock-audit.sh` | `deadlock-audit-results-2026.10.07.txt`, `-2026.11.10.txt`, `-2026.11.20.txt`, `-2026.11.20-larger.txt`, `-2026.11.20-A1.txt` | none yet |
 | `defects/*.tla`: the thirteen listings of `proof-certification.md` §8 as files, twelve prover modules and the TLC model `BinderDefectTLC.tla` | ADR-0046 A2; ADR-0045 A3 (the prover's two unsound cases, Batch 37). The reproductions ADR-0046's ratification condition ran from the document, as files; reported upstream 2026.10.18 as tlaplus/tlapm#309 and #310 (ADR-0046 A3, ADR-0045 A4, Batch 39) | `defects/defects-run.sh`, from `spec/` | `defects/defects-results-2026.10.22.txt` | none; §8's text is the record |
 | `Workflow.tla` | ADR-0054 §12 (Proposed) | `workflow-run.sh`; `workflow-gen-results.sh` with `Workflow-rows.txt` | `Workflow-results-2026.10.08.txt` | ADR-0054 |
+| `Workflow_A1.tla` | ADR-0054 §9 (Proposed), a draft the record does not yet carry. Successor to `Workflow.tla`: a fenced epoch fails the workflow, the property `FenceFailsWorkflow` (over `ENABLED Settle`), the mutation `M_FENCERUNS` (the frozen rule) and the witness `NeverFailedByFence`. Not yet proved | `workflow-run.sh`; `workflow-gen-results.sh` with `Workflow_A1-rows.txt`, both with `MODULE=Workflow_A1` | `Workflow_A1-results-2026.11.20.txt` | none yet |
 | `Mesh.tla` | ADR-0055 §11 (Proposed) | `mesh-run.sh`; `mesh-gen-results.sh` with `Mesh-rows.txt` | `Mesh-results-2026.10.07.txt` | ADR-0055 |
 | `Federation.tla` | ADR-0059 §9 (Proposed) | `live-gen-results.sh` with `Federation-rows.txt` | `Federation-results-2026.11.10.txt` | none yet |
 | `Membership.tla` | ADR-0061 §7 (Proposed) | `live-gen-results.sh` with `Membership-rows.txt` | `Membership-results-2026.11.10.txt` | none yet |
@@ -88,6 +89,10 @@ not model-checking runs; since then the audit's first step is TLC's own deadlock
 running at its end: a finding, or the one fence, closes every edge into the sink, and `Settle` has no case for nothing
 left to run, as `Mesh`'s has. The line's bound names that stall, which the module's header calls safe; ADR-0054 §9
 fails a workflow when the epoch is fenced, where the module fails only the nodes running at the fence.
+`Workflow_A1.tla` (2026.11.20, a draft) makes a fenced epoch a cause `Settle` fails the workflow for; its line in
+`deadlock-audit-results-2026.11.20-A1.txt` has every terminal state at the fence with the workflow settled, and no
+stall. A fence that failed the workflow in its own step was tried first and dropped: no grant could then be refused
+after a fence, so `NeverRefusedAtGrant` held and `M_GRANTANYEPOCH` no longer broke `GrantUnderPromotion`.
 
 ## TLAPS proofs
 
