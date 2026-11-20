@@ -1,0 +1,10 @@
+TOPAK — TLAPS proof results for Workflow_A1.tla: every obligation of Workflow_A1_proof.tla, checked by the prover below
+Modules: Workflow_A1.tla (sha256 a2718d6b4044c849) · Workflow_A1_proof.tla (sha256 b2de1af8e3e9b4f3)
+Prover: tlapm 7824dab (binary sha256 e150fb793fb28592) · backends: Z3 version 4.8.9 - 64 bit · zenon version 0.8.4 [a268] 2017-11-14 · Isabelle2025 · LS4 for PTL · driver: proof-results.sh
+Assumptions: none
+Theorems: AppliedRouteEnabledAlways · OneRoutePerDecisionAlways · FindingPrecedesNoRouteAlways · ChosenOnlyByRouteAlways · EdgeAfterCoverageAlways · TaintedNeverOutwardAlways · GrantUnderPromotionAlways · PromotedAlternatesAlways · CompletedOnlyBySinkAlways · BasisStableAlways · FenceFailsWorkflowAlways · SafeAlways
+Lemmas: EdgeFacts · NoAttrRec · InitTypeOK · ActivateShape · ActivateTypes · DefaultEdge · ApplyTypeOK · NextTypeOK · InitShape · EndedFrozen · AppliedStep · ActStep · NextShape · NextAppliedRouteEnabled · NextAtMostOne · AtMostOneBound · NextFindingPrecedes · NextChosenOnlyByRoute · NextInvC · NextInvT · NextGrantUnderPromotion · NextPromotedAlternates · NextCompletedOnlyBySink · NextInvB · NextFencedPromoted · FenceFailsWorkflowHolds · MutDecideOnlySkipsTheRecheck · MutNoConsumeIgnoresConsumed · MutDefaultTakesAnEdge · MutUncoveredIgnoresCoverage · MutNoTaintIgnoresTheLabel · MutGrantAnyEpochSkipsTheFence · MutNoLineagePassesTheGate · MutTimeoutDoneCompletes · MutRewriteAdmitsARewrite · MutFenceRunsDropsTheFence
+A proved obligation is a theorem of the module under its assumptions and the hypotheses the statement names; the prover, not the constants, bounds the claim. Mutations and witnesses are behaviours and stay with TLC.
+
+File "./Workflow_A1_proof.tla", line 1, character 1 to line 1378, character 77:
+[INFO]: All 1169 obligations proved.

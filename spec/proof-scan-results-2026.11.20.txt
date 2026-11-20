@@ -1,0 +1,181 @@
+TOPAK — the prover's unsound cases (proof-certification.md §8) looked for: the untranslated operators in spec/*.tla; in each proof module's certified run, the queries that hold an opaque constant under a binder and the obligations Zenon or Isabelle closed; the names the run gives abstracted terms, against a run over renamed sources; and, in the obligations as tlapm prints them, the bound variables that capture a name
+Runner: proof-scan.sh (sha256 9da631cea50b3807) · tlapm 7824dab (binary sha256 e150fb793fb28592) · smt-checked (sha256 d949be509c5e44d6) · cvc5 (sha256 a4ce24a176532209) · ethos (sha256 4eb41c1f1f9fce88) · tla2tools.jar (sha256 936a262061c91469) · one thread · backend timeouts x1
+An opaque constant under a binder is sound when the term it stands for mentions no variable bound around it (a step's primed goal, the prime of a variable-tuple definition); it is the binder case when the term does (an ENABLED, a \cdot or a temporal formula over the bound variable). The listings say where; the step at each line says which. A difference under renaming is two terms that shared a name in one run; a capture is a bound variable tlapm's printer renames (x_1) over the name it would capture, which the print tlapm hashes shows as another term.
+
+1. Sources
+  Alone.tla (sha256 9e7e04adb2ab5161): 4 lines (1 [][A]_v, the box of an action)
+    246: ENABLED · (lstate = "live" /\ hears /\ used < Count /\ "l1" \in alphabet) => ENABLED Permit("l1")
+    248: ENABLED · TerminalNeverWaits == lstate = "ended" => ENABLED Recover(Seated)
+    264: ENABLED · ~(lstate = "live" /\ hears /\ used < Count /\ "o1" \in alphabet /\ ~ENABLED Permit("o1"))
+  Alone_proof.tla (sha256 635342d360ec2f86): 14 lines (10 Spec => []P, P a bare name)
+    309: ENABLED · PROVE  ~ENABLED Permit("l1")
+    314: ENABLED · PROVE  ~ENABLED Permit("l1")
+    319: ENABLED · PROVE  ~ENABLED Permit("l1")
+    324: ENABLED · PROVE  ~ENABLED Recover(Seated)
+  Anchor.tla (sha256 a70187ef43058848): 1 lines (1 [][A]_v, the box of an action)
+  Anchor_proof.tla (sha256 8a482305f19d8bbd): 2 lines (2 Spec => []P, P a bare name)
+  BreakGlass.tla (sha256 2c3c3d75aba2a599): 1 lines (1 [][A]_v, the box of an action)
+  BreakGlass_A1.tla (sha256 b586a6afa4fd5136): 1 lines (1 [][A]_v, the box of an action)
+  BreakGlass_A1_proof.tla (sha256 6bf26fc5a91638b7): 1 lines (1 Spec => []P, P a bare name)
+  BreakGlass_proof.tla (sha256 d6d49a5329a27e1c): 1 lines (1 Spec => []P, P a bare name)
+  Confinement.tla (sha256 d0dcf21ce9774885): 4 lines (3 [] between CASE arms; 1 [][A]_v, the box of an action)
+  Confinement_A1.tla (sha256 715b1c291771c527): 4 lines (3 [] between CASE arms; 1 [][A]_v, the box of an action)
+  Confinement_A1_proof.tla (sha256 63c7d90a7fc2ccf8): 9 lines (9 Spec => []P, P a bare name)
+  Confinement_proof.tla (sha256 2f4b4bb96d1f83f3): 9 lines (9 Spec => []P, P a bare name)
+  Correlator.tla (sha256 351b4159e0e298d9): 2 lines (1 [][A]_v, the box of an action)
+    302: ENABLED · LagNeverGates == \A t \in Thinkers : \A x \in Stores : ~Blocked(t) => ENABLED Touch(t, x)
+  Correlator_proof.tla (sha256 5dc0e337ead963dd): 23 lines (22 Spec => []P, P a bare name)
+    517: ENABLED · PROVE  ENABLED Report(c, s)
+  Coupling.tla (sha256 6d1e7a07f3d102ef): 1 lines (1 [][A]_v, the box of an action)
+  Coupling_live.tla (sha256 d65189d3c71b30b4): 14 lines (2 [][A]_v, the box of an action)
+    123: WF_ · ObserverRegranted == WF_vars(GrantO)
+    124: SF_ · ObserverKeepsUp   == SF_vars(KeepUp)
+    128: SF_ · ThinkerAsks == SF_vars(Admit)
+    129: WF_ · GrantsMade  == WF_vars(GrantT)
+    140: WF_ · SpecWFKeepUp  == SpecL /\ ObserverRegranted /\ WF_vars(KeepUp) /\ ThinkerAsks /\ GrantsMade
+    142: SF_ · /\ SF_vars(\E r \in Rounds, w \in 0..R : HeartbeatL(r, w))
+    143: WF_ · SpecWFAdmit   == SpecA12 /\ WF_vars(Admit) /\ GrantsMade
+    149: ENABLED ~> · AdmitStallEnds == (tLive /\ seq < R) ~> (~tLive \/ ENABLED Admit)
+    152: ENABLED ~> · GrantStallEnds == (~tLive /\ round < MaxRound) ~> ENABLED GrantT
+    155: ~> · AdmitsResume     == \A n \in 0..R : (tLive /\ seq = n /\ n < R) ~> (~tLive \/ seq > n)
+    156: ~> · NextRoundGranted == \A r \in 0..MaxRound : (~tLive /\ round = r /\ r < MaxRound) ~> (round > r)
+    172: <> · NoBehaviour == <>FALSE
+  Coupling_live_proof.tla (sha256 9efafeccf705dde2): 7 lines (7 Spec => []P, P a bare name)
+  Coupling_proof.tla (sha256 9c37a36c2e607d54): 8 lines (7 Spec => []P, P a bare name)
+    268: ENABLED · PROVE  ENABLED GrantT
+  Emergency.tla (sha256 1abae9beb82b00fa): 1 lines (1 [][A]_v, the box of an action)
+  Emergency_live.tla (sha256 9685c67b42910b85): 3 lines (1 [][A]_v, the box of an action)
+    80: ENABLED · EmergencyNeverCoupled == \A t \in Tools : (em.live /\ t \in em.envelope) => ENABLED EmAdmit(t)
+    82: ENABLED · EmergencyCallsWithoutObserver == (em.live /\ ~obsLive) => \E t \in Tools : ENABLED EmAdmit(t)
+  Emergency_live_proof.tla (sha256 63c8ec703e6097d9): 24 lines (22 Spec => []P, P a bare name)
+    288: ENABLED · PROVE  ~ENABLED EmAdmit(t)
+    294: ENABLED · PROVE  ~ENABLED EmAdmit(t)
+  Emergency_proof.tla (sha256 a1e5a82ad625496b): 23 lines (23 Spec => []P, P a bare name)
+  Federation.tla (sha256 03e0bbb28b5e9a1d): 1 lines (1 [][A]_v, the box of an action)
+  Federation_proof.tla (sha256 cb0264730a865d32): 12 lines (12 Spec => []P, P a bare name)
+  FloorComposition.tla (sha256 3d30a058d8f8d9d1): 3 lines (2 [] between CASE arms; 1 [][A]_v, the box of an action)
+  FloorComposition_proof.tla (sha256 17a6c22eb9e7f30c): 13 lines (11 Spec => []P, P a bare name; 2 [] between CASE arms)
+  FloorRouting.tla (sha256 9d4c0f5e03defc1e): 1 lines (1 [][A]_v, the box of an action)
+  FloorRouting_proof.tla (sha256 df536eefdb805f08): 3 lines (3 Spec => []P, P a bare name)
+  Intent.tla (sha256 0c90ea5004c4f127): 1 lines (1 [][A]_v, the box of an action)
+  Intent_proof.tla (sha256 0b81c0025abb588c): 9 lines (9 Spec => []P, P a bare name)
+  Labels.tla (sha256 cc124f5c406aedac): 5 lines (3 [] between CASE arms; 2 [][A]_v, the box of an action)
+  Labels_proof.tla (sha256 877d9361051a9fbb): 34 lines (33 Spec => []P, P a bare name)
+    564: [] · THEOREM BaseAlways == Spec => [](TypeOK /\ IdsUsed /\ GuestIn)
+  Lease.tla (sha256 7636c6c3364bca9c): 3 lines (2 [] between CASE arms; 1 [][A]_v, the box of an action)
+  Lease_A1.tla (sha256 0b5eac7a7309be2f): 4 lines (3 [] between CASE arms; 1 [][A]_v, the box of an action)
+  Lease_A1_proof.tla (sha256 6f39c7711252c8de): 10 lines (9 Spec => []P, P a bare name)
+    300: ENABLED · PROVE  ENABLED Grant(p)
+  Mechanism.tla (sha256 e29dbaf0936dbae1): 40 lines (39 [] between CASE arms; 1 [][A]_v, the box of an action)
+  Membership.tla (sha256 bcf3c5d151488133): 1 lines (1 [][A]_v, the box of an action)
+  Membership_proof.tla (sha256 c88b8ed201aa5448): 10 lines (10 Spec => []P, P a bare name)
+  Mesh.tla (sha256 a5bc64953c38c9a9): 9 lines (7 [] between CASE arms; 1 [][A]_v, the box of an action)
+    115: <> · /\ acts = <<>>
+  Mesh_proof.tla (sha256 1d4bd5ad924b6ab6): 34 lines (15 Spec => []P, P a bare name)
+    70: <> · BeforePromotion == ~promoted => acts = <<>> /\ wf = "running"
+    346: <> · <1>1. /\ Append(<<>>, x) \in Seq(ActRec)
+    347: <> · /\ Len(Append(<<>>, x)) = 0 + 1
+    348: <> · /\ Append(<<>>, x)[0 + 1] = x
+    349: <> · <2>1. <<>> \in Seq(ActRec) /\ Len(<<>>) = 0
+    353: <> · <1>2. <<x>> = Append(<<>>, x)
+    354: <> · <2>1. <<>> \in Seq(ActRec) /\ <<x>> \in [1..1 -> ActRec]
+    360: <> · <2>4. Len(Append(<<>>, x)) = 1 /\ Append(<<>>, x) \in Seq(ActRec) /\ Append(<<>>, x)[1] = x
+    362: <> · <2>5. \A k \in 1..Len(<<x>>) : <<x>>[k] = Append(<<>>, x)[k]
+    498: <> · <1>1. acts = <<>> /\ <<>> \in Seq(ActRec) /\ Len(<<>>) = 0
+    650: <> · <3> SUFFICES ASSUME ~promoted' PROVE acts' = <<>> /\ wf' = "running"
+    654: <> · <3>1. acts = <<>> /\ wf = "running"
+    664: <> · <3>6. ASSUME NEW e \in Chosen, Decide(e) PROVE acts' = <<>> /\ wf' = "running"
+    672: <> · <3> SUFFICES ASSUME ~promoted' PROVE acts' = <<>> /\ wf' = "running"
+    676: <> · <3>2. acts = <<>> /\ wf = "running"
+    1463: <> · <2>1. acts = <<>> /\ Len(<<>>) = 0
+    1548: <> · <3>1. acts # <<>>
+    1551: <> · <4>2. Len(<<>>) = 0
+    1653: <> · <2>1. acts = <<>> /\ Len(<<>>) = 0
+  NonComposition.tla (sha256 119f9a7e878f8929): 3 lines (2 [] between CASE arms; 1 [][A]_v, the box of an action)
+  NonComposition_A1.tla (sha256 d1e9113480d016bb): 4 lines (3 [] between CASE arms; 1 [][A]_v, the box of an action)
+  NonComposition_A1_proof.tla (sha256 11033360d0998c95): 5 lines (5 Spec => []P, P a bare name)
+  NonComposition_proof.tla (sha256 6ce6aee98a43d40e): 5 lines (5 Spec => []P, P a bare name)
+  Observers.tla (sha256 96b0792ce948ec80): 1 lines (1 [][A]_v, the box of an action)
+  Observers_proof.tla (sha256 f70c3246962b1837): 5 lines (5 Spec => []P, P a bare name)
+  Operators.tla (sha256 a465d7af62becd03): 2 lines (1 [][A]_v, the box of an action)
+    249: ENABLED · \A o \in Ops : (inForce[o] /\ vouched[o]) => \A p \in Principals : inForce[p] => ENABLED Revoke(o, p)
+  Operators_proof.tla (sha256 226230ef1e56b413): 32 lines (31 Spec => []P, P a bare name)
+    498: ENABLED · PROVE  ENABLED FenceEpoch(o)
+  Outstanding.tla (sha256 8ecb0b147c7748ac): 1 lines (1 [][A]_v, the box of an action)
+  Outstanding_proof.tla (sha256 f118d16087ce08d2): 11 lines (11 Spec => []P, P a bare name)
+  Paxos.tla (sha256 ac26b35f368beeb8): 9 lines (8 [] between CASE arms; 1 [][A]_v, the box of an action)
+  PaxosTrace.tla (sha256 63a086605dca3cad): 7 lines (6 [] between CASE arms; 1 [][A]_v, the box of an action)
+  Peer.tla (sha256 5ee3528164cd1a35): 1 lines (1 [][A]_v, the box of an action)
+  Peer_proof.tla (sha256 3c661ef57179a03c): 10 lines (10 Spec => []P, P a bare name)
+  PlaneClock.tla (sha256 7d7ced23419c1df2): 1 lines (1 [][A]_v, the box of an action)
+  PlaneClock_proof.tla (sha256 bbfe21580db67b9d): 12 lines (12 Spec => []P, P a bare name)
+  Release.tla (sha256 7a8a212d3f07956b): 2 lines (1 [][A]_v, the box of an action)
+    291: ENABLED · ReleaseNeverCoupled == (relLive /\ contact /\ nextId <= MaxActs) => ENABLED AdmitRelease
+  Release_proof.tla (sha256 ac1cb37282c19f5a): 17 lines (17 Spec => []P, P a bare name)
+  RulesFloorBase.tla (sha256 cf2351de2b39cccf): 5 lines (5 [] between CASE arms)
+  RulesFloorNV.tla (sha256 1468d8bab89bb076): 6 lines (5 [] between CASE arms; 1 [][A]_v, the box of an action)
+  RulesFloorNV_rev5.tla (sha256 3034df144d75ec3a): 5 lines (4 [] between CASE arms; 1 [][A]_v, the box of an action)
+  RulesFloorNV_rev5_proof.tla (sha256 8ecd73b3451018c5): 13 lines (13 Spec => []P, P a bare name)
+  RunConfinement.tla (sha256 d0c4aa37934b78b5): 5 lines (4 [] between CASE arms; 1 [][A]_v, the box of an action)
+  RunConfinement_proof.tla (sha256 e8612bf4111c7599): 5 lines (5 Spec => []P, P a bare name)
+  RunCoupling.tla (sha256 781fdbc135f37491): 2 lines (1 [][A]_v, the box of an action)
+    162: ENABLED · ConsultNeverCoupled == (tLive /\ acts < R) => ENABLED Consult
+  RunCoupling_proof.tla (sha256 493b5b19b5e5ae05): 14 lines (11 Spec => []P, P a bare name)
+    336: ENABLED · PROVE  ENABLED Consult
+    384: ENABLED · PROVE  ENABLED GrantT
+    394: ENABLED · PROVE  ENABLED Consult
+  RunSeats.tla (sha256 1bb49475ab59f6de): 2 lines (1 [] between CASE arms; 1 [][A]_v, the box of an action)
+  RunSeats_proof.tla (sha256 1356d403035e3357): 7 lines (7 Spec => []P, P a bare name)
+  Seats.tla (sha256 903a1db686968df0): 3 lines (2 [] between CASE arms; 1 [][A]_v, the box of an action)
+  Seats_proof.tla (sha256 e5a0fa0b5e17b2c9): 5 lines (5 Spec => []P, P a bare name)
+  ToolList.tla (sha256 7c0a18b897e6cb98): 1 lines (1 [][A]_v, the box of an action)
+  ToolList_proof.tla (sha256 c6b7ac1be332dfd6): 18 lines (18 Spec => []P, P a bare name)
+  Workflow.tla (sha256 a72973b5878e9468): 12 lines (11 [] between CASE arms; 1 [][A]_v, the box of an action)
+  Workflow_A1.tla (sha256 a2718d6b4044c849): 13 lines (11 [] between CASE arms; 1 [][A]_v, the box of an action)
+    378: ENABLED · FenceFailsWorkflow == epoch # PE /\ wf = "running" /\ status[Sink] # "ended" => ENABLED Settle
+  Workflow_A1_proof.tla (sha256 b2de1af8e3e9b4f3): 23 lines (23 Spec => []P, P a bare name)
+  Workflow_proof.tla (sha256 5dc68f94eeacda28): 21 lines (21 Spec => []P, P a bare name)
+  lines with an untranslated operator, outside comments: 638, of which listed in full: 56
+
+2. Runs
+== Workflow_A1_proof.tla (sha256 b2de1af8e3e9b4f3): 1169 obligations (trivial 768 · SMT 388 · Zenon 0 · Isabelle 1 · LS4 12 · not proved 0) · 4 results reused · tlapm exit 0 · this run certifies
+   SMT queries with an opaque constant under a binder: 24
+     line 284 · q-20c3ee423debc543 · content 6011605a19fef0fe · h15bf9
+     line 369 · q-0eeef678f0bba73b · content e08e7ec892056161 · h5dbc3 h765ed hb8e84
+     line 396 · q-239ab6a86c5282a7 · content 9ec7233b983b8238 · h34820 h5dbc3 hb8e84 hd3d0b
+     line 526 · q-0e5e621f6e0f8ad1 · content 6c57bef4f0778d27 · h46f60 ha8a99 hda355
+     line 552 · q-43ac8ec58bb85a7f · content 087b0f5f18e88695 · hdf7a9
+     line 582 · q-b98cae6393b68395 · content db5e1c897d6c34c6 · h5dbc3 h765ed hb8e84 hd3d0b
+     line 617 · q-e6594cacc08a4f49 · content 16683f1ae247dc25 · h7eac7
+     line 708 · q-cb489c4f00c61435 · content 63121533c758ab97 · h5dbc3 h765ed hb8e84
+     line 713 · q-74c05c92a4b128fd · content b8fb13e3e8a6c65e · h87797
+     line 778 · q-ece372258359c7a5 · content a52068246c1d3192 · had913
+     line 811 · q-a63eca32c6f0c253 · content ccbed7b12ef62ff3 · h34820 h765ed hb8e84 hd3d0b
+     line 866 · q-e41b7e8ac040711d · content 9ae8fa6c661ea2e5 · ha5c86
+     line 891 · q-adba8429237d63bb · content 19f91d64b7219d07 · h5dbc3 h765ed hb8e84 hd3d0b
+     line 981 · q-2d12701d7025be74 · content 1da418e3cb658804 · h765ed hb8e84 hd3d0b
+     line 1041 · q-65a552124bd8872c · content 0f4611eb0439525d · hcb4ad
+     line 1084 · q-7fa1c4299b9e9292 · content b3d9b6166b0ec44b · h34820 h765ed hb8e84 hd3d0b
+     line 1089 · q-918ae59644fa9c2a · content 1855f11fd92408bf · h997e7
+     line 1116 · q-a66199fcfc3a5aca · content 9e041c85c37a9bc3 · h34820 h5dbc3 h765ed hd3d0b
+     line 1120 · q-0c3a1ed252488a2d · content 3f38839ffe6da314 · h960e0
+     line 1150 · q-d1de7fc4ee708586 · content 31d569dd780dcfa2 · h34820 h5dbc3 h765ed hd3d0b
+     line 1226 · q-556da297a53845e3 · content 363b4449017cac5d · h765ed hb8e84 hd3d0b
+     line 1230 · q-156af5b8aceda027 · content 129e71a0d19a3931 · heee49
+     line 1262 · q-3f6935c8eb900bcc · content a1f29be81e4eb968 · h34820 h5dbc3 h765ed hd3d0b
+     line 1268 · q-3540b5bdba1bf0ab · content c318be36ea225230 · h13a55
+   Obligations Zenon or Isabelle closed: 1
+     line 1274 · isabelle
+
+Modules run: 1, of which this run certifies: 1 · SMT queries with an opaque constant under a binder: 24 · obligations Zenon or Isabelle closed: 1
+
+3. Names
+  renamed copy: 77 modules copied; 2172 identifiers renamed, each to a name of the same length; 542 keyword, standard and module names kept
+== Workflow_A1_proof.tla: SMT 384 (160 with two or more names, at most 7, 651 pairs) · Zenon 0 · Isabelle 1 · LS4 12 (12 with two or more names, at most 13, 269 pairs) · renamed run: each of 1169 obligations by the same route, no difference
+
+Modules run: 1 · backend inputs: 397, of which hold two or more names: 172 · pairs of names within an input: 920, so 0.0009 collisions to expect by accident · modules whose renamed run differs: 0
+
+4. Capture
+== Workflow_A1_proof.tla: 397 obligations printed normalized, of the 397 sent to a backend · no capture · SANY: parses
+
+Modules: 1 · obligations sent to a backend: 397, printed normalized: 397 · captures: 0 · modules SANY parses: 1 of 1
