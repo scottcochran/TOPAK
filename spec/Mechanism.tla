@@ -41,12 +41,28 @@
 (*   Activate          the roster keys whose signature over this activation       *)
 (*                     verified (`approvers`); the grant's Persona and its        *)
 (*                     confinement digest, which are digests the code computes    *)
+(*   WorkflowLoad      what the workflow's text parses to (`def`), the digests    *)
+(*                     of the text and of its artifact (`workflow`, `artifact`),  *)
+(*                     and whether every load check passed (`ok`): the model      *)
+(*                     neither parses nor restates the load checks                *)
 (*                                                                                *)
 (* Labels (ADR-0047), operators (ADR-0050) and the emergency seating (ADR-0052),  *)
 (* all Proposed, are modelled as `apply` holds every replica to them: the round's *)
 (* labels folded from the admits, the control facts recomputed and compared, the  *)
 (* envelope of C1 to C9 restated (`Permitted`), the activation's quorum. X1 is    *)
 (* retired: a BreakGlassApprove is rejected, and `approvals` stays empty.         *)
+(*                                                                                *)
+(* Workflows and meshes (ADR-0054, ADR-0055; both Proposed) are modelled as       *)
+(* `apply` runs them (workflow.rs): the load under a promotion; a slot's grant,   *)
+(* rebuilt from the promoted seating and compared with the one ordered; a route   *)
+(* checked again where it is applied; a typed outcome; a finding; and, after      *)
+(* every entry that is not a duplicate, the advance: the ends of workflow leases  *)
+(* lifted, the fence, coverage at the edge, each computed edge evaluated once in  *)
+(* the code's order, decision events with no edge left, joins and skips,          *)
+(* completion and failure. `Workflow.tla` and `Mesh.tla` state their properties   *)
+(* over one fixed graph each; this is the engine, for whatever graph a trace      *)
+(* loads. An orchestrator seat is coupled as a Thinker's is (ADR-0039 A3,         *)
+(* pending), and `Route` is an effect (ADR-0041 A4).                              *)
 (*                                                                                *)
 (* Confinement (ADR-0034 §3, ADR-0036 §6) is modelled as the code checks it at    *)
 (* apply: the appraisal against the registered profile, the nonce's epoch, the    *)
@@ -58,7 +74,11 @@
 (* Not modelled: the floor and bundle decisions (an Admit entry is already a      *)
 (* decision; apply re-checks the mechanism conditions only, as the code does),    *)
 (* the clock (expiry arrives as an ordered EndRound), payloads, denials (never    *)
-(* logged), and the Paxos log itself (entries arrive in index order).             *)
+(* logged), and the Paxos log itself (entries arrive in index order). Of a        *)
+(* workflow: its load checks (a trusted input, above); the reason a workflow, an  *)
+(* activation or a decision event failed for, which is a status here as a         *)
+(* rejection is a result; and, of a slot's grant, any difference from the         *)
+(* seating's in a field the trace does not project of a grant.                    *)
 (*                                                                                *)
 (* Shapes. Every record below has exactly the fields `trace.rs` projects; a       *)
 (* function is `(k :> v @@ ...)`, a set `{...}`, a round topic `<<seat, epoch,   *)
@@ -70,7 +90,7 @@
 (*        verifierKeys bundleKeys (ADR-0025 §1 (f)) personas criterion           *)
 (*        leases liveBySeat lastRound candidates gates approvals revoked          *)
 (*        appliedIds lastApplied k tPersona marks seals profiles contested        *)
-(*        contained wasmTools buildBound runBound                                 *)
+(*        contained wasmTools buildBound runBound workflows wfBindings            *)
 (* Seat: domain kind cell rung                                                    *)
 (* Lease: principal seat persona bundle epoch rulesEpoch conf rung alphabet round *)
 (*        role ttl ended actions seq att sessionCtr clearSet results consults     *)
@@ -84,13 +104,28 @@
 (*        measurement tcb platform gen evidence                                   *)
 (* Candidate: artifact author votes promotedAt · Vote: verdict evidence rulesEpoch*)
 (* Result: kind, plus fence | seq promoted | ended | epoch | rulesEpoch | approvals*)
+(*        | workflow                                                              *)
+(* Run (a loaded workflow, by the digest of its text): def artifact loadedAt      *)
+(*        epoch rulesEpoch outward status acts events charged chargedNode         *)
+(*        exhausted evaluated (pairs <<activation, edge>>)                        *)
+(* Def: kind root sinks nodes edges orchestrator budget; nodes and edges are      *)
+(*        sequences, in the order the code's maps iterate                         *)
+(* Node: name outcomes outward join, and a seating's fields · Seating: seat       *)
+(*        principal persona bundle conf rung alphabet ttl taskLabel               *)
+(* Edge: id from to kind guard delivery · Budget: n perNode                       *)
+(* Guard: op, plus g | gs | node anyOf | node has | node cmp value                *)
+(* Activation (numbered from 0, as events and histories are): node trig via fired *)
+(*        status fence hist createdAt clearInputs handleInputs attrs found seal   *)
+(*        covered · Attrs: end actuates label outcome output                      *)
+(* Event: state fence edge · Binding (by fence): workflow slot act actuates       *)
+(*        reports outcome lifted · Stamp: workflow event basis                    *)
 EXTENDS Naturals, Sequences, FiniteSets, TLC
 
 CONSTANTS InitState, Trace
 
 NONE == "none"
-RunKinds == {"Consult", "Actuate", "Report"}
-RunEffects == {"Actuate", "Report"}
+RunKinds == {"Consult", "Actuate", "Report", "Route"}
+RunEffects == {"Actuate", "Report", "Route"}             \* ActionKind::is_run_effect (ADR-0041 A4)
 EmptyFn == [x \in {} |-> x]
 
 DomainOf(k) == IF k \in RunKinds THEN "run" ELSE "build"
@@ -102,7 +137,12 @@ KindAllows(kind, k) ==
     [] kind = "observer" -> k \in {"Read", "Emit", "Vote", "Consult", "Report"}
     [] kind = "grant"    -> k \in {"Read", "Emit", "Vote"}
     [] kind = "emergency" -> k \in {"Consult", "Actuate", "Report"}   \* ADR-0052 §1
+    [] kind = "orchestrator" -> k \in {"Route", "Report"}             \* ADR-0054 §3
     [] OTHER             -> FALSE                                    \* an operator is issued none
+
+\* SeatKind::is_coupled (ADR-0039 §2; A3, pending): a seat whose effect-bearing admits need a live
+\* cell Observer, whose rounds seal, and whose next round waits for the last to be read
+Coupled(kind) == kind \in {"thinker", "orchestrator"}
 
 \* TLC refuses `=` between an integer and a string, and `\in STRING` on an integer or a
 \* record, so an absent value is tested on its printed form, which every value has.
@@ -117,7 +157,7 @@ SeatKindOf(s, seat) == IF seat \in DOMAIN s.seats THEN s.seats[seat].kind ELSE N
 CellObservers(s, t) == {o \in DOMAIN s.seats : s.seats[o].kind = "observer" /\ s.seats[o].cell = t}
 Watches(s, o, t) ==
   /\ o \in DOMAIN s.seats /\ t \in DOMAIN s.seats
-  /\ s.seats[o].kind = "observer" /\ s.seats[t].kind = "thinker"
+  /\ s.seats[o].kind = "observer" /\ Coupled(s.seats[t].kind)
   /\ IF s.seats[o].cell = NONE THEN s.seats[o].domain = s.seats[t].domain ELSE s.seats[o].cell = t
 
 HasLive(s, seat)   == seat \in DOMAIN s.liveBySeat
@@ -150,7 +190,7 @@ HeartbeatOk(s, seat, topic, wm) ==
   /\ SeatKindOf(s, seat) = "observer"
   /\ LET LiveTopic(t) == HasLive(s, t) /\ TopicOf(s.leases[s.liveBySeat[t]]) = topic
          SealTopic(t) == t \in DOMAIN s.seals /\ s.seals[t].topic = topic
-         cands == {t \in DOMAIN s.seats : s.seats[t].kind = "thinker" /\ (LiveTopic(t) \/ SealTopic(t))}
+         cands == {t \in DOMAIN s.seats : Coupled(s.seats[t].kind) /\ (LiveTopic(t) \/ SealTopic(t))}
      IN /\ cands # {}
         /\ LET t == CHOOSE t \in cands : TRUE
                upper == IF LiveTopic(t) THEN s.leases[s.liveBySeat[t]].seq ELSE s.seals[t].seq
@@ -158,8 +198,111 @@ HeartbeatOk(s, seat, topic, wm) ==
               /\ wm <= upper
               /\ wm >= Mark(s, seat, topic)
 
-\* The action kind check_live reads: a heartbeat is checked under the variant it arrived as
-AK(a) == IF a.kind = "Heartbeat" THEN a.via ELSE a.kind
+\* The action kind check_live reads: a heartbeat or a finding is checked under the variant it
+\* arrived as
+AK(a) == IF a.kind \in {"Heartbeat", "Finding"} THEN a.via ELSE a.kind
+
+\* --- workflows and meshes: what a check reads (ADR-0054, ADR-0055, Proposed; workflow.rs) ---
+\* Activations, decision events and history sets are numbered from 0, as the code's vector is.
+\* Nodes and edges are sequences in the order the code's maps iterate, which is the order the
+\* engine visits them in.
+
+MinOf(S) == CHOOSE x \in S : \A y \in S : x <= y
+MaxOf(S) == CHOOSE x \in S : \A y \in S : x >= y
+
+NActs(run)       == Cardinality(DOMAIN run.acts)
+ActAt(run, j)    == run.acts[j + 1]
+ActIdx(run)      == 0 .. NActs(run) - 1
+ActsOf(run, n)   == {j \in ActIdx(run) : ActAt(run, j).node = n}
+NodeNames(def)   == {def.nodes[k].name : k \in DOMAIN def.nodes}
+NodeOf(run, n)   == run.def.nodes[CHOOSE k \in DOMAIN run.def.nodes : run.def.nodes[k].name = n]
+EdgeIds(run)     == {run.def.edges[k].id : k \in DOMAIN run.def.edges}
+EdgeOf(run, id)  == run.def.edges[CHOOSE k \in DOMAIN run.def.edges : run.def.edges[k].id = id]
+InEdges(run, n)  == {run.def.edges[k].id : k \in {k \in DOMAIN run.def.edges : run.def.edges[k].to = n}}
+ChosenOut(run, n) == {run.def.edges[k].id : k \in {k \in DOMAIN run.def.edges :
+                                                     run.def.edges[k].from = n /\ run.def.edges[k].kind = "chosen"}}
+HasOut(run, n)   == \E k \in DOMAIN run.def.edges : run.def.edges[k].from = n
+
+OpenEvent        == [state |-> "open", fence |-> NONE, edge |-> NONE]
+FailedEvent      == [state |-> "failed", fence |-> NONE, edge |-> NONE]
+
+\* Guard::reads
+RECURSIVE GuardReads(_)
+GuardReads(g) ==
+  CASE g.op = "true"            -> {}
+    [] g.op = "not"             -> GuardReads(g.g)
+    [] g.op \in {"all", "any"}  -> UNION {GuardReads(g.gs[k]) : k \in DOMAIN g.gs}
+    [] OTHER                    -> {g.node}
+
+\* Run::attrs_in_history: the latest ended activation of `node` in activation i's causal history
+AttrsInHistory(run, i, node) ==
+  LET c == {j \in ActAt(run, i).hist : ActAt(run, j).node = node /\ ~IsNone(ActAt(run, j).attrs)}
+  IN IF c = {} THEN NONE ELSE ActAt(run, MaxOf(c)).attrs
+
+\* Guard::eval (ADR-0054 §4): a node with no attributes in reach makes every atom over it false
+RECURSIVE GuardEval(_, _, _)
+GuardEval(run, i, g) ==
+  CASE g.op = "true" -> TRUE
+    [] g.op = "not"  -> ~GuardEval(run, i, g.g)
+    [] g.op = "all"  -> \A k \in DOMAIN g.gs : GuardEval(run, i, g.gs[k])
+    [] g.op = "any"  -> \E k \in DOMAIN g.gs : GuardEval(run, i, g.gs[k])
+    [] OTHER ->
+         LET a == AttrsInHistory(run, i, g.node) IN
+         /\ ~IsNone(a)
+         /\ CASE g.op = "outcome" -> a.outcome \in g.anyOf
+              [] g.op = "end"     -> a.end \in g.anyOf
+              [] g.op = "label"   -> g.has \in a.label
+              [] g.op = "count"   -> CASE g.cmp = "lt" -> a.actuates < g.value
+                                       [] g.cmp = "le" -> a.actuates <= g.value
+                                       [] g.cmp = "eq" -> a.actuates = g.value
+                                       [] g.cmp = "ge" -> a.actuates >= g.value
+                                       [] g.cmp = "gt" -> a.actuates > g.value
+
+\* Run::disabled is None: the source ended and covered (ADR-0054 §7), no finding against any
+\* activation in its causal history (ADR-0055 §3), its guard true (§4), and the routing rule (§5)
+Enabled(run, i, eid) ==
+  /\ eid \in EdgeIds(run)
+  /\ LET e == EdgeOf(run, eid)
+         a == ActAt(run, i)
+         Tainted(n) == LET x == AttrsInHistory(run, i, n) IN ~IsNone(x) /\ "untrusted" \in x.label
+     IN /\ a.node = e.from /\ a.status = "ended"
+        /\ a.covered
+        /\ ~\E j \in a.hist : ActAt(run, j).found
+        /\ GuardEval(run, i, e.guard)
+        /\ LET restrictedIn == e.delivery = "clear" /\ ~IsNone(a.attrs) /\ "restricted" \in a.attrs.label
+           IN (e.to \in run.outward \/ restrictedIn) => ~\E n \in GuardReads(e.guard) \cup {e.from} : Tainted(n)
+
+\* State::route_check (ADR-0054 §8): the round is the one granted for the event the route names,
+\* the workflow running, the event served by this round, the edge a chosen edge out of it, enabled
+RouteCheck(s, fence, edge, wf, ev) ==
+  /\ fence \in DOMAIN s.wfBindings
+  /\ s.wfBindings[fence].workflow = wf /\ s.wfBindings[fence].slot = "decision" /\ s.wfBindings[fence].act = ev
+  /\ wf \in DOMAIN s.workflows
+  /\ LET run == s.workflows[wf] IN
+     /\ run.status = "running"
+     /\ ev \in DOMAIN run.events /\ run.events[ev].state = "served" /\ run.events[ev].fence = fence
+     /\ edge \in EdgeIds(run) /\ EdgeOf(run, edge).kind = "chosen" /\ EdgeOf(run, edge).from = ActAt(run, ev).node
+     /\ Enabled(run, ev, edge)
+
+\* State::check_finding: a finding names a round of a coupled seat in the Observer's reach
+FindingOk(s, seat, topic) ==
+  /\ SeatKindOf(s, seat) = "observer"
+  /\ \E f \in DOMAIN s.leases : /\ SeatDomain(s, s.leases[f].seat) # NONE
+                                /\ TopicOf(s.leases[f]) = topic
+                                /\ Watches(s, seat, s.leases[f].seat)
+
+\* State::workflow_admit_check: at apply a route is checked again against the stamp it carries,
+\* and a typed outcome is one of its node's (ADR-0054 §4, §8)
+WfAdmitCheck(s, e) ==
+  LET a == e.action IN
+  CASE a.kind = "Route" -> ~IsNone(a.stamp) /\ RouteCheck(s, e.lease, a.edge, a.stamp.workflow, a.stamp.event)
+    [] a.kind = "Report" /\ ~IsNone(a.outcome) ->
+         /\ e.lease \in DOMAIN s.wfBindings
+         /\ s.wfBindings[e.lease].slot = "node"
+         /\ LET b == s.wfBindings[e.lease]
+                run == s.workflows[b.workflow]
+            IN a.outcome \in NodeOf(run, ActAt(run, b.act).node).outcomes
+    [] OTHER -> TRUE
 
 \* State::check_action_preconditions
 Preconditions(s, e) ==
@@ -170,6 +313,10 @@ Preconditions(s, e) ==
                                /\ a.artifact \in DOMAIN s.gates
                                /\ s.gates[a.artifact] = a.evidence
     [] a.kind = "Heartbeat" -> HeartbeatOk(s, e.seat, a.topic, a.watermark)
+    [] a.kind = "Finding"   -> FindingOk(s, e.seat, a.topic)
+    \* State::workflow_preconditions: a route under its round's own binding
+    [] a.kind = "Route"     -> /\ e.lease \in DOMAIN s.wfBindings
+                               /\ RouteCheck(s, e.lease, a.edge, s.wfBindings[e.lease].workflow, s.wfBindings[e.lease].act)
     [] OTHER                -> TRUE
 
 \* State::check_live: the epoch fence first (ADR-0022 §2), then the lease
@@ -212,18 +359,208 @@ EndLease(s, fence, reason) ==
            s1  == [s EXCEPT !.leases = [@ EXCEPT ![fence].ended = reason]]
            s2  == IF rec.seat \in DOMAIN s1.liveBySeat /\ s1.liveBySeat[rec.seat] = fence
                     THEN [s1 EXCEPT !.liveBySeat = Remove(@, rec.seat)] ELSE s1
-       IN IF SeatKindOf(s, rec.seat) = "thinker"
+       IN IF Coupled(SeatKindOf(s, rec.seat))
             THEN [s2 EXCEPT !.seals = Put(@, rec.seat, SealOf(rec))] ELSE s2
 
-\* State::end_all_live: every live lease ends; every live Thinker's round seals
+\* State::end_all_live: every live lease ends; every live coupled seat's round seals
 EndAllLive(s, reason) ==
   LET live     == {s.liveBySeat[x] : x \in DOMAIN s.liveBySeat}
       leases2  == [f \in DOMAIN s.leases |->
                      IF f \in live /\ s.leases[f].ended = NONE
                        THEN [s.leases[f] EXCEPT !.ended = reason] ELSE s.leases[f]]
-      thinkers == {x \in DOMAIN s.liveBySeat : SeatKindOf(s, x) = "thinker"}
+      thinkers == {x \in DOMAIN s.liveBySeat : Coupled(SeatKindOf(s, x))}
       newSeals == [x \in thinkers |-> SealOf(s.leases[s.liveBySeat[x]])]
   IN [s EXCEPT !.leases = leases2, !.liveBySeat = EmptyFn, !.seals = newSeals @@ @]
+
+\* --- workflows and meshes: the engine (workflow.rs) -----------------------------------
+
+\* Run::enter: a new activation of the edge's target, or one more fired edge into a waiting join
+Enter(run, src, eid, at) ==
+  LET e      == EdgeOf(run, eid)
+      from   == ActAt(run, src)
+      label  == IF IsNone(from.attrs) THEN {} ELSE from.attrs.label
+      clear  == IF e.delivery = "clear" THEN label ELSE {}
+      handle == IF e.delivery = "clear" THEN {} ELSE label
+      there  == ActsOf(run, e.to)
+  IN IF run.def.kind = "dag" /\ there # {}
+       THEN LET j == MinOf(there) IN
+            IF ActAt(run, j).status = "waiting"
+              THEN [run EXCEPT !.acts[j + 1] = [@ EXCEPT !.fired = @ \cup {eid}, !.clearInputs = @ \cup clear,
+                                                         !.handleInputs = @ \cup handle, !.hist = @ \cup from.hist]]
+              ELSE run                    \* an `any` join already entered: the edge changes nothing
+       ELSE [run EXCEPT !.acts = Append(@,
+               [node |-> e.to, trig |-> src, via |-> eid, fired |-> {eid},
+                status |-> IF NodeOf(run, e.to).join = "all" THEN "waiting" ELSE "ready", fence |-> NONE,
+                hist |-> from.hist \cup {NActs(run)}, createdAt |-> at, clearInputs |-> clear,
+                handleInputs |-> handle, attrs |-> NONE, found |-> FALSE, seal |-> NONE, covered |-> FALSE])]
+
+\* Run::dead: in a dag, whether the edge can no longer fire
+Dead(run, eid) ==
+  LET e    == EdgeOf(run, eid)
+      from == ActsOf(run, e.from)
+  IN IF from = {} THEN FALSE
+     ELSE LET i == MinOf(from)
+              a == ActAt(run, i)
+          IN CASE a.status \in {"failed", "skipped"} -> TRUE
+               [] a.status = "ended" ->
+                    IF e.kind = "computed"
+                      THEN <<i, eid>> \in run.evaluated /\ ~\E j \in ActsOf(run, e.to) : eid \in ActAt(run, j).fired
+                      ELSE IF i \notin DOMAIN run.events THEN FALSE
+                      ELSE (CASE run.events[i].state = "consumed" -> run.events[i].edge # eid
+                              [] run.events[i].state = "failed"   -> TRUE
+                              [] OTHER                            -> FALSE)
+               [] OTHER -> FALSE
+
+\* Run::settle_joins (ADR-0054 §1): one pass over the nodes in order, then again until nothing
+\* changes. A node every incoming edge of which is dead is skipped; a waiting `all` join is ready
+\* when every incoming edge has fired or is dead.
+RECURSIVE SettlePass(_, _, _, _)
+SettlePass(run, k, changed, at) ==
+  IF k > Cardinality(DOMAIN run.def.nodes) THEN [run |-> run, changed |-> changed]
+  ELSE LET n   == run.def.nodes[k].name
+           ins == InEdges(run, n)
+           pos == ActsOf(run, n)
+       IN IF n = run.def.root THEN SettlePass(run, k + 1, changed, at)
+          ELSE IF pos = {} /\ ins # {} /\ (\A x \in ins : Dead(run, x))
+            THEN SettlePass([run EXCEPT !.acts = Append(@,
+                   [node |-> n, trig |-> NONE, via |-> NONE, fired |-> {}, status |-> "skipped", fence |-> NONE,
+                    hist |-> {}, createdAt |-> at, clearInputs |-> {}, handleInputs |-> {}, attrs |-> NONE,
+                    found |-> FALSE, seal |-> NONE, covered |-> FALSE])], k + 1, TRUE, at)
+          ELSE IF pos # {} /\ ActAt(run, MinOf(pos)).status = "waiting"
+                  /\ (\A x \in ins : x \in ActAt(run, MinOf(pos)).fired \/ Dead(run, x))
+            THEN SettlePass([run EXCEPT !.acts[MinOf(pos) + 1].status = "ready"], k + 1, TRUE, at)
+          ELSE SettlePass(run, k + 1, changed, at)
+
+RECURSIVE SettleJoins(_, _)
+SettleJoins(run, at) ==
+  IF run.def.kind # "dag" THEN run
+  ELSE LET r == SettlePass(run, 1, FALSE, at) IN IF r.changed THEN SettleJoins(r.run, at) ELSE r.run
+
+\* Run::settle (ADR-0054 §9, ADR-0055 §8): completion first, then failure, then quiescence
+Settle(run) ==
+  IF run.status # "running" THEN run
+  ELSE LET sinkEnded == \E j \in ActIdx(run) : ActAt(run, j).node \in run.def.sinks /\ ActAt(run, j).status = "ended"
+           sinksDone == \A x \in run.def.sinks : \E j \in ActsOf(run, x) : ActAt(run, j).status \in {"ended", "skipped"}
+           nodeFailed == \E j \in ActIdx(run) : ActAt(run, j).status = "failed"
+           eventFailed == \E ev \in DOMAIN run.events : run.events[ev].state = "failed"
+           busy      == \E j \in ActIdx(run) : ActAt(run, j).status \in {"ready", "running", "waiting"}
+           deciding  == \E ev \in DOMAIN run.events : run.events[ev].state \in {"open", "served"}
+           pending   == \E j \in ActIdx(run) : /\ ActAt(run, j).status = "ended" /\ ~ActAt(run, j).covered
+                                               /\ HasOut(run, ActAt(run, j).node)
+           done      == [run EXCEPT !.status = "completed"]
+           failed    == [run EXCEPT !.status = "failed"]
+           quiet     == IF ~busy /\ ~deciding /\ ~pending THEN failed ELSE run
+       IN IF run.def.kind = "dag"
+            THEN IF sinksDone /\ sinkEnded THEN done
+                 ELSE IF nodeFailed \/ eventFailed THEN failed
+                 ELSE quiet
+            ELSE IF sinkEnded THEN done
+                 ELSE IF run.exhausted THEN failed
+                 ELSE quiet
+
+\* Run::charge (ADR-0055 §2): the budget, at a grant
+Charge(run, node) ==
+  LET b == run.def.budget IN
+  IF IsNone(b) THEN [ok |-> TRUE, run |-> run]
+  ELSE LET cnt == IF node \in DOMAIN run.chargedNode THEN run.chargedNode[node] ELSE 0 IN
+    IF run.charged >= b.n THEN [ok |-> FALSE, run |-> [run EXCEPT !.exhausted = TRUE]]
+    ELSE IF node \in DOMAIN b.perNode /\ cnt >= b.perNode[node] THEN [ok |-> FALSE, run |-> [run EXCEPT !.exhausted = TRUE]]
+    ELSE [ok |-> TRUE, run |-> [run EXCEPT !.charged = @ + 1, !.chargedNode = Put(@, node, cnt + 1)]]
+
+\* EndKind::of (ADR-0054 §4)
+EndKindOf(r) ==
+  CASE r \in {"outcome", "routed", "submitted", "voted", "abstained"} -> "outcome"
+    [] r \in {"expired", "renewed"}                                   -> "expired"
+    [] r \in {"fenced", "rules_changed"}                              -> "fenced"
+    [] OTHER                                                          -> "revoked"   \* revoked, operator
+
+\* State::workflow_advance, step 1: lift the end of one workflow lease into its run
+LiftOne(s, fence) ==
+  LET rec  == s.leases[fence]
+      b    == s.wfBindings[fence]
+      run  == s.workflows[b.workflow]
+      seal == IF SeatDomain(s, rec.seat) = NONE THEN NONE ELSE SealOf(rec)
+      end  == EndKindOf(rec.ended)
+      run2 == IF b.slot = "node"
+                THEN LET a  == ActAt(run, b.act)
+                         a2 == IF end \in {"fenced", "revoked"}
+                                 THEN [a EXCEPT !.seal = seal, !.status = "failed", !.fence = NONE]
+                                 ELSE [a EXCEPT !.seal = seal, !.status = "ended", !.fence = NONE,
+                                                !.attrs = [end |-> end, actuates |-> b.actuates, label |-> rec.clearSet,
+                                                           outcome |-> b.outcome, output |-> b.reports]]
+                         r1 == [run EXCEPT !.acts[b.act + 1] = a2]
+                     IN IF a2.status = "ended" /\ ChosenOut(run, a.node) # {}
+                          THEN [r1 EXCEPT !.events = Put(@, b.act, OpenEvent)] ELSE r1
+                \* ADR-0054 §8: a lapsed orchestrator fails its decision point and takes no edge
+                ELSE IF b.act \in DOMAIN run.events /\ run.events[b.act].state = "served" /\ run.events[b.act].fence = fence
+                       THEN [run EXCEPT !.events = Put(@, b.act, FailedEvent)] ELSE run
+  IN [s EXCEPT !.wfBindings[fence].lifted = TRUE, !.workflows = Put(@, b.workflow, run2)]
+
+Unlifted(s) == {f \in DOMAIN s.wfBindings : ~s.wfBindings[f].lifted /\ f \in DOMAIN s.leases /\ s.leases[f].ended # NONE}
+
+RECURSIVE LiftAll(_, _)
+LiftAll(s, F) == IF F = {} THEN s ELSE LET f == CHOOSE x \in F : TRUE IN LiftAll(LiftOne(s, f), F \ {f})
+
+\* Step 4: computed edges, each evaluated once, when its source has ended and is covered. The
+\* code takes the first unevaluated pair, in activation order and then edge order, and starts
+\* again; nothing it does makes an earlier pair eligible, so that is one pass in that order.
+RECURSIVE FireEdges(_, _, _, _)
+FireEdges(run, i, k, at) ==
+  IF i >= NActs(run) THEN run
+  ELSE IF k > Cardinality(DOMAIN run.def.edges) THEN FireEdges(run, i + 1, 1, at)
+  ELSE LET a == ActAt(run, i)
+           e == run.def.edges[k]
+       IN IF a.status = "ended" /\ a.covered /\ e.from = a.node /\ e.kind = "computed" /\ <<i, e.id>> \notin run.evaluated
+            THEN LET r1 == [run EXCEPT !.evaluated = @ \cup {<<i, e.id>>}]
+                 IN FireEdges(IF Enabled(r1, i, e.id) THEN Enter(r1, i, e.id, at) ELSE r1, i, k + 1, at)
+            ELSE FireEdges(run, i, k + 1, at)
+
+\* Steps 2 to 6, for one running workflow
+AdvanceRun(s, run, at) ==
+  \* 2. the fence: what the workflow has not yet issued is void (ADR-0024 A4, ADR-0054 §9)
+  IF run.epoch # s.epoch \/ run.rulesEpoch # s.rulesEpoch
+    THEN [run EXCEPT !.acts = [k \in DOMAIN @ |-> IF @[k].status \in {"ready", "waiting"}
+                                                    THEN [@[k] EXCEPT !.status = "failed"] ELSE @[k]],
+                     !.status = "failed"]
+  ELSE LET \* 3. coverage at the edge (ADR-0039 A3, ADR-0054 §7)
+           Cov(a) == /\ a.status = "ended" /\ ~a.covered /\ ~IsNone(a.seal)
+                     /\ \E o \in CellObservers(s, NodeOf(run, a.node).seat) : Mark(s, o, a.seal.topic) >= a.seal.seq
+           r1 == [run EXCEPT !.acts = [k \in DOMAIN @ |-> IF Cov(@[k]) THEN [@[k] EXCEPT !.covered = TRUE] ELSE @[k]]]
+           r2 == FireEdges(r1, 0, 1, at)
+           \* 5. a decision event no round holds, with no chosen edge left enabled, fails (§8)
+           deadEv == {ev \in DOMAIN r2.events :
+                        /\ r2.events[ev].state = "open" /\ ActAt(r2, ev).covered
+                        /\ \A x \in ChosenOut(r2, ActAt(r2, ev).node) : ~Enabled(r2, ev, x)}
+           r3 == [r2 EXCEPT !.events = [ev \in DOMAIN @ |-> IF ev \in deadEv THEN FailedEvent ELSE @[ev]]]
+       IN Settle(SettleJoins(r3, at))           \* 6. joins and skips, then completion and failure
+
+\* State::workflow_advance: after every apply, each running workflow moves as far as it can
+Advance(s, at) ==
+  LET s1 == LiftAll(s, Unlifted(s))
+  IN [s1 EXCEPT !.workflows = [id \in DOMAIN @ |-> IF @[id].status = "running" THEN AdvanceRun(s1, @[id], at) ELSE @[id]]]
+
+\* State::workflow_finding (ADR-0054 §4's `found`): every activation run in the round is marked
+WorkflowFinding(s, topic) ==
+  LET hits == {f \in DOMAIN s.wfBindings : /\ s.wfBindings[f].slot = "node" /\ f \in DOMAIN s.leases
+                                           /\ SeatDomain(s, s.leases[f].seat) # NONE
+                                           /\ TopicOf(s.leases[f]) = topic}
+      Hit(id, j) == \E f \in hits : s.wfBindings[f].workflow = id /\ s.wfBindings[f].act = j
+  IN [s EXCEPT !.workflows = [id \in DOMAIN @ |->
+        [@[id] EXCEPT !.acts = [k \in DOMAIN @ |-> IF Hit(id, k - 1) THEN [@[k] EXCEPT !.found = TRUE] ELSE @[k]]]]]
+
+\* State::workflow_admitted: after an admit under a workflow lease is counted. A route consumes
+\* its event, enters its target and ends the orchestrator's round; an outcome ends the worker's
+WorkflowAdmitted(s, at, fence, a, seq) ==
+  CASE a.kind = "Actuate" -> [s EXCEPT !.wfBindings[fence].actuates = @ + 1]
+    [] a.kind = "Report" ->
+         LET s1 == [s EXCEPT !.wfBindings[fence].reports = Append(@, seq)] IN
+         IF IsNone(a.outcome) THEN s1
+         ELSE EndLease([s1 EXCEPT !.wfBindings[fence].outcome = a.outcome], fence, "outcome")
+    [] a.kind = "Route" /\ ~IsNone(a.stamp) ->
+         LET run == s.workflows[a.stamp.workflow]
+             r1  == [run EXCEPT !.events = Put(@, a.stamp.event, [state |-> "consumed", fence |-> NONE, edge |-> a.edge])]
+         IN EndLease([s EXCEPT !.workflows = Put(@, a.stamp.workflow, Enter(r1, a.stamp.event, a.edge, at))], fence, "routed")
+    [] OTHER -> s
 
 \* --- confinement (ADR-0034, ADR-0036; confine.rs) ----------------------------------
 
@@ -333,7 +670,7 @@ ApplyGrant(s, idx, e) ==
       kind == SeatKindOf(s, e.seat)
       busy == \E x \in DOMAIN s.liveBySeat : s.leases[s.liveBySeat[x]].principal = e.principal
       revokedHit == \E t \in s.revoked : TargetMatches(t, [principal |-> e.principal, persona |-> e.persona, conf |-> e.conf])
-      unread == /\ dom = "run" /\ kind = "thinker" /\ e.seat \in DOMAIN s.seals
+      unread == /\ dom = "run" /\ Coupled(kind) /\ e.seat \in DOMAIN s.seals
                 /\ ~(\E o \in CellObservers(s, e.seat) : Mark(s, o, s.seals[e.seat].topic) >= s.seals[e.seat].seq)
       reused == e.seat \in DOMAIN s.lastRound /\ e.round <= s.lastRound[e.seat]
   IN IF dom = NONE THEN Rej(s)
@@ -398,7 +735,7 @@ ApplyRevoke(s, e) ==
       hit      == {f \in liveF : TargetMatches(t, s.leases[f])}
       hitSeats == {s.leases[f].seat : f \in hit}
       leases2  == [f \in DOMAIN s.leases |-> IF f \in hit THEN [s.leases[f] EXCEPT !.ended = "revoked"] ELSE s.leases[f]]
-      thinkers == {x \in hitSeats : SeatKindOf(s, x) = "thinker"}
+      thinkers == {x \in hitSeats : Coupled(SeatKindOf(s, x))}
       newSeals == [x \in thinkers |-> SealOf(s.leases[s.liveBySeat[x]])]
   IN [st  |-> [s EXCEPT !.revoked = @ \cup {t}, !.leases = leases2,
                         !.liveBySeat = [x \in DOMAIN @ \ hitSeats |-> @[x]],
@@ -411,8 +748,10 @@ Admitted(seq, promoted) == [kind |-> "Admitted", seq |-> seq, promoted |-> promo
 \* State::apply_admit: the re-check across the consensus gap, then the effect on state
 ApplyAdmit(s, idx, e) ==
   IF ~e.ok THEN Rej(s)
+  \* ADR-0054 §8: a route is checked again where it is applied, and is void if it fails
+  ELSE IF ~WfAdmitCheck(s, e) THEN Rej(s)
   ELSE IF ~CheckLive(s, e) THEN Rej(s)
-  ELSE IF e.action.kind \in RunEffects /\ SeatKindOf(s, e.seat) = "thinker" /\ ~ObserverCovers(s, e.seat) THEN Rej(s)
+  ELSE IF e.action.kind \in RunEffects /\ Coupled(SeatKindOf(s, e.seat)) /\ ~ObserverCovers(s, e.seat) THEN Rej(s)
   ELSE IF e.action.kind = "Actuate" /\ ~ChannelFidelity(s, e.lease, e.action.tool) THEN Rej(s)
   \* ADR-0047 §1, §4: no Run delivery is unlabelled, and the floor's answer was about the clearSet
   \* the admit names; if the round's has grown since, the admit is refused
@@ -428,9 +767,12 @@ ApplyAdmit(s, idx, e) ==
            item == [label |-> e.labels.resultLabel, delivery |-> e.labels.delivery]
            \* ADR-0047 §4: what is delivered clear joins clearSet, at admit
            Read(cs) == IF e.labels.delivery = "clear" THEN cs \cup e.labels.resultLabel ELSE cs
-       IN CASE a.kind \in {"Emit", "Report"} ->
+           r == CASE a.kind \in {"Emit", "Report", "Route"} ->
                LET lr2 == [lr1 EXCEPT !.seq = @ + 1]
                IN [st |-> [s EXCEPT !.leases = Put(@, f, lr2)], res |-> Admitted(lr2.seq, NONE)]
+          [] a.kind = "Finding" ->
+               LET lr2 == [lr1 EXCEPT !.seq = @ + 1]
+               IN [st |-> WorkflowFinding([s EXCEPT !.leases = Put(@, f, lr2)], a.topic), res |-> Admitted(lr2.seq, NONE)]
           [] a.kind = "Actuate" ->
                LET lr2 == [lr1 EXCEPT !.seq = @ + 1, !.results = Put(@, lr1.seq + 1, item), !.clearSet = Read(@)]
                IN [st |-> [s EXCEPT !.leases = Put(@, f, lr2)], res |-> Admitted(lr2.seq, NONE)]
@@ -464,6 +806,8 @@ ApplyAdmit(s, idx, e) ==
                IN [st |-> EndLease(s1, f, "voted"), res |-> Admitted(NONE, IF prom THEN a.artifact ELSE NONE)]
           [] OTHER ->
                [st |-> [s EXCEPT !.leases = Put(@, f, lr1)], res |-> Admitted(NONE, NONE)]
+       IN IF f \in DOMAIN s.wfBindings
+            THEN [st |-> WorkflowAdmitted(r.st, idx, f, a, r.res.seq), res |-> r.res] ELSE r
 
 ApplyEndRound(s, e) ==
   IF e.reason = "abstained" /\ SeatDomain(s, e.seat) = "run" THEN Rej(s)
@@ -668,7 +1012,78 @@ ApplyProfileRegister(s, idx, e) ==
                         [artifact |-> e.artifact, summary |-> e.profile, registeredAt |-> idx])],
         res |-> [kind |-> "ProfileRegistered", digest |-> e.digest]]
 
-\* State::apply
+\* State::apply_workflow_load (ADR-0054 §1, §2): only from a promoted single-file workspace, and
+\* only if every load check passes. `ok`, the workflow's digest, its artifact and what its text
+\* parses to are the trace's.
+ApplyWorkflowLoad(s, idx, e) ==
+  IF ~(e.artifact \in DOMAIN s.candidates /\ ~IsNone(s.candidates[e.artifact].promotedAt)) THEN Rej(s)
+  ELSE IF ~e.ok THEN Rej(s)
+  ELSE IF ~(e.outward \subseteq NodeNames(e.def)) THEN Rej(s)
+  ELSE IF e.workflow \in DOMAIN s.workflows THEN Rej(s)
+  ELSE LET declared == {e.def.nodes[k].name : k \in {k \in DOMAIN e.def.nodes : e.def.nodes[k].outward}}
+           root == [node |-> e.def.root, trig |-> NONE, via |-> NONE, fired |-> {}, status |-> "ready",
+                    fence |-> NONE, hist |-> {0}, createdAt |-> idx, clearInputs |-> {}, handleInputs |-> {},
+                    attrs |-> NONE, found |-> FALSE, seal |-> NONE, covered |-> FALSE]
+           run  == [def |-> e.def, artifact |-> e.artifact, loadedAt |-> idx, epoch |-> s.epoch,
+                    rulesEpoch |-> s.rulesEpoch, outward |-> declared \cup e.outward, status |-> "running",
+                    acts |-> <<root>>, events |-> EmptyFn, charged |-> 0, chargedNode |-> EmptyFn,
+                    exhausted |-> FALSE, evaluated |-> {}]
+       IN [st  |-> [s EXCEPT !.workflows = Put(@, e.workflow, run)],
+           res |-> [kind |-> "WorkflowLoaded", workflow |-> e.workflow]]
+
+\* workflow::grant_for: the grant a slot is entitled to, as far as the trace projects a grant
+GrantFor(sg, round, clear) ==
+  [principal |-> sg.principal, seat |-> sg.seat, persona |-> sg.persona, bundle |-> sg.bundle, conf |-> sg.conf,
+   rung |-> sg.rung, alphabet |-> sg.alphabet, ttl |-> sg.ttl, round |-> round, role |-> "author",
+   taskLabelled |-> TRUE, taskLabel |-> sg.taskLabel \cup clear, taskLabelsAllowed |-> {}]
+SameGrant(w, g) == \A x \in DOMAIN w : w[x] = g[x]
+
+\* `fail` in apply_workflow_grant: the slot fails, nothing stands in, and the workflow moves
+FailSlot(s, idx, e, run) ==
+  LET run2 == IF e.slot = "node" THEN [run EXCEPT !.acts[e.act + 1].status = "failed"]
+              ELSE [run EXCEPT !.events = Put(@, e.act, FailedEvent)]
+  IN [st |-> Advance([s EXCEPT !.workflows = Put(@, e.workflow, run2)], idx), res |-> [kind |-> "WorkflowFailed"]]
+
+\* State::apply_workflow_grant (ADR-0054 §2; ADR-0024 A4, ADR-0031 A4, pending). A slot that is
+\* not ready, or must wait, is refused and nothing changes. Otherwise the grant is made under the
+\* promotion; one the budget or a grant check refuses fails the slot.
+ApplyWorkflowGrant(s, idx, e) ==
+  IF e.workflow \notin DOMAIN s.workflows THEN Rej(s)
+  ELSE LET run == s.workflows[e.workflow] IN
+    IF run.status # "running" THEN Rej(s)
+    ELSE IF e.slot = "node" /\ ~(e.act < NActs(run) /\ ActAt(run, e.act).status = "ready") THEN Rej(s)
+    ELSE IF e.slot = "decision" /\ ~(e.act \in DOMAIN run.events /\ run.events[e.act].state = "open") THEN Rej(s)
+    \* ADR-0054 §3: decision events are served in log order
+    ELSE IF e.slot = "decision" /\ (\E x \in DOMAIN run.events : x < e.act /\ run.events[x].state = "open") THEN Rej(s)
+    ELSE IF e.slot = "decision" /\ IsNone(run.def.orchestrator) THEN Rej(s)
+    ELSE LET sg     == IF e.slot = "node" THEN NodeOf(run, ActAt(run, e.act).node) ELSE run.def.orchestrator
+             node   == IF e.slot = "node" THEN ActAt(run, e.act).node ELSE "orchestrator"
+             clear  == IF e.slot = "node" THEN ActAt(run, e.act).clearInputs ELSE {}
+             round  == IF sg.seat \in DOMAIN s.lastRound THEN s.lastRound[sg.seat] + 1 ELSE 1
+             \* waits, not failures: the seat or its principal holds a live lease, or the seat's
+             \* last round is not yet read to its seal
+             busy   == \/ sg.seat \in DOMAIN s.liveBySeat
+                       \/ \E x \in DOMAIN s.liveBySeat : s.leases[s.liveBySeat[x]].principal = sg.principal
+             unread == /\ sg.seat \in DOMAIN s.seals
+                       /\ ~(\E o \in CellObservers(s, sg.seat) : Mark(s, o, s.seals[sg.seat].topic) >= s.seals[sg.seat].seq)
+         IN IF ~SameGrant(GrantFor(sg, round, clear), e.grant) THEN Rej(s)
+            ELSE IF busy THEN Rej(s)
+            ELSE IF unread THEN Rej(s)
+            \* ADR-0024 A4: a fence, or a change of rules, voids what the workflow has not issued
+            ELSE IF run.epoch # s.epoch \/ run.rulesEpoch # s.rulesEpoch THEN FailSlot(s, idx, e, run)
+            ELSE LET c == Charge(run, node) IN
+              IF ~c.ok THEN FailSlot(s, idx, e, c.run)
+              ELSE LET r == ApplyGrant([s EXCEPT !.workflows = Put(@, e.workflow, c.run)], idx, e.grant) IN
+                IF r.res.kind # "LeaseGranted" THEN FailSlot(r.st, idx, e, c.run)
+                ELSE LET run2 == IF e.slot = "node"
+                                   THEN [c.run EXCEPT !.acts[e.act + 1].status = "running", !.acts[e.act + 1].fence = idx]
+                                   ELSE [c.run EXCEPT !.events = Put(@, e.act, [state |-> "served", fence |-> idx, edge |-> NONE])]
+                         bind == [workflow |-> e.workflow, slot |-> e.slot, act |-> e.act, actuates |-> 0,
+                                  reports |-> <<>>, outcome |-> NONE, lifted |-> FALSE]
+                     IN [st  |-> [r.st EXCEPT !.workflows = Put(@, e.workflow, run2), !.wfBindings = Put(@, idx, bind)],
+                         res |-> r.res]
+
+\* State::apply_entry
 ApplyRaw(s0, idx, e) ==
   LET s == [s0 EXCEPT !.lastApplied = idx] IN
   IF e.id \in s.appliedIds THEN [st |-> s, res |-> [kind |-> "Duplicate"]]
@@ -693,10 +1108,16 @@ ApplyRaw(s0, idx, e) ==
       [] e.kind = "BreakGlassApprove" -> Rej(s1)       \* X1 is retired (ADR-0052 §2)
       [] e.kind = "Contested"         -> ApplyContested(s1, e)
       [] e.kind = "ProfileRegister"   -> ApplyProfileRegister(s1, idx, e)
+      [] e.kind = "WorkflowLoad"      -> ApplyWorkflowLoad(s1, idx, e)
+      [] e.kind = "WorkflowGrant"     -> ApplyWorkflowGrant(s1, idx, e)
 
-\* The projection carries `contained`, which the model recomputes after every step.
+\* State::apply_inner: whatever the entry changed, each running workflow moves as far as it can,
+\* in the same apply; a duplicate changed nothing (ADR-0054, ADR-0055). The projection carries
+\* `contained`, which the model recomputes after every step.
 Apply(s0, idx, e) ==
-  LET r == ApplyRaw(s0, idx, e) IN [st |-> [r.st EXCEPT !.contained = ContainedSet(r.st)], res |-> r.res]
+  LET r  == ApplyRaw(s0, idx, e)
+      s1 == IF DOMAIN r.st.workflows # {} /\ r.res.kind # "Duplicate" THEN Advance(r.st, idx) ELSE r.st
+  IN [st |-> [s1 EXCEPT !.contained = ContainedSet(s1)], res |-> r.res]
 
 \* --- trace validation ---------------------------------------------------------
 

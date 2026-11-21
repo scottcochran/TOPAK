@@ -15,7 +15,9 @@
 //! proof verified under the lease's key, and what a registered profile file parses to; for an
 //! operator (ADR-0050), whether a request's signature is its seat's, whether a sign-on assertion
 //! verifies, and which seat a revocation was lifted on; for an activation (ADR-0052), which
-//! roster keys approved it. Those are the trace's trusted inputs, and the module says so.
+//! roster keys approved it; for a workflow's load (ADR-0054, ADR-0055), what its text parses to,
+//! its two digests, and whether every load check passed. Those are the trace's trusted inputs,
+//! and the module says so.
 //!
 //! JSON encoding: `{"$f": [[k, v], ...]}` is a TLA+ function, `{"$s": [...]}` a set, an array a
 //! tuple, any other object a record. A round topic is the tuple `<<seat, epoch, round>>`.
@@ -31,6 +33,7 @@ use crate::labels::{Delivery, ItemLabel, LabelFacts};
 use crate::rules::{self, Quorum, Rules};
 use crate::state::*;
 use crate::types::*;
+use crate::workflow::{ActStatus, Activation, Definition, EventState, Guard, Run, RunStatus, SeatingDef, Slot};
 
 pub const ENV_DIR: &str = "TOPAK_TRACE_DIR";
 
@@ -125,6 +128,21 @@ pub fn oracle(state: &State, entry: &Entry, params: &Params) -> Value {
             json!({ "ok": authentic::verify(BREAK_GLASS_PURPOSE, &body, approval) })
         }
         Entry::Admit { rec, .. } => json!({ "ok": rec.params == params.digest() }),
+        // The model does not parse a workflow's text or run its load checks: it takes what the
+        // text parses to, the digests the code computes from it, and whether it loads.
+        Entry::WorkflowLoad { text, .. } => {
+            let parsed = Definition::parse(text);
+            let rules = &state.rules;
+            let ok = parsed
+                .as_ref()
+                .is_ok_and(|d| d.check(&|seat| rules.seats.get(seat).map(|d| (d.kind, d.domain, d.rung))).is_empty());
+            json!({
+                "ok": ok,
+                "workflow": Digest::of(text.as_bytes()).0,
+                "artifact": crate::workflow::workflow_artifact(text.as_bytes()).0,
+                "def": parsed.as_ref().map(project_def).unwrap_or_else(|_| json!("none")),
+            })
+        }
         _ => json!({}),
     }
 }
@@ -375,7 +393,149 @@ pub fn project_state(s: &State, params: &Params) -> Value {
             "at": a.at, "seat": a.activation.seat, "person": a.activation.person, "epoch": a.activation.epoch,
             "round": a.activation.round, "approvers": setv(a.approvers.iter().cloned()), "drill": a.drill,
         })).collect());
+    // ADR-0054 and ADR-0055.
+    v["workflows"] = fnv(s.workflows.iter().map(|(id, r)| (id.0.clone(), project_run(r))));
+    v["wfBindings"] = fnv(s.wf_bindings.iter().map(|(fence, b)| {
+        let (slot, act) = project_slot(&b.slot);
+        (*fence, json!({
+            "workflow": b.workflow.0, "slot": slot, "act": act, "actuates": b.actuates, "reports": b.reports,
+            "outcome": none_or(b.outcome.clone()), "lifted": b.lifted,
+        }))
+    }));
     v
+}
+
+fn project_slot(s: &Slot) -> (&'static str, usize) {
+    match s {
+        Slot::Node(i) => ("node", *i),
+        Slot::Decision(ev) => ("decision", *ev),
+    }
+}
+
+/// A serde enum that is one lowercase word, as the model's string.
+fn word<T: serde::Serialize>(t: T) -> Value {
+    serde_json::to_value(t).expect("a unit variant")
+}
+
+/// A seating as a workflow names it, as far as a grant reads it (`workflow::grant_for`).
+fn project_seating(s: &SeatingDef) -> Value {
+    json!({
+        "seat": s.seat, "principal": s.principal, "persona": s.persona.0, "bundle": s.bundle.0,
+        "conf": s.confinement.digest.0, "rung": s.confinement.rung,
+        "alphabet": setv(s.alphabet.iter().map(|k| k.as_str())), "ttl": s.ttl_ms,
+        "taskLabel": setv(s.task_label.iter().cloned()),
+    })
+}
+
+fn project_guard(g: &Guard) -> Value {
+    let many = |gs: &[Guard]| Value::Array(gs.iter().map(project_guard).collect());
+    match g {
+        Guard::True => json!({ "op": "true" }),
+        Guard::Not(g) => json!({ "op": "not", "g": project_guard(g) }),
+        Guard::All(gs) => json!({ "op": "all", "gs": many(gs) }),
+        Guard::Any(gs) => json!({ "op": "any", "gs": many(gs) }),
+        Guard::Outcome { node, any_of } => {
+            json!({ "op": "outcome", "node": node, "anyOf": setv(any_of.iter().cloned()) })
+        }
+        Guard::End { node, any_of } => {
+            json!({ "op": "end", "node": node, "anyOf": setv(any_of.iter().map(|k| word(*k))) })
+        }
+        Guard::Label { node, has } => json!({ "op": "label", "node": node, "has": has }),
+        // `of` has one value, the count of admitted `Actuate`s.
+        Guard::Count { node, cmp, value, .. } => {
+            json!({ "op": "count", "node": node, "cmp": word(*cmp), "value": value })
+        }
+    }
+}
+
+/// What a workflow's text parses to, as the model reads it. Nodes and edges are arrays in the
+/// order the maps iterate, which is the order the engine visits them in. What only the load
+/// checks read (a seating's lineage and task) is left out: the model takes their verdict.
+pub fn project_def(d: &Definition) -> Value {
+    let nodes: Vec<Value> = d
+        .nodes
+        .iter()
+        .map(|(name, n)| {
+            let mut v = project_seating(&n.seating);
+            v["name"] = json!(name);
+            v["outcomes"] = setv(n.outcomes.iter().cloned());
+            v["outward"] = json!(n.outward);
+            v["join"] = word(n.join);
+            v
+        })
+        .collect();
+    let edges: Vec<Value> = d
+        .edges
+        .iter()
+        .map(|(id, e)| {
+            json!({
+                "id": id, "from": e.from, "to": e.to, "kind": word(e.kind), "guard": project_guard(&e.guard),
+                "delivery": delivery(e.delivery),
+            })
+        })
+        .collect();
+    let budget = d.budget.as_ref().map_or_else(
+        || json!("none"),
+        |b| json!({ "n": b.n, "perNode": fnv(b.per_node.iter().map(|(k, v)| (k.clone(), *v))) }),
+    );
+    json!({
+        "kind": word(d.kind), "root": d.root, "sinks": setv(d.sinks.iter().cloned()),
+        "nodes": nodes, "edges": edges,
+        "orchestrator": d.orchestrator.as_ref().map_or_else(|| json!("none"), project_seating),
+        "budget": budget,
+    })
+}
+
+fn project_activation(a: &Activation) -> Value {
+    let (status, fence) = match &a.status {
+        ActStatus::Waiting => ("waiting", None),
+        ActStatus::Ready => ("ready", None),
+        ActStatus::Running { fence } => ("running", Some(*fence)),
+        ActStatus::Ended => ("ended", None),
+        ActStatus::Failed { .. } => ("failed", None),
+        ActStatus::Skipped => ("skipped", None),
+    };
+    let attrs = a.attrs.as_ref().map_or_else(
+        || json!("none"),
+        |x| json!({
+            "end": word(x.end), "actuates": x.actuates, "label": setv(x.label.iter().cloned()),
+            "outcome": none_or(x.outcome.clone()), "output": x.output,
+        }),
+    );
+    let seal =
+        a.seal.as_ref().map_or_else(|| json!("none"), |s| json!({ "topic": topic_tuple(&s.topic), "seq": s.seq }));
+    json!({
+        "node": a.node, "trig": none_or(a.trig), "via": none_or(a.via.clone()),
+        "fired": setv(a.fired.iter().cloned()), "status": status, "fence": none_or(fence),
+        "hist": setv(a.hist.iter().copied()), "createdAt": a.created_at,
+        "clearInputs": setv(a.clear_inputs.iter().cloned()),
+        "handleInputs": setv(a.handle_inputs.iter().cloned()),
+        "attrs": attrs, "found": a.found, "seal": seal, "covered": a.covered,
+    })
+}
+
+/// One loaded workflow. A status, an activation's failure and a decision event's are projected
+/// without their reasons, as a rejection is.
+fn project_run(r: &Run) -> Value {
+    let event = |s: &EventState| match s {
+        EventState::Open => json!({ "state": "open", "fence": "none", "edge": "none" }),
+        EventState::Served { fence } => json!({ "state": "served", "fence": fence, "edge": "none" }),
+        EventState::Consumed { edge } => json!({ "state": "consumed", "fence": "none", "edge": edge }),
+        EventState::Failed { .. } => json!({ "state": "failed", "fence": "none", "edge": "none" }),
+    };
+    let status = match r.status {
+        RunStatus::Running => "running",
+        RunStatus::Completed => "completed",
+        RunStatus::Failed { .. } => "failed",
+    };
+    let acts: Vec<Value> = r.acts.iter().map(project_activation).collect();
+    json!({
+        "def": project_def(&r.def), "artifact": r.artifact.0, "loadedAt": r.loaded_at, "epoch": r.epoch,
+        "rulesEpoch": r.rules_epoch, "outward": setv(r.outward.iter().cloned()), "status": status,
+        "acts": acts, "events": fnv(r.events.iter().map(|(ev, s)| (*ev, event(s)))),
+        "charged": r.charged, "chargedNode": fnv(r.charged_node.iter().map(|(n, c)| (n.clone(), *c))),
+        "exhausted": r.exhausted, "evaluated": setv(r.evaluated.iter().map(|(i, e)| json!([i, e]))),
+    })
 }
 
 fn project_em_seating(g: &EmergencySeating) -> Value {
@@ -401,6 +561,17 @@ fn project_action(a: &Admitted) -> Value {
         Admitted::Heartbeat { via, topic, watermark } => json!({
             "kind": "Heartbeat", "via": via.as_str(), "topic": topic_tuple(topic), "watermark": watermark,
         }),
+        Admitted::Finding { via, topic } => {
+            json!({ "kind": "Finding", "via": via.as_str(), "topic": topic_tuple(topic) })
+        }
+        Admitted::Report { outcome, .. } => json!({ "kind": "Report", "outcome": none_or(outcome.clone()) }),
+        Admitted::Route { edge, stamp } => {
+            let stamp = stamp.as_ref().map_or_else(
+                || json!("none"),
+                |s| json!({ "workflow": s.workflow.0, "event": s.event, "basis": s.basis }),
+            );
+            json!({ "kind": "Route", "edge": edge, "stamp": stamp })
+        }
         other => json!({ "kind": other.kind().as_str() }),
     }
 }
@@ -483,10 +654,21 @@ pub fn project_entry(e: &Entry, oracle: Value) -> Value {
         Entry::BreakGlassApprove { id, seat, epoch, approval } => json!({
             "kind": "BreakGlassApprove", "id": id, "seat": seat, "epoch": epoch, "key": approval.key,
         }),
-        // ADR-0054, ADR-0055 (Proposed): `spec/Mechanism.tla` does not model workflows. Projected by
-        // name only, so a traced run that orders one does not match the module (ADR-0033 A16).
-        Entry::WorkflowLoad { id, .. } => json!({ "kind": "WorkflowLoad", "id": id }),
-        Entry::WorkflowGrant { id, .. } => json!({ "kind": "WorkflowGrant", "id": id }),
+        // ADR-0054, ADR-0055 (Proposed). What a load's text parses to comes with the oracle. A
+        // slot's grant is projected as the unsigned entry is, so the model applies it with the
+        // same operator after rebuilding the grant the slot is entitled to.
+        Entry::WorkflowLoad { id, outward, .. } => {
+            json!({ "kind": "WorkflowLoad", "id": id, "outward": setv(outward.iter().cloned()) })
+        }
+        Entry::WorkflowGrant { id, workflow, slot, req, appraisal } => {
+            let (slot, act) = project_slot(slot);
+            let sig = appraisal.as_ref().map(sig_oracle);
+            let mut g = project_grant(req, false);
+            g["appraisal"] = appraisal.as_ref().map_or_else(|| json!("none"), project_appraisal);
+            g["sigOk"] = sig.as_ref().map_or(json!(false), |o| o["sigOk"].clone());
+            g["sigKey"] = sig.as_ref().map_or(json!("none"), |o| o["sigKey"].clone());
+            json!({ "kind": "WorkflowGrant", "id": id, "workflow": workflow.0, "slot": slot, "act": act, "grant": g })
+        }
     };
     if let (Some(obj), Some(o)) = (v.as_object_mut(), oracle.as_object()) {
         for (k, val) in o {
