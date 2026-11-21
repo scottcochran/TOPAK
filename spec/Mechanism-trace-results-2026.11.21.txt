@@ -1,0 +1,123 @@
+TOPAK — Mechanism.tla trace validation: the reference's recorded behaviours replayed through the operational model (ADR-0045 T-0045-28, stage 1)
+Module: Mechanism.tla (sha256 5c720eac9e6d41e5) · TLC Version 2.19 of 08 August 2024 (jar sha256 936a262061c91469) · openjdk version "21.0.13.0.3" 2026-10-24
+Reference: mechanism/ at b46ed37 · recorder: crates/topak-core/src/trace.rs · converter: trace2tla.py · driver: mechanism-trace-run.sh
+Suites traced: topak-core tests/mutations.rs, tests/confinement.rs, tests/operators.rs, tests/emergency.rs and tests/workflow.rs (every state the helpers build) · topak-floor tests/workflow.rs (the core's workflow harness, decided by the linked floor) · topak-node tests/e2e.rs and tests/contain.rs (replica 1 of every cluster; contain.rs launches the demo guest, rung 3 SIMULATED)
+A MATCH line means every recorded step's projected state and result equal the model's. A trace is one test; steps are applied log entries.
+
+test result: ok. 36 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.23s
+test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.12s
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.04s
+test result: ok. 18 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.85s
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.21s
+test result: ok. 10 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 8.83s
+test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.09s
+
+conf_a_contained_lease_stops_being_contained_when_it_ends_3 | 13 steps | MATCH
+conf_a_contested_verdict_ends_a_live_lease_0 | 12 steps | MATCH
+conf_a_contested_verdict_never_grants_and_revokes_the_principal_2 | 17 steps | MATCH
+conf_a_run_seat_is_never_granted_on_a_build_profile_1 | 11 steps | MATCH
+conf_a_run_seat_on_a_run_profile_is_contained_with_p4_as_channel_fidelity_4 | 11 steps | MATCH
+conf_a_run_seat_on_a_run_profile_is_contained_with_p4_as_channel_fidelity_6 | 13 steps | MATCH
+conf_a_rung_1_grant_is_the_launchers_assertion_5 | 11 steps | MATCH
+conf_an_attested_rung_3_grant_binds_the_guest_and_is_contained_8 | 11 steps | MATCH
+conf_an_epoch_fence_invalidates_a_pending_appraisal_7 | 13 steps | MATCH
+conf_channel_fidelity_is_checked_at_apply_20 | 13 steps | MATCH
+conf_channel_fidelity_is_checked_at_apply_9 | 14 steps | MATCH
+conf_contained_is_a_lookup_and_each_conjunct_matters_10 | 11 steps | MATCH
+conf_contained_is_a_lookup_and_each_conjunct_matters_14 | 11 steps | MATCH
+conf_contained_is_a_lookup_and_each_conjunct_matters_16 | 11 steps | MATCH
+conf_contained_is_a_lookup_and_each_conjunct_matters_17 | 11 steps | MATCH
+conf_contained_is_a_lookup_and_each_conjunct_matters_18 | 11 steps | MATCH
+conf_contained_is_a_lookup_and_each_conjunct_matters_21 | 11 steps | MATCH
+conf_contained_is_a_lookup_and_each_conjunct_matters_22 | 11 steps | MATCH
+conf_m_lower_and_m_renewlow_are_refused_12 | 15 steps | MATCH
+conf_no_silent_downgrade_at_grant_11 | 14 steps | MATCH
+conf_only_a_promoted_well_formed_build_profile_is_a_reference_value_13 | 42 steps | MATCH
+conf_renewal_re_attests_the_same_guest_15 | 18 steps | MATCH
+conf_rung_3_is_appraised_by_an_issued_verifier_against_the_profile_19 | 18 steps | MATCH
+conf_rung_3_is_appraised_by_an_issued_verifier_against_the_profile_24 | 11 steps | MATCH
+conf_the_session_is_the_attested_guests_and_m_unbound_is_refused_23 | 15 steps | MATCH
+contain_bundle_a_guest_that_cannot_verify_its_bundle_is_never_granted_1 | 11 steps | MATCH
+contain_host_every_host_power_subtracts_7 | 15 steps | MATCH
+contain_lying_every_host_power_subtracts_9 | 12 steps | MATCH
+contain_nocrit_without_the_criterion_nothing_is_contained_14 | 12 steps | MATCH
+contain_r1_rung_1_honest_round_and_its_refusals_10 | 26 steps | MATCH
+contain_r3_simulated_rung_3_round_is_contained_and_rung_0_beside_it_is_not_11 | 17 steps | MATCH
+contain_renew_renewal_re_attests_the_same_guest_and_lapses_when_it_cannot_8 | 14 steps | MATCH
+contain_rogue_a_rogue_image_is_contested_and_the_principal_is_revoked_0 | 13 steps | MATCH
+contain_run3_a_run_round_actuates_only_its_declared_channel_2 | 16 steps | MATCH
+contain_run3_undeclared_a_hosted_tool_with_no_channel_in_the_leases_revision_is_not_run_3 | 16 steps | MATCH
+contain_run_a_run_seat_launches_nothing_5 | 11 steps | MATCH
+contain_session_the_session_is_the_attested_guests_12 | 13 steps | MATCH
+contain_stale_an_epoch_fence_voids_a_pending_appraisal_4 | 12 steps | MATCH
+contain_unreach_an_unreachable_verifier_grants_nothing_6 | 12 steps | MATCH
+contain_withdraw_withdrawing_a_profile_fences_its_leases_13 | 13 steps | MATCH
+e2e_actuate_actuate_is_counted_recorded_and_sealed_1 | 34 steps | MATCH
+e2e_build_build_round_promotion_and_fencing_5 | 30 steps | MATCH
+e2e_coupling_observer_liveness_couples_run_admits_6 | 29 steps | MATCH
+e2e_emergency_break_glass_is_an_emergency_seating_4 | 17 steps | MATCH
+e2e_expiry_an_expired_lease_is_ended_and_refused_3 | 9 steps | MATCH
+e2e_labels_labels_bound_what_a_round_may_send_after_what_it_has_read_9 | 31 steps | MATCH
+e2e_operators_an_operator_is_a_principal_and_its_requests_are_decided_0 | 20 steps | MATCH
+e2e_toollist_the_tool_list_is_delivered_and_opens_the_round_8 | 14 steps | MATCH
+e2e_tools_tools_break_glass_issuance_and_partition_7 | 20 steps | MATCH
+e2e_workflow_a_workflow_is_run_by_its_promotion_2 | 40 steps | MATCH
+em_a_drill_is_a_real_activation_on_the_log_2 | 7 steps | MATCH
+em_an_emergency_lease_has_a_roster_quorum_1 | 14 steps | MATCH
+em_an_emergency_lease_has_a_roster_quorum_5 | 5 steps | MATCH
+em_an_emergency_lease_is_one_round_0 | 9 steps | MATCH
+em_an_operator_ends_it_and_x1_is_retired_3 | 11 steps | MATCH
+em_the_actions_are_the_persons_4 | 9 steps | MATCH
+mut_a_revoked_principal_persona_or_profile_is_not_granted_again_and_m_revoke_is_refused_0 | 3 steps | MATCH
+mut_a_revoked_principal_persona_or_profile_is_not_granted_again_and_m_revoke_is_refused_2 | 3 steps | MATCH
+mut_a_revoked_principal_persona_or_profile_is_not_granted_again_and_m_revoke_is_refused_6 | 3 steps | MATCH
+mut_a_run_round_seals_with_its_lease_and_a_run_seat_cannot_abstain_15 | 2 steps | MATCH
+mut_a_run_round_seals_with_its_lease_and_a_run_seat_cannot_abstain_3 | 11 steps | MATCH
+mut_a_targeted_revocation_ends_one_round_and_not_the_fleet_1 | 3 steps | MATCH
+mut_a_ttl_over_t_persona_is_refused_at_grant_and_at_renewal_4 | 5 steps | MATCH
+mut_alphabets_are_bounded_by_seat_kind_and_m_kind_is_refused_5 | 6 steps | MATCH
+mut_lease_renewal_is_monotone_and_m_renew_is_refused_8 | 5 steps | MATCH
+mut_no_action_under_a_fenced_epoch_and_m_fence_is_refused_7 | 2 steps | MATCH
+mut_one_live_lease_per_principal_9 | 2 steps | MATCH
+mut_one_seat_per_principal_and_m_seat_is_refused_10 | 3 steps | MATCH
+mut_renewal_cannot_change_round_or_role_and_m_role_is_refused_11 | 1 steps | MATCH
+mut_run_alphabets_are_bounded_by_seat_kind_and_domain_12 | 5 steps | MATCH
+mut_rung_zero_is_never_contained_and_says_why_13 | 1 steps | MATCH
+mut_the_round_bound_counts_consult_14 | 5 steps | MATCH
+mut_the_round_bound_terminates_a_round_16 | 1 steps | MATCH
+mut_the_rounds_labels_are_folded_and_a_stale_clear_set_is_refused_17 | 11 steps | MATCH
+mut_the_sequence_counts_effects_and_m_emitseq_is_refused_18 | 16 steps | MATCH
+op_a_lapsed_operator_stops_its_own_domain_and_nothing_else_0 | 18 steps | MATCH
+op_a_lapsed_operator_stops_its_own_domain_and_nothing_else_5 | 9 steps | MATCH
+op_a_request_is_the_operators_and_is_not_replayed_1 | 14 steps | MATCH
+op_a_successor_grant_keeps_the_seating_and_never_widens_3 | 21 steps | MATCH
+op_an_operators_lease_needs_a_sign_on_assertion_2 | 8 steps | MATCH
+op_the_unsigned_path_seats_and_does_nothing_else_4 | 15 steps | MATCH
+op_three_operators_recover_a_lapse_and_two_cannot_6 | 9 steps | MATCH
+op_three_operators_recover_a_lapse_and_two_cannot_7 | 11 steps | MATCH
+wf_a_clear_input_joins_the_receivers_clear_set_3 | 26 steps | MATCH
+wf_a_clear_input_raises_the_receivers_clear_set_and_r5_then_refuses_its_outward_call_1 | 27 steps | MATCH
+wf_a_clear_input_raises_the_receivers_clear_set_and_r5_then_refuses_its_outward_call_3 | 26 steps | MATCH
+wf_a_computed_edge_fires_on_a_typed_attribute_0 | 27 steps | MATCH
+wf_a_computed_edge_fires_on_a_typed_attribute_4 | 27 steps | MATCH
+wf_a_fence_fails_a_node_not_yet_granted_2 | 26 steps | MATCH
+wf_a_finding_against_the_workers_round_voids_the_decision_nodes_next_route_1 | 33 steps | MATCH
+wf_a_lapsed_orchestrator_fails_its_decision_point_5 | 23 steps | MATCH
+wf_a_mesh_loads_only_with_a_budget_and_two_coloured_clear_edges_6 | 30 steps | MATCH
+wf_a_route_applies_and_the_workflow_completes_by_its_sink_7 | 29 steps | MATCH
+wf_a_route_decided_before_a_finding_and_applied_after_is_void_9 | 25 steps | MATCH
+wf_a_route_decided_in_one_round_and_committed_after_it_ends_is_void_8 | 32 steps | MATCH
+wf_a_route_is_decided_by_r8_r9_and_r3_2 | 22 steps | MATCH
+wf_a_second_route_to_a_consumed_decision_point_is_void_10 | 24 steps | MATCH
+wf_a_workflow_loads_only_promoted_and_well_formed_11 | 51 steps | MATCH
+wf_an_edge_waits_for_its_sources_coverage_12 | 27 steps | MATCH
+wf_an_orchestrator_round_is_charged_13 | 22 steps | MATCH
+wf_an_untrusted_attribute_disables_the_edge_into_an_outward_node_14 | 24 steps | MATCH
+wf_every_run_request_carries_its_decision_point_0 | 19 steps | MATCH
+wf_only_the_orchestrator_routes_and_only_its_own_decision_16 | 25 steps | MATCH
+wf_the_budget_refuses_a_grant_and_the_workflow_fails_15 | 31 steps | MATCH
+wf_the_loop_turns_twice_and_exits_17 | 45 steps | MATCH
+wf_untrusted_content_read_on_the_loop_disables_the_exit_18 | 41 steps | MATCH
+
+106 traces · 1716 steps

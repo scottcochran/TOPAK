@@ -156,6 +156,69 @@ up to the workflow entries; anything on `main`. One signal is unread: the item h
 was carried through G11 and G12, which may mean it is harder than these sizes suggest, or only that it was not the
 priority.
 
+**Note, 2026.11.21: items 1 and 2 are done**, at `b46ed37`, with the run in
+`Mechanism-trace-results-2026.11.21.txt`. Item 4 is open.
+
+*What was done.* `Mechanism.tla` models the workflow engine as `apply` runs it, 720 lines grown to 1,141: the two
+entries, the advance after every entry, the admit's three hooks, and the three places outside workflows where the
+code had moved (an orchestrator seat is coupled, `Route` is an effect, a finding is checked under the variant it
+arrived as). `trace.rs` projects the workflow entries, the loaded workflows and the bindings. The generator traces
+the core's and the floor's `tests/workflow.rs`. The driver exits 1 on a trace that is not a MATCH, and the generator
+on that or on a suite that records nothing. `trace2tla.py` needed no change. The module is re-pinned in
+`mechanism/corpus-pins.sha256`.
+
+*The run.* **Checked**: 106 traces, 1,716 steps, every step matching, every state keeping
+`ConfinementRefinement.tla`'s four predicates. Rerun first at the tree as it stood, the old generator gave what G12
+item 56 records: 83 traces, 82 matching, and an exit status of 0. The 23 new traces are the workflow suites', and
+the end-to-end workflow trace that did not replay now does.
+
+*A control.* Twenty-seven mutants of the new part of the model, one rule changed in each, were replayed in a
+scratch copy, as the Lean mutants were; they are not an artefact. All were run against the core suite's 19 workflow
+traces, and those no trace caught against the floor's four and the end-to-end one as well. Eighteen are caught.
+Nine are not, by any of the 24, and each names something the traces do not show:
+
+| Mutant | The rule changed | Why no trace sees it |
+|---|---|---|
+| The routing rule dropped | A tainted read no longer disables an edge into an outward node | The tests' tainted routes are refused at decide, so no entry reaches `apply` |
+| No failure of a dead decision event | An open event with no chosen edge left stays open | No trace has one |
+| An `any` join entered twice | A second edge into an entered node makes a second activation | In the tests' graph one of the two branches is always skipped |
+| No wait at a grant | A slot is granted while its seat is busy or its last round unread | No trace orders such a grant |
+| Any grant taken as the seating's | The ordered grant is not compared with the one the slot is entitled to | No trace orders a different one |
+| An orchestrator's route not coupled | A route needs no live cell Observer at apply | No trace applies a route without one |
+| No epoch check at a grant | A grant after a fence is not failed there | The advance has already failed the workflow |
+| A route's stamp not checked | Only the round's own binding is checked | The two agree unless an entry is forged |
+| A report's outcome not checked | Any outcome is accepted at apply | An outcome outside the node's enum is refused at decide |
+
+The first six are paths no test takes through `apply`. The last three are checks that another check shadows in
+every trace. For all nine, the model's rule and the code's could differ and this run would not show it.
+
+*What else the traces do not reach.* Read from the 24 traces: no `all` join, so no activation ever waits; no
+guard but `true` and `outcome`, so `not`, `all`, `any`, `end`, `label` and `count` are never evaluated; no
+per-node budget; no load with an outward set from the bundle; no node whose round ended any way but by its outcome.
+The model has all of these and nothing has checked them against the code.
+
+*What the estimate above got wrong.* It said about four days, and the work took one session. The engine is a
+deterministic function in the shape the model already had, one operator for each function of the code; the parse
+and the load checks were taken as trusted inputs, as the estimate assumed; the converter is generic; and the model
+matched on its first replay, which the estimate, reasoning from the Lean model's first replay, did not expect. One
+line of its table was wrong in the tree: `tests/workflow.rs` already named its traces, in `tests/support/wf.rs`.
+What was missing was the generator running the suite.
+
+*What it leaves.*
+
+- **A required check that disagrees with this step.** `frozen-files` (rule F7) reports `spec/Mechanism.tla` as
+  frozen, because ADR-0033 cites the digest it had. `spec/README.md` says of the same module "Pinned, not frozen:
+  the operational model moves with the code", and the note on *TOPAK's choice* above followed it. The change is
+  made in place, as the README has it and as the module was changed four times before the check existed. A pull
+  request that carries it fails that check until the custodian labels it `frozen-override`, or the check learns
+  the README's exception, or the custodian rules that the model should have been a successor module.
+- **A record.** No ADR-0033 addendum cites the run; that is the custodian's. `mechanism/` has moved, so no
+  reference manifest measures this tree.
+- **More inputs.** The nine survivors and the unreached paths are an argument for the generated inputs of Step 1
+  and of the 11.04 paper's step 1, replayed through the code as well as the model.
+- **The Lean replays** cannot read a workflow trace: `Route`, `Finding` and the `orchestrator` seat kind are
+  unknown to their parsers. They were stale before this (Step 6). The other 83 traces changed only by added fields.
+
 ## 3. Step 1: a composite that runs
 
 A new module, here called `MechanismFree.tla`, that extends `Mechanism.tla` and edits nothing in it.
