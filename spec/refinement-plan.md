@@ -43,6 +43,64 @@ target instead of thirty.
 | J3 | Component to component: the log to `apply`; the admit decision to `apply`; issuance to `apply`; Build to Run | A sentence in `Mechanism.tla`'s header ("Not modelled: … the Paxos log itself (entries arrive in index order)") | Step 5 |
 | J4 | Code to composite: T-0045-28 itself | Trace validation, 82 of 83 at G12; two Lean models, stale | Not here. The 11.04 paper's order stands; Steps 1 and 6 feed it |
 
+## 1a. What `INSTANCE` is, and what it buys alone
+
+*Added 2026.11.21, after the custodian asked what it means that no module has an `INSTANCE`, and whether having
+one would change anything without composition and refinement.*
+
+**What it is.** `EXTENDS` copies a module in as written: the same names and the same variables. `INSTANCE Foo WITH
+x <- e` imports `Foo` with the instancing module's own expressions in place of `Foo`'s constants and variables, and
+every definition and theorem of `Foo` is then read under that substitution, as `M!Next`, `M!Spec` and so on.
+
+**What its absence means here.**
+
+- **No module speaks of another module's specification over its own state.** `INSTANCE` is the only way in TLA+ to
+  write "that module's `Spec`, read over my variables". With `EXTENDS` the variables are the same ones and nothing
+  is substituted, which is why the one theorem that crosses modules is `SpecLImpliesSpec == SpecL => Spec`
+  (`Coupling_live_proof.tla:65`, `Emergency_live_proof.tla:136`).
+- **Nothing is reused by parameter.** What is shared is written again: `RunSeats` has `Seats`' shape with a domain
+  added, and `ConfinementRefinement` writes four of `Confinement_A1`'s predicates by hand.
+- **It is a count, not the gap.** The corpus has refinement without the keyword: `SeatsModel.lean` states its
+  mapping as a function, `abs`, and `SpecL => Spec` needs only `EXTENDS`. What is missing is the claims of §1, and
+  zero `INSTANCE` is how their absence shows in a search.
+
+**What an instance gives with no refinement or composition claimed.** Three things:
+
+1. **One definition in place of copies.** A check uses the module's own predicate, so a restatement cannot drift
+   from what it restates.
+2. **The mapping written down and checked for form.** A `WITH` clause must give a value to every constant and
+   variable of the module it instances. Writing one forces the questions of Step 2: `lease` is a function of seats
+   in one module and of principals in another, and the code keeps no `acted`.
+3. **Theorems reused across constants.** A module proved once can be instanced for Build and again for Run, and
+   its theorems hold of each instance where its assumptions do.
+
+A sketch of the first two, in a module that extends the composite, with the second line checked as an invariant.
+The mapping's name is invented and nothing here was parsed or checked:
+
+```tla
+C == INSTANCE Confinement_A1 WITH lease <- LeaseByPrincipal(st), Mut <- "none"   \* and every other name
+NoSilentDowngradeHere == C!NoSilentDowngrade   \* the module's own predicate, read over the mechanism's state
+```
+
+**What it does not give.** No proved theorem crosses an instance by itself. `Confinement_A1`'s invariants are
+proved of the states its own `Next` reaches. An instance lets the invariant be *stated* over the mechanism's state;
+it must still be *checked* there, as the trace replay checks its four predicates now. To carry the proof across
+takes the further claim that every step of the mechanism maps to a step of `Confinement_A1`, and that claim is
+refinement. So in Step 2's table, grade (a) is an instance alone, and grades (b) and (c) are the refinement.
+
+It does not make the six `ENABLED` properties readable over the composite either. Substitution for variables does
+not distribute over `ENABLED` *(the drafter's recollection of Specifying Systems; to check)*, which is one more
+reason Step 3 states them afresh.
+
+- *Standard practice.* `INSTANCE` is the ordinary instrument for reuse and for refinement alike, and one module
+  instanced twice is the usual way to write "one component instantiated twice". A development of this size with no
+  instance at all is unusual.
+- *TOPAK's choice.* It was left out to keep the proofs cheap: `proof-method.md` §5 names "no `INSTANCE`, no
+  refinement mapping" among the reasons, and the `writing-tla-specs-and-proofs` skill puts refinement mappings out
+  of its scope. The freezing rule does not stand in the way of an instance, which edits nothing. It does stand in
+  the way of folding `Seats` and `RunSeats` into one parameterized module: that would be a successor, with its own
+  proof.
+
 ## 2. Step 0: preconditions
 
 1. **Bring the composite up to the code.** Model `WorkflowLoad` and `WorkflowGrant` in `Mechanism.tla` and
