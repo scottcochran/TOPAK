@@ -1,17 +1,19 @@
 # Linking the specification modules: a plan for composition and refinement
 
-**UNDATED DRAFT** · derived · a plan offered, not a record · prepared by the assistant at the custodian's request ·
-basis: the tree at `ffd02f1`, on branch `claude/loving-gauss-3q99gi`, and
-`derived/topak-module-refinement-and-composition-2026.11.21.md` (the findings this plan answers; "the write-up"
-below) · first drafted uncommitted, as the custodian asked; the custodian then asked for it committed as an undated
-live document. It has no row in `derived/README.md`. It takes its date, its row and its freeze when the custodian
-says it has settled, and until then it may change. Revised once before its first commit: Step 0 item 3 is done ·
-nothing here is built, run or ratified, and every size is a guess.
+**2026.11.21** · a plan for linking `Mechanism.tla` to the per-property modules, the successors to their
+predecessors, and the mechanism's components to each other · DRAFT, revised as its steps are done
 
-> separately, draft an uncommitted plan for composition+refinement and note in the plan where it differs from
-> standard or best practice and where it is unique to TOPAK's choices.
->
-> commit the plan as an undated live doc
+**What this is.** A plan, not a record and not yet a method note. No step of it is built except where one is marked
+done, nothing here is ratified, and every size is a guess. It answers the findings of
+`derived/topak-module-refinement-and-composition-2026.11.21.md` ("the write-up" below) and was prepared by the
+assistant at the custodian's request, against the tree at `ffd02f1`. The custodian asked that each step note where
+it differs from standard or best practice and where it is unique to TOPAK's choices. The state of record for the
+work it plans is the checkpoint's open list (G12 item 56), not this file.
+
+**How it is kept.** It was first committed as an undated draft under `derived/` (`32958b0`) and moved here the same
+day at the custodian's request: a derived document is frozen once it is on `main`, and this one is meant to change.
+A step that is done is marked done where it stands, with the commit. A later revision adds a dated note under the
+step it changes and does not rewrite what was planned, as `proof-method.md` does with its assessments.
 
 **How to read the two notes on each step.** *Standard practice* says what the published TLA+ and verification
 practice does at that point and whether this plan follows it. *TOPAK's choice* says what in the step exists only

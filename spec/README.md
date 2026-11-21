@@ -298,5 +298,11 @@ binding's `check` columns, `manifests/index.tsv`, the sync scripts) read against
 `premise-routes.sh`'s (`specification-graph-results-2026.11.07.txt`; `-2026.11.17.txt`, after Batch 40 and the ten modules added since). `clauses.py` splits a record into the clauses
 that are pinned (ADR-0057 §7).
 
+**`refinement-plan.md`** is a plan and not a method: how `Mechanism.tla`, the one module that states the mechanism
+whole, could be given a free `Next` and linked to the per-property modules by an instance and a mapping checked in
+TLC, what no such mapping carries, what each successor changed from its predecessor, and which assumptions sit at the
+boundaries between components. No step of it is built. It answers
+`derived/topak-module-refinement-and-composition-2026.11.21.md`, and is revised in place as its steps are done.
+
 Every `*-run.sh` and `simulate-run.sh` finds the jar at `../tools/tla2tools.jar` or `$TLA_JAR`; from `spec/` no
 export is needed. TLC writes its metadata under `/tmp/tlc_<name>`.
