@@ -169,17 +169,18 @@ Paxos | EXTENDS Spec | Mut = "none"; N = 3; Values = {1}; Electors = {1,3}; Beat
 Paxos | EXTENDS Spec | Mut = "none"; N = 3; Values = {1,2}; Electors = {1,3}; Beaters = {}; Hosts = {1,3}; Crashers = {}; MaxRound = 1; MaxHand = 1; MaxDup = 0; MaxCrash = 0 | Next |
 Paxos | EXTENDS Spec | Mut = "none"; N = 3; Values = {1}; Electors = {1,3}; Beaters = {}; Hosts = {1}; Crashers = {}; MaxRound = 1; MaxHand = 2; MaxDup = 0; MaxCrash = 0 | Next |
 Paxos | EXTENDS Spec | Mut = "none"; N = 3; Values = {1}; Electors = {1,3}; Beaters = {}; Hosts = {1,3}; Crashers = {}; MaxRound = 1; MaxHand = 2; MaxDup = 0; MaxCrash = 0 | Next |
-# live-gen-results.sh with MechanismFree-rows.txt and MechanismFree-larger-rows.txt: every set of constants their
-# unmutated rows use (MechanismFree-results-2026.11.21.txt, MechanismFree-larger-results-2026.11.21.txt). The bound is
-# the depth: FreeNext needs i < Depth, and below it the generator always has an entry to write (the fleet fence has
-# no guard), so every state with no successor is at i = Depth. The last is the large one, 5,745,577 distinct states.
+# live-gen-results.sh with MechanismFree-rows.txt: every set of constants its unmutated rows use
+# (MechanismFree-results-2026.11.21.txt). The bound is the depth: FreeNext needs i < Depth, and below it the generator
+# always has an entry to write (the fleet fence has no guard), so every state with no successor is at i = Depth.
+# Not here: the one set of MechanismFree-larger-rows.txt, the defaults at Depth = 6 (5,745,577 distinct states). Every
+# run of this module ends at its depth, so every line needs the TerminalAtBound run, which evaluates ENABLED FreeNext
+# in every state; at that size it was stopped after an hour with a sixth of the states done (2026.11.21).
 MechanismFree | EXTENDS Spec | Mut = "none"; InitState = "unused"; Trace = "unused"; Depth = 4; Principals = {"p1","p2"}; GenSeats = {"a1","o1","g1","r1","ro1"}; Artifacts = {"art"}; Steps = {"grant","renew","admit","end","revoke","fence","gates","again"} | FreeNext | i = Depth
 MechanismFree | EXTENDS Spec | Mut = "none"; InitState = "unused"; Trace = "unused"; Depth = 5; Principals = {"p1","p2"}; GenSeats = {"a1","o1","g1","r1","ro1"}; Artifacts = {"art"}; Steps = {"grant","renew","admit","end","revoke","fence","gates","again"} | FreeNext | i = Depth
 MechanismFree | EXTENDS Spec | Mut = "none"; InitState = "unused"; Trace = "unused"; Depth = 6; Principals = {"p1","p2"}; GenSeats = {"r1","ro1"}; Artifacts = {"art"}; Steps = {"grant","renew","admit","end","revoke","fence","gates","again"} | FreeNext | i = Depth
 MechanismFree | EXTENDS Spec | Mut = "none"; InitState = "unused"; Trace = "unused"; Depth = 6; Principals = {"p1"}; GenSeats = {"a1","g1","g2","g3"}; Artifacts = {"art"}; Steps = {"grant","renew","admit","end","revoke","fence","gates","again"} | FreeNext | i = Depth
 MechanismFree | EXTENDS Spec | Mut = "none"; InitState = "unused"; Trace = "unused"; Depth = 4; Principals = {"p1","p2"}; GenSeats = {"a1","o1","g1","g2","g3","r1","ro1"}; Artifacts = {"art"}; Steps = {"grant","renew","admit","end","revoke","fence","gates","again"} | FreeNext | i = Depth
 MechanismFree | EXTENDS Spec | Mut = "none"; InitState = "unused"; Trace = "unused"; Depth = 9; Principals = {"p1"}; GenSeats = {"a1","g1","g2","g3"}; Artifacts = {"art"}; Steps = {"grant","admit","gates"} | FreeNext | i = Depth
-MechanismFree | EXTENDS Spec | Mut = "none"; InitState = "unused"; Trace = "unused"; Depth = 6; Principals = {"p1","p2"}; GenSeats = {"a1","o1","g1","r1","ro1"}; Artifacts = {"art"}; Steps = {"grant","renew","admit","end","revoke","fence","gates","again"} | FreeNext | i = Depth
 # lean/graph-check.sh: its two unmutated rows, through the Dump module it writes.
 Seats | Dump lean/graph-check.sh OnlyThinkersAuthor OneSeatPerPrincipal | Mut = "none" | Next |
 FloorComposition | Dump lean/graph-check.sh AdmitImpliesFloorPermit FloorErrorIsDeny BundleRefusalHonored BundleCannotWriteFloorInputs EnvelopeHolds | Mut = "none" | Next |

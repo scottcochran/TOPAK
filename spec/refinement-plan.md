@@ -309,7 +309,12 @@ states evaluated, in under three minutes. It says no sampled behaviour broke an 
   Rust and through the Lean models, are not built.
 - **A change to the audit.** `deadlock-audit.sh` required a specification written `Init /\ [][Next]_vars` to the
   letter. `Mechanism.tla` already defines `vars`, so this module's are `FreeInit` and `fvars`, and the audit now
-  accepts a prefix on both.
+  accepts a prefix on both. Its six lines for this module are in
+  `deadlock-audit-results-2026.11.21-MechanismFree.txt`: at every set of constants the first results file uses,
+  every state with no successor is at the depth.
+- **The larger run is not audited.** The audit's check evaluates `ENABLED` in every state, and every run of this
+  module needs it, since every behaviour ends at the depth. At 5,745,577 states it was stopped after an hour with a
+  sixth of them done. The argument does not depend on the depth: the fleet fence has no guard.
 
 *What the size above got wrong.* It allowed two to three days for a first run over six kinds. The module, its rows
 and the runs took part of one session. The generator was not the hard part the plan expected: an entry is a
