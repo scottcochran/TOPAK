@@ -108,7 +108,7 @@ reason Step 3 states them afresh.
 2. **Make the replay driver fail.** Its exit status is 0 with an ERROR row (register L-8).
 3. **Done at `18d2e61`.** Line 38 of `spec/README.md` said `Workflow_A1` was not yet proved; it now points at the
    proof module.
-4. **Answer Q1 (§8)**: which composite is of record. Steps 1 to 3 assume the TLA+ one.
+4. **Answer Q1 (§10)**: which composite is of record. Steps 1 to 3 assume the TLA+ one.
 
 - *Standard practice.* Nothing to note: a model that is validated against code is kept in step with it. As the
   drafter recalls them, the MongoDB report describes what keeping the two in step cost, and the CCF one runs its
@@ -117,6 +117,44 @@ reason Step 3 states them afresh.
   is printed in every trace results file, so an edit means a new results file from the generator.
 
 Size: days.
+
+**Note, 2026.11.21: the size, estimated.** *Added at the custodian's request.* About four working days, with a range
+of three to five, for an assistant drafting and the custodian reviewing, as the corpus has worked so far. It is a
+judgement from sizes read in the tree at `e0f49ef`, not a measurement, and it replaces "days" above without
+striking it.
+
+| Part | Work | Estimate |
+|---|---|---|
+| Record the workflow state | `trace.rs` writes the two workflow entries as their kind and id only (lines 488 to 489), and the projected state has no workflow fields. Add both, and add the `traced` helper the other suites have to `tests/workflow.rs`: 18 tests, none traced | 0.5 to 1 day |
+| Model it in `Mechanism.tla` | `WorkflowLoad`, `WorkflowGrant`, the advance that follows every applied entry once a workflow is loaded (`state.rs:931`), and the three hooks in the admit arm (`state.rs:1599`, `:1697`, `:1747`) | 1.5 to 3 days |
+| Replay until it matches | Rerun every trace, correct the model where a step differs, regenerate the results file | 0.5 to 1 day |
+| Make the driver fail (item 2) | `mechanism-trace-run.sh` ends in an unconditional `exit 0` | under an hour |
+| Q1 (item 4) | The custodian's. Not counted | |
+
+*What it rests on.*
+
+- **Earlier catch-ups were quick.** `Mechanism.tla` has five dated results files from 2026.09.30 to 2026.10.05: it
+  was brought up to the code four times in six days. The largest, on 2026.10.05, added 258 lines for labels,
+  operators and the emergency seating.
+- **This one is larger and of another kind.** `workflow.rs` is 1,381 lines, about 800 of them on the `apply` side.
+  At the model's present ratio, 720 lines for the fourteen kinds it handles, that is 400 to 550 new lines: about
+  twice the largest earlier catch-up.
+- **It touches every arm.** The advance runs after every applied entry, so every existing replay path changes and
+  not only the two new kinds.
+
+*What would take it past a week.*
+
+- **The graph.** `Workflow.tla` models one small fixed graph. The operational model needs joins, dead edges and
+  guard evaluation for whatever graph a test loads.
+- **A real divergence.** The first Lean replay failed 25 of 58 traces (ADR-0053 finding 7). A step that differs
+  because the code and the intended rule disagree is a finding for a record, and stops being modelling.
+- **The checks at load.** The estimate takes a definition's parse and its cycle and dominator checks as a trusted
+  input of the trace, as a profile's parse already is. Modelling them adds one to two days.
+
+*What it leaves out.* The ADR-0033 addendum that would cite the new results; the Lean replays, which Step 6 brings
+up to the workflow entries; anything on `main`. One signal is unread: the item has been open since 2026.10.08 and
+was carried through G11 and G12, which may mean it is harder than these sizes suggest, or only that it was not the
+priority.
 
 ## 3. Step 1: a composite that runs
 
@@ -142,6 +180,10 @@ A new module, here called `MechanismFree.tla`, that extends `Mechanism.tla` and 
   The wrapper, in place of an edit, is the freezing habit applied to a module that is only pinned.
 
 Size: one to two weeks, nearly all of it the generator. The state space is unmeasured.
+
+**Note, 2026.11.21.** *Added with the note under Step 0.* The size above stands. As a split: a first useful run
+over the six basic entry kinds (grant, renewal, admit, end of round, revocation, the fleet fence) is perhaps two to
+three days; the other ten kinds, and bringing the state space within reach, are the rest.
 
 ## 4. Step 2: the composite against each slice
 
