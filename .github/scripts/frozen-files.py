@@ -15,7 +15,10 @@ F4  process/*, except process/README.md: the genesis cleanup's dated logs
 F5  manifests/SHA256SUMS*: a manifest measures one commit; index.tsv, README.md and EXCLUDE may change
 F6  every *-results-*.txt, and everything under a *-evidence-* directory: dated, generated, never edited
 F7  a .tla module whose digest at BASE is cited by a decision record whose status is not Proposed: a change is a
-    successor module (spec/README.md)
+    successor module (spec/README.md). The exception is spec/README.md's own: a module whose row in that file's
+    tables ends `Pinned, not frozen` is an operational model that moves with the code (Mechanism.tla, Paxos.tla).
+    Modifying one is reported as a note and is not a violation; deleting or renaming one is. The marking is read
+    from the README as it stands at BASE, so a change cannot exempt a module by marking it in the same change
 F8  decisions/ADR-*.md may not be deleted or renamed; its content changes only by typed History rows, which the
     custodian checks at review and this script does not
 F2 and F6 allow a dated file to change on its own date (the date in its name equals HEAD's commit date), so a
@@ -55,6 +58,24 @@ def cited_digests(base):
     return cited
 
 
+PINNED = "Pinned, not frozen"
+
+
+def pinned_modules(base):
+    """Modules spec/README.md marks `Pinned, not frozen` at BASE: the first cell of a table row names them, in
+    backticks, and the row's last cell carries the marking. Anything else in that file exempts nothing."""
+    try:
+        text = git("show", f"{base}:spec/README.md")
+    except subprocess.CalledProcessError:
+        return set()
+    pinned = set()
+    for line in text.splitlines():
+        cells = line.split("|")
+        if line.startswith("|") and len(cells) >= 4 and PINNED in cells[-2]:
+            pinned.update("spec/" + name for name in re.findall(r"`([A-Za-z0-9_]+\.tla)`", cells[1]))
+    return pinned
+
+
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     override = "--override" in sys.argv
@@ -64,7 +85,7 @@ def main():
     head = args[1]
     rows = git("diff", "--name-status", "-M", base, head).splitlines()
     actions = os.environ.get("GITHUB_ACTIONS") == "true"
-    found, cited = [], None
+    found, notes, cited, pinned = [], [], None, None
     today = git("log", "-1", "--format=%cd", "--date=format:%Y.%m.%d", head).strip()
 
     for row in rows:
@@ -87,7 +108,12 @@ def main():
                         cited = cited_digests(base)
                     digest = hashlib.sha256(git("show", f"{base}:{old}", binary=True)).hexdigest()[:16]
                     if digest in cited:
-                        found.append(("F7", old, f"{old} {verb}: its digest {digest} is cited by a record that is not Proposed; write a successor module"))
+                        if pinned is None:
+                            pinned = pinned_modules(base)
+                        if kind == "M" and old in pinned:
+                            notes.append((old, f"{old} modified: its digest {digest} is cited by a record that is not Proposed, and spec/README.md marks the module `{PINNED}`. The record's digest no longer names the module in the tree"))
+                        else:
+                            found.append(("F7", old, f"{old} {verb}: its digest {digest} is cited by a record that is not Proposed; write a successor module"))
                 if re.match(r"decisions/ADR-\d+\.md$", old) and kind in "DR":
                     found.append(("F8", old, f"{old} {verb}: a record is never removed; supersede or tombstone it"))
 
@@ -99,6 +125,8 @@ def main():
                 if size > MAX_BYTES:
                     found.append(("F9", new, f"{new}: {size} bytes, over the {MAX_BYTES} byte limit"))
 
+    for path, message in notes:
+        print(f"::notice file={path},title=F7 (pinned, not frozen)::{message}" if actions else f"NOTE F7 {message}")
     level = "warning" if override else "error"
     for rule, path, message in found:
         print(f"::{level} file={path},title={rule}::{message}" if actions else f"{level.upper()} {rule} {message}")

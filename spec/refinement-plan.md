@@ -212,6 +212,9 @@ What was missing was the generator running the suite.
   made in place, as the README has it and as the module was changed four times before the check existed. A pull
   request that carries it fails that check until the custodian labels it `frozen-override`, or the check learns
   the README's exception, or the custodian rules that the model should have been a successor module.
+  *2026.11.21, later:* the custodian chose the second. Rule F7 now reads the README's *Pinned, not frozen*
+  marking, as it stands on the base branch, and reports an edit of such a module as a note. Deleting or renaming
+  one is still a violation, and a change cannot mark a module and edit it at once.
 - **A record.** No ADR-0033 addendum cites the run; that is the custodian's. `mechanism/` has moved, so no
   reference manifest measures this tree.
 - **More inputs.** The nine survivors and the unreached paths are an argument for the generated inputs of Step 1

@@ -38,7 +38,7 @@ deletes or renames one fails the `frozen-files` check. Add a new file instead.
 | A derived document, `derived/*.md` other than the README | A new dated document that supersedes it |
 | A results or evidence file, `*-results-*.txt` or a `*-evidence-*` directory | A new dated file from the generating script |
 | A manifest, `manifests/SHA256SUMS*` | A new cut |
-| A TLA+ module whose digest a record that is not Proposed cites | A successor module (`Lease` to `Lease_A1`), with its proof in the same commit (`spec/README.md`) |
+| A TLA+ module whose digest a record that is not Proposed cites | A successor module (`Lease` to `Lease_A1`), with its proof in the same commit (`spec/README.md`). The exception is an operational model that `spec/README.md` marks *Pinned, not frozen* in its table (`Mechanism.tla`, `Paxos.tla`): it moves with the code, so it is edited in place, and the check reports the edit as a note. The marking counts as it stands on the base branch |
 | The narrative archive and the process logs | Nothing; they are closed |
 | A decision record's file | Never deleted or renamed. Its text changes only by typed History rows, in lane 2 |
 

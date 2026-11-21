@@ -4,7 +4,12 @@ TLA+ modules checked in TLC at small constants, each with the mutations that mus
 witnesses that must be violated. **TLC's results are evidence, not proofs** (every checkpoint's §8); since G8 the
 invariants of thirteen modules are also proved, under named hypotheses, by the proof modules below (ADR-0046), and
 neither is a claim about the running reference. A module cited by digest
-in an accepted record is frozen; a change is a successor module (`RulesFloorNV_rev5`, `Lease_A1`). Results files are
+in an accepted record is frozen; a change is a successor module (`RulesFloorNV_rev5`, `Lease_A1`). The exception is
+an operational model of the reference, which moves with the code: its row in the table below ends *Pinned, not
+frozen* (`Mechanism.tla`, `Paxos.tla`), and it is edited in place. The frozen-files check
+(`.github/scripts/frozen-files.py`, rule F7) reads that marking from this file as it stands on the base branch, in
+the last cell of the module's row, and reports such an edit as a note: changing that cell changes what the check
+freezes. Results files are
 hand-assembled TLC output with a dated name and never change; the two generators regenerate one from a row list.
 `tools/tla2tools.jar` is the checker, tracked for its digest, which results files print from 2026.09.30 on.
 
