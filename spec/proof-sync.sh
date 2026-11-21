@@ -56,6 +56,7 @@ for bf in "$here"/*.tla; do
     Lease)          why="frozen and superseded by Lease_A1, which is proved; its invariants are Lease_A1's at rungs 0..2" ;;
     Mechanism)      why="a trace replay, not a transition system with invariants; its target is the refinement (T-0045-28)" ;;
     ConfinementRefinement) why="predicates over Mechanism's replayed trace states, checked on every trace; no Spec of its own (T-0045-28, stage one)" ;;
+    MechanismFree)  why="Mechanism's Apply run over a generator of entries to a depth, checked in TLC: a way to examine the operational model's states, not a mechanism with a theorem of its own (refinement-plan.md, step 1)" ;;
     Paxos)          why="an operational model of the reference's replica, written to be replayed against it (PaxosTrace) and checked in TLC; the safety argument is Voting's (ToO §11.3), which is not written as a module, and this one would refine it" ;;
     PaxosTrace)     why="a trace replay over Paxos's operators, not a transition system with invariants of its own" ;;
     *)              why="NO REASON RECORDED: write the proof or add the reason here"; status=1 ;;

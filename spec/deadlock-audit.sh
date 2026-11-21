@@ -169,6 +169,17 @@ Paxos | EXTENDS Spec | Mut = "none"; N = 3; Values = {1}; Electors = {1,3}; Beat
 Paxos | EXTENDS Spec | Mut = "none"; N = 3; Values = {1,2}; Electors = {1,3}; Beaters = {}; Hosts = {1,3}; Crashers = {}; MaxRound = 1; MaxHand = 1; MaxDup = 0; MaxCrash = 0 | Next |
 Paxos | EXTENDS Spec | Mut = "none"; N = 3; Values = {1}; Electors = {1,3}; Beaters = {}; Hosts = {1}; Crashers = {}; MaxRound = 1; MaxHand = 2; MaxDup = 0; MaxCrash = 0 | Next |
 Paxos | EXTENDS Spec | Mut = "none"; N = 3; Values = {1}; Electors = {1,3}; Beaters = {}; Hosts = {1,3}; Crashers = {}; MaxRound = 1; MaxHand = 2; MaxDup = 0; MaxCrash = 0 | Next |
+# live-gen-results.sh with MechanismFree-rows.txt and MechanismFree-larger-rows.txt: every set of constants their
+# unmutated rows use (MechanismFree-results-2026.11.21.txt, MechanismFree-larger-results-2026.11.21.txt). The bound is
+# the depth: FreeNext needs i < Depth, and below it the generator always has an entry to write (the fleet fence has
+# no guard), so every state with no successor is at i = Depth. The last is the large one, 5,745,577 distinct states.
+MechanismFree | EXTENDS Spec | Mut = "none"; InitState = "unused"; Trace = "unused"; Depth = 4; Principals = {"p1","p2"}; GenSeats = {"a1","o1","g1","r1","ro1"}; Artifacts = {"art"}; Steps = {"grant","renew","admit","end","revoke","fence","gates","again"} | FreeNext | i = Depth
+MechanismFree | EXTENDS Spec | Mut = "none"; InitState = "unused"; Trace = "unused"; Depth = 5; Principals = {"p1","p2"}; GenSeats = {"a1","o1","g1","r1","ro1"}; Artifacts = {"art"}; Steps = {"grant","renew","admit","end","revoke","fence","gates","again"} | FreeNext | i = Depth
+MechanismFree | EXTENDS Spec | Mut = "none"; InitState = "unused"; Trace = "unused"; Depth = 6; Principals = {"p1","p2"}; GenSeats = {"r1","ro1"}; Artifacts = {"art"}; Steps = {"grant","renew","admit","end","revoke","fence","gates","again"} | FreeNext | i = Depth
+MechanismFree | EXTENDS Spec | Mut = "none"; InitState = "unused"; Trace = "unused"; Depth = 6; Principals = {"p1"}; GenSeats = {"a1","g1","g2","g3"}; Artifacts = {"art"}; Steps = {"grant","renew","admit","end","revoke","fence","gates","again"} | FreeNext | i = Depth
+MechanismFree | EXTENDS Spec | Mut = "none"; InitState = "unused"; Trace = "unused"; Depth = 4; Principals = {"p1","p2"}; GenSeats = {"a1","o1","g1","g2","g3","r1","ro1"}; Artifacts = {"art"}; Steps = {"grant","renew","admit","end","revoke","fence","gates","again"} | FreeNext | i = Depth
+MechanismFree | EXTENDS Spec | Mut = "none"; InitState = "unused"; Trace = "unused"; Depth = 9; Principals = {"p1"}; GenSeats = {"a1","g1","g2","g3"}; Artifacts = {"art"}; Steps = {"grant","admit","gates"} | FreeNext | i = Depth
+MechanismFree | EXTENDS Spec | Mut = "none"; InitState = "unused"; Trace = "unused"; Depth = 6; Principals = {"p1","p2"}; GenSeats = {"a1","o1","g1","r1","ro1"}; Artifacts = {"art"}; Steps = {"grant","renew","admit","end","revoke","fence","gates","again"} | FreeNext | i = Depth
 # lean/graph-check.sh: its two unmutated rows, through the Dump module it writes.
 Seats | Dump lean/graph-check.sh OnlyThinkersAuthor OneSeatPerPrincipal | Mut = "none" | Next |
 FloorComposition | Dump lean/graph-check.sh AdmitImpliesFloorPermit FloorErrorIsDeny BundleRefusalHonored BundleCannotWriteFloorInputs EnvelopeHolds | Mut = "none" | Next |
@@ -202,7 +213,7 @@ toollist-run.sh, toollist-gen-results.sh | ToolList
 operators-run.sh, operators-gen-results.sh | Operators
 correlator-run.sh, correlator-gen-results.sh | Correlator
 labels-run.sh, labels-gen-results.sh | Labels
-live-gen-results.sh | Coupling_live Emergency_live Federation Membership Intent Alone Outstanding PlaneClock Peer Release Paxos
+live-gen-results.sh | Coupling_live Emergency_live Federation Membership Intent Alone Outstanding PlaneClock Peer Release Paxos MechanismFree
 mesh-run.sh, mesh-gen-results.sh | Mesh
 workflow-run.sh, workflow-gen-results.sh | Workflow Workflow_A1
 lean/graph-check.sh | SeatsDump FloorCompositionDump
@@ -297,7 +308,9 @@ while IFS='|' read -r mod inst rc next atb; do
     "EXTENDS "*)
       spec=${inst#EXTENDS }; base=$mod; key=$mod
       label=$mod; [ "$spec" = Spec ] || label="$mod ($spec)"
-      grep -qE "^$spec *== *Init /\\\\ \\[\\]\\[$next\\]_vars" "$mod.tla" || {
+      # The initial predicate and the subscript may carry a prefix (MechanismFree's FreeInit and fvars: the module
+      # it extends has a `vars` of its own); what is checked is that the row's relation is the specification's.
+      grep -qE "^$spec *== *[A-Za-z0-9_]*Init /\\\\ \\[\\]\\[$next\\]_[A-Za-z0-9_]*vars" "$mod.tla" || {
         echo "$label | $shown | ERROR: $mod.tla has no $spec == Init /\\ [][$next]_vars"; echo "$key	error" >> "$tmp/lines"
         nerr=$((nerr + 1)); continue; } ;;
     "Dump "*)

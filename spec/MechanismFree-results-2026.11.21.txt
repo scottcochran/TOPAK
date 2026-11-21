@@ -1,0 +1,5436 @@
+TOPAK — MechanismFree.tla (ADR-0045 T-0045-28; refinement-plan.md, step 1): Mechanism.tla run freely over a generator of entries, TLC results 2026.11.21
+Module: MechanismFree.tla (sha256 70eae918b4a4d456) · extends Mechanism.tla (sha256 5c720eac9e6d41e5) · ConfinementRefinement.tla (sha256 27e47bf343d0794d) · TLC Version 2.19 of 08 August 2024 (jar sha256 936a262061c91469) · openjdk version "21.0.13.0.3" 2026-10-24
+Runner: live-gen-results.sh (sha256 b4d8857ad6fb6081) · rows: MechanismFree-rows.txt (sha256 742757d99bdc2161) · InitState = "unused" · Trace = "unused" · Depth = 4 · Principals = {"p1","p2"} · GenSeats = {"a1","o1","g1","r1","ro1"} · Artifacts = {"art"} · Steps = {"grant","renew","admit","end","revoke","fence","gates","again"} unless the row says otherwise · TLC -workers 1 -fp 0, with -deadlock except on a DEADLOCK row
+expected: none: TypeOK, Indexed and ConfinementRefined HOLD of every state the generator reaches, to four entries at the defaults (both cells and one grant seat, two principals), to five, to six in one cell at a time, and to nine with the generator narrowed to grants, admits and gate attestations; a state with no successor is at the depth; every witness of something the generator reaches is VIOLATED, and the two of what it does not reach HOLD; M_NOGRANT: with no grant offered, the witnesses that need a lease HOLD
+
+=== s-type · Mut=none · InitState="unused" Trace="unused" Depth=4 Principals={"p1","p2"} GenSeats={"a1","o1","g1","r1","ro1"} Artifacts={"art"} Steps={"grant","renew","admit","end","revoke","fence","gates","again"} · SPECIFICATION Spec · INVARIANT TypeOK
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.3E-10
+  based on the actual fingerprints:  val = 5.0E-11
+146475 states generated, 40486 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 20 and the 95th percentile is 14).
+Finished in 06s at (2026-11-21 09:13:48)
+→ HOLDS (expected HOLDS: as expected) · 40486 distinct states (expected 40486: as expected)
+
+=== s-indexed · Mut=none · InitState="unused" Trace="unused" Depth=4 Principals={"p1","p2"} GenSeats={"a1","o1","g1","r1","ro1"} Artifacts={"art"} Steps={"grant","renew","admit","end","revoke","fence","gates","again"} · SPECIFICATION Spec · INVARIANT Indexed
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.3E-10
+  based on the actual fingerprints:  val = 5.0E-11
+146475 states generated, 40486 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 20 and the 95th percentile is 14).
+Finished in 06s at (2026-11-21 09:13:55)
+→ HOLDS (expected HOLDS: as expected) · 40486 distinct states (expected 40486: as expected)
+
+=== s-confinement · Mut=none · InitState="unused" Trace="unused" Depth=4 Principals={"p1","p2"} GenSeats={"a1","o1","g1","r1","ro1"} Artifacts={"art"} Steps={"grant","renew","admit","end","revoke","fence","gates","again"} · SPECIFICATION Spec · INVARIANT ConfinementRefined
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.3E-10
+  based on the actual fingerprints:  val = 5.0E-11
+146475 states generated, 40486 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 20 and the 95th percentile is 14).
+Finished in 06s at (2026-11-21 09:14:03)
+→ HOLDS (expected HOLDS: as expected) · 40486 distinct states (expected 40486: as expected)
+
+=== s-depth5 · Mut=none · InitState="unused" Trace="unused" Depth=5 Principals={"p1","p2"} GenSeats={"a1","o1","g1","r1","ro1"} Artifacts={"art"} Steps={"grant","renew","admit","end","revoke","fence","gates","again"} · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 4.2E-8
+  based on the actual fingerprints:  val = 1.0E-8
+2060318 states generated, 488841 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 6.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 21 and the 95th percentile is 13).
+Finished in 01min 20s at (2026-11-21 09:15:24)
+→ HOLDS (expected HOLDS: as expected) · 488841 distinct states (expected 488841: as expected)
+
+=== s-run6 · Mut=none · InitState="unused" Trace="unused" Depth=6 Principals={"p1","p2"} GenSeats={"r1","ro1"} Artifacts={"art"} Steps={"grant","renew","admit","end","revoke","fence","gates","again"} · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 8.1E-8
+  based on the actual fingerprints:  val = 4.8E-8
+2860803 states generated, 683475 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 21 and the 95th percentile is 10).
+Finished in 01min 51s at (2026-11-21 09:17:16)
+→ HOLDS (expected HOLDS: as expected) · 683475 distinct states (expected 683475: as expected)
+
+=== s-build6 · Mut=none · InitState="unused" Trace="unused" Depth=6 Principals={"p1"} GenSeats={"a1","g1","g2","g3"} Artifacts={"art"} Steps={"grant","renew","admit","end","revoke","fence","gates","again"} · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.0E-8
+  based on the actual fingerprints:  val = 1.2E-5
+1010589 states generated, 254621 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 11 and the 95th percentile is 9).
+Finished in 35s at (2026-11-21 09:17:52)
+→ HOLDS (expected HOLDS: as expected) · 254621 distinct states (expected 254621: as expected)
+
+=== s-seven · Mut=none · InitState="unused" Trace="unused" Depth=4 Principals={"p1","p2"} GenSeats={"a1","o1","g1","g2","g3","r1","ro1"} Artifacts={"art"} Steps={"grant","renew","admit","end","revoke","fence","gates","again"} · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 9.1E-10
+  based on the actual fingerprints:  val = 1.5E-10
+296023 states generated, 76238 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 20 and the 95th percentile is 14).
+Finished in 13s at (2026-11-21 09:18:06)
+→ HOLDS (expected HOLDS: as expected) · 76238 distinct states (expected 76238: as expected)
+
+=== s-promo9 · Mut=none · InitState="unused" Trace="unused" Depth=9 Principals={"p1"} GenSeats={"a1","g1","g2","g3"} Artifacts={"art"} Steps={"grant","admit","gates"} · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 1.4E-9
+  based on the actual fingerprints:  val = 1.5E-9
+483801 states generated, 59400 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 10.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 6 and the 95th percentile is 6).
+Finished in 18s at (2026-11-21 09:18:25)
+→ HOLDS (expected HOLDS: as expected) · 59400 distinct states (expected 59400: as expected)
+
+=== d-atdepth · Mut=none · InitState="unused" Trace="unused" Depth=4 Principals={"p1","p2"} GenSeats={"a1","o1","g1","r1","ro1"} Artifacts={"art"} Steps={"grant","renew","admit","end","revoke","fence","gates","again"} · SPECIFICATION Spec · INVARIANT TerminalAtDepth
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.3E-10
+  based on the actual fingerprints:  val = 5.0E-11
+146475 states generated, 40486 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 20 and the 95th percentile is 14).
+Finished in 37s at (2026-11-21 09:19:03)
+→ HOLDS (expected HOLDS: as expected) · 40486 distinct states (expected 40486: as expected)
+
+=== w-granted · Mut=none · InitState="unused" Trace="unused" Depth=4 Principals={"p1","p2"} GenSeats={"a1","o1","g1","r1","ro1"} Artifacts={"art"} Steps={"grant","renew","admit","end","revoke","fence","gates","again"} · SPECIFICATION Spec · INVARIANT NeverGranted
+Error: Invariant NeverGranted is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ i = 0
+/\ last = "none"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |-> << >>,
+  lastLease |-> << >>,
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |-> << >>,
+  liveBySeat |-> << >>,
+  lastRound |-> << >>,
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {},
+  lastApplied |-> 0,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 2: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 1
+/\ last = "LeaseGranted"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |->
+      [ a1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "author",
+              taskLabels |-> {} ] ],
+  lastLease |-> [a1 |-> 1],
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |->
+      << [ rung |-> 0,
+           epoch |-> 0,
+           rulesEpoch |-> 0,
+           seat |-> "a1",
+           alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+           round |-> 1,
+           principal |-> "p1",
+           persona |-> "persona",
+           bundle |-> "bundle",
+           conf |-> "conf",
+           ttl |-> 1000,
+           role |-> "author",
+           clearSet |-> {},
+           ended |-> "none",
+           actions |-> 0,
+           seq |-> 0,
+           results |-> << >>,
+           att |-> "none",
+           person |-> "none",
+           sessionCtr |-> 0,
+           consults |-> << >>,
+           envelope |-> << >> ] >>,
+  liveBySeat |-> [a1 |-> 1],
+  lastRound |-> [a1 |-> 1],
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"1"},
+  lastApplied |-> 1,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+2 states generated, 2 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 00s at (2026-11-21 09:19:04)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-renewed · Mut=none · InitState="unused" Trace="unused" Depth=4 Principals={"p1","p2"} GenSeats={"a1","o1","g1","r1","ro1"} Artifacts={"art"} Steps={"grant","renew","admit","end","revoke","fence","gates","again"} · SPECIFICATION Spec · INVARIANT NeverRenewed
+Error: Invariant NeverRenewed is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ i = 0
+/\ last = "none"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |-> << >>,
+  lastLease |-> << >>,
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |-> << >>,
+  liveBySeat |-> << >>,
+  lastRound |-> << >>,
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {},
+  lastApplied |-> 0,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 2: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 1
+/\ last = "LeaseGranted"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |->
+      [ a1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "author",
+              taskLabels |-> {} ] ],
+  lastLease |-> [a1 |-> 1],
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |->
+      << [ rung |-> 0,
+           epoch |-> 0,
+           rulesEpoch |-> 0,
+           seat |-> "a1",
+           alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+           round |-> 1,
+           principal |-> "p1",
+           persona |-> "persona",
+           bundle |-> "bundle",
+           conf |-> "conf",
+           ttl |-> 1000,
+           role |-> "author",
+           clearSet |-> {},
+           ended |-> "none",
+           actions |-> 0,
+           seq |-> 0,
+           results |-> << >>,
+           att |-> "none",
+           person |-> "none",
+           sessionCtr |-> 0,
+           consults |-> << >>,
+           envelope |-> << >> ] >>,
+  liveBySeat |-> [a1 |-> 1],
+  lastRound |-> [a1 |-> 1],
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"1"},
+  lastApplied |-> 1,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 3: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 2
+/\ last = "Renewed"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |->
+      [ a1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "author",
+              taskLabels |-> {} ] ],
+  lastLease |-> [a1 |-> 2],
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |->
+      << [ rung |-> 0,
+           epoch |-> 0,
+           rulesEpoch |-> 0,
+           seat |-> "a1",
+           alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+           round |-> 1,
+           principal |-> "p1",
+           persona |-> "persona",
+           bundle |-> "bundle",
+           conf |-> "conf",
+           ttl |-> 1000,
+           role |-> "author",
+           clearSet |-> {},
+           ended |-> "renewed",
+           actions |-> 0,
+           seq |-> 0,
+           results |-> << >>,
+           att |-> "none",
+           person |-> "none",
+           sessionCtr |-> 0,
+           consults |-> << >>,
+           envelope |-> << >> ],
+         [ rung |-> 0,
+           epoch |-> 0,
+           rulesEpoch |-> 0,
+           seat |-> "a1",
+           alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+           round |-> 1,
+           principal |-> "p1",
+           persona |-> "persona",
+           bundle |-> "bundle",
+           conf |-> "conf",
+           ttl |-> 1000,
+           role |-> "author",
+           clearSet |-> {},
+           ended |-> "none",
+           actions |-> 0,
+           seq |-> 0,
+           results |-> << >>,
+           att |-> "none",
+           person |-> "none",
+           sessionCtr |-> 0,
+           consults |-> << >>,
+           envelope |-> << >> ] >>,
+  liveBySeat |-> [a1 |-> 2],
+  lastRound |-> [a1 |-> 1],
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"2", "1"},
+  lastApplied |-> 2,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+50 states generated, 22 distinct states found, 19 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 15 (minimum is 15, the maximum 15 and the 95th percentile is 15).
+Finished in 01s at (2026-11-21 09:19:05)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-admitted · Mut=none · InitState="unused" Trace="unused" Depth=4 Principals={"p1","p2"} GenSeats={"a1","o1","g1","r1","ro1"} Artifacts={"art"} Steps={"grant","renew","admit","end","revoke","fence","gates","again"} · SPECIFICATION Spec · INVARIANT NeverAdmitted
+Error: Invariant NeverAdmitted is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ i = 0
+/\ last = "none"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |-> << >>,
+  lastLease |-> << >>,
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |-> << >>,
+  liveBySeat |-> << >>,
+  lastRound |-> << >>,
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {},
+  lastApplied |-> 0,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 2: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 1
+/\ last = "LeaseGranted"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |->
+      [ a1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "author",
+              taskLabels |-> {} ] ],
+  lastLease |-> [a1 |-> 1],
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |->
+      << [ rung |-> 0,
+           epoch |-> 0,
+           rulesEpoch |-> 0,
+           seat |-> "a1",
+           alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+           round |-> 1,
+           principal |-> "p1",
+           persona |-> "persona",
+           bundle |-> "bundle",
+           conf |-> "conf",
+           ttl |-> 1000,
+           role |-> "author",
+           clearSet |-> {},
+           ended |-> "none",
+           actions |-> 0,
+           seq |-> 0,
+           results |-> << >>,
+           att |-> "none",
+           person |-> "none",
+           sessionCtr |-> 0,
+           consults |-> << >>,
+           envelope |-> << >> ] >>,
+  liveBySeat |-> [a1 |-> 1],
+  lastRound |-> [a1 |-> 1],
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"1"},
+  lastApplied |-> 1,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 3: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 2
+/\ last = "Admitted"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |->
+      [ a1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "author",
+              taskLabels |-> {} ] ],
+  lastLease |-> [a1 |-> 1],
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |->
+      << [ rung |-> 0,
+           epoch |-> 0,
+           rulesEpoch |-> 0,
+           seat |-> "a1",
+           alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+           round |-> 1,
+           principal |-> "p1",
+           persona |-> "persona",
+           bundle |-> "bundle",
+           conf |-> "conf",
+           ttl |-> 1000,
+           role |-> "author",
+           clearSet |-> {},
+           ended |-> "none",
+           actions |-> 1,
+           seq |-> 0,
+           results |-> << >>,
+           att |-> "none",
+           person |-> "none",
+           sessionCtr |-> 0,
+           consults |-> << >>,
+           envelope |-> << >> ] >>,
+  liveBySeat |-> [a1 |-> 1],
+  lastRound |-> [a1 |-> 1],
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"2", "1"},
+  lastApplied |-> 2,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+52 states generated, 23 distinct states found, 20 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 15 (minimum is 15, the maximum 15 and the 95th percentile is 15).
+Finished in 00s at (2026-11-21 09:19:07)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-ended · Mut=none · InitState="unused" Trace="unused" Depth=4 Principals={"p1","p2"} GenSeats={"a1","o1","g1","r1","ro1"} Artifacts={"art"} Steps={"grant","renew","admit","end","revoke","fence","gates","again"} · SPECIFICATION Spec · INVARIANT NeverRoundEnded
+Error: Invariant NeverRoundEnded is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ i = 0
+/\ last = "none"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |-> << >>,
+  lastLease |-> << >>,
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |-> << >>,
+  liveBySeat |-> << >>,
+  lastRound |-> << >>,
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {},
+  lastApplied |-> 0,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 2: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 1
+/\ last = "LeaseGranted"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |->
+      [ a1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "author",
+              taskLabels |-> {} ] ],
+  lastLease |-> [a1 |-> 1],
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |->
+      << [ rung |-> 0,
+           epoch |-> 0,
+           rulesEpoch |-> 0,
+           seat |-> "a1",
+           alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+           round |-> 1,
+           principal |-> "p1",
+           persona |-> "persona",
+           bundle |-> "bundle",
+           conf |-> "conf",
+           ttl |-> 1000,
+           role |-> "author",
+           clearSet |-> {},
+           ended |-> "none",
+           actions |-> 0,
+           seq |-> 0,
+           results |-> << >>,
+           att |-> "none",
+           person |-> "none",
+           sessionCtr |-> 0,
+           consults |-> << >>,
+           envelope |-> << >> ] >>,
+  liveBySeat |-> [a1 |-> 1],
+  lastRound |-> [a1 |-> 1],
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"1"},
+  lastApplied |-> 1,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 3: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 2
+/\ last = "RoundEnded"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |->
+      [ a1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "author",
+              taskLabels |-> {} ] ],
+  lastLease |-> [a1 |-> 1],
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |->
+      << [ rung |-> 0,
+           epoch |-> 0,
+           rulesEpoch |-> 0,
+           seat |-> "a1",
+           alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+           round |-> 1,
+           principal |-> "p1",
+           persona |-> "persona",
+           bundle |-> "bundle",
+           conf |-> "conf",
+           ttl |-> 1000,
+           role |-> "author",
+           clearSet |-> {},
+           ended |-> "abstained",
+           actions |-> 0,
+           seq |-> 0,
+           results |-> << >>,
+           att |-> "none",
+           person |-> "none",
+           sessionCtr |-> 0,
+           consults |-> << >>,
+           envelope |-> << >> ] >>,
+  liveBySeat |-> << >>,
+  lastRound |-> [a1 |-> 1],
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"2", "1"},
+  lastApplied |-> 2,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> [a1 |-> [topic |-> <<"a1", 0, 1>>, seq |-> 0]],
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+57 states generated, 26 distinct states found, 23 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 15 (minimum is 15, the maximum 15 and the 95th percentile is 15).
+Finished in 00s at (2026-11-21 09:19:08)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-revoked · Mut=none · InitState="unused" Trace="unused" Depth=4 Principals={"p1","p2"} GenSeats={"a1","o1","g1","r1","ro1"} Artifacts={"art"} Steps={"grant","renew","admit","end","revoke","fence","gates","again"} · SPECIFICATION Spec · INVARIANT NeverRevoked
+Error: Invariant NeverRevoked is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ i = 0
+/\ last = "none"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |-> << >>,
+  lastLease |-> << >>,
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |-> << >>,
+  liveBySeat |-> << >>,
+  lastRound |-> << >>,
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {},
+  lastApplied |-> 0,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 2: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 1
+/\ last = "Revoked"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |-> << >>,
+  lastLease |-> << >>,
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |-> << >>,
+  liveBySeat |-> << >>,
+  lastRound |-> << >>,
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {[kind |-> "principal", id |-> "p1"]},
+  appliedIds |-> {"1"},
+  lastApplied |-> 1,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+22 states generated, 13 distinct states found, 11 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 01s at (2026-11-21 09:19:09)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-fenced · Mut=none · InitState="unused" Trace="unused" Depth=4 Principals={"p1","p2"} GenSeats={"a1","o1","g1","r1","ro1"} Artifacts={"art"} Steps={"grant","renew","admit","end","revoke","fence","gates","again"} · SPECIFICATION Spec · INVARIANT NeverFenced
+Error: Invariant NeverFenced is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ i = 0
+/\ last = "none"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |-> << >>,
+  lastLease |-> << >>,
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |-> << >>,
+  liveBySeat |-> << >>,
+  lastRound |-> << >>,
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {},
+  lastApplied |-> 0,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 2: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 1
+/\ last = "EpochIncremented"
+/\ st = [ gates |-> << >>,
+  epoch |-> 1,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |-> << >>,
+  lastLease |-> << >>,
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |-> << >>,
+  liveBySeat |-> << >>,
+  lastRound |-> << >>,
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"1"},
+  lastApplied |-> 1,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+24 states generated, 15 distinct states found, 13 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 00s at (2026-11-21 09:19:11)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-gated · Mut=none · InitState="unused" Trace="unused" Depth=4 Principals={"p1","p2"} GenSeats={"a1","o1","g1","r1","ro1"} Artifacts={"art"} Steps={"grant","renew","admit","end","revoke","fence","gates","again"} · SPECIFICATION Spec · INVARIANT NeverGated
+Error: Invariant NeverGated is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ i = 0
+/\ last = "none"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |-> << >>,
+  lastLease |-> << >>,
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |-> << >>,
+  liveBySeat |-> << >>,
+  lastRound |-> << >>,
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {},
+  lastApplied |-> 0,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 2: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 1
+/\ last = "GatesRecorded"
+/\ st = [ gates |-> [art |-> "evidence"],
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |-> << >>,
+  lastLease |-> << >>,
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |-> << >>,
+  liveBySeat |-> << >>,
+  lastRound |-> << >>,
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"1"},
+  lastApplied |-> 1,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+25 states generated, 16 distinct states found, 14 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 00s at (2026-11-21 09:19:12)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-rejected · Mut=none · InitState="unused" Trace="unused" Depth=4 Principals={"p1","p2"} GenSeats={"a1","o1","g1","r1","ro1"} Artifacts={"art"} Steps={"grant","renew","admit","end","revoke","fence","gates","again"} · SPECIFICATION Spec · INVARIANT NeverRejected
+Error: Invariant NeverRejected is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ i = 0
+/\ last = "none"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |-> << >>,
+  lastLease |-> << >>,
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |-> << >>,
+  liveBySeat |-> << >>,
+  lastRound |-> << >>,
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {},
+  lastApplied |-> 0,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 2: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 1
+/\ last = "Rejected"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |-> << >>,
+  lastLease |-> << >>,
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |-> << >>,
+  liveBySeat |-> << >>,
+  lastRound |-> << >>,
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"1"},
+  lastApplied |-> 1,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+3 states generated, 3 distinct states found, 1 states left on queue.
+The depth of the complete state graph search is 2.
+Finished in 00s at (2026-11-21 09:19:13)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-duplicate · Mut=none · InitState="unused" Trace="unused" Depth=4 Principals={"p1","p2"} GenSeats={"a1","o1","g1","r1","ro1"} Artifacts={"art"} Steps={"grant","renew","admit","end","revoke","fence","gates","again"} · SPECIFICATION Spec · INVARIANT NeverDuplicate
+Error: Invariant NeverDuplicate is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ i = 0
+/\ last = "none"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |-> << >>,
+  lastLease |-> << >>,
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |-> << >>,
+  liveBySeat |-> << >>,
+  lastRound |-> << >>,
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {},
+  lastApplied |-> 0,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 2: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 1
+/\ last = "LeaseGranted"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |->
+      [ a1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "author",
+              taskLabels |-> {} ] ],
+  lastLease |-> [a1 |-> 1],
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |->
+      << [ rung |-> 0,
+           epoch |-> 0,
+           rulesEpoch |-> 0,
+           seat |-> "a1",
+           alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+           round |-> 1,
+           principal |-> "p1",
+           persona |-> "persona",
+           bundle |-> "bundle",
+           conf |-> "conf",
+           ttl |-> 1000,
+           role |-> "author",
+           clearSet |-> {},
+           ended |-> "none",
+           actions |-> 0,
+           seq |-> 0,
+           results |-> << >>,
+           att |-> "none",
+           person |-> "none",
+           sessionCtr |-> 0,
+           consults |-> << >>,
+           envelope |-> << >> ] >>,
+  liveBySeat |-> [a1 |-> 1],
+  lastRound |-> [a1 |-> 1],
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"1"},
+  lastApplied |-> 1,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 3: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 2
+/\ last = "Duplicate"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |->
+      [ a1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "author",
+              taskLabels |-> {} ] ],
+  lastLease |-> [a1 |-> 1],
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |->
+      << [ rung |-> 0,
+           epoch |-> 0,
+           rulesEpoch |-> 0,
+           seat |-> "a1",
+           alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+           round |-> 1,
+           principal |-> "p1",
+           persona |-> "persona",
+           bundle |-> "bundle",
+           conf |-> "conf",
+           ttl |-> 1000,
+           role |-> "author",
+           clearSet |-> {},
+           ended |-> "none",
+           actions |-> 0,
+           seq |-> 0,
+           results |-> << >>,
+           att |-> "none",
+           person |-> "none",
+           sessionCtr |-> 0,
+           consults |-> << >>,
+           envelope |-> << >> ] >>,
+  liveBySeat |-> [a1 |-> 1],
+  lastRound |-> [a1 |-> 1],
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"1"},
+  lastApplied |-> 2,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+63 states generated, 32 distinct states found, 29 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 15 (minimum is 15, the maximum 15 and the 95th percentile is 15).
+Finished in 00s at (2026-11-21 09:19:15)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-sealed · Mut=none · InitState="unused" Trace="unused" Depth=4 Principals={"p1","p2"} GenSeats={"a1","o1","g1","r1","ro1"} Artifacts={"art"} Steps={"grant","renew","admit","end","revoke","fence","gates","again"} · SPECIFICATION Spec · INVARIANT NeverSealed
+Error: Invariant NeverSealed is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ i = 0
+/\ last = "none"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |-> << >>,
+  lastLease |-> << >>,
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |-> << >>,
+  liveBySeat |-> << >>,
+  lastRound |-> << >>,
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {},
+  lastApplied |-> 0,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 2: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 1
+/\ last = "LeaseGranted"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |->
+      [ a1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "author",
+              taskLabels |-> {} ] ],
+  lastLease |-> [a1 |-> 1],
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |->
+      << [ rung |-> 0,
+           epoch |-> 0,
+           rulesEpoch |-> 0,
+           seat |-> "a1",
+           alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+           round |-> 1,
+           principal |-> "p1",
+           persona |-> "persona",
+           bundle |-> "bundle",
+           conf |-> "conf",
+           ttl |-> 1000,
+           role |-> "author",
+           clearSet |-> {},
+           ended |-> "none",
+           actions |-> 0,
+           seq |-> 0,
+           results |-> << >>,
+           att |-> "none",
+           person |-> "none",
+           sessionCtr |-> 0,
+           consults |-> << >>,
+           envelope |-> << >> ] >>,
+  liveBySeat |-> [a1 |-> 1],
+  lastRound |-> [a1 |-> 1],
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"1"},
+  lastApplied |-> 1,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 3: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 2
+/\ last = "Admitted"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |->
+      [ a1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "author",
+              taskLabels |-> {} ] ],
+  lastLease |-> [a1 |-> 1],
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |->
+      << [ rung |-> 0,
+           epoch |-> 0,
+           rulesEpoch |-> 0,
+           seat |-> "a1",
+           alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+           round |-> 1,
+           principal |-> "p1",
+           persona |-> "persona",
+           bundle |-> "bundle",
+           conf |-> "conf",
+           ttl |-> 1000,
+           role |-> "author",
+           clearSet |-> {},
+           ended |-> "submitted",
+           actions |-> 1,
+           seq |-> 0,
+           results |-> << >>,
+           att |-> "none",
+           person |-> "none",
+           sessionCtr |-> 0,
+           consults |-> << >>,
+           envelope |-> << >> ] >>,
+  liveBySeat |-> << >>,
+  lastRound |-> [a1 |-> 1],
+  candidates |->
+      [ art |->
+            [ artifact |-> "art",
+              author |-> "a1",
+              votes |-> << >>,
+              promotedAt |-> "none" ] ],
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"2", "1"},
+  lastApplied |-> 2,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> [a1 |-> [topic |-> <<"a1", 0, 1>>, seq |-> 0]],
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+55 states generated, 25 distinct states found, 22 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 15 (minimum is 15, the maximum 15 and the 95th percentile is 15).
+Finished in 01s at (2026-11-21 09:19:16)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-candidate · Mut=none · InitState="unused" Trace="unused" Depth=4 Principals={"p1","p2"} GenSeats={"a1","o1","g1","r1","ro1"} Artifacts={"art"} Steps={"grant","renew","admit","end","revoke","fence","gates","again"} · SPECIFICATION Spec · INVARIANT NeverCandidate
+Error: Invariant NeverCandidate is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ i = 0
+/\ last = "none"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |-> << >>,
+  lastLease |-> << >>,
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |-> << >>,
+  liveBySeat |-> << >>,
+  lastRound |-> << >>,
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {},
+  lastApplied |-> 0,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 2: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 1
+/\ last = "LeaseGranted"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |->
+      [ a1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "author",
+              taskLabels |-> {} ] ],
+  lastLease |-> [a1 |-> 1],
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |->
+      << [ rung |-> 0,
+           epoch |-> 0,
+           rulesEpoch |-> 0,
+           seat |-> "a1",
+           alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+           round |-> 1,
+           principal |-> "p1",
+           persona |-> "persona",
+           bundle |-> "bundle",
+           conf |-> "conf",
+           ttl |-> 1000,
+           role |-> "author",
+           clearSet |-> {},
+           ended |-> "none",
+           actions |-> 0,
+           seq |-> 0,
+           results |-> << >>,
+           att |-> "none",
+           person |-> "none",
+           sessionCtr |-> 0,
+           consults |-> << >>,
+           envelope |-> << >> ] >>,
+  liveBySeat |-> [a1 |-> 1],
+  lastRound |-> [a1 |-> 1],
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"1"},
+  lastApplied |-> 1,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 3: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 2
+/\ last = "Admitted"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |->
+      [ a1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "author",
+              taskLabels |-> {} ] ],
+  lastLease |-> [a1 |-> 1],
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |->
+      << [ rung |-> 0,
+           epoch |-> 0,
+           rulesEpoch |-> 0,
+           seat |-> "a1",
+           alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+           round |-> 1,
+           principal |-> "p1",
+           persona |-> "persona",
+           bundle |-> "bundle",
+           conf |-> "conf",
+           ttl |-> 1000,
+           role |-> "author",
+           clearSet |-> {},
+           ended |-> "submitted",
+           actions |-> 1,
+           seq |-> 0,
+           results |-> << >>,
+           att |-> "none",
+           person |-> "none",
+           sessionCtr |-> 0,
+           consults |-> << >>,
+           envelope |-> << >> ] >>,
+  liveBySeat |-> << >>,
+  lastRound |-> [a1 |-> 1],
+  candidates |->
+      [ art |->
+            [ artifact |-> "art",
+              author |-> "a1",
+              votes |-> << >>,
+              promotedAt |-> "none" ] ],
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"2", "1"},
+  lastApplied |-> 2,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> [a1 |-> [topic |-> <<"a1", 0, 1>>, seq |-> 0]],
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+55 states generated, 25 distinct states found, 22 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 15 (minimum is 15, the maximum 15 and the 95th percentile is 15).
+Finished in 00s at (2026-11-21 09:19:17)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-marked · Mut=none · InitState="unused" Trace="unused" Depth=4 Principals={"p1","p2"} GenSeats={"a1","o1","g1","r1","ro1"} Artifacts={"art"} Steps={"grant","renew","admit","end","revoke","fence","gates","again"} · SPECIFICATION Spec · INVARIANT NeverMarked
+Error: Invariant NeverMarked is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ i = 0
+/\ last = "none"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |-> << >>,
+  lastLease |-> << >>,
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |-> << >>,
+  liveBySeat |-> << >>,
+  lastRound |-> << >>,
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {},
+  lastApplied |-> 0,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 2: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 1
+/\ last = "LeaseGranted"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |->
+      [ a1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "author",
+              taskLabels |-> {} ] ],
+  lastLease |-> [a1 |-> 1],
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |->
+      << [ rung |-> 0,
+           epoch |-> 0,
+           rulesEpoch |-> 0,
+           seat |-> "a1",
+           alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+           round |-> 1,
+           principal |-> "p1",
+           persona |-> "persona",
+           bundle |-> "bundle",
+           conf |-> "conf",
+           ttl |-> 1000,
+           role |-> "author",
+           clearSet |-> {},
+           ended |-> "none",
+           actions |-> 0,
+           seq |-> 0,
+           results |-> << >>,
+           att |-> "none",
+           person |-> "none",
+           sessionCtr |-> 0,
+           consults |-> << >>,
+           envelope |-> << >> ] >>,
+  liveBySeat |-> [a1 |-> 1],
+  lastRound |-> [a1 |-> 1],
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"1"},
+  lastApplied |-> 1,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 3: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 2
+/\ last = "LeaseGranted"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |->
+      [ a1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "author",
+              taskLabels |-> {} ],
+        o1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Emit", "Vote"},
+              principal |-> "p2",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "voter",
+              taskLabels |-> {} ] ],
+  lastLease |-> [a1 |-> 1, o1 |-> 2],
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |->
+      << [ rung |-> 0,
+           epoch |-> 0,
+           rulesEpoch |-> 0,
+           seat |-> "a1",
+           alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+           round |-> 1,
+           principal |-> "p1",
+           persona |-> "persona",
+           bundle |-> "bundle",
+           conf |-> "conf",
+           ttl |-> 1000,
+           role |-> "author",
+           clearSet |-> {},
+           ended |-> "none",
+           actions |-> 0,
+           seq |-> 0,
+           results |-> << >>,
+           att |-> "none",
+           person |-> "none",
+           sessionCtr |-> 0,
+           consults |-> << >>,
+           envelope |-> << >> ],
+         [ rung |-> 0,
+           epoch |-> 0,
+           rulesEpoch |-> 0,
+           seat |-> "o1",
+           alphabet |-> {"Read", "Emit", "Vote"},
+           round |-> 1,
+           principal |-> "p2",
+           persona |-> "persona",
+           bundle |-> "bundle",
+           conf |-> "conf",
+           ttl |-> 1000,
+           role |-> "voter",
+           clearSet |-> {},
+           ended |-> "none",
+           actions |-> 0,
+           seq |-> 0,
+           results |-> << >>,
+           att |-> "none",
+           person |-> "none",
+           sessionCtr |-> 0,
+           consults |-> << >>,
+           envelope |-> << >> ] >>,
+  liveBySeat |-> [a1 |-> 1, o1 |-> 2],
+  lastRound |-> [a1 |-> 1, o1 |-> 1],
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"2", "1"},
+  lastApplied |-> 2,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 4: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 3
+/\ last = "Admitted"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |->
+      [ a1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "author",
+              taskLabels |-> {} ],
+        o1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Emit", "Vote"},
+              principal |-> "p2",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "voter",
+              taskLabels |-> {} ] ],
+  lastLease |-> [a1 |-> 1, o1 |-> 2],
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |->
+      << [ rung |-> 0,
+           epoch |-> 0,
+           rulesEpoch |-> 0,
+           seat |-> "a1",
+           alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+           round |-> 1,
+           principal |-> "p1",
+           persona |-> "persona",
+           bundle |-> "bundle",
+           conf |-> "conf",
+           ttl |-> 1000,
+           role |-> "author",
+           clearSet |-> {},
+           ended |-> "none",
+           actions |-> 0,
+           seq |-> 0,
+           results |-> << >>,
+           att |-> "none",
+           person |-> "none",
+           sessionCtr |-> 0,
+           consults |-> << >>,
+           envelope |-> << >> ],
+         [ rung |-> 0,
+           epoch |-> 0,
+           rulesEpoch |-> 0,
+           seat |-> "o1",
+           alphabet |-> {"Read", "Emit", "Vote"},
+           round |-> 1,
+           principal |-> "p2",
+           persona |-> "persona",
+           bundle |-> "bundle",
+           conf |-> "conf",
+           ttl |-> 1000,
+           role |-> "voter",
+           clearSet |-> {},
+           ended |-> "none",
+           actions |-> 1,
+           seq |-> 1,
+           results |-> << >>,
+           att |-> "none",
+           person |-> "none",
+           sessionCtr |-> 0,
+           consults |-> << >>,
+           envelope |-> << >> ] >>,
+  liveBySeat |-> [a1 |-> 1, o1 |-> 2],
+  lastRound |-> [a1 |-> 1, o1 |-> 1],
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"2", "3", "1"},
+  lastApplied |-> 3,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> [o1 |-> (<<"a1", 0, 1>> :> 0)],
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+630 states generated, 257 distinct states found, 238 states left on queue.
+The depth of the complete state graph search is 4.
+The average outdegree of the complete state graph is 15 (minimum is 9, the maximum 16 and the 95th percentile is 16).
+Finished in 01s at (2026-11-21 09:19:19)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-revokedlive · Mut=none · InitState="unused" Trace="unused" Depth=4 Principals={"p1","p2"} GenSeats={"a1","o1","g1","r1","ro1"} Artifacts={"art"} Steps={"grant","renew","admit","end","revoke","fence","gates","again"} · SPECIFICATION Spec · INVARIANT NeverRevokedLive
+Error: Invariant NeverRevokedLive is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ i = 0
+/\ last = "none"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |-> << >>,
+  lastLease |-> << >>,
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |-> << >>,
+  liveBySeat |-> << >>,
+  lastRound |-> << >>,
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {},
+  lastApplied |-> 0,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 2: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 1
+/\ last = "LeaseGranted"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |->
+      [ a1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "author",
+              taskLabels |-> {} ] ],
+  lastLease |-> [a1 |-> 1],
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |->
+      << [ rung |-> 0,
+           epoch |-> 0,
+           rulesEpoch |-> 0,
+           seat |-> "a1",
+           alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+           round |-> 1,
+           principal |-> "p1",
+           persona |-> "persona",
+           bundle |-> "bundle",
+           conf |-> "conf",
+           ttl |-> 1000,
+           role |-> "author",
+           clearSet |-> {},
+           ended |-> "none",
+           actions |-> 0,
+           seq |-> 0,
+           results |-> << >>,
+           att |-> "none",
+           person |-> "none",
+           sessionCtr |-> 0,
+           consults |-> << >>,
+           envelope |-> << >> ] >>,
+  liveBySeat |-> [a1 |-> 1],
+  lastRound |-> [a1 |-> 1],
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"1"},
+  lastApplied |-> 1,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 3: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 2
+/\ last = "Revoked"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |->
+      [ a1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "author",
+              taskLabels |-> {} ] ],
+  lastLease |-> [a1 |-> 1],
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |->
+      << [ rung |-> 0,
+           epoch |-> 0,
+           rulesEpoch |-> 0,
+           seat |-> "a1",
+           alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+           round |-> 1,
+           principal |-> "p1",
+           persona |-> "persona",
+           bundle |-> "bundle",
+           conf |-> "conf",
+           ttl |-> 1000,
+           role |-> "author",
+           clearSet |-> {},
+           ended |-> "revoked",
+           actions |-> 0,
+           seq |-> 0,
+           results |-> << >>,
+           att |-> "none",
+           person |-> "none",
+           sessionCtr |-> 0,
+           consults |-> << >>,
+           envelope |-> << >> ] >>,
+  liveBySeat |-> << >>,
+  lastRound |-> [a1 |-> 1],
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {[kind |-> "principal", id |-> "p1"]},
+  appliedIds |-> {"2", "1"},
+  lastApplied |-> 2,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> [a1 |-> [topic |-> <<"a1", 0, 1>>, seq |-> 0]],
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+59 states generated, 28 distinct states found, 25 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 15 (minimum is 15, the maximum 15 and the 95th percentile is 15).
+Finished in 01s at (2026-11-21 09:19:21)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-tainted · Mut=none · InitState="unused" Trace="unused" Depth=4 Principals={"p1","p2"} GenSeats={"a1","o1","g1","r1","ro1"} Artifacts={"art"} Steps={"grant","renew","admit","end","revoke","fence","gates","again"} · SPECIFICATION Spec · INVARIANT NeverTainted
+Error: Invariant NeverTainted is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ i = 0
+/\ last = "none"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |-> << >>,
+  lastLease |-> << >>,
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |-> << >>,
+  liveBySeat |-> << >>,
+  lastRound |-> << >>,
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {},
+  lastApplied |-> 0,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 2: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 1
+/\ last = "LeaseGranted"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |->
+      [ r1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Consult", "Actuate", "Report"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "author",
+              taskLabels |-> {} ] ],
+  lastLease |-> [r1 |-> 1],
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |->
+      << [ rung |-> 0,
+           epoch |-> 0,
+           rulesEpoch |-> 0,
+           seat |-> "r1",
+           alphabet |-> {"Consult", "Actuate", "Report"},
+           round |-> 1,
+           principal |-> "p1",
+           persona |-> "persona",
+           bundle |-> "bundle",
+           conf |-> "conf",
+           ttl |-> 1000,
+           role |-> "author",
+           clearSet |-> {},
+           ended |-> "none",
+           actions |-> 0,
+           seq |-> 0,
+           results |-> << >>,
+           att |-> "none",
+           person |-> "none",
+           sessionCtr |-> 0,
+           consults |-> << >>,
+           envelope |-> << >> ] >>,
+  liveBySeat |-> [r1 |-> 1],
+  lastRound |-> [r1 |-> 1],
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"1"},
+  lastApplied |-> 1,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 3: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 2
+/\ last = "Admitted"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |->
+      [ r1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Consult", "Actuate", "Report"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "author",
+              taskLabels |-> {} ] ],
+  lastLease |-> [r1 |-> 1],
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |->
+      << [ rung |-> 0,
+           epoch |-> 0,
+           rulesEpoch |-> 0,
+           seat |-> "r1",
+           alphabet |-> {"Consult", "Actuate", "Report"},
+           round |-> 1,
+           principal |-> "p1",
+           persona |-> "persona",
+           bundle |-> "bundle",
+           conf |-> "conf",
+           ttl |-> 1000,
+           role |-> "author",
+           clearSet |-> {"untrusted"},
+           ended |-> "none",
+           actions |-> 1,
+           seq |-> 0,
+           results |-> << >>,
+           att |-> "none",
+           person |-> "none",
+           sessionCtr |-> 0,
+           consults |->
+               [object |-> [delivery |-> "clear", label |-> {"untrusted"}]],
+           envelope |-> << >> ] >>,
+  liveBySeat |-> [r1 |-> 1],
+  lastRound |-> [r1 |-> 1],
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"2", "1"},
+  lastApplied |-> 2,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+199 states generated, 86 distinct states found, 79 states left on queue.
+The depth of the complete state graph search is 3.
+The average outdegree of the complete state graph is 15 (minimum is 15, the maximum 16 and the 95th percentile is 16).
+Finished in 01s at (2026-11-21 09:19:22)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-atbound · Mut=none · InitState="unused" Trace="unused" Depth=4 Principals={"p1","p2"} GenSeats={"a1","o1","g1","r1","ro1"} Artifacts={"art"} Steps={"grant","renew","admit","end","revoke","fence","gates","again"} · SPECIFICATION Spec · INVARIANT NeverAtBound
+Error: Invariant NeverAtBound is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ i = 0
+/\ last = "none"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |-> << >>,
+  lastLease |-> << >>,
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |-> << >>,
+  liveBySeat |-> << >>,
+  lastRound |-> << >>,
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {},
+  lastApplied |-> 0,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 2: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 1
+/\ last = "LeaseGranted"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |->
+      [ a1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "author",
+              taskLabels |-> {} ] ],
+  lastLease |-> [a1 |-> 1],
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |->
+      << [ rung |-> 0,
+           epoch |-> 0,
+           rulesEpoch |-> 0,
+           seat |-> "a1",
+           alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+           round |-> 1,
+           principal |-> "p1",
+           persona |-> "persona",
+           bundle |-> "bundle",
+           conf |-> "conf",
+           ttl |-> 1000,
+           role |-> "author",
+           clearSet |-> {},
+           ended |-> "none",
+           actions |-> 0,
+           seq |-> 0,
+           results |-> << >>,
+           att |-> "none",
+           person |-> "none",
+           sessionCtr |-> 0,
+           consults |-> << >>,
+           envelope |-> << >> ] >>,
+  liveBySeat |-> [a1 |-> 1],
+  lastRound |-> [a1 |-> 1],
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"1"},
+  lastApplied |-> 1,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 3: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 2
+/\ last = "Admitted"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |->
+      [ a1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "author",
+              taskLabels |-> {} ] ],
+  lastLease |-> [a1 |-> 1],
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |->
+      << [ rung |-> 0,
+           epoch |-> 0,
+           rulesEpoch |-> 0,
+           seat |-> "a1",
+           alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+           round |-> 1,
+           principal |-> "p1",
+           persona |-> "persona",
+           bundle |-> "bundle",
+           conf |-> "conf",
+           ttl |-> 1000,
+           role |-> "author",
+           clearSet |-> {},
+           ended |-> "none",
+           actions |-> 1,
+           seq |-> 0,
+           results |-> << >>,
+           att |-> "none",
+           person |-> "none",
+           sessionCtr |-> 0,
+           consults |-> << >>,
+           envelope |-> << >> ] >>,
+  liveBySeat |-> [a1 |-> 1],
+  lastRound |-> [a1 |-> 1],
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"2", "1"},
+  lastApplied |-> 2,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 4: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 3
+/\ last = "Admitted"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |->
+      [ a1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "author",
+              taskLabels |-> {} ] ],
+  lastLease |-> [a1 |-> 1],
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |->
+      << [ rung |-> 0,
+           epoch |-> 0,
+           rulesEpoch |-> 0,
+           seat |-> "a1",
+           alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+           round |-> 1,
+           principal |-> "p1",
+           persona |-> "persona",
+           bundle |-> "bundle",
+           conf |-> "conf",
+           ttl |-> 1000,
+           role |-> "author",
+           clearSet |-> {},
+           ended |-> "none",
+           actions |-> 2,
+           seq |-> 0,
+           results |-> << >>,
+           att |-> "none",
+           person |-> "none",
+           sessionCtr |-> 0,
+           consults |-> << >>,
+           envelope |-> << >> ] >>,
+  liveBySeat |-> [a1 |-> 1],
+  lastRound |-> [a1 |-> 1],
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"2", "3", "1"},
+  lastApplied |-> 3,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 5: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 4
+/\ last = "Admitted"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        ro1 |->
+            [domain |-> "run", kind |-> "observer", cell |-> "r1", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [ domain |-> "build",
+              kind |-> "grant",
+              cell |-> "none",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |->
+      [ a1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "author",
+              taskLabels |-> {} ] ],
+  lastLease |-> [a1 |-> 1],
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |->
+      << [ rung |-> 0,
+           epoch |-> 0,
+           rulesEpoch |-> 0,
+           seat |-> "a1",
+           alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+           round |-> 1,
+           principal |-> "p1",
+           persona |-> "persona",
+           bundle |-> "bundle",
+           conf |-> "conf",
+           ttl |-> 1000,
+           role |-> "author",
+           clearSet |-> {},
+           ended |-> "none",
+           actions |-> 3,
+           seq |-> 0,
+           results |-> << >>,
+           att |-> "none",
+           person |-> "none",
+           sessionCtr |-> 0,
+           consults |-> << >>,
+           envelope |-> << >> ] >>,
+  liveBySeat |-> [a1 |-> 1],
+  lastRound |-> [a1 |-> 1],
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"2", "3", "1", "4"},
+  lastApplied |-> 4,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+14845 states generated, 4771 distinct states found, 4431 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 14 (minimum is 0, the maximum 19 and the 95th percentile is 18).
+Finished in 01s at (2026-11-21 09:19:25)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== w-promoted · Mut=none · InitState="unused" Trace="unused" Depth=9 Principals={"p1"} GenSeats={"a1","g1","g2","g3"} Artifacts={"art"} Steps={"grant","admit","gates"} · SPECIFICATION Spec · INVARIANT NeverPromoted
+Error: Invariant NeverPromoted is violated.
+Error: The behavior up to this point is:
+State 1: <Initial predicate>
+/\ i = 0
+/\ last = "none"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        ro1 |->
+            [ domain |-> "run",
+              kind |-> "observer",
+              cell |-> "r1",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |-> << >>,
+  lastLease |-> << >>,
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |-> << >>,
+  liveBySeat |-> << >>,
+  lastRound |-> << >>,
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {},
+  lastApplied |-> 0,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 2: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 1
+/\ last = "LeaseGranted"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        ro1 |->
+            [ domain |-> "run",
+              kind |-> "observer",
+              cell |-> "r1",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |->
+      [ a1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "author",
+              taskLabels |-> {} ] ],
+  lastLease |-> [a1 |-> 1],
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |->
+      << [ rung |-> 0,
+           epoch |-> 0,
+           rulesEpoch |-> 0,
+           seat |-> "a1",
+           alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+           round |-> 1,
+           principal |-> "p1",
+           persona |-> "persona",
+           bundle |-> "bundle",
+           conf |-> "conf",
+           ttl |-> 1000,
+           role |-> "author",
+           clearSet |-> {},
+           ended |-> "none",
+           actions |-> 0,
+           seq |-> 0,
+           results |-> << >>,
+           att |-> "none",
+           person |-> "none",
+           sessionCtr |-> 0,
+           consults |-> << >>,
+           envelope |-> << >> ] >>,
+  liveBySeat |-> [a1 |-> 1],
+  lastRound |-> [a1 |-> 1],
+  candidates |-> << >>,
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"1"},
+  lastApplied |-> 1,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> << >>,
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 3: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 2
+/\ last = "Admitted"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        ro1 |->
+            [ domain |-> "run",
+              kind |-> "observer",
+              cell |-> "r1",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |->
+      [ a1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "author",
+              taskLabels |-> {} ] ],
+  lastLease |-> [a1 |-> 1],
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |->
+      << [ rung |-> 0,
+           epoch |-> 0,
+           rulesEpoch |-> 0,
+           seat |-> "a1",
+           alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+           round |-> 1,
+           principal |-> "p1",
+           persona |-> "persona",
+           bundle |-> "bundle",
+           conf |-> "conf",
+           ttl |-> 1000,
+           role |-> "author",
+           clearSet |-> {},
+           ended |-> "submitted",
+           actions |-> 1,
+           seq |-> 0,
+           results |-> << >>,
+           att |-> "none",
+           person |-> "none",
+           sessionCtr |-> 0,
+           consults |-> << >>,
+           envelope |-> << >> ] >>,
+  liveBySeat |-> << >>,
+  lastRound |-> [a1 |-> 1],
+  candidates |->
+      [ art |->
+            [ artifact |-> "art",
+              author |-> "a1",
+              votes |-> << >>,
+              promotedAt |-> "none" ] ],
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"2", "1"},
+  lastApplied |-> 2,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> [a1 |-> [topic |-> <<"a1", 0, 1>>, seq |-> 0]],
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 4: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 3
+/\ last = "LeaseGranted"
+/\ st = [ gates |-> << >>,
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        ro1 |->
+            [ domain |-> "run",
+              kind |-> "observer",
+              cell |-> "r1",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |->
+      [ a1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "author",
+              taskLabels |-> {} ],
+        g1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Emit", "Vote"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "voter",
+              taskLabels |-> {} ] ],
+  lastLease |-> [a1 |-> 1, g1 |-> 3],
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |->
+      ( 1 :>
+            [ rung |-> 0,
+              epoch |-> 0,
+              rulesEpoch |-> 0,
+              seat |-> "a1",
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              round |-> 1,
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              ttl |-> 1000,
+              role |-> "author",
+              clearSet |-> {},
+              ended |-> "submitted",
+              actions |-> 1,
+              seq |-> 0,
+              results |-> << >>,
+              att |-> "none",
+              person |-> "none",
+              sessionCtr |-> 0,
+              consults |-> << >>,
+              envelope |-> << >> ] @@
+        3 :>
+            [ rung |-> 0,
+              epoch |-> 0,
+              rulesEpoch |-> 0,
+              seat |-> "g1",
+              alphabet |-> {"Read", "Emit", "Vote"},
+              round |-> 1,
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              ttl |-> 1000,
+              role |-> "voter",
+              clearSet |-> {},
+              ended |-> "none",
+              actions |-> 0,
+              seq |-> 0,
+              results |-> << >>,
+              att |-> "none",
+              person |-> "none",
+              sessionCtr |-> 0,
+              consults |-> << >>,
+              envelope |-> << >> ] ),
+  liveBySeat |-> [g1 |-> 3],
+  lastRound |-> [a1 |-> 1, g1 |-> 1],
+  candidates |->
+      [ art |->
+            [ artifact |-> "art",
+              author |-> "a1",
+              votes |-> << >>,
+              promotedAt |-> "none" ] ],
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"2", "3", "1"},
+  lastApplied |-> 3,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> [a1 |-> [topic |-> <<"a1", 0, 1>>, seq |-> 0]],
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 5: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 4
+/\ last = "GatesRecorded"
+/\ st = [ gates |-> [art |-> "evidence"],
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        ro1 |->
+            [ domain |-> "run",
+              kind |-> "observer",
+              cell |-> "r1",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |->
+      [ a1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "author",
+              taskLabels |-> {} ],
+        g1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Emit", "Vote"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "voter",
+              taskLabels |-> {} ] ],
+  lastLease |-> [a1 |-> 1, g1 |-> 3],
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |->
+      ( 1 :>
+            [ rung |-> 0,
+              epoch |-> 0,
+              rulesEpoch |-> 0,
+              seat |-> "a1",
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              round |-> 1,
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              ttl |-> 1000,
+              role |-> "author",
+              clearSet |-> {},
+              ended |-> "submitted",
+              actions |-> 1,
+              seq |-> 0,
+              results |-> << >>,
+              att |-> "none",
+              person |-> "none",
+              sessionCtr |-> 0,
+              consults |-> << >>,
+              envelope |-> << >> ] @@
+        3 :>
+            [ rung |-> 0,
+              epoch |-> 0,
+              rulesEpoch |-> 0,
+              seat |-> "g1",
+              alphabet |-> {"Read", "Emit", "Vote"},
+              round |-> 1,
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              ttl |-> 1000,
+              role |-> "voter",
+              clearSet |-> {},
+              ended |-> "none",
+              actions |-> 0,
+              seq |-> 0,
+              results |-> << >>,
+              att |-> "none",
+              person |-> "none",
+              sessionCtr |-> 0,
+              consults |-> << >>,
+              envelope |-> << >> ] ),
+  liveBySeat |-> [g1 |-> 3],
+  lastRound |-> [a1 |-> 1, g1 |-> 1],
+  candidates |->
+      [ art |->
+            [ artifact |-> "art",
+              author |-> "a1",
+              votes |-> << >>,
+              promotedAt |-> "none" ] ],
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"2", "3", "1", "4"},
+  lastApplied |-> 4,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> [a1 |-> [topic |-> <<"a1", 0, 1>>, seq |-> 0]],
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 6: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 5
+/\ last = "Admitted"
+/\ st = [ gates |-> [art |-> "evidence"],
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        ro1 |->
+            [ domain |-> "run",
+              kind |-> "observer",
+              cell |-> "r1",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |->
+      [ a1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "author",
+              taskLabels |-> {} ],
+        g1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Emit", "Vote"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "voter",
+              taskLabels |-> {} ] ],
+  lastLease |-> [a1 |-> 1, g1 |-> 3],
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |->
+      ( 1 :>
+            [ rung |-> 0,
+              epoch |-> 0,
+              rulesEpoch |-> 0,
+              seat |-> "a1",
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              round |-> 1,
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              ttl |-> 1000,
+              role |-> "author",
+              clearSet |-> {},
+              ended |-> "submitted",
+              actions |-> 1,
+              seq |-> 0,
+              results |-> << >>,
+              att |-> "none",
+              person |-> "none",
+              sessionCtr |-> 0,
+              consults |-> << >>,
+              envelope |-> << >> ] @@
+        3 :>
+            [ rung |-> 0,
+              epoch |-> 0,
+              rulesEpoch |-> 0,
+              seat |-> "g1",
+              alphabet |-> {"Read", "Emit", "Vote"},
+              round |-> 1,
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              ttl |-> 1000,
+              role |-> "voter",
+              clearSet |-> {},
+              ended |-> "voted",
+              actions |-> 1,
+              seq |-> 0,
+              results |-> << >>,
+              att |-> "none",
+              person |-> "none",
+              sessionCtr |-> 0,
+              consults |-> << >>,
+              envelope |-> << >> ] ),
+  liveBySeat |-> << >>,
+  lastRound |-> [a1 |-> 1, g1 |-> 1],
+  candidates |->
+      [ art |->
+            [ artifact |-> "art",
+              author |-> "a1",
+              votes |->
+                  [ g1 |->
+                        [ rulesEpoch |-> 0,
+                          verdict |-> "grant",
+                          evidence |-> "evidence" ] ],
+              promotedAt |-> "none" ] ],
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"2", "3", "1", "4", "5"},
+  lastApplied |-> 5,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> [a1 |-> [topic |-> <<"a1", 0, 1>>, seq |-> 0]],
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 7: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 6
+/\ last = "LeaseGranted"
+/\ st = [ gates |-> [art |-> "evidence"],
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        ro1 |->
+            [ domain |-> "run",
+              kind |-> "observer",
+              cell |-> "r1",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |->
+      [ a1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "author",
+              taskLabels |-> {} ],
+        g1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Emit", "Vote"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "voter",
+              taskLabels |-> {} ],
+        g2 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Emit", "Vote"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "voter",
+              taskLabels |-> {} ] ],
+  lastLease |-> [a1 |-> 1, g1 |-> 3, g2 |-> 6],
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |->
+      ( 1 :>
+            [ rung |-> 0,
+              epoch |-> 0,
+              rulesEpoch |-> 0,
+              seat |-> "a1",
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              round |-> 1,
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              ttl |-> 1000,
+              role |-> "author",
+              clearSet |-> {},
+              ended |-> "submitted",
+              actions |-> 1,
+              seq |-> 0,
+              results |-> << >>,
+              att |-> "none",
+              person |-> "none",
+              sessionCtr |-> 0,
+              consults |-> << >>,
+              envelope |-> << >> ] @@
+        3 :>
+            [ rung |-> 0,
+              epoch |-> 0,
+              rulesEpoch |-> 0,
+              seat |-> "g1",
+              alphabet |-> {"Read", "Emit", "Vote"},
+              round |-> 1,
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              ttl |-> 1000,
+              role |-> "voter",
+              clearSet |-> {},
+              ended |-> "voted",
+              actions |-> 1,
+              seq |-> 0,
+              results |-> << >>,
+              att |-> "none",
+              person |-> "none",
+              sessionCtr |-> 0,
+              consults |-> << >>,
+              envelope |-> << >> ] @@
+        6 :>
+            [ rung |-> 0,
+              epoch |-> 0,
+              rulesEpoch |-> 0,
+              seat |-> "g2",
+              alphabet |-> {"Read", "Emit", "Vote"},
+              round |-> 1,
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              ttl |-> 1000,
+              role |-> "voter",
+              clearSet |-> {},
+              ended |-> "none",
+              actions |-> 0,
+              seq |-> 0,
+              results |-> << >>,
+              att |-> "none",
+              person |-> "none",
+              sessionCtr |-> 0,
+              consults |-> << >>,
+              envelope |-> << >> ] ),
+  liveBySeat |-> [g2 |-> 6],
+  lastRound |-> [a1 |-> 1, g1 |-> 1, g2 |-> 1],
+  candidates |->
+      [ art |->
+            [ artifact |-> "art",
+              author |-> "a1",
+              votes |->
+                  [ g1 |->
+                        [ rulesEpoch |-> 0,
+                          verdict |-> "grant",
+                          evidence |-> "evidence" ] ],
+              promotedAt |-> "none" ] ],
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"2", "3", "1", "4", "5", "6"},
+  lastApplied |-> 6,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> [a1 |-> [topic |-> <<"a1", 0, 1>>, seq |-> 0]],
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 8: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 7
+/\ last = "Admitted"
+/\ st = [ gates |-> [art |-> "evidence"],
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        ro1 |->
+            [ domain |-> "run",
+              kind |-> "observer",
+              cell |-> "r1",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |->
+      [ a1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "author",
+              taskLabels |-> {} ],
+        g1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Emit", "Vote"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "voter",
+              taskLabels |-> {} ],
+        g2 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Emit", "Vote"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "voter",
+              taskLabels |-> {} ] ],
+  lastLease |-> [a1 |-> 1, g1 |-> 3, g2 |-> 6],
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |->
+      ( 1 :>
+            [ rung |-> 0,
+              epoch |-> 0,
+              rulesEpoch |-> 0,
+              seat |-> "a1",
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              round |-> 1,
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              ttl |-> 1000,
+              role |-> "author",
+              clearSet |-> {},
+              ended |-> "submitted",
+              actions |-> 1,
+              seq |-> 0,
+              results |-> << >>,
+              att |-> "none",
+              person |-> "none",
+              sessionCtr |-> 0,
+              consults |-> << >>,
+              envelope |-> << >> ] @@
+        3 :>
+            [ rung |-> 0,
+              epoch |-> 0,
+              rulesEpoch |-> 0,
+              seat |-> "g1",
+              alphabet |-> {"Read", "Emit", "Vote"},
+              round |-> 1,
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              ttl |-> 1000,
+              role |-> "voter",
+              clearSet |-> {},
+              ended |-> "voted",
+              actions |-> 1,
+              seq |-> 0,
+              results |-> << >>,
+              att |-> "none",
+              person |-> "none",
+              sessionCtr |-> 0,
+              consults |-> << >>,
+              envelope |-> << >> ] @@
+        6 :>
+            [ rung |-> 0,
+              epoch |-> 0,
+              rulesEpoch |-> 0,
+              seat |-> "g2",
+              alphabet |-> {"Read", "Emit", "Vote"},
+              round |-> 1,
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              ttl |-> 1000,
+              role |-> "voter",
+              clearSet |-> {},
+              ended |-> "voted",
+              actions |-> 1,
+              seq |-> 0,
+              results |-> << >>,
+              att |-> "none",
+              person |-> "none",
+              sessionCtr |-> 0,
+              consults |-> << >>,
+              envelope |-> << >> ] ),
+  liveBySeat |-> << >>,
+  lastRound |-> [a1 |-> 1, g1 |-> 1, g2 |-> 1],
+  candidates |->
+      [ art |->
+            [ artifact |-> "art",
+              author |-> "a1",
+              votes |->
+                  [ g1 |->
+                        [ rulesEpoch |-> 0,
+                          verdict |-> "grant",
+                          evidence |-> "evidence" ],
+                    g2 |->
+                        [ rulesEpoch |-> 0,
+                          verdict |-> "grant",
+                          evidence |-> "evidence" ] ],
+              promotedAt |-> "none" ] ],
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"2", "3", "1", "4", "5", "6", "7"},
+  lastApplied |-> 7,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> [a1 |-> [topic |-> <<"a1", 0, 1>>, seq |-> 0]],
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 9: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 8
+/\ last = "LeaseGranted"
+/\ st = [ gates |-> [art |-> "evidence"],
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        ro1 |->
+            [ domain |-> "run",
+              kind |-> "observer",
+              cell |-> "r1",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |->
+      [ a1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "author",
+              taskLabels |-> {} ],
+        g1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Emit", "Vote"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "voter",
+              taskLabels |-> {} ],
+        g2 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Emit", "Vote"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "voter",
+              taskLabels |-> {} ],
+        g3 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Emit", "Vote"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "voter",
+              taskLabels |-> {} ] ],
+  lastLease |-> [a1 |-> 1, g1 |-> 3, g2 |-> 6, g3 |-> 8],
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |->
+      ( 1 :>
+            [ rung |-> 0,
+              epoch |-> 0,
+              rulesEpoch |-> 0,
+              seat |-> "a1",
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              round |-> 1,
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              ttl |-> 1000,
+              role |-> "author",
+              clearSet |-> {},
+              ended |-> "submitted",
+              actions |-> 1,
+              seq |-> 0,
+              results |-> << >>,
+              att |-> "none",
+              person |-> "none",
+              sessionCtr |-> 0,
+              consults |-> << >>,
+              envelope |-> << >> ] @@
+        3 :>
+            [ rung |-> 0,
+              epoch |-> 0,
+              rulesEpoch |-> 0,
+              seat |-> "g1",
+              alphabet |-> {"Read", "Emit", "Vote"},
+              round |-> 1,
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              ttl |-> 1000,
+              role |-> "voter",
+              clearSet |-> {},
+              ended |-> "voted",
+              actions |-> 1,
+              seq |-> 0,
+              results |-> << >>,
+              att |-> "none",
+              person |-> "none",
+              sessionCtr |-> 0,
+              consults |-> << >>,
+              envelope |-> << >> ] @@
+        6 :>
+            [ rung |-> 0,
+              epoch |-> 0,
+              rulesEpoch |-> 0,
+              seat |-> "g2",
+              alphabet |-> {"Read", "Emit", "Vote"},
+              round |-> 1,
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              ttl |-> 1000,
+              role |-> "voter",
+              clearSet |-> {},
+              ended |-> "voted",
+              actions |-> 1,
+              seq |-> 0,
+              results |-> << >>,
+              att |-> "none",
+              person |-> "none",
+              sessionCtr |-> 0,
+              consults |-> << >>,
+              envelope |-> << >> ] @@
+        8 :>
+            [ rung |-> 0,
+              epoch |-> 0,
+              rulesEpoch |-> 0,
+              seat |-> "g3",
+              alphabet |-> {"Read", "Emit", "Vote"},
+              round |-> 1,
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              ttl |-> 1000,
+              role |-> "voter",
+              clearSet |-> {},
+              ended |-> "none",
+              actions |-> 0,
+              seq |-> 0,
+              results |-> << >>,
+              att |-> "none",
+              person |-> "none",
+              sessionCtr |-> 0,
+              consults |-> << >>,
+              envelope |-> << >> ] ),
+  liveBySeat |-> [g3 |-> 8],
+  lastRound |-> [a1 |-> 1, g1 |-> 1, g2 |-> 1, g3 |-> 1],
+  candidates |->
+      [ art |->
+            [ artifact |-> "art",
+              author |-> "a1",
+              votes |->
+                  [ g1 |->
+                        [ rulesEpoch |-> 0,
+                          verdict |-> "grant",
+                          evidence |-> "evidence" ],
+                    g2 |->
+                        [ rulesEpoch |-> 0,
+                          verdict |-> "grant",
+                          evidence |-> "evidence" ] ],
+              promotedAt |-> "none" ] ],
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"2", "8", "3", "1", "4", "5", "6", "7"},
+  lastApplied |-> 8,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> [a1 |-> [topic |-> <<"a1", 0, 1>>, seq |-> 0]],
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+State 10: <FreeNext line 190, col 3 to line 198, col 39 of module MechanismFree>
+/\ i = 9
+/\ last = "Admitted"
+/\ st = [ gates |-> [art |-> "evidence"],
+  epoch |-> 0,
+  rulesEpoch |-> 0,
+  seats |->
+      [ a1 |->
+            [ domain |-> "build",
+              kind |-> "thinker",
+              cell |-> "none",
+              rung |-> 0 ],
+        g1 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g2 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        g3 |->
+            [domain |-> "build", kind |-> "grant", cell |-> "none", rung |-> 0],
+        r1 |->
+            [domain |-> "run", kind |-> "thinker", cell |-> "none", rung |-> 0],
+        o1 |->
+            [ domain |-> "build",
+              kind |-> "observer",
+              cell |-> "a1",
+              rung |-> 0 ],
+        ro1 |->
+            [ domain |-> "run",
+              kind |-> "observer",
+              cell |-> "r1",
+              rung |-> 0 ] ],
+  grantRoster |-> {"a1", "g1", "g2", "g3"},
+  vetoRoster |-> {"o1"},
+  quorum |-> "all",
+  minGrant |-> 2,
+  bgIssued |-> FALSE,
+  bgRoster |-> {},
+  bgQuorum |-> 0,
+  seatings |->
+      [ a1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "author",
+              taskLabels |-> {} ],
+        g1 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Emit", "Vote"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "voter",
+              taskLabels |-> {} ],
+        g2 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Emit", "Vote"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "voter",
+              taskLabels |-> {} ],
+        g3 |->
+            [ rung |-> 0,
+              alphabet |-> {"Read", "Emit", "Vote"},
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              role |-> "voter",
+              taskLabels |-> {} ] ],
+  lastLease |-> [a1 |-> 1, g1 |-> 3, g2 |-> 6, g3 |-> 8],
+  controlCtr |-> << >>,
+  emSeatings |-> << >>,
+  activations |-> <<>>,
+  verifierKeys |-> {},
+  bundleKeys |-> {},
+  personas |-> << >>,
+  criterion |-> FALSE,
+  leases |->
+      ( 1 :>
+            [ rung |-> 0,
+              epoch |-> 0,
+              rulesEpoch |-> 0,
+              seat |-> "a1",
+              alphabet |-> {"Read", "Draft", "Invoke", "Emit", "Submit"},
+              round |-> 1,
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              ttl |-> 1000,
+              role |-> "author",
+              clearSet |-> {},
+              ended |-> "submitted",
+              actions |-> 1,
+              seq |-> 0,
+              results |-> << >>,
+              att |-> "none",
+              person |-> "none",
+              sessionCtr |-> 0,
+              consults |-> << >>,
+              envelope |-> << >> ] @@
+        3 :>
+            [ rung |-> 0,
+              epoch |-> 0,
+              rulesEpoch |-> 0,
+              seat |-> "g1",
+              alphabet |-> {"Read", "Emit", "Vote"},
+              round |-> 1,
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              ttl |-> 1000,
+              role |-> "voter",
+              clearSet |-> {},
+              ended |-> "voted",
+              actions |-> 1,
+              seq |-> 0,
+              results |-> << >>,
+              att |-> "none",
+              person |-> "none",
+              sessionCtr |-> 0,
+              consults |-> << >>,
+              envelope |-> << >> ] @@
+        6 :>
+            [ rung |-> 0,
+              epoch |-> 0,
+              rulesEpoch |-> 0,
+              seat |-> "g2",
+              alphabet |-> {"Read", "Emit", "Vote"},
+              round |-> 1,
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              ttl |-> 1000,
+              role |-> "voter",
+              clearSet |-> {},
+              ended |-> "voted",
+              actions |-> 1,
+              seq |-> 0,
+              results |-> << >>,
+              att |-> "none",
+              person |-> "none",
+              sessionCtr |-> 0,
+              consults |-> << >>,
+              envelope |-> << >> ] @@
+        8 :>
+            [ rung |-> 0,
+              epoch |-> 0,
+              rulesEpoch |-> 0,
+              seat |-> "g3",
+              alphabet |-> {"Read", "Emit", "Vote"},
+              round |-> 1,
+              principal |-> "p1",
+              persona |-> "persona",
+              bundle |-> "bundle",
+              conf |-> "conf",
+              ttl |-> 1000,
+              role |-> "voter",
+              clearSet |-> {},
+              ended |-> "voted",
+              actions |-> 1,
+              seq |-> 0,
+              results |-> << >>,
+              att |-> "none",
+              person |-> "none",
+              sessionCtr |-> 0,
+              consults |-> << >>,
+              envelope |-> << >> ] ),
+  liveBySeat |-> << >>,
+  lastRound |-> [a1 |-> 1, g1 |-> 1, g2 |-> 1, g3 |-> 1],
+  candidates |->
+      [ art |->
+            [ artifact |-> "art",
+              author |-> "a1",
+              votes |->
+                  [ g1 |->
+                        [ rulesEpoch |-> 0,
+                          verdict |-> "grant",
+                          evidence |-> "evidence" ],
+                    g2 |->
+                        [ rulesEpoch |-> 0,
+                          verdict |-> "grant",
+                          evidence |-> "evidence" ],
+                    g3 |->
+                        [ rulesEpoch |-> 0,
+                          verdict |-> "grant",
+                          evidence |-> "evidence" ] ],
+              promotedAt |-> 9 ] ],
+  approvals |-> << >>,
+  revoked |-> {},
+  appliedIds |-> {"2", "8", "3", "1", "4", "5", "6", "7", "9"},
+  lastApplied |-> 9,
+  k |-> 8,
+  tPersona |-> 3600000,
+  marks |-> << >>,
+  seals |-> [a1 |-> [topic |-> <<"a1", 0, 1>>, seq |-> 0]],
+  profiles |-> << >>,
+  contested |-> << >>,
+  contained |-> {},
+  wasmTools |-> {},
+  buildBound |-> 3,
+  runBound |-> 3,
+  workflows |-> << >>,
+  wfBindings |-> << >> ]
+275262 states generated, 34108 distinct states found, 22285 states left on queue.
+The depth of the complete state graph search is 10.
+The average outdegree of the complete state graph is 3 (minimum is 0, the maximum 6 and the 95th percentile is 6).
+Finished in 11s at (2026-11-21 09:19:37)
+→ VIOLATED (expected VIOLATED: as expected)
+
+=== n-contained · Mut=none · InitState="unused" Trace="unused" Depth=4 Principals={"p1","p2"} GenSeats={"a1","o1","g1","r1","ro1"} Artifacts={"art"} Steps={"grant","renew","admit","end","revoke","fence","gates","again"} · SPECIFICATION Spec · INVARIANT NeverContained
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.3E-10
+  based on the actual fingerprints:  val = 5.0E-11
+146475 states generated, 40486 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 20 and the 95th percentile is 14).
+Finished in 06s at (2026-11-21 09:19:44)
+→ HOLDS (expected HOLDS: as expected)
+
+=== n-contested · Mut=none · InitState="unused" Trace="unused" Depth=4 Principals={"p1","p2"} GenSeats={"a1","o1","g1","r1","ro1"} Artifacts={"art"} Steps={"grant","renew","admit","end","revoke","fence","gates","again"} · SPECIFICATION Spec · INVARIANT NeverContested
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.3E-10
+  based on the actual fingerprints:  val = 5.0E-11
+146475 states generated, 40486 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 20 and the 95th percentile is 14).
+Finished in 07s at (2026-11-21 09:19:52)
+→ HOLDS (expected HOLDS: as expected)
+
+=== c-nogrant-granted · Mut=M_NOGRANT · InitState="unused" Trace="unused" Depth=4 Principals={"p1","p2"} GenSeats={"a1","o1","g1","r1","ro1"} Artifacts={"art"} Steps={"grant","renew","admit","end","revoke","fence","gates","again"} · SPECIFICATION Spec · INVARIANT NeverGranted
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.4E-15
+420 states generated, 231 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 5 and the 95th percentile is 5).
+Finished in 00s at (2026-11-21 09:19:53)
+→ HOLDS (expected HOLDS: as expected)
+
+=== c-nogrant-admitted · Mut=M_NOGRANT · InitState="unused" Trace="unused" Depth=4 Principals={"p1","p2"} GenSeats={"a1","o1","g1","r1","ro1"} Artifacts={"art"} Steps={"grant","renew","admit","end","revoke","fence","gates","again"} · SPECIFICATION Spec · INVARIANT NeverAdmitted
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.4E-15
+420 states generated, 231 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 5 and the 95th percentile is 5).
+Finished in 00s at (2026-11-21 09:19:55)
+→ HOLDS (expected HOLDS: as expected)
+
+=== c-nogrant-sealed · Mut=M_NOGRANT · InitState="unused" Trace="unused" Depth=4 Principals={"p1","p2"} GenSeats={"a1","o1","g1","r1","ro1"} Artifacts={"art"} Steps={"grant","renew","admit","end","revoke","fence","gates","again"} · SPECIFICATION Spec · INVARIANT NeverSealed
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.4E-15
+420 states generated, 231 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 5 and the 95th percentile is 5).
+Finished in 00s at (2026-11-21 09:19:56)
+→ HOLDS (expected HOLDS: as expected)
+
+=== c-nogrant-safe · Mut=M_NOGRANT · InitState="unused" Trace="unused" Depth=4 Principals={"p1","p2"} GenSeats={"a1","o1","g1","r1","ro1"} Artifacts={"art"} Steps={"grant","renew","admit","end","revoke","fence","gates","again"} · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 2.4E-15
+420 states generated, 231 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 5.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 5 and the 95th percentile is 5).
+Finished in 01s at (2026-11-21 09:19:58)
+→ HOLDS (expected HOLDS: as expected)
+
+Rows: 31 · as expected: 31 · not as expected: none · ERROR: none

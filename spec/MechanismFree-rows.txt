@@ -1,0 +1,46 @@
+# Rows for live-gen-results.sh MechanismFree: name mut spec kind property expected [CONST=value ...] [states=N]
+# Run: DEFAULTS='InitState="unused" Trace="unused" Depth=4 Principals={"p1","p2"} GenSeats={"a1","o1","g1","r1","ro1"} Artifacts={"art"} Steps={"grant","renew","admit","end","revoke","fence","gates","again"}' ./live-gen-results.sh MechanismFree MechanismFree-rows.txt "<title>"
+# expected: none: TypeOK, Indexed and ConfinementRefined HOLD of every state the generator reaches, to four entries at the defaults (both cells and one grant seat, two principals), to five, to six in one cell at a time, and to nine with the generator narrowed to grants, admits and gate attestations; a state with no successor is at the depth; every witness of something the generator reaches is VIOLATED, and the two of what it does not reach HOLD; M_NOGRANT: with no grant offered, the witnesses that need a lease HOLD
+#
+# Mut = none: the invariants, exhaustively to the depth. InitState and Trace are Mechanism.tla's, for the replay;
+# nothing here reads them.
+s-type               none              Spec INVARIANT TypeOK                 HOLDS    states=40486
+s-indexed            none              Spec INVARIANT Indexed                HOLDS    states=40486
+s-confinement        none              Spec INVARIANT ConfinementRefined     HOLDS    states=40486
+s-depth5             none              Spec INVARIANT Safe                   HOLDS    Depth=5 states=488841
+# One cell at a time, two entries deeper: the Run Thinker and its cell Observer; the Build Thinker and the three
+# grant seats, with one principal.
+s-run6               none              Spec INVARIANT Safe                   HOLDS    Depth=6 GenSeats={"r1","ro1"} states=683475
+s-build6             none              Spec INVARIANT Safe                   HOLDS    Depth=6 Principals={"p1"} GenSeats={"a1","g1","g2","g3"} states=254621
+# Every seat of the fixture.
+s-seven              none              Spec INVARIANT Safe                   HOLDS    GenSeats={"a1","o1","g1","g2","g3","r1","ro1"} states=76238
+# The generator narrowed to grants, admits and gate attestations, for one principal: to nine entries, which is
+# where a promotion is (w-promoted).
+s-promo9             none              Spec INVARIANT Safe                   HOLDS    Depth=9 Principals={"p1"} GenSeats={"a1","g1","g2","g3"} Steps={"grant","admit","gates"} states=59400
+# A state with no successor is at the depth.
+d-atdepth            none              Spec INVARIANT TerminalAtDepth        HOLDS    states=40486
+# Witnesses: each result kind the seven entry kinds can have, and what they leave in the state.
+w-granted            none              Spec INVARIANT NeverGranted           VIOLATED
+w-renewed            none              Spec INVARIANT NeverRenewed           VIOLATED
+w-admitted           none              Spec INVARIANT NeverAdmitted          VIOLATED
+w-ended              none              Spec INVARIANT NeverRoundEnded        VIOLATED
+w-revoked            none              Spec INVARIANT NeverRevoked           VIOLATED
+w-fenced             none              Spec INVARIANT NeverFenced            VIOLATED
+w-gated              none              Spec INVARIANT NeverGated             VIOLATED
+w-rejected           none              Spec INVARIANT NeverRejected          VIOLATED
+w-duplicate          none              Spec INVARIANT NeverDuplicate         VIOLATED
+w-sealed             none              Spec INVARIANT NeverSealed            VIOLATED
+w-candidate          none              Spec INVARIANT NeverCandidate         VIOLATED
+w-marked             none              Spec INVARIANT NeverMarked            VIOLATED
+w-revokedlive        none              Spec INVARIANT NeverRevokedLive       VIOLATED
+w-tainted            none              Spec INVARIANT NeverTainted           VIOLATED
+w-atbound            none              Spec INVARIANT NeverAtBound           VIOLATED
+w-promoted           none              Spec INVARIANT NeverPromoted          VIOLATED Depth=9 Principals={"p1"} GenSeats={"a1","g1","g2","g3"} Steps={"grant","admit","gates"}
+# What the first cut of the generator does not reach: no grant above rung 0, no appraisal, no Contested verdict.
+n-contained          none              Spec INVARIANT NeverContained         HOLDS
+n-contested          none              Spec INVARIANT NeverContested         HOLDS
+# A control on the witnesses: with no grant offered, nothing is leased, admitted or sealed.
+c-nogrant-granted    M_NOGRANT         Spec INVARIANT NeverGranted           HOLDS
+c-nogrant-admitted   M_NOGRANT         Spec INVARIANT NeverAdmitted          HOLDS
+c-nogrant-sealed     M_NOGRANT         Spec INVARIANT NeverSealed            HOLDS
+c-nogrant-safe       M_NOGRANT         Spec INVARIANT Safe                   HOLDS

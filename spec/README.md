@@ -52,6 +52,7 @@ hand-assembled TLC output with a dated name and never change; the two generators
 | `Release.tla` | ADR-0066 §7 (Proposed) | `live-gen-results.sh` with `Release-rows.txt` | `Release-results-2026.11.10.txt` | none yet |
 | `FloorComposition.tla`, `Coupling.tla`, `RunCoupling.tla` | ADR-0046 §5 (the premise-table corrections) | `premise-corrections-results.sh` | `premise-corrections-results-2026.10.02.txt` | ADR-0046 |
 | `Mechanism.tla` | ADR-0045 T-0045-28; ADR-0033 A5 | `mechanism-trace-run.sh` on traces the reference records; `mechanism-trace-results.sh` regenerates the file; `trace2tla.py` converts | `Mechanism-trace-results-2026.09.30.txt`, `-2026.10.01.txt`, `-2026.10.02.txt`, `-2026.10.02b.txt`, `-2026.10.05.txt` (labels, operators and the emergency seating, all Proposed; X1 retired), `-2026.11.21.txt` (workflows and meshes, both Proposed; the workflow suites traced) | Pinned, not frozen: the operational model moves with the code |
+| `MechanismFree.tla` | ADR-0045 T-0045-28; `refinement-plan.md`, step 1. Extends `ConfinementRefinement.tla`, and so `Mechanism.tla`, without editing either: the operational model's `Apply` over a generator of entries, from a fixture, to a depth | `live-gen-results.sh` with `MechanismFree-rows.txt`; the larger run with `MechanismFree-larger-rows.txt`, which is not in `modules.tsv` | `MechanismFree-results-2026.11.21.txt`; `MechanismFree-larger-results-2026.11.21.txt` | none yet |
 | `Paxos.tla` | ADR-0033 §2 (row P), §3 and finding 9; Theory of Operation §11.3. An operational model of the reference's replica (`topak-paxos`), one step per call of `handle` | `live-gen-results.sh` with `Paxos-rows.txt`; the larger runs with `Paxos-larger-rows.txt` and `Paxos-kept-rows.txt`, which are not in `modules.tsv` | `Paxos-results-2026.11.14.txt`; `Paxos-larger-results-2026.11.14.txt`. `Paxos-kept-rows.txt` has no results file yet | none yet. Pinned, not frozen: it moves with the code |
 | `PaxosTrace.tla` | ADR-0033 finding 9; the stage-one replay `Mechanism.tla` is for the admit path, for the consensus log | `paxos-trace-run.sh` on traces the reference's simulation records; `paxos-trace-results.sh` regenerates the file; `paxos-trace2tla.py` converts | `Paxos-trace-results-2026.11.14.txt` | none yet |
 
@@ -74,6 +75,23 @@ runs `topak-paxos`'s simulation with `TOPAK_TRACE_DIR` set and replays each reco
 match the module event for event; a run of each mutation of the code (or of the simulated host) matches the module
 under the same mutation up to the event at which the property that mutation breaks is violated, and does not match
 the module under `Mut = "none"`. The host in those runs is the simulation's, not `topak-node`'s driver and WAL.
+
+**`Mechanism.tla` run freely (2026.11.21).** `Mechanism.tla`'s only specification replays a recorded trace, so
+until now no state of the operational model was examined but those a test reaches. `MechanismFree.tla`, step 1 of
+`refinement-plan.md`, gives the same `Apply` a generator of entries and a depth, from the state `tests/mutations.rs`
+builds for one of its tests. It checks the model on states no trace holds, and it says nothing about the code: an
+entry here is the generator's, not a replica's. The first cut writes seven of the sixteen entry kinds (a grant on
+the unsigned path, a renewal, an admit, an end of round, a targeted revocation, the fleet fence, a gate attestation),
+each in the form the code admits and in the forms it refuses. `TypeOK`, `Indexed` (the live index holds exactly the
+leases that have not ended) and `ConfinementRefinement.tla`'s four predicates hold of every state to four entries
+(40,486 states), to five (488,841) and, in the larger file, to six (5,745,577: about twelve times the states for each
+entry more); every state with no successor is at the depth. With the generator narrowed to grants, admits and gate
+attestations, a promotion is reached at nine entries. Sixteen witnesses say what is reached, and two that hold say
+what is not: with no grant above rung 0 and no appraisal, nothing is ever `contained` or Contested, so three of the
+four confinement predicates hold of nothing. Not generated yet: an issuance, an operator's request, the emergency
+seating, a workflow. The invariants are of shape. Of eight one-rule mutants of `Mechanism.tla`, run in a scratch
+copy, they catch five; the three they miss (a fence that ends no lease, a grant to a busy principal, a round number
+reused) each break what one of the per-property modules states, and those are step 2's subject.
 
 **Liveness (2026.10.07).** `Coupling_live.tla` and `Emergency_live.tla` extend frozen modules, as a proof module does,
 and add what they cannot state: fairness, leads-to properties, and invariants over `ENABLED`. Under every `Mut` of

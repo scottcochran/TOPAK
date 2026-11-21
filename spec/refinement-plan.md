@@ -251,6 +251,70 @@ Size: one to two weeks, nearly all of it the generator. The state space is unmea
 over the six basic entry kinds (grant, renewal, admit, end of round, revocation, the fleet fence) is perhaps two to
 three days; the other ten kinds, and bringing the state space within reach, are the rest.
 
+**Note, 2026.11.21: a first cut runs.** `MechanismFree.tla`, with `MechanismFree-results-2026.11.21.txt` (31 rows,
+all as expected) and `MechanismFree-larger-results-2026.11.21.txt` (one row). It is in `modules.tsv`, so CI
+reproduces the first file.
+
+*What it is.* The module extends `ConfinementRefinement.tla`, and so `Mechanism.tla`, and edits neither. Its
+fixture is the state `tests/mutations.rs` builds for one test, as the recorder projects it; a scratch run confirmed
+the two are equal. The generator writes seven of the sixteen entry kinds: the six of the note above and a gate
+attestation, without which no vote is admissible. Each is offered in the form the code admits and in the forms it
+refuses. The runner is the generic `live-gen-results.sh`; `Mechanism.tla`'s two replay constants are bound to a
+string, since nothing here reads them.
+
+*What is checked*, exhaustively to the depth, at one worker:
+
+| Generator | Entries | Distinct states | Time |
+|---|---|---|---|
+| Both cells and one grant seat, two principals (the default) | 3 | 3,179 | 1 s |
+| | 4 | 40,486 | 9 s |
+| | 5 | 488,841 | 89 s |
+| | 6 | 5,745,577 | 18 min |
+| The Run cell alone | 6 | 683,475 | 2 min |
+| The Build Thinker and three grant seats, one principal | 6 | 254,621 | 40 s |
+| All seven seats | 4 | 76,238 | 14 s |
+| Grants, admits and gate attestations only, one principal | 9 | 59,400 | 18 s |
+
+`TypeOK`, `Indexed` and `ConfinementRefinement.tla`'s four predicates hold of every one of these states. `Indexed`
+is new: the live index holds exactly the leases that have not ended, each at its own seat. The three-entry line is
+a scratch run; the others are rows. So the state space, which the plan called unmeasured, grows about twelvefold
+for each entry, and six entries is the practical limit of an exhaustive run at the default generator.
+
+*Controls.*
+
+- **Witnesses.** Sixteen are violated, one for each result kind the seven entry kinds can have and for what they
+  leave in the state. A promotion needs nine entries and is reached only by the narrowed generator. Two hold, and
+  say what the first cut does not reach: nothing is ever `contained`, and no principal is ever Contested.
+- **No grant.** With the generator's grants removed, the witnesses that need a lease hold.
+- **Mutants of the model**, in a scratch copy, not an artefact. Eight one-rule changes to `Mechanism.tla`, against
+  the three invariants. Five are caught: an end that leaves the live index, a renewal that leaves the old lease
+  un-ended, a grant to a seat that holds a live lease (`Indexed`), an admit past the round bound, an index not
+  recorded (`TypeOK`). Three are not: a fence that ends no lease, a grant to a principal that holds a live lease
+  elsewhere, and a round number reused. Each of the three breaks what a slice states: `Lease_A1`'s fence,
+  `Seats`' one seat for a principal, and the non-reuse of a round's topic. **These invariants are of shape, and
+  the three survivors are what Step 2 is for.**
+
+*Sampled, not checked.* `simulate-run.sh`, one run, kept as this line and not as a results file: 1,000 random
+behaviours of 30 entries each, all seven seats, two principals, seed 1. No error sampled for `Safe`, over 7,003,692
+states evaluated, in under three minutes. It says no sampled behaviour broke an invariant, and nothing more.
+
+*What it does not do.*
+
+- **Nine entry kinds are not generated**: a profile, a Contested verdict, an issuance, an operator's request, an
+  emergency seating and its activation, a workflow's load and grant, a break-glass approval. Nor is a grant above
+  rung 0 or any appraisal, so three of the four confinement predicates hold of nothing here. Nor a route, a typed
+  outcome, a finding, a task label or a session proof.
+- **It is not deep.** Beyond six entries only the narrowed runs and the sample above look.
+- **It says nothing about the code.** The two by-products named above, replaying generated sequences through the
+  Rust and through the Lean models, are not built.
+- **A change to the audit.** `deadlock-audit.sh` required a specification written `Init /\ [][Next]_vars` to the
+  letter. `Mechanism.tla` already defines `vars`, so this module's are `FreeInit` and `fvars`, and the audit now
+  accepts a prefix on both.
+
+*What the size above got wrong.* It allowed two to three days for a first run over six kinds. The module, its rows
+and the runs took part of one session. The generator was not the hard part the plan expected: an entry is a
+record with the fields the recorder projects, and `Apply` takes it as it takes a recorded one.
+
 ## 4. Step 2: the composite against each slice
 
 One new module per slice, extending `MechanismFree`. It adds the history variables the slice has and the composite

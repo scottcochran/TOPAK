@@ -1,0 +1,18 @@
+TOPAK — MechanismFree.tla (ADR-0045 T-0045-28; refinement-plan.md, step 1): Mechanism.tla run freely over a generator of entries, the larger run, TLC results 2026.11.21
+Module: MechanismFree.tla (sha256 70eae918b4a4d456) · extends Mechanism.tla (sha256 5c720eac9e6d41e5) · ConfinementRefinement.tla (sha256 27e47bf343d0794d) · TLC Version 2.19 of 08 August 2024 (jar sha256 936a262061c91469) · openjdk version "21.0.13.0.3" 2026-10-24
+Runner: live-gen-results.sh (sha256 b4d8857ad6fb6081) · rows: MechanismFree-larger-rows.txt (sha256 653f2c4e8f2a50e2) · InitState = "unused" · Trace = "unused" · Depth = 6 · Principals = {"p1","p2"} · GenSeats = {"a1","o1","g1","r1","ro1"} · Artifacts = {"art"} · Steps = {"grant","renew","admit","end","revoke","fence","gates","again"} unless the row says otherwise · TLC -workers 1 -fp 0, with -deadlock except on a DEADLOCK row
+expected: none: Safe HOLDS to six entries at the defaults of MechanismFree-rows.txt (both cells and one grant seat, two principals): about eighteen minutes on the machine that made it, and not in modules.tsv
+
+=== s-depth6 · Mut=none · InitState="unused" Trace="unused" Depth=6 Principals={"p1","p2"} GenSeats={"a1","o1","g1","r1","ro1"} Artifacts={"art"} Steps={"grant","renew","admit","end","revoke","fence","gates","again"} · SPECIFICATION Spec · INVARIANT Safe
+Model checking completed. No error has been found.
+  Estimates of the probability that TLC did not check all reachable states
+  because two distinct states had the same fingerprint:
+  calculated (optimistic):  val = 6.6E-6
+  based on the actual fingerprints:  val = 4.2E-7
+26903631 states generated, 5745577 distinct states found, 0 states left on queue.
+The depth of the complete state graph search is 7.
+The average outdegree of the complete state graph is 1 (minimum is 0, the maximum 21 and the 95th percentile is 13).
+Finished in 18min 46s at (2026-11-21 09:42:44)
+→ HOLDS (expected HOLDS: as expected) · 5745577 distinct states (expected 5745577: as expected)
+
+Rows: 1 · as expected: 1 · not as expected: none · ERROR: none

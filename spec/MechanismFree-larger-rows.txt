@@ -1,0 +1,6 @@
+# Rows for live-gen-results.sh MechanismFree, the larger run: name mut spec kind property expected [CONST=value ...] [states=N]
+# Run: DEFAULTS='InitState="unused" Trace="unused" Depth=6 Principals={"p1","p2"} GenSeats={"a1","o1","g1","r1","ro1"} Artifacts={"art"} Steps={"grant","renew","admit","end","revoke","fence","gates","again"}' ./live-gen-results.sh MechanismFree MechanismFree-larger-rows.txt "<title>"
+# expected: none: Safe HOLDS to six entries at the defaults of MechanismFree-rows.txt (both cells and one grant seat, two principals): about eighteen minutes on the machine that made it, and not in modules.tsv
+#
+# One entry deeper than MechanismFree-rows.txt's s-depth5, and about twelve times its states.
+s-depth6             none              Spec INVARIANT Safe                   HOLDS    states=5745577
