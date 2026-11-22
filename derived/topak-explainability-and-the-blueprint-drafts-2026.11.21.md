@@ -264,10 +264,11 @@ Options, the drafter's, in the order they would cost. Nothing here is proposed a
      That was tried with a stand-in for the prover's library module, since the prover is not installed here.
 
    **Where it would live is not decided.** The custodian's inclination, 2026.11.22, is tla-kit, with the rest of
-   what explains a specification: tla-kit's design note of 2026.11.21 (`GRAPH-AND-DIAGRAMS.md` there) already proposes to take the specification
-   graph's format and checker and the diagram skill with its library. Its server already reads SANY's XML export,
-   which is the reason to build the reader there on the parser and not on the text.
+   what explains a specification: tla-kit's design note of 2026.11.21 (`GRAPH-AND-DIAGRAMS.md` there) already
+   proposes to take the specification graph's format and checker and the diagram skill with its library. Its
+   server already reads SANY's XML export, which is the reason to build the reader there on the parser and not on
+   the text.
 
 The first costs nothing. The fourth is the only one already built, and the trial above is the argument for it: a
-check found what writing the blueprint, and checking its names and lines by hand, had not. The third is the one that would make a
-blueprint part of the corpus's own account of its evidence, and not a document beside it.
+check found what writing the blueprint, and checking its names and lines by hand, had not. The third is the one
+that would make a blueprint part of the corpus's own account of its evidence, and not a document beside it.
