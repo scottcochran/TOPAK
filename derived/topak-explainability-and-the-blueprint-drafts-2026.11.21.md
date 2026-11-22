@@ -14,6 +14,11 @@ read.** Most records, the Theory of Operation beyond its headings, and the build
 `specification-graph.py`. Where a mechanism is described from its own README or header, the description is that
 file's, not a check of it.
 
+**Revised 2026.11.22, before it reached `main`**, at the custodian's prompting. §8's fourth option said a generator
+"could" draw a lemma graph from a proof module. One exists, outside TOPAK. The option now says so, with what was
+tried on TOPAK's two modules and what that found: the `Workflow` blueprint's hand-drawn graph was wrong, and is
+redrawn. §6's fourth row and §4's last paragraph take the same finding. Nothing else is changed.
+
 ## 1. Two senses of the word, and which one this note is about
 
 The corpus already takes a position on explainability, and it is not the subject here. The architecture
@@ -137,7 +142,9 @@ the re-check at apply because what they need cannot be undone between decide and
 **What the form cost.** For `Seats` most of the blueprint restates the module's own comments. For `Workflow` the
 graph is flat, ten theorems sharing infrastructure and none using another, so the picture carries little and the
 tables carry most. The form earns its keep where an invariant's strengthening is not obvious, and on the fidelity
-section in both.
+section in both. **A graph drawn by hand is the part not to trust.** Checked against the citations the
+proofs make (§8, option 4), the `Seats` graph was right and the `Workflow` graph left out fourteen citations and
+drew three hypotheses as citations. The blueprint is revised.
 
 ## 5. What the checkers say about the same two modules today
 
@@ -187,7 +194,7 @@ for one theorem, generated, and no other mechanism in §3 produces one.
 | Discussion to record | none; the provenance note | The custodian, marked ⟨K⟩ | No |
 | Record clause to module | *read* | The drafter, for all 41 modules | Only that an end moved. Mutations and witnesses support the reading |
 | Module to proof | *proved* | The prover, certified route by route; the kernel, for the modules proved again in Lean | Yes |
-| Proof to its explanation | none yet | Whoever writes the blueprint | That a named declaration exists at a line, and that the digests are the cited ones. Not that the prose argument is the proof's |
+| Proof to its explanation | none yet | Whoever writes the blueprint | That a named declaration exists at a line, that the digests are the cited ones, and that every arrow drawn is a citation the proof makes and every citation has an arrow (§8, option 4). Not that the prose argument is the proof's |
 | Module to code | *trusted*, or *proved of a reading*, *replayed*, *tested* | A row, or a model and its replay | In part, and the stronger routes are stale at this tree |
 | Theorem to premises | the binding | `inventory.py` | Yes, as bookkeeping |
 | Table to picture | *generated* | The diagram generator | For G3; the others are dated |
@@ -233,9 +240,34 @@ Options, the drafter's, in the order they would cost. Nothing here is proposed a
 3. **Attach a reading to the read edge it is a reading of.** The graph's builder already keeps what is written into
    an edge by hand, a reader and a note. A blueprint's path and digest could be that note, so that a stale
    blueprint is reported with the stale edge and needs no checker of its own.
-4. **Draw the lemma graph from the proof module.** The `LEMMA` and `THEOREM` names and their `BY` citations are in
-   the text; a generator beside the diagram family's could draw the picture and fail when a cited name is gone,
-   which is the check a blueprint's formal links need.
+4. **Draw the lemma graph from the proof module, and check it.** This exists, outside TOPAK: the tic-tac-toe
+   specification and proof the TLA+ skill cites (`TicTacToe_proof.tla`) has a generated diagram of its proof module,
+   built on this family's drawing library. A reader takes every definition, lemma and theorem and, for each proof,
+   the names after `BY` and after `DEF`. The diagram draws one node per fact, with the statement typeset, a reading
+   of how the proof goes, and what it cites and unfolds. **The build fails** if an arrow is drawn that is not a
+   citation, if a citation has no arrow, if a fact of the module is not drawn or has no reading, or if a proof
+   cites a name the diagram does not know. The readings are marked as the diagram's own. That is a blueprint whose
+   formal links are checked, which is more than this option asked for. Placing the nodes and routing the arrows
+   is by hand there, for seventeen facts.
 
-The first costs nothing and the third is the one that would make a blueprint part of the corpus's own account of
-its evidence, and not a document beside it.
+   **Tried on TOPAK's two modules, 2026.11.22.**
+   - Unchanged, the reader takes `Seats_proof.tla` correctly: ten lemmas, three theorems, twelve citations.
+   - Unchanged, it merges facts in `Workflow_proof.tla` and finds 22 of its 33 lemmas. It expects a blank line
+     between facts and numbered step labels; TOPAK's proofs separate sections with a rule and label steps `<1>a`.
+   - With those two things changed, in a scratch copy kept nowhere, it takes `Workflow_proof.tla` correctly:
+     33 lemmas, 11 theorems, 74 citations.
+   - Against those citations the `Seats` blueprint's graph is exact, twelve of twelve. The `Workflow` blueprint's
+     was not: fourteen citations missing, eleven of them of `EdgeFacts`, and three hypotheses drawn as citations.
+     It is redrawn from the citations, and says so in its header.
+   - The same citations can be had from the parser instead of from patterns over the text. SANY's XML export of
+     `Seats_proof.tla` carries each proof's facts and definitions as resolved references, and gives the same twelve.
+     That was tried with a stand-in for the prover's library module, since the prover is not installed here.
+
+   **Where it would live is not decided.** The custodian's inclination, 2026.11.22, is tla-kit, with the rest of
+   what explains a specification: tla-kit's design note of 2026.11.21 (`GRAPH-AND-DIAGRAMS.md` there) already proposes to take the specification
+   graph's format and checker and the diagram skill with its library. Its server already reads SANY's XML export,
+   which is the reason to build the reader there on the parser and not on the text.
+
+The first costs nothing. The fourth is the only one already built, and the trial above is the argument for it: a
+check found what writing the blueprint, and checking its names and lines by hand, had not. The third is the one that would make a
+blueprint part of the corpus's own account of its evidence, and not a document beside it.
