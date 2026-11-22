@@ -11,6 +11,10 @@ rest of ADR-0054. **What was run.** Nothing was proved or checked again. The dig
 modules and the three results files were compared with the tree and agree, and every declaration named below was
 found by name at the line given.
 
+**Revised 2026.11.22, before it reached `main`.** §3's graph was drawn by hand and was wrong: it left out fourteen
+citations, eleven of them of `EdgeFacts`, and drew three hypotheses as citations. It is redrawn from the module's
+`BY` lines, and L13's "uses" line gains L1. Nothing else is changed.
+
 **How to read a node.** A statement in words, the argument in words, what it uses, and its line in
 `Workflow_proof.tla`, written `P`. Lines in `Workflow.tla` are written `W`. The module has no Lean encoding.
 
@@ -58,48 +62,90 @@ subtractive events.
 
 ```mermaid
 graph BT
-  F[L1 EdgeFacts] --> A[L4 L5 Activate lemmas]
-  F --> Y[L3 L8 TypeOK]
+  F[L1 EdgeFacts]
+  Y[L2 L3 L8 TypeOK]
+  A[L4 L5 Activate lemmas]
+  DE[L6 DefaultEdge]
+  AP[L7 ApplyTypeOK]
+  SH[L9 L13 Shape]
+  EF[L10 EndedFrozen]
+  AS[L11 AppliedStep]
+  AC[L12 ActStep]
+  N1[L14 step T1]
+  N2[L15 step AtMostOne]
+  L16[L16 AtMostOneBound]
+  N3[L17 step T3]
+  N4[L18 step T4]
+  N5[L19 step InvC]
+  N6[L20 step InvT]
+  N7[L21 step T7]
+  N8[L22 step T8]
+  N9[L23 step T9]
+  N10[L24 step InvB]
+  T1
+  T2
+  T3
+  T4
+  T5
+  T6
+  T7
+  T8
+  T9
+  T10
+  T11[T11 SafeAlways]
+  F --> Y
   A --> Y
-  DE[L6 DefaultEdge] --> Y
-  AP[L7 ApplyTypeOK] --> Y
-  A --> EF[L10 EndedFrozen]
-  DE --> EF
-  Y --> SH[L9 L13 Shape]
+  DE --> Y
+  AP --> Y
+  F --> A
+  F --> AP
+  A --> AP
+  F --> SH
+  Y --> SH
   EF --> SH
-  AS[L11 AppliedStep] --> SH
-  AS --> N1[L14 step T1]
-  AS --> N2[L15 step AtMostOne]
-  SH --> N3[L17 step T3]
-  AC[L12 ActStep] --> N4[L18 step T4]
+  AS --> SH
+  F --> EF
+  A --> EF
+  DE --> EF
+  AS --> N1
+  AS --> N2
+  F --> N3
+  F --> N4
   A --> N4
-  AC --> N5[L19 step InvC]
-  AC --> N6[L20 step InvT]
+  AC --> N4
+  F --> N5
   A --> N5
+  DE --> N5
+  AC --> N5
+  F --> N6
   A --> N6
-  SH --> N6
-  EF --> N9[L23 step T9]
-  SH --> N10[L24 step InvB]
+  DE --> N6
+  AC --> N6
+  F --> N9
+  EF --> N9
+  F --> N10
   N1 --> T1
-  N2 --> T2
-  L16[L16 AtMostOneBound] --> T2
-  N3 --> T3
-  N4 --> T4
-  N5 --> T5
-  N6 --> T6
-  N7[L21 step T7] --> T7
-  N8[L22 step T8] --> T8
-  N9 --> T9
-  N10 --> T10
-  Y --> T4
-  Y --> T7
   SH --> T2
+  N2 --> T2
+  L16 --> T2
   SH --> T3
+  N3 --> T3
+  F --> T4
+  Y --> T4
+  N4 --> T4
   SH --> T5
+  N5 --> T5
+  F --> T6
   SH --> T6
+  N6 --> T6
+  Y --> T7
+  N7 --> T7
+  N8 --> T8
   SH --> T9
+  N9 --> T9
   SH --> T10
-  T1 --> T11[T11 SafeAlways]
+  N10 --> T10
+  T1 --> T11
   T2 --> T11
   T3 --> T11
   T4 --> T11
@@ -109,10 +155,24 @@ graph BT
   T8 --> T11
   T9 --> T11
   T10 --> T11
+  Y -.-> N2
+  SH -.-> N3
+  Y -.-> N4
+  SH -.-> N5
+  SH -.-> N6
+  Y -.-> N7
+  SH -.-> N9
+  SH -.-> N10
 ```
 
+A solid arrow from A to B says that B's proof cites A after a `BY`; where a node stands for two lemmas, the arrow
+stands for a citation of either. A dashed arrow says that a step lemma takes `Shape` or `TypeOK` as a hypothesis,
+which is a use and not a citation. Both kinds are computed from the module: 74 citations between its lemmas and
+theorems, 62 arrows once grouped, and eight hypotheses. The nine mutation lemmas cite nothing and are not drawn.
+
 The ten properties are proved separately. No property's proof uses another property: they share only the
-infrastructure at the bottom.
+infrastructure at the bottom. `EdgeFacts` is cited by fourteen of the lemmas and theorems above it, which is the
+picture's way of saying that the fixed graph is everywhere in the proof.
 
 ## 4. Definitions the proof adds
 
@@ -168,7 +228,7 @@ the promotion has happened, and `Promote` is then disabled.
 decreases. **L12. `ActStep`** (`P` 367). Every action but `Apply`, `Fire` and `DecisionLapse` leaves the activation
 record alone. These two cut each property's case analysis from fifteen actions to the one, two or three that matter.
 
-**L9, L13. `InitShape`, `NextShape`** (`P` 272, 386). `Shape` holds initially and is kept. *Uses* L8, L10, L11.
+**L9, L13. `InitShape`, `NextShape`** (`P` 272, 386). `Shape` holds initially and is kept. *Uses* L1, L8, L10, L11.
 `PendingEnded` is kept because of L10; `AppliedBound` because a new applied route takes the next position.
 
 ### The properties that rest on the check at apply
