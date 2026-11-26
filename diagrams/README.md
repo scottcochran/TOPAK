@@ -90,6 +90,12 @@ the records it draws in full and its links by kind. A diagram links to another's
 manifest lists it. When a run moves any diagram's anchors or records, the generator updates the manifest, prints a
 `NOTE` line and exits 1. Run it again, and the links follow.
 
+**Module diagrams (I).** A diagram of family I draws one TLA+ module, and its names mean what that module says
+(gov-tla's rule). On it, a code-font name its module or proof module declares or defines opens that line, even a
+name other modules also define (`Spec`, `Grant`, `lease`): the diagram's `MODULE_FILES`. The names it anchors are
+never the target of another diagram's text, so a module page takes no link away from the diagram that anchored a
+name before it (`lib.LOCAL_FAMILIES`). A module's file name still opens the file at the pin.
+
 **Where you land.** The target is framed when it opens: a card, a list or a header shows a halo, and a row is
 recoloured amber. The frame pulses three times and then stays; under `prefers-reduced-motion` it does not pulse.
 Seen in Chrome. Untested in Firefox and Safari.
@@ -101,9 +107,9 @@ uv run --no-project --python 3.12 python <riemann-diagrams>/plugins/proof-poster
 ```
 
 The generator makes the same checks and prints a `WARNING` for any failure, so CI fails on a link that lands
-nowhere. At 2026.11.26 the family carries 19,310 links: 2,930 within a diagram, 2,623 to another diagram's anchor,
-13,689 to a source at its pin and 68 to a commit or pull request, over 1,609 anchors (counted by `check-links.py`
-and from the manifest by hand; the manifest has the current figures).
+nowhere. At 2026.11.26, with I1, the family carries 19,584 links: 2,993 within a diagram, 2,662 to another diagram's
+anchor, 13,861 to a source at its pin and 68 to a commit or pull request, over 1,644 anchors (counted by
+`check-links.py` and from the manifest; the manifest has the current figures).
 
 ## The TOPAK diagram family (2026.10.05)
 
@@ -208,6 +214,20 @@ cases), and reading the newest had drawn their counts as Isabelle's refusals. Ea
 (`AMENDED_G12`); each new one names G12 with Batch 40 as its state (`STATE_G12`). The other 37 regenerate byte for byte
 under the pinned interpreter. H9's counts move when the rebuilt graph lands (529 nodes, 495 edges; a separate branch).
 
+**Drawn 2026.11.26: family I, one diagram per TLA+ module**, after gov-tla's B diagrams
+(`derived/topak-module-diagrams-scope-2026.11.26.md`). **I1**, `Seats.tla`, is the pilot. It draws the module's machine
+from its own definitions, its two properties with the ADR-0037 section each states, the mutation matrix, the
+witnesses, all thirteen statements of `Seats_proof.tla`, the certified run's routes, the Lean re-encoding with its
+mirror and graph check, the premises the binding names, the model of the code that refines it (ADR-0053), and what of
+ADR-0037 §4 the frozen module does not model. Everything is read at build time through `topak/src/modules.py`, which
+names each file it reads. The Lean files are the ones ADR-0053 cites (`TopakSpec-results-2026.10.06b.txt`,
+`GraphCheck-results-2026.10.06.txt`), compared with the later 2026.10.07 files. Each file is read at `PIN_LINKS` and
+must be the same bytes in the tree. Every digest a results file cites is compared with the file, and what the diagram
+expects the files to say is held as literals and compared both ways. `Seats-results-2026.09.29.txt` names no digest,
+so the build checks only that the module has not changed since the file was committed. It also checks that the graph
+check's re-run of TLC has the file's state counts. The page's shared bands are `topak/src/modpage.py`. No other
+diagram is amended. The library change (module-local names, `LOCAL_FAMILIES`) leaves the other 58 byte for byte.
+
 | Id | Diagram | What it shows |
 |---|---|---|
 | **A · Orientation** | | |
@@ -276,6 +296,7 @@ under the pinned interpreter. H9's counts move when the rebuilt graph lands (529
 | H9 | [The specification graph](topak/H9-specification-graph-2026.10.05.svg) | ADR-0057 and ADR-0058 (Proposed): open layers, the eight edge types ordered by what each leaves to a person, pins and premises, the checker's lists; the graph's layers and seventeen of its edges read from `specification-graph.json` at build time, stale ones red; a deployment's declaration against the archetype's |
 | H10 | [User documentation is a derived layer](topak/H10-documentation-layer-2026.10.05.svg) | ADR-0071 to ADR-0073 (Proposed): the corpus's revisions as the source, the gates and the store, the document set for every role (43 documents, the diagram's count), the service as a rebuildable projection, the reader over the public API alone; nothing built |
 | H11 | [TLA+ checks in the tla-kit image](topak/H11-tla-kit-image-2026.10.05.svg) | ADR-0077 (Proposed): the image as a pin by published digest, the proofs job, the prover pin's move by its own pull request; what the tree holds today (the jar and TLAPS pins, the CI workflows) beside what the record proposes, every §7 item but one not met |
+| I1 | [`Seats.tla`](topak/I1-seats-2026.10.05.svg) | ADR-0037 §9's module, drawn whole and read at build time: the machine, `OnlyThinkersAuthor` (§4) and `OneSeatPerPrincipal` (§1), `M_KIND` and `M_SEAT` by property, three witnesses, every statement of `Seats_proof.tla` (110 obligations, certified with 3 on LS4), the Lean encoding, mirror and graph check, the binding's premises, `SeatsModel.lean`, and the kinds and acts of §4 the frozen module does not model |
 
 ### Regenerating
 
