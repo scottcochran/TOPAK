@@ -28,6 +28,10 @@ import sources
 
 ROOT = pathlib.Path(__file__).resolve().parents[3]
 
+# The trace validation that reads the reference's recorded behaviours against Mechanism.tla and, state by state,
+# against ConfinementRefinement.tla's invariants (G10 §3's row; ADR-0033 A14).
+TRACE_RESULTS = "spec/Mechanism-trace-results-2026.10.05.txt"
+
 # The Lean results the records cite (ADR-0053 R6 cites TopakSpec-results-2026.10.06b.txt; ADR-0053 and
 # spec/theorem-premise-binding.md cite GraphCheck-results-2026.10.06.txt). A later file is compared, not drawn.
 LEAN_RESULTS = "spec/lean/TopakSpec-results-2026.10.06b.txt"
@@ -77,6 +81,45 @@ MODULES = {
         module="spec/RulesFloorNV.tla", proof=None,
         tlc="spec/RulesFloorNV-results-2026.09.15.txt", shape="bare", section=None,
         proof_results=None, cert=None, lean=None, mirror=None, graph=False),
+    "Confinement": dict(
+        module="spec/Confinement.tla", proof="spec/Confinement_proof.tla",
+        tlc=("spec/Confinement-results-2026.09.28.txt", "spec/Confinement-results-2026.09.30.txt"), shape="log",
+        section=None, proof_results="spec/Confinement-proof-results-2026.10.02.txt",
+        cert="spec/Confinement-proof-cert-results-2026.10.04.txt",
+        lean="spec/lean/TopakSpec/Confinement.lean", mirror=None, graph=False),
+    "Confinement_A1": dict(
+        module="spec/Confinement_A1.tla", proof="spec/Confinement_A1_proof.tla",
+        tlc="spec/Confinement_A1-results-2026.10.02.txt", shape="log", section=None,
+        proof_results="spec/Confinement_A1-proof-results-2026.10.02.txt",
+        cert="spec/Confinement_A1-proof-cert-results-2026.10.04.txt",
+        lean="spec/lean/TopakSpec/Confinement.lean", mirror=None, graph=False),
+    "ConfinementRefinement": dict(
+        module="spec/ConfinementRefinement.tla", proof=None, tlc=None, shape=None, section=None,
+        proof_results=None, cert=None, lean=None, mirror=None, graph=False),
+    "RunConfinement": dict(
+        module="spec/RunConfinement.tla", proof="spec/RunConfinement_proof.tla",
+        tlc="spec/RunConfinement-results-2026.10.02.txt", shape="log", section=None,
+        proof_results="spec/RunConfinement-proof-results-2026.10.02.txt",
+        cert="spec/RunConfinement-proof-cert-results-2026.10.04.txt", lean=None, mirror=None, graph=False),
+    "Lease": dict(
+        module="spec/Lease.tla", proof=None, tlc="spec/Lease-results-2026.09.25.txt", shape="log", section=None,
+        proof_results=None, cert=None, lean=None, mirror=None, graph=False),
+    "Lease_A1": dict(
+        module="spec/Lease_A1.tla", proof="spec/Lease_A1_proof.tla",
+        tlc="spec/Lease_A1-results-2026.09.28.txt", shape="log", section=None,
+        proof_results="spec/Lease_A1-proof-results-2026.10.02.txt",
+        cert="spec/Lease_A1-proof-cert-results-2026.10.04.txt",
+        lean="spec/lean/TopakSpec/Lease_A1.lean", mirror=None, graph=False),
+    "Labels": dict(
+        module="spec/Labels.tla", proof="spec/Labels_proof.tla",
+        tlc="spec/Labels-results-2026.10.04.txt", shape="log", section=None,
+        proof_results="spec/Labels-proof-results-2026.10.04.txt",
+        cert="spec/Labels-proof-cert-results-2026.10.04.txt", lean=None, mirror=None, graph=False),
+    "ToolList": dict(
+        module="spec/ToolList.tla", proof="spec/ToolList_proof.tla",
+        tlc="spec/ToolList-results-2026.10.04.txt", shape="log", section=None,
+        proof_results="spec/ToolList-proof-results-2026.10.04.txt",
+        cert="spec/ToolList-proof-cert-results-2026.10.04.txt", lean=None, mirror=None, graph=False),
 }
 
 
@@ -141,16 +184,17 @@ def header_mutations(rel, var="Mut"):
     out, cur = [], None
     for ln in header_comment(rel):
         s = ln.strip()
-        m = re.match(rf'^{var} = "(\w+)":\s*(.*)$', s)
+        m = re.match(rf'^{var} = ((?:"\w+"(?:, )?)+):\s*(.*)$', s)
         if m:
-            cur = [m.group(1), m.group(2)]
+            # one entry may name several mutations that share a description ('Mut = "M_F1", "M_F2": ...')
+            cur = [re.findall(r'"(\w+)"', m.group(1)), m.group(2)]
             out.append(cur)
         elif cur is not None and s:
             cur[1] += " " + s
         else:
             cur = None
     _need(out, rel, f'the header lists no {var} = "..." entries')
-    return [(n, re.sub(r"\s+", " ", d).strip()) for n, d in out]
+    return [(n, re.sub(r"\s+", " ", d).strip()) for ns, d in out for n in ns]
 
 
 def definition(rel, name):
@@ -185,7 +229,7 @@ def header_properties(rel):
     for ln in header_comment(rel):
         if re.match(r'^\s*(?:Mut|Mech) = "', ln):
             break
-        m = re.match(r"^\s{3,}([A-Z]\w*)(?:\s+((?:\d{4} )?§[\d.]+))?\s{2,}(\S.*)$", ln)
+        m = re.match(r"^\s{3,}([A-Z]\w*)(?:\s+((?:\d{4} )?§[\d.]+))?\s+(\S.*)$", ln)
         if m and m.group(1) in defined:
             cur = [m.group(1), m.group(2), m.group(3)]
             out.append(cur)
@@ -284,8 +328,9 @@ def tlc_log(rel, section=None):
     for n, i in enumerate(starts):
         body = lines[i + 1:(starts[n + 1] if n + 1 < len(starts) else len(lines))]
         parts = _SEC.match(lines[i]).group(1).split(" · ")
-        inv = re.fullmatch(r"INVARIANT (\w+)", parts[-1])
-        _need(inv, rel, f"section line {i + 1} does not end 'INVARIANT <P>'")
+        inv = re.fullmatch(r"(INVARIANT|PROPERTY) (\w+)", parts[-1])
+        _need(inv, rel, f"section line {i + 1} does not end 'INVARIANT <P>' or 'PROPERTY <P>'")
+        kind, prop = inv.group(1), inv.group(2)
         params, plain = {}, []
         for p in parts[:-1]:
             k, sep, v = p.partition("=")
@@ -296,17 +341,21 @@ def tlc_log(rel, section=None):
         _need(len(plain) in (1, 2), rel, f"section line {i + 1}: expected '[<Module> · ]<row>'")
         mod, name = (plain[0], plain[1]) if len(plain) == 2 else (None, plain[0])
         ok = [ln for ln in body if ln.strip() == "Model checking completed. No error has been found."]
-        bad = [re.match(r"^Error: Invariant (\w+) is violated\.$", ln) for ln in body]
+        bad = [re.match(r"^Error: (?:Invariant|Action property) (\w+) is violated\.$|"
+                        r"^Error: Temporal properties were violated\.$", ln) for ln in body]
         bad = [b for b in bad if b]
         _need(len(ok) + len(bad) == 1, rel, f"section {name}: not exactly one verdict")
-        _need(not bad or bad[0].group(1) == inv.group(1), rel, f"section {name}: violates another invariant")
-        _need(not any(re.match(r"^Error: (?!Invariant \w+ is violated\.|The behavior up to this point is:)", ln)
-                      for ln in body), rel, f"section {name}: an error that is not an invariant's violation")
+        _need(not bad or bad[0].group(1) in (prop, None), rel, f"section {name}: violates another property")
+        _need(not bad or kind == "PROPERTY" or bad[0].group(1) == prop, rel, f"section {name}: an invariant "
+              f"section whose violation is not that invariant's")
+        _need(not any(re.match(r"^Error: (?!Invariant \w+ is violated\.|Action property \w+ is violated\.|"
+                               r"Temporal properties were violated\.|The behavior up to this point is:)", ln)
+                      for ln in body), rel, f"section {name}: an error that is not a property's violation")
         _need(not any("Deadlock" in ln for ln in body), rel, f"section {name}: a deadlock")
         st = [_STATES.match(ln) for ln in body]
         st = [s for s in st if s]
         _need(len(st) == 1, rel, f"section {name}: not one 'states generated' line")
-        rows.append(dict(module=mod, name=name, params=params, prop=inv.group(1),
+        rows.append(dict(module=mod, name=name, params=params, prop=prop, kind=kind,
                          verdict="HOLDS" if ok else "COUNTEREXAMPLE", states=int(st[0].group(2)),
                          left=int(st[0].group(3)), line=i + 1))
     names = [(r["module"], r["name"]) for r in rows]
@@ -323,6 +372,21 @@ def tlc(name):
     m = MODULES[name]
     if m["tlc"] is None:
         return None
+    if isinstance(m["tlc"], (list, tuple)):
+        # one module drawn from several log files (a later run supplementing an earlier one)
+        _need(m["shape"] == "log", name, "several results files must be logs")
+        parts = [tlc_log(f, m["section"]) for f in m["tlc"]]
+        rows = []
+        for f, part in zip(m["tlc"], parts):
+            for r in part["rows"]:
+                r["file"] = f
+                r["mut"] = r["params"].get("Mut", r["params"].get("Mech"))
+                _need(r["mut"], f, f"section {r['name']} names neither Mut= nor Mech=")
+                rows.append(r)
+        names = [r["name"] for r in rows]
+        _need(len(set(names)) == len(names), name, "a row name in two of its results files")
+        return dict(head=[ln for part in parts for ln in part["head"]], heads=[part["head"] for part in parts],
+                    rows=rows, file=" and ".join(m["tlc"]), files=list(m["tlc"]))
     if m["shape"] == "pipe":
         out = tlc_pipe(m["tlc"])
         _need(out["module"] == name, m["tlc"], f"is the results of {out['module']}, not {name}")
@@ -455,6 +519,11 @@ def cert_results(rel):
     out["total"] = int(lines[t[0]].split()[1])
     i = t[0] + 1
     while i < len(lines) and lines[i].startswith("  "):
+        f = re.fullmatch(r"  failed / (\w+): (\d+)", lines[i])
+        if f:  # obligations the certified run could not discharge, by the last backend tried
+            out["routes"].append((f"failed, last backend tried: {f.group(1)}", int(f.group(2)), None))
+            i += 1
+            continue
         r = re.fullmatch(r"  (\S.*?\S)\s{2,}(\d+)(?:\s+\((.*)\))?", lines[i])
         _need(r, rel, f"route line does not parse: {lines[i][:70]!r}")
         out["routes"].append((r.group(1), int(r.group(2)), r.group(3)))
@@ -594,13 +663,21 @@ def evidence(name):
     out["sha"][m["module"]] = sha16(m["module"])
     out["tlc"] = tlc(name)
     if out["tlc"] is not None:
-        shas = [ln[len("Modules: "):] for ln in out["tlc"].get("head", []) if isinstance(ln, str)
-                and ln.startswith("Modules: ")]
-        if shas:
-            cite(m["module"], _shas(shas[0], m["tlc"], "Modules").get(mod), m["tlc"])
-        else:
-            _need(unchanged_since(m["tlc"], m["module"]), m["tlc"], f"{mod} changed after this file was committed")
-            out["tlc"]["order_only"] = True
+        files = out["tlc"].get("files") or [m["tlc"]]
+        heads = out["tlc"].get("heads") or [out["tlc"].get("head", [])]
+        for f, head in zip(files, heads):
+            head = [ln for ln in head if isinstance(ln, str)] if isinstance(head, list) else []
+            many = [ln[len("Modules: "):] for ln in head if ln.startswith("Modules: ")]
+            one = [re.match(r"^Module: (\S+) \(sha256 ([0-9a-f]{16})\)", ln) for ln in head]
+            one = [o for o in one if o]
+            if many:
+                cite(m["module"], _shas(many[0], f, "Modules").get(mod), f)
+            elif one:
+                _need(one[0].group(1) == mod, f, f"is a run of {one[0].group(1)}, not {mod}")
+                cite(m["module"], one[0].group(2), f)
+            else:
+                _need(unchanged_since(f, m["module"]), f, f"{mod} changed after this file was committed")
+                out["tlc"]["order_only"] = True
     if m["proof"]:
         prf = pathlib.PurePosixPath(m["proof"]).name
         pr = proof_results(m["proof_results"])
@@ -648,4 +725,41 @@ def evidence(name):
         _need([r for r in gl["rows"] if r["module"] == name] == rows, GRAPH_LATER,
               f"says otherwise of {name} than {GRAPH_RESULTS}")
         out["graph"] = dict(g, rows=rows)
+    return out
+
+
+_TRACE = re.compile(r"^([a-z][\w-]*) \| (\d+) steps \| (MATCH|.+)$")
+
+
+def trace_results(rel):
+    """A spec/mechanism-trace-results.sh file. Returns dict(title, module {file: sha16}, reference, suites, words,
+    tests [the cargo 'test result:' lines], rows [dict(name, steps, verdict)], traces, steps)."""
+    lines = text(rel).split("\n")
+    _need(lines[0].startswith("TOPAK — Mechanism.tla trace validation"), rel, "line 1 is not the trace title")
+    out = dict(title=lines[0], rows=[], tests=[])
+    for ln in lines[1:]:
+        if ln.startswith("Module: "):
+            m = re.match(r"^Module: (\S+) \(sha256 ([0-9a-f]{16})\)", ln)
+            _need(m, rel, "bad Module: line")
+            out["module"] = {m.group(1): m.group(2)}
+        elif ln.startswith("Reference: "):
+            out["reference"] = ln[len("Reference: "):]
+        elif ln.startswith("Suites traced: "):
+            out["suites"] = ln[len("Suites traced: "):]
+        elif ln.startswith("A MATCH line means"):
+            out["words"] = ln
+        elif ln.startswith("test result: "):
+            out["tests"].append(ln)
+        else:
+            t = _TRACE.match(ln)
+            if t:
+                out["rows"].append(dict(name=t.group(1), steps=int(t.group(2)), verdict=t.group(3)))
+            elif re.fullmatch(r"\d+ traces · \d+ steps", ln.strip()):
+                a, b = re.findall(r"\d+", ln)
+                out["traces"], out["steps"] = int(a), int(b)
+    for k in ("module", "reference", "suites", "words", "traces", "steps"):
+        _need(k in out, rel, f"no {k}")
+    _need(len(out["rows"]) == out["traces"] and sum(r["steps"] for r in out["rows"]) == out["steps"], rel,
+          "the summary does not count the rows")
+    _need(all("0 failed" in t for t in out["tests"]), rel, "a traced suite failed")
     return out

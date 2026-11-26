@@ -196,7 +196,8 @@ def machine(c, x, y, w, rel, rows, size=13.5, gap=30):
 
 def theorem_for(ev, prop):
     """The THEOREM whose statement is Spec => []prop, or None."""
-    hits = [s for s in ev.get("statements", ()) if s["kind"] == "THEOREM" and s["prove"] == f"Spec => []{prop}"]
+    hits = [s for s in ev.get("statements", ()) if s["kind"] == "THEOREM"
+            and s["prove"] in (f"Spec => []{prop}", f"Spec => {prop}")]   # the second: a step property, [][A]_v
     return hits[0] if len(hits) == 1 else None
 
 
@@ -316,10 +317,32 @@ def other_rows_table(c, x, y, w, ev, readings, unmutated=("none",)):
                           ("What it shows (the diagram's reading)", w - 1290)], rows, size=13.5, accent="amber")
 
 
+def form_role(s):
+    """What a statement is for, read from its form alone: a start, a step, a theorem over every behaviour, or why a
+    mutation must fail."""
+    muts = re.findall(r'"(M_\w+)"', s["assume"] or "") + re.findall(r'Mut = "(M_\w+)"', s["prove"])
+    excl = re.findall(r'"(M_\w+)"', s["assume"] or "")
+    unless = f", unless {', '.join(f'`{m}`' for m in excl)}" if excl and "Mut =" not in (s["assume"] or "") else ""
+    if s["kind"] == "THEOREM":
+        m = re.fullmatch(r"Spec => (?:\[\])?\(?(\w+)\)?", s["prove"])
+        return (f"`{m.group(1)}`, for every behaviour" if m else "A theorem over every behaviour") + unless + "."
+    if re.search(r'Mut (?:=|\\in) ', (s["assume"] or "") + s["prove"]):
+        ms = list(dict.fromkeys(muts))
+        return f"Why {', '.join(f'`{m}`' for m in ms)} must fail." if ms else "About a mutation."
+    if s["name"].startswith("Init") or s["name"].endswith("Init"):
+        return "At the start."
+    if s["name"].startswith("Next") or s["name"].endswith("Next"):
+        return "Kept by every step" + unless + "."
+    return "A lemma the proof uses."
+
+
 def theorems_table(c, x, y, w, ev, roles):
     """Every THEOREM and LEMMA of the proof module (#theorems), in order, with its hypothesis and statement.
-    roles: {name: what it is for (the diagram's reading)}, one per statement."""
+    roles: {name: what it is for (the diagram's reading)}, one per statement; None reads each from its form."""
     st = ev["statements"]
+    by_form = roles is None
+    if by_form:
+        roles = {s["name"]: form_role(s) for s in st}
     if [s["name"] for s in st] != list(roles):
         raise M.CorpusError(f"{ev['files']['proof']}: statements {[s['name'] for s in st]}, the diagram reads "
                             f"{list(roles)}")
@@ -329,7 +352,7 @@ def theorems_table(c, x, y, w, ev, roles):
         rows.append({"cells": [f"`{s['name']}`", s["kind"].lower(), hyp, f"`{s['prove']}`", roles[s["name"]]],
                      "accent": "blue" if s["kind"] == "THEOREM" else "grey"})
     cols = [("Statement", 330, {}), ("Kind", 90), ("Hypotheses (ASSUME)", 560), ("Proves", 1180),
-            ("What it is for (the diagram's reading)", w - 2160)]
+            ("What it is for (read from its form)" if by_form else "What it is for (the diagram's reading)", w - 2160)]
     return c.table(x, y, cols, rows, size=13.5, anchor="theorems")
 
 
@@ -338,7 +361,7 @@ def cert_table(c, x, y, w, ev):
     ce = ev["cert"]
     rows = []
     for route, k, note in ce["routes"]:
-        bad = route.startswith("LS4") or (note and "REJECTED" in note)
+        bad = route.startswith(("LS4", "failed")) or (note and "REJECTED" in note)
         rows.append({"cells": [route, n(k), note or "—"], "accent": "red" if bad else "grey"})
     cols = [("Route, as the file names it", 560, {}), ("Obligations", 140), ("The file's note", w - 700)]
     h = c.table(x, y, cols, rows, size=13.5, accent="blue" if ce["certified"] else "red", anchor="certification")
@@ -420,11 +443,12 @@ def premises(c, x, y, w, ev, props, derived, note=None):
     prem = [[strike(x_) for x_ in r] for r in md_rows(PREMISES, PREMISE_HEAD, props)]
     y += c.table(x, y, [(h_, w_) for h_, w_ in zip(PREMISE_HEAD, (290, 700, 180, 300, 560, 330, w - 2360))],
                  prem, size=13.5, accent="blue") + 14
-    der = md_rows(PREMISES, DERIVED_HEAD, derived)
-    y += c.table(x, y, [(DERIVED_HEAD[0], 290, {}), (DERIVED_HEAD[1], 1300), (DERIVED_HEAD[2], w - 1590)],
-                 der, size=13.5, accent="blue") + 14
-    y += c.para(x, y, w, f"The rows of `{PREMISES[5:]}`'s theorem table that are this module's, and its derived "
-                "premise, every cell. G3 draws the whole table; the T-0045 rows open on G1." +
+    if derived:
+        der = md_rows(PREMISES, DERIVED_HEAD, derived)
+        y += c.table(x, y, [(DERIVED_HEAD[0], 290, {}), (DERIVED_HEAD[1], 1300), (DERIVED_HEAD[2], w - 1590)],
+                     der, size=13.5, accent="blue") + 14
+    y += c.para(x, y, w, f"The rows of `{PREMISES[5:]}`'s theorem table that are this module's" +
+                (", and its derived premise" if derived else "") + ", every cell. G3 draws the whole table; the T-0045 rows open on G1." +
                 (f" {note}" if note else ""), 13.5, "muted")
     return y
 
@@ -435,8 +459,9 @@ def elsewhere(c, x, y, w, ev, ids):
     manifest = json.loads((HERE / "manifest.json").read_text("utf-8"))
     fname = pathlib.PurePosixPath(ev["files"]["module"]).name
     rx = re.compile(rf"(?<![\w_]){re.escape(fname)}")
+    # the drawn text only: a link to a definition in the module is not a mention of it
     found = [pid for pid in manifest if not pid.startswith(lib.LOCAL_FAMILIES)
-             and rx.search((HERE / manifest[pid]["file"]).read_text("utf-8"))]
+             and rx.search(re.sub(r"<[^>]+>", " ", (HERE / manifest[pid]["file"]).read_text("utf-8")))]
     if sorted(found) != sorted(ids):
         raise M.CorpusError(f"the diagrams that name {fname} are {sorted(found)}, the diagram lists {sorted(ids)}")
     rows = [[linked(poster_link(pid), f"**{pid}**"), lib.unlinked(manifest[pid]["title"])] for pid in ids]
