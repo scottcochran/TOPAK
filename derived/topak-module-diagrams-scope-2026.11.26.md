@@ -81,7 +81,7 @@ traces to a record or a results file.
 ## Decisions for the custodian
 
 **Decided 2026.11.26: all five as recommended** (the custodian). Phase 1 (the reader) and phase 2 (the `Seats.tla`
-pilot, I1) are built on branch `module-diagrams` and committed (ec8777d). Phase 3 is built the same day: I1's mechanism picture, and I2 `RunSeats`, I3 `FloorComposition`, I4 `FloorRouting`, I5 `RulesFloorNV_rev5` and I6 `RulesFloorBase`, on shared bands (`modpage.py`). Phase 4 is built the same day: a drawn module's file name opens its diagram, and its proof module's name opens the diagram's theorems. 121 links move in fourteen diagrams, H3's module rows among them, and no drawing changes. The release, `diagrams-v0.2.0` (MINOR), waits for the merge and the custodian's tag. For decision 3, the pilot changes no
+pilot, I1) are built on branch `module-diagrams` and committed (ec8777d). Phase 3 is built the same day: I1's mechanism picture, and I2 `RunSeats`, I3 `FloorComposition`, I4 `FloorRouting`, I5 `RulesFloorNV_rev5` and I6 `RulesFloorBase`, on shared bands (`modpage.py`). Phase 4 is built the same day: a drawn module's file name opens its diagram, and its proof module's name opens the diagram's theorems. 121 links move in fourteen diagrams, H3's module rows among them, and no drawing changes. Released 2026.11.26 as **`diagrams-v0.2.1`** (MINOR against `diagrams-v0.1.0`). It is on `ef1d36e`, the merge of PR #106, release run 45849672141. There are 66 assets: 64 SVGs, `pins.json` and `SHA256SUMS`, and all 65 checksums pass. Every SVG matches the tree at the tag and the Pages site byte for byte, and the site names `diagrams-v0.2.1`. `diagrams-v0.2.0` was tagged on `8b3b95b`, before the merge. `release.yml` refused it, and it names no release; v0.2.1's message says so. For decision 3, the pilot changes no
 other diagram's links yet. It adds the I family's local names (`lib.LOCAL_FAMILIES`, `MODULE_FILES`), and the
 module-file-name rule lands with phase 4.
 
@@ -101,7 +101,7 @@ module-file-name rule lands with phase 4.
 
 | Batch | Modules |
 |---|---|
-| Confinement and leases | `Confinement`, `Confinement_A1`, `ConfinementRefinement`, `RunConfinement`, `Lease`, `Lease_A1`, `Labels`, `ToolList` |
+| Confinement and leases: **drawn 2026.11.26 as I7 to I14**, not yet released | `Confinement`, `Confinement_A1`, `ConfinementRefinement`, `RunConfinement`, `Lease`, `Lease_A1`, `Labels`, `ToolList` |
 | Emergency, liveness and observers | `BreakGlass`, `BreakGlass_A1`, `Emergency`, `Emergency_live`, `Coupling`, `Coupling_live`, `RunCoupling`, `Observers`, `Correlator`, `Operators`, `Anchor` |
 | Composition | `NonComposition`, `NonComposition_A1` |
 | Workflow and mesh | `Workflow`, `Workflow_A1` (drawn nowhere today), `Mesh` |

@@ -108,8 +108,8 @@ uv run --no-project --python 3.12 python <riemann-diagrams>/plugins/proof-poster
 ```
 
 The generator makes the same checks and prints a `WARNING` for any failure, so CI fails on a link that lands
-nowhere. At 2026.11.26, with I1 to I6, the family carries 20,900 links: 3,426 within a diagram, 2,926 to another
-diagram's anchor, 14,480 to a source at its pin and 68 to a commit or pull request, over 1,829 anchors (counted by
+nowhere. At 2026.11.26, with I1 to I14, the family carries 23,050 links: 4,240 within a diagram, 3,310 to another
+diagram's anchor, 15,432 to a source at its pin and 68 to a commit or pull request, over 2,286 anchors (counted by
 `check-links.py` and from the manifest; the manifest has the current figures).
 
 ## The TOPAK diagram family (2026.10.05)
@@ -248,6 +248,29 @@ module at the pin. That includes H3's module rows: a module's name opens the dia
 opens its theorems. 121 links move. Their drawings are byte for byte the same once the links are set aside, and no
 footer changes, since a link is not a drawing.
 
+**Drawn 2026.11.26, the confinement and leases batch: I7 to I14**, released after `diagrams-v0.2.1`. **I7**,
+`Confinement.tla`, and **I8**, `Confinement_A1.tla`, draw mutation by property by rung (`Declared`, 0 to 3), and every
+row's verdict is held as a literal. I7 draws ADR-0034 §7's two tables, each compared row by row, and the row neither
+carries (`hx0`, finding 6). I8 draws the one definition its successor changed (`Evidence`), with every other one compared
+and every check the two runs share. Both are proved and **not certified**: three obligations failed in each certified
+run (G10 item 74). **I9**, `ConfinementRefinement.tla`, draws the trace validation (82 traces, 1,007 steps, every one
+matching). The generator that writes each trace's module is read to show that every MATCH includes the refinement
+invariants. **I10**, `RunConfinement.tla`, draws the results by mutation, property and declaration (`Filtered`,
+D-0034-5), against ADR-0034 A2's condition and Met line. **I11**, `Lease.tla`, frozen and without a proof module, and
+**I12**, `Lease_A1.tla`, draw ADR-0031 §8's table, each against its own file, and I12 draws the four definitions A1
+changed. **I13**, `Labels.tla`, and **I14**, `ToolList.tla`, draw property by mutation beside the header's "must break"
+lists, compared. I13 also draws the four rows its proof found. Where a module's results are thin, a page reads its
+proof statements' roles from their form (`modpage.form_role`), and says so. Three findings are drawn, each for the
+custodian:
+1. ADR-0046's Open obligations give the certified results files' digests as the digests of `Confinement_A1_proof.tla`
+   and `RunConfinement_proof.tla` (I8, I10).
+2. `theorem-premise-binding.md` still marks ADR-0034 A2 pending, though it was ratified in Batch 30 (I10).
+3. `Labels.tla` has no binding rows (I13).
+
+`ToolList.tla` has no binding rows either, but ADR-0048 already lists those as owed. Thirteen other diagrams that
+name these modules (B3, B8, C3, C4, C6, C7, D1, G1, G2, G3, H3, H5, H9) now open I7 to I14. 92 links move, and no
+drawing does. The "where else" check now reads drawn text only, so a link to a module's definition is not a mention.
+
 | Id | Diagram | What it shows |
 |---|---|---|
 | **A · Orientation** | | |
@@ -322,6 +345,14 @@ footer changes, since a link is not a drawing.
 | I4 | [`FloorRouting.tla`](topak/I4-floor-routing-2026.10.05.svg) | ADR-0030 §5's routing: the gate and the router, `NoWideningWithoutIssuance` and `FloorNeverVacuous`, `M_ROUTE` and `M_GATE`, three witnesses, ADR-0030 §9's table compared row by row, 36 obligations certified with 3 on LS4 (every theorem under `Mut = "none"`), the Lean encoding |
 | I5 | [`RulesFloorNV_rev5.tla`](topak/I5-rules-floor-nv-rev5-2026.10.05.svg) | ADR-0026 §7's non-vacuity rerun: one havoc issuance and a promotion, six properties each on its entry, every dropped entry and `norecuse` by property, the witness, the three `ASSUME`s, ADR-0026 §7's table compared row by row, 262 obligations proved and **not certified** (Isabelle rejected obligation 55), the Lean encoding, the frozen copy beside the live floor |
 | I6 | [`RulesFloorBase.tla`](topak/I6-rules-floor-base-2026.10.05.svg) | The live definition of the rules floor: its definitions and `ASSUME`, ADR-0026 §2's table against its entries, the three copies of the floor entry by entry, ADR-0029 §5's bootstrap modules against the tree, the modules that extend it, two theorems in Lean; its R6 bound and genesis count before ADR-0026 A2, a finding |
+| I7 | [`Confinement.tla`](topak/I7-confinement-2026.10.05.svg) | ADR-0034's attested confinement at rungs 0 to 3: the host, the appraisal, the grant and the record of effects; four properties; every mutation by property by rung; witnesses by rung; ADR-0034 §7's two tables compared; 502 obligations proved and **not certified** (three failed); the Lean encoding |
+| I8 | [`Confinement_A1.tla`](topak/I8-confinement-a1-2026.10.05.svg) | The successor carrying ADR-0034 finding 6: `Evidence` beside its predecessor's, every other definition compared, every shared check compared; the same machine and results by rung; 503 obligations proved and **not certified**; ADR-0046's digest of the proof module, a finding |
+| I9 | [`ConfinementRefinement.tla`](topak/I9-confinement-refinement-2026.10.05.svg) | T-0045-28 stage one: `Mechanism.tla`'s state mapped onto `Confinement_A1.tla`'s, four invariants beside their abstract counterparts, and the trace validation that holds the reference's recorded states to them: 82 traces, 1,007 steps, every one matching |
+| I10 | [`RunConfinement.tla`](topak/I10-run-confinement-2026.10.05.svg) | ADR-0034 A2's channel fidelity for Run: the tools and what holds each to its channel, the mechanism's check and the tool host, results by mutation and by D-0034-5's filter, A2's condition and Met line compared, 116 obligations certified with 3 on LS4; two findings |
+| I11 | [`Lease.tla`](topak/I11-lease-2026.10.05.svg) | ADR-0031's lease schema as ratified at R3, frozen: grants, renewals, the epoch fence and targeted revocation, four properties, the mutation matrix, five witnesses, ADR-0031 §8's table compared; no proof module of its own |
+| I12 | [`Lease_A1.tla`](topak/I12-lease-a1-2026.10.05.svg) | The successor carrying ADR-0031 A1: the four definitions A1 changed and the two it added, the same machine at rungs 0 to 3, `M_LOWER`, ADR-0031 §8's table compared, 200 obligations certified with 5 on LS4, the Lean encoding |
+| I13 | [`Labels.tla`](topak/I13-labels-2026.10.05.svg) | ADR-0047's labels on Run's ingress: the Listener, the clear set, the floor's three forbids over the ghost truth, the four tools, every property by every mutation beside the header's "must break", the four rows the proof found, 651 obligations certified with 14 on LS4 |
+| I14 | [`ToolList.tla`](topak/I14-tool-list-2026.10.05.svg) | ADR-0048's tool list: the grant, the opening record and a promotion mid-round, five properties over what the Thinker was told, every property by every mutation, six witnesses, ADR-0048 §8's figures and digests compared, 215 obligations certified with 7 on LS4 |
 
 ### Regenerating
 

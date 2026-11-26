@@ -1,0 +1,819 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3400" height="3824" viewBox="0 0 3400 3824" aria-labelledby="t d">
+<title id="t">TOPAK I9 — ConfinementRefinement.tla: the reference's own confinement states, mapped onto Confinement_A1.tla and held to four of its invariants at every recorded step. Checked by trace validation: 82 traces, 1,007 steps, every one matching</title>
+<desc id="d">The first stage of ADR-0045's refinement chain (T-0045-28) for confinement, drawn from the module's own text and the trace validation that runs it, all read at build time: the mapping from Mechanism.tla's state onto the abstract module's, the four invariants beside the abstract ones they stand for, what is not checkable here, and the run, trace by trace. A trace validation is a test of recorded behaviours, not a proof: it shows that the reference's recorded states keep these invariants, not that every state it could reach does. The module has no TLC run and no proof of its own.</desc>
+<style>
+svg{--bg:#ffffff;--page:#eaeaea;--ink:#1e2430;--muted:#4a5262;--faint:#7d8596;--panel:#f5f6f8;--line:#d4d8e0;--zebra:#fafbfc;--blue:#2f5aa8;--blue-t:#edf2fb;--teal:#166b5b;--teal-t:#e8f5f1;--amber:#a35a00;--amber-t:#fdf3e4;--violet:#6b46a8;--violet-t:#f3eefb;--red:#a4262c;--red-t:#fcefef;--grey:#5f6878;--grey-t:#f1f2f4;--brown:#8a4b14;--brown-t:#f9f0e6;--pink:#9d2f6e;--pink-t:#fbeef5;--green:#2e7d32;--green-t:#edf6ee;}
+@media (prefers-color-scheme: dark){svg:not([data-theme=light]){--bg:#12151b;--page:#12151b;--ink:#e6e9ef;--muted:#b0b8c6;--faint:#7f8898;--panel:#1a1e26;--line:#363d4a;--zebra:#161a21;--blue:#8fb0ec;--blue-t:#1a2540;--teal:#6cc7b0;--teal-t:#12302a;--amber:#f0b15c;--amber-t:#33260f;--violet:#b9a0e8;--violet-t:#261d38;--red:#f08a8f;--red-t:#3a1a1d;--grey:#a3abb9;--grey-t:#22262e;--brown:#e0a56b;--brown-t:#2f2215;--pink:#ec8cc2;--pink-t:#351a2a;--green:#85c98a;--green-t:#17291a;}}
+svg[data-theme=dark]{--bg:#12151b;--page:#12151b;--ink:#e6e9ef;--muted:#b0b8c6;--faint:#7f8898;--panel:#1a1e26;--line:#363d4a;--zebra:#161a21;--blue:#8fb0ec;--blue-t:#1a2540;--teal:#6cc7b0;--teal-t:#12302a;--amber:#f0b15c;--amber-t:#33260f;--violet:#b9a0e8;--violet-t:#261d38;--red:#f08a8f;--red-t:#3a1a1d;--grey:#a3abb9;--grey-t:#22262e;--brown:#e0a56b;--brown-t:#2f2215;--pink:#ec8cc2;--pink-t:#351a2a;--green:#85c98a;--green-t:#17291a;}
+a:hover tspan,a:focus tspan,a:hover>text{text-decoration:underline}
+.rd-target{opacity:0} g:target>.rd-target{opacity:1;animation:rd-pulse 0.9s ease-in-out 3} @keyframes rd-pulse{50%{stroke-width:9}} g[id]{scroll-margin-top:90px} g.rd-row:target>rect:first-child{fill:var(--amber-t);stroke:var(--amber);stroke-width:3;animation:rd-pulse 0.9s ease-in-out 3} @media (prefers-reduced-motion:reduce){g:target>.rd-target,g.rd-row:target>rect:first-child{animation:none}}
+.f-bg{fill:var(--bg)} .s-bg{stroke:var(--bg)}
+.f-page{fill:var(--page)} .s-page{stroke:var(--page)}
+.f-ink{fill:var(--ink)} .s-ink{stroke:var(--ink)}
+.f-muted{fill:var(--muted)} .s-muted{stroke:var(--muted)}
+.f-faint{fill:var(--faint)} .s-faint{stroke:var(--faint)}
+.f-panel{fill:var(--panel)} .s-panel{stroke:var(--panel)}
+.f-line{fill:var(--line)} .s-line{stroke:var(--line)}
+.f-zebra{fill:var(--zebra)} .s-zebra{stroke:var(--zebra)}
+.f-blue{fill:var(--blue)} .ft-blue{fill:var(--blue-t)} .s-blue{stroke:var(--blue)}
+.f-teal{fill:var(--teal)} .ft-teal{fill:var(--teal-t)} .s-teal{stroke:var(--teal)}
+.f-amber{fill:var(--amber)} .ft-amber{fill:var(--amber-t)} .s-amber{stroke:var(--amber)}
+.f-violet{fill:var(--violet)} .ft-violet{fill:var(--violet-t)} .s-violet{stroke:var(--violet)}
+.f-red{fill:var(--red)} .ft-red{fill:var(--red-t)} .s-red{stroke:var(--red)}
+.f-grey{fill:var(--grey)} .ft-grey{fill:var(--grey-t)} .s-grey{stroke:var(--grey)}
+.f-brown{fill:var(--brown)} .ft-brown{fill:var(--brown-t)} .s-brown{stroke:var(--brown)}
+.f-pink{fill:var(--pink)} .ft-pink{fill:var(--pink-t)} .s-pink{stroke:var(--pink)}
+.f-green{fill:var(--green)} .ft-green{fill:var(--green-t)} .s-green{stroke:var(--green)}
+</style>
+<defs><marker id="arw-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="13" markerHeight="13" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2f5aa8" class="f-blue"/></marker><marker id="arw-teal" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="13" markerHeight="13" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#166b5b" class="f-teal"/></marker><marker id="arw-amber" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="13" markerHeight="13" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#a35a00" class="f-amber"/></marker><marker id="arw-violet" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="13" markerHeight="13" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#6b46a8" class="f-violet"/></marker><marker id="arw-red" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="13" markerHeight="13" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#a4262c" class="f-red"/></marker><marker id="arw-grey" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="13" markerHeight="13" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#5f6878" class="f-grey"/></marker><marker id="arw-brown" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="13" markerHeight="13" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#8a4b14" class="f-brown"/></marker><marker id="arw-pink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="13" markerHeight="13" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#9d2f6e" class="f-pink"/></marker><marker id="arw-green" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="13" markerHeight="13" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#2e7d32" class="f-green"/></marker><marker id="arw-ink" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="13" markerHeight="13" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#1e2430" class="f-ink"/></marker><marker id="arw-muted" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="13" markerHeight="13" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#4a5262" class="f-muted"/></marker><marker id="arw-faint" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="13" markerHeight="13" orient="auto-start-reverse" markerUnits="userSpaceOnUse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#7d8596" class="f-faint"/></marker></defs>
+<rect width="3400" height="3824" fill="#eaeaea" class="f-page"/>
+<g id="top">
+<rect x="39.0" y="37.0" width="3322.0" height="196.0" rx="14" fill="#f1f2f4" stroke="#5f6878" class="rd-target ft-grey s-grey" stroke-width="3.5" opacity="0"/>
+<text x="56" y="64" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" letter-spacing="1.5" font-weight="bold" fill="#7d8596" class="f-faint">TOPAK · I9</text>
+<text x="56.0" y="100.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="30" fill="#1e2430" class="f-ink" text-anchor="start"><a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/spec/ConfinementRefinement.tla"><tspan font-weight="bold" font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="27.6">ConfinementRefinement.tla</tspan></a><tspan font-weight="bold">: the reference's own confinement states, mapped onto </tspan><a href="I8-confinement-a1-2026.10.05.svg#top"><tspan font-weight="bold" font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="27.6">Confinement_A1.tla</tspan></a><tspan font-weight="bold"> and held to four of its invariants at every recorded step. Checked by trace validation: 82 traces, 1,007 steps, every one</tspan></text>
+<text x="56.0" y="138.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="30" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">matching</tspan></text>
+<text x="56.0" y="178.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="16" fill="#4a5262" class="f-muted" text-anchor="start">The first stage of <a href="G1-trusted-base-2026.10.05.svg#top">ADR-0045</a>'s refinement chain (<a href="G1-trusted-base-2026.10.05.svg#T-0045-28">T-0045-28</a>) for confinement, drawn from the module's own text and the trace validation that runs it, all read at build time: the mapping from <a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/spec/Mechanism.tla"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="14.7">Mechanism.tla</tspan></a>'s state onto the abstract module's, the four invariants beside the abstract ones they stand for, what is not checkable here, and the run, trace by trace. <tspan font-weight="bold">A trace validation is a test of recorded behaviours, not a proof: it shows that the reference's recorded</tspan></text>
+<text x="56.0" y="201.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="16" fill="#4a5262" class="f-muted" text-anchor="start"><tspan font-weight="bold">states keep these invariants, not that every state it could reach does.</tspan> The module has no TLC run and no proof of its own.</text>
+</g>
+<line x1="56" y1="234" x2="3344" y2="234" fill="none" stroke="#d4d8e0" class="s-line" stroke-width="1.5"/>
+<text x="56.0" y="283.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="15" fill="#7d8596" class="f-faint" text-anchor="start"><tspan font-weight="bold">Status</tspan></text>
+<text x="136.0" y="283.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><a href="C4-confinement-rungs-2026.10.05.svg#top"><tspan font-weight="bold">ADR-0034</tspan></a></text>
+<rect x="207.8" y="268.0" width="115.8" height="21.5" rx="10.75" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.2"/>
+<text x="216.8" y="282.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">Accepted · C2, C4</tspan></text>
+<text x="349.6" y="283.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/spec/ConfinementRefinement.tla"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">ConfinementRefinement.tla</tspan></a></text>
+<rect x="544.5" y="268.0" width="137.4" height="21.5" rx="10.75" fill="#f1f2f4" stroke="#5f6878" class="ft-grey s-grey" stroke-width="1.2" stroke-dasharray="2 3"/>
+<text x="553.5" y="282.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">No TLC run of its own</tspan></text>
+<text x="707.9" y="283.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">TLAPS</tspan></text>
+<rect x="760.2" y="268.0" width="110.0" height="21.5" rx="10.75" fill="#f1f2f4" stroke="#5f6878" class="ft-grey s-grey" stroke-width="1.2" stroke-dasharray="2 3"/>
+<text x="769.2" y="282.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">No proof module</tspan></text>
+<text x="896.2" y="283.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">The trace validation</tspan></text>
+<rect x="1031.0" y="268.0" width="339.5" height="21.5" rx="10.75" fill="#e8f5f1" stroke="#166b5b" class="ft-teal s-teal" stroke-width="1.2" stroke-dasharray="6 4"/>
+<text x="1040.0" y="282.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="11.5" fill="#166b5b" class="f-teal" text-anchor="start"><tspan font-weight="bold">Checked · 82 traces, 1,007 steps, every one MATCH · a test</tspan></text>
+<text x="56.0" y="324.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="14.5" fill="#4a5262" class="f-muted" text-anchor="start"><tspan font-weight="bold">Checked</tspan> here means trace validation: each of the reference's recorded behaviours is replayed through <a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/spec/Mechanism.tla"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="13.3">Mechanism.tla</tspan></a>, and every state it reaches is read against this module's invariants. Nothing here is proved.</text>
+<text x="56.0" y="385.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="22" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">The mechanism of the check: every recorded step is replayed, matched and read against the abstract invariants</tspan></text>
+<rect x="1416.0" y="431.6" width="820.0" height="334.6" rx="14" fill="none" stroke="#166b5b" class="s-teal" stroke-width="2.2" stroke-dasharray="10 6"/>
+<rect x="1434.0" y="418.6" width="336.1" height="26" rx="6" fill="#ffffff" stroke="#166b5b" class="f-bg s-teal" stroke-width="1.4"/>
+<text x="1444.0" y="437.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="14" fill="#166b5b" class="f-teal" text-anchor="start"><tspan font-weight="bold" font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.9">st</tspan><tspan font-weight="bold">: the reference's projected state, step by step</tspan></text>
+<rect x="1436.0" y="471.6" width="780.0" height="78.2" rx="8" fill="#e8f5f1" stroke="#166b5b" class="ft-teal s-teal" stroke-width="1.6"/>
+<text x="1452.0" y="501.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="16" fill="#166b5b" class="f-teal" text-anchor="start"><tspan font-weight="bold">The live leases: </tspan><a href="#LiveFences"><tspan font-weight="bold" font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="14.7">LiveFences(st)</tspan></a></text>
+<text x="1452.0" y="529.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#166b5b" class="f-teal" text-anchor="start"><tspan font-weight="bold">•</tspan></text>
+<text x="1464.2" y="529.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">the fences <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">liveBySeat</tspan> names</text>
+<rect x="1436.0" y="567.8" width="780.0" height="78.2" rx="8" fill="#e8f5f1" stroke="#166b5b" class="ft-teal s-teal" stroke-width="1.6"/>
+<text x="1452.0" y="597.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="16" fill="#166b5b" class="f-teal" text-anchor="start"><tspan font-weight="bold">Each lease's rung, appraisal and profile</tspan></text>
+<text x="1452.0" y="625.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#166b5b" class="f-teal" text-anchor="start"><tspan font-weight="bold">•</tspan></text>
+<text x="1464.2" y="625.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">st.leases[f]</tspan>: <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">rung</tspan>, <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">att</tspan>, <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">conf</tspan>, <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">seat</tspan>, <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">principal</tspan>, <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">epoch</tspan></text>
+<rect x="1436.0" y="664.0" width="780.0" height="78.2" rx="8" fill="#e8f5f1" stroke="#166b5b" class="ft-teal s-teal" stroke-width="1.6"/>
+<text x="1452.0" y="694.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="16" fill="#166b5b" class="f-teal" text-anchor="start"><tspan font-weight="bold" font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="14.7">contested</tspan><tspan font-weight="bold">, </tspan><tspan font-weight="bold" font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="14.7">revoked</tspan><tspan font-weight="bold">, </tspan><tspan font-weight="bold" font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="14.7">contained</tspan></text>
+<text x="1452.0" y="721.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#166b5b" class="f-teal" text-anchor="start"><tspan font-weight="bold">•</tspan></text>
+<text x="1464.2" y="721.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">the principals Contested, the revocation targets, the fences counted Contained</text>
+<rect x="476.0" y="441.6" width="760.0" height="141.8" rx="8" fill="#e8f5f1" stroke="#166b5b" class="ft-teal s-teal" stroke-width="1.6"/>
+<text x="492.0" y="471.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="16" fill="#166b5b" class="f-teal" text-anchor="start"><tspan font-weight="bold">One module per trace (</tspan><a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/spec/trace2tla.py"><tspan font-weight="bold" font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="14.7">trace2tla.py</tspan></a><tspan font-weight="bold">)</tspan></text>
+<text x="492.0" y="499.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">①</tspan> each recorded step becomes a step of <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">TraceSpec</tspan>, which <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">EXTENDS ConfinementRefinement</tspan>, itself <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">EXTENDS</tspan></text>
+<text x="492.0" y="518.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">Mechanism</tspan></text>
+<text x="492.0" y="540.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">②</tspan> <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">INVARIANT TraceMatches</tspan>: the model's state and result equal the recorded ones at every step</text>
+<text x="492.0" y="562.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">③</tspan> <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">INVARIANT ConfinementRefined</tspan>: every state keeps the four invariants below</text>
+<rect x="56.0" y="433.6" width="300.0" height="157.8" rx="8" fill="#f9f0e6" stroke="#8a4b14" class="ft-brown s-brown" stroke-width="1.6"/>
+<text x="72.0" y="463.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="16" fill="#8a4b14" class="f-brown" text-anchor="start"><tspan font-weight="bold">The reference's recorded</tspan></text>
+<text x="72.0" y="485.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="16" fill="#8a4b14" class="f-brown" text-anchor="start"><tspan font-weight="bold">behaviours</tspan></text>
+<text x="72.0" y="513.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#8a4b14" class="f-brown" text-anchor="start"><tspan font-weight="bold">•</tspan></text>
+<text x="84.2" y="513.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">the suites: topak-core tests/mutations.rs,</text>
+<text x="84.2" y="532.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">tests/confinement.rs, tests/operators.rs</text>
+<text x="84.2" y="551.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">and tests/emergency.rs (every state the</text>
+<text x="84.2" y="570.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">helpers build) · topak-node tests/e2e.…</text>
+<rect x="476.0" y="688.0" width="760.0" height="78.2" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6" stroke-dasharray="6 4"/>
+<text x="492.0" y="718.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="16" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">A mismatch, or a refinement violated</tspan></text>
+<text x="492.0" y="745.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">•</tspan></text>
+<text x="504.2" y="745.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">the run prints the step (<tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">MISMATCH at step n</tspan>, <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">REFINEMENT … violated at step n</tspan>); none did</text>
+<path d="M 856.0 583.4 L 856.0 688.0" fill="none" stroke="#a4262c" class="s-red" stroke-width="2" stroke-dasharray="7 5" marker-end="url(#arw-red)" stroke-linejoin="round"/>
+<path d="M 356.0 512.5 L 476.0 512.5" fill="none" stroke="#8a4b14" class="s-brown" stroke-width="2" marker-end="url(#arw-brown)" stroke-linejoin="round"/>
+<rect x="384.3" y="485.0" width="63.3" height="22.9" rx="5" fill="#ffffff" stroke="#8a4b14" class="f-bg s-brown" stroke-width="1"/>
+<text x="416.0" y="498.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12.5" fill="#8a4b14" class="f-brown" text-anchor="middle">recorded</text>
+<path d="M 1236.0 512.5 L 1416.0 512.5" fill="none" stroke="#166b5b" class="s-teal" stroke-width="2" marker-end="url(#arw-teal)" stroke-linejoin="round"/>
+<rect x="1284.5" y="485.0" width="82.9" height="22.9" rx="5" fill="#ffffff" stroke="#166b5b" class="f-bg s-teal" stroke-width="1"/>
+<text x="1326.0" y="498.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12.5" fill="#166b5b" class="f-teal" text-anchor="middle">④ each state</text>
+<rect x="2996.0" y="572.6" width="348.0" height="97.4" rx="8" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.6"/>
+<text x="3012.0" y="602.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="16" fill="#2f5aa8" class="f-blue" text-anchor="start"><a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/decisions/ADR-0034.md?plain=1#L167"><tspan font-weight="bold">ADR-0034 §3</tspan></a><tspan font-weight="bold">, read on </tspan><tspan font-weight="bold" font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="14.7">st</tspan></text>
+<text x="3012.0" y="630.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">•</tspan></text>
+<text x="3024.2" y="630.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><a href="#RNoSilentDowngrade"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">RNoSilentDowngrade</tspan></a>, <a href="#RContestedStopped"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">RContestedStopped</tspan></a>,</text>
+<text x="3024.2" y="649.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><a href="#RFreshAppraisal"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">RFreshAppraisal</tspan></a></text>
+<path d="M 2236.0 621.3 L 2996.0 621.3" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="2" stroke-dasharray="4 4" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
+<rect x="2996.0" y="688.0" width="348.0" height="78.2" rx="8" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.6"/>
+<text x="3012.0" y="718.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="16" fill="#2f5aa8" class="f-blue" text-anchor="start"><a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/decisions/ADR-0034.md?plain=1#L224"><tspan font-weight="bold">ADR-0034 §4</tspan></a><tspan font-weight="bold">, read on </tspan><tspan font-weight="bold" font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="14.7">st</tspan></text>
+<text x="3012.0" y="745.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#2f5aa8" class="f-blue" text-anchor="start"><tspan font-weight="bold">•</tspan></text>
+<text x="3024.2" y="745.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><a href="#RContainedAttested"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">RContainedAttested</tspan></a>: <a href="#Contained"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">Contained</tspan></a>'s premises</text>
+<path d="M 2236.0 727.1 L 2996.0 727.1" fill="none" stroke="#2f5aa8" class="s-blue" stroke-width="2" stroke-dasharray="4 4" marker-end="url(#arw-blue)" stroke-linejoin="round"/>
+<text x="56.0" y="809.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#4a5262" class="f-muted" text-anchor="start"><tspan font-weight="bold">Key.</tspan> ① to ③ are what <a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/spec/trace2tla.py"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">trace2tla.py</tspan></a> writes for each trace (read at build time); ④ each state the replay reaches. The picture is the diagram's own drawing of the generator and the definitions below.</text>
+<text x="56.0" y="886.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="22" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">The mapping: </tspan><a href="I8-confinement-a1-2026.10.05.svg#top"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="20.2">Confinement_A1.tla</tspan></a><tspan font-weight="bold">'s variables, as this module reads them in the reference's state (the module's header)</tspan></text>
+<rect x="56" y="918.4" width="1629.0" height="34.2" fill="#166b5b" stroke="#166b5b" class="f-teal s-teal" stroke-width="1"/>
+<text x="65.0" y="939.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#ffffff" class="f-bg" text-anchor="start"><tspan font-weight="bold" font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">Confinement_A1</tspan></text>
+<text x="585.0" y="939.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#ffffff" class="f-bg" text-anchor="start"><tspan font-weight="bold">here (per live lease </tspan><tspan font-weight="bold" font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">f</tspan><tspan font-weight="bold">)</tspan></text>
+<rect x="56" y="952.6" width="1629.0" height="32.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="65.0" y="973.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">lease[p].live</tspan></text>
+<text x="585.0" y="973.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">f \in LiveFences(st)</tspan></text>
+<rect x="56" y="985.2" width="1629.0" height="32.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="65.0" y="1005.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">lease[p].rung = Declared</tspan></text>
+<text x="585.0" y="1005.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">rung = the seat's declared rung</tspan></text>
+<rect x="56" y="1017.8" width="1629.0" height="32.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="65.0" y="1038.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">lease[p].nEpoch, lease[p].epoch</tspan></text>
+<text x="585.0" y="1038.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">att.nEpoch, epoch</tspan></text>
+<rect x="56" y="1050.4" width="1629.0" height="32.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="65.0" y="1070.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">contested, revoked</tspan></text>
+<text x="585.0" y="1070.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">st.contested, principal targets</tspan></text>
+<g id="Contained" class="rd-row">
+<rect x="56" y="1083.0" width="1629.0" height="32.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="65.0" y="1103.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">Contained(p)</tspan></text>
+<text x="585.0" y="1103.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">f \in st.contained</tspan></text>
+</g>
+<line x1="576" y1="918.4" x2="576" y2="1115.6" fill="none" stroke="#d4d8e0" class="s-line" stroke-width="1"/>
+<rect x="56" y="918.4" width="1629.0" height="197.2" fill="none" stroke="#166b5b" class="s-teal" stroke-width="1.4"/>
+<rect x="1715.0" y="918.4" width="1629.0" height="197.2" rx="8" fill="#fcefef" stroke="#a4262c" class="ft-red s-red" stroke-width="1.6"/>
+<text x="1731.0" y="948.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="16" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">What the header says it does not check</tspan></text>
+<text x="1731.0" y="975.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#a4262c" class="f-red" text-anchor="start"><tspan font-weight="bold">•</tspan></text>
+<text x="1743.2" y="975.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">Declared</tspan> is per seat in the reference (PROVISIONAL declared-rung), so NoSilentDowngrade is read per seat. ContainedMeansConfined is not checkable here: it is about the image the host actually ran, which the mechanism never sees. What is checked in its</text>
+<text x="1743.2" y="995.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">place is that <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">contained</tspan> names only live leases at rung &gt;= 1 on an Attested appraisal of a registered profile: the premises the abstract module's Contained rests on.</text>
+<text x="56.0" y="1187.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="22" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">The four invariants, each beside the abstract definition it stands for</tspan></text>
+<g id="properties">
+<rect x="49.0" y="1212.6" width="3302.0" height="211.6" rx="14" fill="#fdf3e4" stroke="#a35a00" class="rd-target ft-amber s-amber" stroke-width="3.5" opacity="0"/>
+<rect x="56" y="1219.6" width="3288" height="34.2" fill="#166b5b" stroke="#166b5b" class="f-teal s-teal" stroke-width="1"/>
+<text x="65.0" y="1241.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#ffffff" class="f-bg" text-anchor="start"><tspan font-weight="bold">Invariant</tspan></text>
+<text x="345.0" y="1241.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#ffffff" class="f-bg" text-anchor="start"><tspan font-weight="bold">Its comment (the section it states)</tspan></text>
+<text x="965.0" y="1241.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#ffffff" class="f-bg" text-anchor="start"><tspan font-weight="bold">Its definition</tspan></text>
+<text x="2065.0" y="1241.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#ffffff" class="f-bg" text-anchor="start"><tspan font-weight="bold">The abstract counterpart</tspan></text>
+<g id="RNoSilentDowngrade" class="rd-row">
+<rect x="56" y="1253.8" width="3288" height="31.9" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="65.0" y="1273.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/spec/ConfinementRefinement.tla#L28"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">RNoSilentDowngrade</tspan></a></text>
+<text x="345.0" y="1273.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">NoSilentDowngrade (<a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/decisions/ADR-0034.md?plain=1#L167">ADR-0034 §3.4</a>, <a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/decisions/ADR-0031.md?plain=1#L396">ADR-0031 A1</a>): no live lease below, or above, its seat's rung.</text>
+<text x="965.0" y="1273.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">RNoSilentDowngrade ==</tspan> <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">\A f \in LiveFences(st) :</tspan> <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">st.leases[f].seat \in DOMAIN st.seats =&gt; st.leases[f].rung = st.seats[st.leases[f].seat].rung</tspan></text>
+<text x="2065.0" y="1273.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><a href="G3-theorem-premise-dag-2026.10.05.svg#NoSilentDowngrade"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">NoSilentDowngrade</tspan></a> (<a href="I8-confinement-a1-2026.10.05.svg#top"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">Confinement_A1.tla</tspan></a>, line 289): <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">NoSilentDowngrade == \A p \in Principals : lease[p].live =&gt; lease[p].rung = Declared</tspan></text>
+</g>
+<g id="RContestedStopped" class="rd-row">
+<rect x="56" y="1285.7" width="3288" height="49.8" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="65.0" y="1305.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/spec/ConfinementRefinement.tla#L33"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">RContestedStopped</tspan></a></text>
+<text x="345.0" y="1305.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">ContestedStopped (<a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/decisions/ADR-0034.md?plain=1#L167">ADR-0034 §3.7</a>): a Contested principal is revoked and holds no live lease.</text>
+<text x="965.0" y="1305.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">RContestedStopped ==</tspan> <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">\A p \in DOMAIN st.contested :</tspan> <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">/\ [kind |-&gt; "principal", id |-&gt; p] \in st.revoked</tspan> <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">/\ \A f \in LiveFences(st) :</tspan></text>
+<text x="965.0" y="1323.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">st.leases[f].principal # p</tspan></text>
+<text x="2065.0" y="1305.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><a href="G3-theorem-premise-dag-2026.10.05.svg#ContestedStopped"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">ContestedStopped</tspan></a> (<a href="I8-confinement-a1-2026.10.05.svg#top"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">Confinement_A1.tla</tspan></a>, line 292): <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">ContestedStopped == \A p \in contested : p \in revoked /\ ~lease[p].live</tspan></text>
+</g>
+<g id="RFreshAppraisal" class="rd-row">
+<rect x="56" y="1335.5" width="3288" height="31.9" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="65.0" y="1355.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/spec/ConfinementRefinement.tla#L39"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">RFreshAppraisal</tspan></a></text>
+<text x="345.0" y="1355.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">FreshAppraisal (<a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/decisions/ADR-0034.md?plain=1#L167">ADR-0034 §3.6</a>): no live lease rests on an appraisal from a fenced epoch.</text>
+<text x="965.0" y="1355.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">RFreshAppraisal ==</tspan> <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">\A f \in LiveFences(st) : ~IsNone(st.leases[f].att) =&gt; st.leases[f].att.nEpoch = st.leases[f].epoch</tspan></text>
+<text x="2065.0" y="1355.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><a href="G3-theorem-premise-dag-2026.10.05.svg#FreshAppraisal"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">FreshAppraisal</tspan></a> (<a href="I8-confinement-a1-2026.10.05.svg#top"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">Confinement_A1.tla</tspan></a>, line 295): <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">FreshAppraisal == \A p \in Principals : lease[p].live =&gt; lease[p].nEpoch = lease[p].epoch</tspan></text>
+</g>
+<g id="RContainedAttested" class="rd-row">
+<rect x="56" y="1367.4" width="3288" height="49.8" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="65.0" y="1387.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/spec/ConfinementRefinement.tla#L43"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">RContainedAttested</tspan></a></text>
+<text x="345.0" y="1387.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start">Contained's premises (<a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/decisions/ADR-0034.md?plain=1#L224">ADR-0034 §4</a>): a live lease, rung &gt;= 1, Attested, a registered profile.</text>
+<text x="965.0" y="1387.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">RContainedAttested ==</tspan> <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">\A f \in st.contained :</tspan> <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">/\ f \in LiveFences(st)</tspan> <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">/\ st.leases[f].rung &gt;= 1</tspan> <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">/\ ~IsNone(st.leases[f].att)</tspan> <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">/\ st.leases[f].att.verdict</tspan></text>
+<text x="965.0" y="1405.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">= "attested"</tspan> <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">/\ st.leases[f].conf \in DOMAIN st.profiles</tspan></text>
+<text x="2065.0" y="1387.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#1e2430" class="f-ink" text-anchor="start"><a href="#Contained"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">Contained</tspan></a> (<a href="I8-confinement-a1-2026.10.05.svg#top"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">Confinement_A1.tla</tspan></a>, line 211): <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">Contained(p) ==</tspan> <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">/\ lease[p].live</tspan> <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">/\ lease[p].rung &gt;= 1</tspan> <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.0">/\ (Mut = "M_PROFILE" \/ lease[p].prof = Arch)</tspan></text>
+</g>
+<line x1="336" y1="1219.6" x2="336" y2="1417.2" fill="none" stroke="#d4d8e0" class="s-line" stroke-width="1"/>
+<line x1="956" y1="1219.6" x2="956" y2="1417.2" fill="none" stroke="#d4d8e0" class="s-line" stroke-width="1"/>
+<line x1="2056" y1="1219.6" x2="2056" y2="1417.2" fill="none" stroke="#d4d8e0" class="s-line" stroke-width="1"/>
+<rect x="56" y="1219.6" width="3288" height="197.6" fill="none" stroke="#166b5b" class="s-teal" stroke-width="1.4"/>
+</g>
+<text x="56.0" y="1444.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#4a5262" class="f-muted" text-anchor="start"><a href="#ConfinementRefined"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">ConfinementRefined</tspan></a> is their conjunction (checked at build time). <a href="#RContainedAttested"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">RContainedAttested</tspan></a> is not <a href="G3-theorem-premise-dag-2026.10.05.svg#ContainedMeansConfined"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">ContainedMeansConfined</tspan></a>: that is "about the image the host actually ran, which the mechanism never sees", so its premises are checked in its place (the header). The machine is <a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/spec/Mechanism.tla"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">Mechanism.tla</tspan></a>'s, which this module extends.</text>
+<g id="LiveFences">
+<rect x="49.0" y="1466.4" width="1643.0" height="92.2" rx="14" fill="#e8f5f1" stroke="#166b5b" class="rd-target ft-teal s-teal" stroke-width="3.5" opacity="0"/>
+<rect x="56.0" y="1473.4" width="1629.0" height="78.2" rx="8" fill="#e8f5f1" stroke="#166b5b" class="ft-teal s-teal" stroke-width="1.6"/>
+<text x="72.0" y="1503.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="16" fill="#166b5b" class="f-teal" text-anchor="start"><a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/spec/ConfinementRefinement.tla#L25"><tspan font-weight="bold" font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="14.7">LiveFences</tspan></a><tspan font-weight="bold"> · line 25</tspan></text>
+<text x="72.0" y="1530.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">LiveFences(s) == {s.liveBySeat[x] : x \in DOMAIN s.liveBySeat}</tspan></text>
+</g>
+<g id="ConfinementRefined">
+<rect x="1708.0" y="1466.4" width="1643.0" height="92.2" rx="14" fill="#edf2fb" stroke="#2f5aa8" class="rd-target ft-blue s-blue" stroke-width="3.5" opacity="0"/>
+<rect x="1715.0" y="1473.4" width="1629.0" height="78.2" rx="8" fill="#edf2fb" stroke="#2f5aa8" class="ft-blue s-blue" stroke-width="1.6"/>
+<text x="1731.0" y="1503.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="16" fill="#2f5aa8" class="f-blue" text-anchor="start"><a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/spec/ConfinementRefinement.tla#L51"><tspan font-weight="bold" font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="14.7">ConfinementRefined</tspan></a></text>
+<text x="1731.0" y="1530.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">ConfinementRefined == RNoSilentDowngrade /\ RContestedStopped /\ RFreshAppraisal /\ RContainedAttested</tspan></text>
+</g>
+<text x="56.0" y="1623.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="22" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">The trace validation, read from </tspan><a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/spec/Mechanism-trace-results-2026.10.05.txt"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="20.2">Mechanism-trace-results-2026.10.05.txt</tspan></a></text>
+<rect x="56.0" y="1655.6" width="1076.0" height="189.2" rx="8" fill="#f1f2f4" stroke="#5f6878" class="ft-grey s-grey" stroke-width="1.6"/>
+<text x="72.0" y="1685.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="16" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">What was traced</tspan></text>
+<text x="72.0" y="1713.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">•</tspan></text>
+<text x="84.2" y="1713.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">Reference: <a href="https://github.com/scottcochran/TOPAK/tree/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/mechanism">mechanism/</a> at 9c57221 + working tree · recorder: crates/topak-core/src/trace.rs · converter: <a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/spec/trace2tla.py">trace2tla.py</a> · driver: <a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/spec/mechanism-trace-run.sh">mechanism-trace-run.sh</a></text>
+<text x="72.0" y="1735.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">•</tspan></text>
+<text x="84.2" y="1735.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">Suites: topak-core tests/mutations.rs, tests/confinement.rs, tests/operators.rs and tests/emergency.rs (every state the helpers build) · topak-node tests/e2e.rs and</text>
+<text x="84.2" y="1754.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">tests/contain.rs (replica 1 of every cluster; <a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/mechanism/crates/topak-node/tests/contain.rs">contain.rs</a> launches the demo guest, rung 3 SIMULATED)</text>
+<text x="72.0" y="1776.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">•</tspan></text>
+<text x="84.2" y="1776.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">Model: <a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/spec/Mechanism.tla"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">Mechanism.tla</tspan></a> (<tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">e29dbaf0936dbae1</tspan>, the digest the file cites)</text>
+<rect x="1162.0" y="1655.6" width="1076.0" height="189.2" rx="8" fill="#e8f5f1" stroke="#166b5b" class="ft-teal s-teal" stroke-width="1.6"/>
+<text x="1178.0" y="1685.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="16" fill="#166b5b" class="f-teal" text-anchor="start"><tspan font-weight="bold">What a line means</tspan></text>
+<text x="1178.0" y="1713.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#166b5b" class="f-teal" text-anchor="start"><tspan font-weight="bold">•</tspan></text>
+<text x="1190.2" y="1713.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">"A MATCH line means every recorded step's projected state and result equal the model's. A trace is one test; steps are applied log entries."</text>
+<text x="1178.0" y="1735.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#166b5b" class="f-teal" text-anchor="start"><tspan font-weight="bold">•</tspan></text>
+<text x="1190.2" y="1735.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">With the runner (<a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/spec/mechanism-trace-run.sh"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">mechanism-trace-run.sh</tspan></a>), a line also fails as <tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">REFINEMENT … violated</tspan> when a state breaks <a href="#ConfinementRefined"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">ConfinementRefined</tspan></a>: every MATCH below includes it.</text>
+<rect x="2268.0" y="1655.6" width="1076.0" height="189.2" rx="8" fill="#f1f2f4" stroke="#5f6878" class="ft-grey s-grey" stroke-width="1.6"/>
+<text x="2284.0" y="1685.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="16" fill="#5f6878" class="f-grey" text-anchor="start"><tspan font-weight="bold">The suites' own runs</tspan></text>
+<text x="2284.0" y="1713.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">test result: ok. 35 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.23s</text>
+<text x="2284.0" y="1735.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">test result: ok. 19 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 1.42s</text>
+<text x="2284.0" y="1757.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">test result: ok. 6 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.45s</text>
+<text x="2284.0" y="1779.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.16s</text>
+<text x="2284.0" y="1801.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">test result: ok. 9 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 6.88s</text>
+<text x="2284.0" y="1824.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">test result: ok. 14 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 3.30s</text>
+<rect x="56" y="1868.8" width="3288" height="34.2" fill="#166b5b" stroke="#166b5b" class="f-teal s-teal" stroke-width="1"/>
+<text x="65.0" y="1890.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#ffffff" class="f-bg" text-anchor="start"><tspan font-weight="bold">Traces from</tspan></text>
+<text x="365.0" y="1890.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#ffffff" class="f-bg" text-anchor="start"><tspan font-weight="bold">Traces</tspan></text>
+<text x="525.0" y="1890.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#ffffff" class="f-bg" text-anchor="start"><tspan font-weight="bold">Steps</tspan></text>
+<text x="685.0" y="1890.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#ffffff" class="f-bg" text-anchor="start"><tspan font-weight="bold">Every one</tspan></text>
+<rect x="56" y="1903.0" width="3288" height="32.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="65.0" y="1923.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">conf_…</tspan></text>
+<text x="365.0" y="1923.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">25</text>
+<text x="525.0" y="1923.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">349</text>
+<text x="685.0" y="1923.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+<rect x="56" y="1935.6" width="3288" height="32.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="65.0" y="1956.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">contain_…</tspan></text>
+<text x="365.0" y="1956.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">15</text>
+<text x="525.0" y="1956.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">213</text>
+<text x="685.0" y="1956.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+<rect x="56" y="1968.2" width="3288" height="32.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="65.0" y="1988.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">e2e_…</tspan></text>
+<text x="365.0" y="1988.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">9</text>
+<text x="525.0" y="1988.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">197</text>
+<text x="685.0" y="1988.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+<rect x="56" y="2000.8" width="3288" height="32.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="65.0" y="2021.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">em_…</tspan></text>
+<text x="365.0" y="2021.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">6</text>
+<text x="525.0" y="2021.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">55</text>
+<text x="685.0" y="2021.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+<rect x="56" y="2033.4" width="3288" height="32.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="65.0" y="2053.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">mut_…</tspan></text>
+<text x="365.0" y="2053.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">19</text>
+<text x="525.0" y="2053.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">88</text>
+<text x="685.0" y="2053.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+<rect x="56" y="2066.0" width="3288" height="32.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="65.0" y="2086.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">op_…</tspan></text>
+<text x="365.0" y="2086.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">8</text>
+<text x="525.0" y="2086.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">105</text>
+<text x="685.0" y="2086.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+<rect x="56" y="2098.6" width="3288" height="32.6" fill="#e8f5f1" stroke="#d4d8e0" class="ft-teal s-line" stroke-width="1"/>
+<rect x="56" y="2098.6" width="5" height="32.6" fill="#166b5b" class="f-teal"/>
+<text x="65.0" y="2119.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">All</tspan></text>
+<text x="365.0" y="2119.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">82</tspan></text>
+<text x="525.0" y="2119.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">1,007</tspan></text>
+<text x="685.0" y="2119.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+<line x1="356" y1="1868.825" x2="356" y2="2131.2" fill="none" stroke="#d4d8e0" class="s-line" stroke-width="1"/>
+<line x1="516" y1="1868.825" x2="516" y2="2131.2" fill="none" stroke="#d4d8e0" class="s-line" stroke-width="1"/>
+<line x1="676" y1="1868.825" x2="676" y2="2131.2" fill="none" stroke="#d4d8e0" class="s-line" stroke-width="1"/>
+<rect x="56" y="1868.825" width="3288" height="262.4" fill="none" stroke="#166b5b" class="s-teal" stroke-width="1.4"/>
+<rect x="56.0" y="2155.2" width="1076.0" height="34.2" fill="#5f6878" stroke="#5f6878" class="f-grey s-grey" stroke-width="1"/>
+<text x="65.0" y="2176.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#ffffff" class="f-bg" text-anchor="start"><tspan font-weight="bold">Trace</tspan></text>
+<text x="921.0" y="2176.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#ffffff" class="f-bg" text-anchor="start"><tspan font-weight="bold">Steps</tspan></text>
+<text x="1021.0" y="2176.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#ffffff" class="f-bg" text-anchor="start"><tspan font-weight="bold">Verdict</tspan></text>
+<g id="conf_a_contained_lease_stops_being_contained_when_it_ends_10" class="rd-row">
+<rect x="56.0" y="2189.4" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="65.0" y="2208.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">conf_a_contained_lease_stops_being_contained_when_it_ends_10</tspan></text>
+<text x="921.0" y="2208.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">13</text>
+<text x="1021.0" y="2208.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="conf_a_contested_verdict_ends_a_live_lease_9" class="rd-row">
+<rect x="56.0" y="2220.0" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="65.0" y="2239.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">conf_a_contested_verdict_ends_a_live_lease_9</tspan></text>
+<text x="921.0" y="2239.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">12</text>
+<text x="1021.0" y="2239.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="conf_a_contested_verdict_never_grants_and_revokes_the_principal_8" class="rd-row">
+<rect x="56.0" y="2250.6" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="65.0" y="2269.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">conf_a_contested_verdict_never_grants_and_revokes_the_principal_8</tspan></text>
+<text x="921.0" y="2269.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">17</text>
+<text x="1021.0" y="2269.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="conf_a_run_seat_is_never_granted_on_a_build_profile_2" class="rd-row">
+<rect x="56.0" y="2281.2" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="65.0" y="2300.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">conf_a_run_seat_is_never_granted_on_a_build_profile_2</tspan></text>
+<text x="921.0" y="2300.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">11</text>
+<text x="1021.0" y="2300.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="conf_a_run_seat_on_a_run_profile_is_contained_with_p4_as_channel_fidelity_14" class="rd-row">
+<rect x="56.0" y="2311.8" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="65.0" y="2330.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">conf_a_run_seat_on_a_run_profile_is_contained_with_p4_as_channel_fidelity_14</tspan></text>
+<text x="921.0" y="2330.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">13</text>
+<text x="1021.0" y="2330.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="conf_a_run_seat_on_a_run_profile_is_contained_with_p4_as_channel_fidelity_6" class="rd-row">
+<rect x="56.0" y="2342.4" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="65.0" y="2361.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">conf_a_run_seat_on_a_run_profile_is_contained_with_p4_as_channel_fidelity_6</tspan></text>
+<text x="921.0" y="2361.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">11</text>
+<text x="1021.0" y="2361.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="conf_a_rung_1_grant_is_the_launchers_assertion_3" class="rd-row">
+<rect x="56.0" y="2373.0" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="65.0" y="2392.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">conf_a_rung_1_grant_is_the_launchers_assertion_3</tspan></text>
+<text x="921.0" y="2392.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">11</text>
+<text x="1021.0" y="2392.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="conf_an_attested_rung_3_grant_binds_the_guest_and_is_contained_5" class="rd-row">
+<rect x="56.0" y="2403.6" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="65.0" y="2422.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">conf_an_attested_rung_3_grant_binds_the_guest_and_is_contained_5</tspan></text>
+<text x="921.0" y="2422.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">11</text>
+<text x="1021.0" y="2422.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="conf_an_epoch_fence_invalidates_a_pending_appraisal_4" class="rd-row">
+<rect x="56.0" y="2434.2" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="65.0" y="2453.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">conf_an_epoch_fence_invalidates_a_pending_appraisal_4</tspan></text>
+<text x="921.0" y="2453.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">13</text>
+<text x="1021.0" y="2453.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="conf_channel_fidelity_is_checked_at_apply_1" class="rd-row">
+<rect x="56.0" y="2464.8" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="65.0" y="2483.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">conf_channel_fidelity_is_checked_at_apply_1</tspan></text>
+<text x="921.0" y="2483.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">14</text>
+<text x="1021.0" y="2483.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="conf_channel_fidelity_is_checked_at_apply_18" class="rd-row">
+<rect x="56.0" y="2495.4" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="65.0" y="2514.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">conf_channel_fidelity_is_checked_at_apply_18</tspan></text>
+<text x="921.0" y="2514.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">13</text>
+<text x="1021.0" y="2514.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="conf_contained_is_a_lookup_and_each_conjunct_matters_0" class="rd-row">
+<rect x="56.0" y="2526.0" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="65.0" y="2545.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">conf_contained_is_a_lookup_and_each_conjunct_matters_0</tspan></text>
+<text x="921.0" y="2545.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">11</text>
+<text x="1021.0" y="2545.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="conf_contained_is_a_lookup_and_each_conjunct_matters_15" class="rd-row">
+<rect x="56.0" y="2556.6" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="65.0" y="2575.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">conf_contained_is_a_lookup_and_each_conjunct_matters_15</tspan></text>
+<text x="921.0" y="2575.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">11</text>
+<text x="1021.0" y="2575.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="conf_contained_is_a_lookup_and_each_conjunct_matters_19" class="rd-row">
+<rect x="56.0" y="2587.2" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="65.0" y="2606.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">conf_contained_is_a_lookup_and_each_conjunct_matters_19</tspan></text>
+<text x="921.0" y="2606.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">11</text>
+<text x="1021.0" y="2606.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="conf_contained_is_a_lookup_and_each_conjunct_matters_21" class="rd-row">
+<rect x="56.0" y="2617.8" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="65.0" y="2636.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">conf_contained_is_a_lookup_and_each_conjunct_matters_21</tspan></text>
+<text x="921.0" y="2636.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">11</text>
+<text x="1021.0" y="2636.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="conf_contained_is_a_lookup_and_each_conjunct_matters_22" class="rd-row">
+<rect x="56.0" y="2648.4" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="65.0" y="2667.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">conf_contained_is_a_lookup_and_each_conjunct_matters_22</tspan></text>
+<text x="921.0" y="2667.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">11</text>
+<text x="1021.0" y="2667.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="conf_contained_is_a_lookup_and_each_conjunct_matters_23" class="rd-row">
+<rect x="56.0" y="2679.0" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="65.0" y="2698.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">conf_contained_is_a_lookup_and_each_conjunct_matters_23</tspan></text>
+<text x="921.0" y="2698.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">11</text>
+<text x="1021.0" y="2698.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="conf_contained_is_a_lookup_and_each_conjunct_matters_24" class="rd-row">
+<rect x="56.0" y="2709.6" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="65.0" y="2728.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">conf_contained_is_a_lookup_and_each_conjunct_matters_24</tspan></text>
+<text x="921.0" y="2728.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">11</text>
+<text x="1021.0" y="2728.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="conf_m_lower_and_m_renewlow_are_refused_7" class="rd-row">
+<rect x="56.0" y="2740.2" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="65.0" y="2759.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">conf_m_lower_and_m_renewlow_are_refused_7</tspan></text>
+<text x="921.0" y="2759.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">15</text>
+<text x="1021.0" y="2759.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="conf_no_silent_downgrade_at_grant_11" class="rd-row">
+<rect x="56.0" y="2770.8" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="65.0" y="2789.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">conf_no_silent_downgrade_at_grant_11</tspan></text>
+<text x="921.0" y="2789.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">14</text>
+<text x="1021.0" y="2789.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="conf_only_a_promoted_well_formed_build_profile_is_a_reference_value_12" class="rd-row">
+<rect x="56.0" y="2801.4" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="65.0" y="2820.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">conf_only_a_promoted_well_formed_build_profile_is_a_reference_value_12</tspan></text>
+<text x="921.0" y="2820.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">42</text>
+<text x="1021.0" y="2820.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="conf_renewal_re_attests_the_same_guest_13" class="rd-row">
+<rect x="56.0" y="2832.0" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="65.0" y="2851.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">conf_renewal_re_attests_the_same_guest_13</tspan></text>
+<text x="921.0" y="2851.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">18</text>
+<text x="1021.0" y="2851.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="conf_rung_3_is_appraised_by_an_issued_verifier_against_the_profile_16" class="rd-row">
+<rect x="56.0" y="2862.6" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="65.0" y="2881.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">conf_rung_3_is_appraised_by_an_issued_verifier_against_the_profile_16</tspan></text>
+<text x="921.0" y="2881.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">18</text>
+<text x="1021.0" y="2881.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="conf_rung_3_is_appraised_by_an_issued_verifier_against_the_profile_20" class="rd-row">
+<rect x="56.0" y="2893.2" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="65.0" y="2912.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">conf_rung_3_is_appraised_by_an_issued_verifier_against_the_profile_20</tspan></text>
+<text x="921.0" y="2912.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">11</text>
+<text x="1021.0" y="2912.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="conf_the_session_is_the_attested_guests_and_m_unbound_is_refused_17" class="rd-row">
+<rect x="56.0" y="2923.8" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="65.0" y="2942.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">conf_the_session_is_the_attested_guests_and_m_unbound_is_refused_17</tspan></text>
+<text x="921.0" y="2942.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">15</text>
+<text x="1021.0" y="2942.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="contain_bundle_a_guest_that_cannot_verify_its_bundle_is_never_granted_10" class="rd-row">
+<rect x="56.0" y="2954.4" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="65.0" y="2973.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">contain_bundle_a_guest_that_cannot_verify_its_bundle_is_never_granted_10</tspan></text>
+<text x="921.0" y="2973.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">11</text>
+<text x="1021.0" y="2973.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="contain_host_every_host_power_subtracts_5" class="rd-row">
+<rect x="56.0" y="2985.0" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="65.0" y="3004.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">contain_host_every_host_power_subtracts_5</tspan></text>
+<text x="921.0" y="3004.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">15</text>
+<text x="1021.0" y="3004.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="contain_lying_every_host_power_subtracts_14" class="rd-row">
+<rect x="56.0" y="3015.6" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="65.0" y="3034.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">contain_lying_every_host_power_subtracts_14</tspan></text>
+<text x="921.0" y="3034.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">12</text>
+<text x="1021.0" y="3034.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<line x1="912.0" y1="2155.2249999999995" x2="912.0" y2="3046.2" fill="none" stroke="#d4d8e0" class="s-line" stroke-width="1"/>
+<line x1="1012.0" y1="2155.2249999999995" x2="1012.0" y2="3046.2" fill="none" stroke="#d4d8e0" class="s-line" stroke-width="1"/>
+<rect x="56.0" y="2155.2249999999995" width="1076.0" height="891.0" fill="none" stroke="#5f6878" class="s-grey" stroke-width="1.4"/>
+<rect x="1162.0" y="2155.2" width="1076.0" height="34.2" fill="#5f6878" stroke="#5f6878" class="f-grey s-grey" stroke-width="1"/>
+<text x="1171.0" y="2176.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#ffffff" class="f-bg" text-anchor="start"><tspan font-weight="bold">Trace</tspan></text>
+<text x="2027.0" y="2176.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#ffffff" class="f-bg" text-anchor="start"><tspan font-weight="bold">Steps</tspan></text>
+<text x="2127.0" y="2176.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#ffffff" class="f-bg" text-anchor="start"><tspan font-weight="bold">Verdict</tspan></text>
+<g id="contain_nocrit_without_the_criterion_nothing_is_contained_13" class="rd-row">
+<rect x="1162.0" y="2189.4" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="1171.0" y="2208.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">contain_nocrit_without_the_criterion_nothing_is_contained_13</tspan></text>
+<text x="2027.0" y="2208.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">12</text>
+<text x="2127.0" y="2208.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="contain_r1_rung_1_honest_round_and_its_refusals_7" class="rd-row">
+<rect x="1162.0" y="2220.0" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="1171.0" y="2239.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">contain_r1_rung_1_honest_round_and_its_refusals_7</tspan></text>
+<text x="2027.0" y="2239.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">26</text>
+<text x="2127.0" y="2239.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="contain_r3_simulated_rung_3_round_is_contained_and_rung_0_beside_it_is_not_6" class="rd-row">
+<rect x="1162.0" y="2250.6" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="1171.0" y="2269.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">contain_r3_simulated_rung_3_round_is_contained_and_rung_0_beside_it_is_not_6</tspan></text>
+<text x="2027.0" y="2269.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">17</text>
+<text x="2127.0" y="2269.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="contain_renew_renewal_re_attests_the_same_guest_and_lapses_when_it_cannot_3" class="rd-row">
+<rect x="1162.0" y="2281.2" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="1171.0" y="2300.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">contain_renew_renewal_re_attests_the_same_guest_and_lapses_when_it_cannot_3</tspan></text>
+<text x="2027.0" y="2300.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">14</text>
+<text x="2127.0" y="2300.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="contain_rogue_a_rogue_image_is_contested_and_the_principal_is_revoked_4" class="rd-row">
+<rect x="1162.0" y="2311.8" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="1171.0" y="2330.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">contain_rogue_a_rogue_image_is_contested_and_the_principal_is_revoked_4</tspan></text>
+<text x="2027.0" y="2330.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">13</text>
+<text x="2127.0" y="2330.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="contain_run3_a_run_round_actuates_only_its_declared_channel_11" class="rd-row">
+<rect x="1162.0" y="2342.4" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="1171.0" y="2361.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">contain_run3_a_run_round_actuates_only_its_declared_channel_11</tspan></text>
+<text x="2027.0" y="2361.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">16</text>
+<text x="2127.0" y="2361.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="contain_run3_undeclared_a_hosted_tool_with_no_channel_in_the_leases_revision_is_not_run_8" class="rd-row">
+<rect x="1162.0" y="2373.0" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="1171.0" y="2392.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">contain_run3_undeclared_a_hosted_tool_with_no_channel_in_the_leases_revision_is_not_run_8</tspan></text>
+<text x="2027.0" y="2392.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">16</text>
+<text x="2127.0" y="2392.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="contain_run_a_run_seat_launches_nothing_2" class="rd-row">
+<rect x="1162.0" y="2403.6" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="1171.0" y="2422.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">contain_run_a_run_seat_launches_nothing_2</tspan></text>
+<text x="2027.0" y="2422.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">11</text>
+<text x="2127.0" y="2422.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="contain_session_the_session_is_the_attested_guests_0" class="rd-row">
+<rect x="1162.0" y="2434.2" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="1171.0" y="2453.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">contain_session_the_session_is_the_attested_guests_0</tspan></text>
+<text x="2027.0" y="2453.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">13</text>
+<text x="2127.0" y="2453.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="contain_stale_an_epoch_fence_voids_a_pending_appraisal_9" class="rd-row">
+<rect x="1162.0" y="2464.8" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="1171.0" y="2483.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">contain_stale_an_epoch_fence_voids_a_pending_appraisal_9</tspan></text>
+<text x="2027.0" y="2483.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">12</text>
+<text x="2127.0" y="2483.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="contain_unreach_an_unreachable_verifier_grants_nothing_1" class="rd-row">
+<rect x="1162.0" y="2495.4" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="1171.0" y="2514.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">contain_unreach_an_unreachable_verifier_grants_nothing_1</tspan></text>
+<text x="2027.0" y="2514.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">12</text>
+<text x="2127.0" y="2514.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="contain_withdraw_withdrawing_a_profile_fences_its_leases_12" class="rd-row">
+<rect x="1162.0" y="2526.0" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="1171.0" y="2545.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">contain_withdraw_withdrawing_a_profile_fences_its_leases_12</tspan></text>
+<text x="2027.0" y="2545.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">13</text>
+<text x="2127.0" y="2545.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="e2e_actuate_actuate_is_counted_recorded_and_sealed_0" class="rd-row">
+<rect x="1162.0" y="2556.6" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="1171.0" y="2575.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">e2e_actuate_actuate_is_counted_recorded_and_sealed_0</tspan></text>
+<text x="2027.0" y="2575.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">26</text>
+<text x="2127.0" y="2575.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="e2e_build_build_round_promotion_and_fencing_4" class="rd-row">
+<rect x="1162.0" y="2587.2" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="1171.0" y="2606.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">e2e_build_build_round_promotion_and_fencing_4</tspan></text>
+<text x="2027.0" y="2606.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">30</text>
+<text x="2127.0" y="2606.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="e2e_coupling_observer_liveness_couples_run_admits_5" class="rd-row">
+<rect x="1162.0" y="2617.8" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="1171.0" y="2636.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">e2e_coupling_observer_liveness_couples_run_admits_5</tspan></text>
+<text x="2027.0" y="2636.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">29</text>
+<text x="2127.0" y="2636.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="e2e_emergency_break_glass_is_an_emergency_seating_6" class="rd-row">
+<rect x="1162.0" y="2648.4" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="1171.0" y="2667.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">e2e_emergency_break_glass_is_an_emergency_seating_6</tspan></text>
+<text x="2027.0" y="2667.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">17</text>
+<text x="2127.0" y="2667.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="e2e_expiry_an_expired_lease_is_ended_and_refused_3" class="rd-row">
+<rect x="1162.0" y="2679.0" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="1171.0" y="2698.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">e2e_expiry_an_expired_lease_is_ended_and_refused_3</tspan></text>
+<text x="2027.0" y="2698.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">10</text>
+<text x="2127.0" y="2698.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="e2e_labels_labels_bound_what_a_round_may_send_after_what_it_has_read_8" class="rd-row">
+<rect x="1162.0" y="2709.6" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="1171.0" y="2728.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">e2e_labels_labels_bound_what_a_round_may_send_after_what_it_has_read_8</tspan></text>
+<text x="2027.0" y="2728.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">31</text>
+<text x="2127.0" y="2728.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="e2e_operators_an_operator_is_a_principal_and_its_requests_are_decided_1" class="rd-row">
+<rect x="1162.0" y="2740.2" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="1171.0" y="2759.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">e2e_operators_an_operator_is_a_principal_and_its_requests_are_decided_1</tspan></text>
+<text x="2027.0" y="2759.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">20</text>
+<text x="2127.0" y="2759.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="e2e_toollist_the_tool_list_is_delivered_and_opens_the_round_7" class="rd-row">
+<rect x="1162.0" y="2770.8" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="1171.0" y="2789.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">e2e_toollist_the_tool_list_is_delivered_and_opens_the_round_7</tspan></text>
+<text x="2027.0" y="2789.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">14</text>
+<text x="2127.0" y="2789.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="e2e_tools_tools_break_glass_issuance_and_partition_2" class="rd-row">
+<rect x="1162.0" y="2801.4" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="1171.0" y="2820.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">e2e_tools_tools_break_glass_issuance_and_partition_2</tspan></text>
+<text x="2027.0" y="2820.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">20</text>
+<text x="2127.0" y="2820.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="em_a_drill_is_a_real_activation_on_the_log_0" class="rd-row">
+<rect x="1162.0" y="2832.0" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="1171.0" y="2851.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">em_a_drill_is_a_real_activation_on_the_log_0</tspan></text>
+<text x="2027.0" y="2851.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">7</text>
+<text x="2127.0" y="2851.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="em_an_emergency_lease_has_a_roster_quorum_1" class="rd-row">
+<rect x="1162.0" y="2862.6" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="1171.0" y="2881.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">em_an_emergency_lease_has_a_roster_quorum_1</tspan></text>
+<text x="2027.0" y="2881.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">14</text>
+<text x="2127.0" y="2881.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="em_an_emergency_lease_has_a_roster_quorum_5" class="rd-row">
+<rect x="1162.0" y="2893.2" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="1171.0" y="2912.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">em_an_emergency_lease_has_a_roster_quorum_5</tspan></text>
+<text x="2027.0" y="2912.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">5</text>
+<text x="2127.0" y="2912.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="em_an_emergency_lease_is_one_round_2" class="rd-row">
+<rect x="1162.0" y="2923.8" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="1171.0" y="2942.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">em_an_emergency_lease_is_one_round_2</tspan></text>
+<text x="2027.0" y="2942.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">9</text>
+<text x="2127.0" y="2942.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="em_an_operator_ends_it_and_x1_is_retired_3" class="rd-row">
+<rect x="1162.0" y="2954.4" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="1171.0" y="2973.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">em_an_operator_ends_it_and_x1_is_retired_3</tspan></text>
+<text x="2027.0" y="2973.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">11</text>
+<text x="2127.0" y="2973.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="em_the_actions_are_the_persons_4" class="rd-row">
+<rect x="1162.0" y="2985.0" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="1171.0" y="3004.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">em_the_actions_are_the_persons_4</tspan></text>
+<text x="2027.0" y="3004.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">9</text>
+<text x="2127.0" y="3004.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="mut_a_revoked_principal_persona_or_profile_is_not_granted_again_and_m_revoke_is_refused_1" class="rd-row">
+<rect x="1162.0" y="3015.6" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="1171.0" y="3034.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">mut_a_revoked_principal_persona_or_profile_is_not_granted_again_and_m_revoke_is_refused_1</tspan></text>
+<text x="2027.0" y="3034.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">3</text>
+<text x="2127.0" y="3034.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<line x1="2018.0" y1="2155.2249999999995" x2="2018.0" y2="3046.2" fill="none" stroke="#d4d8e0" class="s-line" stroke-width="1"/>
+<line x1="2118.0" y1="2155.2249999999995" x2="2118.0" y2="3046.2" fill="none" stroke="#d4d8e0" class="s-line" stroke-width="1"/>
+<rect x="1162.0" y="2155.2249999999995" width="1076.0" height="891.0" fill="none" stroke="#5f6878" class="s-grey" stroke-width="1.4"/>
+<rect x="2268.0" y="2155.2" width="1076.0" height="34.2" fill="#5f6878" stroke="#5f6878" class="f-grey s-grey" stroke-width="1"/>
+<text x="2277.0" y="2176.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#ffffff" class="f-bg" text-anchor="start"><tspan font-weight="bold">Trace</tspan></text>
+<text x="3133.0" y="2176.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#ffffff" class="f-bg" text-anchor="start"><tspan font-weight="bold">Steps</tspan></text>
+<text x="3233.0" y="2176.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#ffffff" class="f-bg" text-anchor="start"><tspan font-weight="bold">Verdict</tspan></text>
+<g id="mut_a_revoked_principal_persona_or_profile_is_not_granted_again_and_m_revoke_is_refused_16" class="rd-row">
+<rect x="2268.0" y="2189.4" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="2277.0" y="2208.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">mut_a_revoked_principal_persona_or_profile_is_not_granted_again_and_m_revoke_is_refused_16</tspan></text>
+<text x="3133.0" y="2208.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">3</text>
+<text x="3233.0" y="2208.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="mut_a_revoked_principal_persona_or_profile_is_not_granted_again_and_m_revoke_is_refused_17" class="rd-row">
+<rect x="2268.0" y="2220.0" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="2277.0" y="2239.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">mut_a_revoked_principal_persona_or_profile_is_not_granted_again_and_m_revoke_is_refused_17</tspan></text>
+<text x="3133.0" y="2239.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">3</text>
+<text x="3233.0" y="2239.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="mut_a_run_round_seals_with_its_lease_and_a_run_seat_cannot_abstain_18" class="rd-row">
+<rect x="2268.0" y="2250.6" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="2277.0" y="2269.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">mut_a_run_round_seals_with_its_lease_and_a_run_seat_cannot_abstain_18</tspan></text>
+<text x="3133.0" y="2269.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">2</text>
+<text x="3233.0" y="2269.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="mut_a_run_round_seals_with_its_lease_and_a_run_seat_cannot_abstain_2" class="rd-row">
+<rect x="2268.0" y="2281.2" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="2277.0" y="2300.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">mut_a_run_round_seals_with_its_lease_and_a_run_seat_cannot_abstain_2</tspan></text>
+<text x="3133.0" y="2300.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">11</text>
+<text x="3233.0" y="2300.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="mut_a_targeted_revocation_ends_one_round_and_not_the_fleet_3" class="rd-row">
+<rect x="2268.0" y="2311.8" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="2277.0" y="2330.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">mut_a_targeted_revocation_ends_one_round_and_not_the_fleet_3</tspan></text>
+<text x="3133.0" y="2330.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">3</text>
+<text x="3233.0" y="2330.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="mut_a_ttl_over_t_persona_is_refused_at_grant_and_at_renewal_0" class="rd-row">
+<rect x="2268.0" y="2342.4" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="2277.0" y="2361.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">mut_a_ttl_over_t_persona_is_refused_at_grant_and_at_renewal_0</tspan></text>
+<text x="3133.0" y="2361.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">5</text>
+<text x="3233.0" y="2361.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="mut_alphabets_are_bounded_by_seat_kind_and_m_kind_is_refused_4" class="rd-row">
+<rect x="2268.0" y="2373.0" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="2277.0" y="2392.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">mut_alphabets_are_bounded_by_seat_kind_and_m_kind_is_refused_4</tspan></text>
+<text x="3133.0" y="2392.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">6</text>
+<text x="3233.0" y="2392.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="mut_lease_renewal_is_monotone_and_m_renew_is_refused_6" class="rd-row">
+<rect x="2268.0" y="2403.6" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="2277.0" y="2422.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">mut_lease_renewal_is_monotone_and_m_renew_is_refused_6</tspan></text>
+<text x="3133.0" y="2422.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">5</text>
+<text x="3233.0" y="2422.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="mut_no_action_under_a_fenced_epoch_and_m_fence_is_refused_5" class="rd-row">
+<rect x="2268.0" y="2434.2" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="2277.0" y="2453.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">mut_no_action_under_a_fenced_epoch_and_m_fence_is_refused_5</tspan></text>
+<text x="3133.0" y="2453.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">2</text>
+<text x="3233.0" y="2453.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="mut_one_live_lease_per_principal_7" class="rd-row">
+<rect x="2268.0" y="2464.8" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="2277.0" y="2483.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">mut_one_live_lease_per_principal_7</tspan></text>
+<text x="3133.0" y="2483.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">2</text>
+<text x="3233.0" y="2483.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="mut_one_seat_per_principal_and_m_seat_is_refused_8" class="rd-row">
+<rect x="2268.0" y="2495.4" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="2277.0" y="2514.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">mut_one_seat_per_principal_and_m_seat_is_refused_8</tspan></text>
+<text x="3133.0" y="2514.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">3</text>
+<text x="3233.0" y="2514.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="mut_renewal_cannot_change_round_or_role_and_m_role_is_refused_9" class="rd-row">
+<rect x="2268.0" y="2526.0" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="2277.0" y="2545.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">mut_renewal_cannot_change_round_or_role_and_m_role_is_refused_9</tspan></text>
+<text x="3133.0" y="2545.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">1</text>
+<text x="3233.0" y="2545.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="mut_run_alphabets_are_bounded_by_seat_kind_and_domain_10" class="rd-row">
+<rect x="2268.0" y="2556.6" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="2277.0" y="2575.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">mut_run_alphabets_are_bounded_by_seat_kind_and_domain_10</tspan></text>
+<text x="3133.0" y="2575.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">5</text>
+<text x="3233.0" y="2575.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="mut_rung_zero_is_never_contained_and_says_why_11" class="rd-row">
+<rect x="2268.0" y="2587.2" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="2277.0" y="2606.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">mut_rung_zero_is_never_contained_and_says_why_11</tspan></text>
+<text x="3133.0" y="2606.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">1</text>
+<text x="3233.0" y="2606.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="mut_the_round_bound_counts_consult_12" class="rd-row">
+<rect x="2268.0" y="2617.8" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="2277.0" y="2636.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">mut_the_round_bound_counts_consult_12</tspan></text>
+<text x="3133.0" y="2636.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">5</text>
+<text x="3233.0" y="2636.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="mut_the_round_bound_terminates_a_round_13" class="rd-row">
+<rect x="2268.0" y="2648.4" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="2277.0" y="2667.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">mut_the_round_bound_terminates_a_round_13</tspan></text>
+<text x="3133.0" y="2667.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">1</text>
+<text x="3233.0" y="2667.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="mut_the_rounds_labels_are_folded_and_a_stale_clear_set_is_refused_14" class="rd-row">
+<rect x="2268.0" y="2679.0" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="2277.0" y="2698.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">mut_the_rounds_labels_are_folded_and_a_stale_clear_set_is_refused_14</tspan></text>
+<text x="3133.0" y="2698.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">11</text>
+<text x="3233.0" y="2698.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="mut_the_sequence_counts_effects_and_m_emitseq_is_refused_15" class="rd-row">
+<rect x="2268.0" y="2709.6" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="2277.0" y="2728.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">mut_the_sequence_counts_effects_and_m_emitseq_is_refused_15</tspan></text>
+<text x="3133.0" y="2728.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">16</text>
+<text x="3233.0" y="2728.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="op_a_lapsed_operator_stops_its_own_domain_and_nothing_else_1" class="rd-row">
+<rect x="2268.0" y="2740.2" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="2277.0" y="2759.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">op_a_lapsed_operator_stops_its_own_domain_and_nothing_else_1</tspan></text>
+<text x="3133.0" y="2759.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">18</text>
+<text x="3233.0" y="2759.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="op_a_lapsed_operator_stops_its_own_domain_and_nothing_else_7" class="rd-row">
+<rect x="2268.0" y="2770.8" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="2277.0" y="2789.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">op_a_lapsed_operator_stops_its_own_domain_and_nothing_else_7</tspan></text>
+<text x="3133.0" y="2789.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">9</text>
+<text x="3233.0" y="2789.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="op_a_request_is_the_operators_and_is_not_replayed_2" class="rd-row">
+<rect x="2268.0" y="2801.4" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="2277.0" y="2820.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">op_a_request_is_the_operators_and_is_not_replayed_2</tspan></text>
+<text x="3133.0" y="2820.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">14</text>
+<text x="3233.0" y="2820.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="op_a_successor_grant_keeps_the_seating_and_never_widens_5" class="rd-row">
+<rect x="2268.0" y="2832.0" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="2277.0" y="2851.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">op_a_successor_grant_keeps_the_seating_and_never_widens_5</tspan></text>
+<text x="3133.0" y="2851.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">21</text>
+<text x="3233.0" y="2851.0" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="op_an_operators_lease_needs_a_sign_on_assertion_3" class="rd-row">
+<rect x="2268.0" y="2862.6" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="2277.0" y="2881.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">op_an_operators_lease_needs_a_sign_on_assertion_3</tspan></text>
+<text x="3133.0" y="2881.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">8</text>
+<text x="3233.0" y="2881.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="op_the_unsigned_path_seats_and_does_nothing_else_4" class="rd-row">
+<rect x="2268.0" y="2893.2" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="2277.0" y="2912.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">op_the_unsigned_path_seats_and_does_nothing_else_4</tspan></text>
+<text x="3133.0" y="2912.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">15</text>
+<text x="3233.0" y="2912.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="op_three_operators_recover_a_lapse_and_two_cannot_0" class="rd-row">
+<rect x="2268.0" y="2923.8" width="1076.0" height="30.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="2277.0" y="2942.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">op_three_operators_recover_a_lapse_and_two_cannot_0</tspan></text>
+<text x="3133.0" y="2942.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">9</text>
+<text x="3233.0" y="2942.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<g id="op_three_operators_recover_a_lapse_and_two_cannot_6" class="rd-row">
+<rect x="2268.0" y="2954.4" width="1076.0" height="30.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="2277.0" y="2973.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="11.0">op_three_operators_recover_a_lapse_and_two_cannot_6</tspan></text>
+<text x="3133.0" y="2973.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start">11</text>
+<text x="3233.0" y="2973.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="12" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">MATCH</tspan></text>
+</g>
+<line x1="3124.0" y1="2155.2249999999995" x2="3124.0" y2="2985.0" fill="none" stroke="#d4d8e0" class="s-line" stroke-width="1"/>
+<line x1="3224.0" y1="2155.2249999999995" x2="3224.0" y2="2985.0" fill="none" stroke="#d4d8e0" class="s-line" stroke-width="1"/>
+<rect x="2268.0" y="2155.2249999999995" width="1076.0" height="829.8" fill="none" stroke="#5f6878" class="s-grey" stroke-width="1.4"/>
+<text x="56.0" y="3073.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#4a5262" class="f-muted" text-anchor="start">Every trace, as the file lists it. G10 cites the file (<tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">3b1ad26dfd432d48</tspan>): "82 traces, 1,007 steps, every step matching, and every state keeping <a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/spec/ConfinementRefinement.tla"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">ConfinementRefinement.tla</tspan></a>'s invariants". The file cites <a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/spec/Mechanism.tla"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">Mechanism.tla</tspan></a>'s digest and not this module's: the build checks that this module has not changed since the file was committed (git, at the pin), which shows order only.</text>
+<text x="56.0" y="3150.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="22" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">Where else </tspan><a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/spec/ConfinementRefinement.tla"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="20.2">ConfinementRefinement.tla</tspan></a><tspan font-weight="bold"> is drawn</tspan></text>
+<rect x="56" y="3182.4" width="3288" height="34.2" fill="#5f6878" stroke="#5f6878" class="f-grey s-grey" stroke-width="1"/>
+<text x="65.0" y="3203.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#ffffff" class="f-bg" text-anchor="start"><tspan font-weight="bold">Diagram</tspan></text>
+<text x="225.0" y="3203.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#ffffff" class="f-bg" text-anchor="start"><tspan font-weight="bold">Its title (the manifest's)</tspan></text>
+<rect x="56" y="3216.6" width="3288" height="32.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="65.0" y="3237.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><a href="D1-admit-pipeline-2026.10.05.svg#top"><tspan font-weight="bold">D1</tspan></a></text>
+<text x="225.0" y="3237.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">The admit path: decide, then order, then effect</text>
+<rect x="56" y="3249.2" width="3288" height="32.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="65.0" y="3269.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><a href="G1-trusted-base-2026.10.05.svg#top"><tspan font-weight="bold">G1</tspan></a></text>
+<text x="225.0" y="3269.7" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">The trusted base: a component enters only if its failure can only subtract, or its identity is issued</text>
+<rect x="56" y="3281.8" width="3288" height="32.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="65.0" y="3302.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><a href="G3-theorem-premise-dag-2026.10.05.svg#top"><tspan font-weight="bold">G3</tspan></a></text>
+<text x="225.0" y="3302.3" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">Theorem to premise: what every checked or proved property rests on, and what is void at the reference</text>
+<rect x="56" y="3314.4" width="3288" height="32.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="65.0" y="3334.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><a href="H3-verification-map-2026.10.05.svg#top"><tspan font-weight="bold">H3</tspan></a></text>
+<text x="225.0" y="3334.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">Verification map: what is checked, what is proved, what must fail, and what neither claims</text>
+<rect x="56" y="3347.0" width="3288" height="32.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="65.0" y="3367.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><a href="H9-specification-graph-2026.10.05.svg#top"><tspan font-weight="bold">H9</tspan></a></text>
+<text x="225.0" y="3367.5" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start">The corpus's specifications form a graph: layers are open, every edge is typed by what it leaves to a person, a guarantee carries its givens, and a theorem is inherited at the grade of its weakest edge</text>
+<line x1="216" y1="3182.4499999999966" x2="216" y2="3379.6" fill="none" stroke="#d4d8e0" class="s-line" stroke-width="1"/>
+<rect x="56" y="3182.4499999999966" width="3288" height="197.2" fill="none" stroke="#5f6878" class="s-grey" stroke-width="1.4"/>
+<text x="56.0" y="3407.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#4a5262" class="f-muted" text-anchor="start">Every diagram whose committed SVG names <a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/spec/ConfinementRefinement.tla"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">ConfinementRefinement.tla</tspan></a>, found at build time and compared with this list. Those diagrams draw the module as part of a record; this one draws the module.</text>
+<text x="56.0" y="3483.9" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="22" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold">The digests: every file drawn whose digest is cited, and every place that cites it</tspan></text>
+<rect x="56" y="3515.9" width="3288" height="34.2" fill="#5f6878" stroke="#5f6878" class="f-grey s-grey" stroke-width="1"/>
+<text x="65.0" y="3537.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#ffffff" class="f-bg" text-anchor="start"><tspan font-weight="bold">File, at the pin</tspan></text>
+<text x="965.0" y="3537.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#ffffff" class="f-bg" text-anchor="start"><tspan font-weight="bold">sha256, first 16 hex digits</tspan></text>
+<text x="1295.0" y="3537.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#ffffff" class="f-bg" text-anchor="start"><tspan font-weight="bold">Cited, with that digest, by (each compared at build time)</tspan></text>
+<rect x="56" y="3550.1" width="3288" height="32.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="65.0" y="3570.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/spec/ConfinementRefinement.tla"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">spec/ConfinementRefinement.tla</tspan></a></text>
+<text x="965.0" y="3570.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">27e47bf343d0794d</tspan></text>
+<text x="1295.0" y="3570.6" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-weight="bold" fill="#a4262c" class="f-red">no results file names its digest</tspan></text>
+<rect x="56" y="3582.7" width="3288" height="32.6" fill="#fafbfc" stroke="#d4d8e0" class="f-zebra s-line" stroke-width="1"/>
+<text x="65.0" y="3603.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/spec/Mechanism.tla"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">spec/Mechanism.tla</tspan></a></text>
+<text x="965.0" y="3603.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">e29dbaf0936dbae1</tspan></text>
+<text x="1295.0" y="3603.2" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/spec/Mechanism-trace-results-2026.10.05.txt"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">spec/Mechanism-trace-results-2026.10.05.txt</tspan></a></text>
+<rect x="56" y="3615.3" width="3288" height="32.6" fill="#ffffff" stroke="#d4d8e0" class="f-bg s-line" stroke-width="1"/>
+<text x="65.0" y="3635.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/spec/Mechanism-trace-results-2026.10.05.txt"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">spec/Mechanism-trace-results-2026.10.05.txt</tspan></a></text>
+<text x="965.0" y="3635.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">3b1ad26dfd432d48</tspan></text>
+<text x="1295.0" y="3635.8" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#1e2430" class="f-ink" text-anchor="start"><a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/checkpoints/topak-genesis-checkpoint-G10-2026.10.05.md?plain=1#L176">Genesis Checkpoint G10 §3</a></text>
+<line x1="956" y1="3515.874999999996" x2="956" y2="3647.9" fill="none" stroke="#d4d8e0" class="s-line" stroke-width="1"/>
+<line x1="1286" y1="3515.874999999996" x2="1286" y2="3647.9" fill="none" stroke="#d4d8e0" class="s-line" stroke-width="1"/>
+<rect x="56" y="3515.874999999996" width="3288" height="132.0" fill="none" stroke="#5f6878" class="s-grey" stroke-width="1.4"/>
+<text x="56.0" y="3675.4" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13.5" fill="#4a5262" class="f-muted" text-anchor="start">Each citation is compared with the file at the pin when the diagram is built, and the build fails on any that differs. No results file cites this module's digest; the trace results cite <a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/spec/Mechanism.tla"><tspan font-family="'DejaVu Sans Mono', Menlo, Consolas, monospace" font-size="12.4">Mechanism.tla</tspan></a>'s.</text>
+<line x1="56" y1="3724.0999999999954" x2="3344" y2="3724.0999999999954" fill="none" stroke="#d4d8e0" class="s-line" stroke-width="1.2"/>
+<text x="56.0" y="3750.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#7d8596" class="f-faint" text-anchor="start">Sources: <a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/spec/ConfinementRefinement.tla">spec/ConfinementRefinement.tla</a> (its header, every definition); <a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/spec/Confinement_A1.tla">spec/Confinement_A1.tla</a> (the four abstract definitions); <a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/spec/Mechanism-trace-results-2026.10.05.txt">spec/Mechanism-trace-results-2026.10.05.txt</a>; <a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/spec/trace2tla.py">spec/trace2tla.py</a> (the module and configuration it writes per trace); <a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/spec/mechanism-trace-run.sh">spec/mechanism-trace-run.sh</a>; <a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/spec/Mechanism.tla">spec/Mechanism.tla</a> (its digest); <a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/checkpoints/topak-genesis-checkpoint-G10-2026.10.05.md?plain=1#L176">Genesis Checkpoint G10 §3</a> (the trace validation row); <a href="G1-trusted-base-2026.10.05.svg#top">ADR-0045</a> <a href="G1-trusted-base-2026.10.05.svg#T-0045-28">T-0045-28</a>; <a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/decisions/ADR-0034.md?plain=1#L167">ADR-0034 §3</a>, <a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/decisions/ADR-0034.md?plain=1#L224">§4</a>; <a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/decisions/ADR-0031.md?plain=1#L396">ADR-0031 A1</a>. Every file read at the pin its links open, and checked equal to the tree</text>
+<text x="56.0" y="3769.1" font-family="Helvetica, Arial, 'Liberation Sans', sans-serif" font-size="13" fill="#7d8596" class="f-faint" text-anchor="start">State of record: <a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/checkpoints/topak-genesis-checkpoint-G12-2026.11.16.md">Genesis Checkpoint G12</a> (2026.11.16), with Batch 40 (2026.11.17) · narrative: <a href="https://github.com/scottcochran/TOPAK/blob/603847533c835df720ea55bb5abd6a5236a70576/narrative/theory-of-operation.md">Theory of Operation rev 16</a> · drawn 2026.11.26, every file read at the pin its links open · generated 2026.10.05 by <a href="https://github.com/scottcochran/TOPAK/blob/ffd02f1363a10bd0db03533f38c6a20fa0f18cab/diagrams/gen-topak-family.py">diagrams/gen-topak-family.py</a> · documentation licence CC BY 4.0 (LICENSE-DOCS)</text>
+</svg>
