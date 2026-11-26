@@ -7,11 +7,14 @@ and return the height they used, so layouts are computed rather than hand-tuned.
 Theming: every colour is written twice, once as a presentation attribute (the light theme, for
 renderers without CSS) and once as a class whose CSS custom property switches under
 `prefers-color-scheme: dark`. CSS beats presentation attributes, so browsers adapt and
-everything else falls back to light.
+everything else falls back to light. The light theme's page, behind the cards, is a grey matched to the
+content's mean luminance (diagrams/PAGE.md), as in gov-tla and riemann-diagrams; the cards stay white.
 
 Inline markup in any text: **bold**, `code`, and [[accent|text]] for an accent-coloured run.
 """
+import pathlib
 import re
+import subprocess
 from xml.sax.saxutils import escape
 
 from metrics import W as _W
@@ -36,10 +39,35 @@ AMENDED_G12 = "amended 2026.11.17 against Genesis Checkpoint G12 (2026.11.16), B
 STATE_G12 = ("State of record: Genesis Checkpoint G12 (2026.11.16), with Batch 40 (2026.11.17) · narrative: Theory of "
              "Operation rev 16 · drawn 2026.11.17")
 
+# A diagram that reads corpus files at build time reads them with git at the commit it was drawn at, once those files
+# have moved on: it then regenerates as drawn, and a later change to the files is not a change to the diagram
+# (diagrams/README.md). Moving a diagram's pin is an amendment of that diagram.
+PIN_G12 = "4cbb883795d9e3b04a8eb252c81b31821dc2b0b9"   # main as the G12 amendment was drawn: the merge of PR #86, 2026.11.17
+
+
+def _git(root, *args):
+    return subprocess.run(["git", "-C", str(root), *args], capture_output=True, check=True).stdout
+
+
+def read_at(root, commit, rel):
+    """The bytes of the tracked file `rel` (relative to the repository root) at `commit`."""
+    try:
+        return _git(root, "show", f"{commit}:{rel}")
+    except subprocess.CalledProcessError:
+        raise FileNotFoundError(f"{rel} at {commit[:7]} (the checkout needs the full history)") from None
+
+
+def list_at(root, commit, rel_dir):
+    """The names of the tracked files directly in `rel_dir` at `commit`, sorted."""
+    out = _git(root, "ls-tree", "--name-only", commit, rel_dir.rstrip("/") + "/").decode()
+    return sorted(pathlib.PurePosixPath(p).name for p in out.splitlines())
+
+
 # ---------------------------------------------------------------------------------------------
 # Theme tokens: name -> (light, dark)
 BASE = {
     "bg":    ("#ffffff", "#12151b"),
+    "page":  ("#eaeaea", "#12151b"),   # the page behind the cards: in light, the mean luminance of the content (PAGE.md)
     "ink":   ("#1e2430", "#e6e9ef"),
     "muted": ("#4a5262", "#b0b8c6"),
     "faint": ("#7d8596", "#7f8898"),
@@ -591,7 +619,7 @@ class Canvas:
                 f'<title id="t">TOPAK {escape(self.ident)} — {escape(re.sub(r"[*`]", "", self.title))}</title>\n'
                 f'<desc id="d">{escape(re.sub(r"[*`]", "", self.subtitle))}</desc>\n'
                 f'<style>\n{_css()}\n</style>\n<defs>{markers}</defs>\n'
-                f'<rect width="{self.W}" height="{H}" {fill("bg")}/>\n')
+                f'<rect width="{self.W}" height="{H}" {fill("page")}/>\n')
         self.warnings = self.check()
         TEXT_BOXES.clear()
         return head + "\n".join(self.out) + "\n</svg>\n"

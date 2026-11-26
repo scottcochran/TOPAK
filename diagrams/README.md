@@ -8,7 +8,8 @@ record is the latest checkpoint.
 
 Forty-two diagrams covering the pattern's logical hierarchies and domain boundaries, drawn against Genesis
 Checkpoint G10 (2026.10.05) and Theory of Operation revision 14. Each diagram is an SVG that adapts to light and
-dark themes (`prefers-color-scheme`; renderers without CSS fall back to light). The diagrams are sized for
+dark themes (`prefers-color-scheme`; renderers without CSS fall back to light). In the light theme the cards sit on a grey
+page matched to the content's mean luminance, as in gov-tla and riemann-diagrams ([PAGE.md](PAGE.md)). The diagrams are sized for
 reading zoomed in and print at poster scale. Where a record has a table, the diagram draws all of it.
 
 **Revised 2026.10.05** against G10 and ToO rev 14. Every diagram of the 2026.10.03 family is redrawn to Batches 27
