@@ -58,6 +58,11 @@ docker compose up -d                       # Kafka :9092, OPA sidecar :18181
 scripts/dev-init.sh --kafka --opa
 python3 scripts/smoke.py
 docker compose down
+
+docker compose -f compose.cluster.yml up -d --build    # the same, one container per replica: image from Dockerfile, real TCP, Kafka, OPA
+docker compose -f compose.cluster.yml run --rm client  # smoke.py against the running replicas, over their sockets on the dev volume
+scripts/faults.sh                                      # kill the leader and restart it; partition the leader and heal
+docker compose -f compose.cluster.yml down -v
 ```
 
 Point an MCP-capable agent at a session:

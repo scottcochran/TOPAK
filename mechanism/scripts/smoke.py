@@ -2,11 +2,17 @@
 """Live smoke test: three `topak node` processes over TCP, the operator CLI, and an MCP client
 speaking JSON-RPC to `topak mcp` on stdio — the path a real agent takes.
 
-Run `scripts/dev-init.sh [--kafka] [--opa]` first."""
+Run `scripts/dev-init.sh [--kafka] [--opa]` first.
+
+In the compose cluster (compose.cluster.yml) the replicas are services, so the script does not start them:
+`docker compose -f compose.cluster.yml run --rm client` sets TOPAK_NODES_EXTERNAL=1, and TOPAK_DEV and
+TOPAK_BIN_DIR to the image's paths."""
 import json, os, subprocess, sys, time, pathlib
 
 HERE = pathlib.Path(__file__).resolve().parent.parent
-DEV, BIN = HERE / "dev", HERE / "target" / "debug" / "topak"
+DEV = pathlib.Path(os.environ.get("TOPAK_DEV") or HERE / "dev")
+BIN = pathlib.Path(os.environ.get("TOPAK_BIN_DIR") or HERE / "target" / "debug") / "topak"
+EXTERNAL = os.environ.get("TOPAK_NODES_EXTERNAL") == "1"
 
 def op(node, req, quiet=False):
     # `topak op` prints the reply and exits non-zero when the reply is a refusal: return it either way,
@@ -59,11 +65,13 @@ def show(label, ok_detail):
     return ok, d
 
 def main():
-    for n in (1, 2, 3):
-        (DEV / f"run/n{n}").mkdir(parents=True, exist_ok=True)
-    logs = [open(DEV / f"run/n{n}.log", "w") for n in (1, 2, 3)]
-    nodes = [subprocess.Popen([BIN, "node", "--config", DEV / f"n{n}.json"], stdout=logs[n - 1], stderr=logs[n - 1])
-             for n in (1, 2, 3)]
+    nodes = []
+    if not EXTERNAL:
+        for n in (1, 2, 3):
+            (DEV / f"run/n{n}").mkdir(parents=True, exist_ok=True)
+        logs = [open(DEV / f"run/n{n}.log", "w") for n in (1, 2, 3)]
+        nodes = [subprocess.Popen([BIN, "node", "--config", DEV / f"n{n}.json"], stdout=logs[n - 1],
+                                  stderr=logs[n - 1]) for n in (1, 2, 3)]
     try:
         # Wait until every replica answers and one leads. A socket file left by an earlier run is not a
         # listening replica, so ask each one and do not look for the file.
@@ -73,9 +81,11 @@ def main():
                 break
             time.sleep(0.1)
         else:
-            sys.exit(f"the replicas did not come up with a leader in 15 s: see {DEV}/run/n*.log")
+            where = "docker compose -f compose.cluster.yml logs" if EXTERNAL else f"{DEV}/run/n*.log"
+            sys.exit(f"the replicas did not come up with a leader in 15 s: see {where}")
         params = json.loads((DEV / "params.json").read_text())
-        bundle = open(HERE / ".env").read().strip().split("=", 1)[1]
+        env = DEV / ".env" if (DEV / ".env").exists() else HERE / ".env"
+        bundle = env.read_text().strip().split("=", 1)[1]
         obj = params["corpus"][0]
         tool, digest = params["build_tools"][0].split("@")
 
