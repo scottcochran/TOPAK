@@ -19,8 +19,15 @@ mkdir -p "$out"
 rev="$(cd "$src" && find . -type f \( -name '*.rego' ! -name '*_test.rego' -o -name 'data.json' \) | LC_ALL=C sort |
   while read -r f; do printf '%s\0' "$f"; cat "$f"; printf '\0'; done | shasum -a 256 | cut -d' ' -f1)"
 
-docker run --rm --platform linux/amd64 -v "$src:/policies:ro" -v "$out:/out" openpolicyagent/opa \
-  build -t wasm -e topak/bundle/allow --revision "$rev" --ignore '*_test.rego' -o "/out/$rev.tar.gz" /policies >&2
+# The revision names the sources, so a tarball already here under this revision was built from these
+# sources and is reused: no docker is needed while policies/ matches the tracked tarball.
+# TOPAK_BUNDLE_REBUILD=1 builds it again.
+if [ -s "$out/$rev.tar.gz" ] && [ -z "${TOPAK_BUNDLE_REBUILD:-}" ]; then
+  echo "bundle $rev: reusing $out/$rev.tar.gz (TOPAK_BUNDLE_REBUILD=1 rebuilds it)" >&2
+else
+  docker run --rm --platform linux/amd64 -v "$src:/policies:ro" -v "$out:/out" openpolicyagent/opa \
+    build -t wasm -e topak/bundle/allow --revision "$rev" --ignore '*_test.rego' -o "/out/$rev.tar.gz" /policies >&2
+fi
 
 if [ -n "${TOPAK_BUNDLE_SECRET:-}" ]; then
   "$here/target/debug/topak" sign --purpose bundle --secret "$TOPAK_BUNDLE_SECRET" <(printf '{"revision":"%s"}' "$rev") > "$out/$rev.sig"
