@@ -181,9 +181,12 @@ def header_properties(rel):
     """The properties the module's header lists with the section each states: [(name, section, words)], the
     words joined from continuation lines, up to the next entry or an empty comment line."""
     out, cur = [], None
+    defined = set(re.findall(r"^([A-Za-z_]\w*)\s*(?:\([^)]*\))?\s*==", text(rel), re.M))
     for ln in header_comment(rel):
-        m = re.match(r"^\s*([A-Z]\w*)\s{2,}(§[\d.]+)\s{2,}(\S.*)$", ln)
-        if m:
+        if re.match(r'^\s*(?:Mut|Mech) = "', ln):
+            break
+        m = re.match(r"^\s{3,}([A-Z]\w*)(?:\s+((?:\d{4} )?§[\d.]+))?\s{2,}(\S.*)$", ln)
+        if m and m.group(1) in defined:
             cur = [m.group(1), m.group(2), m.group(3)]
             out.append(cur)
         elif cur is not None and ln.strip() and re.match(r"^\s{20,}\S", ln):
@@ -191,7 +194,7 @@ def header_properties(rel):
         else:
             cur = None
     _need(out, rel, "the header lists no properties with their sections")
-    return [(a, b, re.sub(r"\s+", " ", c).strip()) for a, b, c in out]
+    return [(a, b, re.sub(r"\s+", " ", c).strip()) for a, b, c in out]  # b is None: the header names no section
 
 
 _STMT = re.compile(r"^(THEOREM|LEMMA)\s+(\w+)\s*==\s*(.*)$")
@@ -345,9 +348,32 @@ def mutations(res):
     return seen
 
 
-def witnesses(res):
-    """The Never... rows: unmutated rows on a property named Never..."""
-    return [r for r in res["rows"] if r["mut"] == "none" and r["prop"].startswith("Never")]
+def witnesses(res, unmutated=("none",)):
+    """The Never... rows: unmutated rows on a property named Never... (unmutated: the variants that are the
+    mechanism as specified; a floor module's is its mechanism, `rev5`)."""
+    return [r for r in res["rows"] if r["mut"] in unmutated and r["prop"].startswith("Never")]
+
+
+def enclosing(rel, line):
+    """The name of the top-level definition whose text holds `line` (1-based)."""
+    lines = text(rel).split("\n")
+    for i in range(line - 1, -1, -1):
+        m = re.match(r"^([A-Za-z_]\w*)\s*(?:\([^)]*\))?\s*==", lines[i])
+        if m:
+            return m.group(1)
+        if i < line - 1 and lines[i].strip() and not lines[i].startswith((" ", "\t")):
+            break
+    _need(False, rel, f"line {line} is in no top-level definition")
+
+
+def code_lines_with(rel, needle):
+    """The 1-based lines of the module's code (not its comments) that contain `needle`."""
+    out = []
+    for i, ln in enumerate(text(rel).split("\n")):
+        code_part = re.sub(r"\\\*.*$", "", re.sub(r"\(\*.*?\*\)", "", ln))
+        if needle in code_part:
+            out.append(i + 1)
+    return out
 
 
 def matrix(res, key=lambda r: r["mut"]):

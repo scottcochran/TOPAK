@@ -81,7 +81,7 @@ traces to a record or a results file.
 ## Decisions for the custodian
 
 **Decided 2026.11.26: all five as recommended** (the custodian). Phase 1 (the reader) and phase 2 (the `Seats.tla`
-pilot, I1) are built on branch `module-diagrams`, for review before phase 3. For decision 3, the pilot changes no
+pilot, I1) are built on branch `module-diagrams` and committed (ec8777d). Phase 3 is built the same day: I1's mechanism picture, and I2 `RunSeats`, I3 `FloorComposition`, I4 `FloorRouting`, I5 `RulesFloorNV_rev5` and I6 `RulesFloorBase`, on shared bands (`modpage.py`). Phase 4 (H3's links, the module-file-name rule, the release) is next. For decision 3, the pilot changes no
 other diagram's links yet. It adds the I family's local names (`lib.LOCAL_FAMILIES`, `MODULE_FILES`), and the
 module-file-name rule lands with phase 4.
 

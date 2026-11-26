@@ -107,8 +107,8 @@ uv run --no-project --python 3.12 python <riemann-diagrams>/plugins/proof-poster
 ```
 
 The generator makes the same checks and prints a `WARNING` for any failure, so CI fails on a link that lands
-nowhere. At 2026.11.26, with I1, the family carries 19,584 links: 2,993 within a diagram, 2,662 to another diagram's
-anchor, 13,861 to a source at its pin and 68 to a commit or pull request, over 1,644 anchors (counted by
+nowhere. At 2026.11.26, with I1 to I6, the family carries 20,900 links: 3,426 within a diagram, 2,805 to another
+diagram's anchor, 14,601 to a source at its pin and 68 to a commit or pull request, over 1,829 anchors (counted by
 `check-links.py` and from the manifest; the manifest has the current figures).
 
 ## The TOPAK diagram family (2026.10.05)
@@ -228,6 +228,19 @@ so the build checks only that the module has not changed since the file was comm
 check's re-run of TLC has the file's state counts. The page's shared bands are `topak/src/modpage.py`. No other
 diagram is amended. The library change (module-local names, `LOCAL_FAMILIES`) leaves the other 58 byte for byte.
 
+**Drawn 2026.11.26, later: I1's picture, and I2 to I6**, the rest of the floor and seats batch. Each opens with a
+picture of the module's mechanism (`modpage.flow_picture`), which I1 now has too, and is built from the same bands. I2,
+`RunSeats.tla`, checks the alphabet it issues each Run seat against ADR-0043 §2's table. I3, `FloorComposition.tla`,
+and I4, `FloorRouting.tla`, share one results file, and both draw ADR-0030 §9's table whole, each row compared with
+it. I3 draws a finding: the binding cites ADR-0030 §4 for `BundleCannotWriteFloorInputs`, where §3's text and the
+module say §3. I5, `RulesFloorNV_rev5.tla`, keys its matrix by row, since a variant is a dropped entry or the
+mechanism without recusal. It draws ADR-0026 §7's table compared row by row, and its proofs as proved and **not
+certified**: Isabelle rejected one of Zenon's proofs, obligation 55 (G10 item 74). I6, `RulesFloorBase.tla`, has no TLC
+run or proof module of its own. It draws ADR-0026 §2's table against the module's entries, the three copies of the
+floor entry by entry, and ADR-0029 §5's modules against the tree (`Genesis`, `RulesFloor` and `Promotion` are not
+there). It also draws a finding: its R6 bound and genesis count predate ADR-0026 A2. `RulesFloorNV.tla`, the G1 copy,
+is drawn only as I6's third column (scope decision 4).
+
 | Id | Diagram | What it shows |
 |---|---|---|
 | **A · Orientation** | | |
@@ -296,7 +309,12 @@ diagram is amended. The library change (module-local names, `LOCAL_FAMILIES`) le
 | H9 | [The specification graph](topak/H9-specification-graph-2026.10.05.svg) | ADR-0057 and ADR-0058 (Proposed): open layers, the eight edge types ordered by what each leaves to a person, pins and premises, the checker's lists; the graph's layers and seventeen of its edges read from `specification-graph.json` at build time, stale ones red; a deployment's declaration against the archetype's |
 | H10 | [User documentation is a derived layer](topak/H10-documentation-layer-2026.10.05.svg) | ADR-0071 to ADR-0073 (Proposed): the corpus's revisions as the source, the gates and the store, the document set for every role (43 documents, the diagram's count), the service as a rebuildable projection, the reader over the public API alone; nothing built |
 | H11 | [TLA+ checks in the tla-kit image](topak/H11-tla-kit-image-2026.10.05.svg) | ADR-0077 (Proposed): the image as a pin by published digest, the proofs job, the prover pin's move by its own pull request; what the tree holds today (the jar and TLAPS pins, the CI workflows) beside what the record proposes, every §7 item but one not met |
-| I1 | [`Seats.tla`](topak/I1-seats-2026.10.05.svg) | ADR-0037 §9's module, drawn whole and read at build time: the machine, `OnlyThinkersAuthor` (§4) and `OneSeatPerPrincipal` (§1), `M_KIND` and `M_SEAT` by property, three witnesses, every statement of `Seats_proof.tla` (110 obligations, certified with 3 on LS4), the Lean encoding, mirror and graph check, the binding's premises, `SeatsModel.lean`, and the kinds and acts of §4 the frozen module does not model |
+| I1 | [`Seats.tla`](topak/I1-seats-2026.10.05.svg) | ADR-0037 §9's module, drawn whole, opening with its mechanism and read at build time: the machine, `OnlyThinkersAuthor` (§4) and `OneSeatPerPrincipal` (§1), `M_KIND` and `M_SEAT` by property, three witnesses, every statement of `Seats_proof.tla` (110 obligations, certified with 3 on LS4), the Lean encoding, mirror and graph check, the binding's premises, `SeatsModel.lean`, and the kinds and acts of §4 the frozen module does not model |
+| I2 | [`RunSeats.tla`](topak/I2-run-seats-2026.10.05.svg) | ADR-0043 §8's module: four seats in two domains, `OnlyThinkersActuate`, `ObserversConsultAndReport` (ADR-0043 §2) and `NoNameCrossesDomains` (ADR-0040 §2), `M_KIND`, `M_DOMAIN` and the provisional column `M_OBSEMIT` by property, three witnesses, every statement of `RunSeats_proof.tla` (147 obligations, certified with 4 on LS4), the Lean encoding, and each seat's alphabet against ADR-0043 §2's table |
+| I3 | [`FloorComposition.tla`](topak/I3-floor-composition-2026.10.05.svg) | ADR-0030's verified floor tier: the decision, the four policies and the havoc bundle, five properties (§1, §3 and the envelope), four mutations by property, three witnesses, ADR-0030 §9's table compared row by row, 171 obligations certified with 6 on LS4, the Lean encoding, mirror and graph check, `FloorRefinement.lean`; the binding's §4 for `BundleCannotWriteFloorInputs`, a finding |
+| I4 | [`FloorRouting.tla`](topak/I4-floor-routing-2026.10.05.svg) | ADR-0030 §5's routing: the gate and the router, `NoWideningWithoutIssuance` and `FloorNeverVacuous`, `M_ROUTE` and `M_GATE`, three witnesses, ADR-0030 §9's table compared row by row, 36 obligations certified with 3 on LS4 (every theorem under `Mut = "none"`), the Lean encoding |
+| I5 | [`RulesFloorNV_rev5.tla`](topak/I5-rules-floor-nv-rev5-2026.10.05.svg) | ADR-0026 §7's non-vacuity rerun: one havoc issuance and a promotion, six properties each on its entry, every dropped entry and `norecuse` by property, the witness, the three `ASSUME`s, ADR-0026 §7's table compared row by row, 262 obligations proved and **not certified** (Isabelle rejected obligation 55), the Lean encoding, the frozen copy beside the live floor |
+| I6 | [`RulesFloorBase.tla`](topak/I6-rules-floor-base-2026.10.05.svg) | The live definition of the rules floor: its definitions and `ASSUME`, ADR-0026 §2's table against its entries, the three copies of the floor entry by entry, ADR-0029 §5's bootstrap modules against the tree, the modules that extend it, two theorems in Lean; its R6 bound and genesis count before ADR-0026 A2, a finding |
 
 ### Regenerating
 

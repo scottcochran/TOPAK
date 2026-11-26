@@ -80,6 +80,86 @@ def set_of(rel, name):
     return re.findall(r'"(\w+)"', src)
 
 
+def picture(c, X0, y, WW, kb, ko, principals):
+    """Principals -> the grant path -> one lease per seat -> acted, and the two properties on what they read.
+    Arrows are numbered and keyed; every element names the line or section it draws."""
+    gl = M.definition(MODULE_FILES[0], "Grant")[0]
+    al = M.definition(MODULE_FILES[0], "Act")[0]
+    el = M.definition(MODULE_FILES[0], "EndRound")[0]
+    sz = 13.5
+    # columns
+    xa, wa = X0, 300
+    xb, wb = X0 + 420, 760
+    xc, wc = X0 + 1360, 820
+    xd, wd = X0 + 2340, 470
+    xe = X0 + 2940
+    we = WW - (xe - X0)
+    gap = 18
+    seat_specs = []
+    for s_, k in ko.items():
+        seat_specs.append((f"Seat `{s_}` · kind `{k}`",
+                           [f"alphabet {', '.join(f'`{a}`' for a in kb[k])}"],
+                           "teal"))
+    sh = [c.card(0, 0, wc - 40, t, b, draw=False, size=sz) for t, b, _ in seat_specs]
+    region_h = 40 + sum(sh) + gap * (len(sh) - 1) + 24
+    top = y + 14
+    # the leases
+    c.region(xc, top, wc, region_h, "`lease`: one record per seat (line 39)", "teal")
+    sy = top + 40
+    for (t, b, acc), h in zip(seat_specs, sh):
+        c.card(xc + 20, sy, wc - 40, t, b, accent=acc, size=sz, h=h)
+        sy += h + gap
+    mid = top + region_h / 2
+    # principals
+    pb = [f"`{p}`" for p in principals]
+    ph = c.card(0, 0, wa, "Principals", pb, draw=False, size=sz)
+    # the grant path
+    gb = [f"**①** `~lease[s].live`: the seat is free",
+          f"**②** `~HoldsElsewhere(p, s)`: `p` holds no live lease on another seat (ADR-0037 §1, §9). "
+          f"`M_SEAT` [[red|drops it.]]",
+          f"**③** the lease is issued `KindBound(KindOf[s])`, whatever was asked (§4). "
+          f"`M_KIND` [[red|issues all of]] `Acts`."]
+    gh = c.card(0, 0, wb, f"The grant path (`Grant`, line {gl})", gb, draw=False, size=sz, bullets=False)
+    gy = top + 10
+    c.card(xb, gy, wb, f"The grant path (`Grant`, line {gl})", gb, accent="teal", size=sz, h=gh, bullets=False)
+    c.card(xa, gy + gh / 2 - ph / 2, wa, "Principals", pb, accent="brown", size=sz, h=ph)
+    rb = ["Nothing changes: no lease, no act."]
+    rh = c.card(0, 0, wb, "Refused, at ① or ②", rb, draw=False, size=sz)
+    ry = top + region_h - rh
+    c.card(xb, ry, wb, "Refused, at ① or ②", rb, accent="red", size=sz, h=rh, dash="6 4")
+    # acted, and the two properties
+    db = ["one record per admitted act: `[act |-> a, kind |-> KindOf[s]]`"]
+    dh = c.card(0, 0, wd, "The record of acts: `acted`", db, draw=False, size=sz)
+    dy = top + 10
+    c.card(xd, dy, wd, "The record of acts: `acted`", db, accent="grey", size=sz, h=dh)
+    p1 = ["`OnlyThinkersAuthor`: an authoring act only from a `thinker` seat, and `Vote` never from one"]
+    p2 = ["`OneSeatPerPrincipal`: two live leases never belong to one principal"]
+    h1 = c.card(0, 0, we, "ADR-0037 §4, read on `acted`", p1, draw=False, size=sz)
+    h2 = c.card(0, 0, we, "ADR-0037 §1, read on `lease`", p2, draw=False, size=sz)
+    c.card(xe, dy, we, "ADR-0037 §4, read on `acted`", p1, accent="blue", size=sz, h=h1)
+    y2 = top + region_h - h2
+    c.card(xe, y2, we, "ADR-0037 §1, read on `lease`", p2, accent="blue", size=sz, h=h2)
+    # arrows
+    ay = gy + gh / 2
+    c.arrow([(xa + wa, ay), (xb, ay)], "brown", label="asks: `Grant(p, s)`", lpos=0.5, loff=(0, -16))
+    c.arrow([(xb + wb, ay), (xc, ay)], "teal", label="④ a live lease", lpos=0.5, loff=(0, -16))
+    c.arrow([(xb + wb / 2, gy + gh), (xb + wb / 2, ry)], "red", dash="7 5")
+    c.arrow([(xc + wc, dy + dh / 2), (xd, dy + dh / 2)], "teal", label=f"⑤ `Act(s)`, line {al}", lpos=0.5,
+            loff=(0, -16))
+    c.arrow([(xd + wd, dy + h1 / 2), (xe, dy + h1 / 2)], "blue", dash="4 4")
+    c.arrow([(xc + wc, y2 + h2 / 2), (xe, y2 + h2 / 2)], "blue", dash="4 4")
+    end_y = top + region_h + 40
+    c.arrow([(xc + wc / 2, top + region_h), (xc + wc / 2, end_y)], "green", dash="7 5", head=True)
+    c.label(xc + wc / 2, end_y + 14, f"⑥ `EndRound(s)`, line {el}: the lease becomes `NoLease`", "green", sz)
+    key_y = end_y + 44
+    kh = c.para(X0, key_y, WW,
+                "**Key.** ① to ③ are `Grant`'s conjuncts in order; ④ is the lease it writes; ⑤ an act from the "
+                "live alphabet, recorded with the seat's kind; ⑥ ends a lease and nothing else. Dotted blue lines "
+                "show what each property reads. The picture is the diagram's own drawing of the module's "
+                "definitions below; red marks where each mutation acts.", 13.5, "muted")
+    return key_y + kh
+
+
 def build():
     ev = M.evidence(NAME)
     mod, prf = ev["files"]["module"], ev["files"]["proof"]
@@ -153,21 +233,14 @@ def build():
     y = c.y
 
     # ---- status
-    y = P.status_strip(c, X0, X1, y, [
-        ("ADR-0037", "accepted", "C3, C4"),
-        ("`Seats.tla`", (f"Checked by TLC · {rows9} rows", "teal", None), ""),
-        ("`Seats_proof.tla`", (f"Proved · {P.n(pr['obligations'])} obligations", "blue", None), ""),
-        ("The certified run", (f"Certified · {ls4} obligations on LS4" if ce["certified"] else "NOT CERTIFIED",
-                               "blue" if ce["certified"] else "red", None), ""),
-        ("`Seats.lean`", ("Proved in Lean, of the re-encoding", "blue", None), ""),
-        ("The graph check", ("Checked against TLC's graphs · a test", "teal", "6 4"), ""),
-        ("`SeatsModel.lean`", ("Proved of a model of the code · ADR-0053", "blue", "4 3"), ""),
-    ])
-    y += c.para(X0, y, WW, "**Checked**, **proved** and **certified** mean what ADR-0046 §1 says: TLC checks the "
-                "mutations and witnesses at the module's constants; TLAPS proves each invariant under the "
-                "hypothesis its statement names; the certified run accounts for every obligation by a route an "
-                "independent checker accepted, or names LS4. Nothing here is said of the running reference.",
-                14.5, "muted") + 34
+    y = P.status_strip(c, X0, X1, y, P.status_items(ev, [("ADR-0037", "accepted", "C3, C4")], tail=[
+        ("`SeatsModel.lean`", ("Proved of a model of the code · ADR-0053", "blue", "4 3"), "")]))
+    y += c.para(X0, y, WW, P.WORDS, 14.5, "muted") + 34
+
+    # ---- the picture
+    y = P.band(c, X0, y, "The mechanism, as the module states it: a grant seats one principal on one seat with "
+                         "its kind's alphabet, and every act is recorded with the kind of the seat it came from")
+    y = picture(c, X0, y, WW, kb, ko, set_of(mod, "Principals")) + 50
 
     # ---- the machine
     y = P.band(c, X0, y, "The machine: two principals, three seats of fixed kinds, three actions (`Seats.tla`)")
@@ -220,42 +293,12 @@ def build():
 
     # ---- the properties
     y = P.band(c, X0, y, "The two properties, the section of ADR-0037 each states, and how each is shown")
-    m_muts, _, cells = M.matrix(res)
-    rows = []
-    for p, sec, words in head_props:
-        ln, src = M.definition(mod, p)
-        breaks = [mt for mt in m_muts if cells[(mt, p)]["verdict"] == X]
-        thm, hyp = THEOREM_OF[p]
-        rows.append([f"`{p}`", f"ADR-0037 {sec}", f"\"{words}\"", " ".join(P.code_lines(src)),
-                     ", ".join(f"`{b}`" for b in breaks), f"`{thm}`, under `{hyp}`"])
-    ln, src = M.definition(mod, "Safe")
-    rows.append([f"`Safe`", "§1 and §4", "their conjunction", P.code(src), "each of them",
-                 f"`{THEOREM_OF['Safe'][0]}`, under `{THEOREM_OF['Safe'][1]}`"])
-    y += c.table(X0, y, [("Property", 260, {}), ("States", 150), ("The module's header", 560),
-                         ("Its definition", 1110), ("Broken, per TLC, by", 260),
-                         ("Proved as (`Seats_proof.tla`)", WW - 2340)], rows, size=13.5, accent="teal",
-                 anchor="properties") + 50
+    m_muts = ["none"] + M.mutations(res)
+    y = P.properties(c, X0, y, WW, ev, [(p_, f"ADR-0037 {s_}", w_) for p_, s_, w_ in head_props]) + 50
 
     # ---- mutations
     y = P.band(c, X0, y, "The mutations: what each does, where it acts, and what it must break")
-    lemma_of = {}
-    for s in ev["statements"]:
-        mm = re.match(r'Mut = "(\w+)"', s["assume"] or "")
-        if s["kind"] == "LEMMA" and mm:
-            lemma_of[mm.group(1)] = s
-    rows = []
-    for mt, words in head_muts[1:]:
-        ln = M.line_of(mod, rf'^\s+/\\ .*Mut = "{mt}"')
-        src = M.text(mod).split("\n")[ln - 1]
-        br = [p for p in PROPS if cells[(mt, p)]["verdict"] == X]
-        ho = [p for p in PROPS if cells[(mt, p)]["verdict"] == H]
-        lm = lemma_of[mt]
-        rows.append([f"`{mt}`", words, f"`Grant`, line {ln}: {P.code(src)}", ", ".join(f"`{p}`" for p in br),
-                     ", ".join(f"`{p}`" for p in ho), f"`{lm['name']}` (line {lm['line']}): `{lm['prove']}`"])
-    y += c.table(X0, y, [("Mutation", 200, {}), ("What it does (the module's header)", 760),
-                         ("Where it acts", 620), ("Breaks", 230), ("Leaves holding", 230),
-                         ("Why it must fail (the proof module's lemma; the counterexample is TLC's)", WW - 2040)],
-                 rows, size=13.5, accent="red", anchor="mutations") + 24
+    y = P.mutations(c, X0, y, WW, ev, head_muts) + 24
     exp_line = res["head"].get("expected")
     _need(exp_line == "none HOLDS on both; M_KIND breaks §4 only; M_SEAT breaks §1 only; witnesses VIOLATED",
           f"{res['file']}'s expected: line is {exp_line!r}")
@@ -291,9 +334,8 @@ def build():
     }) + 50
 
     # ---- the proofs
-    y = P.band(c, X0, y, f"The proofs: every statement of `{prf[5:]}`, and the run that discharged it",
-               status=None)
-    y += P.theorems_table(c, X0, y, WW, ev, {
+    y = P.band(c, X0, y, f"The proofs: every statement of `{prf[5:]}`, and the run that discharged it")
+    y = P.proofs(c, X0, y, WW, ev, {
         "KindBoundActs": "Every kind's bound is within `Acts`: the type of an issued alphabet.",
         "KindBoundKinds": "The table itself: an authoring act only for a thinker, `Vote` only for the others.",
         "InitTypeOK": "Typing, at the start.",
@@ -307,65 +349,19 @@ def build():
         "SafeAlways": "Both, unmutated.",
         "MutKindGrantsAll": "Why `M_KIND` must fail: it issues every act to every seat.",
         "MutSeatIgnoresHolder": "Why `M_SEAT` must fail: the grant no longer looks at other seats.",
-    }) + 24
-    half = (WW - 30) / 2
-    run_body = [f"`{ev['files']['proof_results'][5:]}`: \"All {pr['obligations']} obligations proved.\"",
-                f"Assumptions: **{pr['assumptions']}** (\"The module has no constants beyond `Mut`, so the proof "
-                f"carries no model assumptions\": the proof module's header)",
-                f"Prover: {pr['prover']}",
-                "The run printed nothing else." if not pr["notes"] else
-                "[[red|The run also printed:]] " + "; ".join(pr["notes"]),
-                f"\"{pr['words']}\""]
-    hh = c.card(0, 0, half, "The proof run", run_body, draw=False, size=13.5)
-    c.card(X0, y, half, "The proof run", run_body, accent="blue", size=13.5, h=hh)
-    th = P.cert_table(c, X0 + half + 30, y, half, ev)
-    y += max(hh, th) + 50
+    }, assumptions_note="\"The module has no constants beyond `Mut`, so the proof carries no model assumptions\": "
+                        "the proof module's header") + 50
 
     # ---- Lean
     y = P.band(c, X0, y, "In Lean: the module re-encoded, its theorems proved again, and the encoding checked "
                          "against TLC's state graphs")
-    unit, mu = ev["lean_unit"], ev["mirror_unit"]
-    ax = lr["axioms"]
-
-    def thm_lines(prefix, names):
-        out = []
-        for t in names:
-            k = f"{prefix}.{t}"
-            _need(k in ax, f"{M.LEAN_RESULTS} reports no axioms for {k}")
-            f_, ln_, axs = ax[k]
-            out.append(f"`{t}` (`{f_}`, line {ln_}): depends on {', '.join(f'`{a}`' for a in axs) or 'no axioms'}")
-        return out
-
-    words = lr["words"].split("; ")[0]
-    y += P.row_cards(c, X0, y, WW, 30, [
-        (f"`TopakSpec/Seats.lean`: the theorems, by induction on reachable states",
-         thm_lines("Topak.Spec.Seats", lr["theorems"][unit]) +
-         [f"\"{words}\" (`{M.LEAN_RESULTS[5:]}`)", "Each theorem takes as hypothesis only the mutation that breaks "
-          "it, as in TLAPS (`Seats.lean`'s header)."], "blue", {}),
-        (f"`TopakSpec/Mirror/Seats.lean`: a decidable mirror, proved equal to the encoding",
-         thm_lines("Topak.Spec.Seats.Mirror", [t for t in lr["theorems"][mu] if f"Topak.Spec.Seats.Mirror.{t}" in ax])
-         + [f"Also stated: {', '.join(f'`{t}`' for t in lr['theorems'][mu] if f'Topak.Spec.Seats.Mirror.{t}' not in ax)}"
-            f", which the results file lists and reports no axioms for."], "blue", {}),
-        ("What the graph check is", [
-            "`graph-check.sh` dumps TLC's state graph for each `Mut` and evaluates the mirror on it: every edge a "
-            "`Next` step, every `Next` step an edge or a stutter, the same initial states, every property TLC's "
-            "value in every state. **A test, not a proof**: the mirror's theorems are the proof.",
-            f"{M.LEAN_RESULTS[5:]} and {M.GRAPH_RESULTS[5:]} are the files ADR-0053 cites; the later "
-            f"{M.LEAN_LATER[10:]} and {M.GRAPH_LATER[10:]} are compared and say the same of `Seats`."], "teal", {}),
-    ], size=13.5) + 24
-    y += P.graph_table(c, X0, y, WW, ev) + 50
+    y = P.lean(c, X0, y, WW, ev, "Topak.Spec.Seats", "Topak.Spec.Seats.Mirror",
+               extra_card="Each theorem takes as hypothesis only the mutation that breaks it, as in TLAPS "
+                          "(`Seats.lean`'s header).") + 50
 
     # ---- beyond the module
     y = P.band(c, X0, y, "Beyond the module: what a theorem about it rests on, and a model of the code that refines it")
-    prem = P.md_rows(PREMISES, PREMISE_HEAD, PROPS)
-    y += c.table(X0, y, [(h_, w_) for h_, w_ in zip(PREMISE_HEAD, (260, 700, 160, 170, 560, 250, WW - 2100))],
-                 [r for r in prem], size=13.5, accent="blue") + 14
-    der = P.md_rows(PREMISES, DERIVED_HEAD, ["invariant(Seats)"])
-    y += c.table(X0, y, [(DERIVED_HEAD[0], 260, {}), (DERIVED_HEAD[1], 1300), (DERIVED_HEAD[2], WW - 1560)],
-                 der, size=13.5, accent="blue") + 14
-    y += c.para(X0, y, WW, f"The two rows of `{PREMISES[5:]}`'s theorem table that are this module's, and its "
-                "derived premise, every cell. G3 draws the whole table; the T-0045 rows open on G1.", 13.5,
-                "muted") + 24
+    y = P.premises(c, X0, y, WW, ev, PROPS, ["invariant(Seats)"]) + 24
     mt = {k.split(".")[-1]: v for k, v in model_thms.items()}
     y += P.row_cards(c, X0, y, WW, 30, [
         ("`SeatsModel.lean`: a model of `State::apply`, proved of the model",
@@ -425,18 +421,9 @@ def build():
 
     # ---- where else
     y = P.band(c, X0, y, "Where else `Seats.tla` is drawn")
-    rows = []
-    for pid in ELSEWHERE:
-        u = poster_link(pid)
-        rows.append([linked(u, f"**{pid}**"), lib.unlinked(manifest[pid]["title"])])
-    y += c.table(X0, y, [("Diagram", 160, {}), ("Its title (the manifest's)", WW - 160)], rows, size=13.5) + 14
-    y += c.para(X0, y, WW, "Each names `Seats.tla` in its committed SVG, checked at build time. Those diagrams "
-                "draw the module as part of a record; this one draws the module.", 13.5, "muted") + 50
+    y = P.elsewhere(c, X0, y, WW, ev, ELSEWHERE) + 50
 
     # ---- digests
     y = P.band(c, X0, y, "The digests: every file drawn whose digest is cited, and every place that cites it")
-    y += P.digests_table(c, X0, y, WW, ev, extra=[(MODEL, M.sha16(MODEL), f"`{CODE_LEAN}`")]) + 14
-    y += c.para(X0, y, WW, f"`{res['file']}` names no digest (above, under the matrix). Each citation is compared "
-                "with the file at the pin when the diagram is built, and the build fails on any that differs.",
-                13.5, "muted")
+    y = P.digests(c, X0, y, WW, ev, extra=[(MODEL, M.sha16(MODEL), f"`{CODE_LEAN}`")])
     return c
