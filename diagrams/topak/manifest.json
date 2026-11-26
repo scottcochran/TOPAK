@@ -145,8 +145,8 @@
    "genesis-values.json"
   ],
   "links": 0,
-  "links_out": 13,
-  "links_ext": 221
+  "links_out": 14,
+  "links_ext": 220
  },
  "B3": {
   "file": "B3-floor-change-routing-2026.10.05.svg",
@@ -213,8 +213,8 @@
   "records": [],
   "anchors": [],
   "links": 0,
-  "links_out": 39,
-  "links_ext": 133
+  "links_out": 44,
+  "links_ext": 128
  },
  "B5": {
   "file": "B5-promotion-quorum-2026.10.05.svg",
@@ -287,8 +287,8 @@
    "RulesFloor"
   ],
   "links": 33,
-  "links_out": 33,
-  "links_ext": 227
+  "links_out": 34,
+  "links_ext": 226
  },
  "B8": {
   "file": "B8-floor-stages-2026.10.05.svg",
@@ -341,8 +341,8 @@
    "taskLabelled"
   ],
   "links": 26,
-  "links_out": 26,
-  "links_ext": 264
+  "links_out": 27,
+  "links_ext": 263
  },
  "B9": {
   "file": "B9-planes-and-charters-2026.10.05.svg",
@@ -474,8 +474,8 @@
    "D-0037-2"
   ],
   "links": 1,
-  "links_out": 25,
-  "links_ext": 208
+  "links_out": 27,
+  "links_ext": 206
  },
  "C2": {
   "file": "C2-alphabets-by-seat-2026.10.05.svg",
@@ -536,8 +536,8 @@
    "policies"
   ],
   "links": 123,
-  "links_out": 38,
-  "links_ext": 268
+  "links_out": 42,
+  "links_ext": 264
  },
  "C3": {
   "file": "C3-lease-anatomy-2026.10.05.svg",
@@ -1124,8 +1124,8 @@
    "second"
   ],
   "links": 0,
-  "links_out": 24,
-  "links_ext": 184
+  "links_out": 26,
+  "links_ext": 182
  },
  "D5": {
   "file": "D5-emergency-seating-2026.10.05.svg",
@@ -1169,8 +1169,8 @@
    "thinker"
   ],
   "links": 31,
-  "links_out": 24,
-  "links_ext": 235
+  "links_out": 25,
+  "links_ext": 234
  },
  "D6": {
   "file": "D6-mesh-mechanism-bus-2026.10.05.svg",
@@ -1571,8 +1571,8 @@
    "annex-b"
   ],
   "links": 130,
-  "links_out": 56,
-  "links_ext": 423
+  "links_out": 58,
+  "links_ext": 421
  },
  "G2": {
   "file": "G2-deployment-lattice-2026.10.05.svg",
@@ -1728,8 +1728,8 @@
    "Workflow"
   ],
   "links": 286,
-  "links_out": 172,
-  "links_ext": 622
+  "links_out": 221,
+  "links_ext": 573
  },
  "G4": {
   "file": "G4-overlay-threat-model-2026.10.05.svg",
@@ -1914,8 +1914,8 @@
    "gate_suite.py"
   ],
   "links": 95,
-  "links_out": 344,
-  "links_ext": 1086
+  "links_out": 355,
+  "links_ext": 1075
  },
  "H4": {
   "file": "H4-reference-deployment-2026.10.05.svg",
@@ -1983,8 +1983,8 @@
    "SafeAlways"
   ],
   "links": 1,
-  "links_out": 29,
-  "links_ext": 145
+  "links_out": 30,
+  "links_ext": 144
  },
  "H6": {
   "file": "H6-proof-certification-2026.10.05.svg",
@@ -2074,8 +2074,8 @@
    "version"
   ],
   "links": 32,
-  "links_out": 42,
-  "links_ext": 208
+  "links_out": 45,
+  "links_ext": 205
  },
  "H8": {
   "file": "H8-overlay-verification-2026.10.05.svg",
@@ -2223,8 +2223,8 @@
    "mechanism"
   ],
   "links": 11,
-  "links_out": 57,
-  "links_ext": 332
+  "links_out": 76,
+  "links_ext": 313
  },
  "H10": {
   "file": "H10-documentation-layer-2026.10.05.svg",
@@ -2296,8 +2296,12 @@
    "witnesses"
   ],
   "links": 76,
-  "links_out": 39,
-  "links_ext": 183
+  "links_out": 40,
+  "links_ext": 182,
+  "module": [
+   "spec/Seats.tla",
+   "spec/Seats_proof.tla"
+  ]
  },
  "I2": {
   "file": "I2-run-seats-2026.10.05.svg",
@@ -2357,8 +2361,12 @@
    "witnesses"
   ],
   "links": 108,
-  "links_out": 16,
-  "links_ext": 143
+  "links_out": 18,
+  "links_ext": 141,
+  "module": [
+   "spec/RunSeats.tla",
+   "spec/RunSeats_proof.tla"
+  ]
  },
  "I3": {
   "file": "I3-floor-composition-2026.10.05.svg",
@@ -2412,8 +2420,12 @@
    "witnesses"
   ],
   "links": 162,
-  "links_out": 39,
-  "links_ext": 212
+  "links_out": 43,
+  "links_ext": 208,
+  "module": [
+   "spec/FloorComposition.tla",
+   "spec/FloorComposition_proof.tla"
+  ]
  },
  "I4": {
   "file": "I4-floor-routing-2026.10.05.svg",
@@ -2450,8 +2462,12 @@
    "witnesses"
   ],
   "links": 51,
-  "links_out": 22,
-  "links_ext": 115
+  "links_out": 28,
+  "links_ext": 109,
+  "module": [
+   "spec/FloorRouting.tla",
+   "spec/FloorRouting_proof.tla"
+  ]
  },
  "I5": {
   "file": "I5-rules-floor-nv-rev5-2026.10.05.svg",
@@ -2513,8 +2529,12 @@
    "witnesses"
   ],
   "links": 91,
-  "links_out": 41,
-  "links_ext": 182
+  "links_out": 44,
+  "links_ext": 179,
+  "module": [
+   "spec/RulesFloorNV_rev5.tla",
+   "spec/RulesFloorNV_rev5_proof.tla"
+  ]
  },
  "I6": {
   "file": "I6-rules-floor-base-2026.10.05.svg",
@@ -2531,7 +2551,10 @@
    "RulesFloor"
   ],
   "links": 8,
-  "links_out": 25,
-  "links_ext": 77
+  "links_out": 28,
+  "links_ext": 74,
+  "module": [
+   "spec/RulesFloorBase.tla"
+  ]
  }
 }

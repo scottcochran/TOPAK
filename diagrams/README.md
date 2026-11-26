@@ -58,7 +58,8 @@ before.
 | `Genesis Checkpoint G12`, `G12 (2026.11.16)` | the checkpoint document |
 | `ToO rev 16 §2.3`; `ToO §3.2` | that section of the Theory of Operation at the revision's tag; unversioned, at the revision the diagram's footer names |
 | A trusted-base row `T-0045-31`; a deployment row `D-0024-2` | its row on G1; its card on G2 (else on its record's diagram); else its row in the record |
-| A path or file name, in code or in running text (`tools/ci-plan.sh`, `Seats.tla`, `spec/`) | the file or directory at the pin; a file name only when one tracked file has it. A Markdown file then takes the sections after it (`proof-certification.md §2`) |
+| A TLA+ module with a diagram of its own, `Seats.tla` or `spec/Seats.tla`; its proof module, `Seats_proof.tla` | that module's diagram (I1), at its top; for the proof module, at its theorems (`#theorems`); on the module's own diagram, the file at the pin |
+| A path or file name, in code or in running text (`tools/ci-plan.sh`, `Coupling.tla`, `spec/`) | the file or directory at the pin; a file name only when one tracked file has it. A Markdown file then takes the sections after it (`proof-certification.md §2`) |
 | A code-font name a card or row of this diagram is titled with | that card or row |
 | A distinctive code-font name (`clearSet`, `KUp`, `M_KIND`, `topak-floor`) | the one other diagram that anchors it, else its definition, when one module under `spec/` defines it |
 | A commit (`36269bc`), `PR #68`, `pull request #68` | the commit, when the pin's history holds it; the pull request, when it was merged before the pin |
@@ -94,7 +95,7 @@ manifest lists it. When a run moves any diagram's anchors or records, the genera
 (gov-tla's rule). On it, a code-font name its module or proof module declares or defines opens that line, even a
 name other modules also define (`Spec`, `Grant`, `lease`): the diagram's `MODULE_FILES`. The names it anchors are
 never the target of another diagram's text, so a module page takes no link away from the diagram that anchored a
-name before it (`lib.LOCAL_FAMILIES`). A module's file name still opens the file at the pin.
+name before it (`lib.LOCAL_FAMILIES`). Every other diagram's mention of a drawn module's file name opens its diagram (the Links table, above): the generator writes each module diagram's `MODULE_FILES` into the manifest as `module`, and `lib.MODULE_HOME` reads them back.
 
 **Where you land.** The target is framed when it opens: a card, a list or a header shows a halo, and a row is
 recoloured amber. The frame pulses three times and then stays; under `prefers-reduced-motion` it does not pulse.
@@ -107,8 +108,8 @@ uv run --no-project --python 3.12 python <riemann-diagrams>/plugins/proof-poster
 ```
 
 The generator makes the same checks and prints a `WARNING` for any failure, so CI fails on a link that lands
-nowhere. At 2026.11.26, with I1 to I6, the family carries 20,900 links: 3,426 within a diagram, 2,805 to another
-diagram's anchor, 14,601 to a source at its pin and 68 to a commit or pull request, over 1,829 anchors (counted by
+nowhere. At 2026.11.26, with I1 to I6, the family carries 20,900 links: 3,426 within a diagram, 2,926 to another
+diagram's anchor, 14,480 to a source at its pin and 68 to a commit or pull request, over 1,829 anchors (counted by
 `check-links.py` and from the manifest; the manifest has the current figures).
 
 ## The TOPAK diagram family (2026.10.05)
@@ -240,6 +241,12 @@ run or proof module of its own. It draws ADR-0026 §2's table against the module
 floor entry by entry, and ADR-0029 §5's modules against the tree (`Genesis`, `RulesFloor` and `Promotion` are not
 there). It also draws a finding: its R6 bound and genesis count predate ADR-0026 A2. `RulesFloorNV.tla`, the G1 copy,
 is drawn only as I6's third column (scope decision 4).
+
+**Linked 2026.11.26: a drawn module's file name opens its diagram** (scope decision 3). Fourteen diagrams that name one
+of the six modules, B2, B4, B7, B8, C1, C2, D4, D5, G1, G3, H3, H5, H7 and H9, now open I1 to I6 where they opened the
+module at the pin. That includes H3's module rows: a module's name opens the diagram's top, and its proof module's name
+opens its theorems. 121 links move. Their drawings are byte for byte the same once the links are set aside, and no
+footer changes, since a link is not a drawing.
 
 | Id | Diagram | What it shows |
 |---|---|---|

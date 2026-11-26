@@ -71,7 +71,9 @@ def list_at(root, commit, rel_dir):
 # a trusted-base row (T-0045-31) its row on G1, a deployment row (D-0024-2) its card on G2, a code-font name the
 # card or row that anchors it, on this diagram or the one other that does. References open their line in the source
 # at the pin: a record's section, amendment, erratum, revision, annex or finding; a checkpoint's section or item; the
-# Theory of Operation's section at its revision's tag. A file or directory in code font opens itself, a TLA+ name that
+# Theory of Operation's section at its revision's tag. A TLA+ module that has a diagram of its own (family I) opens
+# that diagram, its proof module the diagram's theorems, except on the module's own diagram. Any other file or directory
+# in code font opens itself, a TLA+ name that
 # one module defines its definition, a commit or merged pull request its page. Every link out is at a commit, never a
 # branch: PIN_LINKS, or the diagram's own when it reads its files at a pin (PIN_LINKS = PIN_G12 in B11 and H9).
 PIN_LINKS = "ffd02f1363a10bd0db03533f38c6a20fa0f18cab"      # main at 2026.11.20, after PR #99: the records as linked
@@ -86,6 +88,9 @@ ROW_HOME = {"T": "G1", "D": "G2"}
 TOP = "top"
 HALO_PAD = 7
 POSTERS, ANCHORS_OF, HOME_OF = {}, {}, {}   # from the manifest: id -> file; file -> anchors; record -> diagram id
+# from the manifest: a module diagram's files -> (its id, the anchor its name opens): `spec/Seats.tla` and `Seats.tla`
+# open I1 at its top, `Seats_proof.tla` at its theorems (diagrams/README.md § Links)
+MODULE_HOME = {}
 _ANCHOR = re.compile(r"[A-Za-z_][\w.-]*")
 _KEY = re.compile(r"([A-Za-z_][\w.-]*)(?:\([^`]*\))?")
 _RESERVED = {"t", "d", TOP}
@@ -126,11 +131,15 @@ def load_registry(manifest):
     POSTERS.clear()
     ANCHORS_OF.clear()
     HOME_OF.clear()
+    MODULE_HOME.clear()
     for pid, m in sorted(manifest.items()):
         POSTERS[pid] = m["file"]
         ANCHORS_OF[m["file"]] = frozenset(m.get("anchors", ()))
         for r in m.get("records", ()):
             HOME_OF[r] = pid
+        for i, rel in enumerate(m.get("module", ())):
+            frag = TOP if i == 0 else "theorems"
+            MODULE_HOME[rel] = (pid, frag)
 
 
 def poster_link(pid, frag=TOP):
@@ -1057,6 +1066,12 @@ class Canvas:
                 return f"#{key}", "in"
         path = pin.path(raw)
         if path:
+            # a TLA+ module that has its own diagram opens that diagram, except on the diagram itself
+            home = MODULE_HOME.get(path)
+            if home and home[0] != self.ident:
+                u = poster_link(*home)
+                if u:
+                    return u, "out"
             return pin.url(path), "ext"
         if not key or len(key) < 3 or key.lower() in self._PLAIN:
             return None, None
