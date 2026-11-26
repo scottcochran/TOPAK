@@ -1,0 +1,169 @@
+# Publish a release's diagrams to GitHub Pages, so a reader can open one in the browser, served as image/svg+xml, in
+# both themes, rather than in GitHub's file viewer. The site holds the tag's diagrams/topak/*.svg at the paths they
+# have in the tree, the release's pins.json, and an index: diagrams/README.md at the tag, rendered, above the list of
+# the release's diagrams. Before it deploys, the job checks the files against the release's SHA256SUMS, so the site
+# is the release and nothing else. Pages holds one release at a time; the others stay on their release pages.
+# Adapted from gov-tla's pages.yml (at gov-tla commit ba9a1c2), itself adapted from riemann-diagrams'.
+#
+# release.yml calls this with each new tag. Run it by hand (Actions, pages, Run workflow, from main) with an
+# existing tag to publish that release again, or an older one. Only the custodian may.
+#
+# Needs Pages set to "GitHub Actions" in the repository's settings, and the github-pages environment to allow main
+# (for a run by hand) and tags matching diagrams-v* (for a call from release.yml).
+#
+# Two jobs, as GitHub's own Pages workflow has them: build stages the site and uploads it, deploy publishes it.
+# riemann-diagrams found that with both in one job, deploy-pages could list the artifact before it was registered;
+# a job boundary waits for it.
+#
+# A deployment is named by the commit the run is at, and a second deployment at a commit that already has one does
+# not replace the site, though it reports success (riemann-diagrams, v0.3.0). So the deploy job ends by reading
+# pins.json from the site and fails unless it names the tag. When it fails for this reason, push a commit to main
+# and run this by hand from main with the tag.
+name: pages
+
+on:
+  workflow_call:
+    inputs:
+      tag:
+        description: The release tag to publish
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: The release tag to publish, e.g. diagrams-v0.1.0
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - name: The tag is a release, and the run is the custodian's
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          [ "$GITHUB_ACTOR" = scottcochran ] || { echo "pages: only the custodian publishes"; exit 1; }
+          [[ "$TAG" =~ ^diagrams-v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "pages: $TAG is not diagrams-vMAJOR.MINOR.PATCH"; exit 1; }
+          gh release view "$TAG" --json tagName -q .tagName >/dev/null || { echo "pages: $TAG has no release"; exit 1; }
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: refs/tags/${{ inputs.tag }}
+          persist-credentials: false
+      - name: Stage the site
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          set -euo pipefail
+          tag=$TAG
+          mkdir -p site/diagrams/topak
+          cp diagrams/topak/*.svg site/diagrams/topak/
+          touch site/.nojekyll
+          gh release download "$tag" -p pins.json -p SHA256SUMS -D release
+          # the site must be the release: every SVG at the tag, under its release name, and pins.json, as summed
+          mkdir check
+          cp diagrams/topak/*.svg release/pins.json release/SHA256SUMS check/
+          (cd check && sha256sum --strict -c SHA256SUMS)
+          [ "$(ls check/*.svg | wc -l)" = "$(grep -c '\.svg$' release/SHA256SUMS)" ] || { echo "pages: the tag has SVGs the release does not"; exit 1; }
+          cp release/pins.json site/
+          python3 - "$tag" > site/index.html <<'PY'
+          import glob, html, os, re, subprocess, sys
+          tag = sys.argv[1]
+          repo = "https://github.com/scottcochran/TOPAK"
+          # The page is diagrams/README.md at the tag, rendered by GitHub's Markdown API, above the list of the
+          # release's diagrams. The README's links are relative to diagrams/: a diagram the site holds resolves on
+          # the site under diagrams/; anything else (a Markdown file, a source, a directory, an SVG not in the
+          # release) goes to GitHub at the tag, so that nothing on the page lands on a 404.
+          md = open("diagrams/README.md", encoding="utf-8").read()
+          def target(m):
+              t = m.group(1)
+              if re.match(r"(https?:|/|#|mailto:)", t):
+                  return m.group(0)
+              if os.path.isfile(os.path.join("site/diagrams", t.split("#")[0])):
+                  return f"](diagrams/{t})"
+              path = re.sub(r"^(\.\./)+", "", t) if t.startswith("../") else f"diagrams/{t}"
+              kind = "tree" if path.endswith("/") else "blob"
+              return f"]({repo}/{kind}/{tag}/{path.rstrip('/')})"
+          md = re.sub(r"\]\(([^)\s]+)\)", target, md)
+          # mode=markdown renders as a README is rendered, a newline a space; gfm would make every newline a break
+          body = subprocess.run(["gh", "api", "-X", "POST", "markdown", "-f", "mode=markdown", "-f", "text=" + md],
+                                capture_output=True, text=True, check=True).stdout
+          release = (f'<p class="release">The diagrams of release <a href="{repo}/releases/tag/{tag}">{tag}</a>, '
+                     f'served as SVG: open one and zoom in. They follow your light or dark setting.</p>')
+          body = body.replace("</h1>", "</h1>\n" + release, 1)
+          out = ['<!doctype html>', '<html lang="en">', '<meta charset="utf-8">',
+                 '<meta name="viewport" content="width=device-width, initial-scale=1">',
+                 f'<title>TOPAK diagrams, {tag}</title>',
+                 '<style>body{font:16px/1.5 -apple-system,Helvetica,Arial,sans-serif;max-width:56rem;margin:2rem auto;'
+                 'padding:0 1rem;color:#1f2328;background:#fff} li{margin:.4rem 0} h1,h2,h3{line-height:1.25}'
+                 'img{max-width:100%;height:auto}'
+                 'code{font-size:.9em;background:#f3f4f6;padding:.1em .3em;border-radius:4px}'
+                 'pre{background:#f3f4f6;padding:.8rem;overflow:auto} pre code{background:none;padding:0}'
+                 'table{border-collapse:collapse;display:block;overflow:auto}'
+                 'th,td{border:1px solid #d0d7de;padding:.3rem .6rem;vertical-align:top;text-align:left}'
+                 '.release{border-left:4px solid #d0d7de;padding-left:.8rem}'
+                 '@media (prefers-color-scheme:dark){body{background:#0d1117;color:#e6edf3} a{color:#4493f8}'
+                 'code,pre{background:#161b22} th,td,.release{border-color:#30363d}}</style>',
+                 body, '<hr>', f'<h2>The diagrams of {tag}</h2>', '<ul>']
+          def key(f):
+              i = os.path.basename(f).split("-")[0]
+              return (i[0], int(i[1:]))
+          for f in sorted(glob.glob("site/diagrams/topak/*.svg"), key=key):
+              t = re.search(r'<title id="t">TOPAK (\S+) — (.*?)</title>', open(f, encoding="utf-8").read())
+              out.append(f'<li><a href="diagrams/topak/{os.path.basename(f)}">{html.escape(t.group(1))}</a>: '
+                         f'{t.group(2)}</li>')
+          out.append("</ul>")
+          print("\n".join(out))
+          PY
+          find site -type f | sort
+      - uses: actions/upload-pages-artifact@fc324d3547104276b827a68afc52ff2a11cc49c9 # v5.0.0
+        with:
+          path: site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/configure-pages@45bfe0192ca1faeb007ade9deae92b16b8254a0d # v6.0.0
+      - id: deploy
+        uses: actions/deploy-pages@368f82528645a54fb793d4d04e342629a3f51346 # v5.0.1
+      - name: The site serves the tag just published
+        env:
+          TAG: ${{ inputs.tag }}
+          URL: ${{ steps.deploy.outputs.page_url }}
+        run: |
+          served=""
+          for i in $(seq 1 12); do
+            # a query string of its own each time, so that no cached copy answers
+            served=$(curl -fsS "${URL%/}/pins.json?run=$GITHUB_RUN_ID-$GITHUB_RUN_ATTEMPT-$i" \
+              | python3 -c 'import json, sys; print(json.load(sys.stdin)["tag"])' || true)
+            if [ "$served" = "$TAG" ]; then echo "pages: the site serves $TAG"; exit 0; fi
+            echo "pages: the site serves ${served:-nothing readable}, not $TAG; checking again in 10 s"
+            sleep 10
+          done
+          echo "::error::pages: the deployment reported success, but the site still serves ${served:-nothing readable}," \
+               "not $TAG. If this commit ($GITHUB_SHA) already had a Pages deployment, push a commit to main and" \
+               "run pages by hand from main with $TAG (see the head of pages.yml)."
+          exit 1

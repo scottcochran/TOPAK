@@ -4,6 +4,38 @@ Diagrams of the corpus and the generators that draw them. A diagram is a derived
 records and never decides anything. **Where a diagram and a record disagree, the record wins**, and the state of
 record is the latest checkpoint.
 
+## CI, releases and the Pages site
+
+Three workflows, adapted from gov-tla's, which adapted them from riemann-diagrams':
+
+- **`diagrams.yml`** runs on every pull request and push to `main`. It regenerates the family under Python 3.9
+  and fails on any `WARNING` or `ERROR` line, on a read that fails, and on any difference from the committed
+  SVGs. Many diagrams read results files, records and specs at build time, so a change elsewhere in the corpus
+  that a diagram reads fails this check until the diagram is amended. A diagram whose files have moved on since it
+  was drawn reads them with git at a pin in [`topak/src/lib.py`](topak/src/lib.py) instead: B11 and H9 read theirs
+  at `PIN_G12`, the merge of PR #86 (2026.11.17), and moving a pin is an amendment of those diagrams.
+- **`release.yml`** runs when the custodian pushes an annotated `diagrams-vMAJOR.MINOR.PATCH` tag on `main`. The
+  prefix keeps it apart from the corpus's own tags (`G<n>`, `REF-`, `ToO-rev`, `glossary-`). It runs
+  `diagrams.yml` on the tag, then creates a GitHub release. The release holds the SVGs and `pins.json`, which
+  records the tag, the pins, the generator's commit and the run. It also holds `SHA256SUMS` over all of them, and
+  notes that open with the tag's message. Then it calls `pages.yml`.
+- **`pages.yml`** publishes one release to GitHub Pages. It checks the tag's SVGs against the release's
+  `SHA256SUMS` before it deploys, so the site is the release and nothing else. It serves the SVGs at
+  `diagrams/topak/…`, the paths they have in the tree, and an index: this README, rendered, above the list of
+  diagrams. It ends by reading `pins.json` back from the site, and fails unless the site names the tag. Run it by
+  hand from `main` with an existing tag to republish a release.
+
+To release, tag `main` and push the tag. The message says what changed and which diagrams a reader must re-read:
+
+```bash
+git tag -s diagrams-v0.1.0 -m "diagrams-v0.1.0: …" && git push origin diagrams-v0.1.0
+```
+
+The site, <https://scottcochran.github.io/TOPAK/>, holds one release at a time; every release stays on its release
+page. Diagrams opened from the site are served as `image/svg+xml`, so they follow the reader's light or dark
+setting there. `g1-to-bootstrap-2026.09.18.svg` is not part of the family, the check or the releases: its generator
+writes outside the tree.
+
 ## The TOPAK diagram family (2026.10.05)
 
 Forty-two diagrams covering the pattern's logical hierarchies and domain boundaries, drawn against Genesis

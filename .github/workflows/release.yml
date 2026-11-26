@@ -1,0 +1,134 @@
+# A release of the TOPAK diagram family is a version tag, diagrams-vMAJOR.MINOR.PATCH, pushed by the custodian, never
+# moved or reused (rulesets 04 and 05). This workflow runs the diagrams check on the tag, as CI runs it on main, then
+# writes pins.json and SHA256SUMS, and creates the GitHub release with the family's SVGs, the two files, and notes
+# that say what the release was generated from and how to check it. Adapted from gov-tla's release.yml (at gov-tla
+# commit ba9a1c2), itself adapted from riemann-diagrams'. The tag is prefixed, as TOPAK's other tag families are
+# (G<n>, REF-, ToO-rev, glossary-), so that it cannot be read as a version of the corpus.
+#
+# Once the release exists, the pages job calls pages.yml with the tag, which publishes the release's diagrams to
+# GitHub Pages (see that file).
+#
+# The tag must be annotated, on main, diagrams-vMAJOR.MINOR.PATCH, and the custodian's. Its message is the release's
+# opening: what changed, and which diagrams a reader must re-read.
+name: release
+
+on:
+  push:
+    tags: ["diagrams-v*"]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  tag:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: The tag is the custodian's, annotated, and on main
+        run: |
+          set -euo pipefail
+          tag=${GITHUB_REF#refs/tags/}
+          [ "$GITHUB_ACTOR" = scottcochran ] || { echo "release: tags are pushed by the custodian only"; exit 1; }
+          [[ "$tag" =~ ^diagrams-v[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "release: $tag is not diagrams-vMAJOR.MINOR.PATCH"; exit 1; }
+          git fetch -q origin "refs/tags/$tag:refs/tags/$tag" --force
+          [ "$(git cat-file -t "refs/tags/$tag")" = tag ] || { echo "release: $tag is not annotated"; exit 1; }
+          [ -n "$(git tag -l --format='%(contents:subject)%(contents:body)' "$tag" | tr -d '[:space:]')" ] || { echo "release: $tag has no message"; exit 1; }
+          git merge-base --is-ancestor HEAD origin/main || { echo "release: $tag is not on main"; exit 1; }
+          # a release of a commit already released would repeat its diagrams, and Pages does not redeploy a commit
+          git fetch -q origin 'refs/tags/diagrams-v*:refs/tags/diagrams-v*' --force
+          for t in $(git tag -l 'diagrams-v*' --points-at HEAD); do
+            [ "$t" = "$tag" ] || { echo "release: $tag names the commit $t already released"; exit 1; }
+          done
+
+  check:
+    needs: tag
+    uses: ./.github/workflows/diagrams.yml
+
+  release:
+    needs: check
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Stage the assets
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          tag=${GITHUB_REF#refs/tags/}
+          # the checkout action fetches the tag peeled to its commit; the notes need the annotated tag's message
+          git fetch -q --force origin "refs/tags/$tag:refs/tags/$tag"
+          [ "$(git cat-file -t "refs/tags/$tag")" = tag ] || { echo "release: $tag is not annotated after fetch"; exit 1; }
+          mkdir -p stage
+          cp diagrams/topak/*.svg stage/
+          # subject and body, not %(contents): that includes a signed tag's signature block
+          git tag -l --format='%(contents:subject)%0a%0a%(contents:body)' "$tag" > tag-message.txt
+          python3 - "$tag" > stage/pins.json <<'PY'
+          import json, os, re, sys
+          tag = sys.argv[1]
+          src = open("diagrams/topak/src/lib.py").read()
+          # every commit a diagram reads its files at (PIN_*); the others read the tree at the generator's commit
+          pins = dict(re.findall(r'^(PIN_\w+) = "([0-9a-f]{40})"', src, re.M))
+          server, repo, sha, run = (os.environ[k] for k in ("GITHUB_SERVER_URL", "GITHUB_REPOSITORY", "GITHUB_SHA",
+                                                              "GITHUB_RUN_ID"))
+          print(json.dumps({
+            "tag": tag,
+            "state_of_record": "each diagram's footer names the checkpoint it was drawn against",
+            "pins": {k: {"commit": v, "url": f"{server}/{repo}/commit/{v}"} for k, v in sorted(pins.items())},
+            "generator": {"commit": sha, "url": f"{server}/{repo}/commit/{sha}", "python": "3.9 (the family's pin)"},
+            "run": {"id": run, "url": f"{server}/{repo}/actions/runs/{run}"},
+          }, indent=1))
+          PY
+          (cd stage && sha256sum *.svg pins.json > SHA256SUMS)
+          python3 - "$tag" > notes.md <<'PY'
+          import glob, html, json, os, re, sys
+          tag = sys.argv[1]
+          pins = json.load(open("stage/pins.json"))
+          def key(f):
+              i = os.path.basename(f).split("-")[0]
+              return (i[0], int(i[1:]))
+          out = [open("tag-message.txt").read().strip(), "",
+                 f"Generated at [`{pins['generator']['commit'][:7]}`]({pins['generator']['url']}) under Python "
+                 f"{pins['generator']['python']}; each diagram's footer names the checkpoint it was drawn against."]
+          for k, v in pins["pins"].items():
+              out.append(f"`{k}`: the diagrams pinned to it read their files at [`{v['commit'][:7]}`]({v['url']}).")
+          out += ["", "Open a diagram in a browser to see it in both themes: GitHub's file viewer shows an SVG as an "
+                  "image, without its style.", "", "| Id | Diagram |", "|---|---|"]
+          for f in sorted(glob.glob("stage/*.svg"), key=key):
+              t = re.search(r'<title id="t">TOPAK (\S+) — (.*?)</title>', open(f, encoding="utf-8").read())
+              out.append(f"| {t.group(1)} | {html.unescape(t.group(2)).replace('|', '/')} |")
+          out += ["", "Check the assets: `sha256sum -c SHA256SUMS` in the directory they were downloaded to."]
+          print("\n".join(out))
+          PY
+          ls -la stage; head -30 notes.md
+      - name: Create the release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          tag=${GITHUB_REF#refs/tags/}
+          gh release create "$tag" --verify-tag --title "$tag" --notes-file notes.md stage/*
+
+  pages:
+    needs: release
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    uses: ./.github/workflows/pages.yml
+    with:
+      tag: ${{ github.ref_name }}
