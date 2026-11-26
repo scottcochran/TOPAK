@@ -20,7 +20,10 @@ done
 
 cargo build -q --manifest-path "$here/Cargo.toml" -p topak-node
 bin="$here/target/debug"
-rev="$("$here/scripts/build-bundle.sh" 2>/dev/null)"
+# The bundle build is quiet unless it fails: then say why (most often, policies/ changed and docker is not running).
+log="$(mktemp)"
+rev="$("$here/scripts/build-bundle.sh" 2>"$log")" || { cat "$log" >&2; rm -f "$log"; echo "dev-init: the bundle build failed" >&2; exit 1; }
+rm -f "$log"
 
 rm -rf "$dev"; mkdir -p "$dev/corpus" "$dev/secrets" "$dev/run" "$dev/bundles"
 echo "TOPAK_BUNDLE=$rev" > "$here/.env"

@@ -8,10 +8,18 @@ import json, os, subprocess, sys, time, pathlib
 HERE = pathlib.Path(__file__).resolve().parent.parent
 DEV, BIN = HERE / "dev", HERE / "target" / "debug" / "topak"
 
-def op(node, req):
-    out = subprocess.run([BIN, "op", "--socket", DEV / f"run/n{node}/operator.sock", json.dumps(req)],
-                         capture_output=True, text=True, check=True).stdout
-    return json.loads(out)
+def op(node, req, quiet=False):
+    # `topak op` prints the reply and exits non-zero when the reply is a refusal: return it either way,
+    # so a caller can read why.
+    r = subprocess.run([BIN, "op", "--socket", DEV / f"run/n{node}/operator.sock", json.dumps(req)],
+                       capture_output=True, text=True)
+    try:
+        return json.loads(r.stdout)
+    except json.JSONDecodeError:
+        if quiet:
+            return None
+        err = (r.stderr.strip().splitlines() or ["no output"])[0]
+        sys.exit(f"topak op on replica {node} gave no reply (exit {r.returncode}): {err}")
 
 class Mcp:
     def __init__(self, node, token, domain="build"):
@@ -57,29 +65,41 @@ def main():
     nodes = [subprocess.Popen([BIN, "node", "--config", DEV / f"n{n}.json"], stdout=logs[n - 1], stderr=logs[n - 1])
              for n in (1, 2, 3)]
     try:
-        for _ in range(100):
-            if all((DEV / f"run/n{n}/operator.sock").exists() for n in (1, 2, 3)):
+        # Wait until every replica answers and one leads. A socket file left by an earlier run is not a
+        # listening replica, so ask each one and do not look for the file.
+        for _ in range(150):
+            up = [op(n, {"op": "status"}, quiet=True) for n in (1, 2, 3)]
+            if all(up) and any(s.get("leader") for s in up):
                 break
             time.sleep(0.1)
-        time.sleep(1.0)  # leader election
+        else:
+            sys.exit(f"the replicas did not come up with a leader in 15 s: see {DEV}/run/n*.log")
         params = json.loads((DEV / "params.json").read_text())
         bundle = open(HERE / ".env").read().strip().split("=", 1)[1]
         obj = params["corpus"][0]
         tool, digest = params["build_tools"][0].split("@")
 
-        g = op(1, {"op": "grant", "principal": "agent-a1", "seat": "a1", "persona": "00" * 32,
-                   "bundle": bundle, "confinement": {"digest": "00" * 32, "rung": 0},
-                   "alphabet": ["Read", "Draft", "Invoke", "Emit", "Submit"], "ttl_ms": 120000,
-                   "round": 1, "role": "author"})
-        assert g["ok"], g
-        print(f"grant a1: fence {g['fence']}, contained={g['contained']} ({g['note']})")
+        # The replicas keep their logs under dev/run/, and a seat's round number is never reused, so a run
+        # after the first takes the next round the seat has not had. `dev-init.sh` starts again from round 1.
+        for rnd in range(1, 1000):
+            g = op(1, {"op": "grant", "principal": "agent-a1", "seat": "a1", "persona": "00" * 32,
+                       "bundle": bundle, "confinement": {"digest": "00" * 32, "rung": 0},
+                       "alphabet": ["Read", "Draft", "Invoke", "Emit", "Submit"], "ttl_ms": 120000,
+                       "round": rnd, "role": "author"})
+            if g.get("ok") or "round numbers are not reused" not in json.dumps(g):
+                break
+        assert g.get("ok"), g
+        why = "; ".join(map(str, g.get("because") or [])) or "no reason given"
+        print(f"grant a1: round {rnd}, fence {g['fence']}, contained={g['contained']} ({why})")
 
         m = Mcp(1, g["token"])
         tools = [t["name"] for t in m.rpc("tools/list", {})["result"]["tools"]]
         print(f"MCP tools offered: {tools}")
         show("read(corpus object)", m.call("read", {"object": obj}))
         show("read(object outside the corpus root)", m.call("read", {"object": "ab" * 32}))
-        show("draft(spec/Lease.tla)", m.call("draft", {"target": "spec/Lease.tla", "content": "VARIABLES lease\n"}))
+        # The round is in the draft so that each run submits an artifact no earlier run submitted.
+        show("draft(spec/Lease.tla)", m.call("draft", {"target": "spec/Lease.tla",
+                                                       "content": f"VARIABLES lease\n\\* smoke round {rnd}\n"}))
         show("draft(../escape)", m.call("draft", {"target": "../escape", "content": "x"}))
         show("emit(record)", m.call("emit", {"record": {"note": "drafted"}}))
         show("invoke(wordcount) — bundle has no schema", m.call("invoke", {"tool": tool, "digest": digest,

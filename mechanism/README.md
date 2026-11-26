@@ -51,8 +51,8 @@ TOPAK_TRACE_DIR=/tmp/p cargo test --release -p topak-paxos --test sim      # rec
 (cd lean && ./seats-replay.sh > SeatsReplay-results-<date>.txt)   # every suite traced and replayed through the Lean model of apply
 (cd lean && ./coupling-replay.sh > CouplingReplay-results-<date>.txt)   # … and through the Coupling-shaped model on it
 ../tools/lean-sync.sh                      # STALE when a file the Lean results transcribe, model or replay moved
-scripts/dev-init.sh                        # 3 replicas, in-memory transport, WASM bundle only
-python3 scripts/smoke.py                   # live: processes, TCP, operator CLI, MCP client
+scripts/dev-init.sh                        # 3 replicas, in-memory transport, WASM bundle only; no docker while policies/ matches the tracked bundle
+python3 scripts/smoke.py                   # live: processes, TCP, operator CLI, MCP client; repeatable, each run takes the seat's next round
 
 docker compose up -d                       # Kafka :9092, OPA sidecar :18181
 scripts/dev-init.sh --kafka --opa
