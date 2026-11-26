@@ -2,6 +2,7 @@
 from lib import Canvas
 
 ID, SLUG = "B6", "anchor-custody"
+RECORDS = ('ADR-0025',)   # the records this diagram draws in full: a name of one opens it
 
 
 def build():

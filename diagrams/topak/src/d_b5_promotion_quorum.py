@@ -2,6 +2,7 @@
 from lib import Canvas, text_width
 
 ID, SLUG = "B5", "promotion-quorum"
+RECORDS = ('ADR-0024',)   # the records this diagram draws in full: a name of one opens it
 
 
 def build():

@@ -96,22 +96,23 @@ jobs:
           PY
           (cd stage && sha256sum *.svg pins.json > SHA256SUMS)
           python3 - "$tag" > notes.md <<'PY'
-          import glob, html, json, os, re, sys
+          import json, sys
           tag = sys.argv[1]
           pins = json.load(open("stage/pins.json"))
-          def key(f):
-              i = os.path.basename(f).split("-")[0]
-              return (i[0], int(i[1:]))
+          manifest = json.load(open("diagrams/topak/manifest.json"))
           out = [open("tag-message.txt").read().strip(), "",
                  f"Generated at [`{pins['generator']['commit'][:7]}`]({pins['generator']['url']}) under Python "
                  f"{pins['generator']['python']}; each diagram's footer names the checkpoint it was drawn against."]
           for k, v in pins["pins"].items():
               out.append(f"`{k}`: the diagrams pinned to it read their files at [`{v['commit'][:7]}`]({v['url']}).")
-          out += ["", "Open a diagram in a browser to see it in both themes: GitHub's file viewer shows an SVG as an "
-                  "image, without its style.", "", "| Id | Diagram |", "|---|---|"]
-          for f in sorted(glob.glob("stage/*.svg"), key=key):
-              t = re.search(r'<title id="t">TOPAK (\S+) — (.*?)</title>', open(f, encoding="utf-8").read())
-              out.append(f"| {t.group(1)} | {html.unescape(t.group(2)).replace('|', '/')} |")
+          out += ["", "Open a diagram in a browser to follow its links and see it in both themes: GitHub's file viewer "
+                  "shows an SVG as an image, without its links or its style. The links between diagrams are relative, "
+                  "so they work among these assets downloaded together, and on the Pages site; a link to a source "
+                  "opens it on GitHub at its pinned commit.", "",
+                  "| Id | Diagram | Anchors | Links within · to another diagram · to a source |", "|---|---|---|---|"]
+          for pid, m in manifest.items():
+              out.append(f"| {pid} | {m['title'].replace('|', '/').replace('`', '')} | {len(m['anchors'])} | "
+                         f"{m['links']} · {m['links_out']} · {m['links_ext']} |")
           out += ["", "Check the assets: `sha256sum -c SHA256SUMS` in the directory they were downloaded to."]
           print("\n".join(out))
           PY

@@ -6,6 +6,7 @@ and draws nothing of D3's content again."""
 from lib import Canvas, STATUS, STATE_G12, text_width
 
 ID, SLUG = "D9", "archive-of-record"
+RECORDS = ('ADR-0074', 'ADR-0075', 'ADR-0076',)   # the records this diagram draws in full: a name of one opens it
 
 W = 3600
 S = 14

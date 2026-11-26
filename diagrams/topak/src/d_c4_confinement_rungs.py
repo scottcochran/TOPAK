@@ -2,6 +2,7 @@
 from lib import Canvas
 
 ID, SLUG = "C4", "confinement-rungs"
+RECORDS = ('ADR-0034',)   # the records this diagram draws in full: a name of one opens it
 
 H = "[[green|holds]]"
 CE = "[[red|counterexample]] ✓"

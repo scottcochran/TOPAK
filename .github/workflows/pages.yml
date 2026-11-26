@@ -80,7 +80,7 @@ jobs:
           [ "$(ls check/*.svg | wc -l)" = "$(grep -c '\.svg$' release/SHA256SUMS)" ] || { echo "pages: the tag has SVGs the release does not"; exit 1; }
           cp release/pins.json site/
           python3 - "$tag" > site/index.html <<'PY'
-          import glob, html, os, re, subprocess, sys
+          import html, json, os, re, subprocess, sys
           tag = sys.argv[1]
           repo = "https://github.com/scottcochran/TOPAK"
           # The page is diagrams/README.md at the tag, rendered by GitHub's Markdown API, above the list of the
@@ -102,7 +102,8 @@ jobs:
           body = subprocess.run(["gh", "api", "-X", "POST", "markdown", "-f", "mode=markdown", "-f", "text=" + md],
                                 capture_output=True, text=True, check=True).stdout
           release = (f'<p class="release">The diagrams of release <a href="{repo}/releases/tag/{tag}">{tag}</a>, '
-                     f'served as SVG: open one and zoom in. They follow your light or dark setting.</p>')
+                     f'served as SVG: open one and zoom in, and follow its links. They follow your light or dark '
+                     f'setting.</p>')
           body = body.replace("</h1>", "</h1>\n" + release, 1)
           out = ['<!doctype html>', '<html lang="en">', '<meta charset="utf-8">',
                  '<meta name="viewport" content="width=device-width, initial-scale=1">',
@@ -118,13 +119,11 @@ jobs:
                  '@media (prefers-color-scheme:dark){body{background:#0d1117;color:#e6edf3} a{color:#4493f8}'
                  'code,pre{background:#161b22} th,td,.release{border-color:#30363d}}</style>',
                  body, '<hr>', f'<h2>The diagrams of {tag}</h2>', '<ul>']
-          def key(f):
-              i = os.path.basename(f).split("-")[0]
-              return (i[0], int(i[1:]))
-          for f in sorted(glob.glob("site/diagrams/topak/*.svg"), key=key):
-              t = re.search(r'<title id="t">TOPAK (\S+) — (.*?)</title>', open(f, encoding="utf-8").read())
-              out.append(f'<li><a href="diagrams/topak/{os.path.basename(f)}">{html.escape(t.group(1))}</a>: '
-                         f'{t.group(2)}</li>')
+          def fmt(t):
+              return re.sub(r"`([^`]+)`", r"<code>\1</code>", html.escape(t))
+          for pid, p in sorted(json.load(open("diagrams/topak/manifest.json", encoding="utf-8")).items(),
+                               key=lambda kv: (kv[0][0], int(kv[0][1:]))):
+              out.append(f'<li><a href="diagrams/topak/{p["file"]}#top">{pid}</a>: {fmt(p["title"])}</li>')
           out.append("</ul>")
           print("\n".join(out))
           PY

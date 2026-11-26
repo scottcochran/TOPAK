@@ -14,6 +14,8 @@ import re
 from lib import PIN_G12, Canvas, STATE_G12, STATUS, read_at, text_width
 
 ID, SLUG = "H9", "specification-graph"
+RECORDS = ('ADR-0057', 'ADR-0058',)   # the records this diagram draws in full: a name of one opens it
+PIN_LINKS = PIN_G12   # its files are read at this commit, and its links open them there
 
 W = 3600
 

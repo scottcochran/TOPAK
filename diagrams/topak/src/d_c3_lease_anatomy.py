@@ -1,11 +1,12 @@
 """C3 — Lease anatomy: ADR-0031's closed twelve-field schema and the lease's life from grant to end."""
-from lib import Canvas
+from lib import Canvas, linked
 
 ID, SLUG = "C3", "lease-anatomy"
+RECORDS = ('ADR-0031',)   # the records this diagram draws in full: a name of one opens it
 
 
 def build():
-    c = Canvas(ID, "The lease is the credential: twelve fields, one round, one live lease per principal",
+    c = Canvas(ID, "The lease is the credential: " + linked("#schema", "twelve fields") + ", one round, one live lease per principal",
                "ADR-0031 fixes a **closed schema**: every field is an authority claim, and a capability that is not a "
                "field is not carried; adding one is a mechanism release. The lease is granted for one round and ends "
                "with it, its fence is the Paxos log index at grant, renewal only narrows, and every way a lease ends "
@@ -77,7 +78,7 @@ def build():
          "G10 §3 result 4", "Open: G10 item 95"],
     ]
     c.heading(X0, y, "ADR-0031 §1: the closed schema, with §6's trusted-base split")
-    th = c.table(X0, y + 40, cols, rows, size=14, accent="blue") + 40
+    th = c.table(X0, y + 40, cols, rows, size=14, accent="blue", anchor="schema") + 40
     left_bot = y + th
 
     # notes under the schema

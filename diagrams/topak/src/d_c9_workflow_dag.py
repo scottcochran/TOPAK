@@ -4,6 +4,7 @@ applied. Meshes (ADR-0055) are D6's."""
 from lib import Canvas, STATUS, STATE_G11, AMENDED_G12, text_width
 
 ID, SLUG = "C9", "workflow-dag"
+RECORDS = ('ADR-0054',)   # the records this diagram draws in full: a name of one opens it
 
 W = 3400
 BR = "[[red|breaks]]"

@@ -4,6 +4,7 @@ checks and proves it."""
 from lib import Canvas, STATUS, STATE_CC, text_width
 
 ID, SLUG = "C11", "release-seat"
+RECORDS = ('ADR-0066',)   # the records this diagram draws in full: a name of one opens it
 
 W = 3400
 

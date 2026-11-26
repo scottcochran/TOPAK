@@ -3,6 +3,7 @@ issues every lease; the intended path beside the reference's; the control entrie
 from lib import Canvas
 
 ID, SLUG = "C8", "operator-principal"
+RECORDS = ('ADR-0050',)   # the records this diagram draws in full: a name of one opens it
 
 Y = "[[green|permit]]"
 F = "[[red|forbid]]"

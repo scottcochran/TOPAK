@@ -4,6 +4,7 @@ archetype). `spec/Peer.tla` is checked and proved; the floor entry is not writte
 from lib import Canvas, STATUS, STATE_CC, text_width
 
 ID, SLUG = "D8", "peer-topics"
+RECORDS = ('ADR-0065',)   # the records this diagram draws in full: a name of one opens it
 
 W = 3400
 

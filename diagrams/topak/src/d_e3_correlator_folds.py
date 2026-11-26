@@ -3,9 +3,10 @@ Proposed, not built)."""
 import re
 
 import lib
-from lib import Canvas, text_width
+from lib import Canvas, text_width, linked
 
 ID, SLUG = "E3", "correlator-folds"
+RECORDS = ('ADR-0051',)   # the records this diagram draws in full: a name of one opens it
 
 W = 3200
 
@@ -49,7 +50,7 @@ def _row(c, x, y, w, cards, gap=24, size=14):
 
 
 def _build():
-    c = Canvas(ID, "The correlator's detection function: five folds over facts, a judgment tier, and a store that never "
+    c = Canvas(ID, "The correlator's detection function: " + linked("#folds", "five folds over facts") + ", a judgment tier, and a store that never "
                    "outlives its sources",
                "ADR-0051 (Proposed 2026.10.04, at R3) answers ADR-0038's finding 1, \"the correlator has inputs but no "
                "function\". It splits the function in two: five correlations, each a named fold over facts with a fixed "
@@ -339,7 +340,7 @@ def _build():
                       "is on the admit path. A facts-only correlator computes all five correlations; the narrowing "
                       "ADR-0038 §3 permits gives up §4 and nothing in §2.", 13.5, "muted")
     h2 = c.table(X0 + hw + 40, y, [("Name", hw * 0.2, {"mono": True}), ("What it sees", hw * 0.55),
-                                   ("Stands on", hw * 0.25)], [
+                                   ("Stands on", hw * 0.25)], anchor="folds", rows=[
         ["carried-label", "The floor's F1 to F3, with labels carried across rounds and cells through shared targets",
          "ADR-0047, ADR-0049 (Proposed)"],
         ["shared-ingress", "An item one watcher found against, delivered to other cells", "Accepted text"],

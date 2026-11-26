@@ -1,15 +1,20 @@
-# Regenerate the diagrams from the tree and fail if the committed files differ. Adapted from gov-tla's diagrams.yml
-# (at gov-tla commit ba9a1c2), itself adapted from riemann-diagrams' posters.yml.
+# Regenerate the diagrams from the tree, fail if the committed files differ, and check that every link lands. Adapted
+# from gov-tla's diagrams.yml (at gov-tla commit ba9a1c2), itself adapted from riemann-diagrams' posters.yml.
 #
 # The generators run under the family's pinned interpreter, Python 3.9 (diagrams/README.md: sum() over floats changed
 # in 3.12, and with it the coordinates). Many diagrams read results files, records and specs at build time; B11 and
-# H9 read theirs with git at PIN_G12 (diagrams/topak/src/lib.py), so the checkout has the full history. A diagram
-# prints WARNING for an overlap and ERROR for a module that does not load, and a read that fails raises; any of these
-# fails the job. The byte comparison then says whether the committed SVGs are the ones the tree produces: a change
-# elsewhere in the corpus that a diagram reads fails here until the diagram is amended or its pin says otherwise.
+# H9 read theirs with git at PIN_G12 (diagrams/topak/src/lib.py), and every link opens a source at a pinned commit
+# read with git, so the checkout has the full history and the tags. A diagram prints WARNING for an overlap or a link
+# that lands nowhere, ERROR for a module that does not load or an SVG that does not parse, and a NOTE, with exit 1,
+# when a diagram's anchors moved and the committed manifest was stale; a read that fails raises. Any of these fails
+# the job. The byte comparison then says whether the committed SVGs and manifest are the ones the tree produces: a
+# change elsewhere in the corpus that a diagram reads fails here until the diagram is amended or its pin says
+# otherwise. The one diagram outside the family, g1-to-bootstrap-2026.09.18.svg, is not regenerated: its generator
+# writes to a path outside the tree.
 #
-# TOPAK's diagrams carry no links, so gov-tla's link check has no counterpart here. The one diagram outside the
-# family, g1-to-bootstrap-2026.09.18.svg, is not regenerated: its generator writes to a path outside the tree.
+# check-links.py is the proof-posters plugin's (riemann-diagrams, plugins/proof-posters/skills/linking-posters),
+# fetched at a pinned commit and checked by its sha256 before it runs, as gov-tla runs it. Moving the pin is a change
+# to this file.
 #
 # release.yml calls this on a tag before it publishes.
 name: diagrams
@@ -37,6 +42,8 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       # The repository allows GitHub-owned actions only, so the pinned interpreter comes from setup-python, not uv.
+      # It puts Python 3.9 first on PATH as `python`; the runner's own Python (/usr/bin/python3, 3.12 on
+      # ubuntu-24.04) stays for check-links.py, which needs 3.11 or later.
       - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
         with:
           python-version: "3.9"
@@ -45,7 +52,7 @@ jobs:
           set -euo pipefail
           python -c 'import sys; assert sys.version_info[:2] == (3, 9), sys.version; print(sys.version)'
           python diagrams/gen-topak-family.py | tee gen.log
-          if grep -E '^\s*(WARNING|ERROR)' gen.log; then
+          if grep -E '^\s*(WARNING|ERROR)|^NOTE ' gen.log; then
             echo "::error::diagrams: the generator reported the lines above"
             exit 1
           fi
@@ -59,3 +66,14 @@ jobs:
             echo "::error::diagrams: regenerating changed the files above; regenerate under Python 3.9 and commit them, or amend the diagram"
             exit 1
           fi
+      - name: Every link lands
+        env:
+          CHECK_LINKS_COMMIT: 37fecadb9a2bb234ef1849d2467ae476f86829d4
+          CHECK_LINKS_SHA256: 55124504f6288a6626d021b57dead25696e01bee93296ad690e72a7da382bcaf
+        run: |
+          set -euo pipefail
+          f="$RUNNER_TEMP/check-links.py"
+          curl -fsSL -o "$f" "https://raw.githubusercontent.com/scottcochran/riemann-diagrams/$CHECK_LINKS_COMMIT/plugins/proof-posters/skills/linking-posters/scripts/check-links.py"
+          echo "$CHECK_LINKS_SHA256  $f" | sha256sum --strict -c
+          /usr/bin/python3 -c 'import sys; assert sys.version_info >= (3, 11), sys.version'
+          /usr/bin/python3 "$f" --config diagrams/proof-posters.toml

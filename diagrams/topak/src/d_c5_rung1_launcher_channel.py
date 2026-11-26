@@ -2,6 +2,7 @@
 from lib import Canvas
 
 ID, SLUG = "C5", "rung1-launcher-channel"
+RECORDS = ('ADR-0036',)   # the records this diagram draws in full: a name of one opens it
 
 P, F, V = "[[green|pass]]", "[[red|fail]]", "[[grey|vacuous]]"
 

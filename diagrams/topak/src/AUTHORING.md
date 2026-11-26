@@ -55,4 +55,13 @@ looked at as rendered images.
 - `c.region(x, y, w, h, label, accent, dash=, tint=)`: a boundary container with a label tab.
 - `c.arrow([(x, y), ...], accent, dash=, label=, lpos=, loff=, both=)`: an orthogonal polyline.
 - `c.para`, `c.text`, `c.pill`, `c.status`, `c.label`, `c.line`, `c.legend`, `c.heading`.
-- Rich text: `**bold**`, `` `code` ``, `[[red|accented bold]]`, and `\n` for a hard break.
+- Rich text: `**bold**`, `` `code` ``, `[[red|accented bold]]`, `[[@url|linked text]]` (write it with
+  `linked(url, text)`, which leaves the text plain when there is no url), and `\n` for a hard break.
+- **Links** (`diagrams/README.md` § Links). Write references as the corpus writes them (`ADR-0033 §2, A19`,
+  `G12 item 113`, `ToO rev 16 §2.3`, `T-0045-31`, a path) and the library links them; do not hand-write links to
+  source lines. Name things in code font. A card or table row whose title or first cell leads with a record id,
+  a `T-`/`D-` row id or one code-font name is anchored by it. Give `anchor="…"` to a table or card a count should
+  open, and link the count with `linked("#anchor", "…")`, or `linked(poster_link(id, anchor), "…")` for another
+  diagram's list (None until the manifest lists it). A diagram that draws records in full says so with a
+  module-level `RECORDS = ("ADR-…",)`: their names on other diagrams open it, and with one record, a bare `§` on it
+  is that record's. A diagram that reads its files at a pin sets `PIN_LINKS = PIN_…` so its links open them there.

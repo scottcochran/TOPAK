@@ -5,6 +5,7 @@ the jar pin, the local TLAPS build and a CI that does not prove. Nothing the rec
 from lib import Canvas, STATE_G12, STATUS, text_width
 
 ID, SLUG = "H11", "tla-kit-image"
+RECORDS = ('ADR-0077',)   # the records this diagram draws in full: a name of one opens it
 
 W = 3600
 S = 14
