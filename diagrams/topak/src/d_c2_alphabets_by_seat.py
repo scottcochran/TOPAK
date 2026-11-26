@@ -1,6 +1,6 @@
 """C2 — Alphabets by seat: Build's six variants, Run's three and the control alphabet's six against the five seat
 kinds that may hold them."""
-from lib import AMENDED_G11, Canvas
+from lib import AMENDED_G11, Canvas, linked
 
 ID, SLUG = "C2", "alphabets-by-seat"
 
@@ -9,7 +9,7 @@ N = "[[red|✗]]"
 
 
 def build():
-    c = Canvas(ID, "Alphabets by seat: nine variants and a control alphabet of six, two domains, five seat kinds (a "
+    c = Canvas(ID, "Alphabets by seat: " + linked("#matrix", "nine variants and a control alphabet of six") + ", two domains, five seat kinds (a "
                "sixth Proposed)",
                "Each domain has its own typed alphabet and **no variant name is shared**; only the carrier, epoch and "
                "lease on every action, is common. Which seat kind may express which variant is bounded twice: by the "
@@ -287,7 +287,7 @@ def build():
          "permit **C4-deny**; forbid **C7-fence-needs-lease**", N, N, N,
          Y + " Persona in force **and** a live lease (R5)", N, "—"],
     ]
-    y += c.table(X0, y, cols, rows, size=14) + 24
+    y += c.table(X0, y, cols, rows, size=14, anchor="matrix") + 24
     y += c.para(X0, y, X1 - X0,
                 "**Only a** `thinker` **seat, or in Run an** `emergency` **seat for** `Actuate`, **holds a variant that "
                 "writes, runs or offers** (`Draft`, `Invoke`, `Submit`, `Actuate`), and B10 names both; a `thinker` "
@@ -381,7 +381,7 @@ def build():
         ["C9-stop-in-own-domain", F, "`EndRound`, `Revoke`", "`resource.domain != principal.domain`",
          "ADR-0050 §4 (R5, R9: confirmed by the custodian)"],
     ]
-    y += c.table(X0, y, cols, rows, size=14) + 24
+    y += c.table(X0, y, cols, rows, size=14, anchor="policies") + 24
     y += c.para(X0, y, X1 - X0,
                 "Evaluation: any satisfied forbid denies; else any satisfied permit allows; else deny. **Any evaluation "
                 "error is a deny** (ADR-0030 §1). Not in the floor, by design: epoch fencing (the mechanism, ahead of "

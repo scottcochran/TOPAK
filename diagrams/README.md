@@ -4,11 +4,113 @@ Diagrams of the corpus and the generators that draw them. A diagram is a derived
 records and never decides anything. **Where a diagram and a record disagree, the record wins**, and the state of
 record is the latest checkpoint.
 
+## CI, releases and the Pages site
+
+Three workflows, adapted from gov-tla's, which adapted them from riemann-diagrams':
+
+- **`diagrams.yml`** runs on every pull request and push to `main`. It regenerates the family under Python 3.9
+  and fails on any `WARNING`, `ERROR` or `NOTE` line, on a read that fails, and on any difference from the
+  committed SVGs and manifest. It also fails on any link `check-links.py` rejects (§ Links). The script is fetched
+  from riemann-diagrams at a pinned commit and checked by its sha256. Many diagrams read results files, records and specs at build time, so a change elsewhere in the corpus
+  that a diagram reads fails this check until the diagram is amended. A diagram whose files have moved on since it
+  was drawn reads them with git at a pin in [`topak/src/lib.py`](topak/src/lib.py) instead: B11 and H9 read theirs
+  at `PIN_G12`, the merge of PR #86 (2026.11.17), and moving a pin is an amendment of those diagrams.
+- **`release.yml`** runs when the custodian pushes an annotated `diagrams-vMAJOR.MINOR.PATCH` tag on `main`. The
+  prefix keeps it apart from the corpus's own tags (`G<n>`, `REF-`, `ToO-rev`, `glossary-`). It runs
+  `diagrams.yml` on the tag, then creates a GitHub release. The release holds the SVGs and `pins.json`, which
+  records the tag, the pins, the generator's commit and the run. It also holds `SHA256SUMS` over all of them, and
+  notes that open with the tag's message. Then it calls `pages.yml`.
+- **`pages.yml`** publishes one release to GitHub Pages. It checks the tag's SVGs against the release's
+  `SHA256SUMS` before it deploys, so the site is the release and nothing else. It serves the SVGs at
+  `diagrams/topak/…`, the paths they have in the tree, and an index: this README, rendered, above the list of
+  diagrams. It ends by reading `pins.json` back from the site, and fails unless the site names the tag. Run it by
+  hand from `main` with an existing tag to republish a release.
+
+To release, tag `main` and push the tag. The message says what changed and which diagrams a reader must re-read:
+
+```bash
+git tag -s diagrams-v0.1.0 -m "diagrams-v0.1.0: …" && git push origin diagrams-v0.1.0
+```
+
+The site, <https://scottcochran.github.io/TOPAK/>, holds one release at a time; every release stays on its release
+page. Diagrams opened from the site are served as `image/svg+xml`, so they follow the reader's light or dark
+setting there. `g1-to-bootstrap-2026.09.18.svg` is not part of the family, the check or the releases: its generator
+writes outside the tree.
+
+## Links
+
+The diagrams link to each other and to the sources they draw, following the `linking-posters` method of
+riemann-diagrams' proof-posters plugin (`plugins/proof-posters/skills/linking-posters/`), as gov-tla's do. Open a
+diagram in a browser to follow them: from the Pages site, a release's assets or the file. **GitHub's file viewer
+shows an SVG as an image, without its links or its style.** No text is added for a link, and nothing moves: every
+line breaks where it did and every shape is where it was, so a renderer that runs no CSS shows the diagram as
+before.
+
+**What a link opens.** Names and references are linked, not prose.
+
+| In a diagram's text | Opens |
+|---|---|
+| A record, `ADR-0069` | the diagram that draws that record in full (B11, which lists it in `RECORDS`), at its top; on that diagram, or for a record no diagram draws, the record at the pin |
+| A part of a record: `ADR-0033 §2`, `A19`, `E1`, `R4`, `Annex A`, `finding 9` | its heading, History row or line in the record at the pin |
+| A list of parts: `ADR-0033 §1–§3, §7 finding 9, A7, A10–A12` | each part, in the record named first |
+| A section with no record named before it, on a diagram that draws one record | that section of the diagram's record (`§10.2` on B11 is ADR-0069 §10.2) |
+| A checkpoint's part: `G12 §9`, `G12 item 113`, `G10 items 87, 88` | its heading or table row in the checkpoint document at the pin |
+| `Genesis Checkpoint G12`, `G12 (2026.11.16)` | the checkpoint document |
+| `ToO rev 16 §2.3`; `ToO §3.2` | that section of the Theory of Operation at the revision's tag; unversioned, at the revision the diagram's footer names |
+| A trusted-base row `T-0045-31`; a deployment row `D-0024-2` | its row on G1; its card on G2 (else on its record's diagram); else its row in the record |
+| A path or file name, in code or in running text (`tools/ci-plan.sh`, `Seats.tla`, `spec/`) | the file or directory at the pin; a file name only when one tracked file has it. A Markdown file then takes the sections after it (`proof-certification.md §2`) |
+| A code-font name a card or row of this diagram is titled with | that card or row |
+| A distinctive code-font name (`clearSet`, `KUp`, `M_KIND`, `topak-floor`) | the one other diagram that anchors it, else its definition, when one module under `spec/` defines it |
+| A commit (`36269bc`), `PR #68`, `pull request #68` | the commit, when the pin's history holds it; the pull request, when it was merged before the pin |
+| A diagram's header label (`TOPAK · B11`) | its row in this README's table at the pin |
+| A count in a title (C2's nine variants, C3's twelve fields, E3's five folds, G1's thirty-seven rows, B3's and B8's three stages) | the list it counts |
+
+A single word in code (`seat`, `Read`, `input`, `latest`) links only to an anchor on its own diagram: the same word
+means different things on different diagrams, and in different modules. A short id (`B10`, `R5`, `G9`) never
+crosses diagrams, since it may be a boundary, a rule, a gate or a diagram, and a bare `Gn` is a checkpoint only
+where the text says so (`G12 §…`, `G12 item …`, `Genesis Checkpoint G12`, `G12 (date)`).
+
+**Anchors.** Every diagram's header is `#top`. A card or table row whose title or first cell leads with a source's
+own key takes that key as its id: a record (`H2-adr-map-2026.10.05.svg#ADR-0057`), a row
+(`G1-trusted-base-2026.10.05.svg#T-0045-31`), or one code-font name (`#RulesFloorBase.tla`, `#Read` for
+`` `Read(ref)` ``). Where a key is drawn twice, the first drawn keeps it. A few lists are anchored by name: G1's
+`#annex-a` and `#annex-b`, C2's `#matrix` and `#policies`, C3's `#schema`, E3's `#folds`, B3's `#stages`. The ids are
+the sources' own names, so a link stays good when a layout changes.
+
+**The pins.** Every link out opens `github.com/scottcochran/TOPAK/blob/<commit>/…` at a commit, never a branch:
+`PIN_LINKS` in [`topak/src/lib.py`](topak/src/lib.py) (`ffd02f1`, main on 2026.11.20), or `PIN_G12` for B11 and
+H9, which read their files there; the Theory of Operation at its revision's tag (`PIN_TOO_REV14` to `16`). Lines are
+found in the file at that commit with git ([`topak/src/sources.py`](topak/src/sources.py)), not in the tree, so a link
+lands on the line it was made for after the file moves on. A Markdown file is opened as plain text at the line
+(`?plain=1#L…`), which GitHub highlights. Commits and merged pull requests are opened at their own pages, which do
+not move. Moving `PIN_LINKS` regenerates every diagram; it changes links, not drawings.
+
+**The manifest and the second run.** [`topak/manifest.json`](topak/manifest.json) lists every diagram's anchors,
+the records it draws in full and its links by kind. A diagram links to another's anchor only when the committed
+manifest lists it. When a run moves any diagram's anchors or records, the generator updates the manifest, prints a
+`NOTE` line and exits 1. Run it again, and the links follow.
+
+**Where you land.** The target is framed when it opens: a card, a list or a header shows a halo, and a row is
+recoloured amber. The frame pulses three times and then stays; under `prefers-reduced-motion` it does not pulse.
+Seen in Chrome. Untested in Firefox and Safari.
+
+```bash
+# Every link lands: parse every output, no duplicate id, every target exists and is framed, every link out pinned
+uv run --no-project --python 3.12 python <riemann-diagrams>/plugins/proof-posters/skills/linking-posters/scripts/check-links.py \
+  --config diagrams/proof-posters.toml
+```
+
+The generator makes the same checks and prints a `WARNING` for any failure, so CI fails on a link that lands
+nowhere. At 2026.11.26 the family carries 19,310 links: 2,930 within a diagram, 2,623 to another diagram's anchor,
+13,689 to a source at its pin and 68 to a commit or pull request, over 1,609 anchors (counted by `check-links.py`
+and from the manifest by hand; the manifest has the current figures).
+
 ## The TOPAK diagram family (2026.10.05)
 
 Forty-two diagrams covering the pattern's logical hierarchies and domain boundaries, drawn against Genesis
 Checkpoint G10 (2026.10.05) and Theory of Operation revision 14. Each diagram is an SVG that adapts to light and
-dark themes (`prefers-color-scheme`; renderers without CSS fall back to light). The diagrams are sized for
+dark themes (`prefers-color-scheme`; renderers without CSS fall back to light). In the light theme the cards sit on a grey
+page matched to the content's mean luminance, as in gov-tla and riemann-diagrams ([PAGE.md](PAGE.md)). The diagrams are sized for
 reading zoomed in and print at poster scale. Where a record has a table, the diagram draws all of it.
 
 **Revised 2026.10.05** against G10 and ToO rev 14. Every diagram of the 2026.10.03 family is redrawn to Batches 27

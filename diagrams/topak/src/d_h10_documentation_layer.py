@@ -5,6 +5,7 @@ and ratification conditions item by item. Nothing here is modelled, checked or b
 from lib import Canvas, STATE_G12, STATUS, text_width
 
 ID, SLUG = "H10", "documentation-layer"
+RECORDS = ('ADR-0071', 'ADR-0072', 'ADR-0073',)   # the records this diagram draws in full: a name of one opens it
 
 W = 3600
 S = 13.5   # body size in the picture's cards and most tables

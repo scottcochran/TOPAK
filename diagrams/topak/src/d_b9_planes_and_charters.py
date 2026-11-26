@@ -5,6 +5,7 @@ it, and is run by replicas whose membership shrinks only by a voted schedule."""
 from lib import Canvas, STATUS, STATE_CC, text_width
 
 ID, SLUG = "B9", "planes-and-charters"
+RECORDS = ('ADR-0059', 'ADR-0061',)   # the records this diagram draws in full: a name of one opens it
 
 W = 3400
 S = 14

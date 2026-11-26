@@ -6,6 +6,7 @@ import lib
 from lib import Canvas
 
 ID, SLUG = "F1", "persona-lift-lineage"
+RECORDS = ('ADR-0016',)   # the records this diagram draws in full: a name of one opens it
 
 
 def _boldfix(s):

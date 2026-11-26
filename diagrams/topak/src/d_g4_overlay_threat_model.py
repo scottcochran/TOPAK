@@ -5,6 +5,7 @@ says of the modules of ADR-0059 to ADR-0066 is its own cross-reference, and is m
 from lib import Canvas, STATUS, STATE_CC, text_width
 
 ID, SLUG = "G4", "overlay-threat-model"
+RECORDS = ('ADR-0068',)   # the records this diagram draws in full: a name of one opens it
 
 W = 3400
 S = 14          # body text in the picture

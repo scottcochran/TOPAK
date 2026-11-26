@@ -2,6 +2,7 @@
 from lib import Canvas, text_width
 
 ID, SLUG = "C6", "labels-and-handles"
+RECORDS = ('ADR-0047',)   # the records this diagram draws in full: a name of one opens it
 
 H = "[[green|holds]]"
 CE = "[[red|counterexample]] ✓"

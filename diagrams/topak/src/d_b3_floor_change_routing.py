@@ -1,5 +1,5 @@
 """B3 — Floor-change routing, the proof-carrying gate, and the 2026.10.01 gate run."""
-from lib import Canvas
+from lib import Canvas, linked
 
 ID, SLUG = "B3", "floor-change-routing"
 
@@ -9,7 +9,7 @@ HOLDS_K = "[[blue|holds✓]]"
 
 def build():
     c = Canvas(ID, "Changing the floor: the route is computed, every solver `holds` carries a checked proof, and "
-               "the floor in force was built in three gated stages",
+               "the floor in force was built in " + linked("#stages", "three gated stages"),
                "A candidate floor F′ is compared with the deployed floor F in both directions; the answer, not the "
                "author, picks the authority path. A Build author is Byzantine by premise and cannot relabel a "
                "relaxation as a tightening; a wrong solver could, until ADR-0030 A1 made the solver trusted for "
@@ -303,7 +303,7 @@ def build():
          "29", "106", "all pass"],
         ["emergency", "+ ADR-0052 (ADR-0041 A2)", "`X1-break-glass` removed; `B10` admits the `emergency` kind for "
          "`Actuate`", "28", "107", "all pass"],
-    ], size=14, accent="teal")
+    ], size=14, accent="teal", anchor="stages")
     c.para(X0, y + sth + 10, stw, "The table of `floor/proposed/README.md`, in full. The genesis floor has 17 "
            "policies and 62 cases. Each stage passes the genesis gates as they stand, plus routing candidates for "
            "its new entries (four for `labels`, nine by `control`, eleven by `emergency`); no `holds` in any run is "

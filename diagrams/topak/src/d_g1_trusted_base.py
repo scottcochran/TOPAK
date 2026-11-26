@@ -2,9 +2,10 @@
 import pathlib
 import re
 
-from lib import strip_external, Canvas, AMENDED_G12
+from lib import strip_external, Canvas, AMENDED_G12, linked
 
 ID, SLUG = "G1", "trusted-base"
+RECORDS = ('ADR-0045',)   # the records this diagram draws in full: a name of one opens it
 
 _HERE = pathlib.Path(__file__).resolve()
 ROOT = next((p for p in [*_HERE.parents, pathlib.Path.cwd(), *pathlib.Path.cwd().parents]
@@ -103,8 +104,8 @@ def build():
 
     c = Canvas(ID, "The trusted base: a component enters only if its failure can only subtract, or its identity is issued",
                "ADR-0045 (Accepted (genesis) 2026.10.01, Batch 22, confirmation required C2 and C4) declares the trusted "
-               "base row by row: a fixed schema, three classes and a refusal, thirty-seven archetype rows in five groups "
-               "(Annex A), and the reference's own declaration (Annex B). Since ratification three rows changed class "
+               "base row by row: a fixed schema, three classes and a refusal, " + linked("#annex-a", "thirty-seven archetype rows in five groups") + " "
+               "(Annex A), and the reference's own " + linked("#annex-b", "declaration") + " (Annex B). Since ratification three rows changed class "
                "(T-0045-27 B23, T-0045-14 B24, T-0045-24 B30 at the archetype) and seven were added: T-0045-31, the TLA+ "
                "Proof System (B25), with a certified configuration since B28; T-0045-32 to 34 for labels, handles and "
                "the tool list (A1, B34); T-0045-35 and 36 for the operator (A2, B34, provisional with ADR-0050); "
@@ -382,7 +383,7 @@ def build():
         rows.extend(grouped[key])
         nrows += sum(1 for r in grouped[key] if "cells" in r)
     assert nrows == 37, nrows
-    y += c.table(X0, y, cols, rows, size=13.5, accent="blue") + 18
+    y += c.table(X0, y, cols, rows, size=13.5, accent="blue", anchor="annex-a") + 18
     y += c.para(X0, y, X1 - X0, "[[amber|Proposed, and not in Annex A]] (G12 §2.6): **T-0045-38**, a subject "
                 "provider (trust root), and **T-0045-39**, a downstream system's authorization (excluded), in ADR-0056 "
                 "§8 (Proposed, 2026.11.06); **T-0045-40**, the archive's governed store (delegated), in ADR-0076 §9 and "
@@ -459,7 +460,7 @@ def build():
                          "is measured at 36269bc, 159 tests (A20).]]")
         rows.append({"cells": cells, "accent": acc} if acc else cells)
     y += c.table(X0, y, [("Row", 150), ("Instance at the reference", 1340), ("Class here", 520),
-                         ("Note", (X1 - X0) - 2010)], rows, size=13.5, accent="brown") + 18
+                         ("Note", (X1 - X0) - 2010)], rows, size=13.5, accent="brown", anchor="annex-b") + 18
 
     inv = annex_b_text.split("**Inventory.**")[1].split("---")[0]
     w2 = (X1 - X0 - 24) / 2

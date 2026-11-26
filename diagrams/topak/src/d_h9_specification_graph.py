@@ -4,15 +4,18 @@ edge contributes a premise; a theorem is inherited at the grade of its weakest e
 edges, the checker's lists and the digests ADR-0057 §14 cites are read from `spec/specification-graph.json`,
 `spec/specification-graph-results-2026.11.07.txt` and `decisions/ADR-0057.md` at build time: a missing file, a line
 that does not parse or an edge the picture draws that the graph no longer holds is an error, not a blank. Where the
-graph file and the results file disagree, both are drawn."""
+graph file and the results file disagree, both are drawn. Every file is read at PIN_G12 (lib.py), the commit H9 was
+drawn at: the graph rebuilt after it (2026.11.17) is not drawn here."""
 import hashlib
 import json
 import pathlib
 import re
 
-from lib import Canvas, STATE_G12, STATUS, text_width
+from lib import PIN_G12, Canvas, STATE_G12, STATUS, read_at, text_width
 
 ID, SLUG = "H9", "specification-graph"
+RECORDS = ('ADR-0057', 'ADR-0058',)   # the records this diagram draws in full: a name of one opens it
+PIN_LINKS = PIN_G12   # its files are read at this commit, and its links open them there
 
 W = 3600
 
@@ -55,9 +58,8 @@ PIC = [
 
 # ------------------------------------------------------------------------------------------------- readers
 def _read(path):
-    if not path.exists():
-        raise FileNotFoundError(f"H9 needs {path}")
-    return path.read_bytes()
+    """`path` (under ROOT) at PIN_G12, the commit H9 was drawn at, not the working tree (lib.py, diagrams/README.md)."""
+    return read_at(ROOT, PIN_G12, path.relative_to(ROOT).as_posix())
 
 
 def _need(pat, text, what, flags=re.M):

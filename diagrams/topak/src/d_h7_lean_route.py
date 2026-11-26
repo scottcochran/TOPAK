@@ -10,6 +10,7 @@ from lib import AMENDED_G12, Canvas
 from d_h6_proof_certification import read_cert, _clean
 
 ID, SLUG = "H7", "lean-route"
+RECORDS = ('ADR-0053',)   # the records this diagram draws in full: a name of one opens it
 
 _HERE = pathlib.Path(__file__).resolve()
 ROOT = next((p for p in [*_HERE.parents, pathlib.Path.cwd(), *pathlib.Path.cwd().parents]

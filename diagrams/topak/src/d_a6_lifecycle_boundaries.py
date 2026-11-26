@@ -3,6 +3,7 @@ the record names placed on the phase whose instant checks it, the §2 inventory 
 from lib import Canvas, STATUS, STATE_G12, text_width
 
 ID, SLUG = "A6", "lifecycle-boundaries"
+RECORDS = ('ADR-0070',)   # the records this diagram draws in full: a name of one opens it
 
 W = 3600
 S = 14

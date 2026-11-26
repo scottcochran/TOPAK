@@ -8,6 +8,7 @@ import re
 from lib import AMENDED_G12, Canvas, strip_external
 
 ID, SLUG = "H6", "proof-certification"
+RECORDS = ('ADR-0046',)   # the records this diagram draws in full: a name of one opens it
 
 _HERE = pathlib.Path(__file__).resolve()
 ROOT = next((p for p in [*_HERE.parents, pathlib.Path.cwd(), *pathlib.Path.cwd().parents]

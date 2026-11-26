@@ -2,6 +2,7 @@
 from lib import Canvas, STATUS, text_width
 
 ID, SLUG = "D5", "emergency-seating"
+RECORDS = ('ADR-0052',)   # the records this diagram draws in full: a name of one opens it
 
 W = 3200
 

@@ -4,6 +4,7 @@ nothing."""
 from lib import Canvas, STATUS, text_width
 
 ID, SLUG = "C10", "user-scope"
+RECORDS = ('ADR-0056',)   # the records this diagram draws in full: a name of one opens it
 
 W = 3400
 STATE_56 = ("State of record: Genesis Checkpoint G11 (2026.10.09), with Batches 38 and 39 · narrative: Theory of "

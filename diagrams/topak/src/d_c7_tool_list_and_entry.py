@@ -2,6 +2,7 @@
 from lib import Canvas
 
 ID, SLUG = "C7", "tool-list-and-entry"
+RECORDS = ('ADR-0048', 'ADR-0049',)   # the records this diagram draws in full: a name of one opens it
 
 H = "[[green|holds]]"
 CE = "[[red|counterexample]] ✓"

@@ -2,6 +2,7 @@
 from lib import AMENDED_G12, Canvas, text_width
 
 ID, SLUG = "B7", "genesis-to-bootstrap"
+RECORDS = ('ADR-0029',)   # the records this diagram draws in full: a name of one opens it
 
 # The 29 confirmation-required records at G12, as at G11: G9's 22, G10's ADR-0005, 0047, 0048, 0049 and the two
 # provisional records, and G11's ADR-0053 (G10 §1.1, §4; G11 §1.1, §4, §6; G12 §1.1, §4, §6; ToO rev 16 §9; each

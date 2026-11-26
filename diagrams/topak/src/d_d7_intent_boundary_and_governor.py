@@ -4,6 +4,7 @@ stops hearing its plane loses its lease. With spec/Intent.tla and spec/Alone.tla
 from lib import Canvas, STATUS, STATE_CC, text_width
 
 ID, SLUG = "D7", "intent-boundary-and-governor"
+RECORDS = ('ADR-0060', 'ADR-0062',)   # the records this diagram draws in full: a name of one opens it
 
 W = 3400
 

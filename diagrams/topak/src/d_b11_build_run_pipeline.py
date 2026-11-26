@@ -1,14 +1,16 @@
 """B11 — The Build-Run pipeline (ADR-0069, Proposed): one ordered path from intake to rollout, keyed by digest; Run's
 output re-enters only through intake and enables nothing; git and GitHub carry it and decide nothing. Every table of
 the record, Annex A and B, the open questions and the ratification condition item by item. The CI files §10.2 cites
-are read at build time and compared with the record's digests."""
+are read at build time and compared with the record's digests, at PIN_G12 (lib.py), the commit B11 was drawn at."""
 import hashlib
 import pathlib
 import re
 
-from lib import Canvas, STATE_G12, STATUS, text_width
+from lib import PIN_G12, Canvas, STATE_G12, STATUS, list_at, read_at, text_width
 
 ID, SLUG = "B11", "build-run-pipeline"
+RECORDS = ('ADR-0069',)   # the records this diagram draws in full: a name of one opens it
+PIN_LINKS = PIN_G12   # its files are read at this commit, and its links open them there
 
 W = 3400
 S = 14
@@ -38,14 +40,13 @@ LINT_PATH = ".claude/skills/drafting-records/scripts/record_lint.py"
 
 
 # ---------------------------------------------------------------------------------------------- build-time reads
-def _read(path):
-    if not path.exists():
-        raise FileNotFoundError(f"B11 needs {path}")
-    return path.read_bytes()
+def _read(rel):
+    """`rel` at PIN_G12, the commit B11 was drawn at, not the working tree (lib.py, diagrams/README.md)."""
+    return read_at(ROOT, PIN_G12, rel)
 
 
 def _digest(rel):
-    return hashlib.sha256(_read(ROOT / rel)).hexdigest()[:16]
+    return hashlib.sha256(_read(rel)).hexdigest()[:16]
 
 
 def read_files():
@@ -56,7 +57,7 @@ def read_files():
     d["digests"].update({rel: _digest(rel) for rel, _ in ASBUILT_INNER})
     d["match"] = {rel: d["digests"][rel] == want for rel, want, _ in ASBUILT}
     d["match"].update({rel: d["digests"][rel] == want for rel, want in ASBUILT_INNER})
-    tsv = _read(ROOT / "spec" / "modules.tsv").decode().splitlines()
+    tsv = _read("spec/modules.tsv").decode().splitlines()
     if not tsv or tsv[0].split("\t")[:4] != ["module", "runner", "rows", "tier"]:
         raise ValueError("B11: spec/modules.tsv has not the expected header")
     tiers = {}
@@ -70,26 +71,26 @@ def read_files():
     if not tiers:
         raise ValueError("B11: spec/modules.tsv lists no module")
     d["tiers"] = tiers
-    checks = _read(ROOT / ".github" / "workflows" / "checks.yml").decode()
+    checks = _read(".github/workflows/checks.yml").decode()
     d["lint_at_skill"] = LINT_PATH in checks
     d["lint_in_tools"] = "tools/record_lint.py" in checks or "tools/record-lint" in checks
-    wfs = sorted(p.name for p in (ROOT / ".github" / "workflows").glob("*.yml"))
+    wfs = [n for n in list_at(ROOT, PIN_G12, ".github/workflows") if n.endswith(".yml")]
     if not wfs:
         raise ValueError("B11: no workflow under .github/workflows")
     d["workflows"] = wfs
     d["extra_wf"] = {w: _digest(f".github/workflows/{w}") for w in wfs
                      if w not in ("checks.yml", "results.yml", "sources.yml")}
-    pin = _read(ROOT / "tools" / "TLA-PIN").decode()
+    pin = _read("tools/TLA-PIN").decode()
     m = re.search(r"^(v[\d.]+)\s+([0-9a-f]{64})\s*$", pin, re.M)
     if not m:
         raise ValueError("B11: cannot parse tools/TLA-PIN")
     d["tla_pin"] = (m.group(1), m.group(2)[:16])
     found = set()
-    for p in sorted((ROOT / "spec").glob("*.tla")):
-        text = p.read_text(errors="replace")
+    for name in (n for n in list_at(ROOT, PIN_G12, "spec") if n.endswith(".tla")):
+        text = _read(f"spec/{name}").decode(errors="replace")
         for inv in INVARIANTS:
             if inv in text:
-                found.add((p.name, inv))
+                found.add((name, inv))
     d["invariants_found"] = sorted(found)
     return d
 

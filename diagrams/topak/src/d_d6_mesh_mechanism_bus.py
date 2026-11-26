@@ -4,6 +4,7 @@ import lib
 from lib import Canvas, STATUS, text_width, fs
 
 ID, SLUG = "D6", "mesh-mechanism-bus"
+RECORDS = ('ADR-0055',)   # the records this diagram draws in full: a name of one opens it
 
 W = 3200
 

@@ -4,6 +4,7 @@ floor gains a `federation` stage of fourteen forbids, none of them written."""
 from lib import Canvas, STATUS, STATE_CC, text_width, wrap
 
 ID, SLUG = "B10", "federation-floor-stage"
+RECORDS = ('ADR-0067',)   # the records this diagram draws in full: a name of one opens it
 
 W = 3400
 

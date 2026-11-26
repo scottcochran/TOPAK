@@ -1,0 +1,48 @@
+# Where the linking-posters skill of riemann-diagrams' proof-posters plugin finds this diagram family's parts, for
+# its check-links.py:
+#   uv run --no-project --python 3.12 python <riemann-diagrams>/plugins/proof-posters/skills/linking-posters/scripts/check-links.py \
+#     --config diagrams/proof-posters.toml
+# Paths are relative to this file's directory (diagrams/). Only the tables check-links.py reads are here. Adapted from
+# gov-tla's diagrams/proof-posters.toml.
+
+[build]
+outputs = ["topak/*.svg"]
+manifests = ["topak/manifest.json"]
+rerun_marker = "NOTE "       # the generator exits 1 with a line starting so when anchors moved: run it again
+
+[pins]
+file = "topak/src/lib.py"
+
+[[pins.commit]]
+name = "PIN_LINKS"
+what = "the TOPAK commit the family's links open: every record, checkpoint, file and line at it"
+repo = "scottcochran/TOPAK"
+
+[[pins.commit]]
+name = "PIN_G12"
+what = "the commit B11 and H9 read their files at (the merge of PR #86); their links open them there"
+repo = "scottcochran/TOPAK"
+
+[[pins.commit]]
+name = "PIN_TOO_REV14"
+what = "tag ToO-rev14: the Theory of Operation at revision 14, which the G10 diagrams cite"
+repo = "scottcochran/TOPAK"
+
+[[pins.commit]]
+name = "PIN_TOO_REV15"
+what = "tag ToO-rev15"
+repo = "scottcochran/TOPAK"
+
+[[pins.commit]]
+name = "PIN_TOO_REV16"
+what = "tag ToO-rev16"
+repo = "scottcochran/TOPAK"
+
+[links]
+# Every link to another diagram names an anchor; every anchored card, list and header carries a halo (class
+# rd-target), and every anchored row is class rd-row, each shown by the style while it is the target. Every link out
+# is at a pin, or opens a commit or a merged pull request, which do not move.
+require_targets = true
+frame_classes = ["rd-target", "rd-row"]   # a halo behind a card or list; a row recolours its own background
+unrendered = ["[[@", "ref:"]   # lib's link markup, and a name left unresolved: never left in an output
+allow = ["https://github.com/scottcochran/TOPAK/commit/", "https://github.com/scottcochran/TOPAK/pull/"]

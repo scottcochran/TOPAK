@@ -1,6 +1,6 @@
 """B8 — The policy floor in force: three gated stages from the genesis draft; and a fourth, `workflow`, Proposed and
 not in force, which the reference links since 2026.10.08."""
-from lib import AMENDED_G11, Canvas
+from lib import AMENDED_G11, Canvas, linked, poster_link
 
 ID, SLUG = "B8", "floor-stages"
 
@@ -92,7 +92,7 @@ POLICIES = [
 
 
 def build():
-    c = Canvas(ID, "The policy floor in force, three gated stages from the genesis draft; and a fourth the reference links",
+    c = Canvas(ID, "The policy floor in force, " + linked(poster_link("B3", "stages"), "three gated stages") + " from the genesis draft; and a fourth the reference links",
                "`floor/proposed/build.py` builds the floor that the entries in force describe from "
                "`floor/genesis-floor.cedar`, in three cumulative stages, each validated, tested and gated: `labels` "
                "(ADR-0041 A1), `control` (A3) and `emergency` (A2). The last is the floor in force. It is "

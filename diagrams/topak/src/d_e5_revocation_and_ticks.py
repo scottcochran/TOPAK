@@ -3,6 +3,7 @@ effects, with no premise about time, and duration bounded by the plane's ticks, 
 from lib import Canvas, STATUS, STATE_CC, text_width, fs
 
 ID, SLUG = "E5", "revocation-and-ticks"
+RECORDS = ('ADR-0063', 'ADR-0064',)   # the records this diagram draws in full: a name of one opens it
 
 W = 3400
 
