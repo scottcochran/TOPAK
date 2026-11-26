@@ -71,7 +71,9 @@ def list_at(root, commit, rel_dir):
 # a trusted-base row (T-0045-31) its row on G1, a deployment row (D-0024-2) its card on G2, a code-font name the
 # card or row that anchors it, on this diagram or the one other that does. References open their line in the source
 # at the pin: a record's section, amendment, erratum, revision, annex or finding; a checkpoint's section or item; the
-# Theory of Operation's section at its revision's tag. A file or directory in code font opens itself, a TLA+ name that
+# Theory of Operation's section at its revision's tag. A TLA+ module that has a diagram of its own (family I) opens
+# that diagram, its proof module the diagram's theorems, except on the module's own diagram. Any other file or directory
+# in code font opens itself, a TLA+ name that
 # one module defines its definition, a commit or merged pull request its page. Every link out is at a commit, never a
 # branch: PIN_LINKS, or the diagram's own when it reads its files at a pin (PIN_LINKS = PIN_G12 in B11 and H9).
 PIN_LINKS = "ffd02f1363a10bd0db03533f38c6a20fa0f18cab"      # main at 2026.11.20, after PR #99: the records as linked
@@ -86,15 +88,25 @@ ROW_HOME = {"T": "G1", "D": "G2"}
 TOP = "top"
 HALO_PAD = 7
 POSTERS, ANCHORS_OF, HOME_OF = {}, {}, {}   # from the manifest: id -> file; file -> anchors; record -> diagram id
+# from the manifest: a module diagram's files -> (its id, the anchor its name opens): `spec/Seats.tla` and `Seats.tla`
+# open I1 at its top, `Seats_proof.tla` at its theorems (diagrams/README.md § Links)
+MODULE_HOME = {}
 _ANCHOR = re.compile(r"[A-Za-z_][\w.-]*")
 _KEY = re.compile(r"([A-Za-z_][\w.-]*)(?:\([^`]*\))?")
 _RESERVED = {"t", "d", TOP}
 
 
+# The families whose diagrams each draw one TLA+ module (I). A module's names mean what that module says, and the
+# same name in another module is another thing (gov-tla's rule), so a name these diagrams anchor is never the target
+# of another diagram's text, and their own code runs open their module's definitions (MODULE_FILES).
+LOCAL_FAMILIES = ("I",)
+
+
 class _Context:
-    """The diagram being built: its id, the records it draws (RECORDS), the commit its links open (PIN_LINKS), and
-    its canvas, whose footer names the Theory of Operation revision an unversioned "ToO §x" means."""
-    ident, records, pin, canvas = None, (), PIN_LINKS, None
+    """The diagram being built: its id, the records it draws (RECORDS), the commit its links open (PIN_LINKS), on a
+    module's diagram the files whose names its code runs open (MODULE_FILES), and its canvas, whose footer names the
+    Theory of Operation revision an unversioned "ToO §x" means."""
+    ident, records, pin, canvas, module_files = None, (), PIN_LINKS, None, ()
 
     def too_rev(self):
         c = self.canvas
@@ -110,6 +122,7 @@ def begin(module):
     CTX.ident = module.ID
     CTX.records = tuple(getattr(module, "RECORDS", ()))
     CTX.pin = getattr(module, "PIN_LINKS", PIN_LINKS)
+    CTX.module_files = tuple(getattr(module, "MODULE_FILES", ()))
     _spans_cached.cache_clear()
 
 
@@ -118,11 +131,15 @@ def load_registry(manifest):
     POSTERS.clear()
     ANCHORS_OF.clear()
     HOME_OF.clear()
+    MODULE_HOME.clear()
     for pid, m in sorted(manifest.items()):
         POSTERS[pid] = m["file"]
         ANCHORS_OF[m["file"]] = frozenset(m.get("anchors", ()))
         for r in m.get("records", ()):
             HOME_OF[r] = pid
+        for i, rel in enumerate(m.get("module", ())):
+            frag = TOP if i == 0 else "theorems"
+            MODULE_HOME[rel] = (pid, frag)
 
 
 def poster_link(pid, frag=TOP):
@@ -612,6 +629,7 @@ class Canvas:
             CTX.canvas = self
         self.pin = CTX.pin if CTX.ident == ident else PIN_LINKS
         self.records = CTX.records if CTX.ident == ident else ()
+        self.module_files = CTX.module_files if CTX.ident == ident else ()
         self.anchors = []  # ids of anchored groups, in the order drawn: the manifest lists them
         self.links = self.links_out = self.links_ext = 0   # made by link(): on this diagram, to another, out
         self.y = self._header()
@@ -998,7 +1016,9 @@ class Canvas:
 
     def _anchored_elsewhere(self, key):
         """file#key of the one other diagram that anchors `key`, else None."""
-        homes = [f for f in sorted(ANCHORS_OF) if key in ANCHORS_OF[f] and f != POSTERS.get(self.ident)]
+        local = {f for pid, f in POSTERS.items() if pid.startswith(LOCAL_FAMILIES)}
+        homes = [f for f in sorted(ANCHORS_OF)
+                 if key in ANCHORS_OF[f] and f != POSTERS.get(self.ident) and f not in local]
         return f"{homes[0]}#{key}" if len(homes) == 1 else None
 
     def resolve_name(self, name, inside):
@@ -1046,12 +1066,24 @@ class Canvas:
                 return f"#{key}", "in"
         path = pin.path(raw)
         if path:
+            # a TLA+ module that has its own diagram opens that diagram, except on the diagram itself
+            home = MODULE_HOME.get(path)
+            if home and home[0] != self.ident:
+                u = poster_link(*home)
+                if u:
+                    return u, "out"
             return pin.url(path), "ext"
         if not key or len(key) < 3 or key.lower() in self._PLAIN:
             return None, None
         u = pin.commit_url(raw.strip())
         if u:
             return u, "ext"
+        # On a module's diagram, a name its module declares or defines opens that line, whatever other modules do
+        # with the name (`Spec`, `Grant`, `lease`).
+        if self.module_files:
+            d = pin.module_definitions(self.module_files).get(key)
+            if d:
+                return pin.url(d[0], d[1]), "ext"
         # Beyond this diagram, only a name no prose word could be: `clearSet`, `KUp`, `M_KIND`, `topak-floor`,
         # never `seat`, `Read` or `input`, which mean different things on different diagrams; and never a short
         # id such as `B10` or `R5`, which may be a boundary, a rule, a gate or a diagram.

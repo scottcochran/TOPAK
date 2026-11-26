@@ -65,3 +65,8 @@ looked at as rendered images.
   diagram's list (None until the manifest lists it). A diagram that draws records in full says so with a
   module-level `RECORDS = ("ADR-…",)`: their names on other diagrams open it, and with one record, a bare `§` on it
   is that record's. A diagram that reads its files at a pin sets `PIN_LINKS = PIN_…` so its links open them there.
+- **A module's diagram (family I)** sets `MODULE_FILES = ("spec/<M>.tla", "spec/<M>_proof.tla")`: its code runs open
+  that module's definitions, its anchors are its own (`LOCAL_FAMILIES`), and the module's file name opens it from every
+  other diagram (the manifest's `module`). Build it from `modules.py` (the evidence, read and cross-checked) and
+  `modpage.py` (the bands and `flow_picture`); name every file it reads, and hold what it expects them to say as
+  literals compared both ways.

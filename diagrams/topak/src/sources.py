@@ -159,21 +159,39 @@ class Pin:
         if self._defs is None:
             seen = {}
             for rel in sorted(f for f in self.files if f.startswith("spec/") and f.endswith(".tla")):
-                text = self.text(rel) or ""
-                found = {}
-                for m in self._DECL.finditer(text):
-                    base = text.count("\n", 0, m.start(1)) + 1
-                    body = re.sub(r"\(\*.*?\*\)", lambda c: re.sub(r"[^\n]", " ", c.group(0)), m.group(1), flags=re.S)
-                    for i, ln in enumerate(body.split("\n")):
-                        ln = re.sub(r"\\\*.*$", "", ln)
-                        for name in re.findall(r"(?:^|,)\s*([A-Za-z_]\w*)", ln):
-                            found.setdefault(name, base + i)
-                for m in self._DEF.finditer(text):
-                    found.setdefault(m.group(1), text.count("\n", 0, m.start()) + 1)
-                for k, v in found.items():
+                for k, v in self.defined_in(rel).items():
                     seen.setdefault(k, []).append((rel, v))
             self._defs = {k: v[0] for k, v in seen.items() if len(v) == 1}
         return self._defs
+
+    def defined_in(self, rel):
+        """Name -> line of every constant and variable `rel` declares and every name it defines (the first
+        occurrence of each), in the order found; {} when the pin has no such file."""
+        if not hasattr(self, "_defs_in"):
+            self._defs_in = {}
+        if rel not in self._defs_in:
+            text = self.text(rel) or ""
+            found = {}
+            for m in self._DECL.finditer(text):
+                base = text.count("\n", 0, m.start(1)) + 1
+                body = re.sub(r"\(\*.*?\*\)", lambda c: re.sub(r"[^\n]", " ", c.group(0)), m.group(1), flags=re.S)
+                for i, ln in enumerate(body.split("\n")):
+                    ln = re.sub(r"\\\*.*$", "", ln)
+                    for name in re.findall(r"(?:^|,)\s*([A-Za-z_]\w*)", ln):
+                        found.setdefault(name, base + i)
+            for m in self._DEF.finditer(text):
+                found.setdefault(m.group(1), text.count("\n", 0, m.start()) + 1)
+            self._defs_in[rel] = found
+        return self._defs_in[rel]
+
+    def module_definitions(self, rels):
+        """Name -> (file, line) over the files of one module's diagram (its module first, then its proof module):
+        an earlier file's definition wins, so a name the module defines opens the module."""
+        out = {}
+        for rel in rels:
+            for k, v in self.defined_in(rel).items():
+                out.setdefault(k, (rel, v))
+        return out
 
     # -- commits and pull requests
     def commit_url(self, sha):

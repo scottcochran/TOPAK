@@ -145,8 +145,8 @@
    "genesis-values.json"
   ],
   "links": 0,
-  "links_out": 13,
-  "links_ext": 221
+  "links_out": 14,
+  "links_ext": 220
  },
  "B3": {
   "file": "B3-floor-change-routing-2026.10.05.svg",
@@ -213,8 +213,8 @@
   "records": [],
   "anchors": [],
   "links": 0,
-  "links_out": 39,
-  "links_ext": 133
+  "links_out": 44,
+  "links_ext": 128
  },
  "B5": {
   "file": "B5-promotion-quorum-2026.10.05.svg",
@@ -287,8 +287,8 @@
    "RulesFloor"
   ],
   "links": 33,
-  "links_out": 33,
-  "links_ext": 227
+  "links_out": 34,
+  "links_ext": 226
  },
  "B8": {
   "file": "B8-floor-stages-2026.10.05.svg",
@@ -341,8 +341,8 @@
    "taskLabelled"
   ],
   "links": 26,
-  "links_out": 26,
-  "links_ext": 264
+  "links_out": 27,
+  "links_ext": 263
  },
  "B9": {
   "file": "B9-planes-and-charters-2026.10.05.svg",
@@ -474,8 +474,8 @@
    "D-0037-2"
   ],
   "links": 1,
-  "links_out": 25,
-  "links_ext": 208
+  "links_out": 27,
+  "links_ext": 206
  },
  "C2": {
   "file": "C2-alphabets-by-seat-2026.10.05.svg",
@@ -536,8 +536,8 @@
    "policies"
   ],
   "links": 123,
-  "links_out": 38,
-  "links_ext": 268
+  "links_out": 42,
+  "links_ext": 264
  },
  "C3": {
   "file": "C3-lease-anatomy-2026.10.05.svg",
@@ -1124,8 +1124,8 @@
    "second"
   ],
   "links": 0,
-  "links_out": 24,
-  "links_ext": 184
+  "links_out": 26,
+  "links_ext": 182
  },
  "D5": {
   "file": "D5-emergency-seating-2026.10.05.svg",
@@ -1169,8 +1169,8 @@
    "thinker"
   ],
   "links": 31,
-  "links_out": 24,
-  "links_ext": 235
+  "links_out": 25,
+  "links_ext": 234
  },
  "D6": {
   "file": "D6-mesh-mechanism-bus-2026.10.05.svg",
@@ -1571,8 +1571,8 @@
    "annex-b"
   ],
   "links": 130,
-  "links_out": 56,
-  "links_ext": 423
+  "links_out": 58,
+  "links_ext": 421
  },
  "G2": {
   "file": "G2-deployment-lattice-2026.10.05.svg",
@@ -1728,8 +1728,8 @@
    "Workflow"
   ],
   "links": 286,
-  "links_out": 172,
-  "links_ext": 622
+  "links_out": 221,
+  "links_ext": 573
  },
  "G4": {
   "file": "G4-overlay-threat-model-2026.10.05.svg",
@@ -1914,8 +1914,8 @@
    "gate_suite.py"
   ],
   "links": 95,
-  "links_out": 344,
-  "links_ext": 1086
+  "links_out": 355,
+  "links_ext": 1075
  },
  "H4": {
   "file": "H4-reference-deployment-2026.10.05.svg",
@@ -1983,8 +1983,8 @@
    "SafeAlways"
   ],
   "links": 1,
-  "links_out": 29,
-  "links_ext": 145
+  "links_out": 30,
+  "links_ext": 144
  },
  "H6": {
   "file": "H6-proof-certification-2026.10.05.svg",
@@ -2074,8 +2074,8 @@
    "version"
   ],
   "links": 32,
-  "links_out": 42,
-  "links_ext": 208
+  "links_out": 45,
+  "links_ext": 205
  },
  "H8": {
   "file": "H8-overlay-verification-2026.10.05.svg",
@@ -2223,8 +2223,8 @@
    "mechanism"
   ],
   "links": 11,
-  "links_out": 57,
-  "links_ext": 332
+  "links_out": 76,
+  "links_ext": 313
  },
  "H10": {
   "file": "H10-documentation-layer-2026.10.05.svg",
@@ -2253,5 +2253,308 @@
   "links": 0,
   "links_out": 43,
   "links_ext": 275
+ },
+ "I1": {
+  "file": "I1-seats-2026.10.05.svg",
+  "title": "`Seats.tla`: a principal holds one seat, and a seat's kind bounds what it may do. Two invariants, each broken by its own mutation: checked by TLC, proved by TLAPS and in Lean",
+  "records": [],
+  "anchors": [
+   "Act",
+   "EndRound",
+   "Grant",
+   "InitInvA",
+   "InitInvS",
+   "InitTypeOK",
+   "KindBoundActs",
+   "KindBoundKinds",
+   "M_KIND",
+   "M_SEAT",
+   "MutKindGrantsAll",
+   "MutSeatIgnoresHolder",
+   "NeverActed",
+   "NeverObserverVoted",
+   "NeverTwoLive",
+   "NextInvA",
+   "NextInvS",
+   "NextTypeOK",
+   "OneSeatPerPrincipal",
+   "OneSeatPerPrincipalAlways",
+   "OnlyThinkersAuthor",
+   "OnlyThinkersAuthorAlways",
+   "Safe",
+   "SafeAlways",
+   "certification",
+   "grant",
+   "invariant",
+   "matrix",
+   "mutations",
+   "none",
+   "observer",
+   "properties",
+   "theorems",
+   "thinker",
+   "witnesses"
+  ],
+  "links": 76,
+  "links_out": 40,
+  "links_ext": 182,
+  "module": [
+   "spec/Seats.tla",
+   "spec/Seats_proof.tla"
+  ]
+ },
+ "I2": {
+  "file": "I2-run-seats-2026.10.05.svg",
+  "title": "`RunSeats.tla`: in Run, only a thinker seat actuates and an observer seat consults and reports, and no variant name is shared by Build and Run. Three invariants, each with the mutations that break it: checked by TLC, proved by TLAPS and in Lean",
+  "records": [],
+  "anchors": [
+   "Act",
+   "ActRecord",
+   "BoundsInActs",
+   "DomainActs",
+   "DomainNames",
+   "EndRound",
+   "Grant",
+   "GrantAlphabet",
+   "InitAll",
+   "InitInv",
+   "InitTypeOK",
+   "KindActuate",
+   "KindBound",
+   "M_DOMAIN",
+   "M_KIND",
+   "M_OBSEMIT",
+   "MutDomainCrosses",
+   "MutKindObserverActuates",
+   "NeverActuated",
+   "NeverObserverConsulted",
+   "NeverObserverReported",
+   "NextActuate",
+   "NextDomains",
+   "NextInv",
+   "NextObservers",
+   "NextTypeOK",
+   "NoNameCrossesDomains",
+   "NoNameCrossesDomainsAlways",
+   "ObserverRun",
+   "ObserversConsultAndReport",
+   "ObserversConsultAndReportAlways",
+   "OnlyThinkersActuate",
+   "OnlyThinkersActuateAlways",
+   "Safe",
+   "SafeAlways",
+   "bo",
+   "bt",
+   "certification",
+   "grant",
+   "invariant",
+   "matrix",
+   "mutations",
+   "none",
+   "observer",
+   "properties",
+   "ro",
+   "rs-obsemit-consulted",
+   "rt",
+   "theorems",
+   "thinker",
+   "witnesses"
+  ],
+  "links": 108,
+  "links_out": 18,
+  "links_ext": 141,
+  "module": [
+   "spec/RunSeats.tla",
+   "spec/RunSeats_proof.tla"
+  ]
+ },
+ "I3": {
+  "file": "I3-floor-composition-2026.10.05.svg",
+  "title": "`FloorComposition.tla`: nothing is admitted without a clean floor permit, whatever the bundle says, and the bundle cannot write what the floor reads. Five invariants, each with the mutations that break it: checked by TLC, proved by TLAPS and in Lean",
+  "records": [],
+  "anchors": [
+   "AdmitImpliesFloorPermit",
+   "AdmitImpliesFloorPermitAlways",
+   "AdmitIsBundleAllow",
+   "AdmitIsFloorPermit",
+   "BundleCannotWriteFloorInputs",
+   "BundleCannotWriteFloorInputsAlways",
+   "BundleRefusalHonored",
+   "BundleRefusalHonoredAlways",
+   "Decide",
+   "DecideFlags",
+   "Envelope",
+   "EnvelopeHolds",
+   "EnvelopeHoldsAlways",
+   "FlagsUnchanged",
+   "FloorErrorIsDeny",
+   "FloorErrorIsDenyAlways",
+   "InitAll",
+   "InitTypeOK",
+   "M_ERR",
+   "M_FAILOPEN",
+   "M_OVERRIDE",
+   "M_WRITE",
+   "MutErrPermitsWithError",
+   "MutFailOpenPassesErrors",
+   "MutOverrideAdmitsOnAllow",
+   "MutWriteDivergesInputs",
+   "NeverAdmitted",
+   "NeverFloorError",
+   "NeverNarrowed",
+   "NextBundleFlag",
+   "NextFloorFlags",
+   "NextInputs",
+   "NextInvE",
+   "NextTypeOK",
+   "PermitWithinEnvelope",
+   "Safe",
+   "SafeAlways",
+   "certification",
+   "invariant",
+   "matrix",
+   "mutations",
+   "none",
+   "properties",
+   "theorems",
+   "witnesses"
+  ],
+  "links": 162,
+  "links_out": 43,
+  "links_ext": 208,
+  "module": [
+   "spec/FloorComposition.tla",
+   "spec/FloorComposition_proof.tla"
+  ]
+ },
+ "I4": {
+  "file": "I4-floor-routing-2026.10.05.svg",
+  "title": "`FloorRouting.tla`: a floor that permits anything its predecessor did not is never deployed without an anchor issuance, and the deployed floor never permits everything. Two invariants, each with the mutation that breaks it: checked by TLC, proved by TLAPS and in Lean",
+  "records": [],
+  "anchors": [
+   "FloorNeverVacuous",
+   "InitSafe",
+   "IssueAndPromote",
+   "M_GATE",
+   "M_ROUTE",
+   "MutGateAdmitsU",
+   "MutRoutePromotesIncomparable",
+   "NeverIncomparable",
+   "NeverRelaxIssued",
+   "NeverTightened",
+   "NeverVacuousAlways",
+   "NextSafe",
+   "NoWideningAlways",
+   "NoWideningWithoutIssuance",
+   "PassesGates",
+   "Promote",
+   "PromoteNarrows",
+   "Route",
+   "Safe",
+   "SafeAlways",
+   "certification",
+   "invariant",
+   "matrix",
+   "mutations",
+   "none",
+   "properties",
+   "theorems",
+   "witnesses"
+  ],
+  "links": 51,
+  "links_out": 28,
+  "links_ext": 109,
+  "module": [
+   "spec/FloorRouting.tla",
+   "spec/FloorRouting_proof.tla"
+  ]
+ },
+ "I5": {
+  "file": "I5-rules-floor-nv-rev5-2026.10.05.svg",
+  "title": "`RulesFloorNV_rev5.tla`: every rules-floor entry is non-vacuous against ADR-0024 revision 5, and each property holds with its entry in force. Six invariants, each broken by dropping its entry: checked by TLC, proved by TLAPS and in Lean, and **not certified**",
+  "records": [],
+  "anchors": [
+   "EntriesIndependent",
+   "Genesis",
+   "GenesisEntries",
+   "GenesisRules",
+   "HumansFinite",
+   "InForce",
+   "InitAll",
+   "InitBase",
+   "Issue",
+   "MutNoRecuseCountsAuthor",
+   "NeverPromoted",
+   "NextBase",
+   "NextP1",
+   "NextP2",
+   "NextP3",
+   "NextP5",
+   "NextP7",
+   "NextP9",
+   "P1Always",
+   "P1_Unanimity",
+   "P2Always",
+   "P2_TwoSeatsCounted",
+   "P3Always",
+   "P3_AuthorNotCounted",
+   "P5Always",
+   "P5_AnchorNotApprover",
+   "P7Always",
+   "P7_BGNoAuthority",
+   "P9Always",
+   "P9_NoSoloGrant",
+   "Promote",
+   "PromoteSets",
+   "R9IndependentUnderThreshold",
+   "RecordedCardinality",
+   "RecordedWithin",
+   "Safe",
+   "SafeAlways",
+   "Steps",
+   "Vote",
+   "base",
+   "certification",
+   "dropR1",
+   "dropR1R9",
+   "dropR2",
+   "dropR5",
+   "dropR7",
+   "envrecuse",
+   "invariant",
+   "matrix",
+   "mutations",
+   "properties",
+   "theorems",
+   "witnesses"
+  ],
+  "links": 91,
+  "links_out": 44,
+  "links_ext": 179,
+  "module": [
+   "spec/RulesFloorNV_rev5.tla",
+   "spec/RulesFloorNV_rev5_proof.tla"
+  ]
+ },
+ "I6": {
+  "file": "I6-rules-floor-base-2026.10.05.svg",
+  "title": "`RulesFloorBase.tla`: the live definition of the rules floor, its six entries and the genesis rules that satisfy it, shared by the bootstrap modules. Definitions only: no TLC run and no proof module of its own; two theorems proved in Lean",
+  "records": [],
+  "anchors": [
+   "Anchor",
+   "Anchor.tla",
+   "BreakGlass",
+   "BreakGlass.tla",
+   "BreakGlass_A1.tla",
+   "Genesis",
+   "Promotion",
+   "RulesFloor"
+  ],
+  "links": 8,
+  "links_out": 28,
+  "links_ext": 74,
+  "module": [
+   "spec/RulesFloorBase.tla"
+  ]
  }
 }

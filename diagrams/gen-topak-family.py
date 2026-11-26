@@ -5,7 +5,8 @@ Each diagram is a module diagrams/topak/src/d_<id>_<slug>.py exposing ID, SLUG a
 Output: diagrams/topak/<ID>-<slug>-<DATE>.svg. Run with no arguments for all, or with ids (e.g. A1 D3).
 diagrams/topak/manifest.json is the registry of the links between diagrams: it lists every diagram's anchors and the
 records it draws in full (RECORDS), and a diagram links to another's anchor only when the committed manifest lists
-it. When a run moves any diagram's anchors or records, it updates the manifest, prints a NOTE line and exits 1: run
+it, and the module files a module's diagram draws (MODULE_FILES). When a run moves any diagram's anchors, records or
+module, it updates the manifest, prints a NOTE line and exits 1: run
 it again, so that the links follow. Every output is parsed as XML before it is written.
 No dependencies beyond the standard library. Run it under the pinned interpreter, or every coordinate may move:
   uv run --no-project --python 3.9 python diagrams/gen-topak-family.py [IDS]
@@ -30,7 +31,7 @@ def main(argv):
     manifest_path = HERE / "manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8")) if manifest_path.exists() else {}
     lib.load_registry(manifest)
-    before = {k: (v["file"], v["anchors"], v.get("records", [])) for k, v in manifest.items()}
+    before = {k: (v["file"], v["anchors"], v.get("records", []), v.get("module")) for k, v in manifest.items()}
     for name in mods:
         if want and name.split("_")[1].upper() not in want:
             continue
@@ -57,15 +58,19 @@ def main(argv):
         manifest[m.ID] = {"file": out.name, "title": lib.unlinked(canvas.title), "records": list(canvas.records),
                           "anchors": sorted(canvas.anchors),
                           "links": canvas.links, "links_out": canvas.links_out, "links_ext": canvas.links_ext}
+        if getattr(m, "MODULE_FILES", None):
+            # a module's diagram: its file names open this diagram on every other (lib.MODULE_HOME)
+            manifest[m.ID]["module"] = list(m.MODULE_FILES)
     manifest = {k: manifest[k] for k in sorted(manifest, key=lambda k: (k[0], int(k[1:])))}
     text = json.dumps(manifest, indent=1, ensure_ascii=False) + "\n"
     if not manifest_path.exists() or manifest_path.read_text(encoding="utf-8") != text:
         manifest_path.write_text(text, encoding="utf-8")
     moved = sorted((k for k in manifest
-                    if before.get(k) != (manifest[k]["file"], manifest[k]["anchors"], manifest[k]["records"])),
+                    if before.get(k) != (manifest[k]["file"], manifest[k]["anchors"], manifest[k]["records"],
+                                         manifest[k].get("module"))),
                    key=lambda k: (k[0], int(k[1:])))
     if moved:
-        print(f"NOTE the anchors or records of {', '.join(moved)} moved: the links were resolved against the "
+        print(f"NOTE the anchors, records or module of {', '.join(moved)} moved: the links were resolved against the "
               f"previous manifest, now updated. Run again so that they follow.")
         return 1
     return 1 if failed else 0
