@@ -84,8 +84,14 @@ the sources' own names, so a link stays good when a layout changes.
 `PIN_LINKS` in [`topak/src/lib.py`](topak/src/lib.py) (`ffd02f1`, main on 2026.11.20), or `PIN_G12` for B11 and
 H9, which read their files there; the Theory of Operation at its revision's tag (`PIN_TOO_REV14` to `16`). Lines are
 found in the file at that commit with git ([`topak/src/sources.py`](topak/src/sources.py)), not in the tree, so a link
-lands on the line it was made for after the file moves on. A Markdown file is opened as plain text at the line
-(`?plain=1#L…`), which GitHub highlights. Commits and merged pull requests are opened at their own pages, which do
+lands on the line it was made for after the file moves on. A heading of a Markdown file is opened in the rendered
+file, at the anchor GitHub gives it (`…G12-2026.11.16.md#22-the-policy-floor`), so a section is read as the record
+shows it. The rendered file anchors headings only, so a History row, a table row, an item or a finding is opened as
+plain text at its line (`?plain=1#L…`), which GitHub highlights. A wrong anchor would open the top of the file and
+fail no check, so [`check-heading-anchors.py`](check-heading-anchors.py) compares every linked heading with
+GitHub's rendered page at the pin; it needs the network, and is run by hand after a pin moves. A file with a heading
+whose anchor cannot be told from its source (a link, HTML or emphasis in it) keeps plain lines throughout; none
+has one today. Commits and merged pull requests are opened at their own pages, which do
 not move. Moving `PIN_LINKS` regenerates every diagram; it changes links, not drawings.
 
 **The manifest and the second run.** [`topak/manifest.json`](topak/manifest.json) lists every diagram's anchors,
