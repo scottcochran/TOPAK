@@ -4,6 +4,8 @@ Diagrams of the corpus and the generators that draw them. A diagram is a derived
 records and never decides anything. **Where a diagram and a record disagree, the record wins**, and the state of
 record is the latest checkpoint.
 
+[![A1 · Roles map: T, O, P, A, K as roles with obligations](topak/A1-roles-map-2026.10.05.svg)](topak/A1-roles-map-2026.10.05.svg)
+
 ## CI, releases and the Pages site
 
 Three workflows, adapted from gov-tla's, which adapted them from riemann-diagrams':
