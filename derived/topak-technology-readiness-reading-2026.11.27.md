@@ -144,8 +144,9 @@ other fifteen derived documents were not read, and one of them may bear on this 
 
 ### 4.1 `compose-stage-a` at `c66f300` (2026.11.26)
 
-One commit on `8b3b95b`. It adds `mechanism/Dockerfile`, `mechanism/compose.cluster.yml` and
-`mechanism/scripts/faults.sh`, and a derived document, `topak-poc-containers-before-kubernetes-2026.11.26.md`.
+One commit on `8b3b95b`. Under the reference's directory it adds `Dockerfile`, `compose.cluster.yml` and
+`scripts/faults.sh`, and it adds a derived document, `topak-poc-containers-before-kubernetes-2026.11.26.md`. None
+of the four is in this tree, so they are named here and not cited by path.
 
 - Three replicas run in three containers with real TCP between them, Kafka and an OPA sidecar, every image pinned
   by digest.
@@ -163,9 +164,9 @@ client is `smoke.py`, the faults are the two the script injects, and the replica
 ### 4.2 `claude/loving-gauss-3q99gi` at `c7beda0` (2026.11.21)
 
 Eleven commits on `ffd02f1`. `spec/Mechanism.tla` is extended to workflows and meshes, and trace validation is
-reported at 106 traces and 1,716 steps, every step matching (`spec/Mechanism-trace-results-2026.11.21.txt` on that
-branch). A first cut of `MechanismFree.tla` runs the model freely over a generator of entries. This widens the
-analytical half of TRL 3 to the workflow engine.
+reported at 106 traces and 1,716 steps, every step matching (`Mechanism-trace-results-2026.11.21.txt`, under the
+specification directory on that branch). A first cut of `MechanismFree.tla` runs the model freely over a
+generator of entries. This widens the analytical half of TRL 3 to the workflow engine.
 
 ### 4.3 `claude/exciting-darwin-gkqg58` at `dfffe83` (2026.11.12)
 
