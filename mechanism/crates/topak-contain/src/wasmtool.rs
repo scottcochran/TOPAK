@@ -25,7 +25,11 @@
 //!
 //! Any other import is refused before the module runs. The declared `kind` (the protocol) is
 //! recorded with the call and not enforced: the capability binds the target, not what is spoken
-//! on it. CPU is bounded by fuel; each connect, send and receive by a timeout.
+//! on it. CPU is bounded by fuel; each connect, send and receive by a timeout; the call as a whole
+//! by a deadline, checked at every network import. Memory is bounded by the store's limits: one
+//! linear memory of at most `MEMORY_MAX` bytes and one table, and a module that asks for more traps
+//! rather than failing quietly. The host allocates nothing a module sizes beyond its own memory,
+//! and a call opens at most `MAX_CONNS` connections.
 
 use std::collections::BTreeMap;
 use std::io::{Read, Write};
@@ -38,7 +42,8 @@ use anyhow::{Context as _, bail};
 use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
 use topak_core::Digest;
-use wasmtime::{Caller, Config, Engine, Linker, Module, Store};
+use std::time::Instant;
+use wasmtime::{Caller, Config, Engine, Linker, Module, Store, StoreLimits, StoreLimitsBuilder};
 
 /// A tool's declared effect channel (ADR-0040 §3), in ADR-0049's form.
 #[derive(Clone, Debug, PartialEq, Eq, Serialize, Deserialize)]
@@ -59,6 +64,16 @@ pub struct WasmToolSpec {
 const GRANTED: [&str; 6] = ["input_len", "input_read", "output", "connect", "send", "recv"];
 const FUEL: u64 = 50_000_000;
 const NET_TIMEOUT: Duration = Duration::from_secs(2);
+/// A call's linear memory, at most: 1024 pages of 64 KiB.
+pub const MEMORY_MAX: usize = 64 << 20;
+const TABLE_MAX: usize = 10_000;
+/// Connections one call may open, all to its one declared target.
+pub const MAX_CONNS: usize = 16;
+/// The most one `recv` reads, whatever buffer the module offers.
+const RECV_MAX: usize = 64 << 10;
+/// A call's wall-clock budget. Fuel bounds what the module computes, and each network operation
+/// has its own timeout; this bounds how many of them a call can wait through.
+pub const CALL_DEADLINE: Duration = Duration::from_secs(10);
 
 struct Tool {
     module: Module,
@@ -83,6 +98,26 @@ struct Ctx {
     channel: Option<Channel>,
     conns: Vec<TcpStream>,
     used: ChannelUse,
+    limits: StoreLimits,
+    deadline: Instant,
+}
+
+/// A network import past the call's deadline traps, and the call fails.
+fn before_deadline(c: &Caller<'_, Ctx>) -> wasmtime::Result<()> {
+    if Instant::now() >= c.data().deadline {
+        return Err(wasmtime::Error::msg(format!("the call passed its deadline of {CALL_DEADLINE:?}")));
+    }
+    Ok(())
+}
+
+/// Bytes `[ptr, ptr + len)` of the module's memory, refused before anything is allocated unless
+/// the module's own memory holds them.
+fn span(c: &Caller<'_, Ctx>, mem: &wasmtime::Memory, ptr: i32, len: i32) -> wasmtime::Result<(usize, usize)> {
+    let (ptr, len) = (ptr as u32 as usize, len.max(0) as usize);
+    match ptr.checked_add(len) {
+        Some(end) if end <= mem.data_size(c) => Ok((ptr, len)),
+        _ => Err(wasmtime::Error::msg("the span is outside the module's memory")),
+    }
 }
 
 /// The allowlist digest of a module file: the SHA-256 of its bytes.
@@ -165,15 +200,25 @@ impl WasmToolHost {
 
     fn call_blocking(&self, id: &str, input: Vec<u8>, channel: Option<Channel>) -> anyhow::Result<(Value, ChannelUse)> {
         let tool = self.tools.get(id).with_context(|| format!("tool {id} is not hosted"))?;
-        let ctx = Ctx { input, output: None, channel, conns: vec![], used: ChannelUse::default() };
+        let limits = StoreLimitsBuilder::new()
+            .memory_size(MEMORY_MAX)
+            .memories(1)
+            .table_elements(TABLE_MAX)
+            .tables(1)
+            .instances(1)
+            .trap_on_grow_failure(true)
+            .build();
+        let deadline = Instant::now() + CALL_DEADLINE;
+        let ctx = Ctx { input, output: None, channel, conns: vec![], used: ChannelUse::default(), limits, deadline };
         let mut store = Store::new(&self.engine, ctx);
+        store.limiter(|c| &mut c.limits);
         wt(store.set_fuel(FUEL))?;
         let mut linker: Linker<Ctx> = Linker::new(&self.engine);
         wt(linker.func_wrap("topak", "input_len", |c: Caller<'_, Ctx>| c.data().input.len() as i32))?;
         wt(linker.func_wrap("topak", "input_read", |mut c: Caller<'_, Ctx>, ptr: i32| -> wasmtime::Result<()> {
             let mem = memory(&mut c)?;
             let input = c.data().input.clone();
-            mem.write(&mut c, ptr as usize, &input)?;
+            mem.write(&mut c, ptr as u32 as usize, &input)?;
             Ok(())
         }))?;
         wt(linker.func_wrap(
@@ -181,16 +226,21 @@ impl WasmToolHost {
             "output",
             |mut c: Caller<'_, Ctx>, ptr: i32, len: i32| -> wasmtime::Result<()> {
                 let mem = memory(&mut c)?;
-                let mut buf = vec![0u8; len.max(0) as usize];
-                mem.read(&c, ptr as usize, &mut buf)?;
+                let (ptr, len) = span(&c, &mem, ptr, len)?;
+                let mut buf = vec![0u8; len];
+                mem.read(&c, ptr, &mut buf)?;
                 c.data_mut().output = Some(buf);
                 Ok(())
             },
         ))?;
         // The only network capability: the declared target. No address crosses this boundary.
-        wt(linker.func_wrap("topak", "connect", |mut c: Caller<'_, Ctx>| -> i32 {
-            let Some(ch) = c.data().channel.clone() else { return -1 };
-            let Ok(addr) = resolve(&ch.target) else { return -1 };
+        wt(linker.func_wrap("topak", "connect", |mut c: Caller<'_, Ctx>| -> wasmtime::Result<i32> {
+            before_deadline(&c)?;
+            let Some(ch) = c.data().channel.clone() else { return Ok(-1) };
+            if c.data().conns.len() >= MAX_CONNS {
+                return Ok(-1);
+            }
+            let Ok(addr) = resolve(&ch.target) else { return Ok(-1) };
             match TcpStream::connect_timeout(&addr, NET_TIMEOUT) {
                 Ok(s) => {
                     let _ = s.set_read_timeout(Some(NET_TIMEOUT));
@@ -198,18 +248,20 @@ impl WasmToolHost {
                     let d = c.data_mut();
                     d.conns.push(s);
                     d.used.connects += 1;
-                    (d.conns.len() - 1) as i32
+                    Ok((d.conns.len() - 1) as i32)
                 }
-                Err(_) => -1,
+                Err(_) => Ok(-1),
             }
         }))?;
         wt(linker.func_wrap(
             "topak",
             "send",
             |mut c: Caller<'_, Ctx>, h: i32, ptr: i32, len: i32| -> wasmtime::Result<i32> {
+                before_deadline(&c)?;
                 let mem = memory(&mut c)?;
-                let mut buf = vec![0u8; len.max(0) as usize];
-                mem.read(&c, ptr as usize, &mut buf)?;
+                let (ptr, len) = span(&c, &mem, ptr, len)?;
+                let mut buf = vec![0u8; len];
+                mem.read(&c, ptr, &mut buf)?;
                 let d = c.data_mut();
                 let Some(s) = d.conns.get_mut(h as usize) else { return Ok(-1) };
                 Ok(match s.write_all(&buf) {
@@ -225,7 +277,10 @@ impl WasmToolHost {
             "topak",
             "recv",
             |mut c: Caller<'_, Ctx>, h: i32, ptr: i32, cap: i32| -> wasmtime::Result<i32> {
-                let mut buf = vec![0u8; cap.max(0) as usize];
+                before_deadline(&c)?;
+                let mem = memory(&mut c)?;
+                let (ptr, cap) = span(&c, &mem, ptr, cap)?;
+                let mut buf = vec![0u8; cap.min(RECV_MAX)];
                 let n = {
                     let d = c.data_mut();
                     let Some(s) = d.conns.get_mut(h as usize) else { return Ok(-1) };
@@ -235,8 +290,7 @@ impl WasmToolHost {
                     }
                 };
                 c.data_mut().used.received += n as u64;
-                let mem = memory(&mut c)?;
-                mem.write(&mut c, ptr as usize, &buf[..n])?;
+                mem.write(&mut c, ptr, &buf[..n])?;
                 Ok(n as i32)
             },
         ))?;
