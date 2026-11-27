@@ -1,0 +1,78 @@
+# The reference as a three-replica cluster on one Docker host: each replica in its own container and
+# network namespace, real TCP between them, real Kafka (K), and an OPA sidecar beside the in-process
+# Wasm bundle. Separate from docker-compose.yml, which serves the host-mode path (scripts/dev-init.sh
+# with --kafka --opa on the host) and is unchanged.
+#
+#   docker compose -f compose.cluster.yml up -d --build    # init, then kafka, opa, n1..n3
+#   docker compose -f compose.cluster.yml run --rm client  # scripts/smoke.py against the running replicas
+#   scripts/faults.sh                                      # kill and restart a replica; partition one and heal
+#   docker compose -f compose.cluster.yml down -v          # -v drops the dev volume: keys, rules, logs
+#
+# DEV RULES, NOT GENESIS RULES (scripts/dev-init.sh). One machine: a partition here is a
+# `docker network disconnect`, and a crash is a `docker kill`. The agent and operator front doors are
+# Unix sockets on the shared `dev` volume, so a client runs in a container on that volume and never
+# on the host. Images are pinned by digest.
+name: topak-cluster
+
+x-topak: &topak
+  image: topak-node:dev
+  build: { context: .., dockerfile: mechanism/Dockerfile }
+  volumes: ["dev:/topak/mechanism/dev"]
+
+x-node: &node
+  <<: *topak
+  restart: "no"
+  depends_on:
+    init: { condition: service_completed_successfully }
+    kafka: { condition: service_healthy }
+    opa: { condition: service_started }
+
+services:
+  init:
+    <<: *topak
+    # Once per volume. Compose re-runs a completed dependency when a dependent is started again, and a
+    # second dev-init.sh would empty dev/ under the running replicas: new keys, their logs and sockets gone.
+    # `down -v` starts again from nothing.
+    command: ["sh", "-c", "[ -f dev/rules.json ] && echo 'dev/ already initialised: kept' || scripts/dev-init.sh --compose --kafka --opa"]
+
+  kafka:
+    image: apache/kafka:4.3.1@sha256:77e3df9054047a88b520d0cc46e16696d3b22022e1d580aeccd2632df6532837
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
+      KAFKA_GROUP_INITIAL_REBALANCE_DELAY_MS: 0
+    healthcheck:
+      test: ["CMD", "/opt/kafka/bin/kafka-broker-api-versions.sh", "--bootstrap-server", "kafka:9092"]
+      interval: 5s
+      timeout: 10s
+      retries: 20
+      start_period: 10s
+
+  opa:
+    # Native arm64 and amd64. The tracked tarball is Wasm, so the platform does not change the bundle.
+    image: openpolicyagent/opa:1.22.4@sha256:ff50f50332ff9e722ffafe2658c195ced1f9b6d4f3064000c2ecfa8cdf7acccf
+    command: ["run", "--server", "--addr=0.0.0.0:8181", "--bundle", "/data/opa/bundle.tar.gz"]
+    volumes: ["dev:/data:ro"]
+    depends_on:
+      init: { condition: service_completed_successfully }
+
+  n1: { <<: *node, command: ["topak", "node", "--config", "/topak/mechanism/dev/n1.json"] }
+  n2: { <<: *node, command: ["topak", "node", "--config", "/topak/mechanism/dev/n2.json"] }
+  n3: { <<: *node, command: ["topak", "node", "--config", "/topak/mechanism/dev/n3.json"] }
+
+  client:
+    <<: *topak
+    profiles: ["client"]
+    environment: { TOPAK_NODES_EXTERNAL: "1" }
+    command: ["python3", "scripts/smoke.py"]
+
+volumes:
+  dev:

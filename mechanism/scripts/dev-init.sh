@@ -4,29 +4,51 @@
 #   scripts/dev-init.sh            # in-memory transport, local WASM bundle only
 #   scripts/dev-init.sh --kafka    # Kafka at 127.0.0.1:9092 (docker compose up kafka)
 #   scripts/dev-init.sh --opa      # OPA sidecar at 127.0.0.1:8181 (docker compose up opa; host port 18181)
+#   scripts/dev-init.sh --compose --kafka --opa
+#                                  # inside the compose cluster (compose.cluster.yml): peers, Kafka and OPA are
+#                                  # named by service, the binaries are the image's ($TOPAK_BIN_DIR), nothing is built
 #
 # DEV RULES, NOT GENESIS RULES. Keys are generated here and their secrets are written to
 # dev/secrets/ in the clear. Nothing produced by this script is a genesis bundle.
 set -euo pipefail
 here="$(cd "$(dirname "$0")/.." && pwd)"
-dev="$here/dev"
+dev="${TOPAK_DEV:-$here/dev}"
+compose=false
+for a in "$@"; do [ "$a" = --compose ] && compose=true; done
+if $compose; then
+  kafka_at=kafka:9092; opa_at=http://opa:8181; peer() { echo "n$1:710$1"; }
+else
+  kafka_at=127.0.0.1:9092; opa_at=http://127.0.0.1:18181; peer() { echo "127.0.0.1:710$1"; }
+fi
 kafka=null; opa=null
 for a in "$@"; do
   case "$a" in
-    --kafka) kafka='{"brokers":["127.0.0.1:9092"],"replication":1}' ;;
-    --opa) opa='"http://127.0.0.1:18181"' ;;
+    --kafka) kafka="{\"brokers\":[\"$kafka_at\"],\"replication\":1}" ;;
+    --opa) opa="\"$opa_at\"" ;;
+    --compose) ;;
+    *) echo "dev-init: unknown flag $a" >&2; exit 2 ;;
   esac
 done
 
-cargo build -q --manifest-path "$here/Cargo.toml" -p topak-node
-bin="$here/target/debug"
+if [ -n "${TOPAK_BIN_DIR:-}" ]; then
+  bin="$TOPAK_BIN_DIR"
+else
+  cargo build -q --manifest-path "$here/Cargo.toml" -p topak-node
+  bin="$here/target/debug"
+fi
 # The bundle build is quiet unless it fails: then say why (most often, policies/ changed and docker is not running).
 log="$(mktemp)"
 rev="$("$here/scripts/build-bundle.sh" 2>"$log")" || { cat "$log" >&2; rm -f "$log"; echo "dev-init: the bundle build failed" >&2; exit 1; }
 rm -f "$log"
 
-rm -rf "$dev"; mkdir -p "$dev/corpus" "$dev/secrets" "$dev/run" "$dev/bundles"
+# Empty dev/ and keep the directory itself: in the compose cluster it is a volume's mount point.
+mkdir -p "$dev"; find "$dev" -mindepth 1 -delete
+mkdir -p "$dev/corpus" "$dev/secrets" "$dev/run" "$dev/bundles"
 echo "TOPAK_BUNDLE=$rev" > "$here/.env"
+cp "$here/.env" "$dev/.env"
+# The OPA sidecar in the compose cluster serves the tracked (unsigned) tarball under a fixed name, as the
+# host-mode sidecar serves bundles/<revision>.tar.gz.
+if $compose; then mkdir -p "$dev/opa"; cp "$here/bundles/$rev.tar.gz" "$dev/opa/bundle.tar.gz"; fi
 
 # Corpus: the repository's TLA+ modules, content-addressed.
 for f in "$here"/../spec/*.tla; do
@@ -74,10 +96,10 @@ jq -n --argjson corpus "$corpus" --arg tool "$tool_id" '{
 }' > "$dev/params.json"
 
 for i in 1 2 3; do
-  jq -n --argjson id "$i" --argjson kafka "$kafka" --argjson opa "$opa" \
+  jq -n --argjson id "$i" --argjson kafka "$kafka" --argjson opa "$opa" --arg p1 "$(peer 1)" --arg p2 "$(peer 2)" --arg p3 "$(peer 3)" \
     --arg tool "$tool_id" --arg cmd "$bin/topak-demo-tool" --arg bin_sha "$tool_bin" '{
     id: $id,
-    peers: {"1": "127.0.0.1:7101", "2": "127.0.0.1:7102", "3": "127.0.0.1:7103"},
+    peers: {"1": $p1, "2": $p2, "3": $p3},
     data_dir: "run/n\($id)", agent_socket: "run/n\($id)/agent.sock", operator_socket: "run/n\($id)/operator.sock",
     rules: "rules.json", params: "params.json", corpus_dir: "corpus", bundles_dir: "bundles",
     opa_sidecar: $opa, kafka: $kafka,

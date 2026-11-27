@@ -30,6 +30,6 @@ else
 fi
 
 if [ -n "${TOPAK_BUNDLE_SECRET:-}" ]; then
-  "$here/target/debug/topak" sign --purpose bundle --secret "$TOPAK_BUNDLE_SECRET" <(printf '{"revision":"%s"}' "$rev") > "$out/$rev.sig"
+  "${TOPAK_BIN_DIR:-$here/target/debug}/topak" sign --purpose bundle --secret "$TOPAK_BUNDLE_SECRET" <(printf '{"revision":"%s"}' "$rev") > "$out/$rev.sig"
 fi
 echo "$rev"

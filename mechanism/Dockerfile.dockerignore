@@ -1,0 +1,12 @@
+# The context is the repository root: send only what the image needs.
+*
+!mechanism/
+mechanism/target/
+mechanism/dev/
+mechanism/lean/
+mechanism/.env
+!policies/
+!spec/*.tla
+!floor/proposed/workflow-floor.cedar
+!floor/proposed/workflow.cedarschema
+!floor/genesis-values.json
